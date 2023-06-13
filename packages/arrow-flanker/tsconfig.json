@@ -1,12 +1,7 @@
 {
-    "compilerOptions": {
-      /* Visit https://aka.ms/tsconfig to read more about this file */
-      "target": "ES2019",
-      "module": "ES6",
-      "moduleResolution": "node",
-      "noEmit": true,
-      "esModuleInterop": true,
-      "forceConsistentCasingInFileNames": true,
-      "skipLibCheck": true
-    }
-  }
+  "extends": "@jspsych/config/tsconfig.contrib.json",
+  "compilerOptions": {
+    "baseUrl": "."
+  },
+  "include": ["src"]
+}
