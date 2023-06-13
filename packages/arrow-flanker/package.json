@@ -7,7 +7,7 @@
     "types": "dist/index.d.ts",
     "unpkg": "dist/index.global.js",
     "scripts": {
-      "build": "tsup index.ts --format esm,iife --sourcemap --dts --treeshake --clean --global-name jsPsychTimelineArrowFlankerTask"
+      "build": "tsup src/index.ts --format esm,iife --sourcemap --dts --treeshake --clean --global-name jsPsychTimelineArrowFlankerTask"
     },
     "repository": {
       "type": "git",
