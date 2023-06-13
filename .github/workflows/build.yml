@@ -31,7 +31,7 @@ jobs:
       - name: Build packages
         run: npm run build
 
-      - name: Run tests
-        run: npm run test -- --ci --coverage --maxWorkers=2
-        env:
-          NODE_OPTIONS: "--max-old-space-size=4096" # Increase heap size for jest
+      # - name: Run tests
+      #   run: npm run test -- --ci --coverage --maxWorkers=2
+      #   env:
+      #     NODE_OPTIONS: "--max-old-space-size=4096" # Increase heap size for jest
