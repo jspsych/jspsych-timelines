@@ -1,0 +1,35 @@
+{
+    "name": "@jspsych-timelines/arrow-flanker",
+    "version": "0.0.1",
+    "description": "Arrow flanker task for jsPsych",
+    "type": "module",
+    "main": "dist/index.mjs",
+    "types": "dist/index.d.ts",
+    "unpkg": "dist/index.global.js",
+    "scripts": {
+      "build": "tsup index.ts --format esm,iife --sourcemap --dts --treeshake --clean --global-name jsPsychTimelineArrowFlankerTask"
+    },
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/jspsych/jspsych-timelines.git"
+    },
+    "keywords": [
+      "jsPsych"
+    ],
+    "author": "Josh de Leeuw",
+    "license": "MIT",
+    "bugs": {
+      "url": "https://github.com/jspsych/jspsych-timelines/issues"
+    },
+    "homepage": "https://github.com/jspsych/jspsych-timelines/packages/arrow-flanker#readme",
+    "peerDependencies": {
+      "jspsych": "^7.3.3"
+    },
+    "dependencies": {
+      "@jspsych/plugin-html-keyboard-response": "^1.1.2"
+    },
+    "devDependencies": {
+      "tsup": "^6.7.0",
+      "typescript": "^5.0.2"
+    }
+  }
