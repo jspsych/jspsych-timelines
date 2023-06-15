@@ -44,5 +44,16 @@ inquirer.prompt([
         .pipe(replace('{author}', answers.author))
         .pipe(replace('{globalName}', globalName))
         .pipe(gulp.dest(`packages/${answers.name}`));
+
+      gulp.src(`packages/${answers.name}/README.md`)
+        .pipe(replace('{name}', answers.name))
+        .pipe(replace('{description}', answers.description))
+        .pipe(replace('{author}', answers.author))
+        .pipe(replace('{globalName}', globalName))
+        .pipe(gulp.dest(`packages/${answers.name}`));
+
+      gulp.src(`packages/${answers.name}/examples/index.html`)
+        .pipe(replace('{globalName}', globalName))
+        .pipe(gulp.dest(`packages/${answers.name}/examples/`));
     });
 });
