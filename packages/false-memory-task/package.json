@@ -1,0 +1,36 @@
+{
+  "name": "@jspsych/timeline-template",
+  "version": "0.0.1",
+  "description": "A template for a shareable, configurable false memory jsPsych experiment",
+  "type": "module",
+  "main": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "unpkg": "dist/index.global.js",
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,iife --sourcemap --dts --treeshake --clean --global-name jsPsychFalseMemoryTask"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/open-cognition-lab/false-memory-module.git"
+  },
+  "keywords": [
+    "jsPsych"
+  ],
+  "author": "Cherrie Chang",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/open-cognition-lab/false-memory-module/issues"
+  },
+  "homepage": "https://github.com/open-cognition-lab/false-memory-module#readme",
+  "peerDependencies": {
+    "jspsych": "^7.3.2"
+  },
+  "dependencies": {
+    "@jspsych/plugin-html-keyboard-response": "^1.1.2",
+    "@jspsych/plugin-survey-text": "^1.1.2"
+  },
+  "devDependencies": {
+    "tsup": "^6.7.0",
+    "typescript": "^5.0.2"
+  }
+}

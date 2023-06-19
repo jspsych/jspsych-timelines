@@ -22,10 +22,10 @@
     "@jspsych/config": "^1.3.2",
     "husky": "^7.0.1",
     "import-sort-style-module": "^6.0.0",
+    "jest": "*",
     "lint-staged": "^11.1.2",
     "prettier": "^2.3.2",
     "prettier-plugin-import-sort": "^0.0.7",
-    "jest": "*",
     "ts-jest": "*"
   },
   "prettier": {
@@ -44,5 +44,8 @@
     "projects": [
       "<rootDir>/packages/*/jest.config.cjs"
     ]
+  },
+  "dependencies": {
+    "node": "^18.16.0"
   }
 }
