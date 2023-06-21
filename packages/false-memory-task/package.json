@@ -7,7 +7,7 @@
   "types": "dist/index.d.ts",
   "unpkg": "dist/index.global.js",
   "scripts": {
-    "build": "tsup src/index.ts --format esm,iife --sourcemap --dts --treeshake --clean --global-name jsPsychFalseMemoryTask"
+    "build": "tsup src/index.ts --format esm,iife --sourcemap --dts --treeshake --clean --global-name jsPsychTimelineFalseMemoryTask"
   },
   "repository": {
     "type": "git",
