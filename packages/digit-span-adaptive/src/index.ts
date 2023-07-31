@@ -6,18 +6,25 @@ export function createTimeline(
   jsPsych: JsPsych,
   {
     starting_span = 3,
+    min_span = 2,
     digit_duration = 1000,
     gap_duration = 0,
-  }: { starting_span: number; digit_duration: number; gap_duration: number }
+    max_attempts = 10,
+  }: {
+    starting_span: number;
+    min_span: number;
+    digit_duration: number;
+    gap_duration: number;
+    max_attempts: number;
+  }
 ) {
   let current_span = starting_span;
 
-  let current_sequence = jsPsych.randomization.sampleWithReplacement(
-    [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
-    current_span
-  );
+  let current_sequence = pickDigits(jsPsych, current_span);
 
   let current_index = 0;
+
+  let attempts = 0;
 
   const display_sequence_timeline = {
     timeline: [
@@ -37,7 +44,13 @@ export function createTimeline(
   };
 
   const response = {
-    type: "TBD",
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: `<p>Y for yes, N for no</p>`,
+    choices: ["y", "n"],
+    on_finish: (data) => {
+      const correct = jsPsych.pluginAPI.compareKeys(data.response, "y");
+      data.correct = correct;
+    },
     data: {
       task: "response",
     },
@@ -51,11 +64,18 @@ export function createTimeline(
         current_span++;
       } else {
         current_span--;
+        if (current_span < min_span) {
+          current_span = min_span;
+        }
       }
       current_index = 0;
       current_sequence = pickDigits(jsPsych, current_span);
+      attempts++;
+      return attempts < max_attempts;
     },
   };
+
+  return adaptive_loop_timeline;
 }
 
 function createDigitSpanSequence(
@@ -70,7 +90,7 @@ function createDigitSpanSequence(
     gap_duration: number;
   }
 ) {
-  const digits = jsPsych.randomization.sampleWithReplacement([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], n);
+  const digits = pickDigits(jsPsych, n);
 
   const sequence = {
     timeline: [],

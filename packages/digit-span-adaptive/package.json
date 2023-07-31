@@ -26,6 +26,7 @@
       "jspsych": "^7.3.3"
     },
     "dependencies": {
+      "@jspsych/plugin-html-keyboard-response": "^1.1.2"
     },
     "devDependencies": {
       "tsup": "^6.7.0",
