@@ -78,52 +78,7 @@ export function createTimeline(
   return adaptive_loop_timeline;
 }
 
-function createDigitSpanSequence(
-  jsPsych: JsPsych,
-  {
-    n,
-    digit_duration = 1000,
-    gap_duration = 0,
-  }: {
-    n: number;
-    digit_duration: number;
-    gap_duration: number;
-  }
-) {
-  const digits = pickDigits(jsPsych, n);
-
-  const sequence = {
-    timeline: [],
-  };
-
-  for (const digit of digits) {
-    const trial = createDigitSpanDisplay({ digit, digit_duration, gap_duration });
-    sequence.timeline.push(trial);
-  }
-
-  return sequence;
-}
-
-function createDigitSpanDisplay({
-  digit,
-  digit_duration = 1000,
-  gap_duration = 0,
-}: {
-  digit: number;
-  digit_duration: number;
-  gap_duration: number;
-}) {
-  const show_digit = {
-    type: jsPsychHtmlKeyboardResponse,
-    stimulus: `<p class="digit-span-adaptive-digit">${digit}</p>`,
-    trial_duration: digit_duration + gap_duration,
-    stimulus_duration: digit_duration,
-    choices: "NO_KEYS",
-  };
-  return show_digit;
-}
-
-export const timelineUnits = { createDigitSpanDisplay, createDigitSpanSequence };
+export const timelineUnits = { };
 
 function pickDigits(jsPsych: JsPsych, n: number) {
   return jsPsych.randomization.sampleWithReplacement([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], n);
