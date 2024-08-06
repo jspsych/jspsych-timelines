@@ -23,11 +23,11 @@
   },
   "homepage": "https://github.com/open-cognition-lab/false-memory-module#readme",
   "peerDependencies": {
-    "jspsych": "^7.3.2"
+    "jspsych": "^8.0.1"
   },
   "dependencies": {
-    "@jspsych/plugin-html-keyboard-response": "^1.1.2",
-    "@jspsych/plugin-survey-text": "^1.1.2"
+    "@jspsych/plugin-html-keyboard-response": "^2.0.0",
+    "@jspsych/plugin-survey-text": "^2.0.0"
   },
   "devDependencies": {
     "tsup": "^6.7.0",
