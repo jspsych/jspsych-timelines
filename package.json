@@ -48,13 +48,7 @@
   },
   "dependencies": {
     "chokidar": "^3.6.0",
-    "gulp": "^5.0.0",
-    "gulp-cli": "^3.0.0",
+    "braces": "^3.0.3",
     "jspsych": "^8.0.1"
-  },
-
-  "overrides": {
-    "braces": "^3.0.3"
   }
-
 }

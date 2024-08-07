@@ -23,7 +23,7 @@
     },
     "homepage": "https://github.com/jspsych/jspsych-timelines/packages/{name}#readme",
     "peerDependencies": {
-      "jspsych": "^7.3.3"
+      "jspsych": "^8.0.1"
     },
     "dependencies": {
     },
