@@ -42,7 +42,7 @@ If you would like to contribute a new task to this repository, please follow the
 1. Fork this repository
 2. Create a new branch for your task (e.g., 'new-task-arrow-flanker')
 3. Run `npm install` in the root directory of the repository to install dependencies.
-4. Run `npm run create-task` and answer the prompts to create a new task template in the `packages` directory.
+4. Run `npm run new` and answer the prompts to create a new task template in the `packages` directory.
 5. Edit the files in the new task directory to implement your task. `src/index.ts` is the main file that will be loaded when the task is used. `README.md` is the documentation for the task. `examples/index.html` is a basic jsPsych experiment template that you can modify to illustrate how your task works.
 6. Run `npm run build` to build the task. This will create a `dist` directory with the compiled task.
 7. Verify that the example works by opening `examples/index.html` in your browser.
