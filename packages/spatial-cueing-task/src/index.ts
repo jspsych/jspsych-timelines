@@ -123,8 +123,8 @@ function makeEndogenousCue(jsPsych: JsPsych, cue_period: number) {
     const endogenous_cue = {
         type: jsPsychHtmlKeyboardResponse,
         stimulus: () => {
-            const validity = jsPsych.timelineVariable("validity");
-            const stimulus_direction = jsPsych.timelineVariable("stimulus_direction");
+            const validity = jsPsych.evaluateTimelineVariable("validity");
+            const stimulus_direction = jsPsych.evaluateTimelineVariable("stimulus_direction");
             const cue_direction = cueDirectionMapper(validity, stimulus_direction);
 
             var stimulus = `<div class="jspsych-spatial-cueing-container">` + StimulusBox.Default;
@@ -157,8 +157,8 @@ function makeExogenousCue(jsPsych: JsPsych, cue_period: number) {
     const exogenous_cue = {
         type: jsPsychHtmlKeyboardResponse,
         stimulus: () => {
-            const validity = jsPsych.timelineVariable("validity");
-            const stimulus_direction = jsPsych.timelineVariable("stimulus_direction");
+            const validity = jsPsych.evaluateTimelineVariable("validity");
+            const stimulus_direction = jsPsych.evaluateTimelineVariable("stimulus_direction");
             const cue_direction = cueDirectionMapper(validity, stimulus_direction);
 
             var stimulus = `<div class="jspsych-spatial-cueing-container">`
@@ -186,15 +186,15 @@ function makeExogenousStimulus(jsPsych: JsPsych) {
     const exogenous_stimulus = {
         type: jsPsychHtmlKeyboardResponse,
         stimulus: () => {
-            const validity = jsPsych.timelineVariable("validity");
-            const stimulus_direction = jsPsych.timelineVariable("stimulus_direction");
+            const validity = jsPsych.evaluateTimelineVariable("validity");
+            const stimulus_direction = jsPsych.evaluateTimelineVariable("stimulus_direction");
             const cue_direction = cueDirectionMapper(validity, stimulus_direction);
 
             var stimulus = `<div class="jspsych-spatial-cueing-container">`;
             if (cue_direction == Direction.Left || cue_direction == Direction.Bi) {
-                stimulus += jsPsych.timelineVariable("stimulus_direction") == Direction.Left ? StimulusBox.WithStimulusHighlighted : StimulusBox.Highlighted;
+                stimulus += jsPsych.evaluateTimelineVariable("stimulus_direction") == Direction.Left ? StimulusBox.WithStimulusHighlighted : StimulusBox.Highlighted;
             }
-            else if (jsPsych.timelineVariable("stimulus_direction") == Direction.Left) {
+            else if (jsPsych.evaluateTimelineVariable("stimulus_direction") == Direction.Left) {
                 stimulus += StimulusBox.WithStimulus;
             }
             else {
@@ -204,9 +204,9 @@ function makeExogenousStimulus(jsPsych: JsPsych) {
             stimulus += FixationBox.NoCue;
 
             if (cue_direction == Direction.Right || cue_direction == Direction.Bi) {
-                stimulus += jsPsych.timelineVariable("stimulus_direction") == Direction.Right ? StimulusBox.WithStimulusHighlighted : StimulusBox.Highlighted;
+                stimulus += jsPsych.evaluateTimelineVariable("stimulus_direction") == Direction.Right ? StimulusBox.WithStimulusHighlighted : StimulusBox.Highlighted;
             }
-            else if (jsPsych.timelineVariable("stimulus_direction") == Direction.Right) {
+            else if (jsPsych.evaluateTimelineVariable("stimulus_direction") == Direction.Right) {
                 stimulus += StimulusBox.WithStimulus;
             }
             else {
@@ -222,7 +222,7 @@ function makeExogenousStimulus(jsPsych: JsPsych) {
             task: "stimulus",
             cue_type: "exogenous",
             correct_response: () => {
-                return jsPsych.timelineVariable("stimulus_direction") == Direction.Left ? 'f' : 'j';
+                return jsPsych.evaluateTimelineVariable("stimulus_direction") == Direction.Left ? 'f' : 'j';
             }
         },
         on_finish: function (data: any) {
@@ -241,11 +241,11 @@ function makeEndogenousStimulus(jsPsych: JsPsych) {
     const endogenous_stimulus = {
         type: jsPsychHtmlKeyboardResponse,
         stimulus: () => {
-            const validity = jsPsych.timelineVariable("validity");
-            const stimulus_direction = jsPsych.timelineVariable("stimulus_direction");
+            const validity = jsPsych.evaluateTimelineVariable("validity");
+            const stimulus_direction = jsPsych.evaluateTimelineVariable("stimulus_direction");
             const cue_direction = cueDirectionMapper(validity, stimulus_direction);
 
-            var stimulus = `<div class="jspsych-spatial-cueing-container">` + (jsPsych.timelineVariable("stimulus_direction") == Direction.Left ? StimulusBox.WithStimulus : StimulusBox.Default);    
+            var stimulus = `<div class="jspsych-spatial-cueing-container">` + (jsPsych.evaluateTimelineVariable("stimulus_direction") == Direction.Left ? StimulusBox.WithStimulus : StimulusBox.Default);    
             switch (cue_direction) {
                 case Direction.Left:
                     stimulus += FixationBox.LeftCue;
@@ -261,7 +261,7 @@ function makeEndogenousStimulus(jsPsych: JsPsych) {
                     break;
             };
 
-            stimulus += (jsPsych.timelineVariable("stimulus_direction") == Direction.Right ? StimulusBox.WithStimulus : StimulusBox.Default) + `</div>`;
+            stimulus += (jsPsych.evaluateTimelineVariable("stimulus_direction") == Direction.Right ? StimulusBox.WithStimulus : StimulusBox.Default) + `</div>`;
             
             return stimulus;
         },
@@ -270,7 +270,7 @@ function makeEndogenousStimulus(jsPsych: JsPsych) {
             task: "stimulus",
             cue_type: "endogenous",
             correct_response: () => {
-                return jsPsych.timelineVariable("stimulus_direction") == Direction.Left ? 'f' : 'j';
+                return jsPsych.evaluateTimelineVariable("stimulus_direction") == Direction.Left ? 'f' : 'j';
             }
         },
         on_finish: function (data: any) {

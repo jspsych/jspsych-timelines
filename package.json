@@ -14,7 +14,7 @@
     "changeset": "changeset",
     "changeset:version": "changeset version && npm install && npm run update-unpkg-links",
     "changeset:publish": "npm run build && changeset publish",
-    "create-task": "node templates/cli/src/index.js"
+    "new": "node templates/cli/src/index.js"
   },
   "devDependencies": {
     "@changesets/changelog-github": "^0.4.0",
@@ -48,13 +48,7 @@
   },
   "dependencies": {
     "chokidar": "^3.6.0",
-    "gulp": "^5.0.0",
-    "gulp-cli": "^3.0.0",
+    "braces": "^3.0.3",
     "jspsych": "^8.0.1"
-  },
-
-  "overrides": {
-    "braces": "^3.0.3"
   }
-
 }
