@@ -1,13 +1,13 @@
 {
-  "name": "@jspsych/false-memory-task",
+  "name": "@jspsych-timelines/test",
   "version": "0.0.1",
-  "description": "False memory task for jsPsych",
+  "description": "test",
   "type": "module",
   "main": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "unpkg": "dist/index.global.js",
   "scripts": {
-    "build": "tsup src/index.ts --format esm,iife --sourcemap --dts --treeshake --clean --global-name jsPsychTimelineFalseMemoryTask"
+    "build": "tsup src/index.ts --format esm,iife --sourcemap --dts --treeshake --clean --global-name jsPsychTimelineTest"
   },
   "repository": {
     "type": "git",
@@ -16,21 +16,19 @@
   "keywords": [
     "jsPsych"
   ],
-  "author": "Cherrie Chang",
+  "author": "me",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/jspsych/jspsych-timelines/issues"
   },
-  "homepage": "https://github.com/jspsych/jspsych-timelines/packages/false-memory-task#readme",
+  "homepage": "https://github.com/jspsych/jspsych-timelines/packages/test#readme",
   "peerDependencies": {
     "jspsych": "^8.0.1"
   },
   "dependencies": {
-    "@jspsych/plugin-html-keyboard-response": "^2.0.0",
-    "@jspsych/plugin-survey-text": "^2.0.0"
   },
   "devDependencies": {
-    "tsup": "^8.2.4",
-    "typescript": "^5.5.4"
+    "tsup": "^6.7.0",
+    "typescript": "^5.0.2"
   }
 }

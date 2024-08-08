@@ -29,7 +29,7 @@
       "@jspsych/plugin-html-keyboard-response": "^2.0.0"
     },
     "devDependencies": {
-      "tsup": "^6.7.0",
-      "typescript": "^5.0.2"
+      "tsup": "^8.0.1",
+      "typescript": "^5.5.4"
     }
   }
