@@ -2,11 +2,11 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { input, select } from "@inquirer/prompts";
 import { deleteSync } from "del";
-import { input, select } from '@inquirer/prompts';
-import { series, src, dest } from 'gulp';
-import rename from 'gulp-rename';
-import replace from 'gulp-replace';
+import { dest, series, src } from "gulp";
+import rename from "gulp-rename";
+import replace from "gulp-replace";
 import slash from "slash";
 
 const repoRoot = slash(path.resolve(fileURLToPath(import.meta.url), "../../../.."));
@@ -22,22 +22,22 @@ function formatName(input) {
 
 async function runPrompts() {
   const language = await select({
-    message: 'What language do you want to use?',
+    message: "What language do you want to use?",
     choices: [
       {
-        name: 'JavaScript',
-        value: 'js'
+        name: "JavaScript",
+        value: "js",
       },
       {
-        name: 'TypeScript',
-        value: 'ts'
-      }
+        name: "TypeScript",
+        value: "ts",
+      },
     ],
-    loop: false
+    loop: false,
   });
 
   const name = await input({
-    message: 'What do you want to call this timeline package?',
+    message: "What do you want to call this timeline package?",
     required: true,
     transformer: (input) => {
       return formatName(input);
@@ -46,28 +46,29 @@ async function runPrompts() {
       const fullDestPath = `${repoRoot}/packages/${formatName(input)}`;
       if (fs.existsSync(fullDestPath)) {
         return "A timeline package with this name already exists. Please choose a different name.";
+      } else {
+        return true;
       }
-      else { return true; }
-    }
+    },
   });
 
   const description = await input({
-    message: 'Enter a brief description of the timeline',
-    required: true
+    message: "Enter a brief description of the timeline",
+    required: true,
   });
 
   const author = await input({
-    message: 'Who is the author of this timeline?',
-    required: true
+    message: "Who is the author of this timeline?",
+    required: true,
   });
 
   return {
     language: language,
     name: name,
     description: description,
-    author: author
-  }
-};
+    author: author,
+  };
+}
 
 async function processAnswers(answers) {
   answers.name = formatName(answers.name);
@@ -94,7 +95,7 @@ async function processAnswers(answers) {
       .pipe(replace("_globalName_", globalName))
       .pipe(replace("{camelCaseName}", camelCaseName))
       .pipe(dest(`${repoRoot}/packages/${answers.name}`));
-  };
+  }
 
   function renameDocsTemplate() {
     return src(`${repoRoot}/packages/${answers.name}/docs/docs-template.md`)
@@ -103,9 +104,15 @@ async function processAnswers(answers) {
       .on("end", function () {
         deleteSync(`${repoRoot}/packages/${answers.name}/docs/docs-template.md`);
       });
-  };
-  series(processTemplate, renameDocsTemplate)();
-};
+  }
+
+  function renameExampleAltLoadComment() { // Rename unpkg load comment url in the example script
+    return src(`${repoRoot}/packages/${answers.name}/examples/index.html`)
+      .pipe(replace("{name}", answers.name))
+      .pipe(dest(`${repoRoot}/packages/${answers.name}/examples`));
+  }
+  series(processTemplate, renameDocsTemplate, renameExampleAltLoadComment)();
+}
 
 const answers = await runPrompts();
 await processAnswers(answers);
