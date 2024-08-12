@@ -26,6 +26,7 @@
     "import-sort-style-module": "^6.0.0",
     "jest": "*",
     "lint-staged": "^11.1.2",
+    "load-tsconfig": "^0.2.5",
     "prettier": "^2.3.2",
     "prettier-plugin-import-sort": "^0.0.7",
     "ts-jest": "*"
