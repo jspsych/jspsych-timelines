@@ -21,6 +21,7 @@
     "@changesets/cli": "^2.16.0",
     "@jspsych/config": "^3.0.0",
     "@types/jest": "^29.5.12",
+    "cac": "^6.7.14",
     "husky": "^7.0.1",
     "import-sort-style-module": "^6.0.0",
     "jest": "*",
