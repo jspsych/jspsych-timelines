@@ -62,11 +62,16 @@ async function runPrompts() {
     required: true,
   });
 
+  const authorUrl = await input({
+    message: `Enter a profile URL for the author, e.g. a link to a GitHub profile [Optional]:`,
+  });
+
   return {
     language: language,
     name: name,
     description: description,
     author: author,
+    authorUrl: authorUrl,
   };
 }
 
@@ -84,6 +89,7 @@ async function processAnswers(answers) {
       .pipe(replace("{name}", answers.name))
       .pipe(replace("{full name}", answers.name))
       .pipe(replace("{author}", answers.author))
+      .pipe(replace("{authorUrl}", answers.authorUrl))
       .pipe(
         replace(
           "{documentation-url}",

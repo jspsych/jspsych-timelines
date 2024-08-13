@@ -16,7 +16,10 @@
     "keywords": [
       "jsPsych"
     ],
-    "author": "Josh de Leeuw",
+    "author": {
+      "name": "Josh de Leeuw",
+      "url": "https://github.com/jodeleeuw"
+    },
     "license": "MIT",
     "bugs": {
       "url": "https://github.com/jspsych/jspsych-timelines/issues"

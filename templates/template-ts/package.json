@@ -16,7 +16,10 @@
     "keywords": [
       "jsPsych"
     ],
-    "author": "{author}",
+    "author": {
+      "name": "{author}",
+      "url": "{authorUrl}"
+    },
     "license": "MIT",
     "bugs": {
       "url": "https://github.com/jspsych/jspsych-timelines/issues"

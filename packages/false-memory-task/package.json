@@ -1,5 +1,5 @@
 {
-  "name": "@jspsych/false-memory-task",
+  "name": "@jspsych-timelines/false-memory-task",
   "version": "0.0.1",
   "description": "False memory task for jsPsych",
   "type": "module",
@@ -16,7 +16,10 @@
   "keywords": [
     "jsPsych"
   ],
-  "author": "Cherrie Chang",
+  "author": {
+    "name": "Cherrie Chang",
+    "url": "https://github.com/cchang-vassar"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/jspsych/jspsych-timelines/issues"

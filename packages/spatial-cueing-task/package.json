@@ -16,7 +16,10 @@
     "keywords": [
       "jsPsych"
     ],
-    "author": "Cherrie",
+    "author": {
+      "name": "Cherrie Chang",
+      "url": "https://github.com/cchang-vassar" 
+    },
     "license": "MIT",
     "bugs": {
       "url": "https://github.com/jspsych/jspsych-timelines/issues"
