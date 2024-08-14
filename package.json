@@ -18,11 +18,11 @@
     "new": "node templates/cli/src/index.js"
   },
   "devDependencies": {
+    "tsup": "^8.2.4",
     "@changesets/changelog-github": "^0.4.0",
     "@changesets/cli": "^2.16.0",
     "@jspsych/config": "^3.0.0",
     "@types/jest": "^29.5.12",
-    "cac": "^6.7.14",
     "husky": "^7.0.1",
     "import-sort-style-module": "^6.0.0",
     "jest": "*",
@@ -30,7 +30,6 @@
     "load-tsconfig": "^0.2.5",
     "prettier": "^2.3.2",
     "prettier-plugin-import-sort": "^0.0.7",
-    "tree-kill": "^1.2.2",
     "ts-jest": "*"
   },
   "prettier": {

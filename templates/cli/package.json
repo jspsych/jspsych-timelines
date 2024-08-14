@@ -5,7 +5,8 @@
   "type": "module",
   "main": "src/index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "build": "echo 'No build script specified'"
   },
   "keywords": [
     "jsPsych"
