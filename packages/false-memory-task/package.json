@@ -1,7 +1,7 @@
 {
-  "name": "@jspsych/timeline-template",
+  "name": "@jspsych-timelines/false-memory-task",
   "version": "0.0.1",
-  "description": "A template for a shareable, configurable false memory jsPsych experiment",
+  "description": "False memory task for jsPsych",
   "type": "module",
   "main": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -11,17 +11,20 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/open-cognition-lab/false-memory-module.git"
+    "url": "git+https://github.com/jspsych/jspsych-timelines.git"
   },
   "keywords": [
     "jsPsych"
   ],
-  "author": "Cherrie Chang",
+  "author": {
+    "name": "Cherrie Chang",
+    "url": "https://github.com/cchang-vassar"
+  },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/open-cognition-lab/false-memory-module/issues"
+    "url": "https://github.com/jspsych/jspsych-timelines/issues"
   },
-  "homepage": "https://github.com/open-cognition-lab/false-memory-module#readme",
+  "homepage": "https://github.com/jspsych/jspsych-timelines/packages/false-memory-task#readme",
   "peerDependencies": {
     "jspsych": "^8.0.1"
   },
@@ -30,7 +33,7 @@
     "@jspsych/plugin-survey-text": "^2.0.0"
   },
   "devDependencies": {
-    "tsup": "^6.7.0",
-    "typescript": "^5.0.2"
+    "tsup": "^8.2.4",
+    "typescript": "^5.5.4"
   }
 }

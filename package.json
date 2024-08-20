@@ -10,13 +10,15 @@
     "test:watch": "npm test -- --watch",
     "build": "npm run build -ws",
     "update-unpkg-links": "gulp updateUnpkgLinks",
+    "update-readme": "gulp updateReadme",
     "prepare": "husky install",
     "changeset": "changeset",
-    "changeset:version": "changeset version && npm install && npm run update-unpkg-links",
+    "changeset:version": "changeset version && npm install && npm run update-unpkg-links && npm run update-readme",
     "changeset:publish": "npm run build && changeset publish",
-    "create-task": "node templates/cli/src/index.js"
+    "new": "node templates/cli/src/index.js"
   },
   "devDependencies": {
+    "tsup": "^8.2.4",
     "@changesets/changelog-github": "^0.4.0",
     "@changesets/cli": "^2.16.0",
     "@jspsych/config": "^3.0.0",
@@ -48,13 +50,9 @@
   },
   "dependencies": {
     "chokidar": "^3.6.0",
+    "jspsych": "^8.0.1",
     "gulp": "^5.0.0",
-    "gulp-cli": "^3.0.0",
-    "jspsych": "^8.0.1"
-  },
-
-  "overrides": {
-    "braces": "^3.0.3"
+    "gulp-replace": "^1.1.4",
+    "run-func": "^3.0.0"
   }
-
 }

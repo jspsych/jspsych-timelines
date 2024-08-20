@@ -5,7 +5,7 @@
     "type": "module",
     "main": "dist/index.mjs",
     "types": "dist/index.d.ts",
-    "unpkg": "dist/index.global.js",
+    "unpkg": "dist/index.browser.min.js",
     "scripts": {
       "build": "tsup src/index.ts --format esm,iife --sourcemap --dts --treeshake --clean --global-name {globalName}"
     },
@@ -16,14 +16,17 @@
     "keywords": [
       "jsPsych"
     ],
-    "author": "{author}",
+    "author": {
+      "name": "{author}",
+      "url": "{authorUrl}"
+    },
     "license": "MIT",
     "bugs": {
       "url": "https://github.com/jspsych/jspsych-timelines/issues"
     },
     "homepage": "https://github.com/jspsych/jspsych-timelines/packages/{name}#readme",
     "peerDependencies": {
-      "jspsych": "^7.3.3"
+      "jspsych": "^8.0.1"
     },
     "dependencies": {
     },
