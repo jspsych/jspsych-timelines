@@ -16,19 +16,22 @@
     "keywords": [
       "jsPsych"
     ],
-    "author": "Cherrie",
+    "author": {
+      "name": "Cherrie Chang",
+      "url": "https://github.com/cchang-vassar" 
+    },
     "license": "MIT",
     "bugs": {
       "url": "https://github.com/jspsych/jspsych-timelines/issues"
     },
     "homepage": "https://github.com/jspsych/jspsych-timelines/packages/spatial-cueing-task#readme",
     "peerDependencies": {
-      "jspsych": "^7.3.3"
+      "jspsych": "^8.0.1"
     },
     "dependencies": {
     },
     "devDependencies": {
-      "tsup": "^6.7.0",
-      "typescript": "^5.0.2"
+      "tsup": "^8.2.4",
+      "typescript": "^5.5.4"
     }
   }
