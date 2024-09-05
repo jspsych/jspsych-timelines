@@ -18,7 +18,6 @@
     "new": "node templates/cli/src/index.js"
   },
   "devDependencies": {
-    "tsup": "^8.2.4",
     "@changesets/changelog-github": "^0.4.0",
     "@changesets/cli": "^2.16.0",
     "@jspsych/config": "^3.0.0",
@@ -29,7 +28,8 @@
     "lint-staged": "^11.1.2",
     "prettier": "^2.3.2",
     "prettier-plugin-import-sort": "^0.0.7",
-    "ts-jest": "*"
+    "ts-jest": "*",
+    "tsup": "^8.2.4"
   },
   "prettier": {
     "printWidth": 100
@@ -50,9 +50,9 @@
   },
   "dependencies": {
     "chokidar": "^3.6.0",
-    "jspsych": "^8.0.1",
     "gulp": "^5.0.0",
     "gulp-replace": "^1.1.4",
+    "jspsych": "^8.0.2",
     "run-func": "^3.0.0"
   }
 }
