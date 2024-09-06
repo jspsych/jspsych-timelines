@@ -1,6 +1,6 @@
 {
   "name": "@jspsych-timelines/spatial-cueing",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A shareable timeline of the Posner spatial cueing task.",
   "type": "module",
   "main": "dist/index.mjs",
