@@ -41,14 +41,14 @@ function updateRootReadme() {
 Timeline | Contributor | Description
 ----------- | ----------- | -----------\n`;
 
-    const guidelinesHead = "## Using timelines from this repository\n";
+    const guidelinesHead = "## Using timelines from this repository\n\n";
 
     let timelineList = "";
 
     packageInfos.map((info) => {
         const authorRender = info.authorUrl ? `[${info.author}](${info.authorUrl})` : info.author;
         const packageName = info.name.replace(/^\@jspsych-timelines\//g, "");
-        const packageReadmeLink = `https://github.com/jspsych/jspsych-timelines/blob/main/packages/${packageReadmeLink}/README.md`;
+        const packageReadmeLink = `https://github.com/jspsych/jspsych-timelines/blob/main/packages/${packageName}/README.md`;
         timelineList = timelineList.concat(
             `[${packageName}](${packageReadmeLink}) | ${authorRender} | ${info.description ? info.description : "foo"} \n`
         );
