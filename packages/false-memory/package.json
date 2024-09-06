@@ -1,6 +1,6 @@
 {
-  "name": "@jspsych-timelines/false-memory-task",
-  "version": "0.1.0",
+  "name": "@jspsych-timelines/false-memory",
+  "version": "0.2.0",
   "description": "False memory task for jsPsych",
   "type": "module",
   "main": "dist/index.mjs",
@@ -24,7 +24,7 @@
   "bugs": {
     "url": "https://github.com/jspsych/jspsych-timelines/issues"
   },
-  "homepage": "https://github.com/jspsych/jspsych-timelines/packages/false-memory-task#readme",
+  "homepage": "https://github.com/jspsych/jspsych-timelines/packages/false-memory#readme",
   "peerDependencies": {
     "jspsych": "^8.0.1"
   },

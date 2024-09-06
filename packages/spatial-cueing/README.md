@@ -1,4 +1,4 @@
-# spatial-cueing-task
+# spatial-cueing
 
 ## Overview
 
@@ -9,22 +9,22 @@ A shareable timeline of the Posner spatial cueing task.
 ### In browser
 
 ```html
-<script src="https://unpkg.com/@jspsych-timelines/spatial-cueing-task">
+<script src="https://unpkg.com/@jspsych-timelines/spatial-cueing">
 ```
 
 ### Via NPM
 
 ```
-npm install @jspsych-timelines/spatial-cueing-task
+npm install @jspsych-timelines/spatial-cueing
 ```
 
 ```js
-import { createTimeline, timelineUnits, utils } from "@jspsych-timelines/spatial-cueing-task"
+import { createTimeline, timelineUnits, utils } from "@jspsych-timelines/spatial-cueing"
 ```
 
 ## Compatibility
 
-`@jspsych-timelines/spatial-cueing-task` requires jsPsych v7.0.0 or later.
+`@jspsych-timelines/spatial-cueing` requires jsPsych v7.0.0 or later.
 
 ## Documentation
 

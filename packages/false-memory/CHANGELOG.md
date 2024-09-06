@@ -1,4 +1,10 @@
-# @jspsych-timelines/false-memory-task
+# @jspsych-timelines/false-memory
+
+## 0.2.0
+
+### Minor Changes
+
+- 22c0236: delete -task suffix
 
 ## 0.1.0
 

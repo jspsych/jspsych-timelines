@@ -1,4 +1,10 @@
-# @jspsych-timelines/spatial-cueing-task
+# @jspsych-timelines/spatial-cueing
+
+## 0.2.0
+
+### Minor Changes
+
+- 22c0236: delete -task suffix
 
 ## 0.1.0
 

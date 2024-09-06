@@ -16,8 +16,8 @@ The `/packages` directory also contains two template sub-folders that can be use
 Timeline | Contributor | Description
 ----------- | ----------- | -----------
 [arrow-flanker](https://github.com/jspsych/jspsych-timelines/blob/main/packages/@jspsych-timelines/arrow-flanker/README.md) | [Josh de Leeuw](https://github.com/jodeleeuw) | Arrow flanker task for jsPsych 
-[false-memory-task](https://github.com/jspsych/jspsych-timelines/blob/main/packages/@jspsych-timelines/false-memory-task/README.md) | [Cherrie Chang](https://github.com/cchang-vassar) | False memory task for jsPsych 
-[spatial-cueing-task](https://github.com/jspsych/jspsych-timelines/blob/main/packages/@jspsych-timelines/spatial-cueing-task/README.md) | [Cherrie Chang](https://github.com/cchang-vassar) | A shareable timeline of the Posner spatial cueing task. 
+[false-memory](https://github.com/jspsych/jspsych-timelines/blob/main/packages/@jspsych-timelines/false-memory/README.md) | [Cherrie Chang](https://github.com/cchang-vassar) | False memory task for jsPsych 
+[spatial-cueing](https://github.com/jspsych/jspsych-timelines/blob/main/packages/@jspsych-timelines/spatial-cueing/README.md) | [Cherrie Chang](https://github.com/cchang-vassar) | A shareable timeline of the Posner spatial cueing task. 
 ## Using timelines from this repository
 
 

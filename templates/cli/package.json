@@ -1,6 +1,6 @@
 {
   "name": "@jspsych-timelines/cli",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "CLI tool for creating new timeline templates",
   "type": "module",
   "main": "src/index.js",
