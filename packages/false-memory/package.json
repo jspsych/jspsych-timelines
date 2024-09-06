@@ -1,6 +1,6 @@
 {
   "name": "@jspsych-timelines/false-memory",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "False memory task for jsPsych",
   "type": "module",
   "main": "dist/index.mjs",

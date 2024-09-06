@@ -1,6 +1,6 @@
 {
   "name": "@jspsych-timelines/arrow-flanker",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Arrow flanker task for jsPsych",
   "type": "module",
   "main": "dist/index.mjs",
