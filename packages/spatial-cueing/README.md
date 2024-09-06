@@ -1,36 +1,36 @@
-# test
+# spatial-cueing
 
 ## Overview
 
-test
+A shareable timeline of the Posner spatial cueing task.
 
 ## Loading
 
 ### In browser
 
 ```html
-<script src="https://unpkg.com/@jspsych-timelines/test">
+<script src="https://unpkg.com/@jspsych-timelines/spatial-cueing">
 ```
 
 ### Via NPM
 
 ```
-npm install @jspsych-timelines/test
+npm install @jspsych-timelines/spatial-cueing
 ```
 
 ```js
-import { createTimeline, timelineUnits, utils } from "@jspsych-timelines/test"
+import { createTimeline, timelineUnits, utils } from "@jspsych-timelines/spatial-cueing"
 ```
 
 ## Compatibility
 
-`@jspsych-timelines/test` requires jsPsych v7.0.0 or later.
+`@jspsych-timelines/spatial-cueing` requires jsPsych v7.0.0 or later.
 
 ## Documentation
 
 ### createTimeline
 
-#### jsPsychTimelineTest.createTimeline(jsPsych, { *options* }) ⇒ <code>timeline</code>
+#### jsPsychTimelineSpatialCueingTask.createTimeline(jsPsych, { *options* }) ⇒ <code>timeline</code>
 Description of the timeline that this plugin generates
 
 The following parameters can be specified in the **options** parameter.
@@ -47,5 +47,5 @@ The following parameters can be specified in the **options** parameter.
 
 ## Author / Citation
 
-me
+Cherrie
 

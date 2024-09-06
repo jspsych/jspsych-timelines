@@ -1,4 +1,4 @@
-# @jspsych-timelines/test
+# @jspsych-timelines/false-memory
 
 ## 0.1.0
 
