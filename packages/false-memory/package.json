@@ -1,13 +1,13 @@
 {
-  "name": "@jspsych-timelines/spatial-cueing-task",
+  "name": "@jspsych-timelines/false-memory",
   "version": "0.1.0",
-  "description": "A shareable timeline of the Posner spatial cueing task.",
+  "description": "False memory task for jsPsych",
   "type": "module",
   "main": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "unpkg": "dist/index.global.js",
   "scripts": {
-    "build": "tsup src/index.ts --format esm,iife --sourcemap --dts --treeshake --clean --global-name jsPsychTimelineSpatialCueingTask"
+    "build": "tsup src/index.ts --format esm,iife --sourcemap --dts --treeshake --clean --global-name jsPsychTimelineFalseMemoryTask"
   },
   "repository": {
     "type": "git",
@@ -24,11 +24,14 @@
   "bugs": {
     "url": "https://github.com/jspsych/jspsych-timelines/issues"
   },
-  "homepage": "https://github.com/jspsych/jspsych-timelines/packages/spatial-cueing-task#readme",
+  "homepage": "https://github.com/jspsych/jspsych-timelines/packages/false-memory#readme",
   "peerDependencies": {
     "jspsych": "^8.0.1"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@jspsych/plugin-html-keyboard-response": "^2.0.0",
+    "@jspsych/plugin-survey-text": "^2.0.0"
+  },
   "devDependencies": {
     "tsup": "^8.2.4",
     "typescript": "^5.5.4"
