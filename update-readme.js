@@ -46,10 +46,11 @@ Timeline | Contributor | Description
     let timelineList = "";
 
     packageInfos.map((info) => {
-        const packageReadmeLink = `https://github.com/jspsych/jspsych-timelines/blob/main/packages/${info.name}/README.md`;
         const authorRender = info.authorUrl ? `[${info.author}](${info.authorUrl})` : info.author;
+        const packageName = info.name.replace(/^\@jspsych-timelines\//g, "");
+        const packageReadmeLink = `https://github.com/jspsych/jspsych-timelines/blob/main/packages/${packageReadmeLink}/README.md`;
         timelineList = timelineList.concat(
-            `[${info.name.replace(/^\@jspsych-timelines\//g, "")}](${packageReadmeLink}) | ${authorRender} | ${info.description ? info.description : "foo"} \n`
+            `[${packageName}](${packageReadmeLink}) | ${authorRender} | ${info.description ? info.description : "foo"} \n`
         );
     });
 
