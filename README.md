@@ -28,11 +28,11 @@ The modules in this repository can be loaded via a CDN or via NPM. The CDN is th
 <script src="https://unpkg.com/@jspsych-timelines/arrow-flanker"></script>
 ```
 
-This will load the timeline into the global namespace as `jsPsychTimelineArrowFlanker`. You can then use the timeline in your experiment like this:
+This will load the timeline into the global namespace as `jsPsychTimelineArrowFlankerTask`. You can then use the timeline in your experiment like this:
 
 ```js
 const jsPsych = initJsPsych();
-const timeline = jsPsychTimelineArrowFlanker.createTimeline(jsPsych, {options});
+const timeline = jsPsychTimelineArrowFlankerTask.createTimeline(jsPsych, {options});
 jsPsych.run([timeline]);
 ```
 
