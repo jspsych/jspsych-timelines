@@ -53,7 +53,7 @@ In the above example, `timeline` is a jsPsych timeline object that can be added 
 Notice that each timeline module exports a `createTimeline()` method. This method returns an object with a `timeline` property that can be inserted into a jsPsych timeline and can be run without the optional `options` parameter to keep default timeline property settings.
 
 ```js
-const timeline = jsPsychTimelineModule.createTimeline(jsPsych);
+const timeline = jsPsychTimelineModule.createTimeline(jsPsych, { options });
 jsPsych.run([timeline]);
 ```
 
