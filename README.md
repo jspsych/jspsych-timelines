@@ -40,10 +40,12 @@ The modules in this repository can be loaded via a CDN or via NPM. The CDN is th
 This will load the timeline into the global namespace as `jsPsychTimelineArrowFlankerTask`. You can then use the timeline in your experiment like this:
 
 ```js
+<script>
 const jsPsych = initJsPsych();
 const options = { fixation_duration: 400 };
 const timeline = jsPsychTimelineArrowFlankerTask.createTimeline(jsPsych, options);
 jsPsych.run([timeline]);
+</script>
 ```
 
 In the above example, `timeline` is a jsPsych timeline object that can be added to other timelines or used as the main timeline. The `options` parameter is an object that contains jsPsych timeline properties (in this case, `fixation_duration: 400`) to configure jsPsych properties present in the imported timeline. The configurable options are described in the documentation for each timeline.
@@ -53,8 +55,10 @@ In the above example, `timeline` is a jsPsych timeline object that can be added 
 Notice that each timeline module exports a `createTimeline()` method. This method returns an object with a `timeline` property that can be inserted into a jsPsych timeline and can be run without the optional `options` parameter to keep default timeline property settings.
 
 ```js
+<script>
 const timeline = jsPsychTimelineModule.createTimeline(jsPsych, { options });
 jsPsych.run([timeline]);
+</script>
 ```
 
 Timeline modules may also export a `timelineUnits` objects and a `utils` object. 
