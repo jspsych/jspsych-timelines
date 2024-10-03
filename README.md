@@ -4,8 +4,8 @@ This is an open repository of timelines for jsPsych. The goal of this repository
 
 ## List of available timelines
 
-The jsPsych timelines that have been contributed by community members can be found in the `/packages` directory. 
-The `/packages` directory also contains two template sub-folders that can be used as a starting point for contributing a timeline (see the [Guidelines for contributing new timelines](#guidelines-for-contributing-new-timelines) section).
+The jsPsych timelines that have been contributed by community members can be found in the `./packages` directory. 
+The `./packages` directory also contains two template sub-folders that can be used as a starting point for contributing a timeline (see the [Guidelines for contributing new timelines](#guidelines-for-contributing-new-timelines) section).
 
 
 
@@ -28,23 +28,33 @@ The modules in this repository can be loaded via a CDN or via NPM. The CDN is th
 <script src="https://unpkg.com/@jspsych-timelines/arrow-flanker"></script>
 ```
 
+> ⚠️ You will also need to import the jsPsych library and css CDNs, in addition to the timeline CDN:
+```html
+<head>
+  <script src="https://unpkg.com/jspsych"></script>
+  <script src="https://unpkg.com/@jspsych-timelines/arrow-flanker"></script>
+  <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css">
+</head>
+```
+
 This will load the timeline into the global namespace as `jsPsychTimelineArrowFlankerTask`. You can then use the timeline in your experiment like this:
 
 ```js
 const jsPsych = initJsPsych();
-const timeline = jsPsychTimelineArrowFlankerTask.createTimeline(jsPsych, {options});
+const options = { fixation_duration: 400 };
+const timeline = jsPsychTimelineArrowFlankerTask.createTimeline(jsPsych, options);
 jsPsych.run([timeline]);
 ```
 
-In the above example, `timeline` is a jsPsych timeline object that can be added to other timelines or used as the main timeline. The `options` parameter is an object that contains options for the timeline. The options are described in the documentation for each timeline.
+In the above example, `timeline` is a jsPsych timeline object that can be added to other timelines or used as the main timeline. The `options` parameter is an object that contains jsPsych timeline properties (in this case, `fixation_duration: 400`) to configure jsPsych properties present in the imported timeline. The configurable options are described in the documentation for each timeline.
 
 ## Structure
 
-Each timeline module exports a `createTimeline()` method. This method returns an object with a `timeline` property that can be inserted into a jsPsych timeline.
+Notice that each timeline module exports a `createTimeline()` method. This method returns an object with a `timeline` property that can be inserted into a jsPsych timeline and can be run without the optional `options` parameter to keep default timeline property settings.
 
 ```js
-const timeline = jsPsychTimelineModule.createTimeline(jsPsych, {options})
-jsPsych.run([timeline])
+const timeline = jsPsychTimelineModule.createTimeline(jsPsych);
+jsPsych.run([timeline]);
 ```
 
 Timeline modules may also export a `timelineUnits` objects and a `utils` object. 
