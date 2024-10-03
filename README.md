@@ -39,12 +39,12 @@ The modules in this repository can be loaded via a CDN or via NPM. The CDN is th
 
 This will load the timeline into the global namespace as `jsPsychTimelineArrowFlankerTask`. You can then use the timeline in your experiment like this:
 
-```js
+```html
 <script>
-const jsPsych = initJsPsych();
-const options = { fixation_duration: 400 };
-const timeline = jsPsychTimelineArrowFlankerTask.createTimeline(jsPsych, options);
-jsPsych.run([timeline]);
+  const jsPsych = initJsPsych();
+  const options = { fixation_duration: 400 };
+  const timeline = jsPsychTimelineArrowFlankerTask.createTimeline(jsPsych, options);
+  jsPsych.run([timeline]);
 </script>
 ```
 
@@ -54,10 +54,10 @@ In the above example, `timeline` is a jsPsych timeline object that can be added 
 
 Notice that each timeline module exports a `createTimeline()` method. This method returns an object with a `timeline` property that can be inserted into a jsPsych timeline and can be run without the optional `options` parameter to keep default timeline property settings.
 
-```js
+```html
 <script>
-const timeline = jsPsychTimelineModule.createTimeline(jsPsych, { options });
-jsPsych.run([timeline]);
+  const timeline = jsPsychTimelineModule.createTimeline(jsPsych, { options });
+  jsPsych.run([timeline]);
 </script>
 ```
 
