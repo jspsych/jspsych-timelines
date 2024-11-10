@@ -1,0 +1,37 @@
+{
+    "name": "@jspsych-timelines/n-back",
+    "version": "0.0.1",
+    "description": "Implementing the typical n-back experiment as a template in JsPsych",
+    "type": "module",
+    "main": "dist/index.mjs",
+    "types": "dist/index.d.ts",
+    "unpkg": "dist/index.global.js",
+    "scripts": {
+      "build": "tsup src/index.ts --format esm,iife --sourcemap --dts --treeshake --clean --global-name jsPsychTimelineNBack"
+    },
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/jspsych/jspsych-timelines.git"
+    },
+    "keywords": [
+      "jsPsych"
+    ],
+    "author": {
+      "name": "Feng Wan",
+      "url": "https://github.com/CharlieHFFF"
+    },
+    "license": "MIT",
+    "bugs": {
+      "url": "https://github.com/jspsych/jspsych-timelines/issues"
+    },
+    "homepage": "https://github.com/jspsych/jspsych-timelines/packages/n-back#readme",
+    "peerDependencies": {
+      "jspsych": "^8.0.1"
+    },
+    "dependencies": {
+    },
+    "devDependencies": {
+      "tsup": "^6.7.0",
+      "typescript": "^5.0.2"
+    }
+  }

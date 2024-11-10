@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script src="https://unpkg.com/jspsych"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response"></script>
+  <script src="../dist/index.global.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css">
+</head>
+
+<body></body>
+<script>
+
+  const timeline = [];
+
+  const jsPsych = initJsPsych();
+
+  const stimuli = ["b", "B", "d", "D", "g", "G", "p", "P", "t", "T", "v", "V"];
+
+  const timeline2Back = jsPsychTimelineNBack.createTimeline(jsPsych, stimuli, "space", 1000, 500, 500, 1, 12, 0.25);
+
+  const instructions = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: `
+      <p>Welcome to the N-back task.</p>
+      <p>You will see a sequence of letters on the screen.</p>
+      <p>Press "space" if the current letter matches the one seen "2“ steps before.</p>
+      <p>Press any key to begin.</p>
+    `
+  };
+
+  timeline.push(instructions)
+
+  timeline.push(timeline2Back)
+
+  jsPsych.run(timeline);
+</script>
+
+</html>
