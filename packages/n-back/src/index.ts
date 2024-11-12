@@ -103,5 +103,3 @@ export function createTimeline(jsPsych: JsPsych,
 
   return timeline
 }
-
-export default createTimeline

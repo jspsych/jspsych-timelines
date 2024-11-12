@@ -8,4 +8,4 @@ n?: number, // Default value for N-back level
 num_trials?: number, // Default number of trials
 rep_ratio?: number, debrief?: boolean, return_accuracy?: boolean, data_output?: "none" | "json" | "csv"): any[];
 
-export { createTimeline, createTimeline as default };
+export { createTimeline };

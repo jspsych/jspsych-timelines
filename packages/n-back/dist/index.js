@@ -263,8 +263,7 @@ function createTimeline(jsPsych, stimuli, keyboard_response = "space", trial_dur
   }
   return timeline;
 }
-var src_default = createTimeline;
 
-export { createTimeline, src_default as default };
+export { createTimeline };
 //# sourceMappingURL=index.js.map
 //# sourceMappingURL=index.js.map

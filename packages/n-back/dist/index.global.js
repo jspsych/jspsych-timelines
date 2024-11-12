@@ -3117,12 +3117,8 @@ var jsPsychTimelineNBack = (function (exports) {
     }
     return timeline;
   }
-  var src_default = createTimeline;
 
   exports.createTimeline = createTimeline;
-  exports.default = src_default;
-
-  Object.defineProperty(exports, '__esModule', { value: true });
 
   return exports;
 

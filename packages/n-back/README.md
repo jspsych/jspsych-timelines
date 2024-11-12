@@ -2,7 +2,7 @@
 
 ## Overview
 
-Implementing the typical n-back experiment as a template in JsPsych
+Creating template for n-back experiments
 
 ## Loading
 
