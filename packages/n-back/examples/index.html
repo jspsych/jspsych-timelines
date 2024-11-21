@@ -13,11 +13,15 @@
 
   const timeline = [];
 
-  const jsPsych = initJsPsych();
+  const jsPsych = initJsPsych({
+    on_finish: function() {
+      jsPsych.data.displayData();
+    }
+  });
 
   const stimuli = ["b", "B", "d", "D", "g", "G", "p", "P", "t", "T", "v", "V"];
 
-  const timeline2Back = jsPsychTimelineNBack.createTimeline(jsPsych, stimuli, "space", 1000, 500, 500, 1, 12, 0.25);
+  const timeline2Back = jsPsychTimelineNBack.createTimeline(jsPsych, stimuli, "n", 1000, 500, 500, 1, 12, 0.8, data_output = "csv");
 
   const instructions = {
     type: jsPsychHtmlKeyboardResponse,

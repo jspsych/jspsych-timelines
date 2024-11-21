@@ -24,7 +24,7 @@ import { createTimeline } from "@jspsych-timelines/n-back"
 
 ## Compatibility
 
-`@jspsych-timelines/n-back` requires jsPsych v7.0.0 or later.
+`@jspsych-timelines/n-back` requires jsPsych v8.0.0 or later.
 
 ## Documentation
 
@@ -36,7 +36,7 @@ This timeline describes an N-back task setup that is customizable based on sever
 | Parameter           | Type                      | Default       | Description                                                                                   |
 |---------------------|---------------------------|---------------|-----------------------------------------------------------------------------------------------|
 | `stimuli`           | `any`                     |               | Stimuli array used in the N-back task, which can be customized based on the experiment needs. |
-| `keyboard_response` | `string`                  | `"space"`     | Key used by participants to respond during trials.                                            |
+| `keyboard_response` | `string`                  | `"n"`     | Key used by participants to respond during trials.                                            |
 | `trial_duration`    | `number`                  | `1000` ms     | Duration of each trial in milliseconds.                                                       |
 | `post_trial_gap`    | `number`                  | `500` ms      | Gap between trials in milliseconds.                                                           |
 | `fixation_duration` | `number`                  | `500` ms      | Duration of the fixation cross before each trial.                                             |

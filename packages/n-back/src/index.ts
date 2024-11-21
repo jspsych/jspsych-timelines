@@ -3,7 +3,7 @@ import jsPsychHtmlKeyboardResponse from '@jspsych/plugin-html-keyboard-response'
 
 export function createTimeline(jsPsych: JsPsych,
   stimuli: any,
-  keyboard_response: string = "space",          // Default key for response
+  keyboard_response: string = "n",          // Default key for response
   trial_duration: number = 1000,                // Default trial duration in ms
   post_trial_gap: number = 500,                 // Default gap between trials in ms
   fixation_duration: number = 500,              // Default fixation duration in ms
@@ -45,13 +45,14 @@ export function createTimeline(jsPsych: JsPsych,
       choices: [keyboard_response],
       trial_duration: trial_duration,
       post_trial_gap: post_trial_gap,
-      data: { correct: i >= 2 && trial_sequence[i] === trial_sequence[i - n] },
+      data: { correct: i >= n && trial_sequence[i].toLowerCase() === trial_sequence[i - n].toLowerCase() },
       on_finish: function (data: any) {
-        data.correct_response = data.correct && data.response === keyboard_response;
+        data.correct_response = data.correct && data.response != null;
         data.correct_no_response = !data.correct && data.response === null;
       }
     })
   }
+
 
   if (debrief){
   if (return_accuracy){
@@ -63,18 +64,21 @@ export function createTimeline(jsPsych: JsPsych,
           var correct_no_responses = jsPsych.data.get().filter({correct_no_response: true}).count();
           var total_trials = jsPsych.data.get().count();
           var accuracy = Math.round(((correct_responses + correct_no_responses) / total_trials) * 100);
-          return `<p>Thank you for participating!</p>
-            <p>You correctly responded to <strong>${correct_responses}</strong> matching trials.</p>
-            <p>You correctly not responded to <strong>${correct_no_responses}</strong> non-matching trials.</p>
-            <p>Your accuracy was <strong>${accuracy}%</strong>.</p>
-            <p>Press any key to finish the experiment.</p>`;
+          const return_prompt = (correct_response: number, correct_no_response: number, accuracy: number): string => {
+            return `<p>Thank you for participating!</p>
+                    <p>You correctly responded to <strong>${correct_response}</strong> matching trials.</p>
+                    <p>You correctly did not respond to <strong>${correct_no_response}</strong> non-matching trials.</p>
+                    <p>Your accuracy was <strong>${accuracy}%</strong>.</p>
+                    <p>Press any key to finish the experiment.</p>`;
+          };
+          return return_prompt(correct_responses, correct_no_responses, accuracy)
         },
-        choices: "NO_KEYS",
+        choices: "ALL_KEYS",
         on_start: function () {
           if (data_output == "csv"){
           jsPsych.data.get().localSave('csv', `n_back.csv`);} else if (data_output == "json") {
             jsPsych.data.get().localSave('json', `n_back.json`);
-          }
+          } else {return null}
         },
         simulation_options: {
           simulate: false
@@ -88,12 +92,12 @@ export function createTimeline(jsPsych: JsPsych,
           return `<p>Thank you for participating!</p>
             <p>Press any key to finish the experiment.</p>`;
         },
-        choices: "NO_KEYS",
+        choices: "ALL_KEYS",
         on_start: function () {
           if (data_output == "csv"){
-            jsPsych.data.get().localSave('csv', `n_back.csv`);} else if (data_output == "json") {
-              jsPsych.data.get().localSave('json', `n_back.json`);
-            }
+            return jsPsych.data.get().localSave('csv', `n_back.csv`);} else if (data_output == "json") {
+              return jsPsych.data.get().localSave('json', `n_back.json`)
+            } else {return null}
         },
         simulation_options: {
           simulate: false

@@ -175,7 +175,7 @@ var HtmlKeyboardResponsePlugin = class {
 HtmlKeyboardResponsePlugin.info = info;
 
 // src/index.ts
-function createTimeline(jsPsych, stimuli, keyboard_response = "space", trial_duration = 1e3, post_trial_gap = 500, fixation_duration = 500, n = 2, num_trials = 20, rep_ratio = 0.2, debrief = false, return_accuracy = false, data_output = "none") {
+function createTimeline(jsPsych, stimuli, keyboard_response = "n", trial_duration = 1e3, post_trial_gap = 500, fixation_duration = 500, n = 2, num_trials = 20, rep_ratio = 0.2, debrief = false, return_accuracy = false, data_output = "none") {
   const trial_sequence = [];
   for (var i = 0; i < num_trials; i++) {
     if (i >= n && Math.random() < rep_ratio) {
@@ -202,9 +202,9 @@ function createTimeline(jsPsych, stimuli, keyboard_response = "space", trial_dur
       choices: [keyboard_response],
       trial_duration,
       post_trial_gap,
-      data: { correct: i >= 2 && trial_sequence[i] === trial_sequence[i - n] },
+      data: { correct: i >= n && trial_sequence[i].toLowerCase() === trial_sequence[i - n].toLowerCase() },
       on_finish: function(data) {
-        data.correct_response = data.correct && data.response === keyboard_response;
+        data.correct_response = data.correct && data.response != null;
         data.correct_no_response = !data.correct && data.response === null;
       }
     });
@@ -219,11 +219,14 @@ function createTimeline(jsPsych, stimuli, keyboard_response = "space", trial_dur
             var correct_no_responses = jsPsych.data.get().filter({ correct_no_response: true }).count();
             var total_trials = jsPsych.data.get().count();
             var accuracy = Math.round((correct_responses + correct_no_responses) / total_trials * 100);
-            return `<p>Thank you for participating!</p>
-            <p>You correctly responded to <strong>${correct_responses}</strong> matching trials.</p>
-            <p>You correctly not responded to <strong>${correct_no_responses}</strong> non-matching trials.</p>
-            <p>Your accuracy was <strong>${accuracy}%</strong>.</p>
-            <p>Press any key to finish the experiment.</p>`;
+            const return_prompt = (correct_response, correct_no_response, accuracy2) => {
+              return `<p>Thank you for participating!</p>
+                    <p>You correctly responded to <strong>${correct_response}</strong> matching trials.</p>
+                    <p>You correctly did not respond to <strong>${correct_no_response}</strong> non-matching trials.</p>
+                    <p>Your accuracy was <strong>${accuracy2}%</strong>.</p>
+                    <p>Press any key to finish the experiment.</p>`;
+            };
+            return return_prompt(correct_responses, correct_no_responses, accuracy);
           },
           choices: "NO_KEYS",
           on_start: function() {
@@ -246,12 +249,14 @@ function createTimeline(jsPsych, stimuli, keyboard_response = "space", trial_dur
             return `<p>Thank you for participating!</p>
             <p>Press any key to finish the experiment.</p>`;
           },
-          choices: "NO_KEYS",
+          choices: "ALL_KEYS",
           on_start: function() {
             if (data_output == "csv") {
-              jsPsych.data.get().localSave("csv", `n_back.csv`);
+              return jsPsych.data.get().localSave("csv", `n_back.csv`);
             } else if (data_output == "json") {
-              jsPsych.data.get().localSave("json", `n_back.json`);
+              return jsPsych.data.get().localSave("json", `n_back.json`);
+            } else {
+              return null;
             }
           },
           simulation_options: {
@@ -265,5 +270,5 @@ function createTimeline(jsPsych, stimuli, keyboard_response = "space", trial_dur
 }
 
 export { createTimeline };
-//# sourceMappingURL=index.js.map
+//# sourceMappingURL=out.js.map
 //# sourceMappingURL=index.js.map
