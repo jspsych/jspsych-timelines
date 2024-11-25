@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script src="https://unpkg.com/jspsych"></script>
+  <script src="https://unpkg.com/@jspsych-contrib/plugin-html-keyboard-response-raf"></script>
+  <script src="../dist/index.global.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css">
+</head>
+
+<body></body>
+<script>
+
+  const timeline = []
+
+  const jsPsych = initJsPsych();
+
+  const instructions = {
+    type: jsPsychHtmlKeyboardResponseRaf,
+    stimulus: `
+      <p>Welcome to the Stroop task.</p>
+      <p>You will see words in different colors.</p>
+      <p>Name the color of the text instead of the text itself.</p>
+      <p>Press any key to begin.</p>
+    `
+  };
+
+  const stimuli = [
+    { word: 'RED', color: 'red' },     // Congruent
+    { word: "BLUE", color: "blue" },   // Congruent
+    { word: "GREEN", color: "green" }, // Congruent
+    { word: "RED", color: "blue" },    // Incongruent
+    { word: "BLUE", color: "red" },    // Incongruent
+    { word: "GREEN", color: "yellow" } // Incongruent
+];
+
+  const stroopTimeline = jsPsychTimelineStroopTask.createTimeline(jsPsych, stimuli, 48, 2000, 500, 500, true);
+
+  timeline.push(instructions, stroopTimeline)
+
+  jsPsych.run(timeline);
+</script>
+
+</html>
