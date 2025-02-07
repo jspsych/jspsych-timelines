@@ -1,28 +1,22 @@
 # jspsych-timelines
 
-This is an open repository of timelines for jsPsych. The goal of this repository is to provide a place for researchers to share their jsPsych timelines with the community. Packages in this repository all implement a [uniform structure](#structure) that makes it easy to use them in your own experiments and combine them with other code.
+This is an open repository of timelines for jsPsych. The goal of this repository is to provide a place for researchers to share their jsPsych timelines with the community. Packages in this repository all implement a [uniform structure](#structure) that makes it easy to use them in your own experiments and combine them with other code. jsPsych also offers [guidelines](#guidelines-for-contributing-new-timelines) for contributing and a [tool](https://github.com/jspsych/jspsych-dev/tree/main/packages/new-timeline) for building timelines in compliance with this structure.
 
 ## List of available timelines
 
-The jsPsych timelines that have been contributed by community members can be found in the `/packages` directory. 
-The `/packages` directory also contains two template sub-folders that can be used as a starting point for contributing a timeline (see the [Guidelines for contributing new timelines](#guidelines-for-contributing-new-timelines) section).
-
-
-
-
-
-
-### Timelines
+Here is an overview of the jsPsych timelines that have been contributed here by community members. You can find all of them in the `./packages` directory.
 
 Timeline | Contributor | Description
 ----------- | ----------- | -----------
 [arrow-flanker](https://github.com/jspsych/jspsych-timelines/blob/main/packages/arrow-flanker/README.md) | [Josh de Leeuw](https://github.com/jodeleeuw) | Arrow flanker task for jsPsych 
-[false-memory](https://github.com/jspsych/jspsych-timelines/blob/main/packages/false-memory/README.md) | [Cherrie Chang](https://github.com/cchang-vassar) | False memory task for jsPsych 
-[spatial-cueing](https://github.com/jspsych/jspsych-timelines/blob/main/packages/spatial-cueing/README.md) | [Cherrie Chang](https://github.com/cchang-vassar) | A shareable timeline of the Posner spatial cueing task. 
+[false-memory](https://github.com/jspsych/jspsych-timelines/blob/main/packages/false-memory/README.md) | [Cherrie Chang](https://github.com/cherriechang) | False memory task for jsPsych 
+[spatial-cueing](https://github.com/jspsych/jspsych-timelines/blob/main/packages/spatial-cueing/README.md) | [Cherrie Chang](https://github.com/cherriechang) | A shareable timeline of the Posner spatial cueing task. 
+
+
+
 ## Using timelines from this repository
 
-
-The modules in this repository can be loaded via a CDN or via NPM. The CDN is the easiest way to get started. For example, to load the [arrow-flanker]() timeline from the CDN, you would add the following script tag to your HTML document:
+The modules in this repository can be loaded via a CDN or via NPM. The CDN is the easiest way to get started. For example, to load the [arrow-flanker](https://github.com/jspsych/jspsych-timelines/blob/main/packages/arrow-flanker) timeline from the CDN, you would add the following script tag to your HTML document:
 
 ```html
 <script src="https://unpkg.com/@jspsych-timelines/arrow-flanker"></script>
@@ -57,15 +51,12 @@ The `utils` object contains miscellaneous functions that may be useful when usin
 
 If you would like to contribute a new timeline to this repository, please follow these steps:
 
-1. Fork this repository
-2. Create a new branch for your timeline (e.g., 'new-timeline-arrow-flanker')
-3. Run `npm install` in the root directory of the repository to install dependencies.
-4. Run `npm run new` and answer the prompts to create a new timeline template in the `packages` directory.
-5. Edit the files in the new timeline directory to implement your timeline. `src/index.ts` is the main file that will be loaded when the timeline is used. `README.md` is the documentation for the timeline. `examples/index.html` is a basic jsPsych experiment template that you can modify to illustrate how your timeline works.
-6. Run `npm run build` to build the timeline. This will create a `dist` directory with the compiled timeline.
-7. Verify that the example works by opening `examples/index.html` in your browser.
-8. Add a changeset by running `npm run changeset` in the main directory of the repository. This will prompt you for a description of the changes you made. This will create a new changeset file in the `changesets` directory.
-8. Open a pull request to merge your branch into the `main` branch of this repository.
+1. Run `npx @jspsych/new-timeline` and answer the prompts to create a new timeline template your working directory. If 
+2. Edit the files in the new timeline directory to implement your timeline. `src/index.ts` is the main file that will be loaded when the timeline is used. `README.md` is the documentation for the timeline. `examples/index.html` is a basic jsPsych experiment template that you can modify to illustrate how your timeline works.
+3. Run `npm run build` to build the timeline. This will create a `dist` directory with the compiled timeline.
+4. Verify that the example works by opening `examples/index.html` in your browser.
+5. Add a changeset by running `npm run changeset` in the main directory of the repository. This will prompt you for a description of the changes you made. This will create a new changeset file in the `changesets` directory.
+6. Open a pull request to merge your branch into the `main` branch of this repository.
 
 We welcome timelines of all kinds! 
 
