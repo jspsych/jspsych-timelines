@@ -51,10 +51,11 @@ The `utils` object contains miscellaneous functions that may be useful when usin
 
 If you would like to contribute a new timeline to this repository, please follow these steps:
 
-1. Run `npx @jspsych/new-timeline` and answer the prompts to create a new timeline template in your working directory. This is a command-line tool we built to make setting up the development of a new timeline easier. Documentation for using this tool can be found [here](https://github.com/jspsych/jspsych-dev/tree/main/packages/new-timeline#readme).
-2. After you are done editing the timeline template, verify that it works by opening `examples/index.html` in your browser.
-3. Add a changeset by running `npm run changeset` in the main directory of the repository. This will prompt you for a description of the changes you made. This will create a new changeset file in the `changesets` directory.
-4. Open a pull request to merge your branch into the `main` branch of this repository.
+1. Clone this repository on your machine and run `npm i` to install its packages.
+2. Run `npx @jspsych/new-timeline` and answer the prompts to create a new timeline template under `./packages`. This is a command-line tool we built to make setting up the development of a new timeline easier. Documentation for using this tool can be found [here](https://github.com/jspsych/jspsych-dev/tree/main/packages/new-timeline#readme).
+3. After you are done editing the timeline template, verify that it works by opening `examples/index.html` in your browser.
+4. Add a changeset by running `npm run changeset` in the main directory of the repository. This will prompt you for a description of the changes you made and creates a new changeset file in the `changesets` directory accordingly.
+5. Open a pull request to merge your branch into the `main` branch of this repository.
 
 We welcome timelines of all kinds! 
 
