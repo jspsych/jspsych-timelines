@@ -15,11 +15,21 @@ const CHOICES = ["left", "right"];
 /**
  * Generates the stimulus HTML for a given trial.
  */
-function generateStimulus(trialStimulus: keyof typeof STIMULUS_INFO, stimulusSide: string) {
+function generateStimulus(
+  trialStimulus: keyof typeof STIMULUS_INFO,
+  stimulusSide: string,
+  instructions: boolean = false
+) {
   const { name, target_side } = STIMULUS_INFO[trialStimulus];
   return `
     <div class="jspsych-hearts-and-flowers-instruction">
-      <h3>When you see a ${name}, press the button on the ${target_side} side.</h3>
+      ${
+        instructions
+          ? `<h3>
+          When you see a ${name}, press the button on the ${target_side} side.
+        </h3>`
+          : ""
+      }
       <div class="hearts-and-flowers-stimulus-grid">
         <div class="hearts-and-flowers-stimulus-grid-item">
           <img src="../assets/${stimulusSide === "left" ? name : "blank"}-icon.png" />
@@ -36,13 +46,19 @@ function generateStimulus(trialStimulus: keyof typeof STIMULUS_INFO, stimulusSid
  */
 function getCorrectResponse(trialStimulus: keyof typeof STIMULUS_INFO, stimulusSide: string) {
   const { target_side } = STIMULUS_INFO[trialStimulus];
-  return target_side === "same" ? (stimulusSide === "left" ? 0 : 1) : (stimulusSide === "left" ? 1 : 0);
+  return target_side === "same"
+    ? stimulusSide === "left"
+      ? 0
+      : 1
+    : stimulusSide === "left"
+    ? 1
+    : 0;
 }
 
 /**
  * Trial that announces the demo game type.
  */
-function createDemoGametypeTrial(trialStimulus: keyof typeof STIMULUS_INFO) {
+function createGametypeTrial(trialStimulus: keyof typeof STIMULUS_INFO) {
   return {
     type: jsPsychHtmlButtonResponse,
     stimulus: `<div class="jspsych-hearts-and-flowers-instruction"><h3>
@@ -55,12 +71,16 @@ function createDemoGametypeTrial(trialStimulus: keyof typeof STIMULUS_INFO) {
 /**
  * Trial that shows the stimulus and collects the response.
  */
-function createDemoTrial(jsPsych: JsPsych, trialStimulus: keyof typeof STIMULUS_INFO) {
+function createTrial(
+  jsPsych: JsPsych,
+  trialStimulus: keyof typeof STIMULUS_INFO,
+  instructions: boolean = false
+) {
   return {
     type: jsPsychHtmlButtonResponse,
     stimulus: () => {
       const stimulusSide = jsPsych.evaluateTimelineVariable("stimulus_side");
-      return generateStimulus(trialStimulus, stimulusSide);
+      return generateStimulus(trialStimulus, stimulusSide, instructions);
     },
     choices: CHOICES,
     data: {
@@ -74,7 +94,10 @@ function createDemoTrial(jsPsych: JsPsych, trialStimulus: keyof typeof STIMULUS_
       },
     },
     on_finish: (data) => {
-      data.correct = jsPsych.pluginAPI.compareKeys(data.response.toString(), data.correct_response.toString());
+      data.correct = jsPsych.pluginAPI.compareKeys(
+        data.response.toString(),
+        data.correct_response.toString()
+      );
     },
   };
 }
@@ -87,24 +110,54 @@ function createFeedbackTrial(jsPsych: JsPsych) {
     type: jsPsychHtmlKeyboardResponse,
     stimulus: () => {
       return `<div class="jspsych-hearts-and-flowers-instruction">
-        <h3>${jsPsych.data.get().last(1).select("correct").values[0] ? "Great job!" : "Try again."}</h3>
+        <h3>${
+          jsPsych.data.get().last(1).select("correct").values[0] ? "Great job!" : "Try again."
+        }</h3>
       </div>`;
     },
     trial_duration: 1000,
-    data: { trial_type: "demo_feedback", correct: () => jsPsych.data.get().last(1).select("correct").values[0] },
+    data: {
+      trial_type: "demo_feedback",
+      correct: () => jsPsych.data.get().last(1).select("correct").values[0],
+    },
+  };
+}
+
+function createFixationTrial(jsPsych: JsPsych) {
+  let duration;
+  return {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: "<div class='jspsych-hearts-and-flowers-instruction'><h3>+</h3></div>",
+    trial_duration: function () {
+      duration = jsPsych.randomization.sampleWithReplacement([100, 200, 500, 1000], 1)[0];
+      return duration;
+    },
+    data: {
+      trial_type: "fixation",
+    },
+    on_finish: function (data) {
+      data.duration = duration;
+    },
   };
 }
 
 /**
  * Creates a demo subtimeline.
  */
-function createDemoSubTimeline(jsPsych: JsPsych, trialStimulus: keyof typeof STIMULUS_INFO = "hearts") {
+function createDemoSubTimeline(
+  jsPsych: JsPsych,
+  trialStimulus: keyof typeof STIMULUS_INFO = "hearts"
+) {
   return [
-    createDemoGametypeTrial(trialStimulus),
+    createGametypeTrial(trialStimulus),
     {
       timeline: [
         {
-          timeline: [createDemoTrial(jsPsych, trialStimulus), createFeedbackTrial(jsPsych)],
+          timeline: [
+            createFixationTrial(jsPsych),
+            createTrial(jsPsych, trialStimulus, true),
+            createFeedbackTrial(jsPsych),
+          ],
           loop_function: () => !jsPsych.data.get().last(1).select("correct").values[0],
         },
       ],
@@ -118,8 +171,35 @@ function createDemoSubTimeline(jsPsych: JsPsych, trialStimulus: keyof typeof STI
  * Creates the main timeline.
  */
 export function createTimeline(jsPsych: JsPsych) {
-  return [createDemoSubTimeline(jsPsych, "hearts")];
+  return [
+    createDemoSubTimeline(jsPsych, "hearts"),
+    { type: jsPsychHtmlButtonResponse, stimulus: "Time to play!", choices: ["OK"] },
+    {
+      timeline: [createFixationTrial(jsPsych), createTrial(jsPsych, "hearts")],
+      timeline_variables: STIMULUS_SIDES,
+      randomize_order: true,
+      repetitions: 20,
+    },
+    createDemoSubTimeline(jsPsych, "flowers"),
+    { type: jsPsychHtmlButtonResponse, stimulus: "Time to play!", choices: ["OK"] },
+    {
+      timeline: [createFixationTrial(jsPsych), createTrial(jsPsych, "flowers")],
+      timeline_variables: STIMULUS_SIDES,
+      randomize_order: true,
+      repetitions: 20,
+    },
+    { type: jsPsychHtmlButtonResponse, stimulus: "Great job! You're all done.", choices: ["OK"] },
+  ];
 }
 
-export const timelineUnits = { demoTimeline: [] };
-export const utils = {};
+export const timelineUnits = {
+  createGametypeTrial,
+  createTrial,
+  createFeedbackTrial,
+  createFixationTrial,
+  createDemoSubTimeline,
+};
+export const utils = {
+  generateStimulus,
+  getCorrectResponse,
+};
