@@ -7,37 +7,56 @@ import { flowerIconSvg } from "../assets/flower-icon.js";
 import { heartIconSvg } from "../assets/heart-icon.js";
 
 // Constants
-let STIMULUS_INFO = {
-  same: { stimulus_name: "heart", stimulus_src: heartIconSvg },
-  opposite: { stimulus_name: "flower", stimulus_src: flowerIconSvg },
-};
+interface IStimulusInfo {
+  same: {
+    stimulus_name: string;
+    stimulus_src: string;
+    target_side: "same";
+  };
+  opposite: {
+    stimulus_name: string;
+    stimulus_src: string;
+    target_side: "opposite";
+  };
+}
 
-const STIMULUS_SIDES = [{ stimulus_side: "left" }, { stimulus_side: "right" }];
+const DEFAULT_STIMULUS_INFO_OBJECT: IStimulusInfo = {
+  same: {
+    stimulus_name: "heart",
+    stimulus_src: heartIconSvg,
+    target_side: "same",
+  },
+  opposite: {
+    stimulus_name: "flower",
+    stimulus_src: flowerIconSvg,
+    target_side: "opposite",
+  },
+};
 
 // utils
 /**
  * Generates the stimulus HTML for a given trial.
  */
 function generateStimulus(
-  targetSide: keyof typeof STIMULUS_INFO,
+  targetSide: keyof IStimulusInfo,
   stimulusSide: "left" | "right",
+  stimulusInfo: IStimulusInfo,
   instruction: boolean = false
 ) {
-  const { stimulus_name: stimulusName, stimulus_src: stimulusSrc } = STIMULUS_INFO[targetSide];
   return `
     <div class="jspsych-hearts-and-flowers-instruction">
       ${
         instruction
-          ? `<h3>When you see a ${stimulusName}, press the button on the ${targetSide} side.</h3>`
+          ? `<h3>When you see a ${stimulusInfo[targetSide].stimulus_name}, press the button on the ${targetSide} side.</h3>`
           : ""
       }
       </div>
       <div class="hearts-and-flowers-stimulus-grid">
         <div class="hearts-and-flowers-stimulus-grid-item">${
-          stimulusSide === "left" ? stimulusSrc : blankIconSvg
+          stimulusSide === "left" ? stimulusInfo[targetSide].stimulus_src : blankIconSvg
         }</div>
         <div class="hearts-and-flowers-stimulus-grid-item">${
-          stimulusSide === "right" ? stimulusSrc : blankIconSvg
+          stimulusSide === "right" ? stimulusInfo[targetSide].stimulus_src : blankIconSvg
         }</div>
       </div>
     </div>`;
@@ -46,10 +65,7 @@ function generateStimulus(
 /**
  * Computes the correct response index.
  */
-function getCorrectResponse(
-  targetSide: keyof typeof STIMULUS_INFO,
-  stimulusSide: "left" | "right"
-) {
+function getCorrectResponse(targetSide: keyof IStimulusInfo, stimulusSide: "left" | "right") {
   return targetSide === "same"
     ? stimulusSide === "left"
       ? "left"
@@ -62,8 +78,7 @@ function getCorrectResponse(
 /**
  * Trial that announces the demo game type.
  */
-function createGametypeTrial(targetSide: keyof typeof STIMULUS_INFO) {
-  const stimulusName = STIMULUS_INFO[targetSide].stimulus_name;
+function createGametypeTrial(stimulusName: string) {
   return {
     type: jsPsychHtmlButtonResponse,
     stimulus: `<div class="jspsych-hearts-and-flowers-instruction"><h3>
@@ -77,26 +92,24 @@ function createGametypeTrial(targetSide: keyof typeof STIMULUS_INFO) {
 /**
  * Trial that shows the stimulus and collects the response.
  */
-function createTrial(
-  jsPsych: JsPsych,
-  targetSide: keyof typeof STIMULUS_INFO,
-  instruction: boolean = false
-) {
-  const stimulusName = STIMULUS_INFO[targetSide].stimulus_name;
+function createTrial(jsPsych: JsPsych, stimulusInfo: IStimulusInfo, instruction: boolean = false) {
   return {
     type: jsPsychHtmlButtonResponse,
     stimulus: () => {
       const stimulusSide = jsPsych.evaluateTimelineVariable("stimulus_side");
-      return generateStimulus(targetSide, stimulusSide, instruction);
+      const targetSide = jsPsych.evaluateTimelineVariable("target_side");
+      return generateStimulus(targetSide, stimulusSide, stimulusInfo, instruction);
     },
     choices: ["left", "right"],
     data: {
-      trial_type: "demo_trial",
-      stimulus_name: stimulusName,
+      trial_type: instruction ? "demo_trial" : "trial",
       stimulus_side: () => jsPsych.evaluateTimelineVariable("stimulus_side"),
-      target_side: targetSide,
+      target_side: () => jsPsych.evaluateTimelineVariable("target_side"),
+      stimulus_name: () =>
+        stimulusInfo[jsPsych.evaluateTimelineVariable("target_side")].stimulus_name,
       correct_response: () => {
         const stimulusSide = jsPsych.evaluateTimelineVariable("stimulus_side");
+        const targetSide = jsPsych.evaluateTimelineVariable("target_side");
         return getCorrectResponse(targetSide, stimulusSide);
       },
     },
@@ -152,69 +165,198 @@ function createFixationTrial(jsPsych: JsPsych) {
 /**
  * Creates a demo subtimeline.
  */
-function createDemoSubTimeline(jsPsych: JsPsych, targetSide: keyof typeof STIMULUS_INFO = "same") {
+function createDemoSubTimeline(
+  jsPsych: JsPsych,
+  targetSide: keyof IStimulusInfo | "both",
+  stimulusInfo: IStimulusInfo
+) {
   return [
-    createGametypeTrial(targetSide),
+    createGametypeTrial(stimulusInfo[targetSide].stimulus_name),
     {
       timeline: [
         // A full demo session includes a demo trial with stimulus on the left and a demo trial with stimulus on the right
         {
           // Each demo trial includes a fixation trial, a trial with the actual stimulus, and a feedback trial
-          timeline: [
-            createFixationTrial(jsPsych),
-            createTrial(jsPsych, targetSide, true),
-            createFeedbackTrial(jsPsych),
-          ],
+          timeline: [createTrial(jsPsych, stimulusInfo, true), createFeedbackTrial(jsPsych)],
           // The demo trial is repeated until the participant gets it right
           loop_function: () => !jsPsych.data.get().last(1).select("correct").values[0],
         },
       ],
-      timeline_variables: STIMULUS_SIDES,
-      randomize_order: true,
+      timeline_variables: ((targetSide) => {
+        switch (targetSide) {
+          case "same":
+            return [
+              { ...stimulusInfo.same, stimulus_side: "left" },
+              { ...stimulusInfo.same, stimulus_side: "right" },
+            ];
+          case "opposite":
+            return [
+              { ...stimulusInfo.opposite, stimulus_side: "left" },
+              { ...stimulusInfo.opposite, stimulus_side: "right" },
+            ];
+          case "both":
+            return [
+              { ...stimulusInfo.same, stimulus_side: "left" },
+              { ...stimulusInfo.same, stimulus_side: "right" },
+              { ...stimulusInfo.opposite, stimulus_side: "left" },
+              { ...stimulusInfo.opposite, stimulus_side: "right" },
+            ];
+          default:
+            return [];
+        }
+      })(targetSide),
     },
   ];
+}
+
+function createTrialsSubTimeline(
+  jsPsych: JsPsych,
+  userOptions: Partial<{
+    target_side: keyof IStimulusInfo | "both";
+    n_trials: number;
+    target_side_weights: [same_weight: number, opposite_weight: number];
+    side_weights: [left_weight: number, right_weight: number];
+    stimulus_info: IStimulusInfo;
+  }> = {}
+) {
+  const defaultOptions = {
+    target_side: "both",
+    n_trials: 20,
+    target_side_weights: [1, 1],
+    side_weights: [1, 1],
+    stimulus_info: DEFAULT_STIMULUS_INFO_OBJECT,
+  };
+
+  const options = {
+    ...defaultOptions,
+    ...userOptions,
+  };
+
+  return {
+    timeline: [createFixationTrial(jsPsych), createTrial(jsPsych, options.stimulus_info, false)],
+    timeline_variables: ((targetSide) => {
+      switch (targetSide) {
+        case "same":
+          return [
+            { ...options.stimulus_info.same, stimulus_side: "left" },
+            { ...options.stimulus_info.same, stimulus_side: "right" },
+          ];
+        case "opposite":
+          return [
+            { ...options.stimulus_info.opposite, stimulus_side: "left" },
+            { ...options.stimulus_info.opposite, stimulus_side: "right" },
+          ];
+        case "both":
+          return [
+            { ...options.stimulus_info.same, stimulus_side: "left" },
+            { ...options.stimulus_info.same, stimulus_side: "right" },
+            { ...options.stimulus_info.opposite, stimulus_side: "left" },
+            { ...options.stimulus_info.opposite, stimulus_side: "right" },
+          ];
+        default:
+          return [];
+      }
+    })(options.target_side),
+    sample: {
+      type: "with-replacement",
+      size: options.n_trials,
+      weights: ((targetSide, targetSideWeights, sideWeights) => {
+        if (targetSide === "both") {
+          return targetSideWeights.flatMap((tsw) => sideWeights.map((sw) => tsw * sw));
+        } else {
+          return sideWeights;
+        }
+      })(options.target_side, options.target_side_weights, options.side_weights),
+    },
+  };
 }
 
 /**
  * Creates the main timeline.
  */
-export default function createTimeline(
+export function createTimeline(
   jsPsych: JsPsych,
-  {
-    same_side_stimulus_name = "heart",
-    same_side_stimulus_src = heartIconSvg,
-    opposite_side_stimulus_name = "flower",
-    opposite_side_stimulus_src = flowerIconSvg,
-  }: {
-    same_side_stimulus_name: string;
-    same_side_stimulus_src: string;
-    opposite_side_stimulus_name: string;
-    opposite_side_stimulus_src: string;
-  }
+  userOptions: Partial<{
+    n_trials: number;
+    side_weights: [left_weight: number, right_weight: number];
+    target_side_weights: [same_weight: number, opposite_weight: number];
+    stimulus_options: Partial<{
+      same_side_stimulus_name: string;
+      same_side_stimulus_src: string;
+      opposite_side_stimulus_name: string;
+      opposite_side_stimulus_src: string;
+    }>;
+    demo?: boolean;
+    start_instruction_text: string;
+    end_instruction_text: string;
+  }> = {}
 ) {
-  STIMULUS_INFO.same.stimulus_name = same_side_stimulus_name;
-  STIMULUS_INFO.same.stimulus_src = same_side_stimulus_src;
-  STIMULUS_INFO.opposite.stimulus_name = opposite_side_stimulus_name;
-  STIMULUS_INFO.opposite.stimulus_src = opposite_side_stimulus_src;
-  return [
-    createDemoSubTimeline(jsPsych, "same"),
-    { type: jsPsychHtmlButtonResponse, stimulus: "Time to play!", choices: ["OK"] },
-    {
-      timeline: [createFixationTrial(jsPsych), createTrial(jsPsych, "same")],
-      timeline_variables: STIMULUS_SIDES,
-      randomize_order: true,
-      repetitions: 20,
+  // Default values
+  const defaultOptions = {
+    n_trials: 20,
+    side_weights: [1, 1] as [number, number],
+    target_side_weights: [1, 1] as [number, number],
+    stimulus_options: {
+      same_side_stimulus_name: "heart",
+      same_side_stimulus_src: heartIconSvg,
+      opposite_side_stimulus_name: "flower",
+      opposite_side_stimulus_src: flowerIconSvg,
     },
-    createDemoSubTimeline(jsPsych, "opposite"),
-    { type: jsPsychHtmlButtonResponse, stimulus: "Time to play!", choices: ["OK"] },
-    {
-      timeline: [createFixationTrial(jsPsych), createTrial(jsPsych, "opposite")],
-      timeline_variables: STIMULUS_SIDES,
-      randomize_order: true,
-      repetitions: 20,
+    demo: true,
+    start_instruction_text: "Time to play!",
+    end_instruction_text: "Great job! You're all done.",
+  };
+
+  // Merge default options with user options (deep merge for stimulusInfo)
+  const options = {
+    ...defaultOptions,
+    ...userOptions,
+    stimulus_options: {
+      ...defaultOptions.stimulus_options,
+      ...userOptions.stimulus_options, // Ensures individual properties inside stimulusInfo are not lost
     },
-    { type: jsPsychHtmlButtonResponse, stimulus: "Great job! You're all done.", choices: ["OK"] },
-  ];
+  };
+
+  const stimulusInfo: IStimulusInfo = {
+    same: {
+      stimulus_name: options.stimulus_options.same_side_stimulus_name,
+      stimulus_src: options.stimulus_options.same_side_stimulus_src,
+      target_side: "same",
+    },
+    opposite: {
+      stimulus_name: options.stimulus_options.opposite_side_stimulus_name,
+      stimulus_src: options.stimulus_options.opposite_side_stimulus_src,
+      target_side: "opposite",
+    },
+  };
+
+  const heartsAndFlowersTimeline = [];
+
+  if (options.demo) {
+    heartsAndFlowersTimeline.push(createDemoSubTimeline(jsPsych, "same", stimulusInfo));
+    heartsAndFlowersTimeline.push(createDemoSubTimeline(jsPsych, "opposite", stimulusInfo));
+  }
+  heartsAndFlowersTimeline.push({
+    type: jsPsychHtmlButtonResponse,
+    stimulus: options.start_instruction_text,
+    choices: ["OK"],
+  });
+  heartsAndFlowersTimeline.push(
+    createTrialsSubTimeline(jsPsych, {
+      target_side: "both",
+      n_trials: options.n_trials,
+      side_weights: options.side_weights,
+      target_side_weights: options.target_side_weights,
+      stimulus_info: stimulusInfo,
+    })
+  );
+  heartsAndFlowersTimeline.push({
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: options.end_instruction_text,
+    choices: "NO_KEYS",
+  });
+
+  return heartsAndFlowersTimeline;
 }
 
 export const timelineUnits = {
