@@ -356,7 +356,7 @@ export function createTimeline(
     choices: "NO_KEYS",
   });
 
-  return heartsAndFlowersTimeline;
+  return { timeline: heartsAndFlowersTimeline };
 }
 
 export const timelineUnits = {
