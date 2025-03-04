@@ -179,13 +179,11 @@ function createFeedbackTrial(jsPsych: JsPsych) {
  * @returns jsPsychHtmlKeyboardResponse object displaying a fixation cross for a
  * random duration.
  */
-function createFixationTrial(jsPsych: JsPsych) {
+function createFixationTrial(jsPsych: JsPsych, fixationDurationFunction: () => number) {
   return {
     type: jsPsychHtmlKeyboardResponse,
     stimulus: "<div class='jspsych-hearts-and-flowers-instruction'><h3>+</h3></div>",
-    trial_duration: () => {
-      return jsPsych.randomization.sampleWithReplacement([100, 200, 500, 1000], 1)[0];
-    },
+    trial_duration: fixationDurationFunction,
     save_trial_parameters: {
       trial_duration: true,
     },
@@ -268,6 +266,7 @@ function createTrialsSubTimeline(
     n_trials: number;
     target_side_weights: [same_weight: number, opposite_weight: number];
     side_weights: [left_weight: number, right_weight: number];
+    fixation_duration_function: () => number;
     stimulus_info: IStimulusInfo;
   }> = {}
 ) {
@@ -276,6 +275,7 @@ function createTrialsSubTimeline(
     n_trials: 20,
     target_side_weights: [1, 1] as [number, number],
     side_weights: [1, 1] as [number, number],
+    fixation_duration_function: () => jsPsych.randomization.sampleWithReplacement([100, 200, 500, 1000], 1)[0],
     stimulus_info: DEFAULT_STIMULUS_INFO_OBJECT,
   };
 
@@ -285,7 +285,7 @@ function createTrialsSubTimeline(
   };
 
   return {
-    timeline: [createFixationTrial(jsPsych), createTrial(jsPsych, options.stimulus_info, false)],
+    timeline: [createFixationTrial(jsPsych, options.fixation_duration_function), createTrial(jsPsych, options.stimulus_info, false)],
     timeline_variables: ((targetSide) => {
       switch (targetSide) {
         case "same":
@@ -339,6 +339,7 @@ export function createTimeline(
     n_trials: number;
     side_weights: [left_weight: number, right_weight: number];
     target_side_weights: [same_weight: number, opposite_weight: number];
+    fixation_duration_function: () => number;
     stimulus_options: Partial<{
       same_side_stimulus_name: string;
       same_side_stimulus_src: string;
@@ -355,6 +356,7 @@ export function createTimeline(
     n_trials: 20,
     side_weights: [1, 1] as [number, number],
     target_side_weights: [1, 1] as [number, number],
+    fixation_duration_function: () => jsPsych.randomization.sampleWithReplacement([100, 200, 500, 1000], 1)[0],
     stimulus_options: {
       same_side_stimulus_name: "heart",
       same_side_stimulus_src: heartIconSvg,
@@ -406,6 +408,7 @@ export function createTimeline(
       n_trials: options.n_trials,
       side_weights: options.side_weights,
       target_side_weights: options.target_side_weights,
+      fixation_duration_function: options.fixation_duration_function,
       stimulus_info: stimulusInfo,
     })
   );
