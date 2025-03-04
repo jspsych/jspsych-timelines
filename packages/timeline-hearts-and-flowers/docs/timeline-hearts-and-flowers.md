@@ -1,6 +1,6 @@
 # timeline-hearts-and-flowers
 
-Implementation of Hearts and Flowers core task from LEVANTE.
+Implementation of the Hearts and Flowers task, which tests executive function.
 
 ## Parameters
 

@@ -36,6 +36,14 @@ const DEFAULT_STIMULUS_INFO_OBJECT: IStimulusInfo = {
 // utils
 /**
  * Generates the stimulus HTML for a given trial.
+ * 
+ * @param targetSide The side of the target stimulus [same|opposite].
+ * @param stimulusSide The side of the stimulus to be displayed [left|right].
+ * @param stimulusInfo The stimulus information object that describes the name
+ * of the stimulus and its source.
+ * @param instruction Whether to include instruction text teaching participants
+ * how to respond or not.
+ * @returns HTML string representing the stimulus.
  */
 function generateStimulus(
   targetSide: keyof IStimulusInfo,
@@ -64,6 +72,10 @@ function generateStimulus(
 
 /**
  * Computes the correct response index.
+ * 
+ * @param targetSide The side of the target stimulus [same|opposite].
+ * @param stimulusSide The side of the stimulus to be displayed [left|right].
+ * @returns The correct response index.
  */
 function getCorrectResponse(targetSide: keyof IStimulusInfo, stimulusSide: "left" | "right") {
   return targetSide === "same"
@@ -77,6 +89,10 @@ function getCorrectResponse(targetSide: keyof IStimulusInfo, stimulusSide: "left
 
 /**
  * Trial that announces the demo game type.
+ * 
+ * @param stimulusName The name of the stimulus to be demoed
+ * @returns jsPsychHtmlButtonResponse object displaying the name of the stimulus
+ * to be demoed.
  */
 function createGametypeTrial(stimulusName: string) {
   return {
@@ -91,6 +107,14 @@ function createGametypeTrial(stimulusName: string) {
 // trials
 /**
  * Trial that shows the stimulus and collects the response.
+ * 
+ * @param jsPsych The jsPsych object that runs the experiment.
+ * @param stimulusInfo The stimulus information object that describes the name
+ * of the stimulus and its source.
+ * @param instruction Whether to include instruction text teaching participants
+ * how to respond or not.
+ * @returns jsPsychHtmlButtonResponse object displaying the stimulus and collecting
+ * the response.
  */
 function createTrial(jsPsych: JsPsych, stimulusInfo: IStimulusInfo, instruction: boolean = false) {
   return {
@@ -124,6 +148,11 @@ function createTrial(jsPsych: JsPsych, stimulusInfo: IStimulusInfo, instruction:
 
 /**
  * Trial that shows feedback after each demo trial.
+ * 
+ * @param jsPsych The jsPsych object that runs the experiment.
+ * @returns jsPsychHtmlKeyboardResponse object displaying feedback after each
+ * demo trial that depends on whether the participant answered correctly.
+ * 
  */
 function createFeedbackTrial(jsPsych: JsPsych) {
   return {
@@ -145,6 +174,10 @@ function createFeedbackTrial(jsPsych: JsPsych) {
 
 /**
  * Trial that shows a fixation cross.
+ * 
+ * @param jsPsych The jsPsych object that runs the experiment.
+ * @returns jsPsychHtmlKeyboardResponse object displaying a fixation cross for a
+ * random duration.
  */
 function createFixationTrial(jsPsych: JsPsych) {
   return {
@@ -164,6 +197,13 @@ function createFixationTrial(jsPsych: JsPsych) {
 
 /**
  * Creates a demo subtimeline.
+ * 
+ * @param jsPsych The jsPsych object that runs the experiment.
+ * @param targetSide The side of the target stimulus [same|opposite|both].
+ * @param stimulusInfo The stimulus information object that describes the name
+ * of the stimulus and its source.
+ * @returns A subtimeline that includes a demo trial with stimulus on the left,
+ * a demo trial with stimulus on the right, or both.
  */
 function createDemoSubTimeline(
   jsPsych: JsPsych,
@@ -209,9 +249,21 @@ function createDemoSubTimeline(
   ];
 }
 
+/**
+ * Creates a subtimeline with a set number of trials.
+ * 
+ * @param jsPsych The jsPsych object that runs the experiment.
+ * @param options The options object that includes what kinds of trials to
+ * include [same|opposte|both], the number of trials, the weights for how often
+ * each type of stimulus appears, the weights for how often the stimulus appears on
+ * each side, and the stimulus information containing the name and source of each
+ * stimulus type.
+ * 
+ * @returns A subtimeline with a set number of trials with the specified options.
+ */
 function createTrialsSubTimeline(
   jsPsych: JsPsych,
-  userOptions: Partial<{
+  options: Partial<{
     target_side: keyof IStimulusInfo | "both";
     n_trials: number;
     target_side_weights: [same_weight: number, opposite_weight: number];
@@ -220,16 +272,16 @@ function createTrialsSubTimeline(
   }> = {}
 ) {
   const defaultOptions = {
-    target_side: "both",
+    target_side: "both" as keyof IStimulusInfo | "both",
     n_trials: 20,
-    target_side_weights: [1, 1],
-    side_weights: [1, 1],
+    target_side_weights: [1, 1] as [number, number],
+    side_weights: [1, 1] as [number, number],
     stimulus_info: DEFAULT_STIMULUS_INFO_OBJECT,
   };
 
-  const options = {
+  options = {
     ...defaultOptions,
-    ...userOptions,
+    ...options,
   };
 
   return {
@@ -273,10 +325,17 @@ function createTrialsSubTimeline(
 
 /**
  * Creates the main timeline.
+ * 
+ * @param jsPsych The jsPsych object that runs the experiment.
+ * @param options The options object that includes the number of trials, the weights
+ * for how often each type of stimulus appears, the weights for how often the stimulus
+ * appears on each side, the stimulus information containing the name and source
+ * of each stimulus type, whether to include a demo section or not, and the instruction
+ * text at the beginning and end of the experiment.
  */
 export function createTimeline(
   jsPsych: JsPsych,
-  userOptions: Partial<{
+  options: Partial<{
     n_trials: number;
     side_weights: [left_weight: number, right_weight: number];
     target_side_weights: [same_weight: number, opposite_weight: number];
@@ -308,12 +367,12 @@ export function createTimeline(
   };
 
   // Merge default options with user options (deep merge for stimulusInfo)
-  const options = {
+  options = {
     ...defaultOptions,
-    ...userOptions,
+    ...options,
     stimulus_options: {
       ...defaultOptions.stimulus_options,
-      ...userOptions.stimulus_options, // Ensures individual properties inside stimulusInfo are not lost
+      ...options.stimulus_options, // Ensures individual properties inside stimulusInfo are not lost
     },
   };
 
@@ -365,6 +424,7 @@ export const timelineUnits = {
   createFeedbackTrial,
   createFixationTrial,
   createDemoSubTimeline,
+  createTrialsSubTimeline
 };
 export const utils = {
   generateStimulus,
