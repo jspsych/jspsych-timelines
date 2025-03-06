@@ -4,23 +4,17 @@ This is an open repository of timelines for jsPsych. The goal of this repository
 
 ## List of available timelines
 
-The jsPsych timelines that have been contributed by community members can be found in the `/packages` directory. 
+The jsPsych timelines that have been contributed by community members can be found in the `/packages` directory.
 The `/packages` directory also contains two template sub-folders that can be used as a starting point for contributing a timeline (see the [Guidelines for contributing new timelines](#guidelines-for-contributing-new-timelines) section).
 
-
-
-
-
-
 ### Timelines
-
 Timeline | Contributor | Description
 ----------- | ----------- | -----------
 [arrow-flanker](https://github.com/jspsych/jspsych-timelines/blob/main/packages/arrow-flanker/README.md) | [Josh de Leeuw](https://github.com/jodeleeuw) | Arrow flanker task for jsPsych 
 [false-memory](https://github.com/jspsych/jspsych-timelines/blob/main/packages/false-memory/README.md) | [Cherrie Chang](https://github.com/cchang-vassar) | False memory task for jsPsych 
 [spatial-cueing](https://github.com/jspsych/jspsych-timelines/blob/main/packages/spatial-cueing/README.md) | [Cherrie Chang](https://github.com/cchang-vassar) | A shareable timeline of the Posner spatial cueing task. 
-## Using timelines from this repository
 
+## Using timelines from this repository
 
 The modules in this repository can be loaded via a CDN or via NPM. The CDN is the easiest way to get started. For example, to load the [arrow-flanker]() timeline from the CDN, you would add the following script tag to your HTML document:
 
@@ -47,7 +41,7 @@ const timeline = jsPsychTimelineModule.createTimeline(jsPsych, {options})
 jsPsych.run([timeline])
 ```
 
-Timeline modules may also export a `timelineUnits` objects and a `utils` object. 
+Timeline modules may also export a `timelineUnits` objects and a `utils` object.
 
 The `timelineUnits` object contains functions that create smaller units of a timeline than the main `createTimeline()` method. For example, if the main timeline contains two phases (e.g., memorization and test) then there could be `timelineUnits.createTestTimeline()` and `timelineUnits.createMemorizationTimeline()`. These functions could then be used for assembling the overall timeline in a different way than `createTimeline()` allows. There are no constraints on what kinds of timeline creation methods can be exported in `timelineUnits`, other than the requirement that all methods return an object that can be added to a jsPsych timeline. Some modules may export methods to create units as small as a single trial, while others export no methods at all.
 
@@ -65,10 +59,10 @@ If you would like to contribute a new timeline to this repository, please follow
 6. Run `npm run build` to build the timeline. This will create a `dist` directory with the compiled timeline.
 7. Verify that the example works by opening `examples/index.html` in your browser.
 8. Add a changeset by running `npm run changeset` in the main directory of the repository. This will prompt you for a description of the changes you made. This will create a new changeset file in the `changesets` directory.
-8. Open a pull request to merge your branch into the `main` branch of this repository.
+9. Open a pull request to merge your branch into the `main` branch of this repository.
 
-We welcome timelines of all kinds! 
+We welcome timelines of all kinds!
 
 ### What if my timeline requires a custom plugin?
 
-If your timeline requires a custom plugin, we'd recommend adding the plugin to [jspsych-contrib](https://github.com/jspsych/jspsych-contrib) before submitting the timeline here. This will make it easier for other researchers to use your plugin in their own experiments. Currently, this repository is aimed at timelines that use plugins that are published on `npm`. 
+If your timeline requires a custom plugin, we'd recommend adding the plugin to [jspsych-contrib](https://github.com/jspsych/jspsych-contrib) before submitting the timeline here. This will make it easier for other researchers to use your plugin in their own experiments. Currently, this repository is aimed at timelines that use plugins that are published on `npm`.
