@@ -50,6 +50,8 @@ The `timelineUnits` object contains functions that create smaller units of a tim
 The `utils` object contains miscellaneous functions that may be useful when using the module. For example, if a timeline requires creating a complex stimulus that can be procedurally generated there could be a `utils.createStimulus()` method that returns HTML. Or if there is a timeline that involves a particular scoring system like a questionnaire with validated indicies then there could be a `utils.generateScore()` method. There are no constraints on what methods can be exported as part of the `utils` object.
 
 ## Guidelines for contributing new timelines
+
+### Contribution requirements
 Contributions to this repository must:
 
 * Work as described
@@ -63,7 +65,14 @@ Optionally, contributions can include:
 * An `/examples` directory with a working `.html` demo.
 * A test suite following the testing framework in our `-ts` templates.
 
-To submit a timeline, [open a pull request](https://github.com/jspsych/jspsych-contrib/pulls) that contains a directory for your timeline inside the `/packages` directory.
+### To contribute to this repository, follow these steps:
+1. Clone this repository on your machine and run `npm i` to install its packages.
+2. Run `npx @jspsych/new-timeline` and answer the prompts to create a new timeline template under `/packages`. This is a command-line tool we built to make setting up the development of a new timeline easier. Documentation for using this tool can be found [here](https://github.com/jspsych/jspsych-dev/tree/main/packages/new-timeline#readme).
+3. After you are done editing the timeline template, verify that it works by opening `examples/index.html` in your browser.
+4. Run `npm i` in your timeline directory to install all your dependencies.
+5. Add a changeset by running `npm run changeset` in the main directory of the repository. This will prompt you for a description of the changes you made and creates a new changeset file in the `changesets` directory accordingly.
+6. Open a pull request to merge your branch into the `main` branch of this repository.
+
 In the pull request comments, please make it clear how we can verify that the timeline is functional. 
 This could be accomplished with a link to a demonstration experiment, the inclusion of an example file and/or testing files, or through some other means.
 We try to review pull requests quickly and add new timelines as soon as the minimal standards are met.
