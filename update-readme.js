@@ -28,7 +28,7 @@ function getPackageInfo(packageDir) {
   };
 }
 
-async function updateRootReadme() {
+async function updateReadme() {
   const packageInfos = fs
     .readdirSync(packagesDir)
     .map((dir) => path.join(packagesDir, dir))
@@ -69,4 +69,4 @@ async function updateRootReadme() {
   series(generateTimelineTable)();
 }
 
-export default updateRootReadme;
+export default updateReadme;
