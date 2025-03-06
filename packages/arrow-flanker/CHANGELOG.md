@@ -1,4 +1,4 @@
-# @jspsych-timelines/timeline-arrow-flanker
+# @jspsych-timelines/arrow-flanker
 
 ## 0.2.0
 

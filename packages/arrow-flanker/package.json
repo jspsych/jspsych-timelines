@@ -1,5 +1,5 @@
 {
-  "name": "@jspsych-timelines/timeline-arrow-flanker",
+  "name": "@jspsych-timelines/arrow-flanker",
   "version": "0.2.0",
   "description": "Arrow flanker task for jsPsych",
   "type": "module",
@@ -24,7 +24,7 @@
   "bugs": {
     "url": "https://github.com/jspsych/jspsych-timelines/issues"
   },
-  "homepage": "https://github.com/jspsych/jspsych-timelines/packages/timeline-arrow-flanker#readme",
+  "homepage": "https://github.com/jspsych/jspsych-timelines/packages/arrow-flanker#readme",
   "peerDependencies": {
     "jspsych": "^8.0.1"
   },
