@@ -1,4 +1,4 @@
-# timeline-hearts-and-flowers
+# hearts-and-flowers
 
 Implementation of the Hearts and Flowers task, which tests executive function.
 

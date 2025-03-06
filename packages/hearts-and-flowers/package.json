@@ -1,5 +1,5 @@
 {
-    "name": "@jspsych-timelines/timeline-hearts-and-flowers",
+    "name": "@jspsych-timelines/hearts-and-flowers",
     "version": "0.0.1",
     "description": "Implementation of the Hearts and Flowers task, which tests executive function.",
     "type": "module",
@@ -25,7 +25,7 @@
     "bugs": {
         "url": "https://github.com/jspsych/jspsych-timelines/issues"
     },
-    "homepage": "https://github.com/jspsych/jspsych-timelines/packages/timeline-hearts-and-flowers/README.md",
+    "homepage": "https://github.com/jspsych/jspsych-timelines/packages/hearts-and-flowers/README.md",
     "devDependencies": {
         "@jspsych/config": "^3.2.2",
         "jspsych": "^8.0.0",
