@@ -13,8 +13,8 @@ The jsPsych timelines that have been contributed by community members can be fou
 Timeline | Contributor | Description
 ----------- | ----------- | -----------
 [arrow-flanker](https://github.com/jspsych/jspsych-timelines/blob/main/packages/arrow-flanker/README.md) | [Josh de Leeuw](https://github.com/jodeleeuw) | Arrow flanker task for jsPsych 
-[false-memory](https://github.com/jspsych/jspsych-timelines/blob/main/packages/false-memory/README.md) | [Cherrie Chang](https://github.com/cchang-vassar) | False memory task for jsPsych 
-[spatial-cueing](https://github.com/jspsych/jspsych-timelines/blob/main/packages/spatial-cueing/README.md) | [Cherrie Chang](https://github.com/cchang-vassar) | A shareable timeline of the Posner spatial cueing task. 
+[false-memory](https://github.com/jspsych/jspsych-timelines/blob/main/packages/false-memory/README.md) | [Cherrie Chang](https://github.com/cherriechang) | False memory task for jsPsych 
+[spatial-cueing](https://github.com/jspsych/jspsych-timelines/blob/main/packages/spatial-cueing/README.md) | [Cherrie Chang](https://github.com/cherriechang) | A shareable timeline of the Posner spatial cueing task. 
 ## Using timelines from this repository
 
 
