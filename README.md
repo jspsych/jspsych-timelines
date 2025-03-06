@@ -1,16 +1,12 @@
-# jspsych-timelines
+# jspsych-timelines: jsPsych community experiment timelines
 
-This is an open repository of timelines for jsPsych. The goal of this repository is to provide a place for researchers to share their jsPsych timelines with the community. Packages in this repository all implement a [uniform structure](#structure) that makes it easy to use them in your own experiments and combine them with other code.
+This is an open repository of [jsPsych experiment timelines](https://www.jspsych.org/v8/overview/timeline/). The goal of this repository is to provide a place for researchers to share their timelines with the community. Packages in this repository all implement a [uniform structure](#structure) that makes it easy to use them in your own experiments and combine them with other code.
+
+If instead of an experiment timeline, you wish to share a [plugin](https://www.jspsych.org/v8/overview/plugins/) or [extension](https://www.jspsych.org/v8/overview/extensions/), you should check out the [jspsych-contrib](https://github.com/jspsych/jspsych-contrib) repository! 
 
 ## List of available timelines
 
-The jsPsych timelines that have been contributed by community members can be found in the `/packages` directory. 
-The `/packages` directory also contains two template sub-folders that can be used as a starting point for contributing a timeline (see the [Guidelines for contributing new timelines](#guidelines-for-contributing-new-timelines) section).
-
-
-
-
-
+The jsPsych timelines that have been contributed by community members can be found in the `/packages` directory.
 
 ### Timelines
 
@@ -22,7 +18,7 @@ Timeline | Contributor | Description
 ## Using timelines from this repository
 
 
-The modules in this repository can be loaded via a CDN or via NPM. The CDN is the easiest way to get started. For example, to load the [arrow-flanker]() timeline from the CDN, you would add the following script tag to your HTML document:
+The modules in this repository can be loaded via a CDN or via NPM. The CDN is the easiest way to get started. For example, to load the [arrow-flanker](https://github.com/jspsych/jspsych-timelines/blob/main/packages/arrow-flanker) timeline from the CDN, you would add the following script tag to your HTML document:
 
 ```html
 <script src="https://unpkg.com/@jspsych-timelines/arrow-flanker"></script>
@@ -32,7 +28,7 @@ This will load the timeline into the global namespace as `jsPsychTimelineArrowFl
 
 ```js
 const jsPsych = initJsPsych();
-const timeline = jsPsychTimelineArrowFlanker.createTimeline(jsPsych, {options});
+const timeline = jsPsychTimelineArrowFlanker.createTimeline(jsPsych, { options });
 jsPsych.run([timeline]);
 ```
 
@@ -43,7 +39,7 @@ In the above example, `timeline` is a jsPsych timeline object that can be added 
 Each timeline module exports a `createTimeline()` method. This method returns an object with a `timeline` property that can be inserted into a jsPsych timeline.
 
 ```js
-const timeline = jsPsychTimelineModule.createTimeline(jsPsych, {options})
+const timeline = jsPsychTimelineModule.createTimeline(jsPsych, { options })
 jsPsych.run([timeline])
 ```
 
@@ -54,21 +50,33 @@ The `timelineUnits` object contains functions that create smaller units of a tim
 The `utils` object contains miscellaneous functions that may be useful when using the module. For example, if a timeline requires creating a complex stimulus that can be procedurally generated there could be a `utils.createStimulus()` method that returns HTML. Or if there is a timeline that involves a particular scoring system like a questionnaire with validated indicies then there could be a `utils.generateScore()` method. There are no constraints on what methods can be exported as part of the `utils` object.
 
 ## Guidelines for contributing new timelines
+Contributions to this repository must:
 
-If you would like to contribute a new timeline to this repository, please follow these steps:
+* Work as described
+* Include the complete code for the timeline.
+* Include a `readme.md` file following our [template](readme-template.md).
+* Include a `package.json` file.
 
-1. Fork this repository
-2. Create a new branch for your timeline (e.g., 'new-timeline-arrow-flanker')
-3. Run `npm install` in the root directory of the repository to install dependencies.
-4. Run `npm run new` and answer the prompts to create a new timeline template in the `packages` directory.
-5. Edit the files in the new timeline directory to implement your timeline. `src/index.ts` is the main file that will be loaded when the timeline is used. `README.md` is the documentation for the timeline. `examples/index.html` is a basic jsPsych experiment template that you can modify to illustrate how your timeline works.
-6. Run `npm run build` to build the timeline. This will create a `dist` directory with the compiled timeline.
-7. Verify that the example works by opening `examples/index.html` in your browser.
-8. Add a changeset by running `npm run changeset` in the main directory of the repository. This will prompt you for a description of the changes you made. This will create a new changeset file in the `changesets` directory.
-8. Open a pull request to merge your branch into the `main` branch of this repository.
+Optionally, contributions can include:
 
-We welcome timelines of all kinds! 
+* A `/docs` directory with documentation matching the template for docs on jspsych.org 
+* An `/examples` directory with a working `.html` demo.
+* A test suite following the testing framework in our `-ts` templates.
 
-### What if my timeline requires a custom plugin?
+To submit a timeline, [open a pull request](https://github.com/jspsych/jspsych-contrib/pulls) that contains a directory for your timeline inside the `/packages` directory.
+In the pull request comments, please make it clear how we can verify that the timeline is functional. 
+This could be accomplished with a link to a demonstration experiment, the inclusion of an example file and/or testing files, or through some other means.
+We try to review pull requests quickly and add new timelines as soon as the minimal standards are met.
 
-If your timeline requires a custom plugin, we'd recommend adding the plugin to [jspsych-contrib](https://github.com/jspsych/jspsych-contrib) before submitting the timeline here. This will make it easier for other researchers to use your plugin in their own experiments. Currently, this repository is aimed at timelines that use plugins that are published on `npm`. 
+## Creating a new timeline
+
+We have a tool called [`new-timeline`](https://github.com/jspsych/jspsych-dev/tree/main/packages/new-timeline) for building new timelines at [jspsych-dev](https://github.com/jspsych/jspsych-dev/tree/main). Instructions for using the new-timeline tool can be found at the [`README.md`](https://github.com/jspsych/jspsych-dev/tree/main/packages/new-timeline/README.md) in this directory.
+
+You may also want to read the jsPsych documentation on [plugin development](https://www.jspsych.org/latest/developers/plugin-development/) to understand how to work with the `index.ts` file (for TypeScript development) and `index.js` file (for JavaScript development).
+
+## jsPsych version compatibility
+To ensure your timeline can be run by others using the latest version of jsPsych, we encourage you to make your timeline compatible with jsPsych v7+. Documentation for how to migrate from v6.x to v7.x can be found [here](https://www.jspsych.org/v7/support/migration-v7/), and from v.7x to v8.x [here](https://www.jspsych.org/v8/support/migration-v8/).
+
+## What if my timeline requires a custom plugin?
+
+If your timeline requires a custom plugin, we'd recommend adding the plugin to [jspsych-contrib](https://github.com/jspsych/jspsych-contrib) before submitting the timeline here. This will make it easier for other researchers to use your plugin in their own experiments. Currently, this repository is aimed at timelines that use plugins that are published on `npm`. Make sure the plugin and your timeline are both compatible with jsPsych v7+ so that they can work with each other and with the latest jsPsych version.
