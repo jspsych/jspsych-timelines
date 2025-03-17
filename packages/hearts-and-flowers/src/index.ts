@@ -37,13 +37,13 @@ const DEFAULT_STIMULUS_INFO_OBJECT: IStimulusInfo = {
 /**
  * Generates the stimulus HTML for a given trial.
  * 
- * @param targetSide The side of the target stimulus [same|opposite].
- * @param stimulusSide The side of the stimulus to be displayed [left|right].
- * @param stimulusInfo The stimulus information object that describes the name
+ * @param {"same" | "opposite"} targetSide - The side of the target stimulus [same|opposite].
+ * @param {"left" | "right"} stimulusSide - The side of the stimulus to be displayed [left|right].
+ * @param {object} stimulusInfo - The stimulus information object that describes the name
  * of the stimulus and its source.
- * @param instruction Whether to include instruction text teaching participants
+ * @param {boolean} instruction - Whether to include instruction text teaching participants
  * how to respond or not.
- * @returns HTML string representing the stimulus.
+ * @returns {string} HTML string representing the stimulus.
  */
 function generateStimulus(
   targetSide: keyof IStimulusInfo,
@@ -73,9 +73,9 @@ function generateStimulus(
 /**
  * Computes the correct response index.
  * 
- * @param targetSide The side of the target stimulus [same|opposite].
- * @param stimulusSide The side of the stimulus to be displayed [left|right].
- * @returns The correct response index.
+ * @param {"same" | "opposite"} targetSide - The side of the target stimulus [same|opposite].
+ * @param {"left" | "right"} stimulusSide - The side of the stimulus to be displayed [left|right].
+ * @returns {number} The correct response index.
  */
 function getCorrectResponse(targetSide: keyof IStimulusInfo, stimulusSide: "left" | "right") {
   return targetSide === "same"
@@ -90,8 +90,8 @@ function getCorrectResponse(targetSide: keyof IStimulusInfo, stimulusSide: "left
 /**
  * Trial that announces the demo game type.
  * 
- * @param stimulusName The name of the stimulus to be demoed
- * @returns jsPsychHtmlButtonResponse object displaying the name of the stimulus
+ * @param {string} stimulusName - The name of the stimulus to be demoed.
+ * @returns {object} jsPsychHtmlButtonResponse object displaying the name of the stimulus
  * to be demoed.
  */
 function createGametypeTrial(stimulusName: string) {
@@ -108,12 +108,12 @@ function createGametypeTrial(stimulusName: string) {
 /**
  * Trial that shows the stimulus and collects the response.
  * 
- * @param jsPsych The jsPsych object that runs the experiment.
- * @param stimulusInfo The stimulus information object that describes the name
+ * @param {object} jsPsych - The jsPsych object that runs the experiment.
+ * @param {object} stimulusInfo - The stimulus information object that describes the name
  * of the stimulus and its source.
- * @param instruction Whether to include instruction text teaching participants
+ * @param {boolean} instruction - Whether to include instruction text teaching participants
  * how to respond or not.
- * @returns jsPsychHtmlButtonResponse object displaying the stimulus and collecting
+ * @returns {object} jsPsychHtmlButtonResponse object displaying the stimulus and collecting
  * the response.
  */
 function createTrial(jsPsych: JsPsych, stimulusInfo: IStimulusInfo, instruction: boolean = false) {
@@ -149,8 +149,8 @@ function createTrial(jsPsych: JsPsych, stimulusInfo: IStimulusInfo, instruction:
 /**
  * Trial that shows feedback after each demo trial.
  * 
- * @param jsPsych The jsPsych object that runs the experiment.
- * @returns jsPsychHtmlKeyboardResponse object displaying feedback after each
+ * @param {object} jsPsych - The jsPsych object that runs the experiment.
+ * @returns {object} jsPsychHtmlKeyboardResponse object displaying feedback after each
  * demo trial that depends on whether the participant answered correctly.
  * 
  */
@@ -175,8 +175,8 @@ function createFeedbackTrial(jsPsych: JsPsych) {
 /**
  * Trial that shows a fixation cross.
  * 
- * @param jsPsych The jsPsych object that runs the experiment.
- * @returns jsPsychHtmlKeyboardResponse object displaying a fixation cross for a
+ * @param {object} jsPsych - The jsPsych object that runs the experiment.
+ * @returns {object} jsPsychHtmlKeyboardResponse object displaying a fixation cross for a
  * random duration.
  */
 function createFixationTrial(jsPsych: JsPsych, fixationDurationFunction: () => number) {
@@ -196,11 +196,11 @@ function createFixationTrial(jsPsych: JsPsych, fixationDurationFunction: () => n
 /**
  * Creates a demo subtimeline.
  * 
- * @param jsPsych The jsPsych object that runs the experiment.
- * @param targetSide The side of the target stimulus [same|opposite|both].
- * @param stimulusInfo The stimulus information object that describes the name
+ * @param {object} jsPsych - The jsPsych object that runs the experiment.
+ * @param {"same" | "opposite" | "both"} targetSide - The side of the target stimulus.
+ * @param {object} stimulusInfo - The stimulus information object that describes the name
  * of the stimulus and its source.
- * @returns A subtimeline that includes a demo trial with stimulus on the left,
+ * @returns {Array} A subtimeline that includes a demo trial with stimulus on the left,
  * a demo trial with stimulus on the right, or both.
  */
 function createDemoSubTimeline(
@@ -250,14 +250,14 @@ function createDemoSubTimeline(
 /**
  * Creates a subtimeline with a set number of trials.
  * 
- * @param jsPsych The jsPsych object that runs the experiment.
- * @param options The options object that includes what kinds of trials to
+ * @param {object} jsPsych - The jsPsych object that runs the experiment.
+ * @param {object} options - The options object that includes what kinds of trials to
  * include [same|opposte|both], the number of trials, the weights for how often
  * each type of stimulus appears, the weights for how often the stimulus appears on
  * each side, and the stimulus information containing the name and source of each
  * stimulus type.
  * 
- * @returns A subtimeline with a set number of trials with the specified options.
+ * @returns {Array} A subtimeline with a set number of trials with the specified options.
  */
 function createTrialsSubTimeline(
   jsPsych: JsPsych,
@@ -326,12 +326,13 @@ function createTrialsSubTimeline(
 /**
  * Creates the main timeline.
  * 
- * @param jsPsych The jsPsych object that runs the experiment.
- * @param options The options object that includes the number of trials, the weights
+ * @param {object} jsPsych - The jsPsych object that runs the experiment.
+ * @param {object} options - The options object that includes the number of trials, the weights
  * for how often each type of stimulus appears, the weights for how often the stimulus
  * appears on each side, the stimulus information containing the name and source
  * of each stimulus type, whether to include a demo section or not, and the instruction
  * text at the beginning and end of the experiment.
+ * @returns {object} The main timeline object.
  */
 export function createTimeline(
   jsPsych: JsPsych,
