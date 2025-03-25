@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>jsPsychTimelineNihToolboxCognitionBattery Example</title>
+  <script src="https://unpkg.com/jspsych"></script>
+  <!-- Once this timeline package is published, it can be loaded via
+<script src="https://unpkg.com/@jspsych-timelines/timeline-nih-toolbox-cognition-battery"></script> -->
+  <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css">
+</head>
+
+<body></body>
+<script>
+  const jsPsych = initJsPsych();
+
+  const task = jsPsychTimelineNihToolboxCognitionBattery.createTimeline(jsPsych, { });
+
+  jsPsych.run([task])
+</script>
+
+</html>
