@@ -1,5 +1,5 @@
 {
-    "name": "@jspsych-timelines/timeline-nih-toolbox-cognition-battery",
+    "name": "@jspsych-timelines/nih-toolbox-cognition-battery",
     "version": "0.0.1",
     "description": "An implementation of the NIH Toolbox's Cognition Battery.",
     "type": "module",
@@ -25,7 +25,7 @@
     "bugs": {
       "url": "https://github.com/jspsych/jspsych-timelines/issues"
     },
-    "homepage": "https://github.com/jspsych/jspsych-timelines/packages/timeline-nih-toolbox-cognition-battery/README.md",
+    "homepage": "https://github.com/jspsych/jspsych-timelines/packages/nih-toolbox-cognition-battery/README.md",
     "devDependencies": {
       "jspsych": "^8.0.0",
       "@jspsych/config": "^3.2.2",

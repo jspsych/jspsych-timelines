@@ -1,4 +1,4 @@
-# timeline-nih-toolbox-cognition-battery
+# nih-toolbox-cognition-battery
 
 ## Overview
 
@@ -9,22 +9,22 @@ An implementation of the NIH Toolbox's Cognition Battery.
 ### In browser
 
 ```html
-<script src="https://unpkg.com/@jspsych-timelines/timeline-nih-toolbox-cognition-battery">
+<script src="https://unpkg.com/@jspsych-timelines/nih-toolbox-cognition-battery">
 ```
 
 ### Via NPM
 
 ```
-npm install @jspsych-timelines/timeline-nih-toolbox-cognition-battery
+npm install @jspsych-timelines/nih-toolbox-cognition-battery
 ```
 
 ```js
-import { createTimeline, timelineUnits, utils } from "@jspsych-timelines/timeline-nih-toolbox-cognition-battery"
+import { createTimeline, timelineUnits, utils } from "@jspsych-timelines/nih-toolbox-cognition-battery"
 ```
 
 ## Compatibility
 
-`@jspsych-timelines/timeline-nih-toolbox-cognition-battery` requires jsPsych v8.0.0 or later.
+`@jspsych-timelines/nih-toolbox-cognition-battery` requires jsPsych v8.0.0 or later.
 
 ## Documentation
 
