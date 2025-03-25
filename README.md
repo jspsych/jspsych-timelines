@@ -2,7 +2,7 @@
 
 This is an open repository of [jsPsych experiment timelines](https://www.jspsych.org/v8/overview/timeline/). The goal of this repository is to provide a place for researchers to share their timelines with the community. Packages in this repository all implement a [uniform structure](#structure) that makes it easy to use them in your own experiments and combine them with other code.
 
-If instead of an experiment timeline, you wish to share a [plugin](https://www.jspsych.org/v8/overview/plugins/) or [extension](https://www.jspsych.org/v8/overview/extensions/), you should check out the [jspsych-contrib](https://github.com/jspsych/jspsych-contrib) repository! 
+If instead of an experiment timeline, you wish to share a [plugin](https://www.jspsych.org/latest/overview/plugins/) or [extension](https://www.jspsych.org/v8/overview/extensions/), you should check out the [jspsych-contrib](https://github.com/jspsych/jspsych-contrib) repository! 
 
 ## List of available timelines
 
@@ -56,7 +56,7 @@ Contributions to this repository must:
 
 * Work as described
 * Include the complete code for the timeline.
-* Include a `readme.md` file following our [template](readme-template.md).
+* Include a `README.md` file following our [template](https://github.com/jspsych/jspsych-dev/blob/main/packages/new-timeline/templates/timeline-template-ts/README.md).
 * Include a `package.json` file.
 
 Optionally, contributions can include:
@@ -67,9 +67,9 @@ Optionally, contributions can include:
 
 ### To contribute to this repository, follow these steps:
 1. Clone this repository on your machine and run `npm i` to install its packages.
-2. Run `npx @jspsych/new-timeline` and answer the prompts to create a new timeline template under `/packages`. This is a command-line tool we built to make setting up the development of a new timeline easier. Documentation for using this tool can be found [here](https://github.com/jspsych/jspsych-dev/tree/main/packages/new-timeline#readme).
-3. After you are done editing the timeline template, verify that it works by opening `examples/index.html` in your browser.
-4. Run `npm i` in your timeline directory to install all your dependencies.
+2. Run `npx @jspsych/new-timeline` and answer the prompts to create a new timeline template under `/packages`. This is a command-line tool we built to make setting up the development of a new timeline easier. Documentation for using this tool can be found in the [`jspsych-dev` repository](https://github.com/jspsych/jspsych-dev/tree/main/packages/new-timeline#readme).
+3. Run `npm i` in your root directory to install all your dependencies.
+4. After you are done editing the timeline template, verify that it works by opening `examples/index.html` in your browser.
 5. Add a changeset by running `npm run changeset` in the main directory of the repository. This will prompt you for a description of the changes you made and creates a new changeset file in the `changesets` directory accordingly.
 6. Open a pull request to merge your branch into the `main` branch of this repository.
 
