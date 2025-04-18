@@ -3,29 +3,79 @@ import jsPsychPreload from "@jspsych/plugin-preload";
 import { JsPsych } from "jspsych";
 
 const animalStimuli: Array<listSortingWorkingMemoryTestStimulusInfo> = [
-  { stimulus_image: "images/images-animals/mouse.jpg", stimulus_audio: "audio/audio-animals/mouse.mp3" },
-  { stimulus_image: "images/images-animals/bird.jpg", stimulus_audio: "audio/audio-animals/bird.mp3" },
-  { stimulus_image: "images/images-animals/rabbit.jpg", stimulus_audio: "audio/audio-animals/rabbit.mp3" },
-  { stimulus_image: "images/images-animals/dog.jpg", stimulus_audio: "audio/audio-animals/dog.mp3" },
-  { stimulus_image: "images/images-animals/monkey.jpg", stimulus_audio: "audio/audio-animals/monkey.mp3" },
-  { stimulus_image: "images/images-animals/lion.jpg", stimulus_audio: "audio/audio-animals/lion.mp3" },
-  { stimulus_image: "images/images-animals/elephant.jpg", stimulus_audio: "audio/audio-animals/elephant.mp3" },
-  { stimulus_image: "images/images-animals/whale.jpg", stimulus_audio: "audio/audio-animals/whale.mp3" }
+  {
+    stimulus_image: "images/images-animals/mouse.jpg",
+    stimulus_audio: "audio/audio-animals/mouse.mp3",
+  },
+  {
+    stimulus_image: "images/images-animals/bird.jpg",
+    stimulus_audio: "audio/audio-animals/bird.mp3",
+  },
+  {
+    stimulus_image: "images/images-animals/rabbit.jpg",
+    stimulus_audio: "audio/audio-animals/rabbit.mp3",
+  },
+  {
+    stimulus_image: "images/images-animals/dog.jpg",
+    stimulus_audio: "audio/audio-animals/dog.mp3",
+  },
+  {
+    stimulus_image: "images/images-animals/monkey.jpg",
+    stimulus_audio: "audio/audio-animals/monkey.mp3",
+  },
+  {
+    stimulus_image: "images/images-animals/lion.jpg",
+    stimulus_audio: "audio/audio-animals/lion.mp3",
+  },
+  {
+    stimulus_image: "images/images-animals/elephant.jpg",
+    stimulus_audio: "audio/audio-animals/elephant.mp3",
+  },
+  {
+    stimulus_image: "images/images-animals/whale.jpg",
+    stimulus_audio: "audio/audio-animals/whale.mp3",
+  },
 ];
 
-const audioAbsPath = "/Users/cchang/Documents/GitHub/jspsych-timelines/packages/list-sorting-working-memory/src/list-sorting-working-memory-test/audio";
+const audioAbsPath =
+  "/Users/cchang/Documents/GitHub/jspsych-timelines/packages/list-sorting-working-memory/src/list-sorting-working-memory-test/audio";
 
-const imagesAbsPath = "/Users/cchang/Documents/GitHub/jspsych-timelines/packages/list-sorting-working-memory/src/list-sorting-working-memory-test/images";
+const imagesAbsPath =
+  "/Users/cchang/Documents/GitHub/jspsych-timelines/packages/list-sorting-working-memory/src/list-sorting-working-memory-test/images";
 
 const foodStimuli: Array<listSortingWorkingMemoryTestStimulusInfo> = [
-  { stimulus_image: `${imagesAbsPath}/images-food/bean.jpg`, stimulus_audio: `${audioAbsPath}/audio-food/bean.mp3` },
-  { stimulus_image: `${imagesAbsPath}/images-food/mushroom.jpg`, stimulus_audio: `${audioAbsPath}/audio-food/mushroom.mp3` },
-  { stimulus_image: `${imagesAbsPath}/images-food/grape.jpg`, stimulus_audio: `${audioAbsPath}/audio-food/grape.mp3` },
-  { stimulus_image: `${imagesAbsPath}/images-food/shrimp.jpg`, stimulus_audio: `${audioAbsPath}/audio-food/shrimp.mp3` },
-  { stimulus_image: `${imagesAbsPath}/images-food/apple.jpg`, stimulus_audio: `${audioAbsPath}/audio-food/apple.mp3` },
-  { stimulus_image: `${imagesAbsPath}/images-food/pizza.jpg`, stimulus_audio: `${audioAbsPath}/audio-food/pizza.mp3` },
-  { stimulus_image: `${imagesAbsPath}/images-food/turkey.jpg`, stimulus_audio: `${audioAbsPath}/audio-food/turkey.mp3` },
-  { stimulus_image: `${imagesAbsPath}/images-food/pumpkin.jpg`, stimulus_audio: `${audioAbsPath}/audio-food/pumpkin.mp3` },
+  {
+    stimulus_image: `${imagesAbsPath}/images-food/bean.jpg`,
+    stimulus_audio: `${audioAbsPath}/audio-food/bean.mp3`,
+  },
+  {
+    stimulus_image: `${imagesAbsPath}/images-food/mushroom.jpg`,
+    stimulus_audio: `${audioAbsPath}/audio-food/mushroom.mp3`,
+  },
+  {
+    stimulus_image: `${imagesAbsPath}/images-food/grape.jpg`,
+    stimulus_audio: `${audioAbsPath}/audio-food/grape.mp3`,
+  },
+  {
+    stimulus_image: `${imagesAbsPath}/images-food/shrimp.jpg`,
+    stimulus_audio: `${audioAbsPath}/audio-food/shrimp.mp3`,
+  },
+  {
+    stimulus_image: `${imagesAbsPath}/images-food/apple.jpg`,
+    stimulus_audio: `${audioAbsPath}/audio-food/apple.mp3`,
+  },
+  {
+    stimulus_image: `${imagesAbsPath}/images-food/pizza.jpg`,
+    stimulus_audio: `${audioAbsPath}/audio-food/pizza.mp3`,
+  },
+  {
+    stimulus_image: `${imagesAbsPath}/images-food/turkey.jpg`,
+    stimulus_audio: `${audioAbsPath}/audio-food/turkey.mp3`,
+  },
+  {
+    stimulus_image: `${imagesAbsPath}/images-food/pumpkin.jpg`,
+    stimulus_audio: `${audioAbsPath}/audio-food/pumpkin.mp3`,
+  },
 ];
 
 interface listSortingWorkingMemoryTestStimulusInfo {
@@ -38,7 +88,7 @@ function preloadAudio(audioFiles: Array<string>) {
   return {
     type: jsPsychPreload,
     audio: audioFiles,
-  }
+  };
 }
 
 // timeline units
@@ -125,7 +175,7 @@ function lswmTwoListSection(
 }
 
 // main function
-export default function listSortingWorkingMemoryTest(
+export function createTimeline(
   jsPsych: JsPsych,
   options: {
     in_person?: boolean;
@@ -148,9 +198,10 @@ export default function listSortingWorkingMemoryTest(
 
   return {
     timeline: [
-      preloadAudio( // Would you want to push this to subtimelines as well? Or just in createTimeline? -> NO
-        options.one_list_stimulus_set.map((stimulus) => stimulus.stimulus_audio)
-        .concat(options.two_list_stimulus_set.map((stimulus) => stimulus.stimulus_audio))
+      preloadAudio(
+        options.one_list_stimulus_set
+          .map((stimulus) => stimulus.stimulus_audio)
+          .concat(options.two_list_stimulus_set.map((stimulus) => stimulus.stimulus_audio))
       ),
       lswmOneListSection(jsPsych, undefined, options.one_list_stimulus_set),
       lswmTwoListSection(jsPsych, undefined, options.two_list_stimulus_set),
@@ -169,4 +220,4 @@ export const utils = {
   preloadAudio,
   animalStimuli,
   foodStimuli,
-}
+};
