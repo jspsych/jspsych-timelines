@@ -33,6 +33,7 @@
         "typescript": "^5.0.2"
     },
     "dependencies": {
-        "@jspsych/plugin-audio-keyboard-response": "^2.1.0"
+        "@jspsych/plugin-audio-keyboard-response": "^2.1.0",
+        "http-server": "^14.1.1"
     }
 }
