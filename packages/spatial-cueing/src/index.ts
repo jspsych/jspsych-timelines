@@ -164,29 +164,38 @@ function buildTrial(jsPsych: JsPsych) {
             placeCue(jsPsych), 
             placeTarget(jsPsych)
         ],
+        timelines_variables: [
+            { cueValidity: 1, targetSide: 1},
+            { cueValidity: -1, targetSide: 1},
+            { cueValidity: 2, targetSide: 1},
+            { cueValidity: 1, targetSide: -1},
+            { cueValidity: -1, targetSide: -1},
+            { cueValidity: 2, targetSide: -1},
+        ],
+        sample: {
+            type: "with-replacement", 
+            size: 2
+        }
     }
 }
 
-export function createTimeline(jsPsych: JsPsych) {
+export function createTimeline(jsPsych: JsPsych, options: options) {
     return {
         timeline: [buildTrial(jsPsych)],
-        timeline_variables: [
-            { cueType: "endo", cueValidity: 1, targetSide: 1},
-            { cueType: "endo", cueValidity: -1, targetSide: 1},
-            { cueType: "endo", cueValidity: 2, targetSide: 1},
-            { cueType: "endo", cueValidity: 1, targetSide: -1},
-            { cueType: "endo", cueValidity: -1, targetSide: -1},
-            { cueType: "endo", cueValidity: 2, targetSide: -1},
-            { cueType: "exo", cueValidity: 1, targetSide: 1},
-            { cueType: "exo", cueValidity: -1, targetSide: 1},
-            { cueType: "exo", cueValidity: 2, targetSide: 1},
-            { cueType: "exo", cueValidity: 1, targetSide: -1},
-            { cueType: "exo", cueValidity: -1, targetSide: -1},
-            { cueType: "exo", cueValidity: 2, targetSide: -1}
-        ],
+        timeline_variables: () => {
+            var variables = [];
+            return variables.concat(
+                options.exogenous ? [
+                    { cueType: "exo" },
+                ] : [],
+                options.endogenous ? [
+                    { cueType: "endo" },
+                ] : [],
+            )
+        },
         sample: {
             type: "with-replacement", // maybe try alternate-groups between endo and exo?
-            size: 10,
+            size: 5,
         }
     }
 }
