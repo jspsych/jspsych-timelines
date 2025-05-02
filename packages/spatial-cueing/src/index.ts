@@ -38,8 +38,9 @@ const defaultOptions: options = {
 const stimulus = {
     LeftBox: function(cueType, cueSide, targetSide) {
         if (cueType == "endo") {
+            console.log(cueSide);
             return `
-            <div class=${cueSide == -1 || 2 ? 
+            <div class=${cueSide == -1 ||Math.abs(cueSide) == 2 ? 
                 'jspsych-spatial-cueing-target-container-bold' : 
                 'jspsych-spatial-cueing-target-container'}>
                 <p class="target">${targetSide == -1 ?
@@ -81,8 +82,9 @@ const stimulus = {
     },
     RightBox: function(cueType, cueSide, targetSide) {
         if (cueType == "endo") {
+            console.log(cueSide);
             return `
-            <div class=${cueSide == 1 || 2 ? 
+            <div class=${cueSide == 1 || Math.abs(cueSide) == 2 ? 
                 'jspsych-spatial-cueing-target-container-bold' : 
                 'jspsych-spatial-cueing-target-container'}>
                 <p class="target">${targetSide == 1 ?
@@ -99,6 +101,35 @@ const stimulus = {
         }
     }
 }
+
+function buildVariables(options) {
+    const variables = [];
+    
+    var builtin = [
+        { cueValidity: 1, targetSide: 1 },
+        { cueValidity: -1, targetSide: 1 },
+        { cueValidity: 2, targetSide: 1 },
+        { cueValidity: 1, targetSide: -1 },
+        { cueValidity: -1, targetSide: -1 },
+        { cueValidity: 2, targetSide: -1 },
+    ];
+
+    if (options.exogenous) {
+        const cue = builtin.map((variable) => {
+            variable['cueType'] = "exo";
+        })
+        variables.push(...builtin);
+    }
+    if (options.endogenous) {
+        const cue = builtin.map((variable) => {
+            variable['cueType'] = "endo";
+        })
+        variables.push(...builtin);
+    }
+
+    console.log(variables) // get rid of this
+    return variables;
+} 
 
 function generateStimulus(cueType, cueSide, targetSide) {
     return `<div class="jspsych-spatial-cueing-container">`
@@ -128,10 +159,11 @@ function placeCue(jsPsych: JsPsych) {
       
       //ask Josh why evaluateTimelineVariable only works in arrow function, not when calling generateCue directly
       stimulus: () => {
-        var targetSide = jsPsych.evaluateTimelineVariable("targetSide");
         var cueType = jsPsych.evaluateTimelineVariable("cueType");
+        var targetSide = jsPsych.evaluateTimelineVariable("targetSide");
         var cueValidity = jsPsych.evaluateTimelineVariable("cueValidity");
         var cueSide = cueValidity * targetSide;
+        console.log(cueType, cueSide, targetSide) // get rid of this
 
         return generateStimulus(cueType, cueSide, 0)
       },
@@ -146,9 +178,9 @@ function placeTarget(jsPsych: JsPsych) {
       
       //ask Josh why evaluateTimelineVariable only works in arrow function, not when calling generateCue directly
       stimulus: () => {
-        var targetSide = jsPsych.evaluateTimelineVariable("targetSide");
         var cueType = jsPsych.evaluateTimelineVariable("cueType");
         var cueValidity = jsPsych.evaluateTimelineVariable("cueValidity");
+        var targetSide = jsPsych.evaluateTimelineVariable("targetSide");
         var cueSide = cueValidity * targetSide;
 
         return generateStimulus(cueType, cueSide, targetSide)
@@ -158,44 +190,26 @@ function placeTarget(jsPsych: JsPsych) {
 }
 
 function buildTrial(jsPsych: JsPsych) {
+
     return {
         timeline: [
             showBlank(jsPsych), 
             placeCue(jsPsych), 
             placeTarget(jsPsych)
-        ],
-        timelines_variables: [
-            { cueValidity: 1, targetSide: 1},
-            { cueValidity: -1, targetSide: 1},
-            { cueValidity: 2, targetSide: 1},
-            { cueValidity: 1, targetSide: -1},
-            { cueValidity: -1, targetSide: -1},
-            { cueValidity: 2, targetSide: -1},
-        ],
-        sample: {
-            type: "with-replacement", 
-            size: 2
-        }
+        ], // consider restructuring this entirely as a nested timeline, without the separate placeCue and placeTarget functions
     }
 }
 
-export function createTimeline(jsPsych: JsPsych, options: options) {
+export function createTimeline(
+        jsPsych: JsPsych, 
+        options: Partial<options> = defaultOptions
+    ) {
     return {
         timeline: [buildTrial(jsPsych)],
-        timeline_variables: () => {
-            var variables = [];
-            return variables.concat(
-                options.exogenous ? [
-                    { cueType: "exo" },
-                ] : [],
-                options.endogenous ? [
-                    { cueType: "endo" },
-                ] : [],
-            )
-        },
+        timeline_variables: buildVariables(options),
         sample: {
             type: "with-replacement", // maybe try alternate-groups between endo and exo?
-            size: 5,
+            size: 10,
         }
     }
 }
