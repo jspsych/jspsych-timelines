@@ -18,7 +18,7 @@
 
   const html_trial = {
     type: jsPsychHtmlKeyboardResponse,
-    stimulus: `<p>Press any key to begin.</p>`,
+    stimulus: `<img src="../assets/images/images-animals/mouse.png"/>`,
     choices: "ALL_KEYS",  
   }
 
@@ -33,7 +33,7 @@
 
 
 
-  jsPsych.run([html_trial, audio_trial, task])
+  jsPsych.run([task])
 </script>
 
 </html>
