@@ -4,6 +4,33 @@ import jsPsychPreload from "@jspsych/plugin-preload";
 import { JsPsych } from "jspsych";
 
 import { sesameSeedSvg } from "../assets/images/images-food/1-sesame_seed.js";
+import { peppercornSvg } from "../assets/images/images-food/2-peppercorn.js";
+import { cornSvg } from "../assets/images/images-food/3-corn.js";
+import { coffeeBeanSvg } from "../assets/images/images-food/4-coffee_bean.js";
+import { blueberrySvg } from "../assets/images/images-food/5-blueberry.js";
+import { raspberrySvg } from "../assets/images/images-food/6-raspberry.js";
+import { grapeSvg } from "../assets/images/images-food/7-grape.js";
+import { strawberrySvg } from "../assets/images/images-food/8-strawberry.js";
+import { mushroomSvg } from "../assets/images/images-food/9-mushroom.js";
+import { figSvg } from "../assets/images/images-food/10-fig.js";
+import { garlicSvg } from "../assets/images/images-food/11-garlic.js";
+import { eggSvg } from "../assets/images/images-food/12-egg.js";
+import { kiwiSvg } from "../assets/images/images-food/13-kiwi.js";
+import { apricotSvg } from "../assets/images/images-food/14-apricot.js";
+import { tomatoSvg } from "../assets/images/images-food/15-tomato.js";
+import { onionSvg } from "../assets/images/images-food/16-onion.js";
+import { orangeSvg } from "../assets/images/images-food/17-orange.js";
+import { appleSvg } from "../assets/images/images-food/18-apple.js";
+import { mangoSvg } from "../assets/images/images-food/19-mango.js";
+import { bellPepperSvg } from "../assets/images/images-food/20-bell_pepper.js";
+import { grapefruitSvg } from "../assets/images/images-food/21-grapefruit.js";
+import { cauliflowerSvg } from "../assets/images/images-food/22-cauliflower.js";
+import { coconutSvg } from "../assets/images/images-food/23-coconut.js";
+import { cabbageSvg } from "../assets/images/images-food/24-cabbage.js";
+import { cantaloupeSvg } from "../assets/images/images-food/25-cantaloupe.js";
+import { honeydewSvg } from "../assets/images/images-food/26-honeydew.js";
+import { watermelonSvg } from "../assets/images/images-food/27-watermelon.js";
+import { pumpkinSvg } from "../assets/images/images-food/28-pumpkin.js";
 
 // Constants
 const animalStimuli: Array<listSortingWorkingMemoryTestStimulusInfo> = [
@@ -85,8 +112,7 @@ function imageTrial(jsPsych, image) {
   return {
     type: jsPsychHtmlKeyboardResponse,
     stimulus: image,
-    choices: "NO_KEYS",
-    trial_duration: 2000,
+    choices: ['f'],
   };
 }
 
@@ -198,7 +224,34 @@ export function createTimeline(
   for (let i = 0; i < options.dimensions_sequence.length; i++) {
     const dimension = options.dimensions_sequence[i];
     timeline.push(
-      imageTrial(jsPsych, sesameSeedSvg)
+      imageTrial(jsPsych, sesameSeedSvg),
+      imageTrial(jsPsych, peppercornSvg),
+      imageTrial(jsPsych, cornSvg),
+      imageTrial(jsPsych, coffeeBeanSvg),
+      imageTrial(jsPsych, blueberrySvg),
+      imageTrial(jsPsych, raspberrySvg),
+      imageTrial(jsPsych, grapeSvg),
+      imageTrial(jsPsych, strawberrySvg),
+      imageTrial(jsPsych, mushroomSvg),
+      imageTrial(jsPsych, figSvg),
+      imageTrial(jsPsych, garlicSvg),
+      imageTrial(jsPsych, eggSvg),
+      imageTrial(jsPsych, kiwiSvg),
+      imageTrial(jsPsych, apricotSvg),
+      imageTrial(jsPsych, tomatoSvg),
+      imageTrial(jsPsych, onionSvg),
+      imageTrial(jsPsych, orangeSvg),
+      imageTrial(jsPsych, appleSvg),
+      imageTrial(jsPsych, mangoSvg),
+      imageTrial(jsPsych, bellPepperSvg),
+      imageTrial(jsPsych, grapefruitSvg),
+      imageTrial(jsPsych, cauliflowerSvg),
+      imageTrial(jsPsych, coconutSvg),
+      imageTrial(jsPsych, cabbageSvg),
+      imageTrial(jsPsych, cantaloupeSvg),
+      imageTrial(jsPsych, honeydewSvg),
+      imageTrial(jsPsych, watermelonSvg),
+      imageTrial(jsPsych, pumpkinSvg),
       // lswmSection(jsPsych, {
       //   // Assume stimulus_set[0] is always first dimension, stimulus_set[1] is second dimension, etc.
       //   stimulus_set: options.stimulus_set.toSpliced(
