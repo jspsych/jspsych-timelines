@@ -1,4 +1,5 @@
 {
+  "name": "@jspsych/jspsych-timelines",
   "private": true,
   "type": "module",
   "workspaces": [
