@@ -1,0 +1,39 @@
+{
+    "name": "spatial-nback-task",
+    "version": "0.0.1",
+    "description": "Deployable spatial nback timeline",
+    "type": "module",
+    "main": "dist/index.mjs",
+    "types": "dist/index.d.ts",
+    "unpkg": "dist/index.browser.min.js",
+    "scripts": {
+        "build": "tsup src/index.ts --format esm,iife --sourcemap --dts --treeshake --clean --global-name jsPsychTimelineSpatialNbackTask"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/ahfarhat/JsPsychTemplates/",
+        "directory": ""
+    },
+    "keywords": [
+        "jsPsych"
+    ],
+    "author": {
+        "name": "Hunter Farhat",
+        "url": "'use strict';https://github.com/ahfarhat"
+    },
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/ahfarhat/JsPsychTemplates//issues"
+    },
+    "homepage": "/spatial-nback-task/README.md",
+    "devDependencies": {
+        "@jspsych/config": "^3.2.2",
+        "jspsych": "^8.2.1",
+        "tsup": "^6.7.0",
+        "typescript": "^5.0.2"
+    },
+    "dependencies": {
+        "@jspsych/plugin-html-keyboard-response": "^2.1.0",
+        "jsPsych": "npm:jspsych@^8.2.1"
+    }
+}
