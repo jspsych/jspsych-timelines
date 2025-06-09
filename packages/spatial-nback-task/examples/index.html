@@ -13,19 +13,22 @@
 <body></body>
 <script>
   const jsPsych = initJsPsych({
-    show_progress_bar: false,
+    //progress_bar for whole timeline
+    show_progress_bar: true,
     auto_update_progress_bar: true,
     on_finish: function () {
       jsPsych.data.displayData();
     }
   });
 
+  const instructions_template = jsPsychTimelineSpatialNbackTask.utils.task_instructions;
+
   // Create a custom timeline
-  const customTimeline = jsPsychTimelineSpatialNbackTask.createSpatialNBackTimeline({
+  const spatial1Back = jsPsychTimelineSpatialNbackTask.createSpatialNBackTimeline({
     rows: 3,
     cols: 3,
     n_back_level: 1,
-    total_trials: 10,
+    total_trials: 2,
     target_percentage: 50,
     stimulus_duration: 750,
     isi_duration: 250,
@@ -53,7 +56,7 @@
   //     trials_per_level: 20
   // });
 
-  jsPsych.run([customTimeline]);
+  jsPsych.run([instructions_template, spatial1Back]);
 </script>
 
 </html>
