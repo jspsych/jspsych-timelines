@@ -1,27 +1,20 @@
 import { initJsPsych, JsPsych } from "jspsych"
 import jsPsychPluginSpatialNbackTs from "@jspsych/plugin-spatial-nback-ts";
 import jsPsychHtmlKeyboardResponse from "@jspsych/plugin-html-keyboard-response";
+import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
 
 const task_instructions = {
-    type: jsPsychHtmlKeyboardResponse,
-    response_ends_trial: true,
-    on_load: function() {
-        document.body.addEventListener('pointerdown', function endTrialOnClick() {
-            // @ts-ignore - jsPsych is available in the global scope during trial execution
-            jsPsych.finishTrial();
-            document.body.removeEventListener('pointerdown', endTrialOnClick);
-        });
-    },
+    type: jsPsychHtmlButtonResponse,
     stimulus: `
         <div style="text-align: center; font-size: clamp(16px, 4vw, 20px); line-height: 1.5; padding: 10px; max-width: 90vw; margin: 0 auto;">
             <h2 style="font-size: clamp(20px, 5vw, 28px); margin-bottom: 20px;">Spatial N-Back Task</h2>
             <p style="margin-bottom: 15px;">In this task, you will see a grid with blue squares appearing in different positions.</p>
             <p style="margin-bottom: 15px;">Your job is to click the MATCH button whenever the current position is the same as the position from <strong>1 trial ago</strong>.</p>
             <p style="margin-bottom: 15px;">Try to respond as quickly and accurately as possible.</p>
-            <p style="font-weight: bold; color: #2196F3;">Press any key or tap anywhere to begin the task.</p>
+            <p style="font-weight: bold; color: #2196F3;">Click the button below to begin the task.</p>
         </div>
     `,
-    choices: "ALL_KEYS"
+    choices: ['Continue'],
 };
 
 // Generate stimulus sequence for n-back task
