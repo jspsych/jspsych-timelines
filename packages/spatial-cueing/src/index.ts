@@ -1,377 +1,227 @@
+import jsPsychHtmlKeyboardResponse from "@jspsych/plugin-html-keyboard-response";
 import { JsPsych } from "jspsych";
-import jsPsychHtmlKeyboardResponse from '@jspsych/plugin-html-keyboard-response'
 
-/* internal constants */
-const KEYPRESS_TO_NEXT_SLIDE: String = 'Press <span style="color: red"><strong>any key</strong></span> to move to the next slide.';
-
-enum StimulusBox {
-    Default = `<div class="jspsych-spatial-cueing-target-container"><p class="target"></p></div>`,
-    Highlighted = `<div class="jspsych-spatial-cueing-target-container-bold"><p class="target"></p></div>`,
-    WithStimulus = `<div class="jspsych-spatial-cueing-target-container-stimulus"><p class="target">X</p></div>`,
-    WithStimulusHighlighted = `<div class="jspsych-spatial-cueing-target-container-bold"><p class="target">X</p></div>`
-};
-
-enum FixationBox {
-    NoCue = `<div class="jspsych-spatial-cueing-fixation-container"><p>&nbsp</p><p class="fixation">+</p><p>&nbsp</p></div>`,
-    LeftCue = `<div class="jspsych-spatial-cueing-fixation-container"><p>←</p><p class="fixation">+</p><p>&nbsp</p></div>`,
-    RightCue = `<div class="jspsych-spatial-cueing-fixation-container"><p>→</p><p class="fixation">+</p><p>&nbsp</p></div>`,
-    BiCue = `<div class="jspsych-spatial-cueing-fixation-container"><p>↔︎</p><p class="fixation">+</p><p>&nbsp</p></div>`,
-};
-
-enum Direction {
-    Left = -1,
-    Right = 1,
-    Bi = 2,
-    None = 0
-};
-
-enum Validity {
-    Valid = 1,
-    Invalid = -1,
-    Neutral = 0,
-    None = -2,
-};
-
-const ALL_TEST_COMBOS = [
-    {
-        validity: Validity.Valid,
-        stimulus_direction: Direction.Left,
-    },
-    {
-        validity: Validity.Valid,
-        stimulus_direction: Direction.Right,
-    },
-    {
-        validity: Validity.Invalid,
-        stimulus_direction: Direction.Left,
-    },
-    {
-        validity: Validity.Invalid,
-        stimulus_direction: Direction.Right,
-    },
-    {
-        validity: Validity.Neutral,
-        stimulus_direction: Direction.Left,
-    },
-    {
-        validity: Validity.Neutral,
-        stimulus_direction: Direction.Right,
+interface options {
+    exogenous: boolean;
+    endogenous: boolean;
+    validityWeights: number[];
+    cueHTML: {
+        endogenous: {
+            left: string;
+            right: string;
+        };
+        exogenous: {
+            left: string;
+            right: string;
+            both: string;
+        };
     }
-];
-
-// function that generate start instructions
-function showStartInstruction(endogenous_cue: boolean, blank_period: number, cue_period: number) {
-    const start_instruction = {
-        type: jsPsychHtmlKeyboardResponse,
-        stimulus: () => {
-            return (
-                `<div class="jspsych-spatial-cueing-instruction"><h3>This is a demo of the Posner spatial cueing task</h3>` +
-                `<p>In each trial, you will see a fixation cross in the center and two empty boxes on the left and right of the cross.\n` +
-                (endogenous_cue
-                    ? `After ` +
-                      blank_period +
-                      `seconds, you will see an arrow pointing left, right or both directions appear on top of the fixation cross.\n`
-                    : `After ` +
-                      blank_period +
-                      `seconds, you will see either the left, right or both boxes darken slightly.\n`) +
-                `Then after ` +
-                cue_period +
-                `seconds, you will see a black 'X' appear in either one of the boxes.\n` +
-                (endogenous_cue
-                    ? `Most of the time, the location of the 'X' matches the direction the arrow is pointing at.\n` +
-                      `However, sometimes they do not match. For example, sometimes the arrow points to both directions,` +
-                      `but the 'X' can only be in one box. Another example would be if the arrow points left, but the 'X' is in the right box.\n`
-                    : `Most of the time, the 'X' appears in the darkened box.\n` +
-                      `However, sometimes it may appear in the other, non-darkened box.`) +
-                `Your task is to respond as quickly as possible when you see the 'X'. If it appears in the left box, press 'f' on your keyboard. If it appears in the right box, press 'j'.</p>` +
-                KEYPRESS_TO_NEXT_SLIDE + `</div>`
-            );
-        },
-    };
-
-    return start_instruction;
-};
-
-// function that generate end instruction
-function showEndInstruction() {
-    const end_instruction = {
-        type: jsPsychHtmlKeyboardResponse,
-        stimulus: `<div class="jspsych-spatial-cueing-instruction">
-        <h3>That is the end of the demo.</h3>
-        <p>Thank you for participating!</p></div>
-    `,
-    };
-
-    return end_instruction;
 }
 
-// function that generate blank template
-function makeDefaultTemplate(blank_period: number) {
-    const stimulus = `<div class="jspsych-spatial-cueing-container">` + StimulusBox.Default + FixationBox.NoCue + StimulusBox.Default + '</div>';
-    const default_template = {
-        type: jsPsychHtmlKeyboardResponse,
-        stimulus: stimulus,
-        trial_duration: blank_period,
-        choices: "NO_KEYS"
-    };
-
-    return default_template;
-};
-
-// function that generate endogenous cue
-function makeEndogenousCue(jsPsych: JsPsych, cue_period: number) {
-    const endogenous_cue = {
-        type: jsPsychHtmlKeyboardResponse,
-        stimulus: () => {
-            const validity = jsPsych.evaluateTimelineVariable("validity");
-            const stimulus_direction = jsPsych.evaluateTimelineVariable("stimulus_direction");
-            const cue_direction = cueDirectionMapper(validity, stimulus_direction);
-
-            var stimulus = `<div class="jspsych-spatial-cueing-container">` + StimulusBox.Default;
-            switch (cue_direction) {
-                case Direction.Left:
-                    stimulus += FixationBox.LeftCue;
-                    break;
-                case Direction.Right:
-                    stimulus += FixationBox.RightCue;
-                    break;
-                case Direction.Bi:
-                    stimulus += FixationBox.BiCue;
-                    break;
-                default:
-                    stimulus += FixationBox.NoCue;
-            };
-            stimulus += StimulusBox.Default + `</div>`;
-
-            return stimulus;
+const defaultOptions: options = {
+    exogenous: false,
+    endogenous: true,
+    validityWeights: [1, 1, 1],
+    cueHTML: {
+        endogenous: {
+            left: 'jspsych-spatial-cueing-target-container',
+            right: 'jspsych-spatial-cueing-target-container'
         },
-        trial_duration: cue_period,
-        choices: "NO_KEYS"
-    };
-
-    return endogenous_cue;
-};
-
-// function that generate exogenous cue
-function makeExogenousCue(jsPsych: JsPsych, cue_period: number) {
-    const exogenous_cue = {
-        type: jsPsychHtmlKeyboardResponse,
-        stimulus: () => {
-            const validity = jsPsych.evaluateTimelineVariable("validity");
-            const stimulus_direction = jsPsych.evaluateTimelineVariable("stimulus_direction");
-            const cue_direction = cueDirectionMapper(validity, stimulus_direction);
-
-            var stimulus = `<div class="jspsych-spatial-cueing-container">`
-                + (cue_direction == Direction.Left || cue_direction == Direction.Bi ? StimulusBox.Highlighted : StimulusBox.Default)
-                + FixationBox.NoCue
-                + (cue_direction == Direction.Right || cue_direction == Direction.Bi ? StimulusBox.Highlighted : StimulusBox.Default)
-                + `</div>`;
-            
-            return stimulus;
-        },
-        trial_duration: cue_period,
-        choices: "NO_KEYS"
-    };
-
-    return exogenous_cue;
-};
-
-// function that call the cue maker based on endogenous vs exogenous
-function makeCue(jsPsych: JsPsych, endogenous_cue: boolean, cue_period: number) {
-    return endogenous_cue ? makeEndogenousCue(jsPsych, cue_period) : makeExogenousCue(jsPsych, cue_period);
-};
-
-// function that generate exogenous stimulus
-function makeExogenousStimulus(jsPsych: JsPsych) {
-    const exogenous_stimulus = {
-        type: jsPsychHtmlKeyboardResponse,
-        stimulus: () => {
-            const validity = jsPsych.evaluateTimelineVariable("validity");
-            const stimulus_direction = jsPsych.evaluateTimelineVariable("stimulus_direction");
-            const cue_direction = cueDirectionMapper(validity, stimulus_direction);
-
-            var stimulus = `<div class="jspsych-spatial-cueing-container">`;
-            if (cue_direction == Direction.Left || cue_direction == Direction.Bi) {
-                stimulus += jsPsych.evaluateTimelineVariable("stimulus_direction") == Direction.Left ? StimulusBox.WithStimulusHighlighted : StimulusBox.Highlighted;
-            }
-            else if (jsPsych.evaluateTimelineVariable("stimulus_direction") == Direction.Left) {
-                stimulus += StimulusBox.WithStimulus;
-            }
-            else {
-                stimulus += StimulusBox.Default;
-            }
-
-            stimulus += FixationBox.NoCue;
-
-            if (cue_direction == Direction.Right || cue_direction == Direction.Bi) {
-                stimulus += jsPsych.evaluateTimelineVariable("stimulus_direction") == Direction.Right ? StimulusBox.WithStimulusHighlighted : StimulusBox.Highlighted;
-            }
-            else if (jsPsych.evaluateTimelineVariable("stimulus_direction") == Direction.Right) {
-                stimulus += StimulusBox.WithStimulus;
-            }
-            else {
-                stimulus += StimulusBox.Default;
-            }
-
-            stimulus += `</div>`;
-
-            return stimulus;
-        },
-        choices: ['f', 'j'],
-        data: {
-            task: "stimulus",
-            cue_type: "exogenous",
-            correct_response: () => {
-                return jsPsych.evaluateTimelineVariable("stimulus_direction") == Direction.Left ? 'f' : 'j';
-            }
-        },
-        on_finish: function (data: any) {
-            data.correct = jsPsych.pluginAPI.compareKeys(
-                data.response,
-                data.correct_response
-            );
+        exogenous: {
+            left: '←',
+            right: '→',
+            both: '↔︎'
         }
-    };
+    }
+}
 
-    return exogenous_stimulus;
-};
-
-// function that generate endogenous stimulus
-function makeEndogenousStimulus(jsPsych: JsPsych) {
-    const endogenous_stimulus = {
-        type: jsPsychHtmlKeyboardResponse,
-        stimulus: () => {
-            const validity = jsPsych.evaluateTimelineVariable("validity");
-            const stimulus_direction = jsPsych.evaluateTimelineVariable("stimulus_direction");
-            const cue_direction = cueDirectionMapper(validity, stimulus_direction);
-
-            var stimulus = `<div class="jspsych-spatial-cueing-container">` + (jsPsych.evaluateTimelineVariable("stimulus_direction") == Direction.Left ? StimulusBox.WithStimulus : StimulusBox.Default);    
-            switch (cue_direction) {
-                case Direction.Left:
-                    stimulus += FixationBox.LeftCue;
-                    break;
-                case Direction.Right:
-                    stimulus += FixationBox.RightCue;
-                    break;
-                case Direction.Bi:
-                    stimulus += FixationBox.BiCue;
-                    break;
-                default:
-                    stimulus += FixationBox.NoCue;
-                    break;
-            };
-
-            stimulus += (jsPsych.evaluateTimelineVariable("stimulus_direction") == Direction.Right ? StimulusBox.WithStimulus : StimulusBox.Default) + `</div>`;
-            
-            return stimulus;
-        },
-        choices: ['f', 'j'],
-        data: {
-            task: "stimulus",
-            cue_type: "endogenous",
-            correct_response: () => {
-                return jsPsych.evaluateTimelineVariable("stimulus_direction") == Direction.Left ? 'f' : 'j';
-            }
-        },
-        on_finish: function (data: any) {
-            data.correct = jsPsych.pluginAPI.compareKeys(
-                data.response,
-                data.correct_response
-            );
+const stimulus = {
+    LeftBox: function(cueType, cueSide, targetSide) {
+        if (cueType == "endo") {
+            console.log(cueSide);
+            return `
+            <div class=${cueSide == -1 ||Math.abs(cueSide) == 2 ? 
+                'jspsych-spatial-cueing-target-container-bold' : 
+                'jspsych-spatial-cueing-target-container'}>
+                <p class="target">${targetSide == -1 ?
+                    'X' :
+                    '&nbsp'}</p>
+            </div>`
+        } else {
+            return `
+            <div class='jspsych-spatial-cueing-target-container'>
+                <p class="target">${targetSide == -1 ?
+                    'X' :
+                    '&nbsp'}</p>
+            </div>`
         }
-    };
+    },
+    Fixation: function(cueType, cueSide) {
+        if (cueType == "exo") {
+            // this could be consolidated into an options argument for users
+            const cueMap = new Map([
+                [-1, "←"],
+                [1, "→"],
+                [2, "↔︎"],
+                [-2, "↔︎"]
+            ]);
+            return `
+            <div class="jspsych-spatial-cueing-fixation-container">
+                <p>${cueMap.get(cueSide)}</p>
+                <p class="fixation">+</p>
+                <p>&nbsp</p>
+            </div>`
+        } else {
+        return `
+        <div class="jspsych-spatial-cueing-fixation-container">
+            <p>&nbsp</p>
+            <p class="fixation">+</p>
+            <p>&nbsp</p>
+        </div>`
+        }
+    },
+    RightBox: function(cueType, cueSide, targetSide) {
+        if (cueType == "endo") {
+            console.log(cueSide);
+            return `
+            <div class=${cueSide == 1 || Math.abs(cueSide) == 2 ? 
+                'jspsych-spatial-cueing-target-container-bold' : 
+                'jspsych-spatial-cueing-target-container'}>
+                <p class="target">${targetSide == 1 ?
+                    'X' :
+                    '&nbsp'}</p>
+            </div>`
+        } else {
+            return `
+            <div class='jspsych-spatial-cueing-target-container'>
+                <p class="target">${targetSide == 1 ?
+                    'X' :
+                    '&nbsp'}</p>
+            </div>`
+        }
+    }
+}
 
-    return endogenous_stimulus;
-};
+function buildVariables(options) {
+    const variables = [];
+    
+    var builtin = [
+        { cueValidity: 1, targetSide: 1 },
+        { cueValidity: -1, targetSide: 1 },
+        { cueValidity: 2, targetSide: 1 },
+        { cueValidity: 1, targetSide: -1 },
+        { cueValidity: -1, targetSide: -1 },
+        { cueValidity: 2, targetSide: -1 },
+    ];
 
-// function to map stimulus direction to cue direction based on cue validity
-function cueDirectionMapper(validity: Validity, stimulus_direction: Direction) {
-    switch (validity) {
-        case Validity.Valid:
-            return stimulus_direction;
-        case Validity.Invalid:
-            return stimulus_direction * -1;
-        case Validity.Neutral:
-            return Direction.Bi;
-        case Validity.None:
-            return Direction.None;
-        default:
-            return Direction.None;
-    };
-};
+    if (options.exogenous) {
+        const cue = builtin.map((variable) => {
+            variable['cueType'] = "exo";
+        })
+        variables.push(...builtin);
+    }
+    if (options.endogenous) {
+        const cue = builtin.map((variable) => {
+            variable['cueType'] = "endo";
+        })
+        variables.push(...builtin);
+    }
 
-// function that call the stimulus maker based on endogenous vs exogenous
-function makeStimulus(jsPsych: JsPsych, endogenous_cue: boolean) {
-    return endogenous_cue ? makeEndogenousStimulus(jsPsych) : makeExogenousStimulus(jsPsych);
-};
+    console.log(variables) // get rid of this
+    return variables;
+} 
 
+function generateStimulus(cueType, cueSide, targetSide) {
+    return `<div class="jspsych-spatial-cueing-container">`
+    + stimulus.LeftBox(cueType, cueSide, targetSide) 
+    + stimulus.Fixation(cueType, cueSide) 
+    + stimulus.RightBox(cueType, cueSide, targetSide)
+    + `</div>`;
+    
+}
 
-// make a trial consisting of blank, cue and stimulus
-function createTrialTimeline(jsPsych: JsPsych, endogenous_cue: boolean, blank_period: number, cue_period: number) {
-    const single_trial_timeline = {
+function showBlank(jsPsych: JsPsych) {
+    return {
+      type: jsPsychHtmlKeyboardResponse,
+      
+      //ask Josh why evaluateTimelineVariable only works in arrow function, not when calling generateCue directly
+      stimulus: () => {
+        return generateStimulus(0, 0, 0)
+      },
+      choices: "NO_KEYS",
+      trial_duration: 1000,
+    }
+}
+
+function placeCue(jsPsych: JsPsych) {
+    return {
+      type: jsPsychHtmlKeyboardResponse,
+      
+      //ask Josh why evaluateTimelineVariable only works in arrow function, not when calling generateCue directly
+      stimulus: () => {
+        var cueType = jsPsych.evaluateTimelineVariable("cueType");
+        var targetSide = jsPsych.evaluateTimelineVariable("targetSide");
+        var cueValidity = jsPsych.evaluateTimelineVariable("cueValidity");
+        var cueSide = cueValidity * targetSide;
+        console.log(cueType, cueSide, targetSide) // get rid of this
+
+        return generateStimulus(cueType, cueSide, 0)
+      },
+      choices: "NO_KEYS",
+      trial_duration: jsPsych.randomization.sampleWithReplacement([500, 750, 1000, 1250], 1),
+    }
+}
+
+function placeTarget(jsPsych: JsPsych) {
+    return {
+      type: jsPsychHtmlKeyboardResponse,
+      
+      //ask Josh why evaluateTimelineVariable only works in arrow function, not when calling generateCue directly
+      stimulus: () => {
+        var cueType = jsPsych.evaluateTimelineVariable("cueType");
+        var cueValidity = jsPsych.evaluateTimelineVariable("cueValidity");
+        var targetSide = jsPsych.evaluateTimelineVariable("targetSide");
+        var cueSide = cueValidity * targetSide;
+
+        return generateStimulus(cueType, cueSide, targetSide)
+      },
+      choices: ["f", "j"]
+    }
+}
+
+function buildTrial(jsPsych: JsPsych) {
+
+    return {
         timeline: [
-            makeDefaultTemplate(blank_period),
-            makeCue(jsPsych, endogenous_cue, cue_period),
-            makeStimulus(jsPsych, endogenous_cue)
-        ]
-    };
+            showBlank(jsPsych), 
+            placeCue(jsPsych), 
+            placeTarget(jsPsych)
+        ], // consider restructuring this entirely as a nested timeline, without the separate placeCue and placeTarget functions
+    }
+}
 
-    return single_trial_timeline;
-};
-
-// generate a Posner spatial cueing task timeline
 export function createTimeline(
-    jsPsych: JsPsych, {
-        endogenous_cue = false,
-        blank_period = 2000,
-        cue_period = 2000,
-        num_trials = 60,        // must be divisible by 6
-        valid_proportion = 0.8
-    }: {
-        endogenous_cue?: boolean,
-        blank_period?: number,
-        cue_period?: number,
-        num_trials?: number,
-        valid_proportion?: number
-        } = {})
-    {
-        jsPsych = jsPsych;
-        const num_each_valid_trial_type = num_trials * valid_proportion / 2;
-        const num_each_invalid_trial_type = (num_trials - (num_each_valid_trial_type * 2)) / 4;
-        var weights: number[] = [
-            num_each_valid_trial_type, num_each_valid_trial_type,
-            num_each_invalid_trial_type, num_each_invalid_trial_type,
-            num_each_invalid_trial_type, num_each_invalid_trial_type
-        ];
-
-        const spatial_cueing_timeline = {
-            timeline: [
-                createTrialTimeline(jsPsych, endogenous_cue, blank_period, cue_period),
-            ],
-            timeline_variables: ALL_TEST_COMBOS,
-            sample: {
-                type: "with-replacement",
-                size: num_trials,
-                weights: weights
-            }
-        };
-
-        return spatial_cueing_timeline;
-};
+        jsPsych: JsPsych, 
+        options: Partial<options> = defaultOptions
+    ) {
+    return {
+        timeline: [buildTrial(jsPsych)],
+        timeline_variables: buildVariables(options),
+        sample: {
+            type: "with-replacement", // maybe try alternate-groups between endo and exo?
+            size: 10,
+        }
+    }
+}
 
 export const timelineUnits = {
-    createTrialTimeline
-};
+    buildTrial,
+
+}
 
 export const utils = {
-    showStartInstruction,
-    showEndInstruction,
-    makeDefaultTemplate,
-    cueDirectionMapper,
-    makeEndogenousCue,
-    makeExogenousCue,
-    makeCue,
-    makeExogenousStimulus,
-    makeEndogenousStimulus,
-    makeStimulus
+    generateStimulus,
+    showBlank,
+    placeCue,
+    placeTarget,
 }
