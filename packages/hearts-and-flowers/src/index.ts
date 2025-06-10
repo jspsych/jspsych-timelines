@@ -7,20 +7,31 @@ import { flowerIconSvg } from "../assets/flower-icon.js";
 import { heartIconSvg } from "../assets/heart-icon.js";
 
 // Constants
-interface IStimulusInfo {
-  same: {
-    stimulus_name: string;
-    stimulus_src: string;
-    target_side: "same";
-  };
-  opposite: {
-    stimulus_name: string;
-    stimulus_src: string;
-    target_side: "opposite";
-  };
+/**
+ * Interface for the stimulus information object that describes the name and source of the stimulus for both target sides.
+ */
+export interface StimulusInfo {
+  /**
+   * The stimulus information object for the same target side.
+   * @defaultValue { stimulus_name: "heart", stimulus_src: heartIconSvg, target_side: "same" }
+   */
+  same: SameStimulusInfo & { target_side: "same" };
+  /**
+   * The stimulus information object for the opposite target side.
+   * @defaultValue { stimulus_name: "flower", stimulus_src: flowerIconSvg, target_side: "opposite" }
+   */
+  opposite: SameStimulusInfo & { target_side: "opposite" };
 }
 
-const DEFAULT_STIMULUS_INFO_OBJECT: IStimulusInfo = {
+export interface SameStimulusInfo {
+  stimulus_name: string;
+  stimulus_src: string;
+}
+
+/**
+ * The default stimulus information object that describes the name and source of the stimulus for both target sides.
+ */
+const DEFAULT_STIMULUS_INFO_OBJECT: StimulusInfo = {
   same: {
     stimulus_name: "heart",
     stimulus_src: heartIconSvg,
@@ -36,26 +47,25 @@ const DEFAULT_STIMULUS_INFO_OBJECT: IStimulusInfo = {
 // utils
 /**
  * Generates the stimulus HTML for a given trial.
- * 
- * @param {"same" | "opposite"} targetSide - The side of the target stimulus [same|opposite].
- * @param {"left" | "right"} stimulusSide - The side of the stimulus to be displayed [left|right].
- * @param {object} stimulusInfo - The stimulus information object that describes the name
- * of the stimulus and its source.
- * @param {boolean} instruction - Whether to include instruction text teaching participants
- * how to respond or not.
+ *
+ * @param {"same" | "opposite"} targetSide - The side of the target stimulus [same\|opposite].
+ * @param {"left" | "right"} stimulusSide - The side of the stimulus to be displayed [left\|right].
+ * @param {StimulusInfo} stimulusInfo - The stimulus information object that describes the name and source of the stimulus.
+ * @param {boolean} [instruction=false] - Whether to include instruction text teaching participants how to respond.
  * @returns {string} HTML string representing the stimulus.
  */
 function generateStimulus(
-  targetSide: keyof IStimulusInfo,
+  targetSide: "same" | "opposite",
   stimulusSide: "left" | "right",
-  stimulusInfo: IStimulusInfo,
+  stimulusInfo: StimulusInfo,
   instruction: boolean = false
 ) {
   return `
     <div class="jspsych-hearts-and-flowers-instruction">
       ${
         instruction
-          ? `<h3>When you see a ${stimulusInfo[targetSide].stimulus_name}, press the button on the ${targetSide} side.</h3>`
+          ? `<h3>When you see a ${stimulusInfo[targetSide].stimulus_name}, press
+          the button on the ${targetSide} side.</h3>`
           : ""
       }
       </div>
@@ -72,12 +82,12 @@ function generateStimulus(
 
 /**
  * Computes the correct response index.
- * 
- * @param {"same" | "opposite"} targetSide - The side of the target stimulus [same|opposite].
- * @param {"left" | "right"} stimulusSide - The side of the stimulus to be displayed [left|right].
- * @returns {number} The correct response index.
+ *
+ * @param {"same" | "opposite"} targetSide - The side of the target stimulus [same\|opposite].
+ * @param {"left" | "right"} stimulusSide - The side of the stimulus to be displayed [left\|right].
+ * @returns {"left" | "right"} The correct response index.
  */
-function getCorrectResponse(targetSide: keyof IStimulusInfo, stimulusSide: "left" | "right") {
+function getCorrectResponse(targetSide: "same" | "opposite", stimulusSide: "left" | "right") {
   return targetSide === "same"
     ? stimulusSide === "left"
       ? "left"
@@ -87,12 +97,12 @@ function getCorrectResponse(targetSide: keyof IStimulusInfo, stimulusSide: "left
     : "left";
 }
 
+// trials
 /**
  * Trial that announces the demo game type.
- * 
+ *
  * @param {string} stimulusName - The name of the stimulus to be demoed.
- * @returns {object} jsPsychHtmlButtonResponse object displaying the name of the stimulus
- * to be demoed.
+ * @returns {jsPsychHtmlButtonResponse} Plugin object displaying the name of the stimulus to be demoed.
  */
 function createGametypeTrial(stimulusName: string) {
   return {
@@ -104,19 +114,15 @@ function createGametypeTrial(stimulusName: string) {
   };
 }
 
-// trials
 /**
  * Trial that shows the stimulus and collects the response.
- * 
- * @param {object} jsPsych - The jsPsych object that runs the experiment.
- * @param {object} stimulusInfo - The stimulus information object that describes the name
- * of the stimulus and its source.
- * @param {boolean} instruction - Whether to include instruction text teaching participants
- * how to respond or not.
- * @returns {object} jsPsychHtmlButtonResponse object displaying the stimulus and collecting
- * the response.
+ *
+ * @param {JsPsych} jsPsych - The jsPsych object that runs the experiment.
+ * @param {StimulusInfo} stimulusInfo - The stimulus information object that describes the name of the stimulus and its source.
+ * @param {boolean} instruction - Whether to include instruction text teaching participants how to respond or not.
+ * @returns {jsPsychHtmlButtonResponse} Plugin object displaying the stimulus and collecting the response.
  */
-function createTrial(jsPsych: JsPsych, stimulusInfo: IStimulusInfo, instruction: boolean = false) {
+function createTrial(jsPsych: JsPsych, stimulusInfo: StimulusInfo, instruction: boolean = false) {
   return {
     type: jsPsychHtmlButtonResponse,
     stimulus: () => {
@@ -148,15 +154,14 @@ function createTrial(jsPsych: JsPsych, stimulusInfo: IStimulusInfo, instruction:
 
 /**
  * Trial that shows feedback after each demo trial.
- * 
- * @param {object} jsPsych - The jsPsych object that runs the experiment.
- * @returns {object} jsPsychHtmlKeyboardResponse object displaying feedback after each
- * demo trial that depends on whether the participant answered correctly.
- * 
+ *
+ * @param {JsPsych} jsPsych - The jsPsych object that runs the experiment.
+ * @returns {jsPsychHtmlKeyboardResponse} jsPsychHtmlKeyboardResponse object displaying feedback after each demo trial that depends on whether the participant answered correctly.
+ *
  */
 function createFeedbackTrial(jsPsych: JsPsych) {
   return {
-    type: jsPsychHtmlKeyboardResponse,
+    plugin: jsPsychHtmlKeyboardResponse,
     stimulus: () => {
       return `<div class="jspsych-hearts-and-flowers-instruction">
         <h3>${
@@ -174,10 +179,10 @@ function createFeedbackTrial(jsPsych: JsPsych) {
 
 /**
  * Trial that shows a fixation cross.
- * 
- * @param {object} jsPsych - The jsPsych object that runs the experiment.
- * @returns {object} jsPsychHtmlKeyboardResponse object displaying a fixation cross for a
- * random duration.
+ *
+ * @param {JsPsych} jsPsych - The jsPsych object that runs the experiment.
+ * @param {Function} fixationDurationFunction - The function that returns a random fixation duration from a list of possible durations.
+ * @returns {jsPsychHtmlKeyboardResponse} Plugin object displaying a fixation cross for a random duration.
  */
 function createFixationTrial(jsPsych: JsPsych, fixationDurationFunction: () => number) {
   return {
@@ -195,87 +200,81 @@ function createFixationTrial(jsPsych: JsPsych, fixationDurationFunction: () => n
 
 /**
  * Creates a demo subtimeline.
- * 
- * @param {object} jsPsych - The jsPsych object that runs the experiment.
+ *
+ * @param {JsPsych} jsPsych - The jsPsych object that runs the experiment.
  * @param {"same" | "opposite" | "both"} targetSide - The side of the target stimulus.
- * @param {object} stimulusInfo - The stimulus information object that describes the name
- * of the stimulus and its source.
- * @returns {Array} A subtimeline that includes a demo trial with stimulus on the left,
- * a demo trial with stimulus on the right, or both.
+ * @param {StimulusInfo} stimulusInfo - The stimulus information object that describes the name of the stimulus and its source.
+ * @returns {timeline object} A subtimeline that includes a demo trial with stimulus on the left, a demo trial with stimulus on the right, or both.
  */
 function createDemoSubTimeline(
   jsPsych: JsPsych,
-  targetSide: keyof IStimulusInfo | "both",
-  stimulusInfo: IStimulusInfo
+  targetSide: keyof StimulusInfo | "both",
+  stimulusInfo: StimulusInfo
 ) {
-  return [
-    createGametypeTrial(stimulusInfo[targetSide].stimulus_name),
-    {
-      timeline: [
-        // A full demo session includes a demo trial with stimulus on the left and a demo trial with stimulus on the right
-        {
-          // Each demo trial includes a fixation trial, a trial with the actual stimulus, and a feedback trial
-          timeline: [createTrial(jsPsych, stimulusInfo, true), createFeedbackTrial(jsPsych)],
-          // The demo trial is repeated until the participant gets it right
-          loop_function: () => !jsPsych.data.get().last(1).select("correct").values[0],
-        },
-      ],
-      timeline_variables: ((targetSide) => {
-        switch (targetSide) {
-          case "same":
-            return [
-              { ...stimulusInfo.same, stimulus_side: "left" },
-              { ...stimulusInfo.same, stimulus_side: "right" },
-            ];
-          case "opposite":
-            return [
-              { ...stimulusInfo.opposite, stimulus_side: "left" },
-              { ...stimulusInfo.opposite, stimulus_side: "right" },
-            ];
-          case "both":
-            return [
-              { ...stimulusInfo.same, stimulus_side: "left" },
-              { ...stimulusInfo.same, stimulus_side: "right" },
-              { ...stimulusInfo.opposite, stimulus_side: "left" },
-              { ...stimulusInfo.opposite, stimulus_side: "right" },
-            ];
-          default:
-            return [];
-        }
-      })(targetSide),
-    },
-  ];
+  return {
+    timeline: [
+      createGametypeTrial(stimulusInfo[targetSide].stimulus_name),
+      {
+        timeline: [
+          // A full demo session includes a demo trial with stimulus on the left and a demo trial with stimulus on the right
+          {
+            // Each demo trial includes a fixation trial, a trial with the actual stimulus, and a feedback trial
+            timeline: [createTrial(jsPsych, stimulusInfo, true), createFeedbackTrial(jsPsych)],
+            // The demo trial is repeated until the participant gets it right
+            loop_function: () => !jsPsych.data.get().last(1).select("correct").values[0],
+          },
+        ],
+        timeline_variables: ((targetSide) => {
+          switch (targetSide) {
+            case "same":
+              return [
+                { ...stimulusInfo.same, stimulus_side: "left" },
+                { ...stimulusInfo.same, stimulus_side: "right" },
+              ];
+            case "opposite":
+              return [
+                { ...stimulusInfo.opposite, stimulus_side: "left" },
+                { ...stimulusInfo.opposite, stimulus_side: "right" },
+              ];
+            case "both":
+              return [
+                { ...stimulusInfo.same, stimulus_side: "left" },
+                { ...stimulusInfo.same, stimulus_side: "right" },
+                { ...stimulusInfo.opposite, stimulus_side: "left" },
+                { ...stimulusInfo.opposite, stimulus_side: "right" },
+              ];
+            default:
+              return [];
+          }
+        })(targetSide),
+      },
+    ],
+  };
 }
 
 /**
  * Creates a subtimeline with a set number of trials.
- * 
- * @param {object} jsPsych - The jsPsych object that runs the experiment.
- * @param {object} options - The options object that includes what kinds of trials to
+ *
+ * @param {JsPsych} jsPsych - The jsPsych object that runs the experiment.
+ * @param {CreateTrialsSubTimelineOptions} options - The options object that includes what kinds of trials to
  * include [same|opposte|both], the number of trials, the weights for how often
  * each type of stimulus appears, the weights for how often the stimulus appears on
  * each side, and the stimulus information containing the name and source of each
  * stimulus type.
- * 
- * @returns {Array} A subtimeline with a set number of trials with the specified options.
+ *
+ * @returns {timeline object} A subtimeline with a set number of trials with the specified options.
  */
 function createTrialsSubTimeline(
   jsPsych: JsPsych,
-  options: Partial<{
-    target_side: keyof IStimulusInfo | "both";
-    n_trials: number;
-    target_side_weights: [same_weight: number, opposite_weight: number];
-    side_weights: [left_weight: number, right_weight: number];
-    fixation_duration_function: () => number;
-    stimulus_info: IStimulusInfo;
-  }> = {}
+  options: Partial<CreateTrialsSubTimelineOptions> = {}
 ) {
   const defaultOptions = {
-    target_side: "both" as keyof IStimulusInfo | "both",
+    target_side: "both" as keyof StimulusInfo | "both",
     n_trials: 20,
     target_side_weights: [1, 1] as [number, number],
     side_weights: [1, 1] as [number, number],
-    fixation_duration_function: () => jsPsych.randomization.sampleWithReplacement([100, 200, 500, 1000], 1)[0],
+    fixation_duration_function: () =>
+      jsPsych.randomization.sampleWithReplacement([100, 200, 500, 1000], 1)[0],
     stimulus_info: DEFAULT_STIMULUS_INFO_OBJECT,
   };
 
@@ -285,7 +284,10 @@ function createTrialsSubTimeline(
   };
 
   return {
-    timeline: [createFixationTrial(jsPsych, options.fixation_duration_function), createTrial(jsPsych, options.stimulus_info, false)],
+    timeline: [
+      createFixationTrial(jsPsych, options.fixation_duration_function),
+      createTrial(jsPsych, options.stimulus_info, false),
+    ],
     timeline_variables: ((targetSide) => {
       switch (targetSide) {
         case "same":
@@ -324,40 +326,71 @@ function createTrialsSubTimeline(
 }
 
 /**
- * Creates the main timeline.
- * 
- * @param {object} jsPsych - The jsPsych object that runs the experiment.
- * @param {object} options - The options object that includes the number of trials, the weights
+ * Interface for the options parameter in {@link createTrialsSubTimeline}.
+ */
+export interface CreateTrialsSubTimelineOptions {
+  /**
+   * The side of the target stimulus [same\|opposite\|both].
+   * @defaultValue "both"
+   */
+  target_side: "same" | "opposite" | "both";
+
+  /**
+   * The number of trials to include in the experiment.
+   * @defaultValue 20
+   */
+  n_trials: number;
+
+  /**
+   * The weights for how often each type of stimulus appears, defined by their target side [same, opposite].
+   * @defaultValue [1, 1]
+   */
+  target_side_weights: [same_weight: number, opposite_weight: number];
+
+  /**
+   * The weights for how often the stimulus appears on each side [left, right].
+   * @defaultValue [1, 1]
+   */
+  side_weights: [left_weight: number, right_weight: number];
+
+  /**
+   * The function that returns a random fixation duration from a list of possible durations.
+   * @defaultValue () => jsPsych.randomization.sampleWithReplacement([100, 200, 500, 1000], 1)[0]
+   * @returns {number} A function that returns a random fixation duration from a list of possible durations.
+   */
+  fixation_duration_function: () => number;
+
+  /**
+   * The stimulus information object that describes the name and source of the stimulus.
+   * @defaultValue { same_side_stimulus_name: "heart", same_side_stimulus_src: heartIconSvg, opposite_side_stimulus_name: "flower", opposite_side_stimulus_src: flowerIconSvg }
+   */
+  stimulus_info: StimulusInfo;
+}
+
+/**
+ * This timeline shows a sequence of hearts and flowers trials. In each trial,
+ * participants are shown a stimulus on one side of the screen. There are only
+ * two types of stimuli, and participants are taught and expected to respond to
+ * one type by pressing the button on the same side as it (traditionally a
+ * heart), and to the other by pressing the button on the opposite side
+ * (traditionally a flower), as quickly as possible.
+ *
+ * @param {JsPsych} jsPsych - The jsPsych object that runs the experiment.
+ * @param {CreateTimelineOptions} options - The options object that includes the number of trials, the weights
  * for how often each type of stimulus appears, the weights for how often the stimulus
  * appears on each side, the stimulus information containing the name and source
  * of each stimulus type, whether to include a demo section or not, and the instruction
  * text at the beginning and end of the experiment.
- * @returns {object} The main timeline object.
+ * @returns {timeline object} The main timeline object.
  */
-export function createTimeline(
-  jsPsych: JsPsych,
-  options: Partial<{
-    n_trials: number;
-    side_weights: [left_weight: number, right_weight: number];
-    target_side_weights: [same_weight: number, opposite_weight: number];
-    fixation_duration_function: () => number;
-    stimulus_options: Partial<{
-      same_side_stimulus_name: string;
-      same_side_stimulus_src: string;
-      opposite_side_stimulus_name: string;
-      opposite_side_stimulus_src: string;
-    }>;
-    demo?: boolean;
-    start_instruction_text: string;
-    end_instruction_text: string;
-  }> = {}
-) {
+export function createTimeline(jsPsych: JsPsych, options: Partial<CreateTimelineOptions> = {}) {
   // Default values
   const defaultOptions = {
     n_trials: 20,
     side_weights: [1, 1] as [number, number],
     target_side_weights: [1, 1] as [number, number],
-    fixation_duration_function: () => jsPsych.randomization.sampleWithReplacement([100, 200, 500, 1000], 1)[0],
+    fixation_duration_function: () =>
+      jsPsych.randomization.sampleWithReplacement([100, 200, 500, 1000], 1)[0],
     stimulus_options: {
       same_side_stimulus_name: "heart",
       same_side_stimulus_src: heartIconSvg,
@@ -379,7 +412,7 @@ export function createTimeline(
     },
   };
 
-  const stimulusInfo: IStimulusInfo = {
+  const stimulusInfo: StimulusInfo = {
     same: {
       stimulus_name: options.stimulus_options.same_side_stimulus_name,
       stimulus_src: options.stimulus_options.same_side_stimulus_src,
@@ -421,15 +454,104 @@ export function createTimeline(
 
   return { timeline: heartsAndFlowersTimeline };
 }
+/**
+ * Define and export the interface for the `options` parameter in {@link createTimeline}.
+ */
+export interface CreateTimelineOptions {
+  /**
+   * The number of trials to include in the experiment.
+   * @defaultValue 20
+   */
+  n_trials: number;
 
+  /**
+   * The weights for how often the stimulus appears on each side [left, right].
+   * @defaultValue [1, 1]
+   */
+  side_weights: [left_weight: number, right_weight: number];
+
+  /**
+   * The weights for how often each type of stimulus appears, defined by their target side [same, opposite].
+   * @defaultValue [1, 1]
+   */
+  target_side_weights: [same_weight: number, opposite_weight: number];
+
+  /**
+   * The function that returns a random fixation duration from a list of possible durations.
+   * @defaultValue () => jsPsych.randomization.sampleWithReplacement([100, 200, 500, 1000], 1)[0]
+   * @returns {number} A function that returns a random fixation duration from a list of possible durations.
+   */
+  fixation_duration_function: () => number;
+
+  /**
+   * The options object that includes the name and source of each stimulus type.
+   * @defaultValue { same_side_stimulus_name: "heart", same_side_stimulus_src: heartIconSvg, opposite_side_stimulus_name: "flower", opposite_side_stimulus_src: flowerIconSvg }
+   */
+  stimulus_options: Partial<StimulusOptions>;
+
+  /**
+   * Whether to include a demo section or not.
+   * @defaultValue true
+   */
+  demo: boolean;
+
+  /**
+   * The instruction text at the beginning of the experiment.
+   * @defaultValue "Time to play!"
+   */
+  start_instruction_text: string;
+
+  /**
+   * The instruction text at the end of the experiment.
+   * @defaultValue "Great job! You're all done."
+   */
+  end_instruction_text: string;
+}
+
+/**
+ * Define and export the interface for the `stimulus_options` property in {@link CreateTimelineOptions}.
+ */
+export interface StimulusOptions {
+  /**
+   * The name of the stimulus to be displayed when the target side is the same side.
+   * @defaultValue "heart"
+   */
+  same_side_stimulus_name: string;
+
+  /**
+   * The source of the stimulus to be displayed when the target side is the same side.
+   * @defaultValue heartIconSvg
+   */
+  same_side_stimulus_src: string;
+
+  /**
+   * The name of the stimulus to be displayed when the target side is the opposite side.
+   * @defaultValue "flower"
+   */
+  opposite_side_stimulus_name: string;
+
+  /**
+   * The source of the stimulus to be displayed when the target side is the opposite side.
+   * @defaultValue flowerIconSvg
+   */
+  opposite_side_stimulus_src: string;
+}
+
+/**
+ * Timeline units that can be used to create a hearts and flowers experiment.
+ */
 export const timelineUnits = {
   createGametypeTrial,
   createTrial,
   createFeedbackTrial,
   createFixationTrial,
   createDemoSubTimeline,
-  createTrialsSubTimeline
+  createTrialsSubTimeline,
 };
+
+/**
+ * Utility functions that can be used to create a hearts and flowers experiment.
+ */
 export const utils = {
   generateStimulus,
   getCorrectResponse,
