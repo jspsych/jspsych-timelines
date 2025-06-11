@@ -81,8 +81,6 @@ We try to review pull requests quickly and add new timelines as soon as the mini
 
 We have a tool called [`new-timeline`](https://github.com/jspsych/jspsych-dev/tree/main/packages/new-timeline) for building new timelines at [jspsych-dev](https://github.com/jspsych/jspsych-dev/tree/main). Instructions for using the new-timeline tool can be found at the [`README.md`](https://github.com/jspsych/jspsych-dev/tree/main/packages/new-timeline/README.md) in this directory.
 
-You may also want to read the jsPsych documentation on [plugin development](https://www.jspsych.org/latest/developers/plugin-development/) to understand how to work with the `index.ts` file (for TypeScript development) and `index.js` file (for JavaScript development).
-
 ## jsPsych version compatibility
 To ensure your timeline can be run by others using the latest version of jsPsych, we encourage you to make your timeline compatible with jsPsych v7+. Documentation for how to migrate from v6.x to v7.x can be found [here](https://www.jspsych.org/v7/support/migration-v7/), and from v.7x to v8.x [here](https://www.jspsych.org/v8/support/migration-v8/).
 
