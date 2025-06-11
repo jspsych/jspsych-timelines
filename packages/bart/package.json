@@ -8,11 +8,11 @@
     "unpkg": "dist/index.browser.min.js",
     "scripts": {
       "build": "tsup src/index.ts --format esm,iife --sourcemap --dts --treeshake --clean --global-name jsPsychTimelineBart"
+
     },
     "repository": {
         "type": "git",
-        "url": "",
-        "directory": "./"
+        "url": ""
     },
     "keywords": [
         "jsPsych"
@@ -23,7 +23,7 @@
     },
     "license": "MIT",
     "bugs": {
-        "url": "/issues"
+        "url": "https://github.com/jspsych/jspsych-timelines/issues"
     },
     "homepage": "/bart/README.md",
     "devDependencies": {
@@ -32,6 +32,8 @@
         "ts-loader": "^9.5.2",
         "tsup": "^6.7.0",
         "typescript": "^5.8.3"
+
+
     },
     "dependencies": {
         "@jspsych/plugin-fullscreen": "^2.1.0",

@@ -1,7 +1,5 @@
 import { JsPsych } from "jspsych"
 import HtmlButtonResponsePlugin from "@jspsych/plugin-html-button-response";
-import PreloadPlugin from "@jspsych/plugin-preload";
-import FullscreenPlugin from "@jspsych/plugin-fullscreen";
 
 //console.log("jsPsych experiment loading...");
 
