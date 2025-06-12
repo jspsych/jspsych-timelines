@@ -1,0 +1,41 @@
+{
+    "name": "@jspsych-timelines/spatial-nback",
+    "version": "0.0.2",
+    "description": "spatial nback task timeline for jsPsych",
+    "type": "module",
+    "main": "dist/index.mjs",
+    "types": "dist/index.d.ts",
+    "unpkg": "dist/index.browser.min.js",
+    "scripts": {
+        "build": "tsup src/index.ts --format esm,iife --sourcemap --dts --treeshake --clean --global-name jsPsychTimelineSpatialNback"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/jspsych/jspsych-timelines.git",
+        "directory": ""
+    },
+    "keywords": [
+        "jsPsych"
+    ],
+    "author": {
+        "name": "A. Hunter Farhat",
+        "url": "'use strict';https://github.com/farhat60"
+    },
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/jspsych/jspsych-timelines/packages/spatial-nback#readme"
+    },
+    "homepage": "/spatial-nback/README.md",
+    "devDependencies": {
+        "@jspsych/config": "^3.2.2",
+        "jspsych": "^8.2.1",
+        "tsup": "^6.7.0",
+        "typescript": "^5.0.2"
+    },
+    "dependencies": {
+        "@jspsych/plugin-html-button-response": "^2.1.0",
+        "@jspsych/plugin-html-keyboard-response": "^2.1.0",
+        "@jspsych-contrib/plugin-spatial-nback": "git+ssh://git@https://github.com/farhat60/jspsych-contrib/packages/plugin-spatial-nback",
+        "jsPsych": "npm:jspsych@^8.2.1"
+    }
+}
