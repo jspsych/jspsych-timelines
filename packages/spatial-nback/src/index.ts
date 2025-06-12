@@ -1,5 +1,5 @@
 import { initJsPsych, JsPsych } from "jspsych"
-import jsPsychPluginSpatialNback from "@jspsych-contrib/plugin-spatial-nback";
+import jsPsychPluginSpatialNback from "@jspsych/plugin-spatial-nback";
 import jsPsychHtmlKeyboardResponse from "@jspsych/plugin-html-keyboard-response";
 import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
 
