@@ -1,14 +1,11 @@
-import {
-  createSpatialNBackTimeline,
-  createPracticeTimeline,
-  createMultiLevelNBackTimeline,
-  presetConfigurations,
-} from './index';
+import { startTimeline } from "@jspsych/test-utils";
+import jsPsychPluginSpatialNback from "@jspsych/plugin-spatial-nback";
+import { JsPsych } from "jspsych";
 
 describe('Spatial N-Back Timeline', () => {
-  describe('createSpatialNBackTimeline', () => {
+  describe('createTimeline', () => {
     it('should return a timeline object with correct structure', () => {
-      const timeline = createSpatialNBackTimeline({ total_trials: 5 });
+      const timeline = createTimeline({ total_trials: 5 });
       
       expect(timeline).toHaveProperty('timeline');
       expect(Array.isArray(timeline.timeline)).toBe(true);
@@ -16,7 +13,7 @@ describe('Spatial N-Back Timeline', () => {
     });
 
     it('should use default parameters when none provided', () => {
-      const timeline = createSpatialNBackTimeline();
+      const timeline = createTimeline();
       
       expect(timeline.timeline.length).toBe(20); // default total_trials
       expect(timeline.timeline[0]).toHaveProperty('rows', 3);
@@ -25,7 +22,7 @@ describe('Spatial N-Back Timeline', () => {
     });
 
     it('should set randomize_order when randomize_trials is true', () => {
-      const timeline = createSpatialNBackTimeline({ 
+      const timeline = createTimeline({ 
         total_trials: 5, 
         randomize_trials: true 
       });
@@ -34,7 +31,7 @@ describe('Spatial N-Back Timeline', () => {
     });
 
     it('should not set randomize_order when randomize_trials is false', () => {
-      const timeline = createSpatialNBackTimeline({ 
+      const timeline = createTimeline({ 
         total_trials: 5, 
         randomize_trials: false 
       });
@@ -43,7 +40,7 @@ describe('Spatial N-Back Timeline', () => {
     });
 
     it('should include instructions trial when include_instructions is true', () => {
-      const timeline = createSpatialNBackTimeline({ 
+      const timeline = createTimeline({ 
         total_trials: 5, 
         include_instructions: true 
       });
@@ -63,7 +60,7 @@ describe('Spatial N-Back Timeline', () => {
         n_back_level: 2
       };
       
-      const timeline = createSpatialNBackTimeline(customParams);
+      const timeline = createTimeline(customParams);
       
       expect(timeline.timeline[0].rows).toBe(4);
       expect(timeline.timeline[0].cols).toBe(5);
@@ -72,7 +69,7 @@ describe('Spatial N-Back Timeline', () => {
     });
 
     it('should generate valid target sequences', () => {
-      const timeline = createSpatialNBackTimeline({ 
+      const timeline = createTimeline({ 
         total_trials: 10, 
         n_back_level: 2,
         target_percentage: 30
@@ -180,7 +177,7 @@ describe('Spatial N-Back Timeline', () => {
 
   describe('parameter validation', () => {
     it('should handle edge case parameters', () => {
-      const timeline = createSpatialNBackTimeline({
+      const timeline = createTimeline({
         total_trials: 1,
         target_percentage: 0,
         n_back_level: 1
@@ -191,7 +188,7 @@ describe('Spatial N-Back Timeline', () => {
     });
 
     it('should handle high target percentage correctly', () => {
-      const timeline = createSpatialNBackTimeline({
+      const timeline = createTimeline({
         total_trials: 10,
         target_percentage: 90,
         n_back_level: 1

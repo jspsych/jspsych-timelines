@@ -68,7 +68,7 @@ function generateNBackSequence(total_trials: number, n_back_level: number, targe
     return { positions, is_target };
 }
 
-export function createSpatialNBackTimeline({
+export function createTimeline({
     rows = 3,
     cols = 3,
     n_back_level = 1,
@@ -178,8 +178,8 @@ export function createSpatialNBackTimeline({
 }
 
 // Create a practice timeline with fewer trials
-export function createPracticeTimeline(options: Parameters<typeof createSpatialNBackTimeline>[0] = {}) {
-    return createSpatialNBackTimeline({
+export function createPracticeTimeline(options: Parameters<typeof createTimeline>[0] = {}) {
+    return createTimeline({
         ...options,
         total_trials: 6,
         target_percentage: 33,
@@ -199,10 +199,10 @@ export function createMultiLevelNBackTimeline({
     n_back_levels?: number[],
     trials_per_level?: number,
     randomize_levels?: boolean,
-} & Parameters<typeof createSpatialNBackTimeline>[0] = {}) {
+} & Parameters<typeof createTimeline>[0] = {}) {
     
     const level_timelines = n_back_levels.map(level => {
-        return createSpatialNBackTimeline({
+        return createTimeline({
             ...sharedOptions,
             n_back_level: level,
             total_trials: trials_per_level,
@@ -218,21 +218,21 @@ export function createMultiLevelNBackTimeline({
 
 // Utility functions for common configurations
 export const presetConfigurations = {
-    easy: () => createSpatialNBackTimeline({
+    easy: () => createTimeline({
         n_back_level: 1,
         total_trials: 20,
         target_percentage: 30,
         show_feedback: true
     }),
     
-    medium: () => createSpatialNBackTimeline({
+    medium: () => createTimeline({
         n_back_level: 2,
         total_trials: 30,
         target_percentage: 25,
         show_feedback: false
     }),
     
-    hard: () => createSpatialNBackTimeline({
+    hard: () => createTimeline({
         n_back_level: 3,
         total_trials: 40,
         target_percentage: 20,
@@ -254,11 +254,11 @@ export const presetConfigurations = {
 export { instrictions_template, generateNBackSequence };
 
 // Export default timeline creator
-export default createSpatialNBackTimeline;
+export default createTimeline;
 
 export const timelineUnits = {
     createPracticeTimeline,
-    createSpatialNBackTimeline,
+    createTimeline,
     createMultiLevelNBackTimeline,
 };
 

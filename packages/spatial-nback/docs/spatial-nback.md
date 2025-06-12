@@ -71,7 +71,7 @@ rt | number | Response time in ms
 
 The following functions/utilities are exported for custom use:
 
-### createSpatialNBackTimeline(params)
+### createTimeline(params)
 Creates a spatial n-back timeline with the specified parameters.
 
 ### createPracticeTimeline(params)
