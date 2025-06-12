@@ -31,6 +31,8 @@ import { createTimeline, timelineUnits, utils } from "@jspsych-timelines/hearts-
 `@jspsych-timelines/hearts-and-flowers` requires jsPsych v8.0.0 or later.
 
 ## createTimeline() Documentation
+
+
 ### Function: createTimeline()
 
 > **createTimeline**(`jsPsych`, `options`): `object`
@@ -89,7 +91,11 @@ Define and export the interface for the `stimulus_options` property in [CreateTi
 | <a id="opposite_side_stimulus_name"></a> `opposite_side_stimulus_name` | `string` | `"flower"` | The name of the stimulus to be displayed when the target side is the opposite side. |
 | <a id="opposite_side_stimulus_src"></a> `opposite_side_stimulus_src` | `string` | `flowerIconSvg` | The source of the stimulus to be displayed when the target side is the opposite side. |
 
+
+
 ## timelineUnits Documentation
+
+
 ### createGametypeTrial()
 
 > **createGametypeTrial**: (`stimulusName`) => `object`
@@ -272,10 +278,14 @@ Interface for the stimulus information object that describes the name and source
 
 ***
 
+
+
 ## utils Documentation
+
+
 ### generateStimulus()
 
-> **generateStimulus**: (`targetSide`, `stimulusSide`, `stimulusInfo`, `instruction`?) => `string`
+> **generateStimulus**: (`targetSide`, `stimulusSide`, `stimulusInfo`, `instruction?`) => `string`
 
 Generates the stimulus HTML for a given trial.
 
@@ -286,7 +296,7 @@ Generates the stimulus HTML for a given trial.
 | `targetSide` | `"same"` \| `"opposite"` | `undefined` | The side of the target stimulus [same\|opposite]. |
 | `stimulusSide` | `"left"` \| `"right"` | `undefined` | The side of the stimulus to be displayed [left\|right]. |
 | `stimulusInfo` | [`StimulusInfo`](../interfaces/StimulusInfo.md) | `undefined` | The stimulus information object that describes the name and source of the stimulus. |
-| `instruction`? | `boolean` | `false` | Whether to include instruction text teaching participants how to respond. |
+| `instruction?` | `boolean` | `false` | Whether to include instruction text teaching participants how to respond. |
 
 #### Returns
 
@@ -329,3 +339,5 @@ Computes the correct response index.
 The correct response index.
 
 ***
+
+
