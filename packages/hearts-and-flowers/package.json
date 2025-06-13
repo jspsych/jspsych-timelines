@@ -28,12 +28,8 @@
     "homepage": "https://github.com/jspsych/jspsych-timelines/packages/hearts-and-flowers/README.md",
     "devDependencies": {
         "@jspsych/config": "^3.2.2",
-        "jsdoc-plugin-typescript": "^3.2.0",
-        "jsdoc-to-markdown": "^9.1.1",
         "jspsych": "^8.0.0",
         "tsup": "^6.7.0",
-        "typedoc": "^0.28.0",
-        "typedoc-plugin-markdown": "^4.5.0",
         "typescript": "^5.0.2"
     },
     "dependencies": {
