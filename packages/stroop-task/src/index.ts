@@ -11,12 +11,12 @@ const DEFAULT_FIXATION_DURATION = { min: 300, max: 1000 };
 const DEFAULT_SHOW_PRACTICE_FEEDBACK = true;
 const DEFAULT_INCLUDE_FIXATION = true;
 
-const COLORS = [
-    { name: 'RED', hex: 'red', index: 0 },
-    { name: 'GREEN', hex: 'green', index: 1 },
-    { name: 'BLUE', hex: 'blue', index: 2 },
-    { name: 'YELLOW', hex: 'yellow', index: 3 }
-];
+// const COLORS = [
+//     { name: 'RED', hex: 'red', index: 0 },
+//     { name: 'GREEN', hex: 'green', index: 1 },
+//     { name: 'BLUE', hex: 'blue', index: 2 },
+//     { name: 'YELLOW', hex: 'yellow', index: 3 }
+// ];
 
 const WORDS = ['RED', 'GREEN', 'BLUE', 'YELLOW'];
 
@@ -60,11 +60,18 @@ function resetState() {
     };
 }
 
-function generateStimuli(): StroopStimulus[] {
+function generateStimuli(selectedColors?: string[]): StroopStimulus[] {
     const stimuli: StroopStimulus[] = [];
 
-    for (const word of WORDS) {
-        for (const color of COLORS) {
+    const colorsToUse = selectedColors ? selectedColors : WORDS;
+    const colorObjectsToUse = colorsToUse.map((colorName, index) => ({
+        name: colorName,
+        hex: colorName.toLowerCase(),
+        index: index
+    }));
+
+    for (const word of colorsToUse) {
+        for (const color of colorObjectsToUse) {
             stimuli.push({
                 word: word,
                 color: color.hex,
@@ -105,25 +112,34 @@ function createWelcome() {
     return welcome;
 }
 
-function createInstructions() {
+//need to change the code so that the choice of color shows up in the instructions, it is smth to do with changing the colors on line 125, better better prompting 
+function createInstructions(
+    choiceOfColors?: string[]
+) {
     const instructions = {
         type: jsPsychInstructions,
         pages: [
-            `<div style="max-width: 700px; margin: 0 auto; text-align: left; padding: 20px;">
+            `<div style="max-width: 700px; margin: 0 auto; padding: 20px;">
                 <h2>Instructions</h2>
                 <p>You will see a word (e.g., "RED", "BLUE") displayed in one of four ink colors: red, green, blue, or yellow.</p>
                 <p>Your task is to click the button corresponding to the <strong>INK COLOR</strong> of the word, ignoring what the word says.</p>
-                <p>Click the colored buttons that will appear below each word:</p>
-                
-                <div style="display: flex; justify-content: space-around; margin: 20px 0; flex-wrap: wrap;">
-                    ${COLORS.map(color => `
+                <p>Click the colored buttons that will appear below each word:</p><div style="display: flex; justify-content: space-around; margin: 20px 0; flex-wrap: wrap;">
+
+                ${(() => {
+                    const selectedColors = choiceOfColors || ['RED', 'GREEN', 'BLUE', 'YELLOW'];
+                    const dynamicColors = selectedColors.map((colorName, index) => ({
+                        name: colorName,
+                        hex: colorName.toLowerCase(),
+                        index: index
+                    }));
+                    return dynamicColors.map(color => `
                         <div style="padding: 15px; border: 1px solid #ccc; border-radius: 8px; margin: 10px; min-width: 120px; text-align: center;">
                             <span style="color: ${color.hex}; font-size: 24px; font-weight: bold; display: block; margin-bottom: 5px;">${color.name}</span>
                         </div>
-                    `).join('')}
-                </div>
+                    `).join('');
+                })()}
             </div>`,
-            `<div style="max-width: 700px; margin: 0 auto; text-align: left; padding: 20px;">
+            `<div style="max-width: 700px; margin: 0 auto; padding: 20px;">
                 <h2>Examples</h2>
                 <p>If you see the word <strong style="color:blue;">RED</strong> (written in BLUE ink), you should click the BLUE button.</p>
                 <p>If you see the word <strong style="color:green;">GREEN</strong> (written in GREEN ink), you should click the GREEN button.</p>
@@ -173,14 +189,11 @@ function createStroopTrial(
     const trial = {
         type: jsPsychHtmlButtonResponse,
         stimulus: `<div style="font-size: 48px; color: ${stimulus.color}; font-weight: bold;">${stimulus.word}</div>`,
-        choices: choiceOfColors || COLORS.map(c => c.name),
+        choices: choiceOfColors,
         button_layout: 'grid',
         grid_rows: numberOfRows,
         grid_columns: numberOfColumns,
-        button_html: (choice: string, choice_index: number) => {
-            const color = COLORS.find(c => c.name === choice);
-            return `<div style="border: 3px solid #333; width: 150px; height: 60px; margin: 20px; background-color: ${color?.hex}; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold;">${choice}</div>`;
-        },
+        button_html: (choice) => `<div style="border: 3px solid #333; width: 150px; height: 60px; margin: 20px; background-color: ${choice}; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold;">${choice}</div>`,
         margin_horizontal: '20px',
         margin_vertical: '20px',
         trial_duration: trialTimeout || DEFAULT_TRIAL_TIMEOUT,
@@ -202,17 +215,23 @@ function createStroopTrial(
     return trial;
 }
 
-function createPracticeFeedback(jsPsych: JsPsych) {
+function createPracticeFeedback(jsPsych: JsPsych, selectedColors?: string[]) {
     const feedback = {
         type: jsPsychHtmlButtonResponse,
         stimulus: () => {
             const lastTrial = jsPsych.data.get().last(1).values()[0];
-            const correctColorName = COLORS[lastTrial.correct_response].name;
+            if (!lastTrial) {
+                console.error('No trial data found');
+                return '<div style="font-size: 24px; color: orange; text-align: center;"><p>No data available</p></div>';
+            }
+            const colorsToUse = selectedColors || ['RED', 'GREEN', 'BLUE', 'YELLOW'];
+            const correctColorName = colorsToUse[lastTrial.correct_response];
+            console.log('correct_response index:', lastTrial.correct_response, 'selectedColors:', selectedColors, 'correctColorName:', correctColorName);
 
             if (lastTrial.correct) {
                 return '<div style="font-size: 24px; color: green; text-align: center;"><p>✓ CORRECT!</p></div>';
             } else {
-                return `<div style="font-size: 24px; color: red; text-align: center;"><p>✗ INCORRECT. The correct answer was ${correctColorName} for ${lastTrial.color.toUpperCase()} ink.</p></div>`;
+                return `<div style="font-size: 24px; color: red; text-align: center;"><p>✗ INCORRECT. The correct answer was ${lastTrial.color.toUpperCase()}.</p></div>`;
             }
         },
         choices: ['Continue'],
@@ -306,8 +325,8 @@ function createResults(jsPsych: JsPsych) {
 export function createTimeline(
     jsPsych: JsPsych,
     {
-        practiceTrialsPerCondition = 2,
-        mainTrialsPerCondition = 4,
+        practiceTrialsPerCondition = 2, //doesnt work
+        mainTrialsPerCondition = 4, // doesnt work
         trialTimeout = 3000,
         fixationDuration = { min: 300, max: 1500 },
         showPracticeFeedback = true,
@@ -319,7 +338,7 @@ export function createTimeline(
         randomiseFixationDuration = true,
         numberOfRows = 2,
         numberOfColumns = 2,
-        choiceOfColours = ['RED', 'GREEN', 'BLUE', 'YELLOW']    
+        choiceOfColors = ['RED', 'GREEN', 'BLUE', 'PURPLE']    
     }: {
         practiceTrialsPerCondition?: number,
         mainTrialsPerCondition?: number,
@@ -334,14 +353,14 @@ export function createTimeline(
         randomiseFixationDuration?: boolean,
         numberOfRows?: number,
         numberOfColumns?: number,
-        choiceOfColours?: string[]
+        choiceOfColors?: string[]
     } = {}
 ) {
     // Reset state for new timeline
     resetState();
 
     const timeline: any[] = [];
-    const stimuli = generateStimuli();
+    const stimuli = generateStimuli(choiceOfColors);
 
     // Separate congruent and incongruent stimuli
     const congruentStimuli = stimuli.filter(s => s.congruent);
@@ -352,13 +371,13 @@ export function createTimeline(
 
     // Add instructions if requested
     if (showInstructions) {
-        timeline.push(createInstructions());
+        timeline.push(createInstructions(choiceOfColors));
     }
 
     // Create practice trials
     let practiceStimuli = [];
     practiceStimuli.push(...congruentStimuli.slice(0, practiceTrialsPerCondition));
-    practiceStimuli.push(...incongruentStimuli.slice(0, practiceTrialsPerCondition * 3));
+    practiceStimuli.push(...incongruentStimuli.slice(0, practiceTrialsPerCondition));
 
     const shuffledPracticeStimuli = randomisePracticeTrialConditionOrder ? shuffleArray(practiceStimuli) : practiceStimuli;
 
@@ -367,9 +386,9 @@ export function createTimeline(
         if (includeFixation) {
             timeline.push(createFixation(fixationDuration, randomiseFixationDuration));
         }
-        timeline.push(createStroopTrial(jsPsych, stimulus, true, trialTimeout, numberOfRows, numberOfColumns, choiceOfColours));
+        timeline.push(createStroopTrial(jsPsych, stimulus, true, trialTimeout, numberOfRows, numberOfColumns, choiceOfColors));
         if (showPracticeFeedback) {
-            timeline.push(createPracticeFeedback(jsPsych));
+            timeline.push(createPracticeFeedback(jsPsych, choiceOfColors));
         }
     }
 
@@ -380,14 +399,10 @@ export function createTimeline(
     let mainStimuli = [];
 
     // Add congruent trials
-    for (let i = 0; i < mainTrialsPerCondition; i++) {
-        mainStimuli.push(...congruentStimuli);
-    }
+    mainStimuli.push(...congruentStimuli.slice(0, mainTrialsPerCondition));
 
-    // Add incongruent trials
-    for (let i = 0; i < Math.floor(mainTrialsPerCondition / 2); i++) {
-        mainStimuli.push(...incongruentStimuli);
-    }
+    // Add incongruent trials  
+    mainStimuli.push(...incongruentStimuli.slice(0, mainTrialsPerCondition));
 
     const shuffledMainStimuli = randomiseMainTrialConditionOrder ? shuffleArray(mainStimuli) : mainStimuli;
     state.totalTrials = shuffledMainStimuli.length;
@@ -397,7 +412,7 @@ export function createTimeline(
         if (includeFixation) {
             timeline.push(createFixation(fixationDuration, randomiseFixationDuration));
         }
-        timeline.push(createStroopTrial(jsPsych, stimulus, false, trialTimeout, numberOfRows, numberOfColumns, choiceOfColours));
+        timeline.push(createStroopTrial(jsPsych, stimulus, false, trialTimeout, numberOfRows, numberOfColumns, choiceOfColors));
     }
 
     // Add results if requested
