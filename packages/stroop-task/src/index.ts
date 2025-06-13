@@ -325,8 +325,9 @@ function createResults(jsPsych: JsPsych) {
 export function createTimeline(
     jsPsych: JsPsych,
     {
-        practiceTrialsPerCondition = 2, //doesnt work
-        mainTrialsPerCondition = 4, // doesnt work
+        practiceTrialsPerCondition = 2, 
+        congruentMainTrials = 4,
+        incongruentMainTrials = 4, 
         trialTimeout = 3000,
         fixationDuration = { min: 300, max: 1500 },
         showPracticeFeedback = true,
@@ -341,7 +342,8 @@ export function createTimeline(
         choiceOfColors = ['RED', 'GREEN', 'BLUE', 'PURPLE']    
     }: {
         practiceTrialsPerCondition?: number,
-        mainTrialsPerCondition?: number,
+        congruentMainTrials?: number,
+        incongruentMainTrials?: number,
         trialTimeout?: number,
         fixationDuration?: { min: number, max: number },
         showPracticeFeedback?: boolean,
@@ -399,10 +401,10 @@ export function createTimeline(
     let mainStimuli = [];
 
     // Add congruent trials
-    mainStimuli.push(...congruentStimuli.slice(0, mainTrialsPerCondition));
+    mainStimuli.push(...congruentStimuli.slice(0, congruentMainTrials));
 
     // Add incongruent trials  
-    mainStimuli.push(...incongruentStimuli.slice(0, mainTrialsPerCondition));
+    mainStimuli.push(...incongruentStimuli.slice(0, incongruentMainTrials));
 
     const shuffledMainStimuli = randomiseMainTrialConditionOrder ? shuffleArray(mainStimuli) : mainStimuli;
     state.totalTrials = shuffledMainStimuli.length;
