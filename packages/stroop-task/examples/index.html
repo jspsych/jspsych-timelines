@@ -19,8 +19,8 @@
       mainTrialsPerCondition: 4,         // Number of main trials per condition
       trialTimeout: 3000,                // Time limit for each trial (milliseconds)
       fixationDuration: {                // Fixation cross duration range
-        min: 300,                        // Minimum duration (milliseconds), if you do not want to randomise fixation cross duration, set min and max values to the same number
-        max: 1500                        // Maximum duration (milliseconds), if you do not want to randomise fixation cross duration, set min and max values to the same number
+        min: 300,                        // Minimum duration (milliseconds), if you do not want to randomise fixation cross duration, set randomiseFixationDuration parameter to false and set min to the duration of the fixation cross you desire
+        max: 1500                        // Maximum duration (milliseconds), if you do not want to randomise fixation cross duration, set randomiseFixationDuration parameter to false and set min to the duration of the fixation cross you desire
       },
       showPracticeFeedback: true,       // Show feedback during practice trials
       includeFixation: true,             // Include fixation cross before trials
@@ -28,14 +28,14 @@
       showResults: true,                 // Show results at the end,
       randomiseMainTrialConditionOrder: true,     // Randomise the order of conditions
       randomisePracticeTrialConditionOrder: false, // Randomise the order of conditions in practice trials
-      randomiseFixationDuration: true,   // Randomise fixation duration between min/max, if you set this to false then duration of fixation croos will be the value of the min in the parameter fixationDuration
+      randomiseFixationDuration: true,   // Randomise fixation duration between min/max, if you set this to false then duration of fixation cross will be the value of the min in the parameter fixationDuration
       numberOfRows: 2,                   // Number of rows in the display grid
       numberOfColumns: 2,                // Number of columns in the display grid
       choiceOfColors: [                  // Array of colors to use (length determines number of colors), add colour names, hex codes or RGB values
         'red',
         'blue',
         'green',
-        'purple'
+        'yellow'
       ]
     };
   const jsPsych = new initJsPsych();
