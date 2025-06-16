@@ -1,6 +1,6 @@
-# spatial-nback-task
+# pattern-comparison-task
 
-Deployable spatial nback timeline
+An assessment of processing speed. Participants are asked to quickly determine whether two stimuli are the same or not the same.
 
 ## Parameters
 
@@ -11,7 +11,7 @@ Initialization parameters can be set when calling `initJsPsych()`
 ```js
 initJsPsych({
   timelines: [
-    {type: jsPsychTimelineSpatialNbackTask, params: {...}}
+    {type: jsPsychTimelinePatternComparisonTask, params: {...}}
   ]
 })
 ```
@@ -28,7 +28,7 @@ Trial parameters can be set when adding the timeline to a trial object.
 var trial = {
   type: jsPsych...,
   timelines: [
-    {type: jsPsychTimelineSpatialNbackTask, params: {...}}
+    {type: jsPsychTimelinePatternComparisonTask, params: {...}}
   ]
 }
 ```

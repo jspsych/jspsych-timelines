@@ -3,7 +3,7 @@ import jsPsychPluginSpatialNback from "@jspsych/plugin-spatial-nback";
 import jsPsychHtmlKeyboardResponse from "@jspsych/plugin-html-keyboard-response";
 import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
 
-const instrictions_template = {
+const instructions_template = {
     type: jsPsychHtmlButtonResponse,
     stimulus: `
         <div style="text-align: center; font-size: clamp(16px, 4vw, 20px); line-height: 1.5; padding: 10px; max-width: 90vw; margin: 0 auto;">
@@ -18,12 +18,12 @@ const instrictions_template = {
 };
 
 // Generate stimulus sequence for n-back task
-function generateNBackSequence(total_trials: number, n_back_level: number, target_percentage: number, rows: number, cols: number) {
+function generateNBackSequence(total_trials: number, n_back: number, target_percentage: number, rows: number, cols: number) {
     const positions: Array<{row: number, col: number}> = [];
     const is_target: boolean[] = [];
     
     // Generate first n trials (cannot be targets)
-    for (let i = 0; i < n_back_level; i++) {
+    for (let i = 0; i < n_back; i++) {
         positions.push({
             row: Math.floor(Math.random() * rows),
             col: Math.floor(Math.random() * cols)
@@ -32,19 +32,19 @@ function generateNBackSequence(total_trials: number, n_back_level: number, targe
     }
     
     // Calculate number of targets to place
-    const n_targets = Math.round((target_percentage / 100) * (total_trials - n_back_level));
+    const n_targets = Math.round((target_percentage / 100) * (total_trials - n_back));
     let targets_placed = 0;
     
     // Generate remaining trials with targets
-    for (let i = n_back_level; i < total_trials; i++) {
+    for (let i = n_back; i < total_trials; i++) {
         const can_be_target = targets_placed < n_targets;
         const should_be_target = can_be_target && Math.random() < 0.5;
         
         if (should_be_target) {
             // Make this a target trial (same position as n trials back)
             positions.push({
-                row: positions[i - n_back_level].row,
-                col: positions[i - n_back_level].col
+                row: positions[i - n_back].row,
+                col: positions[i - n_back].col
             });
             is_target.push(true);
             targets_placed++;
@@ -57,8 +57,8 @@ function generateNBackSequence(total_trials: number, n_back_level: number, targe
                     col: Math.floor(Math.random() * cols)
                 };
             } while (
-                new_position.row === positions[i - n_back_level].row &&
-                new_position.col === positions[i - n_back_level].col
+                new_position.row === positions[i - n_back].row &&
+                new_position.col === positions[i - n_back].col
             );
             positions.push(new_position);
             is_target.push(false);
@@ -71,16 +71,16 @@ function generateNBackSequence(total_trials: number, n_back_level: number, targe
 export function createTimeline({
     rows = 3,
     cols = 3,
-    n_back_level = 1,
+    n_back = 1,
     total_trials = 20,
     target_percentage = 25,
     stimulus_duration = 750,
     isi_duration = 250,
     feedback_duration = 1000,
-    show_feedback = false,
+    show_feedback_text = false,
     show_feedback_border = false,
-    showFeedbackNoResponse = false,
-    feedbackWaitNoResponse = true,
+    show_feedback_no_click  = false,
+    feedback_wait_no_click = true,
     cell_size = 150,
     instructions_trial = "Click the button when the position matches the one from {n} trial(s) ago",
     button_text = "MATCH",
@@ -92,16 +92,16 @@ export function createTimeline({
 }: {
     rows?: number,
     cols?: number,
-    n_back_level?: number,
+    n_back?: number,
     total_trials?: number,
     target_percentage?: number,
     stimulus_duration?: number,
     isi_duration?: number,
     feedback_duration?: number,
-    show_feedback?: boolean,
+    show_feedback_text?: boolean,
     show_feedback_border?: boolean,
-    showFeedbackNoResponse?: boolean,
-    feedbackWaitNoResponse?: boolean,
+    show_feedback_no_click ?: boolean,
+    feedback_wait_no_click?: boolean,
     cell_size?: number,
     instructions_trial?: string,
     button_text?: string,
@@ -113,13 +113,13 @@ export function createTimeline({
 } = {}) {
 
     // Generate the sequence
-    const sequence = generateNBackSequence(total_trials, n_back_level, target_percentage, rows, cols);
+    const sequence = generateNBackSequence(total_trials, n_back, target_percentage, rows, cols);
     
     // Create individual trial objects
     const trials = [];
     for (let i = 0; i < total_trials; i++) {
         const trial_instructions = instructions_trial
-            .replace('{n}', n_back_level.toString())
+            .replace('{n_back}', n_back.toString())
             .replace('{trial}', (i + 1).toString())
             .replace('{total}', total_trials.toString());
 
@@ -133,10 +133,10 @@ export function createTimeline({
             stimulus_duration: stimulus_duration,
             isi_duration: isi_duration,
             feedback_duration: feedback_duration,
-            show_feedback: show_feedback,
+            show_feedback_text: show_feedback_text,
             show_feedback_border: show_feedback_border,
-            showFeedbackNoResponse: showFeedbackNoResponse,
-            feedbackWaitNoResponse: feedbackWaitNoResponse,
+            show_feedback_no_click : show_feedback_no_click ,
+            feedback_wait_no_click: feedback_wait_no_click,
             cell_size: cell_size,
             instructions: trial_instructions,
             button_text: button_text,
@@ -145,7 +145,7 @@ export function createTimeline({
             incorrect_color: incorrect_color,
             data: {
                 trial_number: i + 1,
-                n_back_level: n_back_level,
+                n_back: n_back,
                 total_trials: total_trials,
                 task: 'spatial-nback'
             }
@@ -162,16 +162,18 @@ export function createTimeline({
     if (include_instructions) {
         // Update instructions to show current n-back level
         const custom_instructions = {
-            ...instrictions_template,
-            stimulus: instrictions_template.stimulus.replace(
+            ...instructions_template,
+            stimulus: instructions_template.stimulus.replace(
                 '<strong>1 trial ago</strong>',
-                `<strong>${n_back_level} trial${n_back_level > 1 ? 's' : ''} ago</strong>`
+                `<strong>${n_back} trial${n_back > 1 ? 's' : ''} ago</strong>`
             )
         };
         
-        return {
+        const nested_timeline = {
             timeline: [custom_instructions, task_timeline]
         };
+        return nested_timeline;
+
     } else {
         return task_timeline;
     }
@@ -182,8 +184,8 @@ export function createPracticeTimeline(options: Parameters<typeof createTimeline
     return createTimeline({
         ...options,
         total_trials: 6,
-        target_percentage: 33,
-        show_feedback: true,
+        target_percentage: 50,
+        show_feedback_text: true,
         show_feedback_border: true,
         include_instructions: true
     });
@@ -191,20 +193,20 @@ export function createPracticeTimeline(options: Parameters<typeof createTimeline
 
 // Create multiple n-back levels timeline
 export function createMultiLevelNBackTimeline({
-    n_back_levels = [1, 2],
+    n_backs = [1, 2],
     trials_per_level = 20,
     randomize_levels = false,
     ...sharedOptions
 }: {
-    n_back_levels?: number[],
+    n_backs?: number[],
     trials_per_level?: number,
     randomize_levels?: boolean,
 } & Parameters<typeof createTimeline>[0] = {}) {
     
-    const level_timelines = n_back_levels.map(level => {
+    const level_timelines = n_backs.map(level => {
         return createTimeline({
             ...sharedOptions,
-            n_back_level: level,
+            n_back: level,
             total_trials: trials_per_level,
             include_instructions: false
         });
@@ -219,39 +221,39 @@ export function createMultiLevelNBackTimeline({
 // Utility functions for common configurations
 export const presetConfigurations = {
     easy: () => createTimeline({
-        n_back_level: 1,
+        n_back: 1,
         total_trials: 20,
         target_percentage: 30,
-        show_feedback: true
+        show_feedback_text: true
     }),
     
     medium: () => createTimeline({
-        n_back_level: 2,
+        n_back: 2,
         total_trials: 30,
         target_percentage: 25,
-        show_feedback: false
+        show_feedback_text: false
     }),
     
     hard: () => createTimeline({
-        n_back_level: 3,
+        n_back: 3,
         total_trials: 40,
         target_percentage: 20,
-        show_feedback: false,
+        show_feedback_text: false,
         rows: 4,
         cols: 4
     }),
 
     research: () => createMultiLevelNBackTimeline({
-        n_back_levels: [1, 2, 3],
+        n_backs: [1, 2, 3],
         trials_per_level: 50,
         target_percentage: 25,
-        show_feedback: false,
+        show_feedback_text: false,
         randomize_levels: true
     })
 };
 
 // Export individual components for custom use
-export { instrictions_template, generateNBackSequence };
+export { instructions_template, generateNBackSequence };
 
 // Export default timeline creator
 export default createTimeline;
@@ -265,5 +267,5 @@ export const timelineUnits = {
 export const utils = {
     presetConfigurations,
     generateNBackSequence,
-    instrictions_template
+    instructions_template
 }

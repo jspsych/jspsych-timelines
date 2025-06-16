@@ -20,16 +20,16 @@ Parameter | Type | Default Value | Description
 ----------|------|---------------|------------
 rows | number | 3 | Number of rows in the grid
 cols | number | 3 | Number of columns in the grid
-n_back_level | number | 1 | The n-back level (how many trials back to match)
+n_back | number | 1 | The n-back level (how many trials back to match)
 total_trials | number | 20 | Total number of trials in the timeline
 target_percentage | number | 25 | Percentage of trials that are targets
 stimulus_duration | number | 750 | Duration (ms) the stimulus is shown
 isi_duration | number | 250 | Inter-stimulus interval (ms)
 feedback_duration | number | 1000 | Duration (ms) of feedback display
-show_feedback | boolean | false | Whether to show feedback after each trial
+show_feedback_text | boolean | false | Whether to show feedback after each trial
 show_feedback_border | boolean | false | Whether to highlight the grid border for feedback
-showFeedbackNoResponse | boolean | false | Show feedback if no response is made
-feedbackWaitNoResponse | boolean | true | Wait for feedback even if no response
+show_feedback_no_click  | boolean | false | Show feedback if no response is made
+feedback_wait_no_click | boolean | true | Wait for feedback even if no response
 cell_size | number | 150 | Size (px) of each grid cell
 instructions_trial | string | "Click the button when the position matches the one from {n} trial(s) ago" | Instructions template for each trial
 button_text | string | "MATCH" | Text for the match button
@@ -54,14 +54,14 @@ var trial = {
 
 Parameter | Type | Default Value | Description
 ----------|------|---------------|------------
-See above | | | (All initialization parameters can also be set per trial)
+See above | | | (All initialization parameters can also be set per trial, look at @jspsych-contrib/plugin-spatial-nback for more info)
 
 ## Data Generated
 
 Name | Type | Value
 -----|------|------
 trial_number | number | The trial index (1-based)
-n_back_level | number | The n-back level for the timeline
+n_back | number | The n-back level for the timeline
 total_trials | number | Total number of trials in the timeline
 task | string | "spatial-nback"
 response | string/number | Participant's response (if applicable)
@@ -87,7 +87,7 @@ Predefined configurations:
 - `hard()`
 - `research()`
 
-### generateNBackSequence(total_trials, n_back_level, target_percentage, rows, cols)
+### generateNBackSequence(total_trials, n_back, target_percentage, rows, cols)
 Generates the sequence of positions and target flags for the task.
 
 ### instrictions_template
