@@ -25,9 +25,18 @@
   // Get instructions trial
 //const instructions = utils.showStartInstructions();
 
-  const task = jsPsychTimelineBart.createTimeline(jsPsych, { });
+  const task = jsPsychTimelineBart.createTimeline(jsPsych, {
+    max_pumps: 20,
+    min_pumps: 1,
+    currency_unit_per_pump: 1, //eg 1 cent per pump
+    num_trials: 5, // number of trials in the experiment
+   });
 
-  jsPsych.run([task])
+   const instructions = jsPsychTimelineBart.utils.showStartInstructions();
+
+   const end = jsPsychTimelineBart.utils.showEndResults(jsPsych);
+
+  jsPsych.run([instructions, task, end])
 </script>
 
 </html>

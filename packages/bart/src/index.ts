@@ -207,7 +207,7 @@ function createTrialTimeline(jsPsych: JsPsych, max_pumps: number, min_pumps: num
     return singleTrial;
 }
 
-export function createTimeline(jsPsych:JsPsych, {
+export function createTimeline(jsPsych:JsPsych, { 
     max_pumps = 20,
     min_pumps = 1,
     currency_unit_per_pump = 1, //eg 1 cent per pump
@@ -235,7 +235,9 @@ export function createTimeline(jsPsych:JsPsych, {
  
 
 
-export const timelineUnits = {}
+export const timelineUnits = {
+    createTrialTimeline
+}
 
 export const utils = {
     showStartInstructions,
