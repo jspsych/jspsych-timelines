@@ -5,7 +5,6 @@
   <title>Spatial N-Back Task</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <script src="https://unpkg.com/jspsych"></script>
-  <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response"></script>
   <script src="../dist/index.global.js"></script>
   <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css">
 </head>
@@ -21,7 +20,7 @@
     }
   });
 
-  const instructions_trial = jsPsychTimelineSpatialNback.utils.instructions_template;
+  const instructions = jsPsychTimelineSpatialNback.utils.createInstructions();
 
   // Create a custom timeline
   const spatial1Back = jsPsychTimelineSpatialNback.createTimeline({
@@ -38,8 +37,8 @@
     show_feedback_no_click : true,
     feedback_wait_no_click: true,
     cell_size: 150,
-    instructions_trial: "Click the button when the position matches the one from {n} trial(s) ago",
-    button_text: "MATCH",
+    prompt: "Click the button when the position matches the one from {n_back} trial{plural} ago", //overrides text.ts
+    button_text: "MATCH",                                                                         //overrides text.ts
     stimulus_color: "#2196F3",
     correct_color: "#4CAF50",
     incorrect_color: "#F44336",
@@ -57,7 +56,7 @@
   // });
   const spatial1BackTrials = spatial1Back.timeline;
 
-  jsPsych.run([instructions_trial, spatial1BackTrials]);
+  jsPsych.run([instructions, spatial1BackTrials]);
 </script>
 
 </html>

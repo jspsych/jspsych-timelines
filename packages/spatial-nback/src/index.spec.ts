@@ -35,7 +35,7 @@ describe('createTimeline', () => {
   it('should include instructions when specified', () => {
     const timeline = createTimeline({ include_instructions: true });
     expect(timeline.timeline).toHaveLength(2);
-    expect(timeline.timeline[0].choices).toEqual(['Continue']);
+    expect(timeline.timeline[0].show_clickable_nav).toBeTruthy();
   });
 
   it('should randomize trials when specified', () => {
@@ -153,17 +153,10 @@ describe('presetConfigurations', () => {
 });
 
 describe('timeline instruction customization', () => {
-  it('should update instructions for different n_backs', () => {
-    const timeline1 = createTimeline({ n_back: 1, include_instructions: true });
-    const timeline2 = createTimeline({ n_back: 2, include_instructions: true });
-    
-    expect(timeline1.timeline[0].stimulus).toContain('1 trial ago');
-    expect(timeline2.timeline[0].stimulus).toContain('2 trials ago');
-  });
 
-  it('should replace placeholders in trial instructions', () => {
+  it('should replace placeholders in trial prompt', () => {
     const timeline = createTimeline({
-      instructions_trial: "Level {n_back}, Trial {trial} of {total}",
+      prompt: "Level {n_back}, Trial {trial} of {total}",
       n_back: 2,
       total_trials: 5
     });

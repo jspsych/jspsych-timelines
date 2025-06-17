@@ -31,7 +31,7 @@ show_feedback_border | boolean | false | Whether to highlight the grid border fo
 show_feedback_no_click  | boolean | false | Show feedback if no response is made
 feedback_wait_no_click | boolean | true | Wait for feedback even if no response
 cell_size | number | 150 | Size (px) of each grid cell
-instructions_trial | string | "Click the button when the position matches the one from {n} trial(s) ago" | Instructions template for each trial
+prompt | string | "Click the button when the position matches the one from {n} trial(s) ago" | Instructions template for each trial
 button_text | string | "MATCH" | Text for the match button
 stimulus_color | string | "#2196F3" | Color of the stimulus square
 correct_color | string | "#4CAF50" | Color for correct feedback

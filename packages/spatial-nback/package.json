@@ -33,9 +33,8 @@
         "typescript": "^5.0.2"
     },
     "dependencies": {
-        "@jspsych/plugin-html-button-response": "^2.1.0",
-        "@jspsych/plugin-html-keyboard-response": "^2.1.0",
-        "@jspsych-contrib/plugin-spatial-nback": "git@https://github.com/farhat60/jspsych-contrib/packages/plugin-spatial-nback",
+        "@jspsych-contrib/plugin-spatial-nback": "https://github.com/farhat60/jspsych-contrib/tree/main/packages",
+        "@jspsych/plugin-instructions": "^2.1.0",
         "jsPsych": "npm:jspsych@^8.2.1"
     }
 }

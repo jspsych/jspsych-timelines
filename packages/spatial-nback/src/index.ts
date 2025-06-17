@@ -1,21 +1,37 @@
 import { initJsPsych, JsPsych } from "jspsych"
-import jsPsychPluginSpatialNback from "@jspsych/plugin-spatial-nback";
-import jsPsychHtmlKeyboardResponse from "@jspsych/plugin-html-keyboard-response";
-import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
+import jsPsychPluginSpatialNback from "@jspsych-contrib/plugin-spatial-nback";
+import jsPsychInstructions from "@jspsych/plugin-instructions";
+import { trial_text, instruction_pages } from "./text";
 
-const instructions_template = {
-    type: jsPsychHtmlButtonResponse,
-    stimulus: `
-        <div style="text-align: center; font-size: clamp(16px, 4vw, 20px); line-height: 1.5; padding: 10px; max-width: 90vw; margin: 0 auto;">
-            <h2 style="font-size: clamp(20px, 5vw, 28px); margin-bottom: 20px;">Spatial N-Back Task</h2>
-            <p style="margin-bottom: 15px;">In this task, you will see a grid with blue squares appearing in different positions.</p>
-            <p style="margin-bottom: 15px;">Your job is to click the MATCH button whenever the current position is the same as the position from <strong>1 trial ago</strong>.</p>
-            <p style="margin-bottom: 15px;">Try to respond as quickly and accurately as possible.</p>
-            <p style="font-weight: bold; color: #2196F3;">Click the button below to begin the task.</p>
-        </div>
-    `,
-    choices: ['Continue'],
-};
+function createInstructions(instructions = instruction_pages) {
+    const pages: string[] = [];
+    // Iterate through instruction texts and replace placeholders
+    for (const text of instruction_pages) {
+        pages.push(`
+            <h1>${text.header || ""}</h1>
+            <h2>${text.header2 || ""}</h2>
+            <p>${text.description || ""}</p>
+            <p>${text.task_explanation || ""}</p>
+            <p>${text.performance_note || ""}</p>    
+            <h2>${text.strategy_title || ""}</h2>
+            <p>${text.strategy_intro || ""}</p>
+            <ul>
+            ${text.strategy_points?.map(point => `<li>${point}</li>`).join('') || ""}
+            </ul>
+            <p style="font-weight: bold; color: #2196F3;">${text.start_prompt || ""}</p>
+        `);
+    }
+
+    // Add the pages using instruction plugin
+    return {
+        type: jsPsychInstructions,
+        pages: pages,
+        button_label_next: "Continue",
+        button_label_previous: "Back",
+        show_clickable_nav: true
+    };
+    
+}
 
 // Generate stimulus sequence for n-back task
 function generateNBackSequence(total_trials: number, n_back: number, target_percentage: number, rows: number, cols: number) {
@@ -79,16 +95,17 @@ export function createTimeline({
     feedback_duration = 1000,
     show_feedback_text = false,
     show_feedback_border = false,
-    show_feedback_no_click  = false,
+    show_feedback_no_click = false,
     feedback_wait_no_click = true,
     cell_size = 150,
-    instructions_trial = "Click the button when the position matches the one from {n} trial(s) ago",
-    button_text = "MATCH",
+    prompt = trial_text.prompt,
+    button_text = trial_text.button,
     stimulus_color = "#2196F3",
     correct_color = "#4CAF50",
     incorrect_color = "#F44336",
     include_instructions = false,
     randomize_trials = false,
+    instruction_texts = instruction_pages,
 }: {
     rows?: number,
     cols?: number,
@@ -100,16 +117,17 @@ export function createTimeline({
     feedback_duration?: number,
     show_feedback_text?: boolean,
     show_feedback_border?: boolean,
-    show_feedback_no_click ?: boolean,
+    show_feedback_no_click?: boolean,
     feedback_wait_no_click?: boolean,
     cell_size?: number,
-    instructions_trial?: string,
+    prompt?: string,
     button_text?: string,
     stimulus_color?: string,
     correct_color?: string,
     incorrect_color?: string,
     include_instructions?: boolean,
     randomize_trials?: boolean,
+    instruction_texts?: typeof instruction_pages,
 } = {}) {
 
     // Generate the sequence
@@ -118,10 +136,11 @@ export function createTimeline({
     // Create individual trial objects
     const trials = [];
     for (let i = 0; i < total_trials; i++) {
-        const trial_instructions = instructions_trial
-            .replace('{n_back}', n_back.toString())
-            .replace('{trial}', (i + 1).toString())
-            .replace('{total}', total_trials.toString());
+        const trial_instructions = prompt
+            .replace(/{n_back}/g, n_back.toString())
+            .replace(/{plural}/g, n_back > 1 ? 's' : '')
+            .replace(/{trial}/g, (i + 1).toString())
+            .replace(/{total}/g, total_trials.toString());
 
         trials.push({
             type: jsPsychPluginSpatialNback,
@@ -135,7 +154,7 @@ export function createTimeline({
             feedback_duration: feedback_duration,
             show_feedback_text: show_feedback_text,
             show_feedback_border: show_feedback_border,
-            show_feedback_no_click : show_feedback_no_click ,
+            show_feedback_no_click: show_feedback_no_click,
             feedback_wait_no_click: feedback_wait_no_click,
             cell_size: cell_size,
             instructions: trial_instructions,
@@ -160,17 +179,10 @@ export function createTimeline({
 
     // Return complete timeline with or without instructions
     if (include_instructions) {
-        // Update instructions to show current n-back level
-        const custom_instructions = {
-            ...instructions_template,
-            stimulus: instructions_template.stimulus.replace(
-                '<strong>1 trial ago</strong>',
-                `<strong>${n_back} trial${n_back > 1 ? 's' : ''} ago</strong>`
-            )
-        };
+        const instructions = createInstructions(instruction_texts);
         
         const nested_timeline = {
-            timeline: [custom_instructions, task_timeline]
+            timeline: [instructions, task_timeline]
         };
         return nested_timeline;
 
@@ -253,7 +265,7 @@ export const presetConfigurations = {
 };
 
 // Export individual components for custom use
-export { instructions_template, generateNBackSequence };
+export { createInstructions, generateNBackSequence };
 
 // Export default timeline creator
 export default createTimeline;
@@ -267,5 +279,5 @@ export const timelineUnits = {
 export const utils = {
     presetConfigurations,
     generateNBackSequence,
-    instructions_template
+    createInstructions
 }
