@@ -7,7 +7,7 @@
     "types": "dist/index.d.ts",
     "unpkg": "dist/index.browser.min.js",
     "scripts": {
-        "build": "tsup src/index.ts --format esm,iife --sourcemap --dts --treeshake --clean --global-name jsPsychTimelineSpatialNback"
+        "build": "tsup src/index.ts --format esm,iife --sourcemap --dts --treeshake --clean --global-name jsPsychTimelineSpatialNback --external @jspsych-contrib/plugin-spatial-nback"
     },
     "repository": {
         "type": "git",
@@ -33,7 +33,7 @@
         "typescript": "^5.0.2"
     },
     "dependencies": {
-        "@jspsych-contrib/plugin-spatial-nback": "https://github.com/farhat60/jspsych-contrib/tree/main/packages",
+        "@jspsych-contrib/plugin-spatial-nback": "https://github.com/farhat60/jspsych-contrib/tree/main/",
         "@jspsych/plugin-instructions": "^2.1.0",
         "jsPsych": "npm:jspsych@^8.2.1"
     }

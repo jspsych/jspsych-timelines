@@ -1,9 +1,13 @@
 import { JsPsych, TrialType } from "jspsych"
 import HtmlButtonResponsePlugin from "@jspsych/plugin-html-button-response"
 
+interface TestCategory {
+  [testName: string]: [string, string] // [original_svg, edited_svg]
+}
+
 interface PatternComparisonConfig {
-  /** Array of SVG strings or URLs to use as patterns */
-  patterns?: string[]
+  /** Array of three test categories, each containing test pairs */
+  testCategories?: TestCategory[]
   /** Number of trials to generate */
   numTrials?: number
   /** Instructions text to display above each trial */
@@ -18,98 +22,73 @@ interface PatternComparisonConfig {
   trialTimeout?: number
   /** Inter-trial interval (in ms) */
   interTrialInterval?: number
-  /** Number of colored patterns to generate */
-  numPatterns?: number
 }
 
-// Base SVG shapes without colors
-const svgShapes = [
-  // Lightbulb
-  `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 18.9999H15C15.5523 18.9999 16 19.4476 16 19.9999C16 20.5522 15.5523 20.9999 15 20.9999H9C8.44772 20.9999 8 20.5522 8 19.9999C8 19.4476 8.44772 18.9999 9 18.9999Z" stroke="STROKE_COLOR" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2C8.68629 2 6 4.68629 6 8C6 10.2913 7.21113 12.2743 9 13.4423V17C9 17.5523 9.44772 18 10 18H14C14.5523 18 15 17.5523 15 17V13.4423C16.7889 12.2743 18 10.2913 18 8C18 4.68629 15.3137 2 12 2Z" fill="FILL_COLOR" stroke="STROKE_COLOR" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
-
-  // Camera
-  `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15 8.99994C15 10.6568 13.6569 11.9999 12 11.9999C10.3431 11.9999 9 10.6568 9 8.99994C9 7.34309 10.3431 5.99994 12 5.99994C13.6569 5.99994 15 7.34309 15 8.99994Z" fill="FILL_COLOR" stroke="STROKE_COLOR" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 20.9999H15C16.1046 20.9999 17 20.1045 17 18.9999V11.9999C17 10.8954 16.1046 9.99994 15 9.99994H9C7.89543 9.99994 7 10.8954 7 11.9999V18.9999C7 20.1045 7.89543 20.9999 9 20.9999Z" fill="FILL_COLOR" stroke="STROKE_COLOR" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 17L19 13" stroke="STROKE_COLOR" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 17L5 13" stroke="STROKE_COLOR" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 9L21 7C21 5.89543 20.1046 5 19 5H5C3.89543 5 3 5.89543 3 7L3 9" stroke="STROKE_COLOR" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
-
-  // Key
-  `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15.5 7.5C15.5 9.433 13.933 11 12 11C10.067 11 8.5 9.433 8.5 7.5C8.5 5.567 10.067 4 12 4C13.933 4 15.5 5.567 15.5 7.5Z" fill="FILL_COLOR" stroke="STROKE_COLOR" stroke-width="2"/><path d="M12 11V15.5C12 15.7761 12.2239 16 12.5 16H14.5M12 20H14.5M14.5 16V20M14.5 16H17.5C17.7761 16 18 15.7761 18 15.5V13.5C18 13.2239 17.7761 13 17.5 13H14" stroke="STROKE_COLOR" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
-
-  // Book
-  `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 19V6.2C4 5.0799 4 4.51984 4.21799 4.09202C4.40973 3.71569 4.71569 3.40973 5.09202 3.21799C5.51984 3 6.0799 3 7.2 3H12M4 19H18.8C19.9201 19 20.4802 19 20.908 18.782C21.2843 18.5903 21.5903 18.2843 21.782 17.908C22 17.4802 22 16.9201 22 15.8V8.2C22 7.0799 22 6.51984 21.782 6.09202C21.5903 5.71569 21.2843 5.40973 20.908 5.21799C20.4802 5 19.9201 5 18.8 5H12M4 19V21M12 3V5M12 3H11M12 5H11.5M12 5H13" fill="FILL_COLOR" stroke="STROKE_COLOR" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
-
-  // Anchor
-  `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 22V8M12 8C12.5523 8 13 7.55228 13 7C13 6.44772 12.5523 6 12 6C11.4477 6 11 6.44772 11 7C11 7.55228 11.4477 8 12 8ZM9 12H15M3 12C3 16.9706 7.02944 21 12 21C16.9706 21 21 16.9706 21 12" fill="FILL_COLOR" stroke="STROKE_COLOR" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
-
-  // Envelope (Mail)
-  `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 7.00005L10.2 11.65C11.2667 12.45 12.7333 12.45 13.8 11.65L20 7" stroke="STROKE_COLOR" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 17H21V5H3V17Z" fill="FILL_COLOR" stroke="STROKE_COLOR" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
-
-  // Gift Box
-  `<svg viewBox="0 0 1024 1024" class="icon" xmlns="http://www.w3.org/2000/svg"><path d="M804.6 473.9v292.6c0 21.9-17.8 39.7-39.7 39.7H259.7c-21.9 0-39.7-17.8-39.7-39.7V473.9h-18.8c-21.9 0-39.7-17.8-39.7-39.7v-68.3c0-21.9 17.8-39.7 39.7-39.7h622.1c21.9 0 39.7 17.8 39.7 39.7v68.3c0 21.9-17.8 39.7-39.7 39.7z" fill="FILL_COLOR"/><path d="M764.9 832.7H259.7c-36.5 0-66.2-29.7-66.2-66.2V499.9c-32.9-3.8-58.5-31.9-58.5-65.7v-68.3c0-36.5 29.7-66.2 66.2-66.2h622.1c36.5 0 66.2 29.7 66.2 66.2v68.3c0 33.9-25.6 61.9-58.5 65.7v266.6c.1 36.5-29.6 66.2-66.1 66.2m-563.7-480c-7.3 0-13.2 5.9-13.2 13.2v68.3c0 7.3 5.9 13.2 13.2 13.2h45.2v319.1c0 7.3 5.9 13.2 13.2 13.2h505.3c7.3 0 13.2-5.9 13.2-13.2V447.4h45.2c7.3 0 13.2-5.9 13.2-13.2v-68.3c0-7.3-5.9-13.2-13.2-13.2z" fill="STROKE_COLOR"/></svg>`,
-
-  // Flag
-  `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 21V4L4.82843 4.82843C5.5786 5.5786 6.58582 6 7.62132 6H17C18.1046 6 19 6.89543 19 8V14C19 15.1046 18.1046 16 17 16H7.62132C6.58582 16 5.5786 16.4214 4.82843 17.1716L4 18" fill="FILL_COLOR" stroke="STROKE_COLOR" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
-];
-
-// Color palette for random selection
-const colors = [
-  '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7',
-  '#DDA0DD', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E9',
-  '#F8C471', '#82E0AA', '#F1948A', '#85C1E9', '#D5A6BD',
-  '#A569BD', '#5DADE2', '#58D68D', '#F4D03F', '#EB984E'
-];
-
-function generatePatterns(numPatterns: number = 20): string[] {
-  const patterns = [];
-  
-  for (let i = 0; i < numPatterns; i++) {
-    // Select random shape
-    const shapeIndex = Math.floor(Math.random() * svgShapes.length);
-    const baseShape = svgShapes[shapeIndex];
-    
-    // Select random colors
-    const fillColor = colors[Math.floor(Math.random() * colors.length)];
-    const strokeColor = colors[Math.floor(Math.random() * colors.length)];
-    
-    // Replace placeholders with actual colors
-    const coloredPattern = baseShape
-      .replace(/FILL_COLOR/g, fillColor)
-      .replace(/STROKE_COLOR/g, strokeColor);
-    
-    patterns.push(coloredPattern);
+// Default test categories based on the PMC article methodology
+const defaultTestCategories: TestCategory[] = [
+  // Category 1: Simple geometric patterns
+  {
+    "circle_pattern": [
+      `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="20" fill="#4ECDC4" stroke="#333" stroke-width="2"/></svg>`,
+      `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="25" fill="#4ECDC4" stroke="#333" stroke-width="2"/></svg>`
+    ],
+    "square_pattern": [
+      `<svg viewBox="0 0 100 100"><rect x="30" y="30" width="40" height="40" fill="#FF6B6B" stroke="#333" stroke-width="2"/></svg>`,
+      `<svg viewBox="0 0 100 100"><rect x="25" y="25" width="50" height="50" fill="#FF6B6B" stroke="#333" stroke-width="2"/></svg>`
+    ]
+  },
+  // Category 2: Complex geometric patterns
+  {
+    "triangle_composition": [
+      `<svg viewBox="0 0 100 100"><polygon points="50,20 30,70 70,70" fill="#45B7D1" stroke="#333" stroke-width="2"/></svg>`,
+      `<svg viewBox="0 0 100 100"><polygon points="50,15 25,75 75,75" fill="#45B7D1" stroke="#333" stroke-width="2"/></svg>`
+    ],
+    "hexagon_pattern": [
+      `<svg viewBox="0 0 100 100"><polygon points="50,10 75,30 75,70 50,90 25,70 25,30" fill="#96CEB4" stroke="#333" stroke-width="2"/></svg>`,
+      `<svg viewBox="0 0 100 100"><polygon points="50,15 70,32 70,68 50,85 30,68 30,32" fill="#96CEB4" stroke="#333" stroke-width="2"/></svg>`
+    ]
+  },
+  // Category 3: Abstract/irregular patterns
+  {
+    "irregular_shape": [
+      `<svg viewBox="0 0 100 100"><path d="M20,50 Q30,20 50,30 Q70,10 80,40 Q90,60 70,70 Q50,80 30,70 Q10,60 20,50 Z" fill="#FFEAA7" stroke="#333" stroke-width="2"/></svg>`,
+      `<svg viewBox="0 0 100 100"><path d="M25,50 Q35,25 50,35 Q65,15 75,40 Q85,65 65,70 Q50,75 35,70 Q15,65 25,50 Z" fill="#FFEAA7" stroke="#333" stroke-width="2"/></svg>`
+    ],
+    "organic_form": [
+      `<svg viewBox="0 0 100 100"><ellipse cx="40" cy="50" rx="15" ry="25" fill="#DDA0DD" stroke="#333" stroke-width="2" transform="rotate(30 40 50)"/><ellipse cx="60" cy="50" rx="10" ry="20" fill="#DDA0DD" stroke="#333" stroke-width="2" transform="rotate(-20 60 50)"/></svg>`,
+      `<svg viewBox="0 0 100 100"><ellipse cx="42" cy="48" rx="18" ry="28" fill="#DDA0DD" stroke="#333" stroke-width="2" transform="rotate(35 42 48)"/><ellipse cx="58" cy="52" rx="12" ry="22" fill="#DDA0DD" stroke="#333" stroke-width="2" transform="rotate(-25 58 52)"/></svg>`
+    ]
   }
-  
-  return patterns;
-}
+];
 
 function generateTrials(config: PatternComparisonConfig) {
-  // Use patterns from config or generate colored patterns
-  const patterns = config.patterns || generatePatterns(config.numPatterns || 20);
+  const testCategories = config.testCategories || defaultTestCategories;
   const numTrials = config.numTrials || 20;
   const trials = [];
 
   for (let i = 0; i < numTrials; i++) {
+    // Randomly select a category
+    const categoryIndex = Math.floor(Math.random() * testCategories.length);
+    const selectedCategory = testCategories[categoryIndex];
+    
+    // Randomly select a test within the category
+    const testNames = Object.keys(selectedCategory);
+    const testName = testNames[Math.floor(Math.random() * testNames.length)];
+    const [originalSvg, editedSvg] = selectedCategory[testName];
+    
     // Randomly decide if patterns should be same or different
     const isSame = Math.random() < 0.5;
     
-    // Select first pattern randomly
-    const pattern1Index = Math.floor(Math.random() * patterns.length);
-    const pattern1 = patterns[pattern1Index];
-    
-    // Select second pattern based on isSame
-    let pattern2;
-    if (isSame) {
-      pattern2 = pattern1;
-    } else {
-      let pattern2Index;
-      do {
-        pattern2Index = Math.floor(Math.random() * patterns.length);
-      } while (pattern2Index === pattern1Index);
-      pattern2 = patterns[pattern2Index];
-    }
+    const pattern1 = originalSvg;
+    const pattern2 = isSame ? originalSvg : editedSvg;
 
     trials.push({
       pattern1,
       pattern2,
-      correctAnswer: isSame ? 0 : 1 // 0 for same, 1 for different
+      correctAnswer: isSame ? 0 : 1, // 0 for same, 1 for different
+      categoryIndex,
+      testName,
+      isSame
     });
   }
 
@@ -136,6 +115,7 @@ export function createTimeline(jsPsych: JsPsych, config: PatternComparisonConfig
       <div style="max-width: 600px; margin: 0 auto; text-align: center; padding: 20px;">
         <h2>Pattern Comparison Task</h2>
         <p>You will see two patterns side by side. Your task is to decide whether they are the same or different.</p>
+        <p>Look carefully at both patterns and compare them closely.</p>
         <p>Respond as quickly and accurately as possible.</p>
         <p>Click the button below to start.</p>
       </div>
@@ -221,9 +201,11 @@ export function createTimeline(jsPsych: JsPsych, config: PatternComparisonConfig
         task: 'pattern-comparison',
         trial_number: index + 1,
         correct_answer: trial.correctAnswer,
+        category_index: trial.categoryIndex,
+        test_name: trial.testName,
+        is_same: trial.isSame,
         pattern1: trial.pattern1,
-        pattern2: trial.pattern2,
-        is_same: trial.correctAnswer === 0
+        pattern2: trial.pattern2
       },
       on_finish: function(data: any) {
         data.correct = data.response === data.correct_answer
@@ -272,11 +254,9 @@ export const timelineUnits = {
 
 export const utils = {
   generateTrials,
-  generatePatterns,
-  svgShapes, // Export the base shapes
-  colors, // Export the color palette
+  defaultTestCategories,
   
-  /** Calculate accuracy and reaction time statistics */
+  /** Calculate accuracy and reaction time statistics by category */
   calculatePerformance: function(data: any[]) {
     const trialData = data.filter(d => d.task === 'pattern-comparison')
     const correct = trialData.filter(d => d.correct).length
@@ -286,11 +266,34 @@ export const utils = {
     const validRTs = trialData.filter(d => d.correct && d.rt !== null).map(d => d.rt)
     const meanRT = validRTs.length > 0 ? validRTs.reduce((a, b) => a + b, 0) / validRTs.length : null
     
+    // Calculate performance by category
+    const categoryPerformance = [0, 1, 2].map(categoryIndex => {
+      const categoryTrials = trialData.filter(d => d.category_index === categoryIndex)
+      const categoryCorrect = categoryTrials.filter(d => d.correct).length
+      const categoryTotal = categoryTrials.length
+      const categoryAccuracy = categoryTotal > 0 ? (categoryCorrect / categoryTotal) * 100 : 0
+      
+      const categoryValidRTs = categoryTrials.filter(d => d.correct && d.rt !== null).map(d => d.rt)
+      const categoryMeanRT = categoryValidRTs.length > 0 ? 
+        categoryValidRTs.reduce((a, b) => a + b, 0) / categoryValidRTs.length : null
+      
+      return {
+        categoryIndex,
+        accuracy: categoryAccuracy,
+        meanReactionTime: categoryMeanRT,
+        totalTrials: categoryTotal,
+        correctTrials: categoryCorrect
+      }
+    })
+    
     return {
-      accuracy,
-      meanReactionTime: meanRT,
-      totalTrials: total,
-      correctTrials: correct
+      overall: {
+        accuracy,
+        meanReactionTime: meanRT,
+        totalTrials: total,
+        correctTrials: correct
+      },
+      byCategory: categoryPerformance
     }
   }
 }

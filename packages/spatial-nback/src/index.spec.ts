@@ -1,5 +1,3 @@
-import { startTimeline } from "@jspsych/test-utils";
-import jsPsychPluginSpatialNback from "@jspsych-contrib/plugin-spatial-nback";
 import { createTimeline, createPracticeTimeline, createMultiLevelNBackTimeline, presetConfigurations } from "./index";
 
 /* Test suite for Spatial N-Back Timeline 
