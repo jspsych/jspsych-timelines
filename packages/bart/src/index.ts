@@ -230,11 +230,6 @@ export function createTimeline(jsPsych:JsPsych, {
      return bart_timeline;;
 
 };
-
-
- 
-
-
 export const timelineUnits = {
     createTrialTimeline
 }
