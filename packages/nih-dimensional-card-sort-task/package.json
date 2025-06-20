@@ -1,0 +1,38 @@
+{
+    "name": "@jspsych-timelines/nih-dimensional-card-sort-task",
+    "version": "0.0.1",
+    "description": "A version of the dimensional card sort task featured in the NIH Cogntive Battery",
+    "type": "module",
+    "main": "dist/index.mjs",
+    "types": "dist/index.d.ts",
+    "unpkg": "dist/index.browser.min.js",
+    "scripts": {
+        "build": "tsup src/index.ts --format esm,iife --sourcemap --dts --treeshake --clean --global-name jsPsychTimelineNihDimensionalCardSortTask"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/jspsych/jspsych-timelines",
+        "directory": "packages"
+    },
+    "keywords": [
+        "jsPsych"
+    ],
+    "author": {
+        "name": "Valeria Inojosa",
+        "url": ""
+    },
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/jspsych/jspsych-timelines/issues"
+    },
+    "homepage": "https://github.com/jspsych/jspsych-timelines/packages/nih-dimensional-card-sort-task/README.md",
+    "devDependencies": {
+        "@jspsych/config": "^3.2.2",
+        "jspsych": "^8.0.0",
+        "tsup": "^6.7.0",
+        "typescript": "^5.0.2"
+    },
+    "dependencies": {
+        "@jspsych/plugin-html-button-response": "^2.1.0"
+    }
+}
