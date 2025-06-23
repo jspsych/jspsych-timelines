@@ -4,7 +4,9 @@
 <head>
   <title>jsPsychTimelinePictureVocabTimeline Example</title>
   <script src="https://unpkg.com/jspsych"></script>
-  <script src="./index.global.js"></script>
+  <!-- <script src="./index.global.js"></script> -->
+    <script src="../dist/index.global.js?v=123"></script>
+
   <!-- Load the published timeline package here, e.g.
 <script src="https://unpkg.com/picture-vocab-timeline"></script>
 <script src="../dist/index.global.js"></script> -->
@@ -13,7 +15,8 @@
 
 </head>
 
-<body></body>
+<body>
+</body>
 <script>
   // Access images from the bundled module
   const images = window.jsPsychTimelinePictureVocabTimeline.images;
@@ -48,37 +51,41 @@
     on_finish:() => jsPsych.data.displayData('json')
   });
 
+
+
+  // Create and run the timeline
   const task = jsPsychTimelinePictureVocabTimeline.createTimeline(jsPsych, {
-  practiceItems: [
-    {
-      word: "banana",
-      images: [bananaSVG, appleSVG, orangeSVG, grapeSVG], // your actual SVG strings
-      correctIndex: 0 // banana is the first image
-    },
-    {
-      word: "spoon", 
-      images: [forkSVG, spoonSVG, knifeSVG, plateSVG],
-      correctIndex: 1 // spoon is the second image  
-    }
-  ],
-  liveItems: [
-    {
-      word: "dog",
-      images: [catSVG, dogSVG, fishSVG, birdSVG],
-      correctIndex: 1 // dog is the second image
-    },
-    {
-      word: "apple",
-      images: [appleSVG, orangeSVG, bananaSVG, grapeSVG],
-      correctIndex: 0 // apple is the first image
-    }
-    // more live items...
-  ]
-}, {
-  shuffleTrials: true, // shuffle the trials
-  shuffleImageChoices: true, // shuffle the image choices
-});
-jsPsych.run([task]);
+    practiceItems: [
+      {
+        word: "banana",
+        images: [bananaSVG, appleSVG, orangeSVG, grapeSVG], // your actual SVG strings
+        correctIndex: 0 // banana is the first image
+      },
+      {
+        word: "spoon", 
+        images: [forkSVG, spoonSVG, knifeSVG, plateSVG],
+        correctIndex: 1 // spoon is the second image  
+      }
+    ],
+    liveItems: [
+      {
+        word: "dog",
+        images: [catSVG, dogSVG, fishSVG, birdSVG],
+        correctIndex: 1 // dog is the second image
+      },
+      {
+        word: "apple",
+        images: [appleSVG, orangeSVG, bananaSVG, grapeSVG],
+        correctIndex: 0 // apple is the first image
+      }
+      // more live items...
+    ]
+  }, {
+    shuffleTrials: true, // shuffle the trials
+    shuffleImageChoices: true // shuffle the image choices
+  });
+  
+  jsPsych.run([task]);
 
 </script>
 

@@ -30,17 +30,125 @@ function resolveImages(providedImages: string[], word?: string): string[] {
   return imageKeys.slice(0, Math.min(4, imageKeys.length)).map(key => images[key as keyof typeof images]);
 }
 
+// SVG validation function
+function validateSvg(svgString: string): boolean {
+  if (!svgString || typeof svgString !== 'string') {
+    return false;
+  }
+  
+  const trimmed = svgString.trim();
+  
+  // Check if it's a complete SVG element
+  if (trimmed.startsWith('<svg') && trimmed.endsWith('</svg>')) {
+    // Basic validation - check for balanced svg tags
+    const openSvgCount = (trimmed.match(/<svg[^>]*>/g) || []).length;
+    const closeSvgCount = (trimmed.match(/<\/svg>/g) || []).length;
+    return openSvgCount === closeSvgCount && openSvgCount === 1;
+  }
+  
+  // Check if it's SVG content that can be wrapped
+  if (trimmed.startsWith('<') && trimmed.endsWith('>')) {
+    // Basic check for valid XML-like structure
+    try {
+      // Simple tag balance check
+      const openTags = (trimmed.match(/<[^\/][^>]*>/g) || []).length;
+      const closeTags = (trimmed.match(/<\/[^>]*>/g) || []).length;
+      const selfClosingTags = (trimmed.match(/<[^>]*\/>/g) || []).length;
+      
+      // For self-closing tags, each counts as both open and close
+      return openTags === closeTags + selfClosingTags;
+    } catch (error) {
+      return false;
+    }
+  }
+  
+  return false;
+}
+
+// Enhanced image resolution with validation
+function resolveAndValidateImages(providedImages: string[], word?: string): string[] {
+  const validImages: string[] = [];
+  const invalidImages: string[] = [];
+  
+  // Validate provided images
+  if (providedImages && providedImages.length > 0) {
+    providedImages.forEach((img, index) => {
+      if (img && img.trim().length > 0 && validateSvg(img)) {
+        validImages.push(img);
+      } else {
+        invalidImages.push(`Image ${index}: ${img ? 'Invalid SVG format' : 'Empty/null image'}`);
+      }
+    });
+    
+    // Log validation errors
+    if (invalidImages.length > 0) {
+      console.warn(`Picture Vocab Timeline - Invalid images detected for word "${word || 'unknown'}":`, invalidImages);
+    }
+    
+    // If we have enough valid images, use them
+    if (validImages.length > 0) {
+      // If we don't have enough valid images, fill with fallbacks
+      if (validImages.length < 2) {
+        console.warn(`Picture Vocab Timeline - Only ${validImages.length} valid image(s) for word "${word || 'unknown'}". Adding fallback images.`);
+        const fallbackImages = getFallbackImages(word, 4 - validImages.length);
+        return [...validImages, ...fallbackImages];
+      }
+      return validImages;
+    }
+  }
+  
+  // Fall back to automatic resolution if no valid images
+  if (invalidImages.length > 0) {
+    console.warn(`Picture Vocab Timeline - No valid images provided for word "${word || 'unknown'}". Using fallback images.`);
+  }
+  
+  return getFallbackImages(word, 4);
+}
+
+
+// Helper function to get fallback images
+function getFallbackImages(word?: string, count: number = 4): string[] {
+  if (word) {
+    const wordLower = word.toLowerCase();
+    const matchingKeys = Object.keys(images).filter(key => 
+      key.toLowerCase().includes(wordLower) || wordLower.includes(key.toLowerCase().replace('svg', ''))
+    );
+    
+    if (matchingKeys.length > 0) {
+      const matchedImages = matchingKeys.map(key => images[key as keyof typeof images]);
+      if (matchedImages.length >= count) {
+        return matchedImages.slice(0, count);
+      }
+      // If not enough matched images, fill with random ones
+      const remainingKeys = Object.keys(images).filter(key => !matchingKeys.includes(key));
+      const additionalImages = remainingKeys.slice(0, count - matchedImages.length)
+        .map(key => images[key as keyof typeof images]);
+      return [...matchedImages, ...additionalImages];
+    }
+  }
+  
+  // Final fallback - use first few images from images.ts
+  const imageKeys = Object.keys(images);
+  return imageKeys.slice(0, Math.min(count, imageKeys.length)).map(key => images[key as keyof typeof images]);
+}
+
+interface PictureVocabItem {
+  word: string;
+  images: string[]; // Array of SVG strings (any number)
+  correctIndex: number; // Which image is correct (0-based index)
+}
+
 interface PictureVocabConfig {
-  practiceItems: {
-    word: string; 
-    images: string[]; // Array of SVG strings (any number)
-    correctIndex: number; // Which image is correct (0-based index)
-  }[]; 
-  liveItems: {
-    word: string;
-    images: string[]; // Array of SVG strings (any number)
-    correctIndex: number; // Which image is correct (0-based index)
-  }[];}
+  practiceItems: PictureVocabItem[];
+  liveItems: PictureVocabItem[];
+}
+
+interface PictureVocabOptions {
+  practiceItems?: PictureVocabItem[];
+  liveItems?: PictureVocabItem[];
+  shuffleTrials?: boolean;
+  shuffleImageChoices?: boolean;
+}
 
 
 function createSvgImageButton(choice: string, choice_index: number) {
@@ -96,20 +204,17 @@ function createSvgImageButton(choice: string, choice_index: number) {
 }
 
 
-export function createTimeline(jsPsych: JsPsych, config: PictureVocabConfig, options : {
-        shuffleTrials?: boolean;
-        shuffleImageChoices?: boolean;
-    } = {}
-): any[] {
-
-  const welcomeScreen = {
+// Timeline Unit Factories
+export function createWelcomeScreen() {
+  return {
     type: htmlButtonResponse,
     stimulus: `<p>${englishText.welcome_message}</p>`,
     choices: [englishText.begin_button]
   };
+}
 
-  // Instructions screen with TTS
-  const instructions = {
+export function createInstructionsScreen() {
+  return {
     type: htmlButtonResponse,
     stimulus: `
       <p>${englishText.instructions_hearing}</p>
@@ -119,11 +224,32 @@ export function createTimeline(jsPsych: JsPsych, config: PictureVocabConfig, opt
       <p>${englishText.instructions_back}</p>
       <p>${englishText.instructions_ready}</p>
     `,
-    choices: [englishText.next_button],
+    choices: [englishText.next_button]
   };
+}
 
+export function createTransitionScreen() {
+  return {
+    type: htmlButtonResponse,
+    stimulus: `
+      <p>${englishText.transition_message}</p>
+      <p>${englishText.transition_reminder}</p>
+      <p>${englishText.transition_action}</p>
+      <p>${englishText.transition_ready}</p>
+    `,
+    choices: [englishText.start_button]
+  };
+}
 
-function makePracticeTrial(word: string, images: string[], correctIndex: number) {
+export function createThankYouScreen() {
+  return {
+    type: htmlButtonResponse,
+    stimulus: `<p>${englishText.thank_you}</p>`,
+    choices: [englishText.finish_button]
+  };
+}
+
+export function createPracticeTrial(jsPsych: JsPsych, word: string, images: string[], correctIndex: number) {
   let attempts = 0;
 
   return {
@@ -135,7 +261,6 @@ function makePracticeTrial(word: string, images: string[], correctIndex: number)
         button_html: createSvgImageButton,
         data: { trial_id: 'practice-choice' },
         on_load: () => {
-          // Clean approach - just add classes, let CSS handle the layout
           const btnGroup = document.querySelector('.jspsych-html-button-response-btngroup') as HTMLElement;
           if (btnGroup) {
             btnGroup.classList.add('image-button-group');
@@ -172,14 +297,11 @@ function makePracticeTrial(word: string, images: string[], correctIndex: number)
   };
 }
 
-
-
-  // Live trial factory
-function makeLiveTrial(word: string, images: string[], correctIndex: number) {
+export function createLiveTrial(word: string, images: string[], correctIndex: number) {
   return {
     type: htmlButtonResponse,
     stimulus: `<p style="text-align: center; margin-bottom: 20px; font-size: 18px;">${englishText.live_instruction.replace('{word}', `<strong>${word}</strong>`)}</p>`,
-    choices: images, // array of SVG strings
+    choices: images,
     button_html: (choice: string, index: number) => {
       return `
         <button class="jspsych-btn responsive-image-btn" style="
@@ -203,7 +325,6 @@ function makeLiveTrial(word: string, images: string[], correctIndex: number) {
         </button>`;
     },
     on_load: () => {
-      // Clean approach - just add classes, let CSS handle the layout
       const btnGroup = document.querySelector('.jspsych-html-button-response-btngroup') as HTMLElement;
       if (btnGroup) {
         btnGroup.classList.add('image-button-group');
@@ -220,17 +341,65 @@ function makeLiveTrial(word: string, images: string[], correctIndex: number) {
   };
 }
 
-  // Transition to live items screen
-  const transition = {
-    type: htmlButtonResponse,
-    stimulus: `
-      <p>${englishText.transition_message}</p>
-      <p>${englishText.transition_reminder}</p>
-      <p>${englishText.transition_action}</p>
-      <p>${englishText.transition_ready}</p>
-    `,
-    choices: [englishText.start_button],
+export function createTimeline(jsPsych: JsPsych, config?: PictureVocabConfig, options: PictureVocabOptions = {}): any[] {
+  // Handle both old and new parameter patterns for backward compatibility
+  let finalConfig: PictureVocabConfig;
+  let finalOptions: PictureVocabOptions;
+
+  if (config && ('practiceItems' in config || 'liveItems' in config)) {
+    // New pattern: createTimeline(jsPsych, config, options)
+    finalConfig = config;
+    finalOptions = options;
+  } else {
+    // Old pattern: createTimeline(jsPsych, options) where first param contains everything
+    finalOptions = (config as PictureVocabOptions) || {};
+    finalConfig = {
+      practiceItems: finalOptions.practiceItems || [],
+      liveItems: finalOptions.liveItems || []
+    };
+  }
+
+  // Default configuration based on index.html example
+  const defaultConfig: PictureVocabConfig = {
+    practiceItems: [
+      {
+        word: "banana",
+        images: [images.bananaSVG, images.appleSVG, images.orangeSVG, images.grapeSVG],
+        correctIndex: 0
+      },
+      {
+        word: "spoon",
+        images: [images.forkSVG, images.spoonSVG, images.knifeSVG, images.plateSVG],
+        correctIndex: 1
+      }
+    ],
+    liveItems: [
+      {
+        word: "dog",
+        images: [images.catSVG, images.dogSVG, images.fishSVG, images.birdSVG],
+        correctIndex: 1
+      },
+      {
+        word: "apple",
+        images: [images.appleSVG, images.orangeSVG, images.bananaSVG, images.grapeSVG],
+        correctIndex: 0
+      }
+    ]
   };
+
+  // Merge provided config with defaults
+  const mergedConfig: PictureVocabConfig = {
+    practiceItems: finalConfig.practiceItems.length > 0 ? finalConfig.practiceItems : defaultConfig.practiceItems,
+    liveItems: finalConfig.liveItems.length > 0 ? finalConfig.liveItems : defaultConfig.liveItems
+  };
+
+  const welcomeScreen = createWelcomeScreen();
+
+  const instructions = createInstructionsScreen();
+
+
+
+  const transition = createTransitionScreen();
 
   // Guess correct index if not manually labeled
   function autoCorrectIndex(word: string, images: string[]): number {
@@ -241,13 +410,13 @@ function makeLiveTrial(word: string, images: string[], correctIndex: number) {
   }
 
 
-    const practiceItems = options.shuffleTrials
-    ? jsPsych.randomization.shuffle(config.practiceItems)
-    : config.practiceItems;
+    const practiceItems = finalOptions.shuffleTrials
+    ? jsPsych.randomization.shuffle(mergedConfig.practiceItems)
+    : mergedConfig.practiceItems;
 
-  const liveItems = options.shuffleTrials
-    ? jsPsych.randomization.shuffle(config.liveItems)
-    : config.liveItems;
+  const liveItems = finalOptions.shuffleTrials
+    ? jsPsych.randomization.shuffle(mergedConfig.liveItems)
+    : mergedConfig.liveItems;
 
 
 // Practice items 
@@ -261,15 +430,15 @@ function makeLiveTrial(word: string, images: string[], correctIndex: number) {
     let images = [...item.images];
     let correctIndex = item.correctIndex;
     
-    // Resolve images first to get actual SVG strings
-    const resolvedImages = resolveImages(images, item.word);
+    // Resolve and validate images first to get actual SVG strings
+    const resolvedImages = resolveAndValidateImages(images, item.word);
     
     // If images were resolved from fallback, update correctIndex
     if (images.length === 0 || !images.every(img => img && img.trim().length > 0)) {
       correctIndex = autoCorrectIndex(item.word, resolvedImages);
     }
 
-    if (options.shuffleImageChoices) {
+    if (finalOptions.shuffleImageChoices) {
       const originalImage = resolvedImages[correctIndex];
       const shuffledImages = jsPsych.randomization.shuffle(resolvedImages);
       correctIndex = shuffledImages.findIndex(img => img === originalImage);
@@ -279,29 +448,24 @@ function makeLiveTrial(word: string, images: string[], correctIndex: number) {
       images = resolvedImages;
     }
 
-    return makePracticeTrial(item.word, images, correctIndex);
+    return createPracticeTrial(jsPsych, item.word, images, correctIndex);
   });
 
-// // Live items˝
-// const liveTimeline = config.liveItems.map(item => {
-//   const correct = item.correctIndex !== undefined ? item.correctIndex : autoCorrectIndex(item.word, item.images);
-//   return makeLiveTrial(item.word, item.images, correct);
-// });
 
 // Create live trials
   const liveTimeline = liveItems.map(item => {
     let images = [...item.images];
     let correctIndex = item.correctIndex;
     
-    // Resolve images first to get actual SVG strings
-    const resolvedImages = resolveImages(images, item.word);
+    // Resolve and validate images first to get actual SVG strings
+    const resolvedImages = resolveAndValidateImages(images, item.word);
     
     // If images were resolved from fallback, update correctIndex
     if (images.length === 0 || !images.every(img => img && img.trim().length > 0)) {
       correctIndex = autoCorrectIndex(item.word, resolvedImages);
     }
 
-    if (options.shuffleImageChoices) {
+    if (finalOptions.shuffleImageChoices) {
       const originalImage = resolvedImages[correctIndex];
       const shuffledImages = jsPsych.randomization.shuffle(resolvedImages);
       correctIndex = shuffledImages.findIndex(img => img === originalImage);
@@ -311,20 +475,28 @@ function makeLiveTrial(word: string, images: string[], correctIndex: number) {
       images = resolvedImages;
     }
 
-    return makeLiveTrial(item.word, images, correctIndex);
+    return createLiveTrial(item.word, images, correctIndex);
   });
 
-  const thankYouScreen = {
-    type: htmlButtonResponse,
-    stimulus: `<p>${englishText.thank_you}</p>`,
-    choices: [englishText.finish_button]
-  }
+  const thankYouScreen = createThankYouScreen();
 
   return [welcomeScreen, instructions, ...practiceTimeline, transition, ...liveTimeline, thankYouScreen];
 }
 
-export const timelineUnits = {}
+export const timelineUnits = {
+  createWelcomeScreen,
+  createInstructionsScreen,
+  createTransitionScreen,
+  createThankYouScreen,
+  createPracticeTrial,
+  createLiveTrial
+}
 
-export const utils = {}
+
+export const utils = {
+  validateSvg,
+  resolveAndValidateImages,
+  getFallbackImages
+}
 
 export { images }

@@ -8,7 +8,7 @@ export const englishText = {
     instructions_back: "If you think you made a mistake and want to change your last answer, tap the Back button to hear the last word again.",
     instructions_ready: "Are you ready?",
     next_button: "Next",
-    practice_intro: "Let's try one for practice. Tap the picture of {word}.",
+    practice_intro: "Let's try one for practice. Tap the picture that means {word}.",
     practice_correct: "You picked the {word}! Let's move on.",
     practice_incorrect: "You did not pick the {word}. Let's try again.",
     try_again_button: "Try Again",

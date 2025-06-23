@@ -3,6 +3,26 @@ import { createTimeline } from "./index";
 import { englishText } from "./text";
 import { images } from "./images";
 
+// Mock speechSynthesis
+const mockSpeechSynthesis = {
+  cancel: jest.fn(),
+  speak: jest.fn()
+};
+
+Object.defineProperty(global, 'window', {
+  value: {
+    speechSynthesis: mockSpeechSynthesis
+  },
+  writable: true
+});
+
+// Mock SpeechSynthesisUtterance
+global.SpeechSynthesisUtterance = jest.fn().mockImplementation((text) => ({
+  text,
+  rate: 0.8,
+  volume: 0.8
+}));
+
 // Mock JsPsych
 const mockJsPsych = {
   randomization: {
@@ -39,6 +59,8 @@ Object.defineProperty(document, 'querySelectorAll', {
 describe("Picture Vocab Timeline", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockSpeechSynthesis.cancel.mockClear();
+    mockSpeechSynthesis.speak.mockClear();
   });
 
   describe("resolveImages", () => {
@@ -484,6 +506,153 @@ describe("Picture Vocab Timeline", () => {
     });
   });
 
+  describe("SVG validation", () => {
+    const { utils } = require("./index");
+
+    test("should validate complete SVG strings", () => {
+      expect(utils.validateSvg("<svg><rect/></svg>")).toBe(true);
+      expect(utils.validateSvg("<svg viewBox='0 0 100 100'><circle r='10'/></svg>")).toBe(true);
+    });
+
+    test("should validate SVG content without svg wrapper", () => {
+      expect(utils.validateSvg("<rect fill='red'/>")).toBe(true);
+      expect(utils.validateSvg("<circle r='10'/>")).toBe(true);
+    });
+
+    test("should reject invalid SVG strings", () => {
+      expect(utils.validateSvg("")).toBe(false);
+      expect(utils.validateSvg(null)).toBe(false);
+      expect(utils.validateSvg(undefined)).toBe(false);
+      expect(utils.validateSvg("not svg")).toBe(false);
+      expect(utils.validateSvg("<svg><rect></svg>")).toBe(false); // Unbalanced tags
+    });
+
+    test("should handle malformed XML", () => {
+      expect(utils.validateSvg("<svg><rect><circle/></svg>")).toBe(false); // Unclosed rect
+      expect(utils.validateSvg("<svg><invalid")).toBe(false); // Incomplete
+    });
+  });
+
+  describe("enhanced image resolution", () => {
+    const { utils } = require("./index");
+
+    test("should resolve and validate provided images", () => {
+      const validImages = ["<svg><rect/></svg>", "<svg><circle/></svg>"];
+      const result = utils.resolveAndValidateImages(validImages, "test");
+      expect(result).toEqual(validImages);
+    });
+
+    test("should filter out invalid images and add fallbacks", () => {
+      const mixedImages = ["<svg><rect/></svg>", "", "invalid", "<svg><circle/></svg>"];
+      const result = utils.resolveAndValidateImages(mixedImages, "test");
+      expect(result.length).toBeGreaterThan(2); // Should have valid images + fallbacks
+      expect(result[0]).toBe("<svg><rect/></svg>");
+      expect(result[1]).toBe("<svg><circle/></svg>");
+    });
+
+    test("should use fallback images when no valid images provided", () => {
+      const invalidImages = ["", "invalid", null];
+      const result = utils.resolveAndValidateImages(invalidImages, "apple");
+      expect(result.length).toBeGreaterThan(0);
+      expect(result.every(img => utils.validateSvg(img))).toBe(true);
+    });
+
+    test("should match word to images when using fallbacks", () => {
+      const result = utils.getFallbackImages("apple", 4);
+      expect(result.length).toBe(4);
+      expect(result.every(img => utils.validateSvg(img))).toBe(true);
+    });
+
+    test("should handle unknown words in fallback", () => {
+      const result = utils.getFallbackImages("unknownword", 3);
+      expect(result.length).toBe(3);
+      expect(result.every(img => utils.validateSvg(img))).toBe(true);
+    });
+  });
+
+  describe("error handling and logging", () => {
+    let consoleSpy: jest.SpyInstance;
+
+    beforeEach(() => {
+      consoleSpy = jest.spyOn(console, 'warn').mockImplementation();
+    });
+
+    afterEach(() => {
+      consoleSpy.mockRestore();
+    });
+
+    test("should log warnings for invalid images", () => {
+      const { utils } = require("./index");
+      const invalidImages = ["invalid", "", null];
+      utils.resolveAndValidateImages(invalidImages, "test");
+      
+      expect(consoleSpy).toHaveBeenCalledWith(
+        expect.stringContaining('Invalid images detected'),
+        expect.any(Array)
+      );
+    });
+
+    test("should log warnings when using fallback images", () => {
+      const { utils } = require("./index");
+      utils.resolveAndValidateImages([], "test");
+      
+      expect(consoleSpy).toHaveBeenCalledWith(
+        expect.stringContaining('No valid images provided')
+      );
+    });
+
+    test("should log warnings for insufficient valid images", () => {
+      const { utils } = require("./index");
+      const oneValidImage = ["<svg><rect/></svg>"];
+      utils.resolveAndValidateImages(oneValidImage, "test");
+      
+      expect(consoleSpy).toHaveBeenCalledWith(
+        expect.stringContaining('Only 1 valid image(s)')
+      );
+    });
+  });
+
+  describe("createTimeline with enhanced validation", () => {
+    test("should handle config with invalid images gracefully", () => {
+      const config = {
+        practiceItems: [{
+          word: "test",
+          images: ["invalid", "", null],
+          correctIndex: 0
+        }],
+        liveItems: [{
+          word: "test2", 
+          images: ["<svg>valid</svg>", "invalid"],
+          correctIndex: 0
+        }]
+      };
+      
+      expect(() => createTimeline(mockJsPsych, config)).not.toThrow();
+      const timeline = createTimeline(mockJsPsych, config);
+      expect(timeline.length).toBeGreaterThan(0);
+    });
+
+    test("should auto-correct indices when using fallback images", () => {
+      const config = {
+        practiceItems: [{
+          word: "apple",
+          images: [], // Will use fallbacks
+          correctIndex: 0
+        }],
+        liveItems: []
+      };
+      
+      const timeline = createTimeline(mockJsPsych, config);
+      expect(timeline.length).toBeGreaterThan(0);
+      
+      // Should have created practice trial with auto-corrected index
+      const practiceTrials = timeline.filter(trial => 
+        trial.timeline && trial.timeline.some((t: any) => t.data?.trial_id === 'practice-choice')
+      );
+      expect(practiceTrials.length).toBe(1);
+    });
+  });
+
   describe("exports", () => {
     test("should export required functions and objects", () => {
       const { createTimeline, timelineUnits, utils, images: exportedImages } = require("./index");
@@ -493,6 +662,169 @@ describe("Picture Vocab Timeline", () => {
       expect(timelineUnits).toBeDefined();
       expect(utils).toBeDefined();
       expect(exportedImages).toBeDefined();
+    });
+
+    test("should export utils with validation functions", () => {
+      const { utils } = require("./index");
+      
+      expect(utils.validateSvg).toBeDefined();
+      expect(typeof utils.validateSvg).toBe('function');
+      expect(utils.resolveAndValidateImages).toBeDefined();
+      expect(typeof utils.resolveAndValidateImages).toBe('function');
+      expect(utils.getFallbackImages).toBeDefined();
+      expect(typeof utils.getFallbackImages).toBe('function');
+    });
+
+    test("should export timelineUnits with all screen creators", () => {
+      const { timelineUnits } = require("./index");
+      
+      expect(timelineUnits.createWelcomeScreen).toBeDefined();
+      expect(timelineUnits.createInstructionsScreen).toBeDefined();
+      expect(timelineUnits.createTransitionScreen).toBeDefined();
+      expect(timelineUnits.createThankYouScreen).toBeDefined();
+      expect(timelineUnits.createPracticeTrial).toBeDefined();
+      expect(timelineUnits.createLiveTrial).toBeDefined();
+    });
+
+    test("should export utils with speakText function", () => {
+      const { utils } = require("./index");
+      
+      expect(utils.speakText).toBeDefined();
+      expect(typeof utils.speakText).toBe('function');
+    });
+  });
+
+  describe("text-to-speech functionality", () => {
+    const { utils } = require("./index");
+
+    test("should speak text when speechSynthesis is available", async () => {
+      const promise = utils.speakText("Hello world");
+      
+      // Should be a promise
+      expect(promise).toBeInstanceOf(Promise);
+      
+      await promise;
+      
+      expect(mockSpeechSynthesis.cancel).toHaveBeenCalled();
+      expect(SpeechSynthesisUtterance).toHaveBeenCalledWith("Hello world");
+    });
+
+    test("should handle missing speechSynthesis gracefully", async () => {
+      const originalWindow = global.window;
+      global.window = {} as any;
+      
+      const promise = utils.speakText("Hello world");
+      expect(promise).toBeInstanceOf(Promise);
+      
+      await expect(promise).resolves.toBeUndefined();
+      
+      global.window = originalWindow;
+    });
+
+    test("should clean HTML tags from text", async () => {
+      await utils.speakText("<p>Hello <strong>world</strong></p>");
+      
+      expect(SpeechSynthesisUtterance).toHaveBeenCalledWith("Hello world");
+    });
+
+    test("should handle empty text gracefully", async () => {
+      const consoleSpy = jest.spyOn(console, 'warn').mockImplementation();
+      
+      await utils.speakText("");
+      
+      expect(consoleSpy).toHaveBeenCalledWith(
+        expect.stringContaining('Empty text provided for TTS')
+      );
+      
+      consoleSpy.mockRestore();
+    });
+
+    test("should create timeline with TTS enabled", () => {
+      const config = {
+        practiceItems: [{
+          word: "test",
+          images: ["<svg>test</svg>"],
+          correctIndex: 0
+        }],
+        liveItems: [{
+          word: "test2",
+          images: ["<svg>test2</svg>"],
+          correctIndex: 0
+        }]
+      };
+      
+      const timeline = createTimeline(mockJsPsych, config, {
+        text_to_speech_enabled: true
+      });
+      
+      expect(timeline.length).toBeGreaterThan(0);
+      
+      // Check that welcome screen has on_load function when TTS is enabled
+      const welcomeScreen = timeline[0];
+      expect(welcomeScreen.on_load).toBeDefined();
+      
+      // Check that instructions screen has on_load function when TTS is enabled
+      const instructionsScreen = timeline[1];
+      expect(instructionsScreen.on_load).toBeDefined();
+    });
+
+    test("should create timeline without TTS by default", () => {
+      const config = {
+        practiceItems: [{
+          word: "test",
+          images: ["<svg>test</svg>"],
+          correctIndex: 0
+        }],
+        liveItems: []
+      };
+      
+      const timeline = createTimeline(mockJsPsych, config);
+      
+      // Check that welcome screen has no on_load function when TTS is disabled
+      const welcomeScreen = timeline[0];
+      expect(welcomeScreen.on_load).toBeUndefined();
+      
+      // Check that instructions screen has no on_load function when TTS is disabled
+      const instructionsScreen = timeline[1];
+      expect(instructionsScreen.on_load).toBeUndefined();
+    });
+
+    test("should call TTS functions when trial screens load", () => {
+      const config = {
+        practiceItems: [{
+          word: "apple",
+          images: ["<svg>apple</svg>", "<svg>orange</svg>"],
+          correctIndex: 0
+        }],
+        liveItems: [{
+          word: "dog",
+          images: ["<svg>dog</svg>", "<svg>cat</svg>"],
+          correctIndex: 0
+        }]
+      };
+      
+      const timeline = createTimeline(mockJsPsych, config, {
+        text_to_speech_enabled: true
+      });
+      
+      // Find practice trial and test its on_load function
+      const practiceTrials = timeline.filter(trial => 
+        trial.timeline && trial.timeline.some((t: any) => t.data?.trial_id === 'practice-choice')
+      );
+      expect(practiceTrials.length).toBe(1);
+      
+      const practiceTrial = practiceTrials[0];
+      const choiceTrial = practiceTrial.timeline[0];
+      expect(choiceTrial.on_load).toBeDefined();
+      
+      // Find live trial and test its on_load function
+      const liveTrials = timeline.filter(trial => 
+        trial.stimulus && trial.stimulus.includes(englishText.live_instruction.replace('{word}', '<strong>dog</strong>'))
+      );
+      expect(liveTrials.length).toBe(1);
+      
+      const liveTrial = liveTrials[0];
+      expect(liveTrial.on_load).toBeDefined();
     });
   });
 });
