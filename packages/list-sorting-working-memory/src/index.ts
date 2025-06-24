@@ -1,107 +1,139 @@
 import jsPsychAudioKeyboardResponse from "@jspsych/plugin-audio-keyboard-response";
 import jsPsychHtmlKeyboardResponse from "@jspsych/plugin-html-keyboard-response";
-import jsPsychPreload from "@jspsych/plugin-preload";
+// import jsPsychPreload from "@jspsych/plugin-preload";
 import { JsPsych } from "jspsych";
 
-import { sesameSeedSvg } from "../assets/images/images-food/1-sesame_seed.js";
-import { peppercornSvg } from "../assets/images/images-food/2-peppercorn.js";
-import { cornSvg } from "../assets/images/images-food/3-corn.js";
-import { coffeeBeanSvg } from "../assets/images/images-food/4-coffee_bean.js";
-import { blueberrySvg } from "../assets/images/images-food/5-blueberry.js";
-import { raspberrySvg } from "../assets/images/images-food/6-raspberry.js";
-import { grapeSvg } from "../assets/images/images-food/7-grape.js";
-import { strawberrySvg } from "../assets/images/images-food/8-strawberry.js";
-import { mushroomSvg } from "../assets/images/images-food/9-mushroom.js";
-import { figSvg } from "../assets/images/images-food/10-fig.js";
-import { garlicSvg } from "../assets/images/images-food/11-garlic.js";
-import { eggSvg } from "../assets/images/images-food/12-egg.js";
-import { kiwiSvg } from "../assets/images/images-food/13-kiwi.js";
-import { apricotSvg } from "../assets/images/images-food/14-apricot.js";
-import { tomatoSvg } from "../assets/images/images-food/15-tomato.js";
-import { onionSvg } from "../assets/images/images-food/16-onion.js";
-import { orangeSvg } from "../assets/images/images-food/17-orange.js";
-import { appleSvg } from "../assets/images/images-food/18-apple.js";
-import { mangoSvg } from "../assets/images/images-food/19-mango.js";
-import { bellPepperSvg } from "../assets/images/images-food/20-bell_pepper.js";
-import { grapefruitSvg } from "../assets/images/images-food/21-grapefruit.js";
-import { cauliflowerSvg } from "../assets/images/images-food/22-cauliflower.js";
-import { coconutSvg } from "../assets/images/images-food/23-coconut.js";
-import { cabbageSvg } from "../assets/images/images-food/24-cabbage.js";
-import { cantaloupeSvg } from "../assets/images/images-food/25-cantaloupe.js";
-import { honeydewSvg } from "../assets/images/images-food/26-honeydew.js";
-import { watermelonSvg } from "../assets/images/images-food/27-watermelon.js";
-import { pumpkinSvg } from "../assets/images/images-food/28-pumpkin.js";
+import {bearSvg} from "../assets/images/images-animals/bear.js";
+import {beeSvg} from "../assets/images/images-animals/bee.js";
+import {birdSvg} from "../assets/images/images-animals/bird.js";
+import {butterflySvg} from "../assets/images/images-animals/butterfly.js";
+import {camelSvg} from "../assets/images/images-animals/camel.js";
+import {catSvg} from "../assets/images/images-animals/cat.js";
+import {cowSvg} from "../assets/images/images-animals/cow.js";
+import {dogSvg} from "../assets/images/images-animals/dog.js";
+import {duckSvg} from "../assets/images/images-animals/duck.js";
+import {elephantSvg} from "../assets/images/images-animals/elephant.js";
+import {frogSvg} from "../assets/images/images-animals/frog.js";
+import {horseSvg} from "../assets/images/images-animals/horse.js";
+import {lionSvg} from "../assets/images/images-animals/lion.js";
+import {monkeySvg} from "../assets/images/images-animals/monkey.js";
+import {mouseSvg} from "../assets/images/images-animals/mouse.js";
+import {pigSvg} from "../assets/images/images-animals/pig.js";
+import {rabbitSvg} from "../assets/images/images-animals/rabbit.js";
+import {sheepSvg} from "../assets/images/images-animals/sheep.js";
+import {tigerSvg} from "../assets/images/images-animals/tiger.js";
+import {turtleSvg} from "../assets/images/images-animals/turtle.js";
+import {appleSvg} from "../assets/images/images-food/apple.js";
+import {bananaSvg} from "../assets/images/images-food/banana.js";
+import {beanSvg} from "../assets/images/images-food/bean.js";
+import {cakeSvg} from "../assets/images/images-food/cake.js";
+import {cherrySvg} from "../assets/images/images-food/cherry.js";
+import {cornSvg} from "../assets/images/images-food/corn.js";
+import {eggSvg} from "../assets/images/images-food/egg.js";
+import {hamburgerSvg} from "../assets/images/images-food/hamburger.js";
+import {lemonSvg} from "../assets/images/images-food/lemon.js";
+import {orangeSvg} from "../assets/images/images-food/orange.js";
+import {peachSvg} from "../assets/images/images-food/peach.js";
+import {pearSvg} from "../assets/images/images-food/pear.js";
+import {pineappleSvg} from "../assets/images/images-food/pineapple.js";
+import {popcornSvg} from "../assets/images/images-food/popcorn.js";
+import {strawberrySvg} from "../assets/images/images-food/strawberry.js";
+import {watermelonSvg} from "../assets/images/images-food/watermelon.js";
 
 // Constants
-const animalStimuli: Array<listSortingWorkingMemoryTestStimulusInfo> = [
-  {
-    stimulus_image: "/assets/images/images-animals/mouse.png",
-    stimulus_audio: "/assets/audio/audio-animals/mouse.mp3",
-  },
-  {
-    stimulus_image: "/assets/images/images-animals/bird.png",
-    stimulus_audio: "/assets/audio/audio-animals/bird.mp3",
-  },
-  {
-    stimulus_image: "/assets/images/images-animals/rabbit.png",
-    stimulus_audio: "/assets/audio/audio-animals/rabbit.mp3",
-  },
-  {
-    stimulus_image: "/assets/images/images-animals/dog.png",
-    stimulus_audio: "/assets/audio/audio-animals/dog.mp3",
-  },
-  {
-    stimulus_image: "/assets/images/images-animals/monkey.png",
-    stimulus_audio: "/assets/audio/audio-animals/monkey.mp3",
-  },
-  {
-    stimulus_image: "/assets/images/images-animals/lion.png",
-    stimulus_audio: "/assets/audio/audio-animals/lion.mp3",
-  },
-  {
-    stimulus_image: "/assets/images/images-animals/elephant.png",
-    stimulus_audio: "/assets/audio/audio-animals/elephant.mp3",
-  },
-  {
-    stimulus_image: "/assets/images/images-animals/whale.png",
-    stimulus_audio: "/assets/audio/audio-animals/whale.mp3",
-  },
+const animals = [
+  "bee",
+  "butterfly",
+  "frog",
+  "bird",
+  "mouse",
+  "turtle",
+  "rabbit",
+  "duck",
+  "cat",
+  "monkey",
+  "dog",
+  "sheep",
+  "pig",
+  "horse",
+  "cow",
+  "tiger",
+  "lion",
+  "bear",
+  "camel",
+  "elephant",
 ];
+const animalSvgs = [
+  beeSvg,
+  butterflySvg,
+  frogSvg,
+  birdSvg,
+  mouseSvg,
+  turtleSvg,
+  rabbitSvg,
+  duckSvg,
+  catSvg,
+  monkeySvg,
+  dogSvg,
+  sheepSvg,
+  pigSvg,
+  horseSvg,
+  cowSvg,
+  tigerSvg,
+  lionSvg,
+  bearSvg,
+  camelSvg,
+  elephantSvg,
+];
+const audioAnimalsFp = "../assets/audio/audio-animals/";
+const animalStimuli: Array<listSortingWorkingMemoryTestStimulusInfo> = animals.map(
+  (animal, index) => ({
+    stimulus_image: animalSvgs[index],
+    stimulus_audio: `${audioAnimalsFp}${animal}.mp3`,
+  })
+);
 
-const foodStimuli: Array<listSortingWorkingMemoryTestStimulusInfo> = [
-  {
-    stimulus_image: `/assets/images/images-food/bean.png`,
-    stimulus_audio: `/assets/audio/audio-food/bean.mp3`,
-  },
-  {
-    stimulus_image: `/assets/images/images-food/mushroom.png`,
-    stimulus_audio: `/assets/audio/audio-food/mushroom.mp3`,
-  },
-  {
-    stimulus_image: `/assets/images/images-food/grape.png`,
-    stimulus_audio: `/assets/audio/audio-food/grape.mp3`,
-  },
-  {
-    stimulus_image: `/assets/images/images-food/shrimp.png`,
-    stimulus_audio: `/assets/audio/audio-food/shrimp.mp3`,
-  },
-  {
-    stimulus_image: `/assets/images/images-food/apple.png`,
-    stimulus_audio: `/assets/audio/audio-food/apple.mp3`,
-  },
-  // {
-  //   stimulus_image: `/assets/images/images-food/papaya.png`,
-  //   stimulus_audio: `/assets/audio/audio-food/papaya.mp3`,
-  // },
-  {
-    stimulus_image: `/assets/images/images-food/turkey.png`,
-    stimulus_audio: `/assets/audio/audio-food/turkey.mp3`,
-  },
-  {
-    stimulus_image: `/assets/images/images-food/pumpkin.png`,
-    stimulus_audio: `/assets/audio/audio-food/pumpkin.mp3`,
-  },
+const foods = [
+  "bean",
+  "popcorn",
+  "cherry",
+  "strawberry",
+  "egg",
+  "lemon",
+  "peach",
+  "apple",
+  "orange",
+  "pear",
+  "corn",
+  "banana",
+  "pineapple",
+  "hamburger",
+  "watermelon",
+  "cake",
 ];
+const foodSvgs = [
+  beanSvg,
+  popcornSvg,
+  cherrySvg,
+  strawberrySvg,
+  eggSvg,
+  lemonSvg,
+  peachSvg,
+  appleSvg,
+  orangeSvg,
+  pearSvg,
+  cornSvg,
+  bananaSvg,
+  pineappleSvg,
+  hamburgerSvg,
+  watermelonSvg,
+  cakeSvg,
+];
+const audioFoodsFp = "../assets/audio/audio-food/";
+const foodStimuli: Array<listSortingWorkingMemoryTestStimulusInfo> = foods.map((food, index) => ({
+  stimulus_image: foodSvgs[index],
+  stimulus_audio: `${audioFoodsFp}${food}.mp3`,
+}));
 
 interface listSortingWorkingMemoryTestStimulusInfo {
   stimulus_image: string;
@@ -112,7 +144,7 @@ function imageTrial(jsPsych, image) {
   return {
     type: jsPsychHtmlKeyboardResponse,
     stimulus: image,
-    choices: ['f'],
+    choices: ["f"],
   };
 }
 
@@ -156,7 +188,7 @@ function lswmSection(
     stimulus.map((stimulusInfo) => ({
       stimulus_image: stimulusInfo.stimulus_image,
       stimulus_audio: stimulusInfo.stimulus_audio,
-      stimulus_set_id: list_idx
+      stimulus_set_id: list_idx,
     }))
   );
 
@@ -223,35 +255,9 @@ export function createTimeline(
 
   for (let i = 0; i < options.dimensions_sequence.length; i++) {
     const dimension = options.dimensions_sequence[i];
-    timeline.push(
-      imageTrial(jsPsych, sesameSeedSvg),
-      imageTrial(jsPsych, peppercornSvg),
-      imageTrial(jsPsych, cornSvg),
-      imageTrial(jsPsych, coffeeBeanSvg),
-      imageTrial(jsPsych, blueberrySvg),
-      imageTrial(jsPsych, raspberrySvg),
-      imageTrial(jsPsych, grapeSvg),
-      imageTrial(jsPsych, strawberrySvg),
-      imageTrial(jsPsych, mushroomSvg),
-      imageTrial(jsPsych, figSvg),
-      imageTrial(jsPsych, garlicSvg),
-      imageTrial(jsPsych, eggSvg),
-      imageTrial(jsPsych, kiwiSvg),
-      imageTrial(jsPsych, apricotSvg),
-      imageTrial(jsPsych, tomatoSvg),
-      imageTrial(jsPsych, onionSvg),
-      imageTrial(jsPsych, orangeSvg),
-      imageTrial(jsPsych, appleSvg),
-      imageTrial(jsPsych, mangoSvg),
-      imageTrial(jsPsych, bellPepperSvg),
-      imageTrial(jsPsych, grapefruitSvg),
-      imageTrial(jsPsych, cauliflowerSvg),
-      imageTrial(jsPsych, coconutSvg),
-      imageTrial(jsPsych, cabbageSvg),
-      imageTrial(jsPsych, cantaloupeSvg),
-      imageTrial(jsPsych, honeydewSvg),
-      imageTrial(jsPsych, watermelonSvg),
-      imageTrial(jsPsych, pumpkinSvg),
+    for (const animalStimulus of options.stimulus_set[0]) {
+      timeline.push(imageTrial(jsPsych, animalStimulus.stimulus_image));
+      // timeline.push(
       // lswmSection(jsPsych, {
       //   // Assume stimulus_set[0] is always first dimension, stimulus_set[1] is second dimension, etc.
       //   stimulus_set: options.stimulus_set.toSpliced(
@@ -259,7 +265,8 @@ export function createTimeline(
       //     options.stimulus_set.length - dimension
       //   ),
       // })
-    );
+      // );
+    }
   }
   return timeline;
 }
