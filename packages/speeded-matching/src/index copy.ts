@@ -182,7 +182,7 @@ function createPracticeRound(items: string[], enable_tts: boolean = false) {
     stimulus: `
       <div class="practice-container">
         <h2>${trial_text.practice_header}</h2>
-        <p class="practice-instruction">${trial_text.practice_intro_message}</p>
+        <p class="practice-instruction">We'll now do a practice round to show you how the task works.</p>
       </div>
     `,
     choices: [trial_text.continue_button],
@@ -295,7 +295,7 @@ function createReadyScreen() {
     type: HtmlButtonResponsePlugin,
     stimulus: `
       <div class="ready-screen">
-        <h2>${trial_text.practice_complete_header}</h2>
+        <h2>Practice Complete!</h2>
         <p>${trial_text.practice_complete_message}</p>
       </div>
     `,

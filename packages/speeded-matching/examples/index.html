@@ -15,18 +15,9 @@
   <script>
     const jsPsych = initJsPsych({
       on_finish: function(data) {
-        // Display results using the built-in performance calculator
-        const performance = jsPsychTimelineSpeededMatching.utils.calculatePerformance(data.values());
         
-        jsPsych.getDisplayElement().innerHTML = `
-          <div style="text-align: center; padding: 50px; font-size: 18px;">
-            <h2>Experiment Complete</h2>
-            <p>Accuracy: ${performance.overall.accuracy.toFixed(1)}%</p>
-            <p>Correct responses: ${performance.overall.correct_trials} out of ${performance.overall.total_trials}</p>
-            <p>Average reaction time: ${performance.overall.mean_reaction_time ? performance.overall.mean_reaction_time.toFixed(0) + 'ms' : 'N/A'}</p>
-            <p>Thank you for participating!</p>
-          </div>
-        `;
+        jsPsych.data.displayData();
+
       }
     });
 
@@ -37,8 +28,8 @@
       enable_tts: true,       // Enable text-to-speech
       show_instructions: false, // Show instruction pages
       show_practice: false,     // Show practice round
-      trial_timeout: 1000000,    // 10 seconds per trial
-      inter_trial_interval: 0 // 500ms between trials
+      trial_timeout: 10000,    // 10 seconds per trial
+      inter_trial_interval: 500 // 500ms between trials
     };
 
     // Create the timeline using the speeded matching package
