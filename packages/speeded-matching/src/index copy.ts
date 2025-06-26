@@ -197,6 +197,7 @@ function createPracticeRound(items: string[], enable_tts: boolean = false) {
   // Practice trial with voice instruction "Look at this picture"
   practice_timeline.push({
     type: HtmlButtonResponsePlugin,
+    
     stimulus: `
       <div class="speeded-matching-container">
         <div class="task-instructions">

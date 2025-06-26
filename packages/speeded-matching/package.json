@@ -7,7 +7,8 @@
     "types": "dist/index.d.ts",
     "unpkg": "dist/index.browser.min.js",
     "scripts": {
-      "build": "tsup src/index.ts --format esm,iife --sourcemap --dts --treeshake --clean --global-name jsPsychTimelineSpeededMatching"
+      "build": "tsup src/index.ts --format esm,iife --sourcemap --dts --treeshake --clean --global-name jsPsychTimelineSpeededMatching",
+      "test": "jest"
     },
     "repository": {
       "type": "git",
