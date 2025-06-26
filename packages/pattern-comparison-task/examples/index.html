@@ -8,6 +8,7 @@
     <script src="../dist/index.global.js"></script>
     <script src="https://unpkg.com/@jspsych/plugin-html-button-response@2.0.1"></script>
     <link href="https://unpkg.com/jspsych@8.2.1/css/jspsych.css" rel="stylesheet" type="text/css" />
+    <link href="../src/styles.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
     <script type="module">
@@ -20,11 +21,16 @@
 
         // Configuration
         const config = {
-            numTrials: 8,
-            instructions: "Are these patterns the same?",
-            sameButtonText: "Same",
-            differentButtonText: "Different",
-            trialTimeout: 8000
+            test_categories: undefined, // Uses default test_categories
+            num_trials: 8,
+            prompt: "Are these patterns the same?",
+            enable_tts: true,
+            same_button_text: "Same",
+            different_button_text: "Different",
+            trial_timeout: 8000,
+            inter_trial_interval: 500,
+            show_instructions: true, // Set to true to show instruction pages
+            instruction_texts: undefined // Uses default instruction_pages
         };
 
         // Create and run timeline

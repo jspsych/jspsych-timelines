@@ -1,4 +1,4 @@
-# spatial-nback
+# @jspsych-timelines/spatial-nback
 
 ## Overview
 

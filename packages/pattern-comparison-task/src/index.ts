@@ -1,94 +1,145 @@
 import { JsPsych, TrialType } from "jspsych"
 import HtmlButtonResponsePlugin from "@jspsych/plugin-html-button-response"
-
-interface TestCategory {
-  [testName: string]: [string, string] // [original_svg, edited_svg]
-}
+import { test_categories } from "./test-categories"
+import { trial_text, instruction_pages } from "./text"
 
 interface PatternComparisonConfig {
-  /** Array of three test categories, each containing test pairs */
-  testCategories?: TestCategory[]
+  /** Array of test categories, each containing test pairs */
+  test_categories?: any[]
   /** Number of trials to generate */
-  numTrials?: number
+  num_trials?: number
   /** Instructions text to display above each trial */
-  instructions?: string
-  /** Enable text-to-speech for instructions */
-  enableTTS?: boolean
+  prompt?: string
+  /** Enable text-to-speech for instructions and prompts */
+  enable_tts?: boolean
   /** Text for the "same" button */
-  sameButtonText?: string
+  same_button_text?: string
   /** Text for the "different" button */
-  differentButtonText?: string
+  different_button_text?: string
   /** Maximum time allowed per trial (in ms) */
-  trialTimeout?: number
+  trial_timeout?: number
   /** Inter-trial interval (in ms) */
-  interTrialInterval?: number
+  inter_trial_interval?: number
+  /** Show instruction pages before the task */
+  show_instructions?: boolean
+  /** Custom instruction texts */
+  instruction_texts?: typeof instruction_pages
 }
 
-// Default test categories based on the PMC article methodology
-const defaultTestCategories: TestCategory[] = [
-  // Category 1: Simple geometric patterns
-  {
-    "circle_pattern": [
-      `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="20" fill="#4ECDC4" stroke="#333" stroke-width="2"/></svg>`,
-      `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="25" fill="#4ECDC4" stroke="#333" stroke-width="2"/></svg>`
-    ],
-    "square_pattern": [
-      `<svg viewBox="0 0 100 100"><rect x="30" y="30" width="40" height="40" fill="#FF6B6B" stroke="#333" stroke-width="2"/></svg>`,
-      `<svg viewBox="0 0 100 100"><rect x="25" y="25" width="50" height="50" fill="#FF6B6B" stroke="#333" stroke-width="2"/></svg>`
-    ]
-  },
-  // Category 2: Complex geometric patterns
-  {
-    "triangle_composition": [
-      `<svg viewBox="0 0 100 100"><polygon points="50,20 30,70 70,70" fill="#45B7D1" stroke="#333" stroke-width="2"/></svg>`,
-      `<svg viewBox="0 0 100 100"><polygon points="50,15 25,75 75,75" fill="#45B7D1" stroke="#333" stroke-width="2"/></svg>`
-    ],
-    "hexagon_pattern": [
-      `<svg viewBox="0 0 100 100"><polygon points="50,10 75,30 75,70 50,90 25,70 25,30" fill="#96CEB4" stroke="#333" stroke-width="2"/></svg>`,
-      `<svg viewBox="0 0 100 100"><polygon points="50,15 70,32 70,68 50,85 30,68 30,32" fill="#96CEB4" stroke="#333" stroke-width="2"/></svg>`
-    ]
-  },
-  // Category 3: Abstract/irregular patterns
-  {
-    "irregular_shape": [
-      `<svg viewBox="0 0 100 100"><path d="M20,50 Q30,20 50,30 Q70,10 80,40 Q90,60 70,70 Q50,80 30,70 Q10,60 20,50 Z" fill="#FFEAA7" stroke="#333" stroke-width="2"/></svg>`,
-      `<svg viewBox="0 0 100 100"><path d="M25,50 Q35,25 50,35 Q65,15 75,40 Q85,65 65,70 Q50,75 35,70 Q15,65 25,50 Z" fill="#FFEAA7" stroke="#333" stroke-width="2"/></svg>`
-    ],
-    "organic_form": [
-      `<svg viewBox="0 0 100 100"><ellipse cx="40" cy="50" rx="15" ry="25" fill="#DDA0DD" stroke="#333" stroke-width="2" transform="rotate(30 40 50)"/><ellipse cx="60" cy="50" rx="10" ry="20" fill="#DDA0DD" stroke="#333" stroke-width="2" transform="rotate(-20 60 50)"/></svg>`,
-      `<svg viewBox="0 0 100 100"><ellipse cx="42" cy="48" rx="18" ry="28" fill="#DDA0DD" stroke="#333" stroke-width="2" transform="rotate(35 42 48)"/><ellipse cx="58" cy="52" rx="12" ry="22" fill="#DDA0DD" stroke="#333" stroke-width="2" transform="rotate(-25 58 52)"/></svg>`
-    ]
+function speakText(text: string) {
+  if ('speechSynthesis' in window) {
+    // Stop any ongoing speech
+    speechSynthesis.cancel();
+    
+    // Create and speak the utterance
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.rate = 0.8; // Slightly slower for clarity
+    utterance.volume = 0.8;
+    speechSynthesis.speak(utterance);
   }
-];
+}
+
+function createInstructions(instruction_pages_data = instruction_pages, enable_tts = false) {
+  const instruction_timeline = [];
+
+  // Create each instruction page as a separate trial
+  instruction_pages_data.forEach((page_data, page_index) => {
+
+    // Build page text for TTS
+    const page_text = [
+      page_data.header,
+      page_data.header2,
+      page_data.description,
+      page_data.task_explanation,
+      page_data.performance_note,
+      page_data.strategy_title,
+      page_data.strategy_intro,
+      ...(page_data.strategy_points || []),
+      page_data.start_prompt,
+    ].filter(Boolean).join(' ');       //remove undefined strings by filtering out falsy values
+
+    instruction_timeline.push({
+      type: HtmlButtonResponsePlugin,
+      stimulus: `
+        <div class="pattern-instructions-container">
+          <h1>${page_data.header || ""}</h1>
+          <h2>${page_data.header2 || ""}</h2>
+          <p>${page_data.description || ""}</p>
+          <p>${page_data.task_explanation || ""}</p>
+          <p class="performance-note">${page_data.performance_note || ""}</p>
+          ${page_data.strategy_title ? `<h2>${page_data.strategy_title}</h2>` : ""}
+          ${page_data.strategy_intro ? `<p>${page_data.strategy_intro}</p>` : ""}
+          ${page_data.strategy_points ? `
+            <ul>
+              ${page_data.strategy_points.map(point => `<li>${point}</li>`).join('')}
+            </ul>
+          ` : ""}
+          ${page_data.start_prompt ? `<p class="start-prompt">${page_data.start_prompt}</p>` : ""}
+        </div>
+      `,
+      choices: page_data.buttons,
+      margin_horizontal: '15px',
+      margin_vertical: '10px',
+      button_html: function(choice, choice_index) {
+        // Check if custom button HTML is provided for this page
+        if (page_data.button_html && page_data.button_html[choice_index]) {
+          return page_data.button_html[choice_index].replace('{choice}', choice);
+        }
+        // Default button styling
+        return `<button class="jspsych-btn pattern-continue-button">${choice}</button>`;
+      },
+      on_start: enable_tts ? function() {
+        // Stop any ongoing speech first
+        speechSynthesis.cancel();
+        // Speak the page content when page starts
+        if (page_text.trim()) {
+          speakText(page_text);
+        }
+      } : undefined,
+      on_finish: function(data: any) {
+        // Stop speech when moving to next page
+        speechSynthesis.cancel();
+      },
+      data: {
+        page_index: page_index,
+        task: 'instruction-page'
+      }
+    });
+  });
+
+  return {
+    timeline: instruction_timeline
+  };
+}
 
 function generateTrials(config: PatternComparisonConfig) {
-  const testCategories = config.testCategories || defaultTestCategories;
-  const numTrials = config.numTrials || 20;
+  const test_svg = config.test_categories || test_categories;
+  const num_trials = config.num_trials || 20;
   const trials = [];
 
-  for (let i = 0; i < numTrials; i++) {
+  for (let i = 0; i < num_trials; i++) {
     // Randomly select a category
-    const categoryIndex = Math.floor(Math.random() * testCategories.length);
-    const selectedCategory = testCategories[categoryIndex];
+    const category_index = Math.floor(Math.random() * test_svg.length);
+    const selected_category = test_svg[category_index];
     
     // Randomly select a test within the category
-    const testNames = Object.keys(selectedCategory);
-    const testName = testNames[Math.floor(Math.random() * testNames.length)];
-    const [originalSvg, editedSvg] = selectedCategory[testName];
+    const test_names = Object.keys(selected_category);
+    const test_name = test_names[Math.floor(Math.random() * test_names.length)];
+    const [original_svg, edited_svg] = selected_category[test_name];
     
     // Randomly decide if patterns should be same or different
-    const isSame = Math.random() < 0.5;
+    const is_same = Math.random() < 0.5;
     
-    const pattern1 = originalSvg;
-    const pattern2 = isSame ? originalSvg : editedSvg;
+    const pattern1 = original_svg;
+    const pattern2 = is_same ? original_svg : edited_svg;
 
     trials.push({
       pattern1,
       pattern2,
-      correctAnswer: isSame ? 0 : 1, // 0 for same, 1 for different
-      categoryIndex,
-      testName,
-      isSame
+      correct_answer: is_same ? 0 : 1, // 0 for same, 1 for different
+      category_index,
+      test_name,
+      is_same
     });
   }
 
@@ -97,124 +148,59 @@ function generateTrials(config: PatternComparisonConfig) {
 
 export function createTimeline(jsPsych: JsPsych, config: PatternComparisonConfig = {}) {
   const {
-    instructions = "Are these two patterns the same?",
-    enableTTS = false,
-    sameButtonText = "Same",
-    differentButtonText = "Different",
-    trialTimeout = 10000,
-    interTrialInterval = 500
+    prompt = trial_text.prompt,
+    enable_tts = false,
+    same_button_text = trial_text.same_button,
+    different_button_text = trial_text.different_button,
+    trial_timeout = 10000,
+    inter_trial_interval = 500,
+    show_instructions = false,
+    instruction_texts = instruction_pages
   } = config
 
   const trials = generateTrials(config)
   const timeline = []
 
-  // Instructions screen
-  timeline.push({
-    type: HtmlButtonResponsePlugin,
-    stimulus: `
-      <div style="max-width: 600px; margin: 0 auto; text-align: center; padding: 20px;">
-        <h2>Pattern Comparison Task</h2>
-        <p>You will see two patterns side by side. Your task is to decide whether they are the same or different.</p>
-        <p>Look carefully at both patterns and compare them closely.</p>
-        <p>Respond as quickly and accurately as possible.</p>
-        <p>Click the button below to start.</p>
-      </div>
-    `,
-    choices: ['Start'],
-    margin_horizontal: '10px',
-    margin_vertical: '10px'
-  })
 
   // Create trial timeline
   trials.forEach((trial, index) => {
     timeline.push({
       type: HtmlButtonResponsePlugin,
       stimulus: `
-        <style>
-          .pattern-comparison-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 60vh;
-            padding: 20px;
-            font-family: Arial, sans-serif;
-          }
-          .instructions {
-            font-size: 18px;
-            margin-bottom: 30px;
-            text-align: center;
-          }
-          .patterns-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 50px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-          }
-          .pattern {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            border: 2px solid #ccc;
-            border-radius: 10px;
-            background-color: #f9f9f9;
-            width: 150px;
-            height: 150px;
-          }
-          .pattern svg {
-            max-width: 100%;
-            max-height: 100%;
-          }
-          @media (max-width: 768px) {
-            .patterns-container {
-              flex-direction: column;
-              gap: 30px;
-            }
-            .pattern {
-              width: 120px;
-              height: 120px;
-            }
-            .instructions {
-              font-size: 16px;
-            }
-          }
-        </style>
         <div class="pattern-comparison-container">
-          <div class="instructions">${instructions}</div>
+          <div class="pattern-instructions">${prompt}</div>
           <div class="patterns-container">
             <div class="pattern">${trial.pattern1}</div>
             <div class="pattern">${trial.pattern2}</div>
           </div>
         </div>
       `,
-      choices: [sameButtonText, differentButtonText],
+      choices: [same_button_text, different_button_text],
       margin_horizontal: '20px',
       margin_vertical: '15px',
       button_html: function(choice, choice_index) {
-        return `<button class="jspsych-btn" style="font-size: 16px; padding: 12px 24px; margin: 0 10px; min-width: 100px;">${choice}</button>`;
+        return `<button class="jspsych-btn pattern-trial-button">${choice}</button>`;
       },
-      trial_duration: trialTimeout,
+      trial_duration: trial_timeout,
       data: {
         task: 'pattern-comparison',
         trial_number: index + 1,
-        correct_answer: trial.correctAnswer,
-        category_index: trial.categoryIndex,
-        test_name: trial.testName,
-        is_same: trial.isSame,
+        correct_answer: trial.correct_answer,
+        category_index: trial.category_index,
+        test_name: trial.test_name,
+        is_same: trial.is_same,
         pattern1: trial.pattern1,
         pattern2: trial.pattern2
       },
       on_finish: function(data: any) {
         data.correct = data.response === data.correct_answer
         data.reaction_time = data.rt
+        // Stop any ongoing speech when trial ends
+        speechSynthesis.cancel();
       },
       on_start: function() {
-        if (enableTTS && 'speechSynthesis' in window) {
-          const utterance = new SpeechSynthesisUtterance(instructions)
-          speechSynthesis.speak(utterance)
+        if (enable_tts) {
+          speakText(prompt);
         }
       }
     })
@@ -223,9 +209,9 @@ export function createTimeline(jsPsych: JsPsych, config: PatternComparisonConfig
     if (index < trials.length - 1) {
       timeline.push({
         type: HtmlButtonResponsePlugin,
-        stimulus: '<div style="font-size: 24px; text-align: center;">+</div>',
+        stimulus: `<div class="pattern-fixation">${trial_text.fixation_cross}</div>`,
         choices: [],
-        trial_duration: interTrialInterval
+        trial_duration: inter_trial_interval
       })
     }
   })
@@ -234,16 +220,78 @@ export function createTimeline(jsPsych: JsPsych, config: PatternComparisonConfig
   timeline.push({
     type: HtmlButtonResponsePlugin,
     stimulus: `
-      <div style="text-align: center; padding: 40px;">
-        <h2>Task Complete!</h2>
-        <p>Thank you for participating in the pattern comparison task.</p>
+      <div class="pattern-end-screen">
+        <h2>${trial_text.task_complete_header}</h2>
+        <p>${trial_text.task_complete_message}</p>
       </div>
     `,
-    choices: ['Continue']
+    choices: ["End"],
+    button_html: function(choice, choice_HTML) { //this is supposed to return the HTML for the each respective button.
+      return `<button class="jspsych-btn pattern-continue-button">${choice}</button>`;
+    }
   })
 
-  return timeline
+  // Create the main task timeline
+  const task_timeline = {
+    timeline: timeline
+  };
+
+  // Return complete timeline with or without detailed instructions
+  if (show_instructions) {
+    const detailed_instructions = createInstructions(instruction_texts, enable_tts);
+    
+    const nested_timeline = {
+      timeline: [detailed_instructions, task_timeline]
+    };
+    return nested_timeline;
+
+  } else {
+    return task_timeline;
+  }
 }
+
+/** Calculate accuracy and reaction time statistics by category */
+function calculatePerformance(data: any[]) {
+  const trial_data = data.filter(d => d.task === 'pattern-comparison')
+  const correct = trial_data.filter(d => d.correct).length
+  const total = trial_data.length
+  const accuracy = total > 0 ? (correct / total) * 100 : 0
+  
+  const valid_rts = trial_data.filter(d => d.correct && d.rt !== null).map(d => d.rt)
+  const mean_rt = valid_rts.length > 0 ? valid_rts.reduce((a, b) => a + b, 0) / valid_rts.length : null
+  
+  // Calculate performance by category
+  const category_performance = [0, 1, 2].map(category_index => {
+    const category_trials = trial_data.filter(d => d.category_index === category_index)
+    const category_correct = category_trials.filter(d => d.correct).length
+    const category_total = category_trials.length
+    const category_accuracy = category_total > 0 ? (category_correct / category_total) * 100 : 0
+    
+    const category_valid_rts = category_trials.filter(d => d.correct && d.rt !== null).map(d => d.rt)
+    const category_mean_rt = category_valid_rts.length > 0 ? 
+      category_valid_rts.reduce((a, b) => a + b, 0) / category_valid_rts.length : null
+    
+    return {
+      category_index,
+      accuracy: category_accuracy,
+      mean_reaction_time: category_mean_rt,
+      total_trials: category_total,
+      correct_trials: category_correct
+    }
+  })
+  
+  return {
+    overall: {
+      accuracy,
+      mean_reaction_time: mean_rt,
+      total_trials: total,
+      correct_trials: correct
+    },
+    by_category: category_performance
+  }
+}
+
+//gotta check standardization of these exports
 
 export const timelineUnits = {
   instructions: "Instructions for the pattern comparison task",
@@ -254,49 +302,13 @@ export const timelineUnits = {
 
 export const utils = {
   generateTrials,
-  defaultTestCategories,
-  
-  /** Calculate accuracy and reaction time statistics by category */
-  calculatePerformance: function(data: any[]) {
-    const trialData = data.filter(d => d.task === 'pattern-comparison')
-    const correct = trialData.filter(d => d.correct).length
-    const total = trialData.length
-    const accuracy = total > 0 ? (correct / total) * 100 : 0
-    
-    const validRTs = trialData.filter(d => d.correct && d.rt !== null).map(d => d.rt)
-    const meanRT = validRTs.length > 0 ? validRTs.reduce((a, b) => a + b, 0) / validRTs.length : null
-    
-    // Calculate performance by category
-    const categoryPerformance = [0, 1, 2].map(categoryIndex => {
-      const categoryTrials = trialData.filter(d => d.category_index === categoryIndex)
-      const categoryCorrect = categoryTrials.filter(d => d.correct).length
-      const categoryTotal = categoryTrials.length
-      const categoryAccuracy = categoryTotal > 0 ? (categoryCorrect / categoryTotal) * 100 : 0
-      
-      const categoryValidRTs = categoryTrials.filter(d => d.correct && d.rt !== null).map(d => d.rt)
-      const categoryMeanRT = categoryValidRTs.length > 0 ? 
-        categoryValidRTs.reduce((a, b) => a + b, 0) / categoryValidRTs.length : null
-      
-      return {
-        categoryIndex,
-        accuracy: categoryAccuracy,
-        meanReactionTime: categoryMeanRT,
-        totalTrials: categoryTotal,
-        correctTrials: categoryCorrect
-      }
-    })
-    
-    return {
-      overall: {
-        accuracy,
-        meanReactionTime: meanRT,
-        totalTrials: total,
-        correctTrials: correct
-      },
-      byCategory: categoryPerformance
-    }
-  }
+  createInstructions,
+  speakText,
+  calculatePerformance
 }
+
+// Export text configuration for external use
+export { trial_text, instruction_pages, createInstructions }
 
 // Default export for convenience
 export default { createTimeline, timelineUnits, utils }

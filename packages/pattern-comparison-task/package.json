@@ -7,15 +7,19 @@
     "types": "dist/index.d.ts",
     "unpkg": "dist/index.browser.min.js",
     "scripts": {
-      "build": "tsup src/index.ts --format esm,iife --sourcemap --dts --treeshake --clean --global-name jsPsychTimelinePatternComparisonTask"
+      "build": "tsup src/index.ts --format esm,iife --sourcemap --dts --treeshake --clean --global-name jsPsychTimelinePatternComparisonTask",
+      "test": "jest"
     },
     "repository": {
       "type": "git",
       "url": "https://github.com/farhat60/jspsych-timelines/",
-      "directory": "packages"
+      "directory": "packages/pattern-comparison-task"
     },
     "keywords": [
-      "jsPsych"
+      "jsPsych",
+      "pattern-comparison",
+      "processing-speed",
+      "cognitive-assessment"
     ],
     "author": {
       "name": "Abdullah Hunter Farhat",
@@ -23,9 +27,9 @@
     },
     "license": "MIT",
     "bugs": {
-      "url": "https://github.com/farhat60/jspsych-timelines//issues"
+      "url": "https://github.com/farhat60/jspsych-timelines/issues"
     },
-    "homepage": "https://github.com/jspsych/jspsych-timelines/packages/pattern-comparison-task/README.md",
+    "homepage": "https://github.com/farhat60/jspsych-timelines/tree/main/packages/pattern-comparison-task#readme",
     "devDependencies": {
       "jspsych": "^8.0.0",
       "@jspsych/config": "^3.2.2",
