@@ -1,5 +1,5 @@
 export const bananaSvg = `<?xml version="1.0" encoding="UTF-8"?>
-<svg id="uuid-89ab733b-b9b6-4f7c-a15e-549df28a5eac" data-name="banana" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080">
+<svg id="uuid-89ab733b-b9b6-4f7c-a15e-549df28a5eac" data-name="banana" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" height=80vh width=80vw>
   <defs>
     <style>
       .uuid-5bd46de7-b1cc-4e9f-8774-c1ad7c30de8b {

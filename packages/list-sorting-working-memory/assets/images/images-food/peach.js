@@ -1,5 +1,5 @@
 export const peachSvg = `<?xml version="1.0" encoding="UTF-8"?>
-<svg id="uuid-8a0f30b0-63ec-4924-84b6-2f7ba40f1143" data-name="peach" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080">
+<svg id="uuid-8a0f30b0-63ec-4924-84b6-2f7ba40f1143" data-name="peach" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" height=80vh width=80vw>
   <defs>
     <style>
       .uuid-1f878992-6627-4ebe-997e-f81742e9752e {

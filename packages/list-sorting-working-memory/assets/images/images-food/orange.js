@@ -1,5 +1,5 @@
 export const orangeSvg = `<?xml version="1.0" encoding="UTF-8"?>
-<svg id="uuid-6b9d4c4e-e843-4b74-8cf8-23ceaa180e6f" data-name="orange" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080">
+<svg id="uuid-6b9d4c4e-e843-4b74-8cf8-23ceaa180e6f" data-name="orange" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" height=80vh width=80vw>
   <defs>
     <style>
       .uuid-f27aff4b-57bb-4162-a17a-bf656ab4fdab {

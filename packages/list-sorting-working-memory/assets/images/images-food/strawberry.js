@@ -1,5 +1,5 @@
 export const strawberrySvg = `<?xml version="1.0" encoding="UTF-8"?>
-<svg id="uuid-7d2bd297-47cf-48da-a8a9-5d6917613dbf" data-name="strawberry" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080">
+<svg id="uuid-7d2bd297-47cf-48da-a8a9-5d6917613dbf" data-name="strawberry" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" height=80vh width=80vw>
   <defs>
     <style>
       .uuid-3188edec-96ef-4742-802a-20b128846b93 {

@@ -1,5 +1,5 @@
 export const pineappleSvg = `<?xml version="1.0" encoding="UTF-8"?>
-<svg id="uuid-541c123c-ba24-4bd5-89b6-66b147ee5151" data-name="pineapple" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080">
+<svg id="uuid-541c123c-ba24-4bd5-89b6-66b147ee5151" data-name="pineapple" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" height=80vh width=80vw>
   <defs>
     <style>
       .uuid-d8870670-7536-4993-b3a5-cd8f389e8c3f {

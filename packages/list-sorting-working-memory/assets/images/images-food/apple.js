@@ -1,5 +1,5 @@
 export const appleSvg = `<?xml version="1.0" encoding="UTF-8"?>
-<svg id="uuid-3df8cc8a-090e-4b83-9e87-690d064b54dc" data-name="cake" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080">
+<svg id="uuid-3df8cc8a-090e-4b83-9e87-690d064b54dc" data-name="cake" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" height=80vh width=80vw>
   <defs>
     <style>
       .uuid-a8380c65-2e96-4248-8c4c-68f5529adc3d {

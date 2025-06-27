@@ -1,5 +1,5 @@
 export const hamburgerSvg = `<?xml version="1.0" encoding="UTF-8"?>
-<svg id="uuid-a444708b-6488-4244-9e04-5e64e143a8f8" data-name="hamburger" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080">
+<svg id="uuid-a444708b-6488-4244-9e04-5e64e143a8f8" data-name="hamburger" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" height=80vh width=80vw>
   <defs>
     <style>
       .uuid-5c1b86f1-d1ff-43d7-a2d1-2761d76c909a {

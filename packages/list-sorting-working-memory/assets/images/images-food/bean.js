@@ -1,5 +1,5 @@
 export const beanSvg = `<?xml version="1.0" encoding="UTF-8"?>
-<svg id="uuid-25fed2a8-fb39-45cf-a667-47bc0df05c21" data-name="bean" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080">
+<svg id="uuid-25fed2a8-fb39-45cf-a667-47bc0df05c21" data-name="bean" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" height=80vh width=80vw>
   <defs>
     <style>
       .uuid-db9239c1-5e8e-48be-aa9f-0c6a57e9a1c0 {

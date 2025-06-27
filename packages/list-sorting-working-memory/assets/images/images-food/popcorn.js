@@ -1,5 +1,5 @@
 export const popcornSvg = `<?xml version="1.0" encoding="UTF-8"?>
-<svg id="uuid-57a4933d-a169-4bce-b049-b3a8c5e3327f" data-name="popcorn" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080">
+<svg id="uuid-57a4933d-a169-4bce-b049-b3a8c5e3327f" data-name="popcorn" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" height=80vh width=80vw>
   <defs>
     <style>
       .uuid-e7e609c8-7ba4-407f-a346-31dca88fe684 {

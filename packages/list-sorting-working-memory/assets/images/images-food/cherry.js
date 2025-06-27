@@ -1,5 +1,5 @@
 export const cherrySvg = `<?xml version="1.0" encoding="UTF-8"?>
-<svg id="uuid-c9757622-8f51-4035-9099-d0791a9ac24a" data-name="cherry" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080">
+<svg id="uuid-c9757622-8f51-4035-9099-d0791a9ac24a" data-name="cherry" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" height=80vh width=80vw>
   <defs>
     <style>
       .uuid-6b66c16c-3c7e-4ef6-a282-f263627578f7 {

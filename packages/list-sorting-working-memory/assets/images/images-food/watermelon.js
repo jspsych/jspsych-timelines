@@ -1,5 +1,5 @@
 export const watermelonSvg = `<?xml version="1.0" encoding="UTF-8"?>
-<svg id="uuid-f2e85280-2129-4b95-b655-966a49fd5a36" data-name="watermelon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080">
+<svg id="uuid-f2e85280-2129-4b95-b655-966a49fd5a36" data-name="watermelon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" height=80vh width=80vw>
   <defs>
     <style>
       .uuid-4d36d095-9899-4745-8b09-eb64ace7769a {

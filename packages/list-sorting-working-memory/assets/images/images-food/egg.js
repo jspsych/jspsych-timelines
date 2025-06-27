@@ -1,5 +1,5 @@
 export const eggSvg = `<?xml version="1.0" encoding="UTF-8"?>
-<svg id="uuid-d32378b7-9d2f-43b5-9499-2c672f7485ba" data-name="egg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080">
+<svg id="uuid-d32378b7-9d2f-43b5-9499-2c672f7485ba" data-name="egg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" height=80vh width=80vw>
   <defs>
     <style>
       .uuid-1f991b8b-44e8-4f39-aff6-1f39da470fd5 {

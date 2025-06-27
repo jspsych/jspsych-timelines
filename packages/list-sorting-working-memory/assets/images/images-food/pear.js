@@ -1,5 +1,5 @@
 export const pearSvg = `<?xml version="1.0" encoding="UTF-8"?>
-<svg id="uuid-16d342fb-d8f8-4b3a-b7aa-4ff848a3d7f6" data-name="pear" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080">
+<svg id="uuid-16d342fb-d8f8-4b3a-b7aa-4ff848a3d7f6" data-name="pear" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" height=80vh width=80vw>
   <defs>
     <style>
       .uuid-6fac1dd0-38b0-4445-909b-f687dac321d6 {
