@@ -142,7 +142,12 @@ export const arrow_stimuli = processLayeredStimuli(arrow_only);
 // STIMULUS CREATION FUNCTIONS
 // ============================================================================
 
-export function createFlankerStim(direction, congruent, stimuli: string[] | { left?: string[]; right?: string[] } | { left: string; right: string } = layered_stimuli) {
+export function createFlankerStim(direction, congruent, stimuli: string[] | { left?: string[]; right?: string[] } | { left: string; right: string } = layered_stimuli, stimuli_amount: number = 5) {
+  // Ensure stimuli_amount is valid (odd number ≥3)
+  let safeAmount = typeof stimuli_amount === 'number' && !isNaN(stimuli_amount) && isFinite(stimuli_amount) ? stimuli_amount : 5;
+  const validAmount = Math.max(3, safeAmount % 2 === 0 ? safeAmount + 1 : safeAmount);
+  const halfFlankers = Math.floor(validAmount / 2);
+  
   // Handle different input types
   let processedStimuli;
   if (Array.isArray(stimuli) || (stimuli && ('left' in stimuli || 'right' in stimuli) && Array.isArray(stimuli.left || stimuli.right))) {
@@ -155,16 +160,30 @@ export function createFlankerStim(direction, congruent, stimuli: string[] | { le
   const flanker = congruent ? processedStimuli[direction] : processedStimuli[direction === 'left' ? 'right' : 'left'];
   
   let html = `<div class="flanker-stim">`;
-  html += `<span>${flanker}</span>`;
-  html += `<span>${flanker}</span>`;
+  
+  // Add left flankers
+  for (let i = 0; i < halfFlankers; i++) {
+    html += `<span>${flanker}</span>`;
+  }
+  
+  // Add center stimulus
   html += `<span class="center">${center}</span>`;
-  html += `<span>${flanker}</span>`;
-  html += `<span>${flanker}</span>`;
+  
+  // Add right flankers
+  for (let i = 0; i < halfFlankers; i++) {
+    html += `<span>${flanker}</span>`;
+  }
+  
   html += `</div>`;
   return html;
 }
 
-export function createPracticeStim(direction, congruent, stimuli: string[] | { left?: string[]; right?: string[] } | { left: string; right: string } = layered_stimuli) {
+export function createPracticeStim(direction, congruent, stimuli: string[] | { left?: string[]; right?: string[] } | { left: string; right: string } = layered_stimuli, stimuli_amount: number = 5) {
+  // Ensure stimuli_amount is valid (odd number ≥3)
+  let safeAmount = typeof stimuli_amount === 'number' && !isNaN(stimuli_amount) && isFinite(stimuli_amount) ? stimuli_amount : 5;
+  const validAmount = Math.max(3, safeAmount % 2 === 0 ? safeAmount + 1 : safeAmount);
+  const halfFlankers = Math.floor(validAmount / 2);
+  
   // Handle different input types
   let processedStimuli;
   if (Array.isArray(stimuli) || (stimuli && ('left' in stimuli || 'right' in stimuli) && Array.isArray(stimuli.left || stimuli.right))) {
@@ -177,11 +196,20 @@ export function createPracticeStim(direction, congruent, stimuli: string[] | { l
   const flanker = congruent ? processedStimuli[direction] : processedStimuli[direction === 'left' ? 'right' : 'left'];
   
   let html = `<div class="flanker-stim practice">`;
-  html += `<span>${flanker}</span>`;
-  html += `<span>${flanker}</span>`;
+  
+  // Add left flankers
+  for (let i = 0; i < halfFlankers; i++) {
+    html += `<span>${flanker}</span>`;
+  }
+  
+  // Add center stimulus with highlighting
   html += `<span class="center highlighted">${center}</span>`;
-  html += `<span>${flanker}</span>`;
-  html += `<span>${flanker}</span>`;
+  
+  // Add right flankers
+  for (let i = 0; i < halfFlankers; i++) {
+    html += `<span>${flanker}</span>`;
+  }
+  
   html += `</div>`;
   return html;
 }
@@ -194,6 +222,7 @@ export interface FlankerConfig {
   stimuli_type?: 'fish' | 'arrow' | 'layered';
   custom_stimuli?: { left?: string[]; right?: string[] };
   svg?: string[]; // Override parameter - array of SVGs to layer
+  stimuli_amount?: number; // Number of stimuli in flanker display (default: 5, must be odd ≥3)
   fixation_duration?: number;
   show_instructions?: boolean;
   show_practice?: boolean;
@@ -235,6 +264,7 @@ export function createTimeline(jsPsych: JsPsych, config: FlankerConfig = {}) {
     stimuli_type = 'layered',
     custom_stimuli,
     svg,
+    stimuli_amount = 5,
     fixation_duration = 500,
     show_instructions = true,
     show_practice = true,
@@ -332,7 +362,7 @@ export function createTimeline(jsPsych: JsPsych, config: FlankerConfig = {}) {
         return `
           <div class="flanker-trial">
             <div class="trial-prompt">${trial_text.main_task_prompt}</div>
-            ${createPracticeStim(direction, congruent, stimuli)}
+            ${createPracticeStim(direction, congruent, stimuli, stimuli_amount)}
           </div>
         `;
       },
@@ -431,7 +461,7 @@ export function createTimeline(jsPsych: JsPsych, config: FlankerConfig = {}) {
       return `
         <div class="flanker-trial">
           <div class="trial-prompt">${trial_text.main_task_prompt}</div>
-          ${createFlankerStim(direction, congruent, stimuli)}
+          ${createFlankerStim(direction, congruent, stimuli, stimuli_amount)}
         </div>
       `;
     },

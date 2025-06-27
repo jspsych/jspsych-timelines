@@ -36,40 +36,53 @@
   // Configure the task
   const config = {
     // Stimulus options
-    stimuli_type: 'fish', // 'fish', 'arrow', or 'layered' (fish + arrow, can be changed in stimuli.ts)
+    stimuli_type: 'layered', // 'fish', 'arrow', or 'layered' (fish + arrow overlay)
+    stimuli_amount: 8, // Number of stimuli in flanker display (3, 5, 7, 9, etc. - must be odd)
     
     // SVG override - uncomment to use custom SVG array
     // svg: [
-    //   '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><circle cx="24" cy="24" r="20" fill="blue"/></svg>',
+    //   '<svg xmlns="http://www.w3.org/2000/svg" wi dth="48" height="48" viewBox="0 0 48 48"><circle cx="24" cy="24" r="20" fill="blue"/></svg>',
     //   '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><path d="M24 8 L32 24 L24 40 L16 24 Z" fill="red"/></svg>'
     // ],
     
-    // Trial configuration
-    num_practice_trials: 4, // Reduced for demo
-    num_congruent_trials: 8, // Reduced for demo  
-    num_incongruent_trials: 4, // Reduced for demo
+    // Trial configuration  
+    num_practice: 6, // Number of practice trials
+    num_trials: 20, // Number of main task trials
     
     // Timing options (in milliseconds)
     fixation_duration: 500,
-    response_timeout: 5000,
-    feedback_duration: 1000,
-    inter_trial_interval: 1000,
     
     // Task flow options
     show_instructions: true,
-    show_practice: true,
-    show_feedback: true,
-    
-    // Performance thresholds
-    practice_threshold: 50, // Reduced for demo - minimum accuracy to pass practice
-    fish_threshold_for_arrows: 70, // Reduced for demo - accuracy needed to advance to arrow block
-    
-    // Progression options
-    auto_advance_to_arrows: true, // Automatically show arrow block if fish performance is good
+    show_practice: true
   };
 
   // Create the timeline
   const task = jsPsychTimelineFlankerInhibitory.createTimeline(jsPsych, config);
+
+  // Alternative configurations (uncomment to try):
+  
+  // Simple fish-only with 3 stimuli
+  // const simpleFish = jsPsychTimelineFlankerInhibitory.createTimeline(jsPsych, {
+  //   stimuli_type: 'fish',
+  //   stimuli_amount: 3,
+  //   num_practice: 4,
+  //   num_trials: 12
+  // });
+
+  // Complex arrow display with 9 stimuli
+  // const complexArrows = jsPsychTimelineFlankerInhibitory.createTimeline(jsPsych, {
+  //   stimuli_type: 'arrow', 
+  //   stimuli_amount: 9,
+  //   num_practice: 8,
+  //   num_trials: 40
+  // });
+
+  // Custom SVG override
+  // const customSVG = jsPsychTimelineFlankerInhibitory.createTimeline(jsPsych, {
+  //   svg: ['<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><polygon points="24,4 44,40 4,40" fill="green"/></svg>'],
+  //   stimuli_amount: 5
+  // });
 
   // Run the experiment
   jsPsych.run([task]);

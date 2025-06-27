@@ -2,19 +2,19 @@
 
 ## Overview
 
-The Flanker Inhibitory Control and Attention test is an assessment of inhibitory control and
+The Flanker Inhibitory Control and Attention test is an assessment of inhibitory control and selective attention based on the NIH Toolbox Flanker task. Participants respond to the direction of a central stimulus while ignoring flanking stimuli that may be congruent or incongruent with the target.
 
 ## Loading
 
 ### In browser
 
 ```html
-<script src="https://unpkg.com/@jspsych-timelines/flanker-inhibitory">
+<script src="https://unpkg.com/@jspsych-timelines/flanker-inhibitory"></script>
 ```
 
 ### Via NPM
 
-```
+```bash
 npm install @jspsych-timelines/flanker-inhibitory
 ```
 
@@ -31,19 +31,75 @@ import { createTimeline, timelineUnits, utils } from "@jspsych-timelines/flanker
 ### createTimeline
 
 #### jsPsychTimelineFlankerInhibitory.createTimeline(jsPsych, { *options* }) ⇒ <code>timeline</code>
-Description of the timeline that this plugin generates
+
+Creates a complete flanker task timeline with instructions, practice trials, and main task trials. The task uses layered fish and arrow stimuli by default, with configurable parameters for customization.
 
 The following parameters can be specified in the **options** parameter.
 
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
-| parameter | type | default | description |
+| stimuli_type | string | 'layered' | Type of stimuli to use: 'fish', 'arrow', or 'layered' |
+| custom_stimuli | object | undefined | Custom stimuli object with left/right arrays |
+| svg | array | undefined | Override parameter - array of SVGs to layer on top of each other |
+| stimuli_amount | number | 5 | Number of stimuli in flanker display (must be odd ≥3) |
+| fixation_duration | number | 500 | Duration of fixation cross in milliseconds |
+| show_instructions | boolean | true | Whether to show instruction screens |
+| show_practice | boolean | true | Whether to include practice trials |
+| num_practice | number | 8 | Number of practice trials |
+| num_trials | number | 20 | Number of main task trials |
 
+#### Example Usage
+
+```js
+const jsPsych = initJsPsych();
+
+// Basic usage with defaults
+const timeline = jsPsychTimelineFlankerInhibitory.createTimeline(jsPsych);
+
+// Custom configuration
+const customTimeline = jsPsychTimelineFlankerInhibitory.createTimeline(jsPsych, {
+  stimuli_type: 'fish',
+  stimuli_amount: 7,
+  num_trials: 40,
+  fixation_duration: 750
+});
+
+// Using custom SVG override
+const svgTimeline = jsPsychTimelineFlankerInhibitory.createTimeline(jsPsych, {
+  svg: [
+    '<svg>...base layer...</svg>',
+    '<svg>...overlay layer...</svg>'
+  ],
+  stimuli_amount: 9
+});
+
+jsPsych.run([timeline]);
+```
 
 ### timelineUnits
 
+Object containing identifiers for different phases of the task:
+- `instructions`: Instruction screens
+- `practice`: Practice trials  
+- `main`: Main task trials
+- `completion`: Task completion screen
 
 ### utils
+
+Utility functions for working with flanker stimuli and data:
+- `calculatePerformance(data)`: Calculate accuracy and mean RT from trial data
+- `createFlankerStim(direction, congruent, stimuli, stimuli_amount)`: Generate flanker stimulus HTML
+- `createPracticeStim(direction, congruent, stimuli, stimuli_amount)`: Generate practice stimulus with highlighting
+
+## Features
+
+- **Adaptive stimuli**: Fish stimuli for younger children, arrows for older children, or layered combinations
+- **Configurable difficulty**: Adjust number of flanker stimuli (3, 5, 7, 9, etc.)
+- **Mobile-friendly**: Touch-optimized button interfaces
+- **Practice mode**: Highlighted center stimulus for learning
+- **Multiple input types**: Support for SVG arrays, custom stimuli objects, or simple overrides
+- **Automatic flipping**: Single SVG automatically generates left/right facing versions
+- **Layered SVGs**: Stack multiple SVG elements for complex stimuli
 
 ## Author / Citation
 

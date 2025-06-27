@@ -13,6 +13,7 @@ import {
   instruction_pages,
   FlankerConfig
 } from "./index";
+import { layered_stimuli } from "./stimuli";
 
 describe("Flanker Inhibitory Control Task", () => {
   let jsPsych: any;
@@ -389,6 +390,99 @@ describe("Flanker Inhibitory Control Task", () => {
     });
   });
 
+  describe("Stimuli Amount Functionality", () => {
+    // Helper function to count only top-level spans (flanker positions)
+    const countFlankerPositions = (html: string): number => {
+      // Count spans that are direct children of the flanker-stim div
+      // These represent the actual flanker positions, not inner SVG content
+      const matches = html.match(/<span[^>]*>/g) || [];
+      return matches.length;
+    };
+
+    it("should default to 5 stimuli (2 left + 1 center + 2 right)", () => {
+      const html = createFlankerStim('left', true);
+      const spanCount = countFlankerPositions(html);
+      expect(spanCount).toBe(5);
+    });
+
+    it("should create correct number of stimuli for custom amounts", () => {
+      const testAmounts = [3, 5, 7, 9];
+      
+      testAmounts.forEach(amount => {
+        const html = createFlankerStim('left', true, layered_stimuli, amount);
+        const spanCount = countFlankerPositions(html);
+        expect(spanCount).toBe(amount);
+      });
+    });
+
+    it("should handle even numbers by rounding up to next odd", () => {
+      const html4 = createFlankerStim('left', true, layered_stimuli, 4);
+      const html6 = createFlankerStim('left', true, layered_stimuli, 6);
+      const html8 = createFlankerStim('left', true, layered_stimuli, 8);
+      
+      expect(countFlankerPositions(html4)).toBe(5); // 4 -> 5
+      expect(countFlankerPositions(html6)).toBe(7); // 6 -> 7
+      expect(countFlankerPositions(html8)).toBe(9); // 8 -> 9
+    });
+
+    it("should enforce minimum of 3 stimuli", () => {
+      const html1 = createFlankerStim('left', true, layered_stimuli, 1);
+      const html2 = createFlankerStim('left', true, layered_stimuli, 2);
+      const htmlNegative = createFlankerStim('left', true, layered_stimuli, -5);
+      
+      expect(countFlankerPositions(html1)).toBe(3);
+      expect(countFlankerPositions(html2)).toBe(3);
+      expect(countFlankerPositions(htmlNegative)).toBe(3);
+    });
+
+    it("should maintain center stimulus with highlighting in practice", () => {
+      const html = createPracticeStim('left', true, layered_stimuli, 7);
+      const spanCount = countFlankerPositions(html);
+      expect(spanCount).toBe(7);
+      expect(html).toContain('center highlighted');
+    });
+
+    it("should work with different stimuli types", () => {
+      const fishHtml = createFlankerStim('left', true, fish_stimuli, 7);
+      const arrowHtml = createFlankerStim('left', true, arrow_stimuli, 7);
+      
+      expect(countFlankerPositions(fishHtml)).toBe(7);
+      expect(countFlankerPositions(arrowHtml)).toBe(7);
+    });
+
+    it("should be configurable via timeline config", () => {
+      const timeline = createTimeline(jsPsych, { 
+        stimuli_amount: 7,
+        show_instructions: false,
+        show_practice: false 
+      });
+      
+      expect(timeline.timeline.length).toBeGreaterThan(0);
+    });
+
+    it("should validate stimuli_amount in different function calls", () => {
+      // Test with simple SVGs (no inner spans)
+      const testSVGs = ['<svg><circle/></svg>'];
+      const html1 = createFlankerStim('left', true, testSVGs, 9);
+      expect(countFlankerPositions(html1)).toBe(9);
+      
+      // Test with objects
+      const testObj = { left: ['<svg><path/></svg>'], right: ['<svg><rect/></svg>'] };
+      const html2 = createFlankerStim('left', true, testObj, 7);
+      expect(countFlankerPositions(html2)).toBe(7);
+    });
+
+    it("should handle invalid amounts by using valid fallbacks", () => {
+      // NaN should fall back to default (5)
+      const htmlNaN = createFlankerStim('left', true, layered_stimuli, NaN);
+      expect(countFlankerPositions(htmlNaN)).toBe(5);
+      
+      // Very large numbers should still work
+      const htmlLarge = createFlankerStim('left', true, layered_stimuli, 15);
+      expect(countFlankerPositions(htmlLarge)).toBe(15);
+    });
+  });
+
   describe("Error Handling", () => {
     it("should handle invalid direction gracefully", () => {
       expect(() => createFlankerStim('invalid' as any, true)).not.toThrow();
@@ -405,6 +499,18 @@ describe("Flanker Inhibitory Control Task", () => {
     it("should handle malformed SVG strings", () => {
       const badSVG = ['not an svg'];
       expect(() => createFlankerStim('left', true, badSVG)).not.toThrow();
+    });
+
+    it("should handle invalid stimuli_amount gracefully", () => {
+      expect(() => createFlankerStim('left', true, layered_stimuli, NaN)).not.toThrow();
+      expect(() => createFlankerStim('left', true, layered_stimuli, Infinity)).not.toThrow();
+      
+      // Should fall back to default value (5) for invalid inputs
+      const htmlNaN = createFlankerStim('left', true, layered_stimuli, NaN);
+      const htmlInfinity = createFlankerStim('left', true, layered_stimuli, Infinity);
+      
+      expect((htmlNaN.match(/<span[^>]*>/g) || []).length).toBe(5);
+      expect((htmlInfinity.match(/<span[^>]*>/g) || []).length).toBe(5);
     });
   });
 });
