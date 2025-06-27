@@ -46,6 +46,59 @@ export const trial_text = {
     trial_progress: "Trial {current} of {total}",
 };
 
+// TTS (Text-to-Speech) configuration
+export const tts_config = {
+    // Voice settings
+    voice_name: '', // Empty string uses default voice, or specify like 'Google US English'
+    rate: 1.0, // Speech rate (0.1 to 10)
+    pitch: 1.0, // Speech pitch (0 to 2)
+    volume: 1.0, // Speech volume (0 to 1)
+    
+    // Language and locale
+    lang: 'en-US', // Language code for speech synthesis
+    
+    // What text to speak aloud (can be disabled per element)
+    speak_instructions: true, // Speak instruction page content
+    speak_prompts: true, // Speak trial prompts
+    speak_feedback: true, // Speak correct/incorrect feedback
+    speak_completion: true, // Speak task completion messages
+    
+    // Auto-play settings
+    auto_speak_on_load: true, // Automatically start speaking when page loads
+    speak_button_text: false, // Whether to also speak button labels
+    
+    // Timing
+    speech_delay: 500, // Delay before starting speech (ms)
+    allow_skip: true, // Allow users to skip/stop speech
+};
+
+// Spoken versions of text (can be different from displayed text for clarity)
+export const tts_text = {
+    // Instruction spoken versions
+    welcome_spoken: "Welcome to the Flanker Inhibitory Control Task. This is an attention and focus test.",
+    task_explanation_spoken: "You will see a group of fish swimming on the screen. Your job is to focus only on the middle fish and ignore the other fish around it.",
+    directions_spoken: "Look at which direction the middle fish is swimming and click the corresponding button. Click the left arrow if it's swimming left, or the right arrow if it's swimming right.",
+    
+    // Trial spoken versions  
+    trial_prompt_spoken: "Look at the middle fish. Click the direction it's swimming.",
+    
+    // Feedback spoken versions
+    correct_spoken: "Correct",
+    incorrect_spoken: "Incorrect", 
+    
+    // Practice spoken versions
+    practice_start_spoken: "Let's practice. Look at the middle fish and click the button that shows which way it's swimming.",
+    practice_complete_spoken: "Practice complete. Great job! Now you're ready for the real task.",
+    
+    // Main task spoken versions
+    main_task_start_spoken: "Now we'll start the real task. Remember to focus on the middle fish.",
+    task_complete_spoken: "Task complete. Thank you for participating.",
+    
+    // Controls
+    skip_speech_text: "Press space to skip speech",
+    speech_controls_note: "Speech can be skipped by pressing the space bar at any time.",
+};
+
 /* 
  * This is an array of page objects that have configurable texts for the instruction pages
  * before the actual trials. Researchers can modify these instructions to change the

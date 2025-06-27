@@ -101,11 +101,12 @@
 }
 
 .trial-prompt {
-  font-size: 4.5vmin;
-  font-weight: 600;
+  font-size: 3vmin;
+  font-weight: 200;
   color: #2c3e50;
   text-align: center;
   max-width: 90vw;
+  line-height: normal;
 }
 
 /* Flanker stimulus */
@@ -113,19 +114,42 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 2vmin;
   margin: 3vmin 0;
   padding: 3vmin;
+  width: 100%;
+  max-width: 95vw;
+  gap: max(0.5vmin, calc(90vw / var(--stimuli-count, 5) * 0.1));
+  
+  /* Dynamic sizing based on number of stimuli and screen space */
+  --base-size: min(
+    calc(85vw / var(--stimuli-count, 5)),
+    calc(70vh / 1),
+    20vmin
+  );
+  --min-size: 4vmin;
+  --max-size: 25vmin;
+  --svg-size: max(var(--min-size), min(var(--max-size), var(--base-size)));
+  
+  /* Special handling for many stimuli (> 7) to ensure readability */
+  --many-stimuli-adjustment: calc(max(0, var(--stimuli-count, 5) - 7) * 0.5vmin);
+  --adjusted-svg-size: max(calc(var(--svg-size) + var(--many-stimuli-adjustment)), var(--min-size));
 }
 
 .flanker-stim span {
-  display: inline-block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  vertical-align: middle;
+  line-height: 0;
 }
 
 .flanker-stim svg {
-  width: 8vmin;
-  height: 8vmin;
+  width: var(--adjusted-svg-size, var(--svg-size));
+  height: var(--adjusted-svg-size, var(--svg-size));
   display: block;
+  vertical-align: middle;
+  flex-shrink: 0;
 }
 
 /* Practice highlighting */
@@ -264,13 +288,17 @@
 /* Small screens */
 @media (max-width: 480px) {
   .flanker-stim {
-    gap: 1vmin;
+    gap: max(0.3vmin, calc(85vw / var(--stimuli-count, 5) * 0.08));
     padding: 2vmin;
-  }
-  
-  .flanker-stim svg {
-    width: 6vmin;
-    height: 6vmin;
+    
+    /* Tighter sizing for small screens */
+    --base-size: min(
+      calc(80vw / var(--stimuli-count, 5)),
+      calc(50vh / 1),
+      15vmin
+    );
+    --min-size: 3vmin;
+    --max-size: 12vmin;
   }
   
   .trial-prompt {
@@ -295,9 +323,17 @@
 
 /* Medium screens */
 @media (min-width: 481px) and (max-width: 768px) {
-  .flanker-stim svg {
-    width: 9vmin;
-    height: 9vmin;
+  .flanker-stim {
+    gap: max(0.4vmin, calc(88vw / var(--stimuli-count, 5) * 0.09));
+    
+    /* Medium screen sizing */
+    --base-size: min(
+      calc(82vw / var(--stimuli-count, 5)),
+      calc(60vh / 1),
+      18vmin
+    );
+    --min-size: 3.5vmin;
+    --max-size: 18vmin;
   }
   
   .jspsych-btn-group:has(.jspsych-btn:nth-child(2):last-child) .jspsych-btn {
@@ -309,9 +345,17 @@
 
 /* Large screens */
 @media (min-width: 769px) {
-  .flanker-stim svg {
-    width: 10vmin;
-    height: 10vmin;
+  .flanker-stim {
+    gap: max(0.5vmin, calc(90vw / var(--stimuli-count, 5) * 0.1));
+    
+    /* Large screen sizing - more generous */
+    --base-size: min(
+      calc(85vw / var(--stimuli-count, 5)),
+      calc(70vh / 1),
+      22vmin
+    );
+    --min-size: 4vmin;
+    --max-size: 30vmin;
   }
   
   .jspsych-btn-group:has(.jspsych-btn:nth-child(2):last-child) .jspsych-btn {

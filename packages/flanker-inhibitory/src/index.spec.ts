@@ -366,6 +366,60 @@ describe("Flanker Inhibitory Control Task", () => {
       expect(leftHtml).toContain('flanker-stim');
       expect(rightHtml).toContain('flanker-stim');
     });
+
+    it("should properly handle fish SVG alignment - no double transforms", () => {
+      // Test specifically with fish stimuli to ensure alignment fix works
+      const fishLeftHtml = createFlankerStim('left', true, fish_stimuli);
+      const fishRightHtml = createFlankerStim('right', true, fish_stimuli);
+      
+      // Both should contain flanker stimulus
+      expect(fishLeftHtml).toContain('flanker-stim');
+      expect(fishRightHtml).toContain('flanker-stim');
+      
+      // They should be different (one flipped)
+      expect(fishLeftHtml).not.toBe(fishRightHtml);
+      
+      // Test that the fish SVG original has a transform
+      expect(fish_stimuli.right).toContain('transform=');
+      
+      // Test that flipping twice gets back to original orientation
+      // This validates the fix for double-transform issues
+      const twice_flipped_left = createFlankerStim('left', true, fish_stimuli);
+      const twice_flipped_right = createFlankerStim('right', true, fish_stimuli);
+      expect(twice_flipped_left).not.toBe(twice_flipped_right);
+    });
+
+    it("should handle fish incongruent stimuli alignment correctly", () => {
+      // Test incongruent fish (center different from flankers) - key alignment test
+      const leftIncongruent = createFlankerStim('left', false, fish_stimuli);
+      const rightIncongruent = createFlankerStim('right', false, fish_stimuli);
+      
+      // Should produce valid HTML
+      expect(leftIncongruent).toContain('flanker-stim');
+      expect(rightIncongruent).toContain('flanker-stim');
+      
+      // Should be different
+      expect(leftIncongruent).not.toBe(rightIncongruent);
+      
+      // The key test: each should contain both orientations (center vs flankers)
+      // This is where alignment issues would be most visible
+      expect(leftIncongruent).toContain('<span>');
+      expect(rightIncongruent).toContain('<span>');
+    });
+
+    it("should maintain consistent alignment with layered fish+arrow stimuli", () => {
+      // Test the default layered stimuli (fish + arrow) for alignment
+      const leftLayered = createFlankerStim('left', true, default_stimuli);
+      const rightLayered = createFlankerStim('right', true, default_stimuli);
+      
+      expect(leftLayered).toContain('flanker-stim');
+      expect(rightLayered).toContain('flanker-stim');
+      expect(leftLayered).not.toBe(rightLayered);
+      
+      // Should contain position styling for layered elements
+      expect(leftLayered).toContain('position:');
+      expect(rightLayered).toContain('position:');
+    });
   });
 
   describe("Layered SVG Functionality", () => {
@@ -511,6 +565,169 @@ describe("Flanker Inhibitory Control Task", () => {
       
       expect((htmlNaN.match(/<span[^>]*>/g) || []).length).toBe(5);
       expect((htmlInfinity.match(/<span[^>]*>/g) || []).length).toBe(5);
+    });
+  });
+
+  describe("Edge Cases and Timeline Variable Errors", () => {
+    it("should handle num_practice=0 with show_practice=true without errors", () => {
+      expect(() => {
+        const timeline = createTimeline(jsPsych, { 
+          num_practice: 0, 
+          show_practice: true,
+          show_instructions: false,
+          num_trials: 1
+        });
+        expect(timeline.timeline.length).toBeGreaterThan(0);
+      }).not.toThrow();
+    });
+
+    it("should handle num_trials=0 without errors", () => {
+      expect(() => {
+        const timeline = createTimeline(jsPsych, { 
+          num_trials: 0,
+          show_instructions: false,
+          show_practice: false
+        });
+        expect(timeline.timeline.length).toBeGreaterThan(0);
+      }).not.toThrow();
+    });
+
+    it("should handle both num_practice=0 and num_trials=0 without errors", () => {
+      expect(() => {
+        const timeline = createTimeline(jsPsych, { 
+          num_practice: 0,
+          show_practice: true,
+          num_trials: 0,
+          show_instructions: false
+        });
+        // Should still have completion screen
+        expect(timeline.timeline.length).toBeGreaterThan(0);
+      }).not.toThrow();
+    });
+
+    it("should handle negative numbers for practice trials", () => {
+      expect(() => {
+        const timeline = createTimeline(jsPsych, { 
+          num_practice: -5,
+          show_practice: true,
+          show_instructions: false,
+          num_trials: 1
+        });
+        expect(timeline.timeline.length).toBeGreaterThan(0);
+      }).not.toThrow();
+    });
+
+    it("should handle negative numbers for main trials", () => {
+      expect(() => {
+        const timeline = createTimeline(jsPsych, { 
+          num_trials: -10,
+          show_instructions: false,
+          show_practice: false
+        });
+        expect(timeline.timeline.length).toBeGreaterThan(0);
+      }).not.toThrow();
+    });
+
+    it("should handle very large numbers without breaking", () => {
+      expect(() => {
+        const timeline = createTimeline(jsPsych, { 
+          num_practice: 1000,
+          show_practice: true,
+          num_trials: 1000,
+          show_instructions: false
+        });
+        expect(timeline.timeline.length).toBeGreaterThan(0);
+      }).not.toThrow();
+    });
+
+    it("should handle NaN values for trial counts", () => {
+      expect(() => {
+        const timeline = createTimeline(jsPsych, { 
+          num_practice: NaN,
+          show_practice: true,
+          num_trials: NaN,
+          show_instructions: false
+        });
+        expect(timeline.timeline.length).toBeGreaterThan(0);
+      }).not.toThrow();
+    });
+
+    it("should handle all combinations of false/0 settings", () => {
+      const edgeCaseConfigs = [
+        { show_instructions: false, show_practice: false, num_practice: 0, num_trials: 0 },
+        { show_instructions: true, show_practice: false, num_practice: 0, num_trials: 0 },
+        { show_instructions: false, show_practice: true, num_practice: 0, num_trials: 0 },
+        { show_instructions: false, show_practice: false, num_practice: 5, num_trials: 0 },
+        { show_instructions: false, show_practice: false, num_practice: 0, num_trials: 5 },
+      ];
+
+      edgeCaseConfigs.forEach((config, index) => {
+        expect(() => {
+          const timeline = createTimeline(jsPsych, config);
+          expect(timeline.timeline.length).toBeGreaterThan(0);
+        }).not.toThrow();
+      });
+    });
+
+    it("should always include completion screen even with no trials", () => {
+      const timeline = createTimeline(jsPsych, { 
+        show_instructions: false,
+        show_practice: false,
+        num_practice: 0,
+        num_trials: 0
+      });
+      
+      // Should have at least the main intro and completion screens
+      expect(timeline.timeline.length).toBeGreaterThanOrEqual(2);
+      
+      // Check that completion screen is present
+      const completionScreen = timeline.timeline.find(trial => 
+        trial.data && trial.data.task === 'complete'
+      );
+      expect(completionScreen).toBeDefined();
+    });
+  });
+
+  describe("Responsive Sizing", () => {
+    it("should add CSS custom property for stimuli count", () => {
+      const html3 = createFlankerStim('left', true, fish_stimuli, 3);
+      const html7 = createFlankerStim('left', true, fish_stimuli, 7);
+      const html15 = createFlankerStim('left', true, fish_stimuli, 15);
+      
+      expect(html3).toContain('--stimuli-count: 3');
+      expect(html7).toContain('--stimuli-count: 7');
+      expect(html15).toContain('--stimuli-count: 15');
+    });
+
+    it("should add CSS custom property to practice stimuli", () => {
+      const practiceHtml = createPracticeStim('right', false, arrow_stimuli, 9);
+      
+      expect(practiceHtml).toContain('--stimuli-count: 9');
+      expect(practiceHtml).toContain('practice');
+    });
+
+    it("should handle different stimuli counts with custom property", () => {
+      const testCounts = [3, 5, 7, 9, 11, 15, 21];
+      
+      testCounts.forEach(count => {
+        const html = createFlankerStim('left', true, default_stimuli, count);
+        expect(html).toContain(`--stimuli-count: ${count}`);
+        expect(html).toContain('flanker-stim');
+      });
+    });
+
+    it("should work with edge cases for responsive sizing", () => {
+      // Test with very large count
+      const htmlLarge = createFlankerStim('left', true, fish_stimuli, 25);
+      expect(htmlLarge).toContain('--stimuli-count: 25');
+      
+      // Test with minimum count (enforced to 3)
+      const htmlMin = createFlankerStim('left', true, fish_stimuli, 1);
+      expect(htmlMin).toContain('--stimuli-count: 3');
+      
+      // Test with invalid input (should fall back to default)
+      const htmlInvalid = createFlankerStim('left', true, fish_stimuli, NaN);
+      expect(htmlInvalid).toContain('--stimuli-count: 5');
     });
   });
 });

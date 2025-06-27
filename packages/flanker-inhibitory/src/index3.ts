@@ -155,117 +155,132 @@ export function addSpeechControls(config = tts_config) {
 // SVG UTILITIES
 // ============================================================================
 
-// Robust SVG flipping with proper alignment handling
+// Function to horizontally flip an SVG - works for all SVGs
 function flipSVG(svgString: string): string {
-  if (!svgString || typeof svgString !== 'string') return svgString;
+  // Parse the SVG to extract viewBox and content
+  const svgMatch = svgString.match(/<svg[^>]*>/);
+  if (!svgMatch) return svgString;
   
-  // Check if SVG already contains a flip transform
-  const hasExistingTransform = svgString.includes('matrix(-1,') || 
-                              svgString.includes('matrix(-1 ') ||
-                              svgString.includes('scaleX(-1)') ||
-                              svgString.includes('scale(-1');
+  const svgTag = svgMatch[0];
+  const svgContent = svgString.replace(svgTag, '').replace('</svg>', '');
   
-  // If already flipped, remove the flip transform to restore original orientation
-  if (hasExistingTransform) {
-    return svgString
-      .replace(/transform="matrix\(-1,\s*0,\s*0,\s*1,\s*0,\s*0\)"/g, '')
-      .replace(/transform="matrix\(-1\s+0\s+0\s+1\s+0\s+0\)"/g, '')
-      .replace(/transform="scaleX\(-1\)"/g, '')
-      .replace(/transform="scale\(-1,\s*1\)"/g, '')
-      .replace(/transform="scale\(-1\s+1\)"/g, '')
-      .replace(/style="[^"]*transform:\s*scaleX\(-1\)[^"]*"/g, (match) => {
-        return match.replace(/transform:\s*scaleX\(-1\);?/, '').replace(/style=""/, '');
-      });
-  }
+  // Extract viewBox if it exists
+  const viewBoxMatch = svgTag.match(/viewBox="([^"]+)"/);
+  let viewBox = viewBoxMatch ? viewBoxMatch[1] : '0 0 48 48';
+  const viewBoxParts = viewBox.split(' ');
+  const vbWidth = parseFloat(viewBoxParts[2]) || 48;
   
-  // Parse SVG to get dimensions for proper transform calculation
-  const viewBoxMatch = svgString.match(/viewBox="([^"]+)"/);
-  const widthMatch = svgString.match(/width="([^"]+)"/);
+  // Extract width and height
+  const widthMatch = svgTag.match(/width="([^"]+)"/);
+  const heightMatch = svgTag.match(/height="([^"]+)"/);
+  const width = widthMatch ? widthMatch[1] : '48';
+  const height = heightMatch ? heightMatch[1] : '48';
   
-  let translateX = 0;
-  if (viewBoxMatch) {
-    const viewBox = viewBoxMatch[1].split(/\s+/);
-    if (viewBox.length >= 3) {
-      translateX = parseFloat(viewBox[2]) || 0; // width from viewBox
+  // Check if SVG already has a horizontal flip transform
+  const hasFlipTransform = svgTag.includes('transform="matrix(-1,') || 
+                          svgTag.includes('transform="matrix(-1 ') ||
+                          svgTag.includes('transform="scale(-1');
+  
+  // If already flipped, remove the flip transform instead of adding another
+  if (hasFlipTransform) {
+    // Remove existing flip transforms and return the content directly
+    let cleanedTag = svgTag
+      .replace(/transform="[^"]*"/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+    
+    // Ensure we have proper attributes
+    if (!cleanedTag.includes('xmlns')) {
+      cleanedTag = cleanedTag.replace('<svg', '<svg xmlns="http://www.w3.org/2000/svg"');
     }
-  } else if (widthMatch) {
-    translateX = parseFloat(widthMatch[1]) || 0;
-  }
-  
-  // Apply proper SVG transform that maintains alignment
-  if (translateX > 0) {
-    // Insert transform into the SVG element itself for better precision
-    return svgString.replace(
-      /<svg([^>]*)>/,
-      `<svg$1><g transform="scale(-1,1) translate(-${translateX},0)">`
-    ).replace(/<\/svg>$/, '</g></svg>');
+    if (!cleanedTag.includes('width')) {
+      cleanedTag = cleanedTag.replace('<svg', `<svg width="${width}"`);
+    }
+    if (!cleanedTag.includes('height')) {
+      cleanedTag = cleanedTag.replace('<svg', `<svg height="${height}"`);
+    }
+    if (!cleanedTag.includes('viewBox')) {
+      cleanedTag = cleanedTag.replace('<svg', `<svg viewBox="${viewBox}"`);
+    }
+    
+    return `${cleanedTag}${svgContent}</svg>`;
   } else {
-    // Fallback to CSS transform with inline-block container
-    return `<span style="display: inline-block; transform: scaleX(-1);">${svgString}</span>`;
+    // Create a new SVG with a wrapper group that flips the content
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="${viewBox}">
+      <g transform="scale(-1,1) translate(-${vbWidth},0)">
+        ${svgContent}
+      </g>
+    </svg>`;
   }
 }
 
-// Simple SVG layering using CSS
+// Function to layer multiple SVGs on top of each other
 function layerSVGs(svgArray: string[]): string {
   if (!svgArray || !Array.isArray(svgArray) || svgArray.length === 0) return '';
   if (svgArray.length === 1) return svgArray[0];
   
-  // Layer SVGs using CSS positioning
-  return `<span style="position: relative; display: inline-block;">
-    ${svgArray.map((svg, index) => 
-      `<span style="position: ${index === 0 ? 'relative' : 'absolute'}; top: 0; left: 0;">${svg}</span>`
-    ).join('')}
-  </span>`;
+  // Create a container div with relative positioning
+  let layeredHTML = '<div style="position: relative; display: inline-block;">';
+  
+  svgArray.forEach((svg, index) => {
+    const style = index === 0 
+      ? 'position: relative;' 
+      : 'position: absolute; top: 0; left: 0;';
+    layeredHTML += `<div style="${style}">${svg}</div>`;
+  });
+  
+  layeredHTML += '</div>';
+  return layeredHTML;
 }
 
-// Simplified stimulus processing
-function processStimuli(stimuli: { left?: string[], right?: string[] } | string[] | { left: string, right: string }) {
-  // If already processed (has left/right strings), return as-is
-  if (stimuli && typeof stimuli === 'object' && !Array.isArray(stimuli) && 
-      typeof stimuli.left === 'string' && typeof stimuli.right === 'string') {
-    return stimuli as { left: string, right: string };
-  }
-  
-  // If simple array, treat as right-facing and generate left by flipping
+// Function to process layered stimuli - creates left/right from SVG arrays
+function processLayeredStimuli(stimuli: { left?: string[], right?: string[] } | string[]) {
+  // If it's a simple array, treat it as right-facing
   if (Array.isArray(stimuli)) {
+    const rightLayered = layerSVGs(stimuli);
+    const leftLayered = layerSVGs(stimuli.map(svg => flipSVG(svg)));
     return {
-      right: layerSVGs(stimuli),
-      left: flipSVG(layerSVGs(stimuli))
+      left: leftLayered,
+      right: rightLayered
     };
   }
   
-  // If object with arrays
-  if (stimuli && typeof stimuli === 'object') {
-    const obj = stimuli as { left?: string[], right?: string[] };
-    if (obj.left && obj.right) {
-      return {
-        left: layerSVGs(obj.left),
-        right: layerSVGs(obj.right)
-      };
-    } else if (obj.right) {
-      return {
-        right: layerSVGs(obj.right),
-        left: flipSVG(layerSVGs(obj.right))
-      };
-    } else if (obj.left) {
-      return {
-        left: layerSVGs(obj.left),
-        right: flipSVG(layerSVGs(obj.left))
-      };
-    }
+  // If object with left/right arrays
+  if (stimuli.left && !stimuli.right) {
+    const leftLayered = layerSVGs(stimuli.left);
+    const rightLayered = layerSVGs(stimuli.left.map(svg => flipSVG(svg)));
+    return {
+      left: leftLayered,
+      right: rightLayered
+    };
+  } else if (stimuli.right && !stimuli.left) {
+    const rightLayered = layerSVGs(stimuli.right);
+    const leftLayered = layerSVGs(stimuli.right.map(svg => flipSVG(svg)));
+    return {
+      left: leftLayered,
+      right: rightLayered
+    };
+  } else if (stimuli.left && stimuli.right) {
+    return {
+      left: layerSVGs(stimuli.left),
+      right: layerSVGs(stimuli.right)
+    };
+  } else {
+    // Neither provided, use default layered
+    const rightLayered = layerSVGs(layered_stimuli);
+    const leftLayered = layerSVGs(layered_stimuli.map(svg => flipSVG(svg)));
+    return {
+      left: leftLayered,
+      right: rightLayered
+    };
   }
-  
-  // Default fallback
-  return {
-    right: layerSVGs(layered_stimuli),
-    left: flipSVG(layerSVGs(layered_stimuli))
-  };
 }
 
-// Pre-processed stimuli for convenience (lazy-loaded)
-export const default_stimuli = processStimuli(layered_stimuli);
-export const fish_stimuli = processStimuli(fish_only);
-export const arrow_stimuli = processStimuli(arrow_only);
+export const default_stimuli = processLayeredStimuli(layered_stimuli);
+
+export const fish_stimuli = processLayeredStimuli(fish_only);
+
+export const arrow_stimuli = processLayeredStimuli(arrow_only);
 
 // ============================================================================
 // STIMULUS CREATION FUNCTIONS
@@ -277,12 +292,18 @@ export function createFlankerStim(direction, congruent, stimuli: string[] | { le
   const validAmount = Math.max(3, safeAmount % 2 === 0 ? safeAmount + 1 : safeAmount);
   const halfFlankers = Math.floor(validAmount / 2);
   
-  // Process stimuli
-  const processedStimuli = processStimuli(stimuli);
+  // Handle different input types
+  let processedStimuli;
+  if (Array.isArray(stimuli) || (stimuli && ('left' in stimuli || 'right' in stimuli) && Array.isArray(stimuli.left || stimuli.right))) {
+    processedStimuli = processLayeredStimuli(stimuli as string[] | { left?: string[]; right?: string[] });
+  } else {
+    // Already processed stimuli with left/right strings
+    processedStimuli = stimuli as { left: string; right: string };
+  }
   const center = processedStimuli[direction];
   const flanker = congruent ? processedStimuli[direction] : processedStimuli[direction === 'left' ? 'right' : 'left'];
   
-  let html = `<div class="flanker-stim" style="--stimuli-count: ${validAmount};">`;
+  let html = `<div class="flanker-stim">`;
   
   // Add left flankers
   for (let i = 0; i < halfFlankers; i++) {
@@ -307,12 +328,18 @@ export function createPracticeStim(direction, congruent, stimuli: string[] | { l
   const validAmount = Math.max(3, safeAmount % 2 === 0 ? safeAmount + 1 : safeAmount);
   const halfFlankers = Math.floor(validAmount / 2);
   
-  // Process stimuli
-  const processedStimuli = processStimuli(stimuli);
+  // Handle different input types
+  let processedStimuli;
+  if (Array.isArray(stimuli) || (stimuli && ('left' in stimuli || 'right' in stimuli) && Array.isArray(stimuli.left || stimuli.right))) {
+    processedStimuli = processLayeredStimuli(stimuli as string[] | { left?: string[]; right?: string[] });
+  } else {
+    // Already processed stimuli with left/right strings
+    processedStimuli = stimuli as { left: string; right: string };
+  }
   const center = processedStimuli[direction];
   const flanker = congruent ? processedStimuli[direction] : processedStimuli[direction === 'left' ? 'right' : 'left'];
   
-  let html = `<div class="flanker-stim practice" style="--stimuli-count: ${validAmount};">`;
+  let html = `<div class="flanker-stim practice">`;
   
   // Add left flankers
   for (let i = 0; i < halfFlankers; i++) {
@@ -515,19 +542,19 @@ export function createTimeline(jsPsych: JsPsych, config: FlankerConfig = {}) {
       } : undefined
     });
 
-    // Only add practice trials if num_practice > 0
-    if (num_practice > 0) {
-      // Practice trials
-      const practice_variables = [
-        {direction: 'left', congruent: true},
-        {direction: 'left', congruent: false},
-        {direction: 'right', congruent: true},
-        {direction: 'right', congruent: false},
-      ];
+    // Practice trials
+    const practice_variables = [
+      {direction: 'left', congruent: true},
+      {direction: 'left', congruent: false},
+      {direction: 'right', congruent: true},
+      {direction: 'right', congruent: false},
+    ];
 
-      const practice_trials = jsPsych.randomization.repeat(practice_variables, Math.floor(num_practice/4))
-        .concat(jsPsych.randomization.sampleWithoutReplacement(practice_variables, num_practice%4));
+    const practice_trials = jsPsych.randomization.repeat(practice_variables, Math.floor(num_practice/4))
+      .concat(jsPsych.randomization.sampleWithoutReplacement(practice_variables, num_practice%4));
 
+    // Only add practice trials if there are any
+    if (practice_trials.length > 0) {
       // Fixation
       const practice_fixation = {
         type: jsPsychHtmlButtonResponse,
@@ -636,65 +663,63 @@ export function createTimeline(jsPsych: JsPsych, config: FlankerConfig = {}) {
     } : undefined
   });
 
-  // Main trials - only add if num_trials > 0
-  if (num_trials > 0) {
-    const trial_variables = [
-      {direction: 'left', congruent: true},
-      {direction: 'left', congruent: false},
-      {direction: 'right', congruent: true},
-      {direction: 'right', congruent: false},
-    ];
+  // Main trials
+  const trial_variables = [
+    {direction: 'left', congruent: true},
+    {direction: 'left', congruent: false},
+    {direction: 'right', congruent: true},
+    {direction: 'right', congruent: false},
+  ];
 
-    const main_trials = jsPsych.randomization.repeat(trial_variables, Math.floor(num_trials/4))
-      .concat(jsPsych.randomization.sampleWithoutReplacement(trial_variables, num_trials%4));
+  const main_trials = jsPsych.randomization.repeat(trial_variables, Math.floor(num_trials/4))
+    .concat(jsPsych.randomization.sampleWithoutReplacement(trial_variables, num_trials%4));
 
-    // Fixation
-    const fixation = {
-      type: jsPsychHtmlButtonResponse,
-      stimulus: `<div class="fixation">${trial_text.fixation_cross}</div>`,
-      choices: [],
-      trial_duration: fixation_duration,
-      data: { task: 'fixation', phase: 'main' }
-    };
+  // Fixation
+  const fixation = {
+    type: jsPsychHtmlButtonResponse,
+    stimulus: `<div class="fixation">${trial_text.fixation_cross}</div>`,
+    choices: [],
+    trial_duration: fixation_duration,
+    data: { task: 'fixation', phase: 'main' }
+  };
 
-    // Main trial
-    const flanker_trial = {
-      type: jsPsychHtmlButtonResponse,
-      stimulus: function() {
-        const direction = jsPsych.evaluateTimelineVariable('direction');
-        const congruent = jsPsych.evaluateTimelineVariable('congruent');
-        return `
-          <div class="flanker-trial">
-            <div class="trial-prompt">${trial_text.main_task_prompt}</div>
-            ${createFlankerStim(direction, congruent, stimuli, stimuli_amount)}
-          </div>
-        `;
-      },
-      choices: [trial_text.left_button, trial_text.right_button],
-      data: {
-        task: 'flanker',
-        phase: 'main',
-        direction: jsPsych.timelineVariable('direction'),
-        congruent: jsPsych.timelineVariable('congruent')
-      },
-      on_load: enable_tts ? function() {
-        if (ttsSettings.speak_prompts) {
-          speakTrialPrompt(ttsSettings);
-        }
-      } : undefined,
-      on_finish: function(data: any) {
-        const correct_response = data.direction === 'left' ? 0 : 1;
-        data.correct = data.response === correct_response;
+  // Main trial
+  const flanker_trial = {
+    type: jsPsychHtmlButtonResponse,
+    stimulus: function() {
+      const direction = jsPsych.evaluateTimelineVariable('direction');
+      const congruent = jsPsych.evaluateTimelineVariable('congruent');
+      return `
+        <div class="flanker-trial">
+          <div class="trial-prompt">${trial_text.main_task_prompt}</div>
+          ${createFlankerStim(direction, congruent, stimuli, stimuli_amount)}
+        </div>
+      `;
+    },
+    choices: [trial_text.left_button, trial_text.right_button],
+    data: {
+      task: 'flanker',
+      phase: 'main',
+      direction: jsPsych.timelineVariable('direction'),
+      congruent: jsPsych.timelineVariable('congruent')
+    },
+    on_load: enable_tts ? function() {
+      if (ttsSettings.speak_prompts) {
+        speakTrialPrompt(ttsSettings);
       }
-    };
+    } : undefined,
+    on_finish: function(data: any) {
+      const correct_response = data.direction === 'left' ? 0 : 1;
+      data.correct = data.response === correct_response;
+    }
+  };
 
-    // Main task timeline
-    timeline.push({
-      timeline: [fixation, flanker_trial],
-      timeline_variables: main_trials,
-      randomize_order: true
-    });
-  }
+  // Main task timeline
+  timeline.push({
+    timeline: [fixation, flanker_trial],
+    timeline_variables: main_trials,
+    randomize_order: true
+  });
 
   // Completion
   timeline.push({
