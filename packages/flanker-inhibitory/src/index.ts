@@ -410,7 +410,7 @@ export function createTimeline(jsPsych: JsPsych, config: FlankerConfig = {}) {
           <div class="flanker-instructions">
             <h2>${trial_text.practice_complete_header}</h2>
             <p>${trial_text.practice_complete_message}</p>
-            <p>Your accuracy: ${performance.accuracy.toFixed(1)}%</p>
+            <p>${trial_text.accuracy_label} ${performance.accuracy.toFixed(1)}%</p>
           </div>
         `;
       },
@@ -424,8 +424,8 @@ export function createTimeline(jsPsych: JsPsych, config: FlankerConfig = {}) {
     type: jsPsychHtmlButtonResponse,
     stimulus: `
       <div class="flanker-instructions">
-        <h2>Main Task</h2>
-        <p>Now we'll start the real task. Remember to focus on the middle fish!</p>
+        <h2>${trial_text.main_task_header}</h2>
+        <p>${trial_text.main_task_intro}</p>
       </div>
     `,
     choices: [trial_text.ready_button],
@@ -497,9 +497,9 @@ export function createTimeline(jsPsych: JsPsych, config: FlankerConfig = {}) {
           <h2>${trial_text.task_complete_header}</h2>
           <p>${trial_text.task_complete_message}</p>
           <div class="performance-summary">
-            <h3>Your Performance:</h3>
-            <p>Accuracy: ${performance.accuracy.toFixed(1)}%</p>
-            <p>Average Response Time: ${performance.mean_rt.toFixed(0)}ms</p>
+            <h3>${trial_text.performance_title}</h3>
+            <p>${trial_text.accuracy_label} ${performance.accuracy.toFixed(1)}%</p>
+            <p>${trial_text.response_time_label} ${performance.mean_rt.toFixed(0)}ms</p>
           </div>
         </div>
       `;

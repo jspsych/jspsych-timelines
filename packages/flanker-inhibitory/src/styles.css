@@ -6,7 +6,7 @@
   max-height: 85vh;
   margin: 0 auto;
   padding: 3vmin;
-  text-align: left;
+  text-align: center;
   line-height: 1.4;
   background-color: white;
   border-radius: 2vmin;
@@ -26,12 +26,14 @@
   margin-top: 3vmin;
   margin-bottom: 1.5vmin;
   font-size: 3.5vmin;
+  text-align: center;
 }
 
 .flanker-instructions p {
   color: #555;
   margin-bottom: 1.5vmin;
   font-size: 3vmin;
+  text-align: center;
 }
 
 .flanker-instructions .performance-note {
@@ -60,6 +62,7 @@
   margin: 1vmin 0;
   font-size: 3vmin;
   color: #555;
+  text-align: center;
 }
 
 /* Performance summary */
@@ -69,7 +72,7 @@
   border-radius: 2vmin;
   padding: 4vmin;
   margin: 4vmin 0;
-  text-align: left;
+  text-align: center;
 }
 
 .performance-summary h3 {
@@ -83,6 +86,7 @@
   margin: 2vmin 0;
   font-size: 3.5vmin;
   color: #6c757d;
+  text-align: center;
 }
 
 /* Trial display */

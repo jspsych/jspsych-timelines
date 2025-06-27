@@ -23,8 +23,15 @@ export const trial_text = {
     practice_complete_message: "Great job! Now you're ready for the real task.",
     practice_failed_message: "Let's try the practice again. Remember to focus on the middle fish only.",
     
-    // Main task instructions
+    // Main task instructions and headers
+    main_task_header: "Main Task",
+    main_task_intro: "Now we'll start the real task. Remember to focus on the middle fish!",
     main_task_prompt: "Look at the middle fish. Click the button for the direction it's swimming.",
+    
+    // Performance summary labels
+    performance_title: "Your Performance:",
+    accuracy_label: "Accuracy:",
+    response_time_label: "Average Response Time:",
     
     // Fixation and inter-trial
     fixation_cross: "+",

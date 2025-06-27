@@ -20,7 +20,7 @@ Parameter | Type | Default Value | Description
 ----------|------|---------------|------------
 stimuli_type | string | 'layered' | Type of stimuli: 'fish', 'arrow', or 'layered' (fish + arrow)
 custom_stimuli | object | undefined | Custom stimuli object with left/right arrays of SVG strings
-svg | array | undefined | Override parameter - array of SVG strings to layer on top of each other
+svg | array | undefined | Override parameter - array of right-facing SVG strings to layer (left version auto-generated)
 stimuli_amount | number | 5 | Number of stimuli in flanker display (must be odd number ≥3)
 fixation_duration | number | 500 | Duration of fixation cross display in milliseconds
 show_instructions | boolean | true | Whether to display instruction screens before the task
@@ -34,10 +34,11 @@ num_trials | number | 20 | Number of main task trials to present
 // Use fish stimuli only
 const fishConfig = { stimuli_type: 'fish' };
 
-// Use custom SVG with 7 total stimuli
+// Use custom right-facing SVG with 7 total stimuli
 const customConfig = {
-  svg: ['<svg>...custom svg...</svg>'],
+  svg: ['<svg>...right-facing custom svg...</svg>'],
   stimuli_amount: 7
+  // Left-facing version automatically generated
 };
 
 // Use layered stimuli with custom amounts
