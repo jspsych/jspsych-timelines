@@ -1,0 +1,35 @@
+{
+    "name": "@jspsych-timelines/flanker-inhibitory",
+    "version": "0.0.1",
+    "description": "The Flanker Inhibitory Control and Attention test is an assessment of inhibitory control and",
+    "type": "module",
+    "main": "dist/index.mjs",
+    "types": "dist/index.d.ts",
+    "unpkg": "dist/index.browser.min.js",
+    "scripts": {
+      "build": "tsup src/index.ts --format esm,iife --sourcemap --dts --treeshake --clean --global-name jsPsychTimelineFlankerInhibitory"
+    },
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/farhat60/jspsych-timelines/",
+      "directory": "packages"
+    },
+    "keywords": [
+      "jsPsych"
+    ],
+    "author": {
+      "name": "Hunter Farhat",
+      "url": "farhat60"
+    },
+    "license": "MIT",
+    "bugs": {
+      "url": "https://github.com/farhat60/jspsych-timelines//issues"
+    },
+    "homepage": "https://github.com/jspsych/jspsych-timelines/packages/flanker-inhibitory/README.md",
+    "devDependencies": {
+      "jspsych": "^8.0.0",
+      "@jspsych/config": "^3.2.2",
+      "tsup": "^6.7.0",
+      "typescript": "^5.0.2"
+    }
+  }

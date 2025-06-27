@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Flanker Inhibitory Control Task Example</title>
+  <script src="https://unpkg.com/jspsych"></script>
+  <script src="../dist/index.global.js"></script>
+  <!-- Once this timeline package is published, it can be loaded via
+<script src="https://unpkg.com/@jspsych-timelines/flanker-inhibitory"></script> -->
+  <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css">
+  <link rel="stylesheet" href="../src/styles.css">
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f8f9fa;
+    }
+  </style>
+</head>
+
+<body></body>
+<script>
+  // Initialize jsPsych
+  const jsPsych = initJsPsych({
+    on_finish: function() {
+      // Display results when task is complete
+      const data = jsPsych.data.get().filter({task: 'flanker-trial', trial_type: 'test'});
+      const performance = jsPsychTimelineFlankerInhibitory.utils.calculatePerformance(data.values());
+      
+      console.log('Task Performance:', performance);
+      
+      // Optional: display CSV data
+      // jsPsych.data.displayData();
+    }
+  });
+
+  // Configure the task
+  const config = {
+    // Stimulus options
+    stimuli_type: 'fish', // 'fish', 'arrow', or 'layered' (fish + arrow, can be changed in stimuli.ts)
+    
+    // SVG override - uncomment to use custom SVG array
+    // svg: [
+    //   '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><circle cx="24" cy="24" r="20" fill="blue"/></svg>',
+    //   '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><path d="M24 8 L32 24 L24 40 L16 24 Z" fill="red"/></svg>'
+    // ],
+    
+    // Trial configuration
+    num_practice_trials: 4, // Reduced for demo
+    num_congruent_trials: 8, // Reduced for demo  
+    num_incongruent_trials: 4, // Reduced for demo
+    
+    // Timing options (in milliseconds)
+    fixation_duration: 500,
+    response_timeout: 5000,
+    feedback_duration: 1000,
+    inter_trial_interval: 1000,
+    
+    // Task flow options
+    show_instructions: true,
+    show_practice: true,
+    show_feedback: true,
+    
+    // Performance thresholds
+    practice_threshold: 50, // Reduced for demo - minimum accuracy to pass practice
+    fish_threshold_for_arrows: 70, // Reduced for demo - accuracy needed to advance to arrow block
+    
+    // Progression options
+    auto_advance_to_arrows: true, // Automatically show arrow block if fish performance is good
+  };
+
+  // Create the timeline
+  const task = jsPsychTimelineFlankerInhibitory.createTimeline(jsPsych, config);
+
+  // Run the experiment
+  jsPsych.run([task]);
+</script>
+
+</html>
