@@ -50,6 +50,7 @@
     ]
   },
   "dependencies": {
+    "@jspsych/plugin-html-button-response": "^2.1.0",
     "@jspsych/test-utils": "^1.2.0",
     "chokidar": "^3.6.0",
     "gulp": "^5.0.0",
