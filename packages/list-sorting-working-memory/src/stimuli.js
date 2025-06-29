@@ -43,94 +43,114 @@ const audioAnimalsFp = "../assets/audio/audio-animals/";
 export const animalStimuli = [
   [
     {
+      stimulus_name: "bee",
       stimulus_image: beeSvg,
       stimulus_audio: `${audioAnimalsFp}bee.mp3`,
     },
     {
+      stimulus_name: "butterfly",
       stimulus_image: butterflySvg,
       stimulus_audio: `${audioAnimalsFp}butterfly.mp3`,
     },
   ],
   [
     {
+      stimulus_name: "frog",
       stimulus_image: frogSvg,
       stimulus_audio: `${audioAnimalsFp}frog.mp3`,
     },
     {
+      stimulus_name: "mouse",
       stimulus_image: mouseSvg,
       stimulus_audio: `${audioAnimalsFp}mouse.mp3`,
     },
     {
+      stimulus_name: "bird",
       stimulus_image: birdSvg,
       stimulus_audio: `${audioAnimalsFp}bird.mp3`,
     }
   ],
   [
     {
+      stimulus_name: "turtle",
       stimulus_image: turtleSvg,
       stimulus_audio: `${audioAnimalsFp}turtle.mp3`,
     },
     {
+      stimulus_name: "rabbit",
       stimulus_image: rabbitSvg,
       stimulus_audio: `${audioAnimalsFp}rabbit.mp3`,
     },
     {
+      stimulus_name: "duck",
       stimulus_image: duckSvg,
       stimulus_audio: `${audioAnimalsFp}duck.mp3`,
     },
   ],
   [
     {
+      stimulus_name: "cat",
       stimulus_image: catSvg,
       stimulus_audio: `${audioAnimalsFp}cat.mp3`,
     },
     {
+      stimulus_name: "monkey",
       stimulus_image: monkeySvg,
       stimulus_audio: `${audioAnimalsFp}monkey.mp3`,
     },
   ],
   [
     {
+      stimulus_name: "dog",
       stimulus_image: dogSvg,
       stimulus_audio: `${audioAnimalsFp}dog.mp3`,
     },
     {
+      stimulus_name: "sheep",
       stimulus_image: sheepSvg,
       stimulus_audio: `${audioAnimalsFp}sheep.mp3`,
     },
     {
+      stimulus_name: "pig",
       stimulus_image: pigSvg,
       stimulus_audio: `${audioAnimalsFp}pig.mp3`,
     },
   ],
   [
     {
+      stimulus_name: "horse",
       stimulus_image: horseSvg,
       stimulus_audio: `${audioAnimalsFp}horse.mp3`,
     },
     {
+      stimulus_name: "cow",
       stimulus_image: cowSvg,
       stimulus_audio: `${audioAnimalsFp}cow.mp3`,
     },
     {
+      stimulus_name: "tiger",
       stimulus_image: tigerSvg,
       stimulus_audio: `${audioAnimalsFp}tiger.mp3`,
     },
   ],
   [
     {
+      stimulus_name: "lion",
       stimulus_image: lionSvg,
       stimulus_audio: `${audioAnimalsFp}lion.mp3`,
     },
     {
+      stimulus_name: "bear",
       stimulus_image: bearSvg,
       stimulus_audio: `${audioAnimalsFp}bear.mp3`,
     },
     {
+      stimulus_name: "camel",
       stimulus_image: camelSvg,
       stimulus_audio: `${audioAnimalsFp}camel.mp3`,
     },
     {
+      stimulus_name: "elephant",
       stimulus_image: elephantSvg,
       stimulus_audio: `${audioAnimalsFp}elephant.mp3`,
     },
@@ -142,80 +162,107 @@ const audioFoodsFp = "../assets/audio/audio-food/";
 export const foodStimuli = [
   [
     {
+      stimulus_name: "bean",
       stimulus_image: beanSvg,
       stimulus_audio: `${audioFoodsFp}bean.mp3`,
     },
     {
+      stimulus_name: "popcorn",
       stimulus_image: popcornSvg,
       stimulus_audio: `${audioFoodsFp}popcorn.mp3`,
     },
   ],
   [
     {
+      stimulus_name: "cherry",
       stimulus_image: cherrySvg,
       stimulus_audio: `${audioFoodsFp}cherry.mp3`,
     },
     {
+      stimulus_name: "strawberry",
       stimulus_image: strawberrySvg,
       stimulus_audio: `${audioFoodsFp}strawberry.mp3`,
     },
   ],
   [
     {
+      stimulus_name: "egg",
       stimulus_image: eggSvg,
       stimulus_audio: `${audioFoodsFp}egg.mp3`,
     },
     {
+      stimulus_name: "lime",
       stimulus_image: limeSvg,
       stimulus_audio: `${audioFoodsFp}lime.mp3`,
     },
   ],
   [
     {
+      stimulus_name: "peach",
       stimulus_image: peachSvg,
       stimulus_audio: `${audioFoodsFp}peach.mp3`,
     },
     {
+      stimulus_name: "apple",
       stimulus_image: appleSvg,
       stimulus_audio: `${audioFoodsFp}apple.mp3`,
     },
     {
+      stimulus_name: "orange",
       stimulus_image: orangeSvg,
       stimulus_audio: `${audioFoodsFp}orange.mp3`,
     },
     {
+      stimulus_name: "pear",
       stimulus_image: pearSvg,
       stimulus_audio: `${audioFoodsFp}pear.mp3`,
     },
   ],
   [
     {
+      stimulus_name: "corn",
       stimulus_image: cornSvg,
       stimulus_audio: `${audioFoodsFp}corn.mp3`,
     },
     {
+      stimulus_name: "banana",
       stimulus_image: bananaSvg,
       stimulus_audio: `${audioFoodsFp}banana.mp3`,
     },
   ],
   [
     {
+      stimulus_name: "pineapple",
       stimulus_image: pineappleSvg,
       stimulus_audio: `${audioFoodsFp}pineapple.mp3`,
     },
     {
+      stimulus_name: "hamburger",
       stimulus_image: hamburgerSvg,
       stimulus_audio: `${audioFoodsFp}hamburger.mp3`,
     },
   ],
   [
     {
+      stimulus_name: "cake",
       stimulus_image: cakeSvg,
       stimulus_audio: `${audioFoodsFp}cake.mp3`,
     },
     {
+      stimulus_name: "watermelon",
       stimulus_image: watermelonSvg,
       stimulus_audio: `${audioFoodsFp}watermelon.mp3`,
     },
   ],
 ];
+
+export const defaultStimuli = [
+  {
+    stimulus_set_name: "animals",
+    stimulus_set: animalStimuli,
+  },
+  {
+    stimulus_set_name: "foods",
+    stimulus_set: foodStimuli,
+  }
+]
