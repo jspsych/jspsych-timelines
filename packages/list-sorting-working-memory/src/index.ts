@@ -16,6 +16,12 @@ const animalStimuli = animalStimuliImport as Array<Array<listSortingWorkingMemor
 const foodStimuli = foodStimuliImport as Array<Array<listSortingWorkingMemoryTestStimulus>>;
 const defaultStimuli = defaultStimuliImport as Array<listSortingWorkingMemoryTestStimulusSet>;
 
+const oneListInstructionText =
+  "You are going to see some pictures one at a time on the screen. When you hear the chime, tell me the pictures you just saw in size order from smallest to biggest. For example, if you see a motorcycle, a bus, and a car, you would say: motorcycle, car, bus. Are you ready to practice?";
+
+const twoListInstructionText =
+  "You are going to see two lists of pictures. After each list, you will be asked to remember the pictures in size order from smallest to biggest. Are you ready to practice?";
+
 interface listSortingWorkingMemoryTestStimulus {
   stimulus_name: string;
   stimulus_image: string;
@@ -146,16 +152,51 @@ function instructionTrial(instruction_text?: string, button_text?: string) {
   };
 }
 
-function fixationTrial() {
+function practiceTrial() {}
+
+function answerTrial(
+  jsPsych: JsPsych,
+  stimulusSetList: Array<listSortingWorkingMemoryTestStimulusSet>,
+  dimension: number
+) {
   return {
-    type: jsPsychHtmlKeyboardResponse,
-    stimulus: '<div style="font-size: 48px;">+</div>',
-    choices: "NO_KEYS",
-    trial_duration: 1000,
+    type: jsPsychSurveyText,
+    questions: [], // Populated by on_start
+    randomize_question_order: true,
+    on_start: (trial) => {
+      const sequenceData = jsPsych.data.getLastTimelineData()["trials"];
+
+      const groups: Record<string, any[]> = {};
+
+      // Group by stimulus_set_id
+      for (const trialData of sequenceData) {
+        const id = trialData.stimulus_set_id;
+        if (!groups[id]) groups[id] = [];
+        groups[id].push(trialData);
+      }
+
+      // Get correct order for each stimulus set
+      const correctAnswer = Object.entries(groups).map(([stimulus_set_id, trials]) => {
+        const sorted = trials.sort((a, b) => a.stimulus_index - b.stimulus_index);
+        const correct_order = sorted.map((t) => t.stimulus_name);
+        return { stimulus_set_id, correct_order };
+      });
+
+      // Dynamically set the questions
+      trial.questions = correctAnswer.map((group) => ({
+        prompt: `Order the ${group.stimulus_set_id} from smallest to largest in size, separated by commas:`,
+        name: `response_${group.stimulus_set_id}`,
+        placeholder: group.correct_order.join(", "), // optional, shows correct answer for debugging
+      }));
+    },
   };
 }
 
-function lswmTrial(jsPsych: JsPsych) {
+function lswmTrial(
+  jsPsych: JsPsych,
+  sampledSetIds: Set<string> = new Set(),
+  taskType: "practice" | "live" = "live"
+) {
   return {
     type: jsPsychAudioKeyboardResponse,
     stimulus: jsPsych.timelineVariable("stimulus_audio"),
@@ -170,9 +211,18 @@ function lswmTrial(jsPsych: JsPsych) {
     `;
     },
     choices: ["f"],
-    on_finish: () => {
-      // console.log("stimulus:", jsPsych.evaluateTimelineVariable("stimulus_image"));
-      console.log("list_idx:", jsPsych.evaluateTimelineVariable("stimulus_set_id"));
+    data: () => {
+      const stimulusName = jsPsych.evaluateTimelineVariable("stimulus_name");
+      const stimulusSetId = jsPsych.evaluateTimelineVariable("stimulus_set_id");
+      const stimulusIndex = jsPsych.evaluateTimelineVariable("stimulus_index");
+      return {
+        task: taskType,
+        timeline_unit_type: "lswmTrial",
+        sampled_set_ids: sampledSetIds,
+        stimulus_name: stimulusName,
+        stimulus_set_id: stimulusSetId,
+        stimulus_index: stimulusIndex,
+      };
     },
   };
 }
@@ -192,12 +242,14 @@ function lswmTrialSequence(
   // Get flat array of stimuli for the section
   let stimulus_set_subarray_flat = [];
   for (const set of stimulus_set_subarray) {
-    for (const group of set.stimulus_set) {
-      const processedGroup = group.map((stimulus) => ({
+    for (let i = 0; i < set.stimulus_set.length; i++) {
+      const group = set.stimulus_set[i];
+      const processedGroup = group.map((stimulus, index) => ({
         stimulus_name: stimulus.stimulus_name,
         stimulus_image: stimulus.stimulus_image,
         stimulus_audio: stimulus.stimulus_audio,
         stimulus_set_id: set.stimulus_set_name,
+        stimulus_index: i,
       }));
       stimulus_set_subarray_flat.push(processedGroup);
     }
@@ -210,15 +262,21 @@ function lswmTrialSequence(
     );
   }
 
-  const timelineVariables = sampleStimulusAcrossSets(stimulus_set_subarray_flat, options.sequence_length);
+  const timelineVariables = sampleStimulusAcrossSets(
+    stimulus_set_subarray_flat,
+    options.sequence_length
+  );
+  const sampledSetIds = new Set(timelineVariables.map((set) => set.stimulus_set_id));
 
   return {
-    timeline: [lswmTrial(jsPsych)],
+    timeline: [lswmTrial(jsPsych, sampledSetIds)],
     timeline_variables: timelineVariables,
+    sampled_set_ids: sampledSetIds,
+    data: {
+      sequence_length: options.sequence_length,
+    },
   };
 }
-
-function answerTrial(jsPsych: JsPsych) {}
 
 /**
  * Create a section of the list sorting working memory task.
@@ -261,14 +319,14 @@ function lswmSection(
   // Section timeline
   let sectionTimeline = [];
   for (let i = 0; i < options.sample_size_sequence.length; i++) {
-    sectionTimeline.push(
-      lswmTrialSequence(jsPsych, {
-        dimension: options.dimension,
-        stimulus_set_list: options.stimulus_set_list,
-        sequence_length: options.sample_size_sequence[i],
-      })
-    );
-    sectionTimeline.push(fixationTrial());
+    const trialSequence = lswmTrialSequence(jsPsych, {
+      dimension: options.dimension,
+      stimulus_set_list: options.stimulus_set_list,
+      sequence_length: options.sample_size_sequence[i],
+    });
+    sectionTimeline.push({
+      timeline: [trialSequence, answerTrial(jsPsych, options.stimulus_set_list, options.dimension)],
+    });
   }
 
   return sectionTimeline;
