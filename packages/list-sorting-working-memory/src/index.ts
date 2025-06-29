@@ -87,6 +87,53 @@ function getRandomSubarray(arr, size) {
   return shuffled.slice(0, size);
 }
 
+function sampleStimulusAcrossSets<T extends { stimulus_set_id: string }>(
+  stimulus_set_list: T[][],
+  sample_size: number = 1
+): T[] {
+  const flat = stimulus_set_list.flat();
+
+  const groups: Record<string, T[]> = {};
+  for (const item of flat) {
+    if (!groups[item.stimulus_set_id]) {
+      groups[item.stimulus_set_id] = [];
+    }
+    groups[item.stimulus_set_id].push(item);
+  }
+
+  // Shuffle each group
+  for (const id in groups) {
+    const items = groups[id];
+    for (let i = items.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [items[i], items[j]] = [items[j], items[i]];
+    }
+  }
+
+  const sampled: T[] = [];
+  const groupIds = Object.keys(groups);
+  let groupIndex = 0;
+
+  while (sampled.length < sample_size && sampled.length < flat.length) {
+    const currentGroupId = groupIds[groupIndex % groupIds.length];
+    const group = groups[currentGroupId];
+
+    if (group && group.length > 0) {
+      sampled.push(group.pop()!);
+    }
+
+    groupIndex++;
+  }
+
+  // Shuffle the final sampled array
+  for (let i = sampled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [sampled[i], sampled[j]] = [sampled[j], sampled[i]];
+  }
+
+  return sampled;
+}
+
 // Timeline Units
 function instructionTrial(instruction_text?: string, button_text?: string) {
   return {
@@ -112,8 +159,7 @@ function lswmTrial(jsPsych: JsPsych) {
   return {
     type: jsPsychAudioKeyboardResponse,
     stimulus: jsPsych.timelineVariable("stimulus_audio"),
-    prompt:
-      jsPsych.timelineVariable("stimulus_image"),
+    prompt: jsPsych.timelineVariable("stimulus_image"),
     choices: ["f"],
     on_finish: () => {
       // console.log("stimulus:", jsPsych.evaluateTimelineVariable("stimulus_image"));
@@ -126,29 +172,36 @@ function lswmTrial(jsPsych: JsPsych) {
 function lswmTrialSequence(
   jsPsych: JsPsych,
   options: {
-    stimulus_set_list_flat: Array<listSortingWorkingMemoryTestStimulus>;
+    dimension: number;
+    stimulus_set_list: Array<listSortingWorkingMemoryTestStimulusSet>;
     sequence_length: number;
   }
 ) {
-  let stimuli = [];
-  if (options.sequence_length <= options.stimulus_set_list_flat.length) {
-    stimuli = jsPsych.randomization.sampleWithoutReplacement(
-      options.stimulus_set_list_flat,
-      options.sequence_length
-    );
-  } else {
-    stimuli = jsPsych.randomization.sampleWithoutReplacement(
-      options.stimulus_set_list_flat,
-      options.stimulus_set_list_flat.length
-    );
+  // The sampled list of stimulus sets for this section is standardized
+  const stimulus_set_subarray = getRandomSubarray(options.stimulus_set_list, options.dimension);
+
+  // Get flat array of stimuli for the section
+  let stimulus_set_subarray_flat = [];
+  for (const set of stimulus_set_subarray) {
+    for (const group of set.stimulus_set) {
+      const processedGroup = group.map((stimulus) => ({
+        stimulus_name: stimulus.stimulus_name,
+        stimulus_image: stimulus.stimulus_image,
+        stimulus_audio: stimulus.stimulus_audio,
+        stimulus_set_id: set.stimulus_set_name,
+      }));
+      stimulus_set_subarray_flat.push(processedGroup);
+    }
+  }
+
+  if (options.sequence_length > stimulus_set_subarray_flat.length) {
+    options.sequence_length = stimulus_set_subarray_flat.length;
     console.warn(
       "Sequence length exceeds available stimuli. Using all stimuli without replacement."
     );
   }
 
-  const timelineVariables = stimuli.map((stimulus_group) => {
-    return jsPsych.randomization.sampleWithoutReplacement(stimulus_group, 1)[0];
-  });
+  const timelineVariables = sampleStimulusAcrossSets(stimulus_set_subarray_flat, options.sequence_length);
 
   return {
     timeline: [lswmTrial(jsPsych)],
@@ -183,26 +236,17 @@ function lswmSection(
     );
   }
 
+  // Warn if cleaned stimulus_set_list.length is less than dimension
+  if (options.stimulus_set_list.length < options.dimension) {
+    console.warn(
+      `The number of available stimulus sets (${options.stimulus_set_list.length}) is less than the specified dimension (${options.dimension}). The dimension will be adjusted to match the number of available sets.`
+    );
+    options.dimension = options.stimulus_set_list.length;
+  }
+
   // If sample_size_sequence is not provided, set it to 1...7)
   if (!options.sample_size_sequence) {
     options.sample_size_sequence = Array.from({ length: 7 }, (_, i) => i + 1);
-  }
-
-  // The sampled list of stimulus sets for this section is standardized
-  const stimulus_set_subarray = getRandomSubarray(options.stimulus_set_list, options.dimension);
-
-  // Get flat array of stimuli for the section
-  let stimulus_set_subarray_flat = [];
-  for (const set of stimulus_set_subarray) {
-    for (const group of set.stimulus_set) {
-      const processedGroup = group.map((stimulus) => ({
-        stimulus_name: stimulus.stimulus_name,
-        stimulus_image: stimulus.stimulus_image,
-        stimulus_audio: stimulus.stimulus_audio,
-        stimulus_set_id: set.stimulus_set_name,
-      }));
-      stimulus_set_subarray_flat.push(processedGroup);
-    }
   }
 
   // Section timeline
@@ -210,7 +254,8 @@ function lswmSection(
   for (let i = 0; i < options.sample_size_sequence.length; i++) {
     sectionTimeline.push(
       lswmTrialSequence(jsPsych, {
-        stimulus_set_list_flat: stimulus_set_subarray_flat,
+        dimension: options.dimension,
+        stimulus_set_list: options.stimulus_set_list,
         sequence_length: options.sample_size_sequence[i],
       })
     );
