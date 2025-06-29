@@ -253,9 +253,9 @@ function lswmSection(
     options.dimension = options.stimulus_set_list.length;
   }
 
-  // If sample_size_sequence is not provided, set it to 1...7)
+  // If sample_size_sequence is not provided, set it to 2...7)
   if (!options.sample_size_sequence) {
-    options.sample_size_sequence = Array.from({ length: 7 }, (_, i) => i + 1);
+    options.sample_size_sequence = Array.from({ length: 6 }, (_, i) => i + 2);
   }
 
   // Section timeline
