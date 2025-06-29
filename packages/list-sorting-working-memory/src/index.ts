@@ -159,7 +159,16 @@ function lswmTrial(jsPsych: JsPsych) {
   return {
     type: jsPsychAudioKeyboardResponse,
     stimulus: jsPsych.timelineVariable("stimulus_audio"),
-    prompt: jsPsych.timelineVariable("stimulus_image"),
+    prompt: () => {
+      const stimulus_image = jsPsych.evaluateTimelineVariable("stimulus_image");
+      const stimulus_name = jsPsych.evaluateTimelineVariable("stimulus_name");
+      return `
+      <div style="text-align: center;">
+        ${stimulus_image}
+        <div style="font-size: 24px;">${stimulus_name}</div>
+      </div>
+    `;
+    },
     choices: ["f"],
     on_finish: () => {
       // console.log("stimulus:", jsPsych.evaluateTimelineVariable("stimulus_image"));
