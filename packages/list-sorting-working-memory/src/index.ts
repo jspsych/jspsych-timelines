@@ -93,45 +93,65 @@ function getRandomSubarray(arr, size) {
   return shuffled.slice(0, size);
 }
 
-function sampleStimulusAcrossSets<T extends { stimulus_set_id: string }>(
+function sampleStimulusAcrossSets<T extends { stimulus_index: number; stimulus_set_id: string }>(
   stimulus_set_list: T[][],
   sample_size: number = 1
 ): T[] {
   const flat = stimulus_set_list.flat();
 
-  const groups: Record<string, T[]> = {};
+  // Group by stimulus_set_id, then by stimulus_index
+  const groups: Record<string, Record<number, T[]>> = {};
   for (const item of flat) {
     if (!groups[item.stimulus_set_id]) {
-      groups[item.stimulus_set_id] = [];
+      groups[item.stimulus_set_id] = {};
     }
-    groups[item.stimulus_set_id].push(item);
+    if (!groups[item.stimulus_set_id][item.stimulus_index]) {
+      groups[item.stimulus_set_id][item.stimulus_index] = [];
+    }
+    groups[item.stimulus_set_id][item.stimulus_index].push(item);
   }
 
-  // Shuffle each group
-  for (const id in groups) {
-    const items = groups[id];
-    for (let i = items.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [items[i], items[j]] = [items[j], items[i]];
+  // Shuffle each (set_id, index) group
+  for (const setId in groups) {
+    for (const index in groups[setId]) {
+      const items = groups[setId][index];
+      for (let i = items.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [items[i], items[j]] = [items[j], items[i]];
+      }
     }
   }
 
+  // Round-robin across stimulus_set_ids
   const sampled: T[] = [];
-  const groupIds = Object.keys(groups);
-  let groupIndex = 0;
+  const setIds = Object.keys(groups);
+  const usedPairs = new Set<string>(); // track set_id|index combos used
+  let setIndex = 0;
 
-  while (sampled.length < sample_size && sampled.length < flat.length) {
-    const currentGroupId = groupIds[groupIndex % groupIds.length];
-    const group = groups[currentGroupId];
+  while (sampled.length < sample_size && usedPairs.size < flat.length) {
+    const currentSetId = setIds[setIndex % setIds.length];
+    const indexGroups = groups[currentSetId];
 
-    if (group && group.length > 0) {
-      sampled.push(group.pop()!);
+    // Find the first unused index group in this set
+    const availableIndices = Object.keys(indexGroups)
+      .map(Number)
+      .filter((index) => {
+        const key = `${currentSetId}|${index}`;
+        return !usedPairs.has(key) && indexGroups[index]?.length > 0;
+      });
+
+    if (availableIndices.length > 0) {
+      const index = availableIndices[0]; // pick lowest unused index in this set
+      const key = `${currentSetId}|${index}`;
+      const item = indexGroups[index].pop()!;
+      sampled.push(item);
+      usedPairs.add(key);
     }
 
-    groupIndex++;
+    setIndex++;
   }
 
-  // Shuffle the final sampled array
+  // Shuffle final result
   for (let i = sampled.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [sampled[i], sampled[j]] = [sampled[j], sampled[i]];
@@ -139,6 +159,8 @@ function sampleStimulusAcrossSets<T extends { stimulus_set_id: string }>(
 
   return sampled;
 }
+
+
 
 // Timeline Units
 function instructionTrial(instruction_text?: string, button_text?: string) {
