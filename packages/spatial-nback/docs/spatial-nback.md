@@ -1,6 +1,6 @@
 # spatial-nback
 
-A deployable spatial n-back timeline for jsPsych. This module provides a flexible implementation of the spatial n-back task, supporting custom grid sizes, n-back levels, feedback, and more.
+A deployable spatial grid n-back timeline for jsPsych. This module provides a flexible implementation of the spatial n-back task, supporting custom grid sizes, n-back levels, feedback, and more.
 
 ## Parameters
 
