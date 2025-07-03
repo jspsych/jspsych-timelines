@@ -7,20 +7,22 @@ import { JsPsych } from "jspsych";
 
 import {
   animalStimuli as animalStimuliImport,
-  defaultStimuli as defaultStimuliImport,
   foodStimuli as foodStimuliImport,
+  oneListPracticeStimuliA as oneListPracticeStimuliAImport,
+  oneListPracticeStimuliB as oneListPracticeStimuliBImport,
+  twoListPracticeStimuliA as twoListPracticeStimuliAImport,
+  twoListPracticeStimuliB as twoListPracticeStimuliBImport,
+  defaultLiveStimuli as defaultLiveStimuliImport,
 } from "./stimuli.js";
 
 // Cast imported stimuli to required types
 const animalStimuli = animalStimuliImport as Array<Array<listSortingWorkingMemoryTestStimulus>>;
 const foodStimuli = foodStimuliImport as Array<Array<listSortingWorkingMemoryTestStimulus>>;
-const defaultStimuli = defaultStimuliImport as Array<listSortingWorkingMemoryTestStimulusSet>;
-
-const oneListInstructionText =
-  "You are going to see some pictures one at a time on the screen. When you hear the chime, tell me the pictures you just saw in size order from smallest to biggest. For example, if you see a motorcycle, a bus, and a car, you would say: motorcycle, car, bus. Are you ready to practice?";
-
-const twoListInstructionText =
-  "You are going to see two lists of pictures. After each list, you will be asked to remember the pictures in size order from smallest to biggest. Are you ready to practice?";
+const oneListPracticeStimuliA = oneListPracticeStimuliAImport as Array<listSortingWorkingMemoryTestStimulusSet>;
+const oneListPracticeStimuliB = oneListPracticeStimuliBImport as Array<listSortingWorkingMemoryTestStimulusSet>;
+const twoListPracticeStimuliA = twoListPracticeStimuliAImport as Array<listSortingWorkingMemoryTestStimulusSet>;
+const twoListPracticeStimuliB = twoListPracticeStimuliBImport as Array<listSortingWorkingMemoryTestStimulusSet>;
+const defaultLiveStimuli = defaultLiveStimuliImport as Array<listSortingWorkingMemoryTestStimulusSet>;
 
 interface listSortingWorkingMemoryTestStimulus {
   stimulus_name: string;
@@ -32,6 +34,28 @@ interface listSortingWorkingMemoryTestStimulus {
 interface listSortingWorkingMemoryTestStimulusSet {
   stimulus_set_name: string;
   stimulus_set: Array<Array<listSortingWorkingMemoryTestStimulus>>;
+}
+
+// Utils
+function nListPracticeInstructionText(
+  stimulusSetList: Array<listSortingWorkingMemoryTestStimulusSet>
+) {
+  if (stimulusSetList.length <= 0) {
+    throw new Error("stimulusSetList must contain at least one stimulus set.");
+  } else if (stimulusSetList.length === 1) {
+    return `You are going to see some pictures one at a time on the screen. After all the pictures have been shown, you will see a screen where you can enter the pictures you just saw in size order from smallest to biggest. For example, if you see a motorcycle, a bus, and a car, you would enter: motorcycle, car, bus. Are you ready to practice?`;
+  } else {
+    const stimulus_set_ids = Array.from(
+      new Set(stimulusSetList.map((set) => set.stimulus_set_name))
+    );
+    return `You are going to see ${stimulus_set_ids.slice(0, -1).join(", ")} and ${
+      stimulus_set_ids[stimulus_set_ids.length - 1]
+    } in a set of pictures one at a time on the screen. After all the pictures have been shown, you will see a screen where for each category (i.e. ${
+      stimulus_set_ids[0]
+    }, ${
+      stimulus_set_ids[1]
+    }, etc.), you can enter the pictures you just saw that belong to that category in order from smallest to biggest. For example, if you see a motorcycle, a bus, a cup, and a barrel, you would enter: motorcycle, bus for the vehicles category, and cup, barrel for the containers category. Are you ready to practice?`;
+  }
 }
 
 function cleanExcludedSets(
@@ -79,9 +103,9 @@ function cleanExcludedSets(
   }
 }
 
-function getRandomSubarray(arr, size) {
-  var shuffled = arr.slice(0),
-    i = arr.length,
+function getRandomSubarray(array, sample_size) {
+  var shuffled = array.slice(0),
+    i = array.length,
     temp,
     index;
   while (i--) {
@@ -90,7 +114,7 @@ function getRandomSubarray(arr, size) {
     shuffled[index] = shuffled[i];
     shuffled[i] = temp;
   }
-  return shuffled.slice(0, size);
+  return shuffled.slice(0, sample_size);
 }
 
 function sampleStimulusAcrossSets<T extends { stimulus_index: number; stimulus_set_id: string }>(
@@ -160,30 +184,22 @@ function sampleStimulusAcrossSets<T extends { stimulus_index: number; stimulus_s
   return sampled;
 }
 
-
-
 // Timeline Units
-function instructionTrial(instruction_text?: string, button_text?: string) {
+function instructionTrial(instruction_text: string, button_text?: string) {
   return {
     type: jsPsychHtmlButtonResponse,
-    stimulus: `<div style="font-size: 24px;">${
-      instruction_text ||
-      "You are going to see some pictures one at a time on the screen. When you hear the chime, tell me the pictures you just saw in size order from smallest to biggest. For example, if you see a motorcycle, a bus, and a car, you would say: motorcycle, car, bus. Are you ready to practice?"
-    }</div>`,
+    stimulus: `<div class="instruction-text" style="text-align: center; font-size: 1.2em;"><p>${instruction_text}</p></div>`,
     choices: [button_text || "Yes"],
   };
 }
 
-function practiceTrial() {}
-
 function answerTrial(
   jsPsych: JsPsych,
-  stimulusSetList: Array<listSortingWorkingMemoryTestStimulusSet>,
-  dimension: number
+  task: "practice" | "live" = "live"
 ) {
   return {
     type: jsPsychSurveyText,
-    questions: [], // Populated by on_start
+    questions: [], // to be set dynamically
     randomize_question_order: true,
     on_start: (trial) => {
       const sequenceData = jsPsych.data.getLastTimelineData()["trials"];
@@ -203,21 +219,38 @@ function answerTrial(
         const correct_order = sorted.map((t) => t.stimulus_name);
         return { stimulus_set_id, correct_order };
       });
+      trial.correctAnswer = correctAnswer;
 
       // Dynamically set the questions
       trial.questions = correctAnswer.map((group) => ({
         prompt: `Order the ${group.stimulus_set_id} from smallest to largest in size, separated by commas:`,
         name: `response_${group.stimulus_set_id}`,
-        placeholder: group.correct_order.join(", "), // optional, shows correct answer for debugging
+        placeholder: group.correct_order.join(", "), // helpful for debugging
       }));
+    },
+    data: function () {
+      return {
+        task: task,
+        timeline_unit_type: "answerTrial",
+        answer: jsPsych.data.getLastTimelineData().values()[0].responses,
+        correct_answer: this.correctAnswer, // pulls from trial.correctAnswer
+        correct: this.correctAnswer.every((group) => {
+          const response = jsPsych.data.getLastTimelineData().values()[0][`response_${group.stimulus_set_id}`];
+          const responseArray = response
+            ? response.split(",").map((s) => s.trim())
+            : [];
+          return JSON.stringify(responseArray) === JSON.stringify(group.correct_order);
+        }),
+      };
     },
   };
 }
 
+
 function lswmTrial(
   jsPsych: JsPsych,
   sampledSetIds: Set<string> = new Set(),
-  taskType: "practice" | "live" = "live"
+  task: "practice" | "live" = "live"
 ) {
   return {
     type: jsPsychAudioKeyboardResponse,
@@ -238,7 +271,7 @@ function lswmTrial(
       const stimulusSetId = jsPsych.evaluateTimelineVariable("stimulus_set_id");
       const stimulusIndex = jsPsych.evaluateTimelineVariable("stimulus_index");
       return {
-        task: taskType,
+        task: task,
         timeline_unit_type: "lswmTrial",
         sampled_set_ids: sampledSetIds,
         stimulus_name: stimulusName,
@@ -258,7 +291,7 @@ function lswmTrialSequence(
     sequence_length: number;
   }
 ) {
-  // The sampled list of stimulus sets for this section is standardized
+  // The sampled list of stimulus sets for this sequence is set (but not across the whole section)
   const stimulus_set_subarray = getRandomSubarray(options.stimulus_set_list, options.dimension);
 
   // Get flat array of stimuli for the section
@@ -297,6 +330,25 @@ function lswmTrialSequence(
     data: {
       sequence_length: options.sequence_length,
     },
+  };
+}
+
+function practiceTrialSequence(jsPsych, practice_stimulus_set_list: Array<listSortingWorkingMemoryTestStimulusSet>) {
+  return {
+    timeline: [
+      instructionTrial(nListPracticeInstructionText(practice_stimulus_set_list)),
+      lswmTrialSequence(jsPsych, {
+        dimension: practice_stimulus_set_list.length,
+        stimulus_set_list: practice_stimulus_set_list,
+        sequence_length: 2,
+      }),
+      answerTrial(jsPsych, practice_stimulus_set_list, 1),
+      lswmTrialSequence(jsPsych, {
+        dimension: practice_stimulus_set_list.length,
+        stimulus_set_list: practice_stimulus_set_list,
+        sequence_length: 23,
+      }),
+    ],
   };
 }
 
@@ -371,7 +423,7 @@ export function createTimeline(
   // Default options
   const defaultOptions = {
     in_person: true,
-    stimulus_set_list: defaultStimuli,
+    stimulus_set_list: defaultLiveStimuli,
   };
 
   // Merge default options with user options
@@ -396,7 +448,6 @@ export function createTimeline(
 
   // Timeline
   let mainTimeline = [];
-  mainTimeline.push(instructionTrial());
   for (let i = 0; i < options.dimensions_sequence.length; i++) {
     mainTimeline.push(
       lswmSection(jsPsych, {
