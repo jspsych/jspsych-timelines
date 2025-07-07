@@ -75,10 +75,12 @@ describe("Flanker Inhibitory Control Task", () => {
       const fishTimeline = createTimeline(jsPsych, { stimuli_type: 'fish' });
       const arrowTimeline = createTimeline(jsPsych, { stimuli_type: 'arrow' });
       const layeredTimeline = createTimeline(jsPsych, { stimuli_type: 'layered' });
+      const customTimeline = createTimeline(jsPsych, { stimuli_type: 'custom' });
       
       expect(fishTimeline.timeline.length).toBeGreaterThan(0);
       expect(arrowTimeline.timeline.length).toBeGreaterThan(0);
       expect(layeredTimeline.timeline.length).toBeGreaterThan(0);
+      expect(customTimeline.timeline.length).toBeGreaterThan(0);
     });
 
     it("should handle SVG override parameter", () => {
@@ -91,15 +93,6 @@ describe("Flanker Inhibitory Control Task", () => {
       expect(timeline.timeline.length).toBeGreaterThan(0);
     });
 
-    it("should handle custom stimuli", () => {
-      const customStimuli = {
-        left: ['<svg>test left</svg>'],
-        right: ['<svg>test right</svg>']
-      };
-      
-      const timeline = createTimeline(jsPsych, { custom_stimuli: customStimuli });
-      expect(timeline.timeline.length).toBeGreaterThan(0);
-    });
 
     it("should set custom fixation duration", () => {
       const customDuration = 1000;
@@ -331,8 +324,7 @@ describe("Flanker Inhibitory Control Task", () => {
         { show_practice: true },
         { num_practice: 10 },
         { num_trials: 25 },
-        { svg: ['<svg>test</svg>'] },
-        { custom_stimuli: { left: ['<svg>left</svg>'] } }
+        { svg: ['<svg>test</svg>'] }
       ];
 
       configs.forEach(config => {

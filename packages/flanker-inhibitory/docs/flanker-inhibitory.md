@@ -18,8 +18,7 @@ const timeline = jsPsychTimelineFlankerInhibitory.createTimeline(jsPsych, {
 
 Parameter | Type | Default Value | Description
 ----------|------|---------------|------------
-stimuli_type | string | 'layered' | Type of stimuli: 'fish', 'arrow', or 'layered' (fish + arrow)
-custom_stimuli | object | undefined | Custom stimuli object with left/right arrays of SVG strings
+stimuli_type | string | 'layered' | Type of stimuli: 'fish', 'arrow', 'layered' (fish + arrow), or 'custom'
 svg | array | undefined | Override parameter - array of right-facing SVG strings to layer (left version auto-generated)
 stimuli_amount | number | 5 | Number of stimuli in flanker display (must be odd number ≥3)
 fixation_duration | number | 500 | Duration of fixation cross display in milliseconds
@@ -54,11 +53,13 @@ const customConfig = {
 // Use layered stimuli with custom amounts
 const layeredConfig = {
   stimuli_type: 'layered',
-  stimuli_amount: 9,
-  custom_stimuli: {
-    left: ['<svg>...left base...</svg>', '<svg>...left overlay...</svg>'],
-    right: ['<svg>...right base...</svg>', '<svg>...right overlay...</svg>']
-  }
+  stimuli_amount: 9
+};
+
+// Use custom stimuli type with predefined custom_stimulus
+const customTypeConfig = {
+  stimuli_type: 'custom',
+  stimuli_amount: 7
 };
 
 // Enable TTS with custom voice settings

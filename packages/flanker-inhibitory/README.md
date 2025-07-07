@@ -38,8 +38,7 @@ The following parameters can be specified in the **options** parameter.
 
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
-| stimuli_type | string | 'layered' | Type of stimuli to use: 'fish', 'arrow', or 'layered' |
-| custom_stimuli | object | undefined | Custom stimuli object with left/right arrays |
+| stimuli_type | string | 'layered' | Type of stimuli to use: 'fish', 'arrow', 'layered', or 'custom' |
 | svg | array | undefined | Override parameter - array of SVGs to layer (should be right-facing; left version auto-generated) |
 | stimuli_amount | number | 5 | Number of stimuli in flanker display (must be odd ≥3) |
 | fixation_duration | number | 500 | Duration of fixation cross in milliseconds |

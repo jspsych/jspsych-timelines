@@ -1,7 +1,7 @@
 import { JsPsych } from "jspsych";
 import jsPsychHtmlButtonResponse from '@jspsych/plugin-html-button-response';
 import { trial_text, instruction_pages, tts_config, tts_text } from './text';
-import { layered_stimuli, fish_only, arrow_only, custom_example } from './stimuli';
+import { layered_stimuli, fish_only, arrow_only, custom_stimulus } from './stimuli';
 
 // ============================================================================
 // TTS (TEXT-TO-SPEECH) UTILITIES
@@ -437,13 +437,12 @@ export function createTimeline(jsPsych: JsPsych, config: FlankerConfig = {}) {
 
   // Determine which stimuli to use based on priority:
   // 1. svg override parameter (highest priority)
-  // 2. custom_stimuli 
-  // 3. stimuli_type selection
+  // 2. stimuli_type selection
   let stimuli;
   if (svg) {
     stimuli = processStimuli(svg); // Process the SVG override array to handle flipping
   } else if (stimuli_type === 'custom') {
-    stimuli = processStimuli(custom_example);
+    stimuli = processStimuli(custom_stimulus);
   } else if (stimuli_type === 'arrow') {
     stimuli = arrow_stimuli;
   } else if (stimuli_type === 'fish') {
