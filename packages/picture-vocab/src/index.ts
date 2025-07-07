@@ -106,6 +106,133 @@ function resolveAndValidateImages(providedImages: string[], word?: string): stri
 }
 
 
+// Global TTS enabled flag and queue
+let enabledGlobal = false;
+let userActivated = false;
+let speechQueue: Array<{text: string, onComplete?: () => void}> = [];
+let isSpeaking = false;
+
+// Helper function to cancel all speech synthesis
+function cancelAllSpeech() {
+  if (window.speechSynthesis) {
+    window.speechSynthesis.cancel();
+  }
+  speechQueue = [];
+  isSpeaking = false;
+}
+
+// Process the next item in the speech queue
+function processNextSpeech(): void {
+  console.log('TTS: processNextSpeech called, isSpeaking:', isSpeaking, 'queue length:', speechQueue.length);
+  if (isSpeaking || speechQueue.length === 0) {
+    return;
+  }
+
+  const { text, onComplete } = speechQueue.shift()!;
+  isSpeaking = true;
+
+  console.log('TTS: Now speaking from queue:', text);
+  
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.rate = 0.8;
+  utterance.pitch = 1.0;
+  utterance.volume = 0.9;
+  
+  utterance.onstart = () => {
+    console.log('TTS: Successfully started speaking:', text);
+  };
+  
+  utterance.onend = () => {
+    console.log('TTS: Finished speaking:', text);
+    isSpeaking = false;
+    if (onComplete) {
+      onComplete();
+    }
+    // Process next item in queue after a short delay
+    setTimeout(processNextSpeech, 300);
+  };
+  
+  utterance.onerror = (event) => {
+    console.warn('TTS: Speech error:', event.error, 'for text:', text);
+    isSpeaking = false;
+    if (onComplete) {
+      onComplete();
+    }
+    // Process next item in queue after a short delay
+    setTimeout(processNextSpeech, 300);
+  };
+  
+  // Force reload voices and use a specific voice
+  window.speechSynthesis.cancel(); // Clear any stuck speech
+  
+  const voices = window.speechSynthesis.getVoices();
+  console.log('TTS: Available voices:', voices.length);
+  
+  // Try to use a system voice explicitly
+  const systemVoice = voices.find(v => v.localService && v.lang.startsWith('en')) || voices[0];
+  if (systemVoice) {
+    utterance.voice = systemVoice;
+    console.log('TTS: Using system voice:', systemVoice.name);
+  }
+  
+  // Try to speak
+  console.log('TTS: Attempting to speak:', text);
+  console.log('TTS: speechSynthesis.speaking:', window.speechSynthesis.speaking);
+  console.log('TTS: speechSynthesis.pending:', window.speechSynthesis.pending);
+  
+  try {
+    window.speechSynthesis.speak(utterance);
+    console.log('TTS: speak() called successfully');
+    
+    // Check status after a short delay
+    setTimeout(() => {
+      console.log('TTS: After 100ms - speaking:', window.speechSynthesis.speaking, 'pending:', window.speechSynthesis.pending);
+    }, 100);
+  } catch (error) {
+    console.error('TTS: Error calling speak():', error);
+  }
+}
+
+// Text-to-speech function with queue system
+function speakText(text: string, delay: number = 1500, onComplete?: () => void): void {
+  if (!enabledGlobal || !userActivated) {
+    console.log('TTS: Disabled or no user activation yet');
+    if (onComplete) {
+      setTimeout(onComplete, delay);
+    }
+    return;
+  }
+  
+  if (!window.speechSynthesis) {
+    console.log('TTS: Speech synthesis not available');
+    if (onComplete) {
+      setTimeout(onComplete, delay);
+    }
+    return;
+  }
+  
+  // Clean HTML tags from text for TTS
+  const cleanText = text.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+  
+  if (cleanText.length === 0) {
+    console.log('TTS: No text to speak after cleaning');
+    if (onComplete) {
+      setTimeout(onComplete, delay);
+    }
+    return;
+  }
+
+  console.log('TTS: Adding to queue after delay:', cleanText);
+  console.log('TTS: Current queue length:', speechQueue.length, 'isSpeaking:', isSpeaking);
+  
+  // Add to queue with delay
+  setTimeout(() => {
+    speechQueue.push({ text: cleanText, onComplete });
+    console.log('TTS: Added to queue, new length:', speechQueue.length);
+    processNextSpeech();
+  }, delay);
+}
+
 // Helper function to get fallback images
 function getFallbackImages(word?: string, count: number = 4): string[] {
   if (word) {
@@ -148,6 +275,7 @@ interface PictureVocabOptions {
   liveItems?: PictureVocabItem[];
   shuffleTrials?: boolean;
   shuffleImageChoices?: boolean;
+  text_to_speech_enabled?: boolean;
 }
 
 
@@ -209,7 +337,22 @@ export function createWelcomeScreen() {
   return {
     type: htmlButtonResponse,
     stimulus: `<p>${englishText.welcome_message}</p>`,
-    choices: [englishText.begin_button]
+    choices: [englishText.begin_button],
+    on_finish: () => {
+      // User has clicked the begin button - now TTS is allowed
+      userActivated = true;
+      console.log('TTS: User activation established, TTS now enabled');
+      
+      // Test basic TTS immediately
+      if (enabledGlobal && window.speechSynthesis) {
+        console.log('TTS: Testing basic speech synthesis...');
+        const testUtterance = new SpeechSynthesisUtterance('test');
+        testUtterance.onstart = () => console.log('TTS: Basic test started');
+        testUtterance.onend = () => console.log('TTS: Basic test ended');
+        testUtterance.onerror = (e) => console.log('TTS: Basic test error:', e.error);
+        window.speechSynthesis.speak(testUtterance);
+      }
+    }
   };
 }
 
@@ -224,7 +367,12 @@ export function createInstructionsScreen() {
       <p>${englishText.instructions_back}</p>
       <p>${englishText.instructions_ready}</p>
     `,
-    choices: [englishText.next_button]
+    choices: [englishText.next_button],
+    on_finish: () => {
+      // Ensure user activation is set
+      userActivated = true;
+      console.log('TTS: User activation confirmed on instructions');
+    }
   };
 }
 
@@ -249,7 +397,7 @@ export function createThankYouScreen() {
   };
 }
 
-export function createPracticeTrial(jsPsych: JsPsych, word: string, images: string[], correctIndex: number) {
+export function createPracticeTrial(jsPsych: JsPsych, word: string, images: string[], correctIndex: number, enableTTS: boolean = false) {
   let attempts = 0;
 
   return {
@@ -269,6 +417,12 @@ export function createPracticeTrial(jsPsych: JsPsych, word: string, images: stri
             buttons.forEach(button => {
               button.classList.add('responsive-image-btn');
             });
+          }
+          
+          // Speak the word automatically if TTS is enabled
+          if (enableTTS) {
+            console.log('TTS: Practice trial loaded, will speak word:', word);
+            speakText(word, 2000); // Wait 2 seconds for page to load and avoid conflicts
           }
         },
         on_finish: (data: any) => {
@@ -297,7 +451,7 @@ export function createPracticeTrial(jsPsych: JsPsych, word: string, images: stri
   };
 }
 
-export function createLiveTrial(word: string, images: string[], correctIndex: number) {
+export function createLiveTrial(word: string, images: string[], correctIndex: number, enableTTS: boolean = false) {
   return {
     type: htmlButtonResponse,
     stimulus: `<p style="text-align: center; margin-bottom: 20px; font-size: 18px;">${englishText.live_instruction.replace('{word}', `<strong>${word}</strong>`)}</p>`,
@@ -333,6 +487,12 @@ export function createLiveTrial(word: string, images: string[], correctIndex: nu
         buttons.forEach(button => {
           button.classList.add('responsive-image-btn');
         });
+      }
+      
+      // Speak the word automatically if TTS is enabled
+      if (enableTTS) {
+        console.log('TTS: Live trial loaded, will speak word:', word);
+        speakText(word, 2000); // Wait 2 seconds for page to load and avoid conflicts
       }
     },
     on_finish: (data: any) => {
@@ -393,6 +553,9 @@ export function createTimeline(jsPsych: JsPsych, config?: PictureVocabConfig, op
     liveItems: finalConfig.liveItems.length > 0 ? finalConfig.liveItems : defaultConfig.liveItems
   };
 
+  // Set global TTS enabled flag based on options
+  enabledGlobal = finalOptions.text_to_speech_enabled || true;
+
   const welcomeScreen = createWelcomeScreen();
 
   const instructions = createInstructionsScreen();
@@ -448,7 +611,7 @@ export function createTimeline(jsPsych: JsPsych, config?: PictureVocabConfig, op
       images = resolvedImages;
     }
 
-    return createPracticeTrial(jsPsych, item.word, images, correctIndex);
+    return createPracticeTrial(jsPsych, item.word, images, correctIndex, finalOptions.text_to_speech_enabled || true);
   });
 
 
@@ -475,7 +638,7 @@ export function createTimeline(jsPsych: JsPsych, config?: PictureVocabConfig, op
       images = resolvedImages;
     }
 
-    return createLiveTrial(item.word, images, correctIndex);
+    return createLiveTrial(item.word, images, correctIndex, finalOptions.text_to_speech_enabled || true);
   });
 
   const thankYouScreen = createThankYouScreen();
@@ -496,7 +659,8 @@ export const timelineUnits = {
 export const utils = {
   validateSvg,
   resolveAndValidateImages,
-  getFallbackImages
+  getFallbackImages,
+  speakText
 }
 
 export { images }

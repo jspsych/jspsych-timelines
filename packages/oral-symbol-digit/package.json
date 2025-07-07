@@ -1,0 +1,37 @@
+{
+    "name": "oral-symbol-digit",
+    "version": "0.0.1",
+    "description": "Oral Symbol Digit Test",
+    "type": "module",
+    "main": "dist/index.mjs",
+    "types": "dist/index.d.ts",
+    "unpkg": "dist/index.browser.min.js",
+    "scripts": {
+      "build": "tsup src/index.ts --format esm,iife --sourcemap --dts --treeshake --clean --global-name jsPsychTimelineOralSymbolDigit",
+      "test": "jest",
+      "test:watch": "jest --watch"
+    },
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/caroline-griem/URSI.git",
+      "directory": ""
+    },
+    "keywords": [
+      "jsPsych"
+    ],
+    "author": {
+      "name": "Caroline Griem",
+      "url": "https://github.com/caroline-griem"
+    },
+    "license": "MIT",
+    "bugs": {
+      "url": "https://github.com/caroline-griem/URSI/issues"
+    },
+    "homepage": "/oral-symbol-digit/README.md",
+    "devDependencies": {
+      "jspsych": "^8.0.0",
+      "@jspsych/config": "^3.2.2",
+      "tsup": "^6.7.0",
+      "typescript": "^5.0.2"
+    }
+  }
