@@ -1,0 +1,46 @@
+{
+    "name": "ravl-timeline",
+    "version": "0.0.1",
+    "description": "Rey Auditory Verbal Learning Timeline",
+    "type": "module",
+    "main": "dist/index.mjs",
+    "types": "dist/index.d.ts",
+    "unpkg": "dist/index.browser.min.js",
+    "scripts": {
+        "build": "tsup src/index.ts --format esm,iife --sourcemap --dts --treeshake --clean --global-name jsPsychTimelineRavlTimeline",
+        "test": "jest",
+        "test:watch": "jest --watch",
+        "test:coverage": "jest --coverage"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/caroline-griem/URSI.git",
+        "directory": ""
+    },
+    "keywords": [
+        "jsPsych"
+    ],
+    "author": {
+        "name": "Caroline Griem",
+        "url": "https://github.com/caroline-griem"
+    },
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/caroline-griem/URSI/issues"
+    },
+    "homepage": "/ravl-timeline/README.md",
+    "devDependencies": {
+        "@jspsych/config": "^3.2.2",
+        "@types/jest": "^30.0.0",
+        "jest": "^30.0.2",
+        "jest-environment-jsdom": "^30.0.2",
+        "jspsych": "^8.0.0",
+        "ts-jest": "^29.4.0",
+        "tsup": "^6.7.0",
+        "typescript": "^5.0.2"
+    },
+    "dependencies": {
+        "@jspsych/plugin-html-keyboard-response": "^2.1.0",
+        "@jspsych/plugin-survey-text": "^2.1.0"
+    }
+}
