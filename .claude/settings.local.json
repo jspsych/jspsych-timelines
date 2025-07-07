@@ -9,7 +9,9 @@
       "Bash(ls:*)",
       "WebFetch(domain:resources.nihtoolbox.org)",
       "Bash(npm run build:*)",
-      "Bash(npm test)"
+      "Bash(npm test)",
+      "Bash(npm run:*)",
+      "Bash(npx jest:*)"
     ],
     "deny": []
   }
