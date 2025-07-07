@@ -36,8 +36,17 @@ export const arrow_only = [
 ];
 
 // Custom example - you can add more layers
-export const custom_example = [
-  fish_svg,
-  arrow_svg,
-  // Add more layers here if needed
-];
+export const custom_example = {
+  left: [
+    '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><circle cx="24" cy="24" r="15" fill="yellow"/></svg>',
+    '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">' +
+    '<polygon points="10,24 30,10 30,38" fill="blue"/>' +
+    '</svg>'
+  ],
+  right: [
+    '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><circle cx="24" cy="24" r="15" fill="yellow"/></svg>',
+    '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">' +
+    '<polygon points="38,24 18,10 18,38" fill="orange"/>' +
+    '</svg>'
+  ]
+};

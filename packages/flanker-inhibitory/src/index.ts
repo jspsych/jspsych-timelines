@@ -1,7 +1,7 @@
 import { JsPsych } from "jspsych";
 import jsPsychHtmlButtonResponse from '@jspsych/plugin-html-button-response';
 import { trial_text, instruction_pages, tts_config, tts_text } from './text';
-import { layered_stimuli, fish_only, arrow_only } from './stimuli';
+import { layered_stimuli, fish_only, arrow_only, custom_example } from './stimuli';
 
 // ============================================================================
 // TTS (TEXT-TO-SPEECH) UTILITIES
@@ -107,7 +107,7 @@ export function speakInstructionPage(pageContent: string, config = tts_config): 
   // Remove HTML tags and clean up text for speech
   const cleanText = pageContent
     .replace(/<[^>]*>/g, ' ') // Remove HTML tags
-    .replace(/\s+/g, ' ') // Normalize whitespace
+    .replace(/\s+/g, ' ') // Normalize any sequence of whitespace (including those left by the previous replace) to a single space
     .trim();
   
   return speakText(cleanText, config);
@@ -206,14 +206,14 @@ function flipSVG(svgString: string): string {
 }
 
 // Simple SVG layering using CSS
-function layerSVGs(svgArray: string[]): string {
+function layerSVGs(svgArray: string[], flip: boolean = false): string {
   if (!svgArray || !Array.isArray(svgArray) || svgArray.length === 0) return '';
-  if (svgArray.length === 1) return svgArray[0];
+  if (svgArray.length === 1) return flip ? flipSVG(svgArray[0]) : svgArray[0];
   
-  // Layer SVGs using CSS positioning
+  // Layer SVGs using CSS positioning, flip each SVG individually if needed
   return `<span style="position: relative; display: inline-block;">
     ${svgArray.map((svg, index) => 
-      `<span style="position: ${index === 0 ? 'relative' : 'absolute'}; top: 0; left: 0;">${svg}</span>`
+      `<span style="position: ${index === 0 ? 'relative' : 'absolute'}; top: 0; left: 0;">${flip ? flipSVG(svg) : svg}</span>`
     ).join('')}
   </span>`;
 }
@@ -229,8 +229,8 @@ function processStimuli(stimuli: { left?: string[], right?: string[] } | string[
   // If simple array, treat as right-facing and generate left by flipping
   if (Array.isArray(stimuli)) {
     return {
-      right: layerSVGs(stimuli),
-      left: flipSVG(layerSVGs(stimuli))
+      right: layerSVGs(stimuli, false),
+      left: layerSVGs(stimuli, true)
     };
   }
   
@@ -239,26 +239,26 @@ function processStimuli(stimuli: { left?: string[], right?: string[] } | string[
     const obj = stimuli as { left?: string[], right?: string[] };
     if (obj.left && obj.right) {
       return {
-        left: layerSVGs(obj.left),
-        right: layerSVGs(obj.right)
+        left: layerSVGs(obj.left, false),
+        right: layerSVGs(obj.right, false)
       };
     } else if (obj.right) {
       return {
-        right: layerSVGs(obj.right),
-        left: flipSVG(layerSVGs(obj.right))
+        right: layerSVGs(obj.right, false),
+        left: layerSVGs(obj.right, true)
       };
     } else if (obj.left) {
       return {
-        left: layerSVGs(obj.left),
-        right: flipSVG(layerSVGs(obj.left))
+        left: layerSVGs(obj.left, false),
+        right: layerSVGs(obj.left, true)
       };
     }
   }
   
   // Default fallback
   return {
-    right: layerSVGs(layered_stimuli),
-    left: flipSVG(layerSVGs(layered_stimuli))
+    right: layerSVGs(layered_stimuli, false),
+    left: layerSVGs(layered_stimuli, true)
   };
 }
 
@@ -336,8 +336,7 @@ export function createPracticeStim(direction, congruent, stimuli: string[] | { l
 // ============================================================================
 
 export interface FlankerConfig {
-  stimuli_type?: 'fish' | 'arrow' | 'layered';
-  custom_stimuli?: { left?: string[]; right?: string[] };
+  stimuli_type?: 'fish' | 'arrow' | 'layered' | 'custom';
   svg?: string[]; // Override parameter - array of SVGs to layer
   stimuli_amount?: number; // Number of stimuli in flanker display (default: 5, must be odd ≥3)
   fixation_duration?: number;
@@ -391,7 +390,6 @@ export function calculatePerformance(data: any[]) {
 export function createTimeline(jsPsych: JsPsych, config: FlankerConfig = {}) {
   const {
     stimuli_type = 'layered',
-    custom_stimuli,
     svg,
     stimuli_amount = 5,
     fixation_duration = 500,
@@ -443,9 +441,9 @@ export function createTimeline(jsPsych: JsPsych, config: FlankerConfig = {}) {
   // 3. stimuli_type selection
   let stimuli;
   if (svg) {
-    stimuli = svg; // Use the SVG override array directly
-  } else if (custom_stimuli) {
-    stimuli = custom_stimuli;
+    stimuli = processStimuli(svg); // Process the SVG override array to handle flipping
+  } else if (stimuli_type === 'custom') {
+    stimuli = processStimuli(custom_example);
   } else if (stimuli_type === 'arrow') {
     stimuli = arrow_stimuli;
   } else if (stimuli_type === 'fish') {

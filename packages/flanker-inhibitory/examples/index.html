@@ -36,10 +36,15 @@
   // Configure the task with ALL available parameters set to their defaults
   const config = {
     // ===== STIMULUS CONFIGURATION =====
-    stimuli_type: 'fish', // 'fish', 'arrow', or 'layered' (fish + arrow overlay)
+    stimuli_type: 'custom', // 'fish', 'arrow', 'custom' or 'layered' (check stimuli.ts for details)
     custom_stimuli: undefined, // Custom stimuli object with left/right arrays, example at end of this file
-    svg: undefined, // Override parameter - array of SVGs to layer (should be right-facing)
-    stimuli_amount: 10, // Number of stimuli in flanker display (must be odd ≥3)
+    svg: [
+    '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><circle cx="24" cy="24" r="15" fill="yellow"/></svg>',
+    '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">' +
+    '<polygon points="38,24 18,10 18,38" fill="orange"/>' +
+    '</svg>'
+  ], // Override parameter - array of SVGs to layer (should be right-facing)
+    stimuli_amount: 5, // Number of stimuli in flanker display (must be odd ≥3)
     
     // ===== TIMING CONFIGURATION =====
     fixation_duration: 500, // Duration of fixation cross in milliseconds
@@ -47,7 +52,7 @@
     // ===== TASK FLOW CONFIGURATION =====
     show_instructions: false, // Whether to show instruction screens
     show_practice: false, // Whether to include practice trials
-    num_practice: 2, // Number of practice trials
+    num_practice: 3, // Number of practice trials
     num_trials: 20, // Number of main task trials
     
     // ===== TEXT-TO-SPEECH CONFIGURATION =====
@@ -87,34 +92,32 @@
   });
 
   // Custom stimuli with different left/right designs
-  // const asymmetricStimuli = jsPsychTimelineFlankerInhibitory.createTimeline(jsPsych, {
-  //   custom_stimuli: {
-  //     left: [
-  //       '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">' +
-  //       '<polygon points="10,24 30,10 30,38" fill="blue"/>' +
-  //       '</svg>'
-  //     ],
-  //     right: [
-  //       '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">' +
-  //       '<polygon points="38,24 18,10 18,38" fill="orange"/>' +
-  //       '</svg>'
-  //     ]
-  //   },
-  //   stimuli_amount: 7
-  // });
+  const asymmetricStimuli = jsPsychTimelineFlankerInhibitory.createTimeline(jsPsych, {
+    custom_stimuli: {
+      left: [
+        '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">' +
+        '<polygon points="10,24 30,10 30,38" fill="blue"/>' +
+        '</svg>'
+      ],
+      right: [
+        '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">' +
+        '<polygon points="38,24 18,10 18,38" fill="orange"/>' +
+        '</svg>'
+      ]
+    },
+    stimuli_amount: 7
+  });
 
   // Layered custom stimuli (multiple SVG layers)
-  // const layeredCustom = jsPsychTimelineFlankerInhibitory.createTimeline(jsPsych, {
-  //   custom_stimuli: {
-  //     right: [
-  //       // Base layer - circle
-  //       '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><circle cx="24" cy="24" r="15" fill="yellow"/></svg>',
-  //       // Overlay layer - arrow
-  //       '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><polygon points="35,24 25,18 25,30" fill="black"/></svg>'
-  //     ]
-  //   },
-  //   stimuli_amount: 7
-  // });
+  const layeredCustom = jsPsychTimelineFlankerInhibitory.createTimeline(jsPsych, {
+    custom_stimuli: {
+      right: [
+        // Overlay layer - arrow
+        '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><polygon points="35,24 25,18 25,30" fill="black"/></svg>'
+      ]
+    },
+    stimuli_amount: 7
+  });
 
   // Run the experiment
   jsPsych.run([task]);
