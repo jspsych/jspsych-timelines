@@ -1,0 +1,39 @@
+{
+    "name": "@jspsych-timelines/pattern-comparison-task",
+    "version": "0.0.1",
+    "description": "An assessment of processing speed. Participants are asked to quickly determine whether two stimuli are the same or not the same.",
+    "type": "module",
+    "main": "dist/index.mjs",
+    "types": "dist/index.d.ts",
+    "unpkg": "dist/index.browser.min.js",
+    "scripts": {
+      "build": "tsup src/index.ts --format esm,iife --sourcemap --dts --treeshake --clean --global-name jsPsychTimelinePatternComparisonTask",
+      "test": "jest"
+    },
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/farhat60/jspsych-timelines/",
+      "directory": "packages/pattern-comparison-task"
+    },
+    "keywords": [
+      "jsPsych",
+      "pattern-comparison",
+      "processing-speed",
+      "cognitive-assessment"
+    ],
+    "author": {
+      "name": "Abdullah Hunter Farhat",
+      "url": "github.com/farhat60"
+    },
+    "license": "MIT",
+    "bugs": {
+      "url": "https://github.com/farhat60/jspsych-timelines/issues"
+    },
+    "homepage": "https://github.com/farhat60/jspsych-timelines/tree/main/packages/pattern-comparison-task#readme",
+    "devDependencies": {
+      "jspsych": "^8.0.0",
+      "@jspsych/config": "^3.2.2",
+      "tsup": "^6.7.0",
+      "typescript": "^5.0.2"
+    }
+  }
