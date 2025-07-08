@@ -38,7 +38,6 @@ import HtmlButtonResponsePlugin from "@jspsych/plugin-html-button-response";
      let currency_unit_per_pump = .01;
 
      const stimulus = `
-        <h1>Balloon Analog Risk Task (BART)</h1>
          <p>In this task, you will inflate a balloon to earn money.</p>
          <p>Click <strong>Pump</strong> to inflate the balloon and earn <strong>${USDollar.format(.01*currency_unit_per_pump)}</strong> per pump.</p>
          <p>Click <strong>Collect</strong> to save your money and end the round.</p>
