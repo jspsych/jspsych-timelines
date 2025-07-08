@@ -329,12 +329,6 @@ function answerTrial(
 }
 
 function practiceFeedbackTrial(jsPsych: JsPsych, getAttempts: () => number, max_attempts: number) {
-  console.log(
-    "practiceFeedbackTrial called with attempts:",
-    getAttempts(),
-    "max_attempts:",
-    max_attempts
-  );
   return {
     type: jsPsychHtmlButtonResponse,
     stimulus: () => {
@@ -346,7 +340,7 @@ function practiceFeedbackTrial(jsPsych: JsPsych, getAttempts: () => number, max_
         return `<div class="instruction-text" style="text-align: center; font-size: 1.2em;"><p>That's right!</p></div>`;
       }
 
-      let correctAnswerHTML = "";
+      let correctAnswerHtml = "";
 
       for (let i = 0; i < incorrect.length; i++) {
         const [set_id, _] = incorrect[i];
@@ -361,8 +355,8 @@ function practiceFeedbackTrial(jsPsych: JsPsych, getAttempts: () => number, max_
         if (getAttempts() < max_attempts) {
           correctOrderHtml = `<p>${
             correctOrder[1]
-              ? correctOrder[0] + "is smaller than " + correctOrder[1]
-              : correctOrder[0] + "is the only item"
+              ? correctOrder[0] + " is smaller than " + correctOrder[1]
+              : correctOrder[0] + " is the only item"
           }${
             correctOrder.length <= 2
               ? "."
@@ -373,11 +367,13 @@ function practiceFeedbackTrial(jsPsych: JsPsych, getAttempts: () => number, max_
           correctOrderHtml += `<p>Now say the ${set_id} in size order, starting with the smallest one.</p>`;
         } else {
           correctOrderHtml = `<p>So you would say: ${correctOrder.join(", ")}.</p>`;
-          correctOrderHtml += `<p>Let's try another one.</p>`;
         }
-        correctAnswerHTML += `<div>${seenOrderHtml}${correctOrderHtml}</div>`;
+        correctAnswerHtml += `<div>${seenOrderHtml}${correctOrderHtml}</div>`;
       }
-      return correctAnswerHTML;
+      if (getAttempts() >= max_attempts) {
+        correctAnswerHtml += `<div><p><strong>Let's move on.</strong></p></div>`;
+      }
+      return correctAnswerHtml;
     },
     choices: ["Continue"],
     on_finish: (data) => {
@@ -388,7 +384,7 @@ function practiceFeedbackTrial(jsPsych: JsPsych, getAttempts: () => number, max_
     },
   };
 }
-// timeline units
+
 function lswmTrialSequence(
   jsPsych: JsPsych,
   options: {
@@ -432,6 +428,8 @@ function lswmTrialSequence(
     sampled_set_ids: sampledSetIds,
     data: {
       sequence_length: options.sequence_length,
+      task_type: options.task,
+      dimension: options.dimension,
     },
   });
 
@@ -449,11 +447,14 @@ function lswmTrialSequence(
         attempts.count += 1;
         if (attempts.count > options.max_attempts) return false; // stop retrying
 
-        console.log("retrying");
         return true; // retry answerTrial only
       },
+      data: {
+        attempts: () => attempts.count,
+        max_attempts: options.max_attempts,
+        dimension: options.dimension,
+      },
     };
-
     trialSequenceTimeline.push(practiceRetryLoop);
   } else {
     trialSequenceTimeline.push(answerTrial(jsPsych, timelineVariables, options.task));
@@ -524,14 +525,12 @@ function lswmSection(
 export function createTimeline(
   jsPsych: JsPsych,
   options: {
-    in_person?: boolean;
     stimulus_set_list?: Array<listSortingWorkingMemoryTestStimulusSet>;
     dimensions_sequence?: Array<number>;
   }
 ) {
   // Default options
   const defaultOptions = {
-    in_person: true,
     stimulus_set_list: defaultLiveStimuli,
   };
 
@@ -564,30 +563,67 @@ export function createTimeline(
     const practiceStimuli = defaultPracticeStimuli.find(
       (stimulus_set_lists) => stimulus_set_lists.dimension === curDimension
     )?.stimulus_set_lists;
+
     if (practiceStimuli) {
       mainTimeline.push(
         instructionTrial(nListPracticeInstructionText(practiceStimuli[0]), "Start Practice")
       );
-      practiceStimuli.map((set) => {
-        mainTimeline.push(
-          lswmTrialSequence(jsPsych, {
+      let practiceTrialSequences = [];
+      practiceStimuli.forEach((set, idx) => {
+        practiceTrialSequences.push({
+          timeline: lswmTrialSequence(jsPsych, {
             dimension: curDimension,
             stimulus_set_list: set,
             task: "practice",
-          })
-        );
+          }),
+        });
       });
+      mainTimeline.push(...practiceTrialSequences);
     } else {
       console.warn(
         `No practice stimuli found for dimension ${curDimension}. Skipping practice section.`
       );
     }
-    mainTimeline.push(
-      lswmSection(jsPsych, {
-        dimension: curDimension,
-        stimulus_set_list: options.stimulus_set_list,
-      })
-    );
+
+    mainTimeline.push({
+      timeline: [
+        instructionTrial(
+          "Let's look at some more pictures. Remember, after you see all the pictures, you will need to enter the pictures in each category in size order from smallest to largest.<br><br><strong>Are you ready?</strong>"
+        ),
+        lswmSection(jsPsych, {
+          dimension: curDimension,
+          stimulus_set_list: options.stimulus_set_list,
+        }),
+      ],
+      conditional_function: () => {
+        const allData = jsPsych.data.get().values();
+        const practicePassed = allData.some(
+          (data) =>
+            data["task_type"] === "practice" &&
+            data["dimension"] == curDimension &&
+            data["all_correct"] == true
+        );
+        return practicePassed;
+      },
+    });
+
+    mainTimeline.push({
+      timeline: [
+        instructionTrial(
+          "You have failed the practice for this section. Moving on to the next section."
+        ),
+      ],
+      conditional_function: () => {
+        const allData = jsPsych.data.get().values();
+        const practicePassed = allData.some(
+          (data) =>
+            data["task_type"] === "practice" &&
+            data["dimension"] == curDimension &&
+            data["all_correct"] == true
+        );
+        return !practicePassed;
+      },
+    });
   }
   return mainTimeline;
 }
