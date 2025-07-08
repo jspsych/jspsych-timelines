@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>jsPsychTimelineVisualReasoningTimeline Example</title>
+  <script src="https://unpkg.com/jspsych"></script>
+  <script src="../dist/index.global.js"></script>
+  <!-- Load the published timeline package here, e.g.
+<script src="https://unpkg.com/visual-reasoning-timeline"></script>
+<script src="../dist/index.global.js"></script> -->
+  <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css">
+</head>
+
+<body></body>
+<script>
+  const taskConfig = {
+    participant_age: 3,
+    participant_education: 'high_school',
+    start_point_override: 0,
+    trial_timeout: 60000,
+    show_practice: true,
+    show_instructions: true,
+    show_results: true,
+    include_audio: true,
+    show_progress: false,
+    cat_parameters: {
+      start_point: 0,
+      min_items: 20,
+      max_items: 30,
+      stopping_se: 0.3
+    },
+    //custom_item_bank,
+    enable_admin_gesture: true
+  }
+  const jsPsych = initJsPsych();
+
+  const task = jsPsychTimelineVisualReasoningTimeline.createTimeline(jsPsych, { });
+
+  jsPsych.run([task])
+</script>
+
+</html>
