@@ -300,7 +300,6 @@ export function createTimeline(jsPsych: JsPsych, config: TimelineConfig = {}) {
     type: htmlButtonResponse,
     stimulus: `
       <div style="font-size: 20px; line-height: 1.5; max-width: 800px; margin: 0 auto;">
-        <h2>${englishText.welcome_title}</h2>
         ${englishText.welcome_text}
       </div>
     `,
