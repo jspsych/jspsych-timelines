@@ -1,6 +1,5 @@
 import jsPsychAudioKeyboardResponse from "@jspsych/plugin-audio-keyboard-response";
 import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
-// import jsPsychHtmlKeyboardResponse from "@jspsych/plugin-html-keyboard-response";
 import jsPsychSurveyText from "@jspsych/plugin-survey-text";
 // import jsPsychPreload from "@jspsych/plugin-preload";
 import { JsPsych } from "jspsych";
@@ -276,16 +275,13 @@ function lswmTrial(
     // choices: ["f"],
     trial_duration: 2000, // Show each stimulus for 2 seconds
     data: () => {
-      const stimulusName = jsPsych.evaluateTimelineVariable("stimulus_name");
-      const stimulusSetId = jsPsych.evaluateTimelineVariable("stimulus_set_id");
-      const stimulusIndex = jsPsych.evaluateTimelineVariable("stimulus_index");
       return {
         task_type: task,
         timeline_unit_type: "lswmTrial",
-        sampled_set_ids: sampledSetIds,
-        stimulus_name: stimulusName,
-        stimulus_set_id: stimulusSetId,
-        stimulus_index: stimulusIndex,
+        sampled_set_ids: Array.from(sampledSetIds),
+        stimulus_name: jsPsych.evaluateTimelineVariable("stimulus_name"),
+        stimulus_set_id: jsPsych.evaluateTimelineVariable("stimulus_set_id"),
+        stimulus_index: jsPsych.evaluateTimelineVariable("stimulus_index"),
       };
     },
   };
