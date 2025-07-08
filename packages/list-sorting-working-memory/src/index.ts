@@ -1,28 +1,33 @@
 import jsPsychAudioKeyboardResponse from "@jspsych/plugin-audio-keyboard-response";
 import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
-import jsPsychHtmlKeyboardResponse from "@jspsych/plugin-html-keyboard-response";
+// import jsPsychHtmlKeyboardResponse from "@jspsych/plugin-html-keyboard-response";
 import jsPsychSurveyText from "@jspsych/plugin-survey-text";
 // import jsPsychPreload from "@jspsych/plugin-preload";
 import { JsPsych } from "jspsych";
 
 import {
   animalStimuli as animalStimuliImport,
+  defaultLiveStimuli as defaultLiveStimuliImport,
   foodStimuli as foodStimuliImport,
   oneListPracticeStimuliA as oneListPracticeStimuliAImport,
   oneListPracticeStimuliB as oneListPracticeStimuliBImport,
   twoListPracticeStimuliA as twoListPracticeStimuliAImport,
   twoListPracticeStimuliB as twoListPracticeStimuliBImport,
-  defaultLiveStimuli as defaultLiveStimuliImport,
 } from "./stimuli.js";
 
 // Cast imported stimuli to required types
 const animalStimuli = animalStimuliImport as Array<Array<listSortingWorkingMemoryTestStimulus>>;
 const foodStimuli = foodStimuliImport as Array<Array<listSortingWorkingMemoryTestStimulus>>;
-const oneListPracticeStimuliA = oneListPracticeStimuliAImport as Array<listSortingWorkingMemoryTestStimulusSet>;
-const oneListPracticeStimuliB = oneListPracticeStimuliBImport as Array<listSortingWorkingMemoryTestStimulusSet>;
-const twoListPracticeStimuliA = twoListPracticeStimuliAImport as Array<listSortingWorkingMemoryTestStimulusSet>;
-const twoListPracticeStimuliB = twoListPracticeStimuliBImport as Array<listSortingWorkingMemoryTestStimulusSet>;
-const defaultLiveStimuli = defaultLiveStimuliImport as Array<listSortingWorkingMemoryTestStimulusSet>;
+const oneListPracticeStimuliA =
+  oneListPracticeStimuliAImport as Array<listSortingWorkingMemoryTestStimulusSet>;
+const oneListPracticeStimuliB =
+  oneListPracticeStimuliBImport as Array<listSortingWorkingMemoryTestStimulusSet>;
+const twoListPracticeStimuliA =
+  twoListPracticeStimuliAImport as Array<listSortingWorkingMemoryTestStimulusSet>;
+const twoListPracticeStimuliB =
+  twoListPracticeStimuliBImport as Array<listSortingWorkingMemoryTestStimulusSet>;
+const defaultLiveStimuli =
+  defaultLiveStimuliImport as Array<listSortingWorkingMemoryTestStimulusSet>;
 
 interface listSortingWorkingMemoryTestStimulus {
   stimulus_name: string;
@@ -117,10 +122,9 @@ function getRandomSubarray(array, sample_size) {
   return shuffled.slice(0, sample_size);
 }
 
-function sampleStimulusAcrossSets<T extends { stimulus_index: number; stimulus_set_id: string }>(
-  stimulus_set_list: T[][],
-  sample_size: number = 1
-): T[] {
+function sampleStimulusAcrossSets<
+  T extends { stimulus_name: string; stimulus_index: number; stimulus_set_id: string }
+>(stimulus_set_list: T[][], sample_size: number = 1): T[] {
   const flat = stimulus_set_list.flat();
 
   // Group by stimulus_set_id, then by stimulus_index
@@ -195,57 +199,60 @@ function instructionTrial(instruction_text: string, button_text?: string) {
 
 function answerTrial(
   jsPsych: JsPsych,
+  trialSequenceStimuli: Array<{
+    stimulus_name: string;
+    stimulus_set_id: string;
+    stimulus_index: number;
+  }>,
   task: "practice" | "live" = "live"
 ) {
+  const groups: Record<string, any[]> = {};
+
+  // Group by stimulus_set_id
+  for (const trialStimulus of trialSequenceStimuli) {
+    const id = trialStimulus.stimulus_set_id;
+    if (!groups[id]) groups[id] = [];
+    groups[id].push(trialStimulus);
+  }
+
+  // Get correct order for each stimulus set
+  const correctAnswer = Object.entries(groups).map(([stimulus_set_id, trials]) => {
+    const sorted = trials.sort((a, b) => a.stimulus_index - b.stimulus_index);
+    const correct_order = sorted.map((t) => t.stimulus_name);
+    return { stimulus_set_id, correct_order };
+  });
+
   return {
     type: jsPsychSurveyText,
     questions: [], // to be set dynamically
     randomize_question_order: true,
     on_start: (trial) => {
-      const sequenceData = jsPsych.data.getLastTimelineData()["trials"];
-
-      const groups: Record<string, any[]> = {};
-
-      // Group by stimulus_set_id
-      for (const trialData of sequenceData) {
-        const id = trialData.stimulus_set_id;
-        if (!groups[id]) groups[id] = [];
-        groups[id].push(trialData);
-      }
-
-      // Get correct order for each stimulus set
-      const correctAnswer = Object.entries(groups).map(([stimulus_set_id, trials]) => {
-        const sorted = trials.sort((a, b) => a.stimulus_index - b.stimulus_index);
-        const correct_order = sorted.map((t) => t.stimulus_name);
-        return { stimulus_set_id, correct_order };
-      });
-      trial.correctAnswer = correctAnswer;
-
       // Dynamically set the questions
       trial.questions = correctAnswer.map((group) => ({
         prompt: `Order the ${group.stimulus_set_id} from smallest to largest in size, separated by commas:`,
         name: `response_${group.stimulus_set_id}`,
-        placeholder: group.correct_order.join(", "), // helpful for debugging
+        placeholder: group.correct_order.join(", "), // DEV: shows correct answer as placeholder; helpful for debugging
       }));
     },
-    data: function () {
-      return {
-        task: task,
-        timeline_unit_type: "answerTrial",
-        answer: jsPsych.data.getLastTimelineData().values()[0].responses,
-        correct_answer: this.correctAnswer, // pulls from trial.correctAnswer
-        correct: this.correctAnswer.every((group) => {
-          const response = jsPsych.data.getLastTimelineData().values()[0][`response_${group.stimulus_set_id}`];
-          const responseArray = response
-            ? response.split(",").map((s) => s.trim())
-            : [];
-          return JSON.stringify(responseArray) === JSON.stringify(group.correct_order);
-        }),
-      };
+    on_finish: (data) => {
+      data.task_type = task;
+      data.timeline_unit_type = "answerTrial";
+      data.correct_answer = correctAnswer;
+      data.correct = correctAnswer.reduce((acc, group) => {
+        const response = data.response[`response_${group.stimulus_set_id}`];
+        const responseArray = response ? response.split(",").map((s) => s.trim()) : [];
+        console.log("response:", response);
+        console.log("responseArray:", responseArray);
+        console.log("correct_order:", group.correct_order);
+
+        acc[group.stimulus_set_id] =
+          JSON.stringify(responseArray) === JSON.stringify(group.correct_order);
+        return acc;
+      }, {});
+      data.allCorrect = Object.values(data.correct).every((v) => v === true);
     },
   };
 }
-
 
 function lswmTrial(
   jsPsych: JsPsych,
@@ -265,13 +272,15 @@ function lswmTrial(
       </div>
     `;
     },
-    choices: ["f"],
+    // DEV: 'f' key for next stimulus
+    // choices: ["f"],
+    trial_duration: 2000, // Show each stimulus for 2 seconds
     data: () => {
       const stimulusName = jsPsych.evaluateTimelineVariable("stimulus_name");
       const stimulusSetId = jsPsych.evaluateTimelineVariable("stimulus_set_id");
       const stimulusIndex = jsPsych.evaluateTimelineVariable("stimulus_index");
       return {
-        task: task,
+        task_type: task,
         timeline_unit_type: "lswmTrial",
         sampled_set_ids: sampledSetIds,
         stimulus_name: stimulusName,
@@ -323,17 +332,23 @@ function lswmTrialSequence(
   );
   const sampledSetIds = new Set(timelineVariables.map((set) => set.stimulus_set_id));
 
-  return {
+  let trialSequenceTimeline = [];
+  trialSequenceTimeline.push({
     timeline: [lswmTrial(jsPsych, sampledSetIds)],
     timeline_variables: timelineVariables,
     sampled_set_ids: sampledSetIds,
     data: {
       sequence_length: options.sequence_length,
     },
-  };
+  });
+  trialSequenceTimeline.push(answerTrial(jsPsych, timelineVariables));
+  return trialSequenceTimeline;
 }
 
-function practiceTrialSequence(jsPsych, practice_stimulus_set_list: Array<listSortingWorkingMemoryTestStimulusSet>) {
+function practiceTrialSequence(
+  jsPsych,
+  practice_stimulus_set_list: Array<listSortingWorkingMemoryTestStimulusSet>
+) {
   return {
     timeline: [
       instructionTrial(nListPracticeInstructionText(practice_stimulus_set_list)),
@@ -342,7 +357,7 @@ function practiceTrialSequence(jsPsych, practice_stimulus_set_list: Array<listSo
         stimulus_set_list: practice_stimulus_set_list,
         sequence_length: 2,
       }),
-      answerTrial(jsPsych, practice_stimulus_set_list, 1),
+      // answerTrial(jsPsych, practice_stimulus_set_list, "practice"),
       lswmTrialSequence(jsPsych, {
         dimension: practice_stimulus_set_list.length,
         stimulus_set_list: practice_stimulus_set_list,
@@ -399,7 +414,7 @@ function lswmSection(
       sequence_length: options.sample_size_sequence[i],
     });
     sectionTimeline.push({
-      timeline: [trialSequence, answerTrial(jsPsych, options.stimulus_set_list, options.dimension)],
+      timeline: [trialSequence],
     });
   }
 
@@ -448,6 +463,7 @@ export function createTimeline(
 
   // Timeline
   let mainTimeline = [];
+  mainTimeline.push(instructionTrial("Start"));
   for (let i = 0; i < options.dimensions_sequence.length; i++) {
     mainTimeline.push(
       lswmSection(jsPsych, {
