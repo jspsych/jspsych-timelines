@@ -153,10 +153,9 @@ export function createInstructions(config: any) {
     type: htmlButtonResponse,
     stimulus: `
       <div style="max-width: 800px; margin: 0 auto; text-align: left; font-size: 18px; line-height: 1.6;">
-        <h2 style="text-align: center;">${englishText.instructionsTitle}</h2>
         
         <div style="background: #f5f5f5; padding: 20px; margin: 20px 0; border-radius: 8px;">
-          <h3>${englishText.symbolNumberKey}</h3>
+          <p><strong>${englishText.symbolNumberKey}</strong></p>
           <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; font-size: 24px; text-align: center;">
             ${SYMBOL_ENTRIES.map(([symbol, num]) => 
               `<div style="border: 2px solid #ccc; padding: 15px; border-radius: 5px;">
@@ -167,7 +166,7 @@ export function createInstructions(config: any) {
           </div>
         </div>
 
-        <p><strong>${englishText.instructionsHeader}</strong></p>
+        <p>${englishText.instructionsHeader}</p>
         <p>${englishText.instructionsIntro}</p>
         <p>${replaceText(englishText.instructionsTask, config.useKeyboard ? englishText.inputMethodPressKey : englishText.inputMethodSelectNumber)}</p>
         <p>${replaceText(englishText.instructionsExample1, symbols.sixSymbol, '6', config.useKeyboard ? replaceText(englishText.inputMethodPress, '6') : replaceText(englishText.inputMethodSelect, '6'))}</p>
@@ -186,7 +185,7 @@ export function createPreTest(config: any) {
         <h2>${englishText.preTestTitle}</h2>
         
         <div style="background: #f5f5f5; padding: 15px; margin: 20px 0; border-radius: 8px;">
-          <h3>${englishText.symbolNumberKey}</h3>
+          <p><strong>${englishText.symbolNumberKey}</strong></p>
           <div style="display: grid; grid-template-columns: repeat(9, 1fr); gap: 10px; font-size: 14px;">
             ${SYMBOL_ENTRIES.map(([symbol, num]) => 
               `<div style="border: 1px solid #ccc; padding: 5px; border-radius: 3px;">
