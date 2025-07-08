@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pattern Comparison Task</title>
+    <script src="https://unpkg.com/jspsych@8.2.1"></script>
+    <script src="../dist/index.global.js"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-html-button-response@2.0.1"></script>
+    <link href="https://unpkg.com/jspsych@8.2.1/css/jspsych.css" rel="stylesheet" type="text/css" />
+    <link href="../src/styles.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <script type="module">
+        // Initialize jsPsych
+        const jsPsych = initJsPsych({
+            on_finish: function() {
+                jsPsych.data.displayData();
+            }
+        });
+
+        // Configuration
+        const config = {
+            test_categories: undefined, // Uses default test_categories
+            num_trials: 8,
+            prompt: "Are these patterns the same?",
+            enable_tts: true,
+            same_button_text: "Same",
+            different_button_text: "Different",
+            trial_timeout: 8000,
+            inter_trial_interval: 500,
+            show_instructions: true, // Set to true to show instruction pages
+            instruction_texts: undefined // Uses default instruction_pages
+        };
+
+        // Create and run timeline
+        const timeline = jsPsychTimelinePatternComparisonTask.createTimeline(jsPsych, config);
+        jsPsych.run(timeline);
+    </script>
+</body>
+</html>
