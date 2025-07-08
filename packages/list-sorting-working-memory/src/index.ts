@@ -28,6 +28,17 @@ const twoListPracticeStimuliB =
 const defaultLiveStimuli =
   defaultLiveStimuliImport as Array<listSortingWorkingMemoryTestStimulusSet>;
 
+const defaultPracticeStimuli = [
+  {
+    dimension: 1,
+    stimulus_set_lists: [oneListPracticeStimuliA, oneListPracticeStimuliB],
+  },
+  {
+    dimension: 2,
+    stimulus_set_lists: [twoListPracticeStimuliA, twoListPracticeStimuliB],
+  },
+];
+
 interface listSortingWorkingMemoryTestStimulus {
   stimulus_name: string;
   stimulus_image: string;
@@ -378,7 +389,7 @@ function lswmTrialSequence(
   options: {
     dimension: number;
     stimulus_set_list: Array<listSortingWorkingMemoryTestStimulusSet>;
-    sequence_length: number;
+    sequence_length?: number;
     task?: "practice" | "live";
     max_attempts?: number;
   }
@@ -390,11 +401,17 @@ function lswmTrialSequence(
   const stimulus_set_subarray = getRandomSubarray(options.stimulus_set_list, options.dimension);
   const stimulus_set_subarray_flat = flattenStimulusSetList(stimulus_set_subarray);
 
-  if (options.sequence_length > stimulus_set_subarray_flat.length) {
+  if (!options.sequence_length) {
+    options.sequence_length = stimulus_set_subarray_flat.length;
+    console.warn("No sequence length provided. Using all stimuli without replacement.");
+  } else if (options.sequence_length > stimulus_set_subarray_flat.length) {
     options.sequence_length = stimulus_set_subarray_flat.length;
     console.warn(
       "Sequence length exceeds available stimuli. Using all stimuli without replacement."
     );
+  } else if (options.sequence_length < 1) {
+    options.sequence_length = 1;
+    console.warn("Sequence length must be at least 1. Using 1.");
   }
 
   const timelineVariables = sampleStimulusAcrossSets(
@@ -536,19 +553,33 @@ export function createTimeline(
   // Timeline
   let mainTimeline = [];
   mainTimeline.push(instructionTrial("Start"));
-  mainTimeline.push(
-    lswmTrialSequence(jsPsych, {
-      dimension: 1,
-      stimulus_set_list: oneListPracticeStimuliA,
-      sequence_length: 2,
-      task: "practice",
-      max_attempts: 2,
-    })
-  );
+
   for (let i = 0; i < options.dimensions_sequence.length; i++) {
+    const curDimension = options.dimensions_sequence[i];
+    const practiceStimuli = defaultPracticeStimuli.find(
+      (stimulus_set_lists) => stimulus_set_lists.dimension === curDimension
+    )?.stimulus_set_lists;
+    if (practiceStimuli) {
+      mainTimeline.push(
+        instructionTrial(nListPracticeInstructionText(practiceStimuli[0]), "Start Practice")
+      );
+      practiceStimuli.map((set) => {
+        mainTimeline.push(
+          lswmTrialSequence(jsPsych, {
+            dimension: curDimension,
+            stimulus_set_list: set,
+            task: "practice",
+          })
+        );
+      });
+    } else {
+      console.warn(
+        `No practice stimuli found for dimension ${curDimension}. Skipping practice section.`
+      );
+    }
     mainTimeline.push(
       lswmSection(jsPsych, {
-        dimension: options.dimensions_sequence[i],
+        dimension: curDimension,
         stimulus_set_list: options.stimulus_set_list,
       })
     );

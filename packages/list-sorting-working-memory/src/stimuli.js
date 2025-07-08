@@ -277,7 +277,7 @@ export const oneListPracticeStimuliA = [
 
 export const oneListPracticeStimuliB = [
   {
-    stimulis_set_name: "animals",
+    stimulus_set_name: "animals",
     stimulus_set: [
       [
         {
@@ -314,7 +314,7 @@ export const twoListPracticeStimuliA = [
           stimulus_image: bearSvg,
           stimulus_audio: `${audioAnimalsFp}bear.mp3`,
         },
-      ]
+      ],
     ],
   },
   {
@@ -328,7 +328,7 @@ export const twoListPracticeStimuliA = [
         },
       ],
     ],
-  }
+  },
 ];
 
 export const twoListPracticeStimuliB = [
@@ -360,9 +360,9 @@ export const twoListPracticeStimuliB = [
           stimulus_image: pineappleSvg,
           stimulus_audio: `${audioFoodsFp}pineapple.mp3`,
         },
-      ]
+      ],
     ],
-  }
+  },
 ];
 
 export const defaultLiveStimuli = [
