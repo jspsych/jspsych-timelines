@@ -509,7 +509,10 @@ function lswmSection(
       sequence_length: options.sample_size_sequence[i],
     });
     sectionTimeline.push({
-      timeline: [trialSequence],
+      timeline: [
+        trialSequence,
+        instructionTrial("Now let's try another set of pictures. Are you ready?"),
+      ],
     });
   }
 
@@ -569,13 +572,16 @@ export function createTimeline(
         instructionTrial(nListPracticeInstructionText(practiceStimuli[0]), "Start Practice")
       );
       let practiceTrialSequences = [];
-      practiceStimuli.forEach((set, idx) => {
+      practiceStimuli.forEach((set, _) => {
         practiceTrialSequences.push({
-          timeline: lswmTrialSequence(jsPsych, {
-            dimension: curDimension,
-            stimulus_set_list: set,
-            task: "practice",
-          }),
+          timeline: [
+            lswmTrialSequence(jsPsych, {
+              dimension: curDimension,
+              stimulus_set_list: set,
+              task: "practice",
+            }),
+            instructionTrial("Now let's practice with another set of pictures. Are you ready?"),
+          ],
         });
       });
       mainTimeline.push(...practiceTrialSequences);
