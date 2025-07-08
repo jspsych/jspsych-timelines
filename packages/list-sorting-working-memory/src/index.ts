@@ -58,18 +58,20 @@ function nListPracticeInstructionText(
   if (stimulusSetList.length <= 0) {
     throw new Error("stimulusSetList must contain at least one stimulus set.");
   } else if (stimulusSetList.length === 1) {
-    return `You are going to see some pictures one at a time on the screen. After all the pictures have been shown, you will see a screen where you can enter the pictures you just saw in size order from smallest to biggest. For example, if you see a motorcycle, a bus, and a car, you would enter: motorcycle, car, bus. Are you ready to practice?`;
+    return `You are going to see some pictures one at a time on the screen. After all the pictures have been shown, you will see a screen where you can enter the pictures you just saw in size order from smallest to biggest.<br><br>For example, if you see a motorcycle, a bus, and a car, you would enter: motorcycle, car, bus.<br><br><strong>Are you ready to practice?</strong>`;
   } else {
     const stimulus_set_ids = Array.from(
       new Set(stimulusSetList.map((set) => set.stimulus_set_name))
     );
-    return `You are going to see ${stimulus_set_ids.slice(0, -1).join(", ")} and ${
+    return `You are going to see <strong>${stimulus_set_ids
+      .slice(0, -1)
+      .join(", ")}</strong> and <strong>${
       stimulus_set_ids[stimulus_set_ids.length - 1]
-    } in a set of pictures one at a time on the screen. After all the pictures have been shown, you will see a screen where for each category (i.e. ${
+    }</strong> in a set of pictures one at a time on the screen. After all the pictures have been shown, you will see a screen where for each category (i.e. ${
       stimulus_set_ids[0]
     }, ${
       stimulus_set_ids[1]
-    }, etc.), you can enter the pictures you just saw that belong to that category in order from smallest to biggest. For example, if you see a motorcycle, a bus, a cup, and a barrel, you would enter: motorcycle, bus for the vehicles category, and cup, barrel for the containers category. Are you ready to practice?`;
+    }, etc.), you can enter the pictures you just saw that belong to that category in order from smallest to biggest.<br><br>For example, if you see a motorcycle, a bus, a cup, and a barrel, you would enter: motorcycle, bus for the vehicles category, and cup, barrel for the containers category.<br><br><strong>Are you ready to practice?</strong>`;
   }
 }
 
@@ -224,7 +226,7 @@ function sampleStimulusAcrossSets<
 function instructionTrial(instruction_text: string, button_text?: string) {
   return {
     type: jsPsychHtmlButtonResponse,
-    stimulus: `<div class="instruction-text" style="text-align: center; font-size: 1.2em;"><p>${instruction_text}</p></div>`,
+    stimulus: `<div class="instruction-text" style="text-align: center; font-size: 1.2em; max-width: 80vw; max-height: 80vh; "><p>${instruction_text}</p></div>`,
     choices: [button_text || "Yes"],
   };
 }
@@ -295,8 +297,9 @@ function answerTrial(
     on_start: (trial) => {
       // Dynamically set the questions
       trial.questions = correctAnswer.map((group) => ({
-        prompt: `Order the ${group.stimulus_set_id} from smallest to largest in size, separated by commas:`,
+        prompt: `Order the <strong>${group.stimulus_set_id}</strong> from smallest to largest in size, separated by commas:`,
         name: `response_${group.stimulus_set_id}`,
+        required: true,
         placeholder: group.correct_order.join(", "), // DEV: shows correct answer as placeholder; helpful for debugging
       }));
     },
@@ -356,8 +359,10 @@ function practiceFeedbackTrial(jsPsych: JsPsych, getAttempts: () => number, max_
         const seenOrderHtml = `<p>You saw: ${seenOrder.join(", ")}</p>`;
         let correctOrderHtml = "";
         if (getAttempts() < max_attempts) {
-          correctOrderHtml = `<p>${correctOrder[0]} is smaller than ${
-            correctOrder[1] || "nothing"
+          correctOrderHtml = `<p>${
+            correctOrder[1]
+              ? correctOrder[0] + "is smaller than " + correctOrder[1]
+              : correctOrder[0] + "is the only item"
           }${
             correctOrder.length <= 2
               ? "."
@@ -365,7 +370,7 @@ function practiceFeedbackTrial(jsPsych: JsPsych, getAttempts: () => number, max_
                 correctOrder.slice(2).join(", which is smaller than ") +
                 "."
           }</p>`;
-          correctOrderHtml += `<p>Now say the ${set_id} in size order.</p>`;
+          correctOrderHtml += `<p>Now say the ${set_id} in size order, starting with the smallest one.</p>`;
         } else {
           correctOrderHtml = `<p>So you would say: ${correctOrder.join(", ")}.</p>`;
           correctOrderHtml += `<p>Let's try another one.</p>`;
