@@ -80,11 +80,9 @@ describe("Speeded Matching Task", () => {
     it("should include instructions when show_instructions is true", () => {
       const timeline = createTimeline(mockJsPsych, { show_instructions: true });
       
-      // Should contain instruction timeline
+      // Should contain instruction trial
       const hasInstructions = timeline.timeline.some(
-        (item: any) => item.timeline && item.timeline.some((subItem: any) => 
-          subItem.data?.task === 'instruction-page'
-        )
+        (item: any) => item.data?.task === 'instruction-pages'
       );
       expect(hasInstructions).toBe(true);
     });
@@ -438,52 +436,38 @@ describe("Speeded Matching Task", () => {
   });
 
   describe("utils.createInstructions", () => {
-    it("should create instruction timeline with default pages", () => {
+    it("should create instruction trial with default pages", () => {
       const instructions = utils.createInstructions();
       
-      expect(instructions.timeline).toBeInstanceOf(Array);
-      expect(instructions.timeline.length).toBe(instruction_pages.length);
+      expect(instructions.pages).toBeInstanceOf(Array);
+      expect(instructions.pages.length).toBe(instruction_pages.length);
+      expect(instructions.data?.task).toBe('instruction-pages');
     });
 
-    it("should create instruction timeline with custom pages", () => {
+    it("should create instruction trial with custom pages", () => {
       const customPages = [
-        {
-          header: "Custom Header",
-          header2: "Custom Subheader",
-          description: "Custom description",
-          task_explanation: "Custom task explanation",
-          performance_note: "Custom performance note",
-          start_prompt: "Click to continue",
-          buttons: ["Next"]
-        }
+        '<div><h1>Custom Header</h1><p>Custom description</p></div>'
       ];
       
       const instructions = utils.createInstructions(customPages);
       
-      expect(instructions.timeline).toHaveLength(1);
-      expect(instructions.timeline[0].stimulus).toContain("Custom Header");
-      expect(instructions.timeline[0].stimulus).toContain("Custom description");
-      expect(instructions.timeline[0].choices).toEqual(["Next"]);
+      expect(instructions.pages).toHaveLength(1);
+      expect(instructions.pages[0]).toContain("Custom Header");
+      expect(instructions.pages[0]).toContain("Custom description");
     });
 
-    it("should handle pages with strategy points", () => {
+    it("should handle HTML pages correctly", () => {
       const customPages = [
-        {
-          strategy_title: "Strategy",
-          strategy_intro: "Follow these steps:",
-          strategy_points: ["Step 1", "Step 2", "Step 3"],
-          start_prompt: "Ready to begin",
-          buttons: ["Got it"]
-        }
+        '<div><h2>Strategy</h2><p>Follow these steps:</p><ul><li>Step 1</li><li>Step 2</li><li>Step 3</li></ul></div>'
       ];
       
       const instructions = utils.createInstructions(customPages);
-      const page = instructions.timeline[0];
+      const page = instructions.pages[0];
       
-      expect(page.stimulus).toContain("Strategy");
-      expect(page.stimulus).toContain("Step 1");
-      expect(page.stimulus).toContain("Step 2");
-      expect(page.stimulus).toContain("Step 3");
+      expect(page).toContain("Strategy");
+      expect(page).toContain("Step 1");
+      expect(page).toContain("Step 2");
+      expect(page).toContain("Step 3");
     });
   });
 
@@ -626,11 +610,7 @@ describe("Speeded Matching Task", () => {
 
     it("should handle custom instruction texts", () => {
       const customInstructions = [
-        {
-          header: "Custom Task",
-          description: "This is a custom task",
-          buttons: ["Start"]
-        }
+        '<div><h1>Custom Task</h1><p>This is a custom task</p></div>'
       ];
       
       const timeline = createTimeline(mockJsPsych, { 
@@ -641,8 +621,8 @@ describe("Speeded Matching Task", () => {
       });
       
       const hasCustomInstructions = timeline.timeline.some((item: any) => 
-        item.timeline && item.timeline.some((subItem: any) => 
-          subItem.stimulus && subItem.stimulus.includes("Custom Task")
+        item.pages && item.pages.some((page: string) => 
+          page.includes("Custom Task")
         )
       );
       expect(hasCustomInstructions).toBe(true);
@@ -657,10 +637,10 @@ describe("Speeded Matching Task", () => {
         num_trials: 1
       });
       
-      // Check that instruction pages have TTS enabled
+      // Check that instruction trial has TTS enabled
       const hasInstructionsWithTTS = timeline.timeline.some((item: any) => 
-        item.timeline && item.timeline.some((subItem: any) => 
-          typeof subItem.on_start === 'function' || subItem.on_start !== undefined
+        item.data?.task === 'instruction-pages' && (
+          typeof item.on_start === 'function' || typeof item.on_load === 'function'
         )
       );
       expect(hasInstructionsWithTTS).toBe(true);
@@ -675,7 +655,7 @@ describe("Speeded Matching Task", () => {
       
       // Instructions should still be created but without TTS
       const hasInstructions = timeline.timeline.some((item: any) => 
-        item.timeline && item.timeline.length > 0
+        item.data?.task === 'instruction-pages'
       );
       expect(hasInstructions).toBe(true);
     });

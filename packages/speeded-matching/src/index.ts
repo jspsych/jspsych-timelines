@@ -1,5 +1,6 @@
 import { JsPsych, TrialType } from "jspsych"
 import HtmlButtonResponsePlugin from "@jspsych/plugin-html-button-response"
+import InstructionsPlugin from "@jspsych/plugin-instructions"
 import { test_items } from "./test-items"
 import { trial_text, instruction_pages } from "./text"
 
@@ -89,80 +90,49 @@ function createTrialSet(items: string[], target_index: number = 0, num_choices: 
 
 /**
  * Creates instruction pages with configurable text and TTS support
- * Based on the pattern-comparison-task implementation
+ * Uses the jsPsych instructions plugin with simple HTML strings
  */
 function createInstructions(instruction_pages_data = instruction_pages, enable_tts = false) {
-  const instruction_timeline = [];
-
-  // Create each instruction page as a separate trial
-  instruction_pages_data.forEach((page_data, page_index) => {
-
-    // Build page text for TTS - combine all text elements
-    const page_text = [
-      page_data.header,
-      page_data.header2,
-      page_data.description,
-      page_data.task_explanation,
-      page_data.performance_note,
-      page_data.strategy_title,
-      page_data.strategy_intro,
-      ...(page_data.strategy_points || []),
-      page_data.start_prompt,
-    ].filter(Boolean).join(' '); // Remove undefined strings by filtering out falsy values
-
-    instruction_timeline.push({
-      type: HtmlButtonResponsePlugin,
-      stimulus: `
-        <div class="speeded-matching-instructions-container">
-          <h1>${page_data.header || ""}</h1>
-          <h2>${page_data.header2 || ""}</h2>
-          <p>${page_data.description || ""}</p>
-          <p>${page_data.task_explanation || ""}</p>
-          <p class="performance-note">${page_data.performance_note || ""}</p>
-          ${page_data.strategy_title ? `<h2>${page_data.strategy_title}</h2>` : ""}
-          ${page_data.strategy_intro ? `<p>${page_data.strategy_intro}</p>` : ""}
-          ${page_data.strategy_points ? `
-            <ul>
-              ${page_data.strategy_points.map(point => `<li>${point}</li>`).join('')}
-            </ul>
-          ` : ""}
-          ${page_data.start_prompt ? `<p class="start-prompt">${page_data.start_prompt}</p>` : ""}
-        </div>
-      `,
-      choices: page_data.buttons,
-      margin_horizontal: '15px',
-      margin_vertical: '10px',
-      button_html: function(choice, choice_index) {
-        // Check if custom button HTML is provided for this page
-        if ('button_html' in page_data && page_data.button_html && page_data.button_html[choice_index]) {
-          return page_data.button_html[choice_index].replace('{choice}', choice);
-        }
-        // Default button styling
-        return `<button class="jspsych-btn speeded-matching-continue-button">${choice}</button>`;
-      },
-      ...(enable_tts && {
-        on_start: function() {
-          // Stop any ongoing speech first
-          speechSynthesis.cancel();
-            // Speak the page text
-            if (page_text.trim()) {
-            speakText(page_text);
-            }
-        }
-      }),
-      on_finish: function(data: any) {
-        // Stop speech when moving to next page
-        speechSynthesis.cancel();
-      },
-      data: {
-        page_index: page_index,
-        task: 'instruction-page'
-      }
-    });
-  });
+  // Helper function to extract text from HTML for TTS
+  function extractTextFromHtml(htmlString: string): string {
+    return htmlString
+      .replace(/<[^>]*>/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
 
   return {
-    timeline: instruction_timeline
+    type: InstructionsPlugin,
+    pages: instruction_pages_data,
+    show_clickable_nav: true,
+    allow_keys: true,
+    key_forward: 'ArrowRight',
+    key_backward: 'ArrowLeft',
+    button_label_previous: 'Previous',
+    button_label_next: 'Next',
+    on_start: function() {
+      speechSynthesis.cancel();
+    },
+    on_load: function() {
+      if (enable_tts) {
+        // Wait a bit for the page to load, then read the current page
+        setTimeout(() => {
+          const instructionsContent = document.querySelector('.jspsych-instructions-content');
+          if (instructionsContent) {
+            const pageText = extractTextFromHtml(instructionsContent.innerHTML);
+            if (pageText.trim()) {
+              speakText(pageText);
+            }
+          }
+        }, 100);
+      }
+    },
+    on_finish: function(data: any) {
+      speechSynthesis.cancel();
+    },
+    data: {
+      task: 'instruction-pages'
+    }
   };
 }
 

@@ -36,45 +36,29 @@ export const trial_text = {
 }
 
 /* 
- * This is an array of page objects that have configurable texts for the instruction pages
- * before the actual trials. Researchers can modify these instructions to change the
- * task description, add new instruction pages, or translate to different languages.
+ * This is an array of HTML strings for instruction pages displayed before the actual trials.
+ * Researchers can modify these instructions to change the task description, add new instruction 
+ * pages, or translate to different languages.
  * 
- * Each page object can contain:
- * - header: Main title (displays in <h1>)
- * - header2: Subtitle (displays in <h2>)
- * - description: Main description text (displays in <p>)
- * - task_explanation: Detailed task explanation (displays in <p>)
- * - performance_note: Performance tips (displays in <p>)
- * - strategy_title: Strategy section title (displays in <h2>)
- * - strategy_intro: Introduction to strategy (displays in <p>)
- * - strategy_points: Array of strategy bullet points (displays as <ul><li>)
- * - start_prompt: Final instruction before starting (displays in <p>)
- * - buttons: Array of button text options
- * - button_html: Custom HTML for buttons (optional)
+ * Each string should contain valid HTML that will be displayed as an instruction page.
+ * You can add more pages by adding more strings to the array, or modify existing pages
+ * by editing the HTML content.
  */
 
 export const instruction_pages = [
-    {
-        header: "Speeded Matching Task",
-        header2: "Visual Pattern Matching",
-        description: "In this task, you will see a target picture at the top of the screen and four choice pictures below.",
-        task_explanation: "Your job is to <strong>quickly identify</strong> which of the four pictures below matches the target picture at the top.",
-        performance_note: "Try to respond as quickly and accurately as possible. Speed and accuracy are both important.",
-        start_prompt: "Click continue to learn more about the task.",
-        buttons: ["Continue"],
-    },
-    {
-        strategy_title: "Instructions",
-        strategy_intro: "For each trial:",
-        strategy_points: [
-            "Look at the target picture at the top of the screen",
-            "Compare it with the four choice pictures below",
-            "Click on the picture that matches the target",
-            "Respond as quickly and accurately as possible",
-            "A brief outline will appear when you make your selection"
-        ],
-        start_prompt: "Click continue to start the practice round.",
-        buttons: ["Continue"],
-    }
+    `<div class="speeded-matching-instructions-container">
+        <p>You will see a picture at the top of the screen and four pictures below it.</p>
+        <p>Your job is to find which of the four pictures matches the one at the top.</p>
+        <p>Try to respond as quickly and accurately as you can.</p>
+    </div>`,
+    `<div class="speeded-matching-instructions-container">
+        <p>For each round:</p>
+        <ul>
+            <li>Look at the picture at the top</li>
+            <li>Compare it with the four pictures below</li>
+            <li>Click on the picture that matches</li>
+            <li>Work quickly but carefully</li>
+        </ul>
+        <p>Let's try a practice round first.</p>
+    </div>`
 ];
