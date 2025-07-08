@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Speeded Matching Task Example</title>
+  <script src="https://unpkg.com/jspsych@8.0.0"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-html-button-response@2.0.0"></script>
+  <script src="../dist/index.global.js"></script>
+  <!-- Once this timeline package is published, it can be loaded via
+  <script src="https://unpkg.com/@jspsych-timelines/speeded-matching"></script> -->
+  <link rel="stylesheet" href="https://unpkg.com/jspsych@8.0.0/css/jspsych.css">
+  <link rel="stylesheet" href="../src/styles.css">
+</head>
+
+<body>
+  <script>
+    const jsPsych = initJsPsych({
+      on_finish: function(data) {
+        
+        jsPsych.data.displayData();
+
+      }
+    });
+
+    // Configure the experiment
+    const config = {
+      num_trials: 8,           // Number of test trials (shortened for demo)
+      num_choices: 4,          // Number of choices per trial
+      enable_tts: true,       // Enable text-to-speech
+      show_instructions: false, // Show instruction pages
+      show_practice: false,     // Show practice round
+      trial_timeout: 10000,    // 10 seconds per trial
+      inter_trial_interval: 500 // 500ms between trials
+    };
+
+    // Create the timeline using the speeded matching package
+    const task = jsPsychTimelineSpeededMatching.createTimeline(jsPsych, config);
+
+    // Run the experiment
+    jsPsych.run([task]);
+  </script>
+</body>
+</html>
