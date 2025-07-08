@@ -33,7 +33,7 @@
         "typescript": "^5.0.2"
     },
     "dependencies": {
-        "@jspsych-contrib/plugin-spatial-nback": "https://github.com/farhat60/jspsych-contrib/tree/main/",
+        "@jspsych-contrib/plugin-spatial-nback": "github:farhat60/jspsych-contrib",
         "@jspsych/plugin-instructions": "^2.1.0",
         "jsPsych": "npm:jspsych@^8.2.1"
     }

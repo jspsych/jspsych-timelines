@@ -23,26 +23,26 @@
   const jsPsych = initJsPsych({
     on_finish: function() {
       // Display results when task is complete
-      const data = jsPsych.data.get().filter({task: 'flanker-trial', trial_type: 'test'});
-      const performance = jsPsychTimelineFlankerInhibitory.utils.calculatePerformance(data.values());
+      // const data = jsPsych.data.get().filter({task: 'flanker-trial', trial_type: 'test'});
+      // const performance = jsPsychTimelineFlankerInhibitory.utils.calculatePerformance(data.values());
       
       console.log('Task Performance:', performance);
       
       // Optional: display CSV data
-      jsPsych.data.displayData();
+      // jsPsych.data.displayData();
     }
   });
 
   // Configure the task with ALL available parameters set to their defaults
   const config = {
     // ===== STIMULUS CONFIGURATION =====
-    stimuli_type: 'custom', // 'fish', 'arrow', 'custom', or 'layered' (check stimuli.ts for details)
-    svg: [
-    '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><circle cx="24" cy="24" r="15" fill="yellow"/></svg>',
-    '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">' +
-    '<polygon points="38,24 18,10 18,38" fill="orange"/>' +
-    '</svg>'
-  ], // Override parameter - array of SVGs to layer (should be right-facing)
+    stimuli_type: 'layered', // 'fish', 'arrow', 'custom', or 'layered' (check stimuli.ts for details)
+  //   svg: [
+  //   '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><circle cx="24" cy="24" r="15" fill="yellow"/></svg>',
+  //   '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">' +
+  //   '<polygon points="38,24 18,10 18,38" fill="orange"/>' +
+  //   '</svg>'
+  // ], // Override parameter - array of SVGs to layer (should be right-facing)
     stimuli_amount: 5, // Number of stimuli in flanker display (must be odd ≥3)
     
     // ===== TIMING CONFIGURATION =====

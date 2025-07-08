@@ -22,6 +22,38 @@ describe("Flanker Inhibitory Control Task", () => {
     jsPsych = initJsPsych();
   });
 
+  // Helper function to count only top-level spans (flanker positions)
+  const countFlankerPositions = (html: string): number => {
+    // Extract the content inside the flanker-stim div
+    const flankerMatch = html.match(/<div class="flanker-stim[^"]*"[^>]*>([\s\S]*?)<\/div>/);
+    if (!flankerMatch) return 0;
+    
+    const content = flankerMatch[1];
+    
+    // Count only direct child spans - these are the stimulus positions
+    // Look for spans that are not nested inside other spans
+    let count = 0;
+    let depth = 0;
+    let i = 0;
+    
+    while (i < content.length) {
+      if (content.substring(i).startsWith('<span')) {
+        if (depth === 0) {
+          count++;
+        }
+        depth++;
+        i = content.indexOf('>', i) + 1;
+      } else if (content.substring(i).startsWith('</span>')) {
+        depth--;
+        i = content.indexOf('>', i) + 1;
+      } else {
+        i++;
+      }
+    }
+    
+    return count;
+  };
+
   describe("createTimeline", () => {
     it("should return a timeline object with timeline array", () => {
       const timeline = createTimeline(jsPsych);
@@ -437,13 +469,6 @@ describe("Flanker Inhibitory Control Task", () => {
   });
 
   describe("Stimuli Amount Functionality", () => {
-    // Helper function to count only top-level spans (flanker positions)
-    const countFlankerPositions = (html: string): number => {
-      // Count spans that are direct children of the flanker-stim div
-      // These represent the actual flanker positions, not inner SVG content
-      const matches = html.match(/<span[^>]*>/g) || [];
-      return matches.length;
-    };
 
     it("should default to 5 stimuli (2 left + 1 center + 2 right)", () => {
       const html = createFlankerStim('left', true);
@@ -555,8 +580,8 @@ describe("Flanker Inhibitory Control Task", () => {
       const htmlNaN = createFlankerStim('left', true, layered_stimuli, NaN);
       const htmlInfinity = createFlankerStim('left', true, layered_stimuli, Infinity);
       
-      expect((htmlNaN.match(/<span[^>]*>/g) || []).length).toBe(5);
-      expect((htmlInfinity.match(/<span[^>]*>/g) || []).length).toBe(5);
+      expect(countFlankerPositions(htmlNaN)).toBe(5);
+      expect(countFlankerPositions(htmlInfinity)).toBe(5);
     });
   });
 

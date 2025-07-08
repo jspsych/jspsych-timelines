@@ -148,8 +148,6 @@
   width: var(--adjusted-svg-size, var(--svg-size));
   height: var(--adjusted-svg-size, var(--svg-size));
   display: block;
-  vertical-align: middle;
-  flex-shrink: 0;
 }
 
 /* Practice highlighting */
