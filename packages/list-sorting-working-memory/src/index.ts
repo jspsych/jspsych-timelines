@@ -1,7 +1,7 @@
 import jsPsychAudioKeyboardResponse from "@jspsych/plugin-audio-keyboard-response";
 import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
+import jsPsychPreload from "@jspsych/plugin-preload";
 import jsPsychSurveyText from "@jspsych/plugin-survey-text";
-// import jsPsychPreload from "@jspsych/plugin-preload";
 import { JsPsych } from "jspsych";
 
 import {
@@ -223,6 +223,16 @@ function sampleStimulusAcrossSets<
 }
 
 // Timeline Units
+function audioPreloadTrial() {
+  return {
+    type: jsPsychPreload,
+    auto_preload: true,
+    data: {
+      timeline_unit_type: "audioPreloadTrial",
+    },
+  };
+}
+
 function instructionTrial(instruction_text: string, button_text?: string) {
   return {
     type: jsPsychHtmlButtonResponse,
@@ -601,6 +611,7 @@ export function createTimeline(
 
   // Timeline
   let mainTimeline = [];
+  mainTimeline.push(audioPreloadTrial());
   mainTimeline.push(instructionTrial("Start"));
 
   for (let i = 0; i < options.dimensions_sequence.length; i++) {
