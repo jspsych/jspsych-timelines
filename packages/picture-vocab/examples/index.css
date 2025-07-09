@@ -1,0 +1,133 @@
+/* Responsive CSS Grid layout for jsPsych IMAGE buttons only */
+.jspsych-btn-group:has(.responsive-image-btn),
+.jspsych-content .jspsych-btn-group:has(.responsive-image-btn),
+#jspsych-html-button-response-btngroup:has(.responsive-image-btn) {
+    display: grid !important;
+    gap: 20px !important;
+    max-width: 800px !important;
+    margin: 20px auto !important;
+    justify-content: center !important;
+    justify-items: center !important;
+    align-items: center !important;
+}
+
+/* Desktop: 4 columns (4x2 grid for 8 items) - IMAGE buttons only */
+@media (min-width: 769px) {
+    .jspsych-btn-group:has(.responsive-image-btn),
+    .jspsych-content .jspsych-btn-group:has(.responsive-image-btn),
+    #jspsych-html-button-response-btngroup:has(.responsive-image-btn) {
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 25px !important;
+        max-width: 700px !important;
+    }
+}
+
+/* Tablet: 2 columns (2x4 grid for 8 items) - IMAGE buttons only */
+@media (min-width: 481px) and (max-width: 768px) {
+    .jspsych-btn-group:has(.responsive-image-btn),
+    .jspsych-content .jspsych-btn-group:has(.responsive-image-btn),
+    #jspsych-html-button-response-btngroup:has(.responsive-image-btn) {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 20px !important;
+        max-width: 320px !important;
+    }
+}
+
+/* Mobile: 2 columns (2x4 grid for 8 items) - IMAGE buttons only */
+@media (max-width: 480px) {
+    .jspsych-btn-group:has(.responsive-image-btn),
+    .jspsych-content .jspsych-btn-group:has(.responsive-image-btn),
+    #jspsych-html-button-response-btngroup:has(.responsive-image-btn) {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 4vw !important;
+        max-width: 85vw !important;
+        margin: 4vw auto !important;
+    }
+}
+
+/* Button styling - IMAGE buttons only */
+.choice-option,
+.responsive-image-btn {
+    width: 150px !important;
+    height: 150px !important;
+    border: 2px solid #bdc3c7 !important;
+    border-radius: 10px !important;
+    background-color: white !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+    padding: 5px !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+}
+
+.choice-option:hover,
+.responsive-image-btn:hover {
+    border-color: #3498db !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Responsive button sizes - IMAGE buttons only */
+@media (min-width: 481px) and (max-width: 768px) {
+    .choice-option,
+    .responsive-image-btn {
+        width: 140px !important;
+        height: 140px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .choice-option,
+    .responsive-image-btn {
+        width: 38vw !important;
+        height: 38vw !important;
+        min-width: 120px !important;
+        min-height: 120px !important;
+        max-width: 180px !important;
+        max-height: 180px !important;
+        font-size: 2.5vw !important;
+        border-width: 3px !important;
+    }
+}
+
+/* Ensure SVG content scales properly within IMAGE buttons */
+.responsive-image-btn div {
+    width: 100% !important;
+    height: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.responsive-image-btn svg {
+    max-width: 80% !important;
+    max-height: 80% !important;
+    width: auto !important;
+    height: auto !important;
+}
+
+/* Response feedback - brief flash when clicked */
+.choice-option.selected {
+    animation: response-flash 0.3s ease-in-out;
+}
+
+@keyframes response-flash {
+    0% { 
+        border-color: #bdc3c7;
+        background-color: white;
+    }
+    50% { 
+        border-color: #27ae60;
+        background-color: #e8f8f5;
+        transform: scale(1.05);
+    }
+    100% { 
+        border-color: #bdc3c7;
+        background-color: white;
+        transform: scale(1);
+    }
+}

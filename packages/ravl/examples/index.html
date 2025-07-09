@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>jsPsychTimelineRAVLTimeline Example</title>
+  <script src="https://unpkg.com/jspsych"></script>
+  <script src="../dist/index.global.js"></script>
+  <!-- Load the published timeline package here, e.g.
+<script src="https://unpkg.com/ravl-timeline"></script>
+<script src="../dist/index.global.js"></script> -->
+  <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css">
+</head>
+
+<body></body>
+<script>
+const jsPsych = initJsPsych({
+  on_finish: function() {
+    jsPsych.data.displayData();
+  }
+});
+
+
+  const task = jsPsychTimelineRavlTimeline.createTimeline(jsPsych, {
+    num_trials: 1,
+  min_delay_minutes: 1, 
+  delay_duration_minutes: 1,  // 1 minute total
+  show_delay_timer: true,
+  show_word_grid: true,
+  text_to_speech_enabled: true,
+  read_words_aloud: true,
+  include_recognition_trial: false,
+  include_interference_trial: false,
+  });
+
+  jsPsych.run([task])
+</script>
+
+</html>

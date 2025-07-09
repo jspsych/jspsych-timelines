@@ -1,0 +1,23 @@
+export const englishText = {
+    welcome_message: "Welcome to the test. Tap the button to begin.",
+    begin_button: "Begin",
+    instructions_hearing: "You will hear a word and see pictures on the screen.",
+    instructions_tap: "Tap the picture that means the same as the word you just heard.",
+    instructions_difficulty: "Some words will be easy and some will be harder. Just do the best you can.",
+    instructions_replay: "If you need to hear a word again, you can tap the Play again button.",
+    instructions_back: "If you think you made a mistake and want to change your last answer, tap the Back button to hear the last word again.",
+    instructions_ready: "Are you ready?",
+    next_button: "Next",
+    practice_intro: "Let's try one for practice. Tap the picture that means {word}.",
+    practice_correct: "You picked the {word}! Let's move on.",
+    practice_incorrect: "You did not pick the {word}. Let's try again.",
+    try_again_button: "Try Again",
+    live_instruction: "Tap the picture that means {word}.",
+    transition_message: "Now you're going to do some more.",
+    transition_reminder: "Remember, you will hear a word and then you will see pictures. One of the pictures will show what the word means.",
+    transition_action: "Tap that picture. Then you will hear a new word and see more pictures. Just do the best you can.",
+    transition_ready: "Are you ready?",
+    start_button: "Start",
+    thank_you: "Thank you for completing the test!",
+    finish_button: "Finish"
+}
