@@ -1,0 +1,42 @@
+{
+    "name": "visual-reasoning-timeline",
+    "version": "0.0.1",
+    "description": "Timeline for the visual reasoning task, part of the NIH toolbox",
+    "type": "module",
+    "main": "dist/index.mjs",
+    "types": "dist/index.d.ts",
+    "unpkg": "dist/index.browser.min.js",
+    "scripts": {
+        "build": "tsup src/index.ts --format esm,iife --sourcemap --dts --treeshake --clean --global-name jsPsychTimelineVisualReasoningTimeline"
+    },
+    "repository": {
+        "type": "git",
+        "url": "",
+        "directory": "./"
+    },
+    "keywords": [
+        "jsPsych"
+    ],
+    "author": {
+        "name": "Vishnu Lakshman",
+        "url": "https://github.com/lakshmanvishnu"
+    },
+    "license": "MIT",
+    "bugs": {
+        "url": "/issues"
+    },
+    "homepage": "/visual-reasoning-timeline/README.md",
+    "devDependencies": {
+        "@jspsych/config": "^3.2.2",
+        "jspsych": "^8.0.0",
+        "tsup": "^6.7.0",
+        "typescript": "^5.0.2"
+    },
+    "dependencies": {
+        "@jspsych/plugin-audio-button-response": "^2.1.0",
+        "@jspsych/plugin-html-button-response": "^2.1.0",
+        "@jspsych/plugin-image-button-response": "^2.1.0",
+        "@jspsych/plugin-instructions": "^2.1.0",
+        "@jspsych/plugin-preload": "^2.1.0"
+    }
+}
