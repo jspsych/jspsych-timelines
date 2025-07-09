@@ -393,7 +393,7 @@ function answerTrial(
         prompt: `Order the <strong>${group.stimulus_set_id}</strong> from smallest to largest in size, separated by commas:`,
         name: `response_${group.stimulus_set_id}`,
         required: true,
-        placeholder: group.correct_order.join(", "), // DEV: shows correct answer as placeholder; helpful for debugging
+        // DEV: placeholder: group.correct_order.join(", "),
       }));
     },
     on_finish: (data) => {
