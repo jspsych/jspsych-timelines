@@ -1,42 +1,43 @@
 {
-    "name": "@jspsych-timelines/list-sorting-working-memory",
-    "version": "0.0.1",
-    "description": "An implementation of the List Sorting Working Memory Task.",
-    "type": "module",
-    "main": "dist/index.mjs",
-    "types": "dist/index.d.ts",
-    "unpkg": "dist/index.browser.min.js",
-    "scripts": {
-        "build": "tsup src/index.ts --format esm,iife --sourcemap --dts --treeshake --clean --global-name jsPsychTimelineListSortingWorkingMemory"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/jspsych/jspsych-timelines.git",
-        "directory": "packages"
-    },
-    "keywords": [
-        "jsPsych"
-    ],
-    "author": {
-        "name": "Cherrie Chang",
-        "url": "https://github.com/cherriechang"
-    },
-    "license": "MIT",
-    "bugs": {
-        "url": "https://github.com/jspsych/jspsych-timelines/issues"
-    },
-    "homepage": "https://github.com/jspsych/jspsych-timelines/packages/list-sorting-working-memory/README.md",
-    "devDependencies": {
-        "@jspsych/config": "^3.2.2",
-        "jspsych": "^8.0.0",
-        "tsup": "^6.7.0",
-        "typescript": "^5.0.2"
-    },
-    "dependencies": {
-        "@jspsych/plugin-html-keyboard-response": "^2.1.0",
-        "@jspsych/plugin-html-button-response": "^2.1.0",
-        "@jspsych/plugin-audio-keyboard-response": "^2.1.0",
-        "@jspsych/plugin-survey-text": "^2.1.0",
-        "http-server": "^14.1.1"
-    }
+  "name": "@jspsych-timelines/list-sorting-working-memory",
+  "version": "0.0.1",
+  "description": "An implementation of the List Sorting Working Memory Task.",
+  "type": "module",
+  "main": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "unpkg": "dist/index.browser.min.js",
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,iife --sourcemap --dts --treeshake --clean --global-name jsPsychTimelineListSortingWorkingMemory"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jspsych/jspsych-timelines.git",
+    "directory": "packages"
+  },
+  "keywords": [
+    "jsPsych"
+  ],
+  "author": {
+    "name": "Cherrie Chang",
+    "url": "https://github.com/cherriechang"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jspsych/jspsych-timelines/issues"
+  },
+  "homepage": "https://github.com/jspsych/jspsych-timelines/packages/list-sorting-working-memory/README.md",
+  "devDependencies": {
+    "@jspsych/config": "^3.2.2",
+    "jspsych": "^8.0.0",
+    "tsup": "^6.7.0",
+    "typescript": "^5.0.2"
+  },
+  "dependencies": {
+    "@jspsych/plugin-preload": "^2.1.0",
+    "@jspsych/plugin-html-keyboard-response": "^2.1.0",
+    "@jspsych/plugin-html-button-response": "^2.1.0",
+    "@jspsych/plugin-audio-keyboard-response": "^2.1.0",
+    "@jspsych/plugin-survey-text": "^2.1.0",
+    "http-server": "^14.1.1"
+  }
 }
