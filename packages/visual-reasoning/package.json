@@ -1,60 +1,42 @@
 {
-  "name": "@jspsych/jspsych-timelines",
-  "private": true,
-  "type": "module",
-  "workspaces": [
-    "packages/*",
-    "templates/cli"
-  ],
-  "scripts": {
-    "test": "jest",
-    "test:watch": "npm test -- --watch",
-    "build": "npm run build -ws",
-    "update-unpkg-links": "gulp updateUnpkgLinks",
-    "update-readme": "node ./update-readme.js",
-    "prepare": "husky install",
-    "changeset": "changeset",
-    "changeset:version": "changeset version && npm install && npm run update-unpkg-links && npm run update-readme",
-    "changeset:publish": "npm run build && changeset publish",
-    "new": "node templates/cli/src/index.js"
-  },
-  "devDependencies": {
-    "@changesets/changelog-github": "^0.4.0",
-    "@changesets/cli": "^2.16.0",
-    "@jspsych/config": "^3.2.2",
-    "@types/jest": "^29.5.12",
-    "husky": "^7.0.1",
-    "import-sort-style-module": "^6.0.0",
-    "jest": "*",
-    "lint-staged": "^11.1.2",
-    "prettier": "^2.3.2",
-    "prettier-plugin-import-sort": "^0.0.7",
-    "ts-jest": "*",
-    "tsup": "^8.2.4"
-  },
-  "prettier": {
-    "printWidth": 100
-  },
-  "importSort": {
-    ".ts, .js, .mjs, .cjs": {
-      "style": "module",
-      "parser": "typescript"
+    "name": "visual-reasoning-timeline",
+    "version": "0.0.1",
+    "description": "Timeline for the visual reasoning task, part of the NIH toolbox",
+    "type": "module",
+    "main": "dist/index.mjs",
+    "types": "dist/index.d.ts",
+    "unpkg": "dist/index.browser.min.js",
+    "scripts": {
+        "build": "tsup src/index.ts --format esm,iife --sourcemap --dts --treeshake --clean --global-name jsPsychTimelineVisualReasoningTimeline"
+    },
+    "repository": {
+        "type": "git",
+        "url": "",
+        "directory": "./"
+    },
+    "keywords": [
+        "jsPsych"
+    ],
+    "author": {
+        "name": "Vishnu Lakshman",
+        "url": "https://github.com/lakshmanvishnu"
+    },
+    "license": "MIT",
+    "bugs": {
+        "url": "/issues"
+    },
+    "homepage": "/visual-reasoning-timeline/README.md",
+    "devDependencies": {
+        "@jspsych/config": "^3.2.2",
+        "jspsych": "^8.0.0",
+        "tsup": "^6.7.0",
+        "typescript": "^5.0.2"
+    },
+    "dependencies": {
+        "@jspsych/plugin-audio-button-response": "^2.1.0",
+        "@jspsych/plugin-html-button-response": "^2.1.0",
+        "@jspsych/plugin-image-button-response": "^2.1.0",
+        "@jspsych/plugin-instructions": "^2.1.0",
+        "@jspsych/plugin-preload": "^2.1.0"
     }
-  },
-  "lint-staged": {
-    "*.{ts,js,mjs,cjs}": "prettier --write"
-  },
-  "jest": {
-    "projects": [
-      "<rootDir>/packages/*/jest.config.cjs"
-    ]
-  },
-  "dependencies": {
-    "@jspsych/test-utils": "^1.2.0",
-    "chokidar": "^3.6.0",
-    "gulp": "^5.0.0",
-    "gulp-replace": "^1.1.4",
-    "jspsych": "^8.2.1",
-    "run-func": "^3.0.0"
-  }
 }
