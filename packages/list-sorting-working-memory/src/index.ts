@@ -5,9 +5,7 @@ import jsPsychSurveyText from "@jspsych/plugin-survey-text";
 import { JsPsych } from "jspsych";
 
 import {
-  animalStimuli as animalStimuliImport,
   defaultLiveStimuli as defaultLiveStimuliImport,
-  foodStimuli as foodStimuliImport,
   oneListPracticeStimuliA as oneListPracticeStimuliAImport,
   oneListPracticeStimuliB as oneListPracticeStimuliBImport,
   twoListPracticeStimuliA as twoListPracticeStimuliAImport,
@@ -15,48 +13,55 @@ import {
 } from "./stimuli.js";
 
 // Default stimuli
-
-const animalStimuli = animalStimuliImport as Array<Array<listSortingWorkingMemoryTestStimulus>>;
-const foodStimuli = foodStimuliImport as Array<Array<listSortingWorkingMemoryTestStimulus>>;
-const oneListPracticeStimuliA =
-  oneListPracticeStimuliAImport as Array<listSortingWorkingMemoryTestStimulusSet>;
-const oneListPracticeStimuliB =
-  oneListPracticeStimuliBImport as Array<listSortingWorkingMemoryTestStimulusSet>;
-const twoListPracticeStimuliA =
-  twoListPracticeStimuliAImport as Array<listSortingWorkingMemoryTestStimulusSet>;
-const twoListPracticeStimuliB =
-  twoListPracticeStimuliBImport as Array<listSortingWorkingMemoryTestStimulusSet>;
-const DEFAULT_LIVE_STIMULI =
-  defaultLiveStimuliImport as Array<listSortingWorkingMemoryTestStimulusSet>;
-const DEFAULT_PRACTICE_STIMULI: Map<
-  number,
-  Array<Array<listSortingWorkingMemoryTestStimulusSet>>
-> = new Map([
+const oneListPracticeStimuliA = oneListPracticeStimuliAImport as Array<lswmStimulusSet>;
+const oneListPracticeStimuliB = oneListPracticeStimuliBImport as Array<lswmStimulusSet>;
+const twoListPracticeStimuliA = twoListPracticeStimuliAImport as Array<lswmStimulusSet>;
+const twoListPracticeStimuliB = twoListPracticeStimuliBImport as Array<lswmStimulusSet>;
+const DEFAULT_LIVE_STIMULI = defaultLiveStimuliImport as Array<lswmStimulusSet>;
+const DEFAULT_PRACTICE_STIMULI: Map<number, Array<Array<lswmStimulusSet>>> = new Map([
   [1, [oneListPracticeStimuliA, oneListPracticeStimuliB]],
   [2, [twoListPracticeStimuliA, twoListPracticeStimuliB]],
 ]);
 
 /**
  * Interface for each stimulus in the List Sorting Working Memory Test experiment timeline.
- * Each stimulus object has a stimulus_name, stimulus_image, and stimulus_audio.
+ * Each stimulus object has a name, image code/file, and audio file.
  * The stimulus_set_id is optional and can be used to group stimuli in sets.
  */
-interface listSortingWorkingMemoryTestStimulus {
+export interface lswmStimulus {
+  /**
+   * The name of the stimulus, e.g. "lemon", "apple", "peach".
+   */
   stimulus_name: string;
+  /**
+   * The SVG code, image file path or URL of the stimulus, e.g. `"images/lemon.png"`.
+   */
   stimulus_image: string;
+  /**
+   * The audio file path or URL of the stimulus, e.g. `"audio/lemon.mp3"`.
+   */
   stimulus_audio: string;
+  /**
+   * The ID of the stimulus set this stimulus belongs to, e.g. "animals", "foods", etc.
+   */
   stimulus_set_id?: string;
 }
 
 /**
  * Interface for a set of stimuli that form a category (e.g. animals, foods) in the List Sorting Working Memory Test experiment timeline.
  * Each stimulus set has a stimulus_set_name, which is used to identify the stimuli category.
- * Each stimulus set also has a stimulus_set field, which is an array of stimulus objects that follow the {@link listSortingWorkingMemoryTestStimulus} interface.
- * The stimulus objects in each set are grouped in arrays, where each array represents a group of stimuli that are of similar size, e.g. [lemon, apple, peach].
+ * Each stimulus set also has a stimulus_set field, which is an array of stimulus objects that follow the {@link lswmStimulus} interface.
+ * The stimulus objects in each set are grouped in arrays, where each array represents a group of stimuli that are of similar size, e.g. `[lemon, apple, peach]`.
  */
-interface listSortingWorkingMemoryTestStimulusSet {
+export interface lswmStimulusSet {
+  /**
+   * The name of the stimulus set, e.g. "animals", "foods", etc.
+   */
   stimulus_set_name: string;
-  stimulus_set: Array<Array<listSortingWorkingMemoryTestStimulus>>;
+  /**
+   * An array of arrays of stimulus objects, where each array represents a group of stimuli that are of similar size.
+   */
+  stimulus_set: Array<Array<lswmStimulus>>;
 }
 
 // Utils
@@ -64,13 +69,13 @@ interface listSortingWorkingMemoryTestStimulusSet {
 /**
  * Generate instruction text for a practice section in the List Sorting Working Memory Test.
  *
- * @param {Array<listSortingWorkingMemoryTestStimulusSet>} stimulusSetList The list of stimulus sets to be used in the section. This is used to determine the number of categories and dynamically generate the instruction text.
+ * @param {Array<lswmStimulusSet>} stimulusSetList The list of stimulus sets to be used in the section. This is used to determine the number of categories and dynamically generate the instruction text.
  * @param {boolean} [practice=true] Whether this is a practice section. If true, the instruction text will be tailored for practice.
  * @returns {string} The instruction text.
- * @throws {Error} If the stimulusSetList is empty or does not contain at least one stimulus set.
+ * @throws {Error} If the `stimulusSetList` is empty or does not contain at least one stimulus set.
  */
 function nListPracticeInstructionText(
-  stimulusSetList: Array<listSortingWorkingMemoryTestStimulusSet>,
+  stimulusSetList: Array<lswmStimulusSet>,
   practice: boolean = true
 ): string {
   if (stimulusSetList.length <= 0) {
@@ -98,14 +103,14 @@ function nListPracticeInstructionText(
 }
 
 /**
- * Modifies a list of stimulus sets in-place to exclude any sets that are specified in the excluded_sets array.
+ * Modifies a list of stimulus sets in-place to exclude any sets that are specified in the `excluded_sets` array.
  *
- * @param {Array<listSortingWorkingMemoryTestStimulusSet>} stimulus_set_list The list of stimulus sets to filter.
+ * @param {Array<lswmStimulusSet>} stimulus_set_list The list of stimulus sets to filter.
  * @param {Array<string | number>} excluded_sets An array of strings or numbers representing the names or indices of the stimulus sets to exclude.
- * @throws {RangeError} If an excluded set index is out of bounds or if an excluded set name is not found in the stimulus_set_list.
+ * @throws {RangeError} If an excluded set index is out of bounds or if an excluded set name is not found in the `stimulus_set_list`.
  */
 function cleanExcludedSets(
-  stimulus_set_list: Array<listSortingWorkingMemoryTestStimulusSet>,
+  stimulus_set_list: Array<lswmStimulusSet>,
   excluded_sets: Array<string | number>
 ) {
   for (let i = excluded_sets.length - 1; i >= 0; i--) {
@@ -154,8 +159,8 @@ function cleanExcludedSets(
  *
  * @param {Array<any>} array The array to sample from.
  * @param {number} sample_size The number of elements to sample.
- * @returns {Array<any>} A randomly sampled subarray of size = sample_size.
- * @throws {RangeError} if sample_size is not a valid positive integer or exceeds array length.
+ * @returns {Array<any>} A randomly sampled subarray of size = `sample_size`.
+ * @throws {RangeError} if `sample_size` is not a valid positive integer or exceeds array length.
  */
 function getRandomSubarray(array: Array<any>, sample_size: number): Array<any> {
   if (!Number.isInteger(sample_size) || sample_size <= 0 || sample_size > array.length) {
@@ -180,14 +185,12 @@ function getRandomSubarray(array: Array<any>, sample_size: number): Array<any> {
  * Flatten a list of stimulus sets into an array of stimulus groups, each group containing stimuli of one category and of similar size.
  * Each stimulus in each group records its name, image, audio, set ID, and index within the set, which denotes its position in the sequence in terms of size.
  *
- * @param {Array<listSortingWorkingMemoryTestStimulusSet>} stimulus_set_subarray An array of stimulus sets, where each set contains groups of stimuli.
- * @returns {Array<Array<{ stimulus_index: number, stimulus_set_id: string } & listSortingWorkingMemoryTestStimulus>>} The flattened array of stimulus groups.
+ * @param {Array<lswmStimulusSet>} stimulus_set_subarray An array of stimulus sets, where each set contains groups of stimuli.
+ * @returns {Array<Array<{ stimulus_index: number, stimulus_set_id: string } & lswmStimulus>>} The flattened array of stimulus groups.
  */
 function flattenStimulusSetList(
-  stimulus_set_subarray: Array<listSortingWorkingMemoryTestStimulusSet>
-): Array<
-  Array<{ stimulus_index: number; stimulus_set_id: string } & listSortingWorkingMemoryTestStimulus>
-> {
+  stimulus_set_subarray: Array<lswmStimulusSet>
+): Array<Array<{ stimulus_index: number; stimulus_set_id: string } & lswmStimulus>> {
   // Get flat array of stimuli for the section
   let stimulus_set_subarray_flat = [];
   for (const set of stimulus_set_subarray) {
@@ -214,13 +217,22 @@ function flattenStimulusSetList(
  * @param {number} sample_size The number of stimuli to sample across all sets. Defaults to 1 if not provided.
  * @returns {Array<{stimulus_name: string, stimulus_index: number, stimulus_set_id: string}>} An array of sampled stimuli.
  */
-function sampleStimulusAcrossSets<
-  T extends { stimulus_name: string; stimulus_index: number; stimulus_set_id: string }
->(stimulus_set_list: T[][], sample_size: number = 1): T[] {
+function sampleStimulusAcrossSets(
+  stimulus_set_list: Array<
+    Array<{ stimulus_name: string; stimulus_index: number; stimulus_set_id: string }>
+  >,
+  sample_size: number = 1
+): Array<{ stimulus_name: string; stimulus_index: number; stimulus_set_id: string }> {
   const flat = stimulus_set_list.flat();
 
   // Group by stimulus_set_id, then by stimulus_index
-  const groups: Record<string, Record<number, T[]>> = {};
+  const groups: Record<
+    string,
+    Record<
+      number,
+      Array<{ stimulus_name: string; stimulus_index: number; stimulus_set_id: string }>
+    >
+  > = {};
   for (const item of flat) {
     if (!groups[item.stimulus_set_id]) {
       groups[item.stimulus_set_id] = {};
@@ -243,7 +255,8 @@ function sampleStimulusAcrossSets<
   }
 
   // Round-robin across stimulus_set_ids
-  const sampled: T[] = [];
+  const sampled: Array<{ stimulus_name: string; stimulus_index: number; stimulus_set_id: string }> =
+    [];
   const setIds = Object.keys(groups);
   const usedPairs = new Set<string>(); // track set_id|index combos used
   let setIndex = 0;
@@ -300,7 +313,7 @@ function preloadTrial() {
  * Trial that displays an instruction text and a button to continue (customizable text).
  *
  * @param {string} instruction_text The text to display in the instruction trial.
- * @param {string} button_text The text to display on the button. Defaults to "Yes".
+ * @param {string} [button_text="Yes"] The text to display on the button.
  * @returns {Object} A jsPsych trial object for displaying instructions.
  */
 function instructionTrial(instruction_text: string, button_text?: string) {
@@ -316,13 +329,13 @@ function instructionTrial(instruction_text: string, button_text?: string) {
  * Displays the stimulus image with the stimulus name printed at the bottom and automatically plays the stimulus audio.
  *
  * @param {object} jsPsych The jsPsych instance of the experiment timeline.
- * @param {Set<string>} sampledSetIds A set of sampled stimulus set IDs for this trial, used to track which sets are used in the List Sorting Working Memory Test trial sequence this trial belongs to. Defaults to an empty set.
- * @param {"practice" | "live"} task The task type, either "practice" or "live". Defaults to "live".
+ * @param {Set<string>} sampledSetIds A set of sampled stimulus set IDs for this trial, used to track which sets are used in the List Sorting Working Memory Test trial sequence this trial belongs to.
+ * @param {"practice" | "live"} task The task type, either "practice" or "live".
  * @returns {Object} A jsPsych trial object for displaying a single stimulus in the List Sorting Working Memory Test.
  */
 function lswmTrial(
   jsPsych: JsPsych,
-  sampledSetIds: Set<string> = new Set(),
+  sampledSetIds: Set<string> = new Set([]),
   task: "practice" | "live" = "live"
 ) {
   return {
@@ -356,7 +369,7 @@ function lswmTrial(
 /**
  *
  * @param {Array<{stimulus_name: string; stimulus_set_id: string; stimulus_index: number;}>} trialSequenceStimuli The array of stimuli displayed in the trial sequence.
- * @param {"practice" | "live"} task The task type, either "practice" or "live". Defaults to "live".
+ * @param {"practice" | "live"} task The task type, either "practice" or "live".
  * @returns {Object} A jsPsych trial object for the participant to provide answers to a List Sorting Working Memory Test trial sequence.
  */
 function answerTrial(
@@ -423,7 +436,7 @@ function answerTrial(
  *
  * @param {Object} jsPsych The jsPsych instance of the experiment timeline.
  * @param {() => number} getAttempts A function that returns the number of attempts made so far in the practice trial.
- * @param {number} max_attempts The maximum number of attempts allowed for the practice trial. Defaults to 2.
+ * @param {number} max_attempts The maximum number of attempts allowed for the practice trial.
  * @returns {Object} A jsPsych trial object for providing feedback after a practice trial in the List Sorting Working Memory Test.
  */
 function practiceFeedbackTrial(
@@ -490,7 +503,7 @@ function practiceFeedbackTrial(
 /**
  * Options for {@link lswmTrialSequence}.
  */
-interface lswmTrialSequenceOptions {
+export interface lswmTrialSequenceOptions {
   /**
    * The number of categories in the List Sorting Working Memory Test trial sequence, e.g. 1 for one-list, 2 for two-list, etc.
    */
@@ -498,10 +511,10 @@ interface lswmTrialSequenceOptions {
   /**
    * The list of stimulus sets to be used in the List Sorting Working Memory Test trial sequence.
    */
-  stimulus_set_list: Array<listSortingWorkingMemoryTestStimulusSet>;
+  stimulus_set_list: Array<lswmStimulusSet>;
   /**
    * The number of stimuli to sample in the List Sorting Working Memory Test trial sequence.
-   * @defaultValue If not provided, all stimuli will be used without replacement.
+   * @defaultValue All stimuli in `stimulus_set_list` will be used without replacement.
    */
   sequence_length?: number;
   /**
@@ -594,8 +607,8 @@ function lswmTrialSequence(jsPsych: JsPsych, options: lswmTrialSequenceOptions):
 
 /**
  * Wrapper for {@link lswmTrialSequence} that creates a retry loop for each List Sorting Working Memory Test trial sequence.
- * For each trial sequence length, the participant is allowed to retry up to max_attempts times if they do not get all answers correct for the sequence.
- * In each retry, a new set of stimuli is sampled from the stimulus_set_list.
+ * For each trial sequence length, the participant is allowed to retry up to `max_attempts` times if they do not get all answers correct for the sequence.
+ * In each retry, a new set of stimuli is sampled from the `stimulus_set_list`.
  *
  * @param {Object} jsPsych The jsPsych instance of the experiment timeline.
  * @param {lswmTrialSequenceOptions} options Options for the List Sorting Working Memory Test trial sequence wrapper.
@@ -636,7 +649,7 @@ function lswmTrialSequenceRetryLoop(jsPsych: JsPsych, options: lswmTrialSequence
 /**
  * Options for {@link lswmSection}.
  */
-interface lswmTrialSectionOptions {
+export interface lswmTrialSectionOptions {
   /**
    * The number of categories in the List Sorting Working Memory Test section, e.g. 1 for one-list, 2 for two-list, etc.
    */
@@ -644,20 +657,20 @@ interface lswmTrialSectionOptions {
   /**
    * The list of stimulus sets to be used in the List Sorting Working Memory Test section.
    */
-  stimulus_set_list: Array<listSortingWorkingMemoryTestStimulusSet>;
+  stimulus_set_list: Array<lswmStimulusSet>;
   /**
    * The sequence of sample sizes for each trial sequence in the section.
-   * @defaultValue If not provided, defaults to [2, 3, 4, 5, 6, 7].
+   * @defaultValue [2, 3, 4, 5, 6, 7].
    */
   sample_size_sequence?: Array<number>;
   /**
    * The list of stimulus set names or indices to exclude from the section.
-   * @defaultValue If not provided, no sets are excluded.
+   * @defaultValue Empty `Set()`
    */
   excluded_sets?: Array<string | number>;
   /**
    * The maximum number of attempts allowed for each trial sequence in the section.
-   * @defaultValue Defaults to 2 attempts if not provided.
+   * @defaultValue 2
    */
   max_attempts?: number;
 }
@@ -717,36 +730,36 @@ function lswmSection(jsPsych: JsPsych, options: lswmTrialSectionOptions): any[] 
 /**
  * Options for {@link createTimeline}.
  */
-interface lswmTimelineOptions {
+export interface lswmTimelineOptions {
   /**
    * The list of stimulus sets to be used in the List Sorting Working Memory Test.
-   * @defaultValue Defaults to {@link DEFAULT_LIVE_STIMULI}
+   * @defaultValue `{@link DEFAULT_LIVE_STIMULI}`
    */
-  stimulus_set_list?: Array<listSortingWorkingMemoryTestStimulusSet>;
+  stimulus_set_list?: Array<lswmStimulusSet>;
   /**
    * The sequence of dimensions (1-list, 2-list, etc.) for the List Sorting Working Memory Test.
-   * @defaultValue Defaults to [1, 2, ..., len(stimulus_set_list)] if not provided.
+   * @defaultValue [1, 2, ..., len(`stimulus_set_list`)]
    */
   dimensions_sequence?: Array<number>;
   /**
    * The maximum number of attempts allowed for each live trial sequence in the List Sorting Working Memory Test.
-   * @defaultValue Defaults to 2 if not provided.
+   * @defaultValue 2
    */
   n_live_max_attempts?: number;
   /**
    * Allow users to manually input the practice stimuli used for each dimension/section of the List Sorting Working Memory experiment timeline by providing a map from dimension value to the practice stimulus sets for that dimension.
    * Each key is a dimension (e.g. 1, 2, etc.) and the value is an array of arrays of stimulus sets that form the practice stimuli used for the List Sorting Working Memory section of that dimension.
-   * @defaultValue If not provided, defaults to randomly sampling the stimuli sets for each section to form n_practice_sequences number of practice trial sequences for each section.
+   * @defaultValue Randomly sampling the stimuli sets for each section to form `n_practice_sequences` number of practice trial sequences for each section.
    */
-  practice_stimulus_set_list?: Map<number, Array<Array<listSortingWorkingMemoryTestStimulusSet>>>;
+  practice_stimulus_set_list?: Map<number, Array<Array<lswmStimulusSet>>>;
   /**
    * The number of practice trial sequences for each dimension/section of the List Sorting Working Memory experiment timeline.
-   * @defaultValue Defaults to 2 if not provided.
+   * @defaultValue 2
    */
   n_practice_sequences?: number;
   /**
    * The maximum number of attempts allowed for each practice trial sequence in the List Sorting Working Memory Test.
-   * @defaultValue Defaults to same number as n_live_max_attempts if not provided.
+   * @defaultValue n_live_max_attempts
    */
   n_practice_max_attempts?: number;
 }
@@ -758,10 +771,7 @@ interface lswmTimelineOptions {
  * @param {lswmTimelineOptions} options Options for the List Sorting Working Memory Test timeline.
  * @returns {Array<Object>} An array of List Sorting Working Memory sections that make up a List Sorting Working Memory Test experiment timeline.
  */
-export default function createTimeline(
-  jsPsych: JsPsych,
-  options: lswmTimelineOptions = {}
-): Array<Object> {
+export function createTimeline(jsPsych: JsPsych, options: lswmTimelineOptions = {}): Array<Object> {
   // Default options
   const defaultOptions = {
     stimulus_set_list: DEFAULT_LIVE_STIMULI,
@@ -945,12 +955,18 @@ export default function createTimeline(
   return mainTimeline;
 }
 
+/**
+ * Timeline units that can be used to create a List Sorting Working Memory Test experiment timeline.
+ */
 export const timelineUnits = {
   lswmTrialSequence,
   lswmTrialSequenceRetryLoop,
   lswmSection,
 };
 
+/**
+ * Utility functions that can be used to create a List Sorting Working Memory Test experiment timeline.
+ */
 export const utils = {
   DEFAULT_LIVE_STIMULI,
   DEFAULT_PRACTICE_STIMULI,
