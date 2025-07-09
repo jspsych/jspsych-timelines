@@ -14,7 +14,8 @@ import {
   twoListPracticeStimuliB as twoListPracticeStimuliBImport,
 } from "./stimuli.js";
 
-// Cast imported stimuli to required types
+// Default stimuli
+
 const animalStimuli = animalStimuliImport as Array<Array<listSortingWorkingMemoryTestStimulus>>;
 const foodStimuli = foodStimuliImport as Array<Array<listSortingWorkingMemoryTestStimulus>>;
 const oneListPracticeStimuliA =
@@ -25,40 +26,59 @@ const twoListPracticeStimuliA =
   twoListPracticeStimuliAImport as Array<listSortingWorkingMemoryTestStimulusSet>;
 const twoListPracticeStimuliB =
   twoListPracticeStimuliBImport as Array<listSortingWorkingMemoryTestStimulusSet>;
-const defaultLiveStimuli =
+const DEFAULT_LIVE_STIMULI =
   defaultLiveStimuliImport as Array<listSortingWorkingMemoryTestStimulusSet>;
+const DEFAULT_PRACTICE_STIMULI: Map<
+  number,
+  Array<Array<listSortingWorkingMemoryTestStimulusSet>>
+> = new Map([
+  [1, [oneListPracticeStimuliA, oneListPracticeStimuliB]],
+  [2, [twoListPracticeStimuliA, twoListPracticeStimuliB]],
+]);
 
-const defaultPracticeStimuli = [
-  {
-    dimension: 1,
-    stimulus_set_lists: [oneListPracticeStimuliA, oneListPracticeStimuliB],
-  },
-  {
-    dimension: 2,
-    stimulus_set_lists: [twoListPracticeStimuliA, twoListPracticeStimuliB],
-  },
-];
-
+/**
+ * Interface for each stimulus in the List Sorting Working Memory Test experiment timeline.
+ * Each stimulus object has a stimulus_name, stimulus_image, and stimulus_audio.
+ * The stimulus_set_id is optional and can be used to group stimuli in sets.
+ */
 interface listSortingWorkingMemoryTestStimulus {
   stimulus_name: string;
   stimulus_image: string;
   stimulus_audio: string;
-  stimulus_set_id?: string; // Optional, used for grouping stimuli in sets
+  stimulus_set_id?: string;
 }
 
+/**
+ * Interface for a set of stimuli that form a category (e.g. animals, foods) in the List Sorting Working Memory Test experiment timeline.
+ * Each stimulus set has a stimulus_set_name, which is used to identify the stimuli category.
+ * Each stimulus set also has a stimulus_set field, which is an array of stimulus objects that follow the {@link listSortingWorkingMemoryTestStimulus} interface.
+ * The stimulus objects in each set are grouped in arrays, where each array represents a group of stimuli that are of similar size, e.g. [lemon, apple, peach].
+ */
 interface listSortingWorkingMemoryTestStimulusSet {
   stimulus_set_name: string;
   stimulus_set: Array<Array<listSortingWorkingMemoryTestStimulus>>;
 }
 
 // Utils
+
+/**
+ * Generate instruction text for a practice section in the List Sorting Working Memory Test.
+ *
+ * @param {Array<listSortingWorkingMemoryTestStimulusSet>} stimulusSetList The list of stimulus sets to be used in the section. This is used to determine the number of categories and dynamically generate the instruction text.
+ * @param {boolean} [practice=true] Whether this is a practice section. If true, the instruction text will be tailored for practice.
+ * @returns {string} The instruction text.
+ * @throws {Error} If the stimulusSetList is empty or does not contain at least one stimulus set.
+ */
 function nListPracticeInstructionText(
-  stimulusSetList: Array<listSortingWorkingMemoryTestStimulusSet>
-) {
+  stimulusSetList: Array<listSortingWorkingMemoryTestStimulusSet>,
+  practice: boolean = true
+): string {
   if (stimulusSetList.length <= 0) {
     throw new Error("stimulusSetList must contain at least one stimulus set.");
   } else if (stimulusSetList.length === 1) {
-    return `You are going to see some pictures one at a time on the screen. After all the pictures have been shown, you will see a screen where you can enter the pictures you just saw in size order from smallest to biggest.<br><br>For example, if you see a motorcycle, a bus, and a car, you would enter: motorcycle, car, bus.<br><br><strong>Are you ready to practice?</strong>`;
+    return `You are going to see some pictures one at a time on the screen. After all the pictures have been shown, you will see a screen where you can enter the pictures you just saw in size order from smallest to biggest.<br><br>For example, if you see a motorcycle, a bus, and a car, you would enter: motorcycle, car, bus.<br><br><strong>Are you ready${
+      practice ? " to practice" : ""
+    }?</strong>`;
   } else {
     const stimulus_set_ids = Array.from(
       new Set(stimulusSetList.map((set) => set.stimulus_set_name))
@@ -71,10 +91,19 @@ function nListPracticeInstructionText(
       stimulus_set_ids[0]
     }, ${
       stimulus_set_ids[1]
-    }, etc.), you can enter the pictures you just saw that belong to that category in order from smallest to biggest.<br><br>For example, if you see a motorcycle, a bus, a cup, and a barrel, you would enter: motorcycle, bus for the vehicles category, and cup, barrel for the containers category.<br><br><strong>Are you ready to practice?</strong>`;
+    }, etc.), you can enter the pictures you just saw that belong to that category in order from smallest to biggest.<br><br>For example, if you see a motorcycle, a bus, a cup, and a barrel, you would enter: motorcycle, bus for the vehicles category, and cup, barrel for the containers category.<br><br><strong>Are you ready${
+      practice ? " to practice" : ""
+    }?</strong>`;
   }
 }
 
+/**
+ * Modifies a list of stimulus sets in-place to exclude any sets that are specified in the excluded_sets array.
+ *
+ * @param {Array<listSortingWorkingMemoryTestStimulusSet>} stimulus_set_list The list of stimulus sets to filter.
+ * @param {Array<string | number>} excluded_sets An array of strings or numbers representing the names or indices of the stimulus sets to exclude.
+ * @throws {RangeError} If an excluded set index is out of bounds or if an excluded set name is not found in the stimulus_set_list.
+ */
 function cleanExcludedSets(
   stimulus_set_list: Array<listSortingWorkingMemoryTestStimulusSet>,
   excluded_sets: Array<string | number>
@@ -120,7 +149,20 @@ function cleanExcludedSets(
   }
 }
 
-function getRandomSubarray(array, sample_size) {
+/**
+ * Get a random subarray of a given size from an array.
+ *
+ * @param {Array<any>} array The array to sample from.
+ * @param {number} sample_size The number of elements to sample.
+ * @returns {Array<any>} A randomly sampled subarray of size = sample_size.
+ * @throws {RangeError} if sample_size is not a valid positive integer or exceeds array length.
+ */
+function getRandomSubarray(array: Array<any>, sample_size: number): Array<any> {
+  if (!Number.isInteger(sample_size) || sample_size <= 0 || sample_size > array.length) {
+    throw new RangeError(
+      "Sample size must be a positive integer that is equal to or smaller than the length of the input array."
+    );
+  }
   var shuffled = array.slice(0),
     i = array.length,
     temp,
@@ -134,9 +176,18 @@ function getRandomSubarray(array, sample_size) {
   return shuffled.slice(0, sample_size);
 }
 
+/**
+ * Flatten a list of stimulus sets into an array of stimulus groups, each group containing stimuli of one category and of similar size.
+ * Each stimulus in each group records its name, image, audio, set ID, and index within the set, which denotes its position in the sequence in terms of size.
+ *
+ * @param {Array<listSortingWorkingMemoryTestStimulusSet>} stimulus_set_subarray An array of stimulus sets, where each set contains groups of stimuli.
+ * @returns {Array<Array<{ stimulus_index: number, stimulus_set_id: string } & listSortingWorkingMemoryTestStimulus>>} The flattened array of stimulus groups.
+ */
 function flattenStimulusSetList(
   stimulus_set_subarray: Array<listSortingWorkingMemoryTestStimulusSet>
-) {
+): Array<
+  Array<{ stimulus_index: number; stimulus_set_id: string } & listSortingWorkingMemoryTestStimulus>
+> {
   // Get flat array of stimuli for the section
   let stimulus_set_subarray_flat = [];
   for (const set of stimulus_set_subarray) {
@@ -152,10 +203,17 @@ function flattenStimulusSetList(
       stimulus_set_subarray_flat.push(processedGroup);
     }
   }
-
   return stimulus_set_subarray_flat;
 }
 
+/**
+ * Sample a specified number of stimuli across different sets, ensuring that each set is sampled roughly the same number of times via round-robin sampling.
+ * Within each set, stimuli of similar size do not get sampled more than once.
+ *
+ * @param {Array<Array<{stimulus_name: string, stimulus_index: number, stimulus_set_id: string}>>} stimulus_set_list The list of stimulus groups, where each group contains stimuli of one category and of similar size.
+ * @param {number} sample_size The number of stimuli to sample across all sets. Defaults to 1 if not provided.
+ * @returns {Array<{stimulus_name: string, stimulus_index: number, stimulus_set_id: string}>} An array of sampled stimuli.
+ */
 function sampleStimulusAcrossSets<
   T extends { stimulus_name: string; stimulus_index: number; stimulus_set_id: string }
 >(stimulus_set_list: T[][], sample_size: number = 1): T[] {
@@ -218,21 +276,33 @@ function sampleStimulusAcrossSets<
     const j = Math.floor(Math.random() * (i + 1));
     [sampled[i], sampled[j]] = [sampled[j], sampled[i]];
   }
-
   return sampled;
 }
 
 // Timeline Units
-function audioPreloadTrial() {
+
+/**
+ * Automatically find all preloadable audio and/or image files for the List Sorting Working Memory Test and preloads them.
+ *
+ * @returns {object} A jsPsych trial object that preloads audio and/or image files for the List Sorting Working Memory Test.
+ */
+function preloadTrial() {
   return {
     type: jsPsychPreload,
     auto_preload: true,
     data: {
-      timeline_unit_type: "audioPreloadTrial",
+      timeline_unit_type: "preloadTrial",
     },
   };
 }
 
+/**
+ * Trial that displays an instruction text and a button to continue (customizable text).
+ *
+ * @param {string} instruction_text The text to display in the instruction trial.
+ * @param {string} button_text The text to display on the button. Defaults to "Yes".
+ * @returns {Object} A jsPsych trial object for displaying instructions.
+ */
 function instructionTrial(instruction_text: string, button_text?: string) {
   return {
     type: jsPsychHtmlButtonResponse,
@@ -241,6 +311,15 @@ function instructionTrial(instruction_text: string, button_text?: string) {
   };
 }
 
+/**
+ * Trial for displaying one stimulus in the List Sorting Working Memory Test.
+ * Displays the stimulus image with the stimulus name printed at the bottom and automatically plays the stimulus audio.
+ *
+ * @param {object} jsPsych The jsPsych instance of the experiment timeline.
+ * @param {Set<string>} sampledSetIds A set of sampled stimulus set IDs for this trial, used to track which sets are used in the List Sorting Working Memory Test trial sequence this trial belongs to. Defaults to an empty set.
+ * @param {"practice" | "live"} task The task type, either "practice" or "live". Defaults to "live".
+ * @returns {Object} A jsPsych trial object for displaying a single stimulus in the List Sorting Working Memory Test.
+ */
 function lswmTrial(
   jsPsych: JsPsych,
   sampledSetIds: Set<string> = new Set(),
@@ -259,8 +338,7 @@ function lswmTrial(
       </div>
     `;
     },
-    // DEV: 'f' key for next stimulus
-    // choices: ["f"],
+    choices: ["NO_KEYS"], // DEV: comment out to click through trials
     trial_duration: 2000, // Show each stimulus for 2 seconds
     data: () => {
       return {
@@ -275,6 +353,12 @@ function lswmTrial(
   };
 }
 
+/**
+ *
+ * @param {Array<{stimulus_name: string; stimulus_set_id: string; stimulus_index: number;}>} trialSequenceStimuli The array of stimuli displayed in the trial sequence.
+ * @param {"practice" | "live"} task The task type, either "practice" or "live". Defaults to "live".
+ * @returns {Object} A jsPsych trial object for the participant to provide answers to a List Sorting Working Memory Test trial sequence.
+ */
 function answerTrial(
   trialSequenceStimuli: Array<{
     stimulus_name: string;
@@ -334,7 +418,19 @@ function answerTrial(
   };
 }
 
-function practiceFeedbackTrial(jsPsych: JsPsych, getAttempts: () => number, max_attempts: number) {
+/**
+ * Trial for providing feedback after a practice trial in the List Sorting Working Memory Test.
+ *
+ * @param {Object} jsPsych The jsPsych instance of the experiment timeline.
+ * @param {() => number} getAttempts A function that returns the number of attempts made so far in the practice trial.
+ * @param {number} max_attempts The maximum number of attempts allowed for the practice trial. Defaults to 2.
+ * @returns {Object} A jsPsych trial object for providing feedback after a practice trial in the List Sorting Working Memory Test.
+ */
+function practiceFeedbackTrial(
+  jsPsych: JsPsych,
+  getAttempts: () => number,
+  max_attempts: number = 2
+) {
   return {
     type: jsPsychHtmlButtonResponse,
     stimulus: () => {
@@ -391,18 +487,45 @@ function practiceFeedbackTrial(jsPsych: JsPsych, getAttempts: () => number, max_
   };
 }
 
-function lswmTrialSequence(
-  jsPsych: JsPsych,
-  options: {
-    dimension: number;
-    stimulus_set_list: Array<listSortingWorkingMemoryTestStimulusSet>;
-    sequence_length?: number;
-    task?: "practice" | "live";
-    max_attempts?: number;
-  }
-) {
-  options.task = options.task || "live"; // Default to 'live' task if not provided
-  options.max_attempts = options.max_attempts || 2; // Default to 2 attempts if not provided
+/**
+ * Options for {@link lswmTrialSequence}.
+ */
+interface lswmTrialSequenceOptions {
+  /**
+   * The number of categories in the List Sorting Working Memory Test trial sequence, e.g. 1 for one-list, 2 for two-list, etc.
+   */
+  dimension: number;
+  /**
+   * The list of stimulus sets to be used in the List Sorting Working Memory Test trial sequence.
+   */
+  stimulus_set_list: Array<listSortingWorkingMemoryTestStimulusSet>;
+  /**
+   * The number of stimuli to sample in the List Sorting Working Memory Test trial sequence.
+   * @defaultValue If not provided, all stimuli will be used without replacement.
+   */
+  sequence_length?: number;
+  /**
+   * The task type, either "practice" or "live".
+   * @defaultValue "live"
+   */
+  task?: "practice" | "live";
+  /**
+   * The maximum number of attempts allowed for the practice trial.
+   * @defaultValue 2
+   */
+  max_attempts?: number;
+}
+
+/**
+ * Create a sequence of List Sorting Working Memory Test trials.
+ *
+ * @param {Object} jsPsych The jsPsych instance of the experiment timeline.
+ * @param {lswmTrialSequenceOptions} options Options for the List Sorting Working Memory Test trial sequence.
+ * @returns {Array<Object>} An array of List Sorting Working Memory Test trials.
+ */
+function lswmTrialSequence(jsPsych: JsPsych, options: lswmTrialSequenceOptions): any[] {
+  options.task = options.task || "live";
+  options.max_attempts = options.max_attempts || 2;
 
   // The sampled list of stimulus sets for this sequence is set (but not across the whole section)
   const stimulus_set_subarray = getRandomSubarray(options.stimulus_set_list, options.dimension);
@@ -469,16 +592,16 @@ function lswmTrialSequence(
   return trialSequenceTimeline;
 }
 
-function lswmTrialSequenceRetryLoop(
-  jsPsych: JsPsych,
-  options: {
-    dimension: number;
-    stimulus_set_list: Array<listSortingWorkingMemoryTestStimulusSet>;
-    sequence_length: number;
-    task?: "practice" | "live";
-    max_attempts?: number;
-  }
-): any[] {
+/**
+ * Wrapper for {@link lswmTrialSequence} that creates a retry loop for each List Sorting Working Memory Test trial sequence.
+ * For each trial sequence length, the participant is allowed to retry up to max_attempts times if they do not get all answers correct for the sequence.
+ * In each retry, a new set of stimuli is sampled from the stimulus_set_list.
+ *
+ * @param {Object} jsPsych The jsPsych instance of the experiment timeline.
+ * @param {lswmTrialSequenceOptions} options Options for the List Sorting Working Memory Test trial sequence wrapper.
+ * @returns {Array<Object>} A timeline containing a List Sorting Working Memory Test trial sequence that recursively pushes a new trial sequence of the same length to the timeline upon participant's failure of the trial sequence, tracking the number of attempts.
+ */
+function lswmTrialSequenceRetryLoop(jsPsych: JsPsych, options: lswmTrialSequenceOptions): any[] {
   const timeline = [];
   const max_attempts = options.max_attempts ?? 2;
   let attempt = 0;
@@ -496,7 +619,7 @@ function lswmTrialSequenceRetryLoop(
       timeline: trialSeq,
       on_timeline_finish: () => {
         const lastData = jsPsych.data.getLastTrialData().values().slice(-1)[0];
-        const correct = lastData?.all_correct;
+        const correct = lastData ? lastData["all_correct"] : false;
         attempt++;
 
         if (!correct && attempt < max_attempts) {
@@ -511,21 +634,42 @@ function lswmTrialSequenceRetryLoop(
 }
 
 /**
- * Create a section of the list sorting working memory task.
- * @param jsPsych
- * @param options
- * @returns
+ * Options for {@link lswmSection}.
  */
-function lswmSection(
-  jsPsych: JsPsych,
-  options: {
-    dimension: number;
-    stimulus_set_list: Array<listSortingWorkingMemoryTestStimulusSet>;
-    sample_size_sequence?: Array<number>;
-    excluded_sets?: Array<string | number>;
-    max_attempts?: number;
-  }
-) {
+interface lswmTrialSectionOptions {
+  /**
+   * The number of categories in the List Sorting Working Memory Test section, e.g. 1 for one-list, 2 for two-list, etc.
+   */
+  dimension: number;
+  /**
+   * The list of stimulus sets to be used in the List Sorting Working Memory Test section.
+   */
+  stimulus_set_list: Array<listSortingWorkingMemoryTestStimulusSet>;
+  /**
+   * The sequence of sample sizes for each trial sequence in the section.
+   * @defaultValue If not provided, defaults to [2, 3, 4, 5, 6, 7].
+   */
+  sample_size_sequence?: Array<number>;
+  /**
+   * The list of stimulus set names or indices to exclude from the section.
+   * @defaultValue If not provided, no sets are excluded.
+   */
+  excluded_sets?: Array<string | number>;
+  /**
+   * The maximum number of attempts allowed for each trial sequence in the section.
+   * @defaultValue Defaults to 2 attempts if not provided.
+   */
+  max_attempts?: number;
+}
+/**
+ * Create a section of the list sorting working memory task.
+ * Each section consists of multiple List Sorting Working Memory trial sequences.
+ *
+ * @param {Object} jsPsych The jsPsych instance of the experiment timeline.
+ * @param {lswmTrialSectionOptions} options Options for a List Sorting Working Memory Test section.
+ * @returns {Array<Object>} An array of List Sorting Working Memory Test trial sequences that make up one section.
+ */
+function lswmSection(jsPsych: JsPsych, options: lswmTrialSectionOptions): any[] {
   // Get list of excluded sets
   if (options.excluded_sets) {
     // Check and filter excluded_sets
@@ -555,7 +699,6 @@ function lswmSection(
   let sectionTimeline = [];
   for (let i = 0; i < options.sample_size_sequence.length; i++) {
     const sequenceLength = options.sample_size_sequence[i];
-    const sequenceAttempts = { count: 0 };
 
     sectionTimeline.push(
       lswmTrialSequenceRetryLoop(jsPsych, {
@@ -572,21 +715,55 @@ function lswmSection(
 }
 
 /**
- * Create a timeline for the list sorting working memory task.
- * @param jsPsych
- * @param options
- * @returns
+ * Options for {@link createTimeline}.
  */
-export function createTimeline(
-  jsPsych: JsPsych,
-  options: {
-    stimulus_set_list?: Array<listSortingWorkingMemoryTestStimulusSet>;
-    dimensions_sequence?: Array<number>;
-  }
-) {
+interface lswmTimelineOptions {
+  /**
+   * The list of stimulus sets to be used in the List Sorting Working Memory Test.
+   * @defaultValue Defaults to {@link DEFAULT_LIVE_STIMULI}
+   */
+  stimulus_set_list?: Array<listSortingWorkingMemoryTestStimulusSet>;
+  /**
+   * The sequence of dimensions (1-list, 2-list, etc.) for the List Sorting Working Memory Test.
+   * @defaultValue Defaults to [1, 2, ..., len(stimulus_set_list)] if not provided.
+   */
+  dimensions_sequence?: Array<number>;
+  /**
+   * The maximum number of attempts allowed for each live trial sequence in the List Sorting Working Memory Test.
+   * @defaultValue Defaults to 2 if not provided.
+   */
+  n_live_max_attempts?: number;
+  /**
+   * Allow users to manually input the practice stimuli used for each dimension/section of the List Sorting Working Memory experiment timeline by providing a map from dimension value to the practice stimulus sets for that dimension.
+   * Each key is a dimension (e.g. 1, 2, etc.) and the value is an array of arrays of stimulus sets that form the practice stimuli used for the List Sorting Working Memory section of that dimension.
+   * @defaultValue If not provided, defaults to randomly sampling the stimuli sets for each section to form n_practice_sequences number of practice trial sequences for each section.
+   */
+  practice_stimulus_set_list?: Map<number, Array<Array<listSortingWorkingMemoryTestStimulusSet>>>;
+  /**
+   * The number of practice trial sequences for each dimension/section of the List Sorting Working Memory experiment timeline.
+   * @defaultValue Defaults to 2 if not provided.
+   */
+  n_practice_sequences?: number;
+  /**
+   * The maximum number of attempts allowed for each practice trial sequence in the List Sorting Working Memory Test.
+   * @defaultValue Defaults to same number as n_live_max_attempts if not provided.
+   */
+  n_practice_max_attempts?: number;
+}
+
+/**
+ * Create a timeline for the List Sorting Working Memory task.
+ *
+ * @param {Object} jsPsych The jsPsych instance of the experiment timeline.
+ * @param {lswmTimelineOptions} options Options for the List Sorting Working Memory Test timeline.
+ * @returns {Array<Object>} An array of List Sorting Working Memory sections that make up a List Sorting Working Memory Test experiment timeline.
+ */
+export function createTimeline(jsPsych: JsPsych, options: lswmTimelineOptions = {}): Array<Object> {
   // Default options
   const defaultOptions = {
-    stimulus_set_list: defaultLiveStimuli,
+    stimulus_set_list: DEFAULT_LIVE_STIMULI,
+    n_live_max_attempts: 2,
+    n_practice_sequences: 2,
   };
 
   // Merge default options with user options
@@ -609,84 +786,158 @@ export function createTimeline(
     );
   }
 
+  // Set n_practice_max_attempts to n_live_max_attempts if not provided
+  if (!options.n_practice_max_attempts) {
+    options.n_practice_max_attempts = options.n_live_max_attempts;
+  }
+
   // Timeline
   let mainTimeline = [];
-  mainTimeline.push(audioPreloadTrial());
+  mainTimeline.push(preloadTrial());
   mainTimeline.push(instructionTrial("Start"));
 
+  // Push one List Sorting Working Memory Test section for each dimension
   for (let i = 0; i < options.dimensions_sequence.length; i++) {
     const curDimension = options.dimensions_sequence[i];
-    const practiceStimuli = defaultPracticeStimuli.find(
-      (stimulus_set_lists) => stimulus_set_lists.dimension === curDimension
-    )?.stimulus_set_lists;
+    let manuallyProvidedPracticeStimuli;
+    let nPracticeSequences = options.n_practice_sequences;
+    let practiceTrialSequences = [];
 
-    if (practiceStimuli) {
-      mainTimeline.push(
-        instructionTrial(nListPracticeInstructionText(practiceStimuli[0]), "Start Practice")
-      );
-      let practiceTrialSequences = [];
-      practiceStimuli.forEach((set, idx) => {
-        practiceTrialSequences.push({
-          timeline: [
-            lswmTrialSequence(jsPsych, {
-              dimension: curDimension,
-              stimulus_set_list: set,
-              task: "practice",
-            }),
-          ],
-        });
-        if (idx < practiceStimuli.length - 1) {
-          practiceTrialSequences.push(
-            instructionTrial("Now let's practice with another set of pictures. Are you ready?")
-          );
-        }
-      });
-      mainTimeline.push(...practiceTrialSequences);
-    } else {
-      console.warn(
-        `No practice stimuli found for dimension ${curDimension}. Skipping practice section.`
+    // Check if practice stimuli is manually provided for this dimension
+    if (
+      options.practice_stimulus_set_list &&
+      options.practice_stimulus_set_list.has(curDimension)
+    ) {
+      manuallyProvidedPracticeStimuli = options.practice_stimulus_set_list.get(curDimension);
+      nPracticeSequences = Math.min(
+        options.n_practice_sequences,
+        manuallyProvidedPracticeStimuli.length
       );
     }
 
-    mainTimeline.push({
-      timeline: [
-        instructionTrial(
-          "Let's look at some more pictures. Remember, after you see all the pictures, you will need to enter the pictures in each category in size order from smallest to largest.<br><br><strong>Are you ready?</strong>"
-        ),
-        lswmSection(jsPsych, {
-          dimension: curDimension,
-          stimulus_set_list: options.stimulus_set_list,
-        }),
-      ],
-      conditional_function: () => {
-        const allData = jsPsych.data.get().values();
-        const practicePassed = allData.some(
-          (data) =>
-            data["task_type"] === "practice" &&
-            data["dimension"] == curDimension &&
-            data["all_correct"] == true
+    // If there is a practice section, push instruction and practice trials
+    if (nPracticeSequences > 0) {
+      if (manuallyProvidedPracticeStimuli) {
+        mainTimeline.push(
+          instructionTrial(
+            nListPracticeInstructionText(manuallyProvidedPracticeStimuli[0]),
+            "Start Practice"
+          )
         );
-        return practicePassed;
-      },
-    });
+        manuallyProvidedPracticeStimuli.forEach((set, idx) => {
+          practiceTrialSequences.push({
+            timeline: [
+              lswmTrialSequence(jsPsych, {
+                dimension: curDimension,
+                stimulus_set_list: set,
+                task: "practice",
+                max_attempts: options.n_practice_max_attempts,
+              }),
+            ],
+          });
+          if (idx < manuallyProvidedPracticeStimuli.length - 1) {
+            practiceTrialSequences.push(
+              instructionTrial("Now let's practice with another set of pictures. Are you ready?")
+            );
+          }
+        });
+      } else {
+        console.info(
+          "No manually provided practice stimuli found for dimension " +
+            curDimension +
+            ". Sampling from options.stimulus_set_list. Note that the sampled categories for this practice section may differ from those that appear in the live section."
+        );
+        // If no manually provided practice stimuli, sample directly from stimulus_set_list and run nPracticeSequences practice trial sequences starting with trial sequence_length = 2
+        const practiceStimulusSets = getRandomSubarray(options.stimulus_set_list, curDimension);
+        mainTimeline.push(
+          instructionTrial(
+            nListPracticeInstructionText(practiceStimulusSets, true),
+            "Start Practice"
+          )
+        );
+        // DEV: console.log("number of practice sequences: " + nPracticeSequences);
+        for (let i = 0; i < nPracticeSequences; i++) {
+          practiceTrialSequences.push({
+            timeline: [
+              lswmTrialSequence(jsPsych, {
+                dimension: curDimension,
+                stimulus_set_list: practiceStimulusSets,
+                sequence_length: 2 + i, // Increase sequence length for each practice trial
+                task: "practice",
+                max_attempts: options.n_practice_max_attempts,
+              }),
+            ],
+          });
+          if (i < nPracticeSequences - 1) {
+            practiceTrialSequences.push(
+              instructionTrial("Now let's practice with another set of pictures. Are you ready?")
+            );
+          }
+        }
+      }
+      mainTimeline.push(...practiceTrialSequences);
+    } else {
+      console.warn(`Number of practice trial sequences set to 0. Skipping practice section.`);
+    }
 
-    mainTimeline.push({
-      timeline: [
-        instructionTrial(
-          "You have failed the practice for this section. Moving on to the next section."
-        ),
-      ],
-      conditional_function: () => {
-        const allData = jsPsych.data.get().values();
-        const practicePassed = allData.some(
-          (data) =>
-            data["task_type"] === "practice" &&
-            data["dimension"] == curDimension &&
-            data["all_correct"] == true
-        );
-        return !practicePassed;
-      },
-    });
+    // Push the live section
+    if (nPracticeSequences > 0) {
+      // If there is a practice section, only push the live section if practice was passed
+      mainTimeline.push({
+        timeline: [
+          instructionTrial(
+            "Let's look at some more pictures. Remember, after you see all the pictures, you will need to enter the pictures in each category in size order from smallest to largest.<br><br><strong>Are you ready?</strong>"
+          ),
+          lswmSection(jsPsych, {
+            dimension: curDimension,
+            stimulus_set_list: options.stimulus_set_list,
+            max_attempts: options.n_live_max_attempts,
+          }),
+        ],
+        conditional_function: () => {
+          const allData = jsPsych.data.get().values();
+          const practicePassed = allData.some(
+            (data) =>
+              data["task_type"] === "practice" &&
+              data["dimension"] == curDimension &&
+              data["all_correct"] == true
+          );
+          return practicePassed;
+        },
+      });
+
+      // If participant failed practice section
+      mainTimeline.push({
+        timeline: [
+          instructionTrial(
+            "You have failed the practice for this section. Moving on to the next section."
+          ),
+        ],
+        conditional_function: () => {
+          const allData = jsPsych.data.get().values();
+          const practicePassed = allData.some(
+            (data) =>
+              data["task_type"] === "practice" &&
+              data["dimension"] == curDimension &&
+              data["all_correct"] == true
+          );
+          return !practicePassed;
+        },
+      });
+    }
+    // Directly start live section
+    else {
+      mainTimeline.push({
+        timeline: [
+          instructionTrial(nListPracticeInstructionText(options.stimulus_set_list, false)),
+          lswmSection(jsPsych, {
+            dimension: curDimension,
+            stimulus_set_list: options.stimulus_set_list,
+            max_attempts: options.n_live_max_attempts,
+          }),
+        ],
+      });
+    }
   }
   return mainTimeline;
 }
