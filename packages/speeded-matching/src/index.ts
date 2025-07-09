@@ -21,6 +21,8 @@ interface SpeedMatchingConfig {
   show_instructions?: boolean
   /** Show practice round before main task */
   show_practice?: boolean
+  /** Number of practice rounds to show (default 1) */
+  practice_rounds?: number
   /** Custom instruction texts */
   instruction_texts?: typeof instruction_pages
 }
@@ -108,8 +110,8 @@ function createInstructions(instruction_pages_data = instruction_pages, enable_t
     allow_keys: true,
     key_forward: 'ArrowRight',
     key_backward: 'ArrowLeft',
-    button_label_previous: 'Previous',
-    button_label_next: 'Next',
+    button_label_previous: trial_text.back_button,
+    button_label_next: trial_text.next_button,
     on_start: function() {
       speechSynthesis.cancel();
     },
@@ -137,14 +139,11 @@ function createInstructions(instruction_pages_data = instruction_pages, enable_t
 }
 
 /**
- * Creates a practice round with voice instructions and visual demonstrations
+ * Creates practice rounds with voice instructions and visual demonstrations
  * This helps participants understand the task before the actual trials
  */
-function createPracticeRound(items: string[], enable_tts: boolean = false) {
+function createPracticeRound(items: string[], enable_tts: boolean = false, num_choices: number = 4, practice_rounds: number = 1) {
   const practice_timeline = [];
-  
-  // Create a practice trial set using the first test item
-  const practice_set = createTrialSet(items, 0, 4);
   
   // Practice instruction screen
   practice_timeline.push({
@@ -164,95 +163,127 @@ function createPracticeRound(items: string[], enable_tts: boolean = false) {
     }
   });
 
-  // Practice trial with voice instruction "Look at this picture"
-  practice_timeline.push({
-    type: HtmlButtonResponsePlugin,
-    stimulus: `
-      <div class="speeded-matching-container">
-        <div class="task-instructions">
-          <p>${trial_text.practice_look_instruction}</p>
-        </div>
-        <div class="target-container">
-          <div class="target-stimulus flash">
-            ${practice_set.target}
+  // Create multiple practice rounds
+  for (let round = 0; round < practice_rounds; round++) {
+    // Create a practice trial set using different target each round
+    const target_index = round % items.length;
+    const practice_set = createTrialSet(items, target_index, num_choices);
+    
+    // Practice trial with voice instruction "Look at this picture"
+    practice_timeline.push({
+      type: HtmlButtonResponsePlugin,
+      stimulus: `
+        <div class="speeded-matching-container">
+          <div class="task-instructions">
+            <p>${trial_text.practice_look_instruction}</p>
+          </div>
+          <div class="target-container">
+            <div class="target-stimulus flash">
+              ${practice_set.target}
+            </div>
           </div>
         </div>
-      </div>
-    `,
-    choices: [],
-    trial_duration: 3000, // Show for 3 seconds
-    on_start: function() {
-      if (enable_tts) {
-        // Wait for voices to load if needed
-        if (speechSynthesis.getVoices().length === 0) {
-          speechSynthesis.addEventListener('voiceschanged', () => {
+      `,
+      choices: [],
+      trial_duration: 3000, // Show for 3 seconds
+      on_start: function() {
+        if (enable_tts) {
+          // Wait for voices to load if needed
+          if (speechSynthesis.getVoices().length === 0) {
+            speechSynthesis.addEventListener('voiceschanged', () => {
+              speakText(trial_text.practice_look_instruction);
+            }, { once: true });
+          } else {
             speakText(trial_text.practice_look_instruction);
-          }, { once: true });
-        } else {
-          speakText(trial_text.practice_look_instruction);
+          }
         }
+      },
+      data: {
+        task: 'practice-target-demo',
+        practice_round: round + 1
       }
-    },
-    data: {
-      task: 'practice-target-demo'
-    }
-  });
+    });
 
-  // Practice trial with voice instruction "We are going to tap the picture down here"
-  practice_timeline.push({
-    type: HtmlButtonResponsePlugin,
-    stimulus: `
-      <div class="speeded-matching-container">
-        <div class="task-instructions">
-          <p>${trial_text.practice_tap_instruction}</p>
-        </div>
-        <div class="target-container">
-          <div class="target-stimulus">
-            ${practice_set.target}
+    // Practice trial with voice instruction "We are going to tap the picture down here"
+    practice_timeline.push({
+      type: HtmlButtonResponsePlugin,
+      stimulus: `
+        <div class="speeded-matching-container">
+          <div class="task-instructions">
+            <p>${trial_text.practice_tap_instruction}</p>
+          </div>
+          <div class="target-container">
+            <div class="target-stimulus">
+              ${practice_set.target}
+            </div>
           </div>
         </div>
-      </div>
-    `,
-    choices: practice_set.choices.map((_, i) => i.toString()),
-    button_html: function(choice, choice_index) {
-      return `<button class="jspsych-btn choice-option" data-choice="${choice_index}">${practice_set.choices[choice_index]}</button>`;
-    },
-    trial_duration: 4000, // Show for 4 seconds
-    on_start: function() {
-      if (enable_tts) {
-        // Wait for voices to load if needed
-        if (speechSynthesis.getVoices().length === 0) {
-          speechSynthesis.addEventListener('voiceschanged', () => {
+      `,
+      choices: practice_set.choices.map((_, i) => i.toString()),
+      button_html: function(choice, choice_index) {
+        const isCorrect = choice_index === practice_set.correct_answer;
+        const disabled = !isCorrect ? 'disabled' : '';
+        const disabledClass = !isCorrect ? 'disabled-choice' : '';
+        return `<button class="jspsych-btn choice-option ${disabledClass}" data-choice="${choice_index}" ${disabled}>${practice_set.choices[choice_index]}</button>`;
+      },
+      // No trial duration - only ends when correct choice is clicked
+      response_ends_trial: true,
+      on_start: function() {
+        if (enable_tts) {
+          // Wait for voices to load if needed
+          if (speechSynthesis.getVoices().length === 0) {
+            speechSynthesis.addEventListener('voiceschanged', () => {
+              speakText(trial_text.practice_tap_instruction);
+            }, { once: true });
+          } else {
             speakText(trial_text.practice_tap_instruction);
-          }, { once: true });
-        } else {
-          speakText(trial_text.practice_tap_instruction);
+          }
         }
+      },
+      on_load: function() {
+        // Set CSS custom property for number of choices for dynamic sizing
+        const btnGroup = document.querySelector('.jspsych-btn-group, #jspsych-html-button-response-btngroup') as HTMLElement;
+        if (btnGroup) {
+          btnGroup.style.setProperty('--num-choices', practice_set.choices.length.toString());
+        }
+        
+        // Add flashing animation for practice demo (1.5 seconds total)
+        setTimeout(() => {
+          const buttons = document.querySelectorAll('.choice-option:not(.disabled-choice)');
+          buttons.forEach(button => {
+            button.classList.add('flash-choices');
+            // Remove flash class after 1.5 seconds
+            setTimeout(() => {
+              button.classList.remove('flash-choices');
+            }, 1500);
+          });
+        }, 500);
+
+        // Disable incorrect choices by preventing click events
+        setTimeout(() => {
+          const incorrectButtons = document.querySelectorAll('.choice-option.disabled-choice');
+          incorrectButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+              e.preventDefault();
+              e.stopPropagation();
+              return false;
+            }, true);
+          });
+        }, 100);
+      },
+      on_finish: function(data: any) {
+        // Mark if they selected the correct answer
+        data.correct = data.response === practice_set.correct_answer;
+        data.practice_round = round + 1;
+        data.correct_answer = practice_set.correct_answer;
+      },
+      data: {
+        task: 'practice-choices-demo',
+        practice_round: round + 1,
+        correct_answer: practice_set.correct_answer
       }
-    },
-    on_load: function() {
-      // Set CSS custom property for number of choices for dynamic sizing
-      const btnGroup = document.querySelector('.jspsych-btn-group, #jspsych-html-button-response-btngroup') as HTMLElement;
-      if (btnGroup) {
-        btnGroup.style.setProperty('--num-choices', practice_set.choices.length.toString());
-      }
-      
-      // Add flashing animation for practice demo (1.5 seconds total)
-      setTimeout(() => {
-        const buttons = document.querySelectorAll('.choice-option');
-        buttons.forEach(button => {
-          button.classList.add('flash-choices');
-          // Remove flash class after 1.5 seconds
-          setTimeout(() => {
-            button.classList.remove('flash-choices');
-          }, 1500);
-        });
-      }, 500);
-    },
-    data: {
-      task: 'practice-choices-demo'
-    }
-  });
+    });
+  }
 
   return practice_timeline;
 }
@@ -317,6 +348,8 @@ export function createTimeline(jsPsych: JsPsych, config: SpeedMatchingConfig = {
     inter_trial_interval = 500,
     show_instructions = true,
     show_practice = true,
+    practice_rounds = 1,
+    num_choices = 4,
     instruction_texts = instruction_pages
   } = config;
 
@@ -332,7 +365,7 @@ export function createTimeline(jsPsych: JsPsych, config: SpeedMatchingConfig = {
 
   // Add practice round if requested
   if (show_practice) {
-    const practice_round = createPracticeRound(items, enable_tts);
+    const practice_round = createPracticeRound(items, enable_tts, num_choices, practice_rounds);
     practice_round.forEach(trial => timeline.push(trial));
     
     // Add ready screen after practice

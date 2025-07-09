@@ -9,16 +9,6 @@
     padding: 2vmin;
 }
 
-/* Instructions */
-.speeded-matching-instructions-container {
-    max-width: 90vw;
-    margin: 0 auto;
-    padding: 5vmin;
-    background-color: white;
-    border-radius: 2vmin;
-    box-shadow: 0 1vmin 2vmin rgba(0, 0, 0, 0.1);
-    text-align: center;
-}
 
 .speeded-matching-instructions-container h1 {
     color: #2c3e50;
@@ -264,3 +254,96 @@
     line-height: 1.6;
     margin-bottom: 4vmin;
 }
+
+/* Instructions plugin navigation buttons - Mobile-friendly styling */
+.jspsych-instructions-nav {
+    margin-top: 6vmin !important;
+    padding: 3vmin !important;
+    display: flex !important;
+    justify-content: center !important;
+    gap: 4vmin !important;
+    flex-wrap: wrap !important;
+}
+
+/* Target the actual button classes that exist */
+.jspsych-instructions-nav .jspsych-btn {
+    /* background-color: #ffffff !important;
+    color: rgb(0, 0, 0) !important; */
+    border: none !important;
+    padding: 4vmin 8vmin !important;
+    font-size: 4vmin !important;
+    border-radius: 2vmin !important;
+    cursor: pointer !important;
+    margin: 2vmin !important;
+    transition: all 0.3s ease !important;
+    min-height: 60px !important;
+    min-width: 120px !important;
+    box-shadow: 0 2vmin 3vmin rgba(0, 0, 0, 0.15) !important;
+    font-weight: 600 !important;
+    touch-action: manipulation !important;
+    user-select: none !important;
+}
+
+.jspsych-instructions-nav .jspsych-btn:hover {
+    background-color: #c0c0c0 !important;
+}
+
+.jspsych-instructions-nav .jspsych-btn:active {
+    transform: translateY(0) !important;
+    box-shadow: 0 1vmin 2vmin rgba(0, 0, 0, 0.15) !important;
+}
+
+.jspsych-instructions-nav .jspsych-btn:disabled {
+    display: none !important;
+}
+
+/* Mobile-specific adjustments for instructions buttons */
+@media (max-width: 768px) {
+    .jspsych-instructions-nav {
+        gap: 3vmin !important;
+        padding: 2vmin !important;
+    }
+    
+    .jspsych-instructions-nav .jspsych-btn,
+    #jspsych-instructions-back,
+    #jspsych-instructions-next {
+        padding: 5vmin 10vmin !important;
+        font-size: 5vmin !important;
+        min-height: 80px !important;
+        min-width: 140px !important;
+        margin: 1.5vmin !important;
+    }
+}
+
+/* Extra large touch targets for very small screens */
+@media (max-width: 480px) {
+    .jspsych-instructions-nav .jspsych-btn,
+    #jspsych-instructions-back,
+    #jspsych-instructions-next {
+        padding: 6vmin 12vmin !important;
+        font-size: 6vmin !important;
+        min-height: 100px !important;
+        min-width: 160px !important;
+        border-radius: 3vmin !important;
+    }
+}
+
+/* .jspsych-btn {
+    display: inline-block;
+    padding: 8px 12px;
+    margin: 0.75em;
+    font-size: 14px;
+    font-weight: 400;
+    font-family: "Open Sans", "Arial", sans-serif;
+    cursor: pointer;
+    line-height: 1.4;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    background-image: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    color: #333;
+    background-color: #fff;
+    border-color: #ccc;
+} */

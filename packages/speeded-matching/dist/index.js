@@ -3504,6 +3504,9 @@ var trial_text = {
   start_button: "Start",
   ready_button: "I'm Ready",
   end_button: "End",
+  // Instruction pages buttons text, these will always have arrows < and >
+  next_button: "",
+  back_button: "",
   // Task completion messages
   task_complete_header: "Task Complete!",
   task_complete_message: "Thank you for participating in the speeded matching task.",
@@ -3589,8 +3592,8 @@ function createInstructions(instruction_pages_data = instruction_pages, enable_t
     allow_keys: true,
     key_forward: "ArrowRight",
     key_backward: "ArrowLeft",
-    button_label_previous: "Previous",
-    button_label_next: "Next",
+    button_label_previous: trial_text.back_button,
+    button_label_next: trial_text.next_button,
     on_start: function() {
       speechSynthesis.cancel();
     },
@@ -3615,9 +3618,8 @@ function createInstructions(instruction_pages_data = instruction_pages, enable_t
     }
   };
 }
-function createPracticeRound(items, enable_tts = false) {
+function createPracticeRound(items, enable_tts = false, num_choices = 4, practice_rounds = 1) {
   const practice_timeline = [];
-  const practice_set = createTrialSet(items, 0, 4);
   practice_timeline.push({
     type: HtmlButtonResponsePlugin,
     stimulus: `
@@ -3634,88 +3636,113 @@ function createPracticeRound(items, enable_tts = false) {
       task: "practice-instruction"
     }
   });
-  practice_timeline.push({
-    type: HtmlButtonResponsePlugin,
-    stimulus: `
-      <div class="speeded-matching-container">
-        <div class="task-instructions">
-          <p>${trial_text.practice_look_instruction}</p>
-        </div>
-        <div class="target-container">
-          <div class="target-stimulus flash">
-            ${practice_set.target}
+  for (let round = 0; round < practice_rounds; round++) {
+    const target_index = round % items.length;
+    const practice_set = createTrialSet(items, target_index, num_choices);
+    practice_timeline.push({
+      type: HtmlButtonResponsePlugin,
+      stimulus: `
+        <div class="speeded-matching-container">
+          <div class="task-instructions">
+            <p>${trial_text.practice_look_instruction}</p>
+          </div>
+          <div class="target-container">
+            <div class="target-stimulus flash">
+              ${practice_set.target}
+            </div>
           </div>
         </div>
-      </div>
-    `,
-    choices: [],
-    trial_duration: 3e3,
-    // Show for 3 seconds
-    on_start: function() {
-      if (enable_tts) {
-        if (speechSynthesis.getVoices().length === 0) {
-          speechSynthesis.addEventListener("voiceschanged", () => {
+      `,
+      choices: [],
+      trial_duration: 3e3,
+      // Show for 3 seconds
+      on_start: function() {
+        if (enable_tts) {
+          if (speechSynthesis.getVoices().length === 0) {
+            speechSynthesis.addEventListener("voiceschanged", () => {
+              speakText(trial_text.practice_look_instruction);
+            }, { once: true });
+          } else {
             speakText(trial_text.practice_look_instruction);
-          }, { once: true });
-        } else {
-          speakText(trial_text.practice_look_instruction);
+          }
         }
+      },
+      data: {
+        task: "practice-target-demo",
+        practice_round: round + 1
       }
-    },
-    data: {
-      task: "practice-target-demo"
-    }
-  });
-  practice_timeline.push({
-    type: HtmlButtonResponsePlugin,
-    stimulus: `
-      <div class="speeded-matching-container">
-        <div class="task-instructions">
-          <p>${trial_text.practice_tap_instruction}</p>
-        </div>
-        <div class="target-container">
-          <div class="target-stimulus">
-            ${practice_set.target}
+    });
+    practice_timeline.push({
+      type: HtmlButtonResponsePlugin,
+      stimulus: `
+        <div class="speeded-matching-container">
+          <div class="task-instructions">
+            <p>${trial_text.practice_tap_instruction}</p>
+          </div>
+          <div class="target-container">
+            <div class="target-stimulus">
+              ${practice_set.target}
+            </div>
           </div>
         </div>
-      </div>
-    `,
-    choices: practice_set.choices.map((_, i) => i.toString()),
-    button_html: function(choice, choice_index) {
-      return `<button class="jspsych-btn choice-option" data-choice="${choice_index}">${practice_set.choices[choice_index]}</button>`;
-    },
-    trial_duration: 4e3,
-    // Show for 4 seconds
-    on_start: function() {
-      if (enable_tts) {
-        if (speechSynthesis.getVoices().length === 0) {
-          speechSynthesis.addEventListener("voiceschanged", () => {
+      `,
+      choices: practice_set.choices.map((_, i) => i.toString()),
+      button_html: function(choice, choice_index) {
+        const isCorrect = choice_index === practice_set.correct_answer;
+        const disabled = !isCorrect ? "disabled" : "";
+        const disabledClass = !isCorrect ? "disabled-choice" : "";
+        return `<button class="jspsych-btn choice-option ${disabledClass}" data-choice="${choice_index}" ${disabled}>${practice_set.choices[choice_index]}</button>`;
+      },
+      // No trial duration - only ends when correct choice is clicked
+      response_ends_trial: true,
+      on_start: function() {
+        if (enable_tts) {
+          if (speechSynthesis.getVoices().length === 0) {
+            speechSynthesis.addEventListener("voiceschanged", () => {
+              speakText(trial_text.practice_tap_instruction);
+            }, { once: true });
+          } else {
             speakText(trial_text.practice_tap_instruction);
-          }, { once: true });
-        } else {
-          speakText(trial_text.practice_tap_instruction);
+          }
         }
+      },
+      on_load: function() {
+        const btnGroup = document.querySelector(".jspsych-btn-group, #jspsych-html-button-response-btngroup");
+        if (btnGroup) {
+          btnGroup.style.setProperty("--num-choices", practice_set.choices.length.toString());
+        }
+        setTimeout(() => {
+          const buttons = document.querySelectorAll(".choice-option:not(.disabled-choice)");
+          buttons.forEach((button) => {
+            button.classList.add("flash-choices");
+            setTimeout(() => {
+              button.classList.remove("flash-choices");
+            }, 1500);
+          });
+        }, 500);
+        setTimeout(() => {
+          const incorrectButtons = document.querySelectorAll(".choice-option.disabled-choice");
+          incorrectButtons.forEach((button) => {
+            button.addEventListener("click", function(e) {
+              e.preventDefault();
+              e.stopPropagation();
+              return false;
+            }, true);
+          });
+        }, 100);
+      },
+      on_finish: function(data) {
+        data.correct = data.response === practice_set.correct_answer;
+        data.practice_round = round + 1;
+        data.correct_answer = practice_set.correct_answer;
+      },
+      data: {
+        task: "practice-choices-demo",
+        practice_round: round + 1,
+        correct_answer: practice_set.correct_answer
       }
-    },
-    on_load: function() {
-      const btnGroup = document.querySelector(".jspsych-btn-group, #jspsych-html-button-response-btngroup");
-      if (btnGroup) {
-        btnGroup.style.setProperty("--num-choices", practice_set.choices.length.toString());
-      }
-      setTimeout(() => {
-        const buttons = document.querySelectorAll(".choice-option");
-        buttons.forEach((button) => {
-          button.classList.add("flash-choices");
-          setTimeout(() => {
-            button.classList.remove("flash-choices");
-          }, 1500);
-        });
-      }, 500);
-    },
-    data: {
-      task: "practice-choices-demo"
-    }
-  });
+    });
+  }
   return practice_timeline;
 }
 function createReadyScreen() {
@@ -3761,6 +3788,8 @@ function createTimeline(jsPsych, config = {}) {
     inter_trial_interval = 500,
     show_instructions = true,
     show_practice = true,
+    practice_rounds = 1,
+    num_choices = 4,
     instruction_texts = instruction_pages
   } = config;
   const items = config.test_items || test_items;
@@ -3771,7 +3800,7 @@ function createTimeline(jsPsych, config = {}) {
     timeline.push(instructions);
   }
   if (show_practice) {
-    const practice_round = createPracticeRound(items, enable_tts);
+    const practice_round = createPracticeRound(items, enable_tts, num_choices, practice_rounds);
     practice_round.forEach((trial) => timeline.push(trial));
     timeline.push(createReadyScreen());
   }

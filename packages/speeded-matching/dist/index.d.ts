@@ -9,6 +9,8 @@ declare const trial_text: {
     start_button: string;
     ready_button: string;
     end_button: string;
+    next_button: string;
+    back_button: string;
     task_complete_header: string;
     task_complete_message: string;
     practice_header: string;
@@ -42,6 +44,8 @@ interface SpeedMatchingConfig {
     show_instructions?: boolean;
     /** Show practice round before main task */
     show_practice?: boolean;
+    /** Number of practice rounds to show (default 1) */
+    practice_rounds?: number;
     /** Custom instruction texts */
     instruction_texts?: typeof instruction_pages;
 }
@@ -89,10 +93,10 @@ declare function createInstructions(instruction_pages_data?: string[], enable_tt
     };
 };
 /**
- * Creates a practice round with voice instructions and visual demonstrations
+ * Creates practice rounds with voice instructions and visual demonstrations
  * This helps participants understand the task before the actual trials
  */
-declare function createPracticeRound(items: string[], enable_tts?: boolean): any[];
+declare function createPracticeRound(items: string[], enable_tts?: boolean, num_choices?: number, practice_rounds?: number): any[];
 /**
  * Creates ready screen asking if user is ready for the actual test
  */

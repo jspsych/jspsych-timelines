@@ -8,7 +8,9 @@ export const trial_text = {
     start_button: "Start",
     ready_button: "I'm Ready",
     end_button: "End",
-    
+    // Instruction pages buttons text, these will always have arrows < and >
+    next_button: "",
+    back_button: "",
     // Task completion messages
     task_complete_header: "Task Complete!",
     task_complete_message: "Thank you for participating in the speeded matching task.",

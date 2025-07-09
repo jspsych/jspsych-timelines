@@ -23,13 +23,14 @@
 
     // Configure the experiment
     const config = {
-      num_trials: 8,           // Number of test trials (shortened for demo)
-      num_choices: 5,          // Number of choices per trial
-      enable_tts: true,       // Enable text-to-speech
-      show_instructions: true, // Show instruction pages
-      show_practice: true,     // Show practice round
-      trial_timeout: 10000,    // 10 seconds per trial
-      inter_trial_interval: 500 // 500ms between trials
+      num_trials: 8,              // Number of test trials (shortened for demo)
+      num_choices: 4,             // Number of choices per trial
+      enable_tts: true,           // Enable text-to-speech
+      show_instructions: true,    // Show instruction pages
+      show_practice: true,        // Show practice round
+      practice_rounds: 3,         // Number of practice rounds
+      trial_timeout: 10000,       // 10 seconds per trial
+      inter_trial_interval: 500   // 500ms between trials
     };
 
     // Create the timeline using the speeded matching package
