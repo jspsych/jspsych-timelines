@@ -488,21 +488,133 @@ const svgImages = {
     }
     }
 
-// // Function to create stimulus groups for practice trials
-// export const createStimulusGroups = (): { [key: string]: VisualStimulusGroup } => {
-//     return {
-//         practice1: {
-//             target: svgToDataUrl(svgImages.pencil),
-//             response_options: [
-//                 svgToDataUrl(svgImages.baguette),
-//                 svgToDataUrl(svgImages.pen),
-//                 svgToDataUrl(svgImages.banana),
-//                 svgToDataUrl(svgImages.goldfish)
-//             ]
-//         }
-//         // Additional stimulus groups can be added here
-//     };
-// };
+// Helper functions for category-based selection
+export const getCategories = (): string[] => {
+    return Object.keys(svgImages);
+};
+
+export const getSubcategories = (category: string): string[] => {
+    return svgImages[category] ? Object.keys(svgImages[category]) : [];
+};
+
+export const getImagesFromSubcategory = (category: string, subcategory: string): string[] => {
+    const subcat = svgImages[category]?.[subcategory];
+    return subcat ? Object.keys(subcat) : [];
+};
+
+export const getImageDataUrl = (category: string, subcategory: string, imageName: string): string => {
+    const image = svgImages[category]?.[subcategory]?.[imageName];
+    if (!image) {
+        console.warn(`Image not found: ${category}/${subcategory}/${imageName}`);
+        return '';
+    }
+    return svgToDataUrl(image);
+};
+
+export const getAllImagesFromCategory = (category: string): { subcategory: string, imageName: string, dataUrl: string }[] => {
+    const images: { subcategory: string, imageName: string, dataUrl: string }[] = [];
+    const subcategories = getSubcategories(category);
+    
+    subcategories.forEach(subcategory => {
+        const imageNames = getImagesFromSubcategory(category, subcategory);
+        imageNames.forEach(imageName => {
+            images.push({
+                subcategory,
+                imageName,
+                dataUrl: getImageDataUrl(category, subcategory, imageName)
+            });
+        });
+    });
+    
+    return images;
+};
+
+export const getRandomImageFromSubcategory = (category: string, subcategory: string): { imageName: string, dataUrl: string } | null => {
+    const imageNames = getImagesFromSubcategory(category, subcategory);
+    if (imageNames.length === 0) return null;
+    
+    const randomIndex = Math.floor(Math.random() * imageNames.length);
+    const imageName = imageNames[randomIndex];
+    
+    return {
+        imageName,
+        dataUrl: getImageDataUrl(category, subcategory, imageName)
+    };
+};
+
+export const getRandomImageFromCategory = (category: string, excludeSubcategory?: string): { subcategory: string, imageName: string, dataUrl: string } | null => {
+    const subcategories = getSubcategories(category).filter(sub => sub !== excludeSubcategory);
+    if (subcategories.length === 0) return null;
+    
+    const randomSubcategory = subcategories[Math.floor(Math.random() * subcategories.length)];
+    const randomImage = getRandomImageFromSubcategory(category, randomSubcategory);
+    
+    if (!randomImage) return null;
+    
+    return {
+        subcategory: randomSubcategory,
+        imageName: randomImage.imageName,
+        dataUrl: randomImage.dataUrl
+    };
+};
+
+export const getRandomImageFromDifferentCategory = (excludeCategory: string): { category: string, subcategory: string, imageName: string, dataUrl: string } | null => {
+    const categories = getCategories().filter(cat => cat !== excludeCategory);
+    if (categories.length === 0) return null;
+    
+    const randomCategory = categories[Math.floor(Math.random() * categories.length)];
+    const randomImage = getRandomImageFromCategory(randomCategory);
+    
+    if (!randomImage) return null;
+    
+    return {
+        category: randomCategory,
+        subcategory: randomImage.subcategory,
+        imageName: randomImage.imageName,
+        dataUrl: randomImage.dataUrl
+    };
+};
+
+// Function to create stimulus groups for practice trials
+export const createStimulusGroups = (): { [key: string]: VisualStimulusGroup } => {
+    return {
+        practice1: {
+            target: 
+                getImageDataUrl('stationary', 'pens', 'pencil_1'),
+            response_options: [
+                getImageDataUrl('food', 'bread', 'baguette_1'),
+                getImageDataUrl('stationary', 'pens', 'pen_1'),
+                getImageDataUrl('food', 'fruit', 'banana_1'),
+                getImageDataUrl('animals', 'fish', 'goldfish_1')
+            ]
+        }
+        // Additional stimulus groups can be added here
+    };
+};
+
+// Category mapping for difficulty levels
+export const categoryMapping = {
+    easy: {
+        // Different main categories
+        stationary: ['food', 'animals', 'space', 'things'],
+        food: ['stationary', 'animals', 'space', 'things'],
+        animals: ['stationary', 'food', 'space', 'things'],
+        space: ['stationary', 'food', 'animals', 'things'],
+        things: ['stationary', 'food', 'animals', 'space']
+    },
+    medium: {
+        // One from same category, rest from different categories
+        // Implementation handled in difficulty logic
+    },
+    hard: {
+        // Same category, different subcategories
+        stationary: ['stationary'],
+        food: ['food'],
+        animals: ['animals'],
+        space: ['space'],
+        things: ['things']
+    }
+};
 
 // Export the function and interface
 export { svgToDataUrl };

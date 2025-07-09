@@ -9,6 +9,7 @@
 <script src="https://unpkg.com/visual-reasoning-timeline"></script>
 <script src="../dist/index.global.js"></script> -->
   <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css">
+  <link rel="stylesheet" href="../src/styles.css">
 </head>
 
 <body></body>
@@ -21,7 +22,7 @@
     show_practice: true,
     show_instructions: true,
     show_results: true,
-    include_audio: true,
+    include_audio: false,
     show_progress: false,
     cat_parameters: {
       start_point: 0,
@@ -30,11 +31,20 @@
       stopping_se: 0.3
     },
     //custom_item_bank,
-    enable_admin_gesture: true
+    enable_admin_gesture: true,
+    // New seed experiment parameters
+    use_seed_experiments: true, // Set to true to enable seed experiments
+    seed_parameters: {
+      numberOfAnswerOptions: 4,
+      numberOfExp1Trials: 5,
+      numberOfExp2Trials: 5,
+      difficulty: 'medium',
+      seedNumber: 12345
+    }
   }
   const jsPsych = initJsPsych();
 
-  const task = jsPsychTimelineVisualReasoningTimeline.createTimeline(jsPsych, { });
+  const task = jsPsychTimelineVisualReasoningTimeline.createTimeline(jsPsych, taskConfig);
 
   jsPsych.run([task])
 </script>

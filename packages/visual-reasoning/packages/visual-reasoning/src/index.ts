@@ -1,10 +1,12 @@
 import { JsPsych } from "jspsych";
 import jsPsychHtmlButtonResponse from '@jspsych/plugin-html-button-response';
-import jsPsychAudioButtonResponse from '@jspsych/plugin-audio-button-response';
+// import jsPsychAudioButtonResponse from '@jspsych/plugin-audio-button-response';
 import jsPsychInstructions from '@jspsych/plugin-instructions';
 import jsPsychImageButtonResponse from '@jspsych/plugin-image-button-response';
 import jsPsychPreload from '@jspsych/plugin-preload';
-import { createStimulusGroups } from './images';
+import { createStimulusGroups, getImageDataUrl } from './images';
+import { genSeed, SeedParameters, presetConfigurations } from './seed';
+import { ExperimentTrial, createExperiment1HTML, createExperiment2HTML, DifficultyLevel } from './experiments';
 
 /* Constants */
 const DEFAULT_START_AGE = 3;
@@ -12,7 +14,7 @@ const DEFAULT_START_EDUCATION = 'high_school';
 const DEFAULT_TRIAL_TIMEOUT = 60000; // 60 seconds
 const DEFAULT_ADMIN_GESTURE_ENABLED = true;
 const DEFAULT_SHOW_PROGRESS = true;
-const DEFAULT_INCLUDE_AUDIO = true;
+// const DEFAULT_INCLUDE_AUDIO = true;
 
 // CAT Algorithm Constants
 const CAT_INITIAL_THETA = 0;
@@ -35,10 +37,10 @@ interface VisualReasoningStimulus {
 }
 
 interface PracticeItem {
-    instruction_audio: string;
-    feedback_audio_correct: string;
-    feedback_audio_incorrect: string;
-    feedback_audio_second_incorrect: string;
+    // instruction_audio: string;
+    // feedback_audio_correct: string;
+    // feedback_audio_incorrect: string;
+    // feedback_audio_second_incorrect: string;
     visual_stimulus: string;
     response_options: string[];
     correct_response: number;
@@ -192,10 +194,10 @@ function generatePracticeItems(): PracticeItem[] {
     
     return [
         {
-            instruction_audio: 'audio/practice_1_instruction.mp3',
-            feedback_audio_correct: 'audio/thats_right.mp3',
-            feedback_audio_incorrect: 'audio/lets_try_again_pencil.mp3',
-            feedback_audio_second_incorrect: 'audio/this_one_pencil.mp3',
+            // instruction_audio: 'audio/practice_1_instruction.mp3',
+            // feedback_audio_correct: 'audio/thats_right.mp3',
+            // feedback_audio_incorrect: 'audio/lets_try_again_pencil.mp3',
+            // feedback_audio_second_incorrect: 'audio/this_one_pencil.mp3',
             visual_stimulus: stimulusGroups.practice1.target,
             response_options: stimulusGroups.practice1.response_options,
             correct_response: 1, // pen is at index 1 in the response options
@@ -206,13 +208,18 @@ function generatePracticeItems(): PracticeItem[] {
             ]
         },
         {
-            instruction_audio: 'audio/practice_2_instruction.mp3',
-            feedback_audio_correct: 'audio/thats_right.mp3',
-            feedback_audio_incorrect: 'audio/lets_try_again_rocket.mp3',
-            feedback_audio_second_incorrect: 'audio/this_one_planet.mp3',
+            // instruction_audio: 'audio/practice_2_instruction.mp3',
+            // feedback_audio_correct: 'audio/thats_right.mp3',
+            // feedback_audio_incorrect: 'audio/lets_try_again_rocket.mp3',
+            // feedback_audio_second_incorrect: 'audio/this_one_planet.mp3',
             visual_stimulus: 'sequence',
-            response_options: ['img/rocket.png', 'img/planet.png', 'img/star.png', 'img/moon.png'],
-            correct_response: 1,
+            response_options: [
+                getImageDataUrl('space', 'flight_related', 'rocket_1'),
+                getImageDataUrl('space', 'planets', 'saturn'),
+                getImageDataUrl('space', 'flight_related', 'astronaut_1'),
+                getImageDataUrl('space', 'planets', 'earth')
+            ],
+            correct_response: 1, // saturn (planet) is correct for A-B-A-? pattern
             item_type: 'sequence',
             highlight_sequence: [
                 { element: 'top_images', duration: 500 },
@@ -221,13 +228,18 @@ function generatePracticeItems(): PracticeItem[] {
             ]
         },
         {
-            instruction_audio: 'audio/practice_3_instruction.mp3',
-            feedback_audio_correct: 'audio/thats_right.mp3',
-            feedback_audio_incorrect: 'audio/lets_try_again_shapes.mp3',
-            feedback_audio_second_incorrect: 'audio/this_one_star.mp3',
+            // instruction_audio: 'audio/practice_3_instruction.mp3',
+            // feedback_audio_correct: 'audio/thats_right.mp3',
+            // feedback_audio_incorrect: 'audio/lets_try_again_shapes.mp3',
+            // feedback_audio_second_incorrect: 'audio/this_one_star.mp3',
             visual_stimulus: 'matrix',
-            response_options: ['img/circle.png', 'img/star.png', 'img/square.png', 'img/triangle.png'],
-            correct_response: 1,
+            response_options: [
+                getImageDataUrl('things', 'birthday', 'balloon_1'),
+                getImageDataUrl('things', 'birthday', 'birthday_cake_1'),
+                getImageDataUrl('food', 'fruit', 'banana_1'),
+                getImageDataUrl('food', 'fruit', 'mango_1')
+            ],
+            correct_response: 1, // birthday_cake_1 to complete pattern
             item_type: 'matrix',
             highlight_sequence: [
                 { element: 'response_options', duration: 500 },
@@ -278,14 +290,15 @@ function createWelcome() {
 }
 
 function createInstructions(include_audio: boolean) {
-    const audioHTML = include_audio ?
-        `<audio id="instruction-audio" src="audio/main_instructions.mp3" autoplay></audio>` : '';
+    // const audioHTML = include_audio ?
+    //     `<audio id="instruction-audio" src="audio/main_instructions.mp3" autoplay></audio>` : '';
+    const audioHTML = '';
 
     return {
         type: jsPsychInstructions,
         pages: [
             `<div style="max-width: 700px; margin: 0 auto; padding: 20px;">
-                ${audioHTML}
+                // ${audioHTML}
                 <h2>Instructions</h2>
                 <p>Let's look at some pictures. You will see a picture in the middle of the screen and some pictures at the bottom.</p>
                 <p>Tap the picture at the bottom that is most like the picture in the middle of the screen, or shows the missing picture.</p>
@@ -295,14 +308,14 @@ function createInstructions(include_audio: boolean) {
         show_clickable_nav: true,
         button_label_next: 'Continue',
         on_finish: () => {
-            const audio = document.getElementById('instruction-audio') as HTMLAudioElement;
-            if (audio) audio.pause();
+            // const audio = document.getElementById('instruction-audio') as HTMLAudioElement;
+            // if (audio) audio.pause();
         }
     };
 }
 
 function createPracticeTransition() {
-    return {
+    const practice = {
         type: jsPsychHtmlButtonResponse,
         stimulus: `
             <div style="max-width: 700px; margin: 0 auto; text-align: center; padding: 20px;">
@@ -312,9 +325,11 @@ function createPracticeTransition() {
             </div>
         `,
         choices: ['Start Practice'],
-        button_html: '<button class="jspsych-btn" style="background-color: #7B3F99; color: white; padding: 10px 20px; border-radius: 20px;">%choice%</button>',
+        button_html: (choice) => `<button class="jspsych-btn" style="margin: 0 20px; padding: 15px 30px; font-size: 18px;">${choice}</button>`,
         post_trial_gap: 500
     };
+
+    return practice;
 }
 
 function createPracticeTrial(
@@ -325,45 +340,84 @@ function createPracticeTrial(
 ) {
     const isFirstTrial = true; // This would track if it's the first attempt
 
-    return {
-        type: include_audio ? jsPsychAudioButtonResponse : jsPsychImageButtonResponse,
-        stimulus: include_audio ? practiceItem.instruction_audio : createPracticeStimulus(practiceItem),
-        choices: practiceItem.response_options,
-        button_html: '<img src="%choice%" style="width: 100px; height: 100px; margin: 10px; border: 3px solid #ccc; border-radius: 10px; cursor: pointer;">',
-        prompt: createPracticePrompt(practiceItem, trial_number),
-        response_ends_trial: true,
-        data: {
-            task: 'practice',
-            practice_item: trial_number,
-            correct_response: practiceItem.correct_response,
-            item_type: practiceItem.item_type
-        },
-        on_finish: (data: any) => {
-            data.correct = (data.response === data.correct_response);
-        }
-    };
+    // if (include_audio) {
+    //     // For audio version, we need to show the visual stimulus along with playing audio
+    //     return {
+    //         type: jsPsychAudioButtonResponse,
+    //         stimulus: practiceItem.instruction_audio,
+    //         choices: practiceItem.response_options,
+    //         button_html: (choice) => `<img src="${choice}" style="width: 100px; height: 100px; margin: 10px; border: 3px solid #ccc; border-radius: 10px; cursor: pointer;">`,
+    //         prompt: `
+    //             <div class="target-container">
+    //                 <div class="target-stimulus">
+    //                     <img src="${practiceItem.visual_stimulus}" style="width: 100%; height: 100%; object-fit: contain;">
+    //                 </div>
+    //             </div>
+    //             ${createPracticePrompt(practiceItem, trial_number)}
+    //         `,
+    //         response_ends_trial: true,
+    //         data: {
+    //             task: 'practice',
+    //             practice_item: trial_number,
+    //             correct_response: practiceItem.correct_response,
+    //             item_type: practiceItem.item_type
+    //         },
+    //         on_finish: (data: any) => {
+    //             data.correct = (data.response === data.correct_response);
+    //         }
+    //     };
+    // } else {
+        // For non-audio version, use the existing approach
+        return {
+            type: jsPsychHtmlButtonResponse,
+            stimulus: ()=> `<img src="${createPracticeStimulus(practiceItem)}`,
+            choices: practiceItem.response_options,
+            button_html: (choice) => `<img src="${choice}" style="width: 100px; height: 100px; margin: 10px; border: 3px solid #ccc; border-radius: 10px; cursor: pointer;">`,
+            prompt: createPracticePrompt(practiceItem, trial_number),
+            response_ends_trial: true,
+            data: {
+                task: 'practice',
+                practice_item: trial_number,
+                correct_response: practiceItem.correct_response,
+                item_type: practiceItem.item_type
+            },
+            on_finish: (data: any) => {
+                data.correct = (data.response === data.correct_response);
+            }
+        };
+    // }
 }
 
 function createPracticeStimulus(item: PracticeItem): string {
     if (item.item_type === 'single_match') {
-        return `<div style="text-align: center;">
-            <img src="${item.visual_stimulus}" style="width: 150px; height: 150px; border: 4px solid #333; border-radius: 10px;">
+        return `<div class="target-container">
+            <div class="target-stimulus">
+                <img src="${item.visual_stimulus}" style="width: 100%; height: 100%; object-fit: contain;">
+            </div>
         </div>`;
     } else if (item.item_type === 'sequence') {
+        // A-B-A-? pattern using actual SVG images
+        const rocketImg = getImageDataUrl('space', 'flight_related', 'rocket_1');
+        const planetImg = getImageDataUrl('space', 'planets', 'saturn');
+        
         return `<div style="text-align: center;">
             <div style="display: flex; justify-content: center; margin-bottom: 30px;">
-                <img src="img/rocket.png" style="width: 80px; height: 80px; margin: 5px; border: 2px solid #333;">
-                <img src="img/planet.png" style="width: 80px; height: 80px; margin: 5px; border: 2px solid #333;">
-                <img src="img/rocket.png" style="width: 80px; height: 80px; margin: 5px; border: 2px solid #333;">
+                <img src="${rocketImg}" style="width: 80px; height: 80px; margin: 5px; border: 2px solid #333;">
+                <img src="${planetImg}" style="width: 80px; height: 80px; margin: 5px; border: 2px solid #333;">
+                <img src="${rocketImg}" style="width: 80px; height: 80px; margin: 5px; border: 2px solid #333;">
                 <div style="width: 80px; height: 80px; margin: 5px; border: 2px solid #333; display: flex; align-items: center; justify-content: center; font-size: 48px;">?</div>
             </div>
         </div>`;
     } else if (item.item_type === 'matrix') {
+        // 2x2 matrix pattern using actual SVG images
+        const balloonImg = getImageDataUrl('things', 'birthday', 'balloon_1');
+        const cakeImg = getImageDataUrl('things', 'birthday', 'birthday_cake_1');
+        
         return `<div style="text-align: center;">
             <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; width: 200px; margin: 0 auto;">
-                <img src="img/circle.png" style="width: 80px; height: 80px; border: 2px solid #333;">
-                <img src="img/circle.png" style="width: 80px; height: 80px; border: 2px solid #333;">
-                <img src="img/star.png" style="width: 80px; height: 80px; border: 2px solid #333;">
+                <img src="${balloonImg}" style="width: 80px; height: 80px; border: 2px solid #333;">
+                <img src="${balloonImg}" style="width: 80px; height: 80px; border: 2px solid #333;">
+                <img src="${cakeImg}" style="width: 80px; height: 80px; border: 2px solid #333;">
                 <div style="width: 80px; height: 80px; border: 2px solid #333; display: flex; align-items: center; justify-content: center; font-size: 48px;">?</div>
             </div>
         </div>`;
@@ -385,11 +439,12 @@ function createPracticeFeedback(jsPsych: JsPsych, include_audio: boolean) {
         type: jsPsychHtmlButtonResponse,
         stimulus: () => {
             const lastTrial = jsPsych.data.get().last(1).values()[0];
-            const audioTag = include_audio && lastTrial.correct ?
-                '<audio autoplay><source src="audio/thats_right.mp3" type="audio/mpeg"></audio>' : '';
+            // const audioTag = include_audio && lastTrial.correct ?
+            //     '<audio autoplay><source src="audio/thats_right.mp3" type="audio/mpeg"></audio>' : '';
+            const audioTag = '';
 
             if (lastTrial.correct) {
-                return `${audioTag}<div style="font-size: 24px; color: green; text-align: center;"><p>✓ That's right!</p></div>`;
+                return `<div style="font-size: 24px; color: green; text-align: center;"><p>✓ That's right!</p></div>`;
             } else {
                 return '<div style="font-size: 24px; color: red; text-align: center;"><p>Let\'s try that again.</p></div>';
             }
@@ -401,13 +456,13 @@ function createPracticeFeedback(jsPsych: JsPsych, include_audio: boolean) {
 }
 
 function createLiveTransition(include_audio: boolean) {
-    const audioHTML = include_audio ?
-        '<audio autoplay><source src="audio/live_transition.mp3" type="audio/mpeg"></audio>' : '';
+    // const audioHTML = include_audio ?
+    //     '<audio autoplay><source src="audio/live_transition.mp3" type="audio/mpeg"></audio>' : '';
+    const audioHTML = '';
 
     return {
         type: jsPsychHtmlButtonResponse,
         stimulus: `
-            ${audioHTML}
             <div style="max-width: 700px; margin: 0 auto; text-align: center; padding: 20px;">
                 <h2>Ready for the Test</h2>
                 <p>Now, let's look at some more pictures.</p>
@@ -417,7 +472,8 @@ function createLiveTransition(include_audio: boolean) {
             </div>
         `,
         choices: ['Start Test'],
-        button_html: '<button class="jspsych-btn" style="background-color: #7B3F99; color: white; padding: 15px 30px; border-radius: 25px; font-size: 18px;">%choice%</button>',
+        button_html: (choice) => `<button class="jspsych-btn" style="margin: 0 20px; padding: 15px 30px; font-size: 18px;">${choice}</button>`,
+        //button_html: (choice) => `<button class="jspsych-btn" style="background-color: #7B3F99; color: white; padding: 15px 30px; border-radius: 25px; font-size: 18px;">${choice}</button>`,
         post_trial_gap: 500,
         on_finish: () => {
             state.practiceCompleted = true;
@@ -437,7 +493,7 @@ function createAdaptiveTrial(
         </div>` : '';
 
     return {
-        type: jsPsychImageButtonResponse,
+        type: jsPsychHtmlButtonResponse,
         stimulus: createAdaptiveStimulus(stimulus),
         choices: stimulus.response_options,
         button_html: '<img src="%choice%" style="width: 120px; height: 120px; margin: 10px; border: 3px solid #ccc; border-radius: 10px; cursor: pointer; transition: all 0.3s;">',
@@ -513,11 +569,13 @@ function createAdaptiveStimulus(item: VisualReasoningStimulus): string {
 
 function createTimeoutWarning() {
     return {
-        type: jsPsychAudioButtonResponse,
-        stimulus: 'audio/please_choose_answer.mp3',
+        // type: jsPsychAudioButtonResponse,
+        type: jsPsychHtmlButtonResponse,
+        // stimulus: 'audio/please_choose_answer.mp3',
+        stimulus: '<p style="font-size: 18px; color: #666;">Please choose an answer</p>',
         choices: [],
-        trial_duration: 2000,
-        prompt: '<p style="font-size: 18px; color: #666;">Please choose an answer</p>'
+        trial_duration: 2000
+        // prompt: '<p style="font-size: 18px; color: #666;">Please choose an answer</p>'
     };
 }
 
@@ -562,7 +620,7 @@ export function createTimeline(
         show_practice = true,
         show_instructions = true,
         show_results = true,
-        include_audio = DEFAULT_INCLUDE_AUDIO,
+        // include_audio = DEFAULT_INCLUDE_AUDIO,
         show_progress = DEFAULT_SHOW_PROGRESS,
         cat_parameters = {
             start_point: CAT_INITIAL_THETA,
@@ -571,7 +629,16 @@ export function createTimeline(
             stopping_se: CAT_STOPPING_SE
         },
         //custom_item_bank,
-        enable_admin_gesture = DEFAULT_ADMIN_GESTURE_ENABLED
+        enable_admin_gesture = DEFAULT_ADMIN_GESTURE_ENABLED,
+        // New seed parameters for visual reasoning experiments
+        use_seed_experiments = false,
+        seed_parameters = {
+            numberOfAnswerOptions: 4,
+            numberOfExp1Trials: 5,
+            numberOfExp2Trials: 5,
+            difficulty: 'medium' as DifficultyLevel,
+            seedNumber: 12345
+        }
     }: {
         participant_age?: number,
         participant_education?: string,
@@ -580,11 +647,13 @@ export function createTimeline(
         show_practice?: boolean,
         show_instructions?: boolean,
         show_results?: boolean,
-        include_audio?: boolean,
+        // include_audio?: boolean,
         show_progress?: boolean,
         cat_parameters?: CATParameters,
         custom_item_bank?: VisualReasoningStimulus[],
-        enable_admin_gesture?: boolean
+        enable_admin_gesture?: boolean,
+        use_seed_experiments?: boolean,
+        seed_parameters?: SeedParameters
     } = {}
 ) {
     // Reset state for new timeline
@@ -605,6 +674,17 @@ export function createTimeline(
         state.currentTheta = getStartPoint(participant_age, participant_education);
     }
 
+    // Check if using seed experiments
+    if (use_seed_experiments) {
+        return createSeededTimeline(jsPsych, seed_parameters, {
+            trial_timeout,
+            show_practice,
+            show_instructions,
+            show_results,
+            show_progress
+        });
+    }
+
     const timeline: any[] = [];
 
     // Preload all images and audio
@@ -613,7 +693,7 @@ export function createTimeline(
         images: () => {
             const images: string[] = [];
 
-            // Add practice images
+            // Add practice images - these are all SVG data URLs now
             const practiceItems = generatePracticeItems();
             practiceItems.forEach(item => {
                 if (item.visual_stimulus && !['sequence', 'matrix'].includes(item.visual_stimulus)) {
@@ -622,10 +702,7 @@ export function createTimeline(
                 images.push(...item.response_options);
             });
 
-            // Add images for specific practice patterns
-            images.push('img/pencil.png', 'img/pen.png', 'img/book.png', 'img/pencil2.png', 'img/eraser.png');
-            images.push('img/rocket.png', 'img/planet.png', 'img/star.png', 'img/moon.png');
-            images.push('img/circle.png', 'img/star.png', 'img/square.png', 'img/triangle.png');
+            // Note: No need to preload additional images as they are SVG data URLs
 
             // Add adaptive test images
             state.itemBank.forEach(item => {
@@ -637,26 +714,26 @@ export function createTimeline(
 
             return images;
         },
-        audio: () => {
-            if (!include_audio) return [];
+        // audio: () => {
+        //     if (!include_audio) return [];
 
-            const audio: string[] = [
-                'audio/main_instructions.mp3',
-                'audio/live_transition.mp3',
-                'audio/please_choose_answer.mp3'
-            ];
+        //     const audio: string[] = [
+        //         'audio/main_instructions.mp3',
+        //         'audio/live_transition.mp3',
+        //         'audio/please_choose_answer.mp3'
+        //     ];
 
-            // Add practice audio
-            const practiceItems = generatePracticeItems();
-            practiceItems.forEach(item => {
-                audio.push(item.instruction_audio);
-                audio.push(item.feedback_audio_correct);
-                audio.push(item.feedback_audio_incorrect);
-                audio.push(item.feedback_audio_second_incorrect);
-            });
+        //     // Add practice audio
+        //     const practiceItems = generatePracticeItems();
+        //     practiceItems.forEach(item => {
+        //         audio.push(item.instruction_audio);
+        //         audio.push(item.feedback_audio_correct);
+        //         audio.push(item.feedback_audio_incorrect);
+        //         audio.push(item.feedback_audio_second_incorrect);
+        //     });
 
-            return audio;
-        },
+        //     return audio;
+        // },
         show_progress_bar: true,
         message: 'Loading test materials...'
     });
@@ -666,7 +743,7 @@ export function createTimeline(
 
     // Add instructions if requested
     if (show_instructions) {
-        timeline.push(createInstructions(include_audio));
+        timeline.push(createInstructions(false)); // Audio disabled
     }
 
     // Add practice trials if requested
@@ -676,14 +753,14 @@ export function createTimeline(
         const practiceItems = generatePracticeItems();
         practiceItems.forEach((item, index) => {
             // First attempt
-            timeline.push(createPracticeTrial(jsPsych, item, index + 1, include_audio));
-            timeline.push(createPracticeFeedback(jsPsych, include_audio));
+            timeline.push(createPracticeTrial(jsPsych, item, index + 1, false)); // Audio disabled
+            timeline.push(createPracticeFeedback(jsPsych, false)); // Audio disabled
 
             // Conditional node for second attempt if incorrect
             const conditionalNode = {
                 timeline: [
-                    createPracticeTrial(jsPsych, item, index + 1, include_audio),
-                    createPracticeFeedback(jsPsych, include_audio)
+                    createPracticeTrial(jsPsych, item, index + 1, false), // Audio disabled
+                    createPracticeFeedback(jsPsych, false) // Audio disabled
                 ],
                 conditional_function: () => {
                     const lastTrial = jsPsych.data.get().filter({ task: 'practice' }).last(1).values()[0];
@@ -695,7 +772,7 @@ export function createTimeline(
     }
 
     // Add transition to live items
-    timeline.push(createLiveTransition(include_audio));
+    timeline.push(createLiveTransition(false)); // Audio disabled
 
 if (state.itemBank.length > 0) {    
     // Create adaptive testing loop
@@ -798,18 +875,18 @@ if (state.itemBank.length > 0) {
                         data.theta_estimate_post = state.currentTheta;
                         data.se_estimate_post = state.currentSE;
                     },
-                    on_load: () => {
-                        // Add timeout warning functionality
-                        if (include_audio) {
-                            setTimeout(() => {
-                                const buttons = document.querySelectorAll('.jspsych-content-wrapper button');
-                                if (buttons.length > 0 && !jsPsych.data.get().last(1).values()[0].response) {
-                                    const audio = new Audio('audio/please_choose_answer.mp3');
-                                    audio.play();
-                                }
-                            }, trial_timeout - 5000); // Play warning 5 seconds before timeout
-                        }
-                    }
+                    // on_load: () => {
+                    //     // Add timeout warning functionality
+                    //     if (include_audio) {
+                    //         setTimeout(() => {
+                    //             const buttons = document.querySelectorAll('.jspsych-content-wrapper button');
+                    //             if (buttons.length > 0 && !jsPsych.data.get().last(1).values()[0].response) {
+                    //                 const audio = new Audio('audio/please_choose_answer.mp3');
+                    //                 audio.play();
+                    //             }
+                    //         }, trial_timeout - 5000); // Play warning 5 seconds before timeout
+                    //     }
+                    // }
                 }
             ],
             conditional_function: () => {
@@ -843,6 +920,176 @@ if (state.itemBank.length > 0) {
 }
 
     return timeline;
+}
+
+/* New seeded experimental timeline creation function */
+export function createSeededTimeline(
+    jsPsych: JsPsych,
+    seedParameters: SeedParameters,
+    {
+        trial_timeout = DEFAULT_TRIAL_TIMEOUT,
+        show_practice = true,
+        show_instructions = true,
+        show_results = true,
+        show_progress = DEFAULT_SHOW_PROGRESS
+    }: {
+        trial_timeout?: number,
+        show_practice?: boolean,
+        show_instructions?: boolean,
+        show_results?: boolean,
+        show_progress?: boolean
+    } = {}
+) {
+    const timeline: any[] = [];
+
+    // Generate seeded trials
+    const experimentalTrials = genSeed(jsPsych, seedParameters);
+
+    // Preload all images
+    timeline.push({
+        type: jsPsychPreload,
+        images: () => {
+            const images: string[] = [];
+
+            // Add practice images
+            const practiceItems = generatePracticeItems();
+            practiceItems.forEach(item => {
+                if (item.visual_stimulus && !['sequence', 'matrix'].includes(item.visual_stimulus)) {
+                    images.push(item.visual_stimulus);
+                }
+                images.push(...item.response_options);
+            });
+
+            // Add experimental trial images
+            experimentalTrials.forEach(trial => {
+                if (trial.target) images.push(trial.target);
+                if (trial.patternSequence) images.push(...trial.patternSequence);
+                images.push(...trial.responseOptions);
+            });
+
+            return images;
+        },
+        show_progress_bar: true,
+        message: 'Loading test materials...'
+    });
+
+    // Add welcome screen
+    timeline.push(createWelcome());
+
+    // Add instructions if requested
+    if (show_instructions) {
+        timeline.push(createInstructions(false)); // No audio for simplicity
+    }
+
+    // Add practice trials if requested
+    if (show_practice) {
+        timeline.push(createPracticeTransition());
+
+        const practiceItems = generatePracticeItems();
+        practiceItems.forEach((item, index) => {
+            timeline.push(createPracticeTrial(jsPsych, item, index + 1, false));
+            timeline.push(createPracticeFeedback(jsPsych, false));
+        });
+    }
+
+    // Add transition to live items
+    timeline.push(createLiveTransition(false));
+
+    // Add experimental trials
+    experimentalTrials.forEach((trial, index) => {
+        // Evaluate stimulus and prompt immediately
+        const stimulus = trial.experimentType === 'experiment1' 
+            ? createExperiment1HTML(trial) 
+            : createExperiment2HTML(trial);
+            
+        const prompt = show_progress 
+            ? `<div class="progress-indicator">
+                Trial ${index + 1} of ${experimentalTrials.length}
+              </div>` 
+            : '';
+
+        const trialNode = {
+            type: jsPsychImageButtonResponse,
+            stimulus: stimulus,
+            choices: trial.responseOptions,
+            button_html: '<img src="%choice%" class="jspsych-btn choice-option" style="width: 120px; height: 120px; margin: 10px; border: 3px solid #ccc; border-radius: 10px; cursor: pointer; transition: all 0.3s;">',
+            prompt: prompt,
+            trial_duration: trial_timeout,
+            data: {
+                task: 'visual_reasoning_experiment',
+                experiment_type: trial.experimentType,
+                difficulty: trial.difficulty,
+                correct_response: trial.correctResponse,
+                trial_number: index + 1,
+                total_trials: experimentalTrials.length,
+                seed_info: trial.trialData
+            },
+            on_finish: (data: any) => {
+                data.correct = (data.response === data.correct_response);
+                data.experiment_complete_time = Date.now();
+            },
+            css_classes: ['visual-reasoning-trial']
+        };
+
+        timeline.push(trialNode);
+    });
+
+    // Add results screen if requested
+    if (show_results) {
+        timeline.push(createSeededResults(jsPsych, seedParameters));
+    }
+
+    return timeline;
+}
+
+// Results screen for seeded experiments
+function createSeededResults(jsPsych: JsPsych, seedParameters: SeedParameters) {
+    return {
+        type: jsPsychHtmlButtonResponse,
+        stimulus: () => {
+            const trials = jsPsych.data.get().filter({ task: 'visual_reasoning_experiment' });
+            const correctTrials = trials.filter({ correct: true });
+            const exp1Trials = trials.filter({ experiment_type: 'experiment1' });
+            const exp2Trials = trials.filter({ experiment_type: 'experiment2' });
+            const exp1Correct = exp1Trials.filter({ correct: true });
+            const exp2Correct = exp2Trials.filter({ correct: true });
+            
+            const overallAccuracy = Math.round((correctTrials.count() / trials.count()) * 100);
+            const exp1Accuracy = exp1Trials.count() > 0 ? Math.round((exp1Correct.count() / exp1Trials.count()) * 100) : 0;
+            const exp2Accuracy = exp2Trials.count() > 0 ? Math.round((exp2Correct.count() / exp2Trials.count()) * 100) : 0;
+
+            return `
+                <div class="visual-reasoning-end-screen">
+                    <h2>Experiment Complete!</h2>
+                    <div style="text-align: left; background-color: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                        <h3>Overall Performance</h3>
+                        <p><strong>Total Trials:</strong> ${trials.count()}</p>
+                        <p><strong>Overall Accuracy:</strong> ${overallAccuracy}%</p>
+                        
+                        <h3>Experiment 1 (Target Matching)</h3>
+                        <p><strong>Trials:</strong> ${exp1Trials.count()}</p>
+                        <p><strong>Accuracy:</strong> ${exp1Accuracy}%</p>
+                        <p><strong>Difficulty:</strong> ${seedParameters.difficulty}</p>
+                        
+                        <h3>Experiment 2 (Pattern Completion)</h3>
+                        <p><strong>Trials:</strong> ${exp2Trials.count()}</p>
+                        <p><strong>Accuracy:</strong> ${exp2Accuracy}%</p>
+                        
+                        <h3>Session Info</h3>
+                        <p><strong>Seed Number:</strong> ${seedParameters.seedNumber}</p>
+                        <p><strong>Answer Options:</strong> ${seedParameters.numberOfAnswerOptions}</p>
+                    </div>
+                    <p>Thank you for participating in the Visual Reasoning Experiments!</p>
+                </div>
+            `;
+        },
+        choices: ['Finish'],
+        on_finish: () => {
+            if (jsPsych.data.get().select('responses').values.length > 0) {
+                console.log('Experiment data:', jsPsych.data.get().csv());
+            }
+        }
+    };
 }
 
 /* Export individual components for custom timeline building */
@@ -917,6 +1164,10 @@ export const catFunctions = {
         usedItems: Array.from(state.usedItems)
     })
 };
+
+/* Export new experimental functions */
+export { genSeed, presetConfigurations };
+export type { SeedParameters, DifficultyLevel, ExperimentTrial };
 
 /* Export types */
 export type {
