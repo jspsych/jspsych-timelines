@@ -321,6 +321,9 @@ function instructionTrial(instruction_text: string, button_text?: string) {
     type: jsPsychHtmlButtonResponse,
     stimulus: `<div class="instruction-text" style="text-align: center; font-size: 1.2em; max-width: 80vw; max-height: 80vh; "><p>${instruction_text}</p></div>`,
     choices: [button_text || "Yes"],
+    data: {
+      timeline_unit_type: "instructionTrial",
+    },
   };
 }
 
@@ -406,6 +409,7 @@ function answerTrial(
         prompt: `Order the <strong>${group.stimulus_set_id}</strong> from smallest to largest in size, separated by commas:`,
         name: `response_${group.stimulus_set_id}`,
         required: true,
+        placeholder: "",
         // DEV: placeholder: group.correct_order.join(", "),
       }));
     },
@@ -492,7 +496,7 @@ function practiceFeedbackTrial(
     },
     choices: ["Continue"],
     on_finish: (data) => {
-      data.task_type = "practice_feedback";
+      data.task_type = "practice";
       data.timeline_unit_type = "practiceFeedbackTrial";
       data.attempts = getAttempts();
       data.max_attempts = max_attempts;
@@ -593,6 +597,7 @@ function lswmTrialSequence(jsPsych: JsPsych, options: lswmTrialSequenceOptions):
         return true; // retry answerTrial only
       },
       data: {
+        task_type: options.task,
         attempts: () => attempts.count,
         max_attempts: options.max_attempts,
         dimension: options.dimension,
