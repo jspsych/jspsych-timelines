@@ -266,7 +266,6 @@ function lswmTrial(
 }
 
 function answerTrial(
-  jsPsych: JsPsych,
   trialSequenceStimuli: Array<{
     stimulus_name: string;
     stimulus_set_id: string;
@@ -315,9 +314,6 @@ function answerTrial(
       data.correct = correctAnswer.reduce((acc, group) => {
         const response = data.response[`response_${group.stimulus_set_id}`];
         const responseArray = response ? response.split(",").map((s) => s.trim()) : [];
-        console.log("response:", response);
-        console.log("responseArray:", responseArray);
-        console.log("correct_order:", group.correct_order);
 
         acc[group.stimulus_set_id] =
           JSON.stringify(responseArray) === JSON.stringify(group.correct_order);
@@ -422,6 +418,7 @@ function lswmTrialSequence(
   const sampledSetIds = new Set(timelineVariables.map((set) => set.stimulus_set_id));
 
   let trialSequenceTimeline = [];
+
   trialSequenceTimeline.push({
     timeline: [lswmTrial(jsPsych, sampledSetIds, options.task)],
     timeline_variables: timelineVariables,
@@ -437,7 +434,7 @@ function lswmTrialSequence(
     const attempts = { count: 1 };
     const practiceRetryLoop = {
       timeline: [
-        answerTrial(jsPsych, timelineVariables, options.task),
+        answerTrial(timelineVariables, options.task),
         practiceFeedbackTrial(jsPsych, () => attempts.count, options.max_attempts),
       ],
       loop_function: () => {
@@ -457,9 +454,50 @@ function lswmTrialSequence(
     };
     trialSequenceTimeline.push(practiceRetryLoop);
   } else {
-    trialSequenceTimeline.push(answerTrial(jsPsych, timelineVariables, options.task));
+    trialSequenceTimeline.push(answerTrial(timelineVariables, options.task));
   }
   return trialSequenceTimeline;
+}
+
+function lswmTrialSequenceRetryLoop(
+  jsPsych: JsPsych,
+  options: {
+    dimension: number;
+    stimulus_set_list: Array<listSortingWorkingMemoryTestStimulusSet>;
+    sequence_length: number;
+    task?: "practice" | "live";
+    max_attempts?: number;
+  }
+): any[] {
+  const timeline = [];
+  const max_attempts = options.max_attempts ?? 2;
+  let attempt = 0;
+
+  function addAttempt() {
+    const trialSeq = lswmTrialSequence(jsPsych, {
+      dimension: options.dimension,
+      stimulus_set_list: options.stimulus_set_list,
+      sequence_length: options.sequence_length,
+      task: options.task || "live",
+      max_attempts,
+    });
+
+    timeline.push({
+      timeline: trialSeq,
+      on_timeline_finish: () => {
+        const lastData = jsPsych.data.getLastTrialData().values().slice(-1)[0];
+        const correct = lastData?.all_correct;
+        attempt++;
+
+        if (!correct && attempt < max_attempts) {
+          addAttempt(); // Add a new attempt
+        }
+      },
+    });
+  }
+
+  addAttempt(); // Start with the first attempt
+  return timeline;
 }
 
 /**
@@ -475,6 +513,7 @@ function lswmSection(
     stimulus_set_list: Array<listSortingWorkingMemoryTestStimulusSet>;
     sample_size_sequence?: Array<number>;
     excluded_sets?: Array<string | number>;
+    max_attempts?: number;
   }
 ) {
   // Get list of excluded sets
@@ -500,22 +539,25 @@ function lswmSection(
     options.sample_size_sequence = Array.from({ length: 6 }, (_, i) => i + 2);
   }
 
+  options.max_attempts = options.max_attempts || 2; // Default to 2 attempts if not provided
+
   // Section timeline
   let sectionTimeline = [];
   for (let i = 0; i < options.sample_size_sequence.length; i++) {
-    const trialSequence = lswmTrialSequence(jsPsych, {
-      dimension: options.dimension,
-      stimulus_set_list: options.stimulus_set_list,
-      sequence_length: options.sample_size_sequence[i],
-    });
-    sectionTimeline.push({
-      timeline: [
-        trialSequence,
-        instructionTrial("Now let's try another set of pictures. Are you ready?"),
-      ],
-    });
-  }
+    const sequenceLength = options.sample_size_sequence[i];
+    const sequenceAttempts = { count: 0 };
 
+    sectionTimeline.push(
+      lswmTrialSequenceRetryLoop(jsPsych, {
+        dimension: options.dimension,
+        stimulus_set_list: options.stimulus_set_list,
+        sequence_length: sequenceLength,
+        task: "live",
+        max_attempts: options.max_attempts,
+      })
+    );
+    sectionTimeline.push(instructionTrial("Now let's try another set of pictures. Are you ready?"));
+  }
   return sectionTimeline;
 }
 
@@ -572,7 +614,7 @@ export function createTimeline(
         instructionTrial(nListPracticeInstructionText(practiceStimuli[0]), "Start Practice")
       );
       let practiceTrialSequences = [];
-      practiceStimuli.forEach((set, _) => {
+      practiceStimuli.forEach((set, idx) => {
         practiceTrialSequences.push({
           timeline: [
             lswmTrialSequence(jsPsych, {
@@ -580,9 +622,13 @@ export function createTimeline(
               stimulus_set_list: set,
               task: "practice",
             }),
-            instructionTrial("Now let's practice with another set of pictures. Are you ready?"),
           ],
         });
+        if (idx < practiceStimuli.length - 1) {
+          practiceTrialSequences.push(
+            instructionTrial("Now let's practice with another set of pictures. Are you ready?")
+          );
+        }
       });
       mainTimeline.push(...practiceTrialSequences);
     } else {
