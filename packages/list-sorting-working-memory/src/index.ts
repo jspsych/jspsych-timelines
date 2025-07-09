@@ -957,6 +957,9 @@ export function createTimeline(jsPsych: JsPsych, options: lswmTimelineOptions = 
       });
     }
   }
+  mainTimeline.push(
+    instructionTrial("You have completed the experiment. Thank you for participating!")
+  );
   return mainTimeline;
 }
 
