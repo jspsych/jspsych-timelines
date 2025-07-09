@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>jsPsychTimelineOralSymbolDigit Example</title>
+  <script src="https://unpkg.com/jspsych"></script>
+  <script src="../dist/index.global.js"></script>
+  <!-- Load the published timeline package here, e.g.
+<script src="https://unpkg.com/oral-symbol-digit"></script>
+<script src="../dist/index.global.js"></script> -->
+  <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css">
+</head>
+
+<body></body>
+<script>
+  const jsPsych = initJsPsych({
+    on_finish: function() {
+      // Display raw JSON data instead of formatted page
+      const data = jsPsych.data.get().values();
+      document.body.innerHTML = `<pre style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace; font-size: 12px; margin: 20px;">${JSON.stringify(data, null, 2)}</pre>`;
+    }
+  });
+
+  // ===== CONFIGURATION OPTIONS =====
+  // Edit these settings to customize the test
+  const config = {
+    testDuration: 30,          // Test duration in seconds (default: 120 = 2 minutes)
+    practiceRequired: true,     // Whether practice must be perfect to continue (default: true)
+    showInstructions: true,     // Whether to show instruction phase (default: true)
+    showResults: true,          // Whether to show results pages (default: true)
+    numTestItems: 200,         // Number of test items to generate (default: 143)
+    numPracticeItems: 5,       // Number of practice items (default: 9)
+    maxPracticeAttempts: 2,    // Maximum practice attempts before proceeding (default: 3)
+    useKeyboard: false          // Whether to use keyboard input (true) or on-screen buttons (false) (default: false)
+  };
+
+  // Common configurations (uncomment one to use):
+  
+  // Short 1-minute test:
+  // config.testDuration = 60;
+  
+  // Quick 30-second demo:
+  // config.testDuration = 30;
+  // config.numTestItems = 50;
+  
+  // Extended 5-minute test:
+  // config.testDuration = 300;
+  // config.numTestItems = 200;
+  
+  // Test-only mode (skip instructions and results):
+  // config.showInstructions = false;
+  // config.showResults = false;
+  
+  // Practice-optional mode:
+  // config.practiceRequired = false;
+  
+  // Keyboard input mode:
+  // config.useKeyboard = true;
+  
+  // Custom practice length:
+  // config.numPracticeItems = 15;
+  
+  // Allow unlimited practice attempts:
+  // config.maxPracticeAttempts = 999;
+
+  const task = jsPsychTimelineOralSymbolDigit.createTimeline(jsPsych, config);
+
+  jsPsych.run([task])
+</script>
+
+</html>
