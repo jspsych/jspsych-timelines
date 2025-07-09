@@ -91,7 +91,6 @@ out
 
 # Nuxt.js build / generate output
 .nuxt
-dist
 
 # Gatsby files
 .cache/
@@ -133,3 +132,10 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# Ignore specific packages, 
+packages/pattern-comparison-task/
+packages/pattern-comparison/
+packages/flanker-inhibitory/
+packages/visual-reasoning/
+packages/spatial-nback/
