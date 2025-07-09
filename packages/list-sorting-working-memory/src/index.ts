@@ -758,7 +758,10 @@ interface lswmTimelineOptions {
  * @param {lswmTimelineOptions} options Options for the List Sorting Working Memory Test timeline.
  * @returns {Array<Object>} An array of List Sorting Working Memory sections that make up a List Sorting Working Memory Test experiment timeline.
  */
-export function createTimeline(jsPsych: JsPsych, options: lswmTimelineOptions = {}): Array<Object> {
+export default function createTimeline(
+  jsPsych: JsPsych,
+  options: lswmTimelineOptions = {}
+): Array<Object> {
   // Default options
   const defaultOptions = {
     stimulus_set_list: DEFAULT_LIVE_STIMULI,
@@ -943,12 +946,22 @@ export function createTimeline(jsPsych: JsPsych, options: lswmTimelineOptions = 
 }
 
 export const timelineUnits = {
-  lswmTrial,
   lswmTrialSequence,
+  lswmTrialSequenceRetryLoop,
   lswmSection,
 };
 
 export const utils = {
-  animalStimuli,
-  foodStimuli,
+  DEFAULT_LIVE_STIMULI,
+  DEFAULT_PRACTICE_STIMULI,
+  nListPracticeInstructionText,
+  cleanExcludedSets,
+  getRandomSubarray,
+  flattenStimulusSetList,
+  sampleStimulusAcrossSets,
+  preloadTrial,
+  instructionTrial,
+  lswmTrial,
+  answerTrial,
+  practiceFeedbackTrial,
 };
