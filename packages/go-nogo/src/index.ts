@@ -32,11 +32,24 @@ export function createTimeline(jsPsych: JsPsych, config: GoNoGoConfig = {}) {
   
   const generateTrials = () => {
     const trials = []
+    let goTrialCount = 0
+    let noGoTrialCount = 0
+    
     for (let i = 0; i < numTrials; i++) {
-      const isGoTrial = Math.random() < goTrialProbability
-      const stimulus = isGoTrial 
-        ? actualGoStimuli[Math.floor(Math.random() * actualGoStimuli.length)]
-        : actualNoGoStimuli[Math.floor(Math.random() * actualNoGoStimuli.length)]
+      const randomValue = Math.random()
+      const isGoTrial = randomValue < goTrialProbability
+      
+      // Use separate counters for go and no-go stimuli to ensure variety
+      let stimulus
+      if (isGoTrial) {
+        const stimulusIndex = goTrialCount % actualGoStimuli.length
+        stimulus = actualGoStimuli[stimulusIndex]
+        goTrialCount++
+      } else {
+        const stimulusIndex = noGoTrialCount % actualNoGoStimuli.length
+        stimulus = actualNoGoStimuli[stimulusIndex]
+        noGoTrialCount++
+      }
       
       trials.push({
         stimulus: `<div style="font-size: 48px; font-weight: bold; color: ${isGoTrial ? 'green' : 'red'}">${stimulus}</div>`,
