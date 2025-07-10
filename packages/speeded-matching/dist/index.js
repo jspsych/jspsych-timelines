@@ -3519,7 +3519,7 @@ var trial_text = {
   practice_complete_header: "Are you ready?",
   practice_complete_message: "Practice complete! Ready for the full test?",
   // Main task instructions
-  main_task_prompt: "",
+  main_task_prompt: "Tap the matching picture below",
   // Fixation and inter-trial
   fixation_cross: "+",
   // Feedback messages (optional)
@@ -3716,9 +3716,6 @@ function createPracticeRound(items, enable_tts = false, num_choices = 4, practic
           const buttons = document.querySelectorAll(".choice-option:not(.disabled-choice)");
           buttons.forEach((button) => {
             button.classList.add("flash-choices");
-            setTimeout(() => {
-              button.classList.remove("flash-choices");
-            }, 1500);
           });
         }, 500);
         setTimeout(() => {

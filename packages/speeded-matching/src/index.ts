@@ -252,10 +252,6 @@ function createPracticeRound(items: string[], enable_tts: boolean = false, num_c
           const buttons = document.querySelectorAll('.choice-option:not(.disabled-choice)');
           buttons.forEach(button => {
             button.classList.add('flash-choices');
-            // Remove flash class after 1.5 seconds
-            setTimeout(() => {
-              button.classList.remove('flash-choices');
-            }, 1500);
           });
         }, 500);
 

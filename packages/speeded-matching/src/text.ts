@@ -25,7 +25,7 @@ export const trial_text = {
     practice_complete_message: "Practice complete! Ready for the full test?",
     
     // Main task instructions
-    main_task_prompt: "",
+    main_task_prompt: "Tap the matching picture below",
     
     // Fixation and inter-trial
     fixation_cross: "+",
