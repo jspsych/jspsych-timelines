@@ -121,6 +121,19 @@ declare function generateTrials(config: SpeedMatchingConfig): any[];
 declare function createTimeline(jsPsych: JsPsych, config?: SpeedMatchingConfig): {
     timeline: any[];
 };
+/**
+ * Function to calculate accuracy and reaction time statistics
+ * just for exporting with utils
+*/
+declare function calculatePerformance(data: any[]): {
+    overall: {
+        accuracy: number;
+        mean_reaction_time: number;
+        total_trials: number;
+        correct_trials: number;
+    };
+    by_target: {};
+};
 declare const timelineUnits: {
     instructions: string;
     practice: string;
@@ -137,16 +150,7 @@ declare const utils: {
     speakText: typeof speakText;
     createTrialSet: typeof createTrialSet;
     getRandomTestItems: typeof getRandomTestItems;
-    /** Calculate accuracy and reaction time statistics */
-    calculatePerformance: (data: any[]) => {
-        overall: {
-            accuracy: number;
-            mean_reaction_time: number;
-            total_trials: number;
-            correct_trials: number;
-        };
-        by_target: {};
-    };
+    calculatePerformance: typeof calculatePerformance;
 };
 
 declare const _default: {
@@ -167,16 +171,7 @@ declare const _default: {
         speakText: typeof speakText;
         createTrialSet: typeof createTrialSet;
         getRandomTestItems: typeof getRandomTestItems;
-        /** Calculate accuracy and reaction time statistics */
-        calculatePerformance: (data: any[]) => {
-            overall: {
-                accuracy: number;
-                mean_reaction_time: number;
-                total_trials: number;
-                correct_trials: number;
-            };
-            by_target: {};
-        };
+        calculatePerformance: typeof calculatePerformance;
     };
 };
 

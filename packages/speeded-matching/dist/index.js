@@ -3514,9 +3514,9 @@ var trial_text = {
   practice_header: "Practice Round",
   practice_intro_message: "We'll now do a practice round to show you how the task works.",
   practice_look_instruction: "Look at this picture",
-  practice_tap_instruction: "We are going to tap the matching picture below",
-  practice_complete_header: "Practice Complete!",
-  practice_complete_message: "Practice complete! Are you ready for the actual test?",
+  practice_tap_instruction: "Tap the matching picture below",
+  practice_complete_header: "Are you ready?",
+  practice_complete_message: "Practice complete! Are you ready for the full test?",
   // Main task instructions
   main_task_prompt: "",
   // Fixation and inter-trial
@@ -3630,7 +3630,7 @@ function createPracticeRound(items, enable_tts = false, num_choices = 4, practic
     `,
     choices: [trial_text.continue_button],
     button_html: function(choice) {
-      return `<button class="jspsych-btn speeded-matching-continue-button">${choice}</button>`;
+      return `<button class="jspsych-btn continue-button">${choice}</button>`;
     },
     data: {
       task: "practice-instruction"
@@ -3642,7 +3642,7 @@ function createPracticeRound(items, enable_tts = false, num_choices = 4, practic
     practice_timeline.push({
       type: HtmlButtonResponsePlugin,
       stimulus: `
-        <div class="speeded-matching-container">
+        <div class="trial-container">
           <div class="task-instructions">
             <p>${trial_text.practice_look_instruction}</p>
           </div>
@@ -3675,7 +3675,7 @@ function createPracticeRound(items, enable_tts = false, num_choices = 4, practic
     practice_timeline.push({
       type: HtmlButtonResponsePlugin,
       stimulus: `
-        <div class="speeded-matching-container">
+        <div class="trial-container">
           <div class="task-instructions">
             <p>${trial_text.practice_tap_instruction}</p>
           </div>
@@ -3756,7 +3756,7 @@ function createReadyScreen() {
     `,
     choices: [trial_text.ready_button],
     button_html: function(choice) {
-      return `<button class="jspsych-btn speeded-matching-continue-button">${choice}</button>`;
+      return `<button class="jspsych-btn continue-button">${choice}</button>`;
     },
     data: {
       task: "ready-screen"
@@ -3808,7 +3808,7 @@ function createTimeline(jsPsych, config = {}) {
     const mainTrial = {
       type: HtmlButtonResponsePlugin,
       stimulus: `
-        <div class="speeded-matching-container">
+        <div class="trial-container">
           <div class="task-instructions">
             <p>${trial_text.main_task_prompt}</p>
           </div>
@@ -3856,7 +3856,7 @@ function createTimeline(jsPsych, config = {}) {
     if (inter_trial_interval !== void 0 && inter_trial_interval > 0 && index < trials.length - 1) {
       timeline.push({
         type: HtmlButtonResponsePlugin,
-        stimulus: `<div class="speeded-matching-fixation">${trial_text.fixation_cross}</div>`,
+        stimulus: `<div class="fixation">${trial_text.fixation_cross}</div>`,
         choices: [],
         trial_duration: inter_trial_interval,
         data: {
@@ -3868,14 +3868,14 @@ function createTimeline(jsPsych, config = {}) {
   timeline.push({
     type: HtmlButtonResponsePlugin,
     stimulus: `
-      <div class="speeded-matching-end-screen">
+      <div class="end-screen">
         <h2>${trial_text.task_complete_header}</h2>
         <p>${trial_text.task_complete_message}</p>
       </div>
     `,
     choices: [trial_text.end_button],
     button_html: function(choice) {
-      return `<button class="jspsych-btn speeded-matching-continue-button">${choice}</button>`;
+      return `<button class="jspsych-btn continue-button">${choice}</button>`;
     },
     data: {
       task: "end-screen"
@@ -3883,6 +3883,41 @@ function createTimeline(jsPsych, config = {}) {
   });
   return {
     timeline
+  };
+}
+function calculatePerformance(data) {
+  const trial_data = data.filter((d) => d.task === "speeded-matching-trial");
+  const correct = trial_data.filter((d) => d.correct).length;
+  const total = trial_data.length;
+  const accuracy = total > 0 ? correct / total * 100 : 0;
+  const valid_rts = trial_data.filter((d) => d.correct && d.rt !== null).map((d) => d.rt);
+  const mean_rt = valid_rts.length > 0 ? valid_rts.reduce((a, b) => a + b, 0) / valid_rts.length : null;
+  const target_performance = {};
+  trial_data.forEach((trial) => {
+    const target_index = trial.target_index;
+    if (!target_performance[target_index]) {
+      target_performance[target_index] = {
+        correct: 0,
+        total: 0,
+        reaction_times: []
+      };
+    }
+    target_performance[target_index].total++;
+    if (trial.correct) {
+      target_performance[target_index].correct++;
+      if (trial.rt !== null) {
+        target_performance[target_index].reaction_times.push(trial.rt);
+      }
+    }
+  });
+  return {
+    overall: {
+      accuracy,
+      mean_reaction_time: mean_rt,
+      total_trials: total,
+      correct_trials: correct
+    },
+    by_target: target_performance
   };
 }
 var timelineUnits = {
@@ -3901,42 +3936,7 @@ var utils = {
   speakText,
   createTrialSet,
   getRandomTestItems,
-  /** Calculate accuracy and reaction time statistics */
-  calculatePerformance: function(data) {
-    const trial_data = data.filter((d) => d.task === "speeded-matching-trial");
-    const correct = trial_data.filter((d) => d.correct).length;
-    const total = trial_data.length;
-    const accuracy = total > 0 ? correct / total * 100 : 0;
-    const valid_rts = trial_data.filter((d) => d.correct && d.rt !== null).map((d) => d.rt);
-    const mean_rt = valid_rts.length > 0 ? valid_rts.reduce((a, b) => a + b, 0) / valid_rts.length : null;
-    const target_performance = {};
-    trial_data.forEach((trial) => {
-      const target_index = trial.target_index;
-      if (!target_performance[target_index]) {
-        target_performance[target_index] = {
-          correct: 0,
-          total: 0,
-          reaction_times: []
-        };
-      }
-      target_performance[target_index].total++;
-      if (trial.correct) {
-        target_performance[target_index].correct++;
-        if (trial.rt !== null) {
-          target_performance[target_index].reaction_times.push(trial.rt);
-        }
-      }
-    });
-    return {
-      overall: {
-        accuracy,
-        mean_reaction_time: mean_rt,
-        total_trials: total,
-        correct_trials: correct
-      },
-      by_target: target_performance
-    };
-  }
+  calculatePerformance
 };
 var src_default = { createTimeline, timelineUnits, utils };
 
