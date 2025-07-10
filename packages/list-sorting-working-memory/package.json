@@ -9,6 +9,11 @@
   "scripts": {
     "build": "tsup src/index.ts --format esm,iife --sourcemap --dts --treeshake --clean --global-name jsPsychTimelineListSortingWorkingMemory"
   },
+  "files": [
+    "dist",
+    "src",
+    "assets"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jspsych/jspsych-timelines.git",

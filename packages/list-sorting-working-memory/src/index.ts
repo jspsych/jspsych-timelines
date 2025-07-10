@@ -4,6 +4,8 @@ import jsPsychPreload from "@jspsych/plugin-preload";
 import jsPsychSurveyText from "@jspsych/plugin-survey-text";
 import { JsPsych } from "jspsych";
 
+// Import default stimulus assets from src/stimuli.js
+// NOTE: You can use own stimulus assets and/or change the file path to the assets folder by modifying the src/stimulus.js file
 import {
   defaultLiveStimuli as defaultLiveStimuliImport,
   oneListPracticeStimuliA as oneListPracticeStimuliAImport,
@@ -12,7 +14,6 @@ import {
   twoListPracticeStimuliB as twoListPracticeStimuliBImport,
 } from "./stimuli.js";
 
-// Default stimuli
 const oneListPracticeStimuliA = oneListPracticeStimuliAImport as Array<lswmStimulusSet>;
 const oneListPracticeStimuliB = oneListPracticeStimuliBImport as Array<lswmStimulusSet>;
 const twoListPracticeStimuliA = twoListPracticeStimuliAImport as Array<lswmStimulusSet>;
