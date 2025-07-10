@@ -114,42 +114,43 @@ The stimulus_set_id is optional and can be used to group stimuli in sets.
 
 
 
-#### lswmTrialSequence()
+#### lswmSection()
 
-> **lswmTrialSequence**: (`jsPsych`, `options`) => `any`[]
+> **lswmSection**: (`jsPsych`, `options`) => `any`[]
 
-Create a sequence of List Sorting Working Memory Test trials.
+Create a section of the list sorting working memory task.
+Each section consists of multiple List Sorting Working Memory trial sequences.
 
 ##### Parameters
 
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
 | `jsPsych` | `JsPsych` | The jsPsych instance of the experiment timeline. |
-| `options` | [`lswmTrialSequenceOptions`](#interface-lswmtrialsequenceoptions) | Options for the List Sorting Working Memory Test trial sequence. |
+| `options` | [`lswmTrialSectionOptions`](#interface-lswmtrialsectionoptions) | Options for a List Sorting Working Memory Test section. |
 
 ##### Returns
 
 `any`[]
 
-An array of List Sorting Working Memory Test trials.
+An array of List Sorting Working Memory Test trial sequences that make up one section.
 
 ***
 
 
 
-#### Interface: lswmTrialSequenceOptions
+#### Interface: lswmTrialSectionOptions
 
-Options for [lswmTrialSequence](#lswmtrialsequence).
+Options for [lswmSection](#lswmsection).
 
 ##### Properties
 
 | Property | Type | Default value | Description |
 | ------ | ------ | ------ | ------ |
-| <a id="dimension"></a> `dimension` | `number` | `undefined` | The number of categories in the List Sorting Working Memory Test trial sequence, e.g. 1 for one-list, 2 for two-list, etc. |
-| <a id="stimulus_set_list"></a> `stimulus_set_list` | [`lswmStimulusSet`](#interface-lswmstimulusset)[] | `undefined` | The list of stimulus sets to be used in the List Sorting Working Memory Test trial sequence. |
-| <a id="sequence_length"></a> `sequence_length?` | `number` | All stimuli in `stimulus_set_list` will be used without replacement. | The number of stimuli to sample in the List Sorting Working Memory Test trial sequence. |
-| <a id="task"></a> `task?` | `"live"` \| `"practice"` | `"live"` | The task type, either "practice" or "live". |
-| <a id="max_attempts"></a> `max_attempts?` | `number` | `2` | The maximum number of attempts allowed for the practice trial. |
+| <a id="dimension"></a> `dimension` | `number` | `undefined` | The number of categories in the List Sorting Working Memory Test section, e.g. 1 for one-list, 2 for two-list, etc. |
+| <a id="stimulus_set_list"></a> `stimulus_set_list` | [`lswmStimulusSet`](#interface-lswmstimulusset)[] | `undefined` | The list of stimulus sets to be used in the List Sorting Working Memory Test section. |
+| <a id="sample_size_sequence"></a> `sample_size_sequence?` | `number`[] | `[2, 3, 4, 5, 6, 7].` | The sequence of sample sizes for each trial sequence in the section. |
+| <a id="excluded_sets"></a> `excluded_sets?` | (`string` \| `number`)[] | Empty `Set()` | The list of stimulus set names or indices to exclude from the section. |
+| <a id="max_attempts"></a> `max_attempts?` | `number` | `2` | The maximum number of attempts allowed for each trial sequence in the section. |
 
 ***
 
@@ -180,207 +181,45 @@ A timeline containing a List Sorting Working Memory Test trial sequence that rec
 
 
 
-#### lswmSection()
+#### Interface: lswmTrialSequenceOptions
 
-> **lswmSection**: (`jsPsych`, `options`) => `any`[]
+Options for [lswmTrialSequence](#lswmtrialsequence).
 
-Create a section of the list sorting working memory task.
-Each section consists of multiple List Sorting Working Memory trial sequences.
+##### Properties
+
+| Property | Type | Default value | Description |
+| ------ | ------ | ------ | ------ |
+| <a id="dimension"></a> `dimension` | `number` | `undefined` | The number of categories in the List Sorting Working Memory Test trial sequence, e.g. 1 for one-list, 2 for two-list, etc. |
+| <a id="stimulus_set_list"></a> `stimulus_set_list` | [`lswmStimulusSet`](#interface-lswmstimulusset)[] | `undefined` | The list of stimulus sets to be used in the List Sorting Working Memory Test trial sequence. |
+| <a id="sequence_length"></a> `sequence_length?` | `number` | All stimuli in `stimulus_set_list` will be used without replacement. | The number of stimuli to sample in the List Sorting Working Memory Test trial sequence. |
+| <a id="task"></a> `task?` | `"live"` \| `"practice"` | `"live"` | The task type, either "practice" or "live". |
+| <a id="max_attempts"></a> `max_attempts?` | `number` | `2` | The maximum number of attempts allowed for the practice trial. |
+
+***
+
+
+
+#### lswmTrialSequence()
+
+> **lswmTrialSequence**: (`jsPsych`, `options`) => `any`[]
+
+Create a sequence of List Sorting Working Memory Test trials.
 
 ##### Parameters
 
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
 | `jsPsych` | `JsPsych` | The jsPsych instance of the experiment timeline. |
-| `options` | [`lswmTrialSectionOptions`](#interface-lswmtrialsectionoptions) | Options for a List Sorting Working Memory Test section. |
+| `options` | [`lswmTrialSequenceOptions`](#interface-lswmtrialsequenceoptions) | Options for the List Sorting Working Memory Test trial sequence. |
 
 ##### Returns
 
 `any`[]
 
-An array of List Sorting Working Memory Test trial sequences that make up one section.
+An array of List Sorting Working Memory Test trials.
 ***
-
-#### Interface: lswmTrialSectionOptions
-
-Options for [lswmSection](#lswmsection).
-
-##### Properties
-
-| Property | Type | Default value | Description |
-| ------ | ------ | ------ | ------ |
-| <a id="dimension"></a> `dimension` | `number` | `undefined` | The number of categories in the List Sorting Working Memory Test section, e.g. 1 for one-list, 2 for two-list, etc. |
-| <a id="stimulus_set_list"></a> `stimulus_set_list` | [`lswmStimulusSet`](#interface-lswmstimulusset)[] | `undefined` | The list of stimulus sets to be used in the List Sorting Working Memory Test section. |
-| <a id="sample_size_sequence"></a> `sample_size_sequence?` | `number`[] | `[2, 3, 4, 5, 6, 7].` | The sequence of sample sizes for each trial sequence in the section. |
-| <a id="excluded_sets"></a> `excluded_sets?` | (`string` \| `number`)[] | Empty `Set()` | The list of stimulus set names or indices to exclude from the section. |
-| <a id="max_attempts"></a> `max_attempts?` | `number` | `2` | The maximum number of attempts allowed for each trial sequence in the section. |
-
-***
-
-
 
 ### `utils` Documentation
-
-
-
-#### DEFAULT\_LIVE\_STIMULI
-
-> **DEFAULT\_LIVE\_STIMULI**: [`lswmStimulusSet`](#interface-lswmstimulusset)[]
-
-#### DEFAULT\_PRACTICE\_STIMULI
-
-> **DEFAULT\_PRACTICE\_STIMULI**: `Map`\<`number`, [`lswmStimulusSet`](#interface-lswmstimulusset)[][]\>
-
-#### nListPracticeInstructionText()
-
-> **nListPracticeInstructionText**: (`stimulusSetList`, `practice?`) => `string`
-
-Generate instruction text for a practice section in the List Sorting Working Memory Test.
-
-##### Parameters
-
-| Parameter | Type | Default value | Description |
-| ------ | ------ | ------ | ------ |
-| `stimulusSetList` | [`lswmStimulusSet`](#interface-lswmstimulusset)[] | `undefined` | The list of stimulus sets to be used in the section. This is used to determine the number of categories and dynamically generate the instruction text. |
-| `practice?` | `boolean` | `true` | Whether this is a practice section. If true, the instruction text will be tailored for practice. |
-
-##### Returns
-
-`string`
-
-The instruction text.
-
-***
-
-
-
-#### cleanExcludedSets()
-
-> **cleanExcludedSets**: (`stimulus_set_list`, `excluded_sets`) => `void`
-
-Modifies a list of stimulus sets in-place to exclude any sets that are specified in the `excluded_sets` array.
-
-##### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `stimulus_set_list` | [`lswmStimulusSet`](#interface-lswmstimulusset)[] | The list of stimulus sets to filter. |
-| `excluded_sets` | (`string` \| `number`)[] | An array of strings or numbers representing the names or indices of the stimulus sets to exclude. |
-
-##### Returns
-
-`void`
-
-***
-
-
-
-#### getRandomSubarray()
-
-> **getRandomSubarray**: (`array`, `sample_size`) => `any`[]
-
-Get a random subarray of a given size from an array.
-
-##### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `array` | `any`[] | The array to sample from. |
-| `sample_size` | `number` | The number of elements to sample. |
-
-##### Returns
-
-`any`[]
-
-A randomly sampled subarray of size = `sample_size`.
-
-***
-
-
-
-#### flattenStimulusSetList()
-
-> **flattenStimulusSetList**: (`stimulus_set_subarray`) => `object` & [`lswmStimulus`](#interface-lswmstimulus)[][]
-
-Flatten a list of stimulus sets into an array of stimulus groups, each group containing stimuli of one category and of similar size.
-Each stimulus in each group records its name, image, audio, set ID, and index within the set, which denotes its position in the sequence in terms of size.
-
-##### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `stimulus_set_subarray` | [`lswmStimulusSet`](#interface-lswmstimulusset)[] | An array of stimulus sets, where each set contains groups of stimuli. |
-
-##### Returns
-
-`object` & [`lswmStimulus`](#interface-lswmstimulus)[][]
-
-The flattened array of stimulus groups.
-
-***
-
-
-
-#### sampleStimulusAcrossSets()
-
-> **sampleStimulusAcrossSets**: (`stimulus_set_list`, `sample_size`) => `object`[]
-
-Sample a specified number of stimuli across different sets, ensuring that each set is sampled roughly the same number of times via round-robin sampling.
-Within each set, stimuli of similar size do not get sampled more than once.
-
-##### Parameters
-
-| Parameter | Type | Default value | Description |
-| ------ | ------ | ------ | ------ |
-| `stimulus_set_list` | `object`[][] | `undefined` | The list of stimulus groups, where each group contains stimuli of one category and of similar size. |
-| `sample_size` | `number` | `1` | The number of stimuli to sample across all sets. Defaults to 1 if not provided. |
-
-##### Returns
-
-`object`[]
-
-An array of sampled stimuli.
-
-***
-
-
-
-#### preloadTrial()
-
-> **preloadTrial**: () => `object`
-
-Automatically find all preloadable audio and/or image files for the List Sorting Working Memory Test and preloads them.
-
-##### Returns
-
-`object`
-
-A jsPsych trial object that preloads audio and/or image files for the List Sorting Working Memory Test.
-
-***
-
-
-
-#### instructionTrial()
-
-> **instructionTrial**: (`instruction_text`, `button_text?`) => `object`
-
-Trial that displays an instruction text and a button to continue (customizable text).
-
-##### Parameters
-
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `instruction_text` | `string` | The text to display in the instruction trial. |
-| `button_text?` | `string` | The text to display on the button. |
-
-##### Returns
-
-`object`
-
-A jsPsych trial object for displaying instructions.
-
-***
 
 
 

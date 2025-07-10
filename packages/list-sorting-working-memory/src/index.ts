@@ -967,24 +967,15 @@ export function createTimeline(jsPsych: JsPsych, options: lswmTimelineOptions = 
  * Timeline units that can be used to create a List Sorting Working Memory Test experiment timeline.
  */
 export const timelineUnits = {
-  lswmTrialSequence,
-  lswmTrialSequenceRetryLoop,
   lswmSection,
+  lswmTrialSequenceRetryLoop,
+  lswmTrialSequence,
 };
 
 /**
  * Utility functions that can be used to create a List Sorting Working Memory Test experiment timeline.
  */
 export const utils = {
-  DEFAULT_LIVE_STIMULI,
-  DEFAULT_PRACTICE_STIMULI,
-  nListPracticeInstructionText,
-  cleanExcludedSets,
-  getRandomSubarray,
-  flattenStimulusSetList,
-  sampleStimulusAcrossSets,
-  preloadTrial,
-  instructionTrial,
   lswmTrial,
   answerTrial,
   practiceFeedbackTrial,
