@@ -1,13 +1,33 @@
 /* Speeded Matching Task - Minimal Styles */
 
-.trial-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    font-family: Arial, sans-serif;
-    padding: 2vmin;
+/* GENERAL STYLES */
+
+h1, h2, h3 {
+    line-height: 1.6 !important;
+    margin: vmin !important;
+    margin-bottom: 3vmin !important;    
+    overflow-wrap: break-word !important;
+    word-wrap: break-word !important;
+    hyphens: auto !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
 }
+
+p {
+    margin: 2vmin !important;
+    font-size: clamp(15px, 8vmin, 40px) !important;
+    line-height: 1.6 !important;
+    margin-bottom: 2vmin !important;
+    
+    /* Prevent horizontal overflow */
+    overflow-wrap: break-word !important;
+    word-wrap: break-word !important;
+    hyphens: auto !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+/* INSTRUCTIONS TRIAL STYLES */
 
 .instructions-container {
     max-width: 90vw; /* Limit width for better readability */
@@ -18,23 +38,6 @@
     padding-bottom: 5vh !important;
 }
 
-/* For instruction containers specifically */
-.instructions-container p {
-    font-weight: 600 !important;
-    margin: 2vmin !important;            /* Add outer spacing */
-    font-size: clamp(15px, 6vmin, 30px) !important;
-    line-height: 1.6 !important;
-    margin-bottom: 2vmin !important;
-    
-    /* Prevent horizontal overflow */
-    word-wrap: break-word !important;    /* Break long words */
-    word-break: break-word !important;   /* Alternative for better support */
-    overflow-wrap: break-word !important; /* Modern standard */
-    hyphens: auto !important;            /* Add hyphens for readability */
-    max-width: 100% !important;          /* Never exceed container */
-    box-sizing: border-box !important;   /* Include padding in width */
-}
-
 /* Mobile-friendly instruction navigation buttons */
 .jspsych-instructions-nav {
     display: flex !important;
@@ -42,8 +45,32 @@
     justify-content: center !important;
     margin-top: auto !important;
     padding: 20px !important;
-    min-height: 50vmin !important;
+    min-height: clamp(20px, 50vmin, 250px) !important;
     align-items: flex-end !important;
+}
+
+/* Instruction navigation button styles */
+.jspsych-instructions-nav .jspsych-btn {
+    background-color: #fff !important;
+    color: #000 !important;
+    width: 20vmin !important;
+    height: 20vmin !important;
+    border: 3px solid #ccc !important;
+    border-radius: 50% !important;
+    font-size: clamp(15px, 7vmin, 35px) !important;
+    cursor: pointer !important;
+    min-height: 100px !important;
+    min-width: 100px !important;
+    font-weight: 600 !important;
+}
+
+.jspsych-instructions-nav .jspsych-btn:active {
+    background-color: #f0f0f0 !important;
+    border-color: #999 !important;
+}
+
+.jspsych-instructions-nav .jspsych-btn:disabled {
+    visibility: hidden !important;  /* Keeps the space but hides the button */
 }
 
 /* Fixed positioning for phones only */
@@ -63,45 +90,18 @@
     }
 }
 
-.jspsych-instructions-nav .jspsych-btn {
-    background-color: #fff !important;
-    color: #000 !important;
-    width: 20vmin !important;
-    height: 20vmin !important;
-    border: 3px solid #ccc !important;
-    border-radius: 50% !important;
-    font-size: 18px !important;
-    cursor: pointer !important;
-    min-height: 100px !important;
-    min-width: 100px !important;
-    font-weight: 600 !important;
-}
-
-.jspsych-instructions-nav .jspsych-btn:active {
-    background-color: #f0f0f0 !important;
-    border-color: #999 !important;
-}
-
-.jspsych-instructions-nav .jspsych-btn:disabled {
-    visibility: hidden !important;  /* Keeps the space but hides the button */
-}
-
-.start-prompt {
-    font-weight: bold;
-    color: #2980b9 !important;
-    font-size: 4vmin !important;
-    margin-top: 4vmin !important;
-}
+/* PRACTICE TRIAL STYLES */
 
 .continue-button {
     background-color: #3498db;
     color: white;
     border: none;
-    padding: 3vmin 6vmin;
-    font-size: 3vmin;
+    padding: clamp(15px, 6vmin, 35px) clamp(15px, 8vmin, 40px);
+    font-size: clamp(15px, 6vmin, 35px);
     border-radius: 1vmin;
     cursor: pointer;
     margin: 2vmin;
+    margin-top: 10vh;
     transition: background-color 0.3s;
     min-height: 48px;
 }
@@ -110,17 +110,41 @@
     background-color: #2980b9;
 }
 
-/* Task instructions */
+/* pre-practice and post-practice round pages */
+.practice-instructions, .ready-screen {
+    max-width: 90vw; /* Limit width for better readability */
+    margin: 0 auto; /* Center the container */
+    padding: 2vmin; /* Add some padding */
+    box-sizing: border-box; /* Include padding in width calculations */
+    overflow-x: hidden; /* Prevent horizontal overflow */
+    padding-bottom: 5vh !important;
+}
+
+/* EXPERIMENT TRIAL STYLES */
+
+/* Fixation cross (inter-trial), set to invisible by default */
+.fixation {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8vmin;
+    color: #ffffff; /* White color for invisibility */
+    font-weight: bold;
+    min-height: 20vmin;
+}
+.trial-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    font-family: Arial, sans-serif;
+    padding: 2vmin;
+}
+
+/* Task instructions in trial container, text on top. Usually there is none. */
 .task-instructions {
     margin-bottom: 3vmin;
     text-align: center;
-}
-
-.task-instructions p {
-    font-size: 4vmin;
-    color: #2c3e50;
-    font-weight: 600;
-    margin: 0;
 }
 
 /* Target stimulus */
@@ -229,7 +253,7 @@
     }
 }
 
-/* SVG sizing */
+/* SVG SIZING */
 .target-stimulus svg {
     width: 100% !important;
     height: 100% !important;
@@ -240,7 +264,8 @@
     height: 100% !important;
 }
 
-/* End screen */
+/* END SCREEN */
+
 .end-screen {
     text-align: center;
     max-width: 90vw;
@@ -256,65 +281,3 @@
     font-size: 5vmin;
     margin-bottom: 3vmin;
 }
-
-.end-screen p {
-    color: #555;
-    font-size: 3vmin;
-    line-height: 1.6;
-}
-
-/* Fixation cross, set to invisible by default */
-.fixation {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 8vmin;
-    color: #ffffff; /* White color for invisibility */
-    font-weight: bold;
-    min-height: 20vmin;
-}
-
-/* Ready screen */
-.ready-screen {
-    max-width: 90vw; /* Limit width for better readability */
-    margin: 0 auto; /* Center the container */
-    padding: 2vmin; /* Add some padding */
-    box-sizing: border-box; /* Include padding in width calculations */
-    overflow-x: hidden; /* Prevent horizontal overflow */
-    padding-bottom: 5vh !important;
-}
-
-.ready-screen h2 {
-    font-weight: 600 !important;
-    font-size: clamp(18px, 7vmin, 35px) !important;
-    line-height: 1.6 !important;
-    margin: 2vmin !important;
-    margin-bottom: 3vmin !important;
-    color: #2c3e50 !important;
-    
-    /* Prevent horizontal overflow */
-    word-wrap: break-word !important;
-    word-break: break-word !important;
-    overflow-wrap: break-word !important;
-    hyphens: auto !important;
-    max-width: 100% !important;
-    box-sizing: border-box !important;
-}
-
-.ready-screen p {
-    font-weight: 600 !important;
-    margin: 2vmin !important;
-    font-size: clamp(15px, 6vmin, 30px) !important;
-    line-height: 1.6 !important;
-    margin-bottom: 4vmin !important;
-    color: #555 !important;
-    
-    /* Prevent horizontal overflow */
-    word-wrap: break-word !important;
-    word-break: break-word !important;
-    overflow-wrap: break-word !important;
-    hyphens: auto !important;
-    max-width: 100% !important;
-    box-sizing: border-box !important;
-}
-

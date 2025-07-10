@@ -3505,6 +3505,7 @@ var trial_text = {
   ready_button: "I'm Ready",
   end_button: "End",
   // Instruction pages buttons text, these will always have arrows < and >
+  // these do not work right now due to CSS fixed position, might fix later
   next_button: "",
   back_button: "",
   // Task completion messages
@@ -3516,7 +3517,7 @@ var trial_text = {
   practice_look_instruction: "Look at this picture",
   practice_tap_instruction: "Tap the matching picture below",
   practice_complete_header: "Are you ready?",
-  practice_complete_message: "Practice complete! Are you ready for the full test?",
+  practice_complete_message: "Practice complete! Ready for the full test?",
   // Main task instructions
   main_task_prompt: "",
   // Fixation and inter-trial
