@@ -12,6 +12,7 @@ interface GoNoGoConfig {
   numTrials?: number
   goTrialProbability?: number
   varyStimulus?: boolean
+  showResultsDetails?: boolean
 }
 
 export function createTimeline(jsPsych: JsPsych, config: GoNoGoConfig = {}) {
@@ -23,7 +24,8 @@ export function createTimeline(jsPsych: JsPsych, config: GoNoGoConfig = {}) {
     interTrialInterval = 500,
     numTrials = 100,
     goTrialProbability = 0.7,
-    varyStimulus = true
+    varyStimulus = true,
+    showResultsDetails = true
   } = config
 
   // Override stimuli based on varyStimulus setting
@@ -122,6 +124,15 @@ export function createTimeline(jsPsych: JsPsych, config: GoNoGoConfig = {}) {
   const debriefTrial = {
     type: htmlButtonResponse,
     stimulus: () => {
+      if (!showResultsDetails) {
+        return `
+          <div style="font-size: 18px; line-height: 1.5; max-width: 600px; margin: 0 auto;">
+            <h2>Task Complete!</h2>
+            <p>Thank you for completing the Go/No-Go task!</p>
+          </div>
+        `
+      }
+
       const allData = jsPsych.data.get()
       
       // Get all trials that have stimulus_type defined (go-no-go trials)

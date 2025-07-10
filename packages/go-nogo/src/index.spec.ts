@@ -318,7 +318,7 @@ describe("createTimeline", () => {
       
       expect(mockData.correct).toBe(true);
       expect(mockData.accuracy).toBe(1);
-      expect(mockData.reaction_time).toBeUndefined();
+      expect(mockData.reaction_time).toBeNull();
     });
 
     it("should handle incorrect go trial responses", () => {
@@ -425,6 +425,278 @@ describe("createTimeline", () => {
       noGoTrials.forEach((trial: any) => {
         expect(trial.stimulus).toContain('NOGO_SINGLE');
       });
+    });
+  });
+
+  describe("debrief trial results calculation", () => {
+    it("should calculate accuracy correctly with mixed trial results", () => {
+      // Mock jsPsych data
+      const mockTrialData = [
+        { stimulus_type: 'go', accuracy: 1, response: 0, rt: 400 },
+        { stimulus_type: 'go', accuracy: 0, response: null, rt: null },
+        { stimulus_type: 'no-go', accuracy: 1, response: null, rt: null },
+        { stimulus_type: 'no-go', accuracy: 0, response: 0, rt: 300 },
+        { stimulus_type: 'go', accuracy: 1, response: 0, rt: 500 }
+      ];
+
+      const mockJsPsych = {
+        data: {
+          get: () => ({
+            values: () => mockTrialData
+          })
+        },
+        timelineVariable: (name: string) => `timeline_variable_${name}`
+      };
+
+      const timeline = createTimeline(mockJsPsych as any);
+      const debriefTrial = timeline.timeline[2] as any;
+      const stimulus = debriefTrial.stimulus();
+
+      expect(stimulus).toContain('<strong>Overall Accuracy:</strong> 60%'); // 3 correct out of 5 trials
+      expect(stimulus).toContain('<strong>Average Response Time (GO trials):</strong> 450ms'); // (400 + 500) / 2
+    });
+
+    it("should handle all correct trials", () => {
+      const mockTrialData = [
+        { stimulus_type: 'go', accuracy: 1, response: 0, rt: 400 },
+        { stimulus_type: 'go', accuracy: 1, response: 0, rt: 600 },
+        { stimulus_type: 'no-go', accuracy: 1, response: null, rt: null },
+        { stimulus_type: 'no-go', accuracy: 1, response: null, rt: null }
+      ];
+
+      const mockJsPsych = {
+        data: {
+          get: () => ({
+            values: () => mockTrialData
+          })
+        },
+        timelineVariable: (name: string) => `timeline_variable_${name}`
+      };
+
+      const timeline = createTimeline(mockJsPsych as any);
+      const debriefTrial = timeline.timeline[2] as any;
+      const stimulus = debriefTrial.stimulus();
+
+      expect(stimulus).toContain('<strong>Overall Accuracy:</strong> 100%');
+      expect(stimulus).toContain('<strong>Average Response Time (GO trials):</strong> 500ms');
+    });
+
+    it("should handle all incorrect trials", () => {
+      const mockTrialData = [
+        { stimulus_type: 'go', accuracy: 0, response: null, rt: null },
+        { stimulus_type: 'go', accuracy: 0, response: null, rt: null },
+        { stimulus_type: 'no-go', accuracy: 0, response: 0, rt: 300 },
+        { stimulus_type: 'no-go', accuracy: 0, response: 0, rt: 400 }
+      ];
+
+      const mockJsPsych = {
+        data: {
+          get: () => ({
+            values: () => mockTrialData
+          })
+        },
+        timelineVariable: (name: string) => `timeline_variable_${name}`
+      };
+
+      const timeline = createTimeline(mockJsPsych as any);
+      const debriefTrial = timeline.timeline[2] as any;
+      const stimulus = debriefTrial.stimulus();
+
+      expect(stimulus).toContain('<strong>Overall Accuracy:</strong> 0%');
+      expect(stimulus).toContain('<strong>Average Response Time (GO trials):</strong> 0ms'); // No valid GO responses
+    });
+
+    it("should handle no go-no-go trials", () => {
+      const mockTrialData = [
+        { trial_type: 'instructions', response: 0 },
+        { trial_type: 'html-button-response', response: 0 }
+      ];
+
+      const mockJsPsych = {
+        data: {
+          get: () => ({
+            values: () => mockTrialData
+          })
+        },
+        timelineVariable: (name: string) => `timeline_variable_${name}`
+      };
+
+      const timeline = createTimeline(mockJsPsych as any);
+      const debriefTrial = timeline.timeline[2] as any;
+      const stimulus = debriefTrial.stimulus();
+
+      expect(stimulus).toContain('<strong>Overall Accuracy:</strong> 0%');
+      expect(stimulus).toContain('<strong>Average Response Time (GO trials):</strong> 0ms');
+    });
+
+    it("should handle only no-go trials", () => {
+      const mockTrialData = [
+        { stimulus_type: 'no-go', accuracy: 1, response: null, rt: null },
+        { stimulus_type: 'no-go', accuracy: 0, response: 0, rt: 300 },
+        { stimulus_type: 'no-go', accuracy: 1, response: null, rt: null }
+      ];
+
+      const mockJsPsych = {
+        data: {
+          get: () => ({
+            values: () => mockTrialData
+          })
+        },
+        timelineVariable: (name: string) => `timeline_variable_${name}`
+      };
+
+      const timeline = createTimeline(mockJsPsych as any);
+      const debriefTrial = timeline.timeline[2] as any;
+      const stimulus = debriefTrial.stimulus();
+
+      expect(stimulus).toContain('<strong>Overall Accuracy:</strong> 67%'); // 2 correct out of 3
+      expect(stimulus).toContain('<strong>Average Response Time (GO trials):</strong> 0ms'); // No GO trials
+    });
+
+    it("should handle only go trials", () => {
+      const mockTrialData = [
+        { stimulus_type: 'go', accuracy: 1, response: 0, rt: 400 },
+        { stimulus_type: 'go', accuracy: 0, response: null, rt: null },
+        { stimulus_type: 'go', accuracy: 1, response: 0, rt: 600 }
+      ];
+
+      const mockJsPsych = {
+        data: {
+          get: () => ({
+            values: () => mockTrialData
+          })
+        },
+        timelineVariable: (name: string) => `timeline_variable_${name}`
+      };
+
+      const timeline = createTimeline(mockJsPsych as any);
+      const debriefTrial = timeline.timeline[2] as any;
+      const stimulus = debriefTrial.stimulus();
+
+      expect(stimulus).toContain('<strong>Overall Accuracy:</strong> 67%'); // 2 correct out of 3
+      expect(stimulus).toContain('<strong>Average Response Time (GO trials):</strong> 500ms'); // (400 + 600) / 2
+    });
+
+    it("should filter out invalid response times", () => {
+      const mockTrialData = [
+        { stimulus_type: 'go', accuracy: 1, response: 0, rt: 400 },
+        { stimulus_type: 'go', accuracy: 1, response: 0, rt: null },
+        { stimulus_type: 'go', accuracy: 1, response: 0, rt: 0 },
+        { stimulus_type: 'go', accuracy: 1, response: 0, rt: 600 },
+        { stimulus_type: 'go', accuracy: 1, response: 0, rt: undefined }
+      ];
+
+      const mockJsPsych = {
+        data: {
+          get: () => ({
+            values: () => mockTrialData
+          })
+        },
+        timelineVariable: (name: string) => `timeline_variable_${name}`
+      };
+
+      const timeline = createTimeline(mockJsPsych as any);
+      const debriefTrial = timeline.timeline[2] as any;
+      const stimulus = debriefTrial.stimulus();
+
+      expect(stimulus).toContain('<strong>Overall Accuracy:</strong> 100%');
+      expect(stimulus).toContain('<strong>Average Response Time (GO trials):</strong> 500ms'); // (400 + 600) / 2, excluding null, 0, undefined
+    });
+
+    it("should handle edge case with undefined accuracy values", () => {
+      const mockTrialData = [
+        { stimulus_type: 'go', accuracy: undefined, response: 0, rt: 400 },
+        { stimulus_type: 'go', accuracy: 1, response: 0, rt: 500 },
+        { stimulus_type: 'no-go', accuracy: null, response: null, rt: null },
+        { stimulus_type: 'no-go', accuracy: 0, response: 0, rt: 300 }
+      ];
+
+      const mockJsPsych = {
+        data: {
+          get: () => ({
+            values: () => mockTrialData
+          })
+        },
+        timelineVariable: (name: string) => `timeline_variable_${name}`
+      };
+
+      const timeline = createTimeline(mockJsPsych as any);
+      const debriefTrial = timeline.timeline[2] as any;
+      const stimulus = debriefTrial.stimulus();
+
+      expect(stimulus).toContain('<strong>Overall Accuracy:</strong> 50%'); // 1 correct out of 2 valid accuracy values
+      expect(stimulus).toContain('<strong>Average Response Time (GO trials):</strong> 450ms'); // Both GO trials have valid responses: (400 + 500) / 2
+    });
+
+    it("should show simple completion message when showResultsDetails is false", () => {
+      const mockTrialData = [
+        { stimulus_type: 'go', accuracy: 1, response: 0, rt: 400 },
+        { stimulus_type: 'no-go', accuracy: 1, response: null, rt: null }
+      ];
+
+      const mockJsPsych = {
+        data: {
+          get: () => ({
+            values: () => mockTrialData
+          })
+        },
+        timelineVariable: (name: string) => `timeline_variable_${name}`
+      };
+
+      const timeline = createTimeline(mockJsPsych as any, { showResultsDetails: false });
+      const debriefTrial = timeline.timeline[2] as any;
+      const stimulus = debriefTrial.stimulus();
+
+      expect(stimulus).toContain('<h2>Task Complete!</h2>');
+      expect(stimulus).toContain('Thank you for completing the Go/No-Go task!');
+      expect(stimulus).not.toContain('Overall Accuracy');
+      expect(stimulus).not.toContain('Average Response Time');
+    });
+
+    it("should show detailed results when showResultsDetails is true (default)", () => {
+      const mockTrialData = [
+        { stimulus_type: 'go', accuracy: 1, response: 0, rt: 400 }
+      ];
+
+      const mockJsPsych = {
+        data: {
+          get: () => ({
+            values: () => mockTrialData
+          })
+        },
+        timelineVariable: (name: string) => `timeline_variable_${name}`
+      };
+
+      const timeline = createTimeline(mockJsPsych as any, { showResultsDetails: true });
+      const debriefTrial = timeline.timeline[2] as any;
+      const stimulus = debriefTrial.stimulus();
+
+      expect(stimulus).toContain('<h2>Task Complete!</h2>');
+      expect(stimulus).toContain('Thank you for completing the Go/No-Go task!');
+      expect(stimulus).toContain('<strong>Overall Accuracy:</strong>');
+      expect(stimulus).toContain('<strong>Average Response Time (GO trials):</strong>');
+    });
+
+    it("should show detailed results by default when showResultsDetails is not specified", () => {
+      const mockTrialData = [
+        { stimulus_type: 'go', accuracy: 1, response: 0, rt: 400 }
+      ];
+
+      const mockJsPsych = {
+        data: {
+          get: () => ({
+            values: () => mockTrialData
+          })
+        },
+        timelineVariable: (name: string) => `timeline_variable_${name}`
+      };
+
+      const timeline = createTimeline(mockJsPsych as any); // No config parameter
+      const debriefTrial = timeline.timeline[2] as any;
+      const stimulus = debriefTrial.stimulus();
+
+      expect(stimulus).toContain('<strong>Overall Accuracy:</strong>');
+      expect(stimulus).toContain('<strong>Average Response Time (GO trials):</strong>');
     });
   });
 
