@@ -2,6 +2,7 @@
 <html>
 <head>
   <title>Speeded Matching Task Example</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://unpkg.com/jspsych@8.0.0"></script>
   <script src="https://unpkg.com/@jspsych/plugin-html-button-response@2.0.0"></script>
   <script src="../dist/index.global.js"></script>
@@ -28,8 +29,8 @@
       enable_tts: true,           // Enable text-to-speech
       show_instructions: true,    // Show instruction pages
       show_practice: true,        // Show practice round
-      practice_rounds: 3,         // Number of practice rounds
-      trial_timeout: 10000,       // 10 seconds per trial
+      practice_rounds: 2,         // Number of practice rounds
+      trial_timeout: undefined,       // dont time out
       inter_trial_interval: 500   // 500ms between trials
     };
 

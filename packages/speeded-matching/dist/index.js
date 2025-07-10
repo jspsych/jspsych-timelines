@@ -3528,20 +3528,20 @@ var trial_text = {
   too_slow_message: "Please respond faster"
 };
 var instruction_pages = [
-  `<div class="speeded-matching-instructions-container">
-        <p>You will see a picture at the top of the screen and four pictures below it.</p>
-        <p>Your job is to find which of the four pictures matches the one at the top.</p>
-        <p>Try to respond as quickly and accurately as you can.</p>
+  `<div class="instructions-container">
+        <p>You will see a picture at the top.</p>
     </div>`,
-  `<div class="speeded-matching-instructions-container">
-        <p>For each round:</p>
-        <ul>
-            <li>Look at the picture at the top</li>
-            <li>Compare it with the four pictures below</li>
-            <li>Click on the picture that matches</li>
-            <li>Work quickly but carefully</li>
-        </ul>
-        <p>Let's try a practice round first.</p>
+  `<div class="instructions-container">
+        <p>Below it, you will see four pictures.</p>
+    </div>`,
+  `<div class="instructions-container">
+        <p>Click on the picture that matches the one at the top.</p>
+    </div>`,
+  `<div class="instructions-container">
+        <p>Work quickly but carefully.</p>
+    </div>`,
+  `<div class="instructions-container">
+        <p>Let's practice first.</p>
     </div>`
 ];
 
@@ -3784,8 +3784,8 @@ function generateTrials(config) {
 function createTimeline(jsPsych, config = {}) {
   const {
     enable_tts = true,
-    trial_timeout = 1e4,
-    inter_trial_interval = 500,
+    trial_timeout,
+    inter_trial_interval,
     show_instructions = true,
     show_practice = true,
     practice_rounds = 1,
@@ -3805,7 +3805,7 @@ function createTimeline(jsPsych, config = {}) {
     timeline.push(createReadyScreen());
   }
   trials.forEach((trial, index) => {
-    timeline.push({
+    const mainTrial = {
       type: HtmlButtonResponsePlugin,
       stimulus: `
         <div class="speeded-matching-container">
@@ -3823,7 +3823,6 @@ function createTimeline(jsPsych, config = {}) {
       button_html: function(choice, choice_index) {
         return `<button class="jspsych-btn choice-option" data-choice="${choice_index}">${trial.choices[choice_index]}</button>`;
       },
-      trial_duration: trial_timeout,
       on_load: function() {
         const btnGroup = document.querySelector(".jspsych-btn-group, #jspsych-html-button-response-btngroup");
         if (btnGroup) {
@@ -3849,8 +3848,12 @@ function createTimeline(jsPsych, config = {}) {
         data.reaction_time = data.rt;
         speechSynthesis.cancel();
       }
-    });
-    if (inter_trial_interval > 0 && index < trials.length - 1) {
+    };
+    if (trial_timeout !== void 0 && trial_timeout !== null) {
+      mainTrial.trial_duration = trial_timeout;
+    }
+    timeline.push(mainTrial);
+    if (inter_trial_interval !== void 0 && inter_trial_interval > 0 && index < trials.length - 1) {
       timeline.push({
         type: HtmlButtonResponsePlugin,
         stimulus: `<div class="speeded-matching-fixation">${trial_text.fixation_cross}</div>`,

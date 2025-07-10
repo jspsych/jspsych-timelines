@@ -156,7 +156,7 @@ function createPracticeRound(items: string[], enable_tts: boolean = false, num_c
     `,
     choices: [trial_text.continue_button],
     button_html: function(choice) {
-      return `<button class="jspsych-btn speeded-matching-continue-button">${choice}</button>`;
+      return `<button class="jspsych-btn continue-button">${choice}</button>`;
     },
     data: {
       task: 'practice-instruction'
@@ -173,7 +173,7 @@ function createPracticeRound(items: string[], enable_tts: boolean = false, num_c
     practice_timeline.push({
       type: HtmlButtonResponsePlugin,
       stimulus: `
-        <div class="speeded-matching-container">
+        <div class="trial-container">
           <div class="task-instructions">
             <p>${trial_text.practice_look_instruction}</p>
           </div>
@@ -208,7 +208,7 @@ function createPracticeRound(items: string[], enable_tts: boolean = false, num_c
     practice_timeline.push({
       type: HtmlButtonResponsePlugin,
       stimulus: `
-        <div class="speeded-matching-container">
+        <div class="trial-container">
           <div class="task-instructions">
             <p>${trial_text.practice_tap_instruction}</p>
           </div>
@@ -302,7 +302,7 @@ function createReadyScreen() {
     `,
     choices: [trial_text.ready_button],
     button_html: function(choice) {
-      return `<button class="jspsych-btn speeded-matching-continue-button">${choice}</button>`;
+      return `<button class="jspsych-btn continue-button">${choice}</button>`;
     },
     data: {
       task: 'ready-screen'
@@ -344,8 +344,8 @@ function generateTrials(config: SpeedMatchingConfig) {
 export function createTimeline(jsPsych: JsPsych, config: SpeedMatchingConfig = {}) {
   const {
     enable_tts = true,
-    trial_timeout = 10000,
-    inter_trial_interval = 500,
+    trial_timeout,
+    inter_trial_interval,
     show_instructions = true,
     show_practice = true,
     practice_rounds = 1,
@@ -374,11 +374,11 @@ export function createTimeline(jsPsych: JsPsych, config: SpeedMatchingConfig = {
 
   // Create main task trials
   trials.forEach((trial, index) => {
-    // Main trial
-    timeline.push({
+    // Create the main trial object
+    const mainTrial: any = {
       type: HtmlButtonResponsePlugin,
       stimulus: `
-        <div class="speeded-matching-container">
+        <div class="trial-container">
           <div class="task-instructions">
             <p>${trial_text.main_task_prompt}</p>
           </div>
@@ -393,7 +393,6 @@ export function createTimeline(jsPsych: JsPsych, config: SpeedMatchingConfig = {
       button_html: function(choice, choice_index) {
         return `<button class="jspsych-btn choice-option" data-choice="${choice_index}">${trial.choices[choice_index]}</button>`;
       },
-      trial_duration: trial_timeout,
       on_load: function() {
         // Set CSS custom property for number of choices for dynamic sizing
         const btnGroup = document.querySelector('.jspsych-btn-group, #jspsych-html-button-response-btngroup') as HTMLElement;
@@ -425,13 +424,20 @@ export function createTimeline(jsPsych: JsPsych, config: SpeedMatchingConfig = {
         // Stop any ongoing speech when trial ends
         speechSynthesis.cancel();
       }
-    });
+    };
+
+    // Only add trial_duration if trial_timeout is defined and not null
+    if (trial_timeout !== undefined && trial_timeout !== null) {
+      mainTrial.trial_duration = trial_timeout;
+    }
+
+    timeline.push(mainTrial);
     
-    // Inter-trial interval (fixation cross)
-    if (inter_trial_interval > 0 && index < trials.length - 1) {
+    // Inter-trial interval (fixation cross) - only if defined and > 0
+    if (inter_trial_interval !== undefined && inter_trial_interval > 0 && index < trials.length - 1) {
       timeline.push({
         type: HtmlButtonResponsePlugin,
-        stimulus: `<div class="speeded-matching-fixation">${trial_text.fixation_cross}</div>`,
+        stimulus: `<div class="fixation">${trial_text.fixation_cross}</div>`,
         choices: [],
         trial_duration: inter_trial_interval,
         data: {
@@ -445,14 +451,14 @@ export function createTimeline(jsPsych: JsPsych, config: SpeedMatchingConfig = {
   timeline.push({
     type: HtmlButtonResponsePlugin,
     stimulus: `
-      <div class="speeded-matching-end-screen">
+      <div class="end-screen">
         <h2>${trial_text.task_complete_header}</h2>
         <p>${trial_text.task_complete_message}</p>
       </div>
     `,
     choices: [trial_text.end_button],
     button_html: function(choice) {
-      return `<button class="jspsych-btn speeded-matching-continue-button">${choice}</button>`;
+      return `<button class="jspsych-btn continue-button">${choice}</button>`;
     },
     data: {
       task: 'end-screen'
@@ -464,25 +470,11 @@ export function createTimeline(jsPsych: JsPsych, config: SpeedMatchingConfig = {
   };
 }
 
-export const timelineUnits = {
-  instructions: "Instructions for the speeded matching task",
-  practice: "Practice round with voice instructions and demonstrations", 
-  readyScreen: "Confirmation screen before starting the main task",
-  trial: "Single speeded matching trial with target and choice options",
-  interTrialInterval: "Fixation cross between trials",
-  endScreen: "Task completion screen"
-}
-
-export const utils = {
-  generateTrials,
-  createInstructions,
-  createPracticeRound,
-  createReadyScreen,
-  speakText,
-  createTrialSet,
-  getRandomTestItems,
-  /** Calculate accuracy and reaction time statistics */
-  calculatePerformance: function(data: any[]) {
+/**
+ * Function to calculate accuracy and reaction time statistics 
+ * just for exporting with utils
+*/
+function calculatePerformance(data: any[]) {
     const trial_data = data.filter(d => d.task === 'speeded-matching-trial');
     const correct = trial_data.filter(d => d.correct).length;
     const total = trial_data.length;
@@ -521,6 +513,26 @@ export const utils = {
       by_target: target_performance
     };
   }
+
+
+export const timelineUnits = {
+  instructions: "Instructions for the speeded matching task",
+  practice: "Practice round with voice instructions and demonstrations", 
+  readyScreen: "Confirmation screen before starting the main task",
+  trial: "Single speeded matching trial with target and choice options",
+  interTrialInterval: "Fixation cross between trials",
+  endScreen: "Task completion screen"
+}
+
+export const utils = {
+  generateTrials,
+  createInstructions,
+  createPracticeRound,
+  createReadyScreen,
+  speakText,
+  createTrialSet,
+  getRandomTestItems,
+  calculatePerformance
 }
 
 // Export text and test items for external use

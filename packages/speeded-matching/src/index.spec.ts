@@ -127,6 +127,33 @@ describe("Speeded Matching Task", () => {
       expect(mainTrial.trial_duration).toBe(customTimeout);
     });
 
+    it("should not set trial timeout when undefined", () => {
+      const timeline = createTimeline(mockJsPsych, { 
+        trial_timeout: undefined,
+        num_trials: 1,
+        show_instructions: false,
+        show_practice: false
+      });
+      
+      const mainTrial = timeline.timeline.find(
+        (item: any) => item.data?.task === 'speeded-matching-trial'
+      );
+      expect(mainTrial.trial_duration).toBeUndefined();
+    });
+
+    it("should not set trial timeout when not specified", () => {
+      const timeline = createTimeline(mockJsPsych, { 
+        num_trials: 1,
+        show_instructions: false,
+        show_practice: false
+      });
+      
+      const mainTrial = timeline.timeline.find(
+        (item: any) => item.data?.task === 'speeded-matching-trial'
+      );
+      expect(mainTrial.trial_duration).toBeUndefined();
+    });
+
     it("should use custom test items", () => {
       const customItems = [
         '<svg><rect width="50" height="50" fill="red"/></svg>',
@@ -164,6 +191,33 @@ describe("Speeded Matching Task", () => {
     it("should skip inter-trial interval when set to 0", () => {
       const timeline = createTimeline(mockJsPsych, { 
         inter_trial_interval: 0,
+        num_trials: 2,
+        show_instructions: false,
+        show_practice: false
+      });
+      
+      const intervalTrials = timeline.timeline.filter(
+        (item: any) => item.data?.task === 'inter-trial-interval'
+      );
+      expect(intervalTrials).toHaveLength(0);
+    });
+
+    it("should skip inter-trial interval when undefined", () => {
+      const timeline = createTimeline(mockJsPsych, { 
+        inter_trial_interval: undefined,
+        num_trials: 2,
+        show_instructions: false,
+        show_practice: false
+      });
+      
+      const intervalTrials = timeline.timeline.filter(
+        (item: any) => item.data?.task === 'inter-trial-interval'
+      );
+      expect(intervalTrials).toHaveLength(0);
+    });
+
+    it("should skip inter-trial interval when not specified", () => {
+      const timeline = createTimeline(mockJsPsych, { 
         num_trials: 2,
         show_instructions: false,
         show_practice: false

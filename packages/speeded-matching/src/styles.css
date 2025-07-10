@@ -9,36 +9,81 @@
     padding: 2vmin;
 }
 
-
-.speeded-matching-instructions-container h1 {
-    color: #2c3e50;
-    margin-bottom: 3vmin;
-    font-size: 6vmin;
+.instructions-container {
+    max-width: 90vw; /* Limit width for better readability */
+    margin: 0 auto; /* Center the container */
+    padding: 2vmin; /* Add some padding */
+    box-sizing: border-box; /* Include padding in width calculations */
+    overflow-x: hidden; /* Prevent horizontal overflow */
+    padding-bottom: 5vh !important;
 }
 
-.speeded-matching-instructions-container h2 {
-    color: #34495e;
-    margin-bottom: 2vmin;
-    font-size: 4vmin;
+/* For instruction containers specifically */
+.instructions-container p {
+    font-weight: 600 !important;
+    margin: 2vmin !important;            /* Add outer spacing */
+    font-size: clamp(15px, 6vmin, 30px) !important;
+    line-height: 1.6 !important;
+    margin-bottom: 2vmin !important;
+    
+    /* Prevent horizontal overflow */
+    word-wrap: break-word !important;    /* Break long words */
+    word-break: break-word !important;   /* Alternative for better support */
+    overflow-wrap: break-word !important; /* Modern standard */
+    hyphens: auto !important;            /* Add hyphens for readability */
+    max-width: 100% !important;          /* Never exceed container */
+    box-sizing: border-box !important;   /* Include padding in width */
 }
 
-.speeded-matching-instructions-container p {
-    color: #555;
-    line-height: 1.6;
-    margin-bottom: 2vmin;
-    font-size: 3vmin;
+/* Mobile-friendly instruction navigation buttons */
+.jspsych-instructions-nav {
+    display: flex !important;
+    gap: 15vw !important;
+    justify-content: center !important;
+    margin-top: auto !important;
+    padding: 20px !important;
+    min-height: 50vmin !important;
+    align-items: flex-end !important;
 }
 
-.speeded-matching-instructions-container ul {
-    text-align: left;
-    max-width: 80%;
-    margin: 3vmin auto;
+/* Fixed positioning for phones only */
+@media (max-width: 768px) {
+    .jspsych-instructions-nav {
+        position: fixed !important;
+        bottom: 30vmin !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        margin-top: 0 !important;
+        min-height: auto !important;
+    }
+    
+    /* Add padding to prevent content from going under fixed buttons */
+    .instructions-container {
+        padding-bottom: 45vmin !important; /* 30vmin for button position + 5vmin safety */
+    }
 }
 
-.speeded-matching-instructions-container li {
-    margin-bottom: 1vmin;
-    color: #555;
-    font-size: 3vmin;
+.jspsych-instructions-nav .jspsych-btn {
+    background-color: #fff !important;
+    color: #000 !important;
+    width: 20vmin !important;
+    height: 20vmin !important;
+    border: 3px solid #ccc !important;
+    border-radius: 50% !important;
+    font-size: 18px !important;
+    cursor: pointer !important;
+    min-height: 100px !important;
+    min-width: 100px !important;
+    font-weight: 600 !important;
+}
+
+.jspsych-instructions-nav .jspsych-btn:active {
+    background-color: #f0f0f0 !important;
+    border-color: #999 !important;
+}
+
+.jspsych-instructions-nav .jspsych-btn:disabled {
+    visibility: hidden !important;  /* Keeps the space but hides the button */
 }
 
 .start-prompt {
@@ -113,8 +158,6 @@
 }
 
 /* Button layout - flexible responsive grid */
-.jspsych-btn-group,
-.jspsych-content .jspsych-btn-group,
 #jspsych-html-button-response-btngroup {
     display: flex !important;
     flex-wrap: wrap !important;
@@ -233,117 +276,45 @@
 
 /* Ready screen */
 .ready-screen {
-    text-align: center;
-    max-width: 90vw;
-    margin: 0 auto;
-    padding: 5vmin;
-    background-color: white;
-    border-radius: 2vmin;
-    box-shadow: 0 1vmin 2vmin rgba(0, 0, 0, 0.1);
+    max-width: 90vw; /* Limit width for better readability */
+    margin: 0 auto; /* Center the container */
+    padding: 2vmin; /* Add some padding */
+    box-sizing: border-box; /* Include padding in width calculations */
+    overflow-x: hidden; /* Prevent horizontal overflow */
+    padding-bottom: 5vh !important;
 }
 
 .ready-screen h2 {
-    color: #2c3e50;
-    font-size: 5vmin;
-    margin-bottom: 3vmin;
+    font-weight: 600 !important;
+    font-size: clamp(18px, 7vmin, 35px) !important;
+    line-height: 1.6 !important;
+    margin: 2vmin !important;
+    margin-bottom: 3vmin !important;
+    color: #2c3e50 !important;
+    
+    /* Prevent horizontal overflow */
+    word-wrap: break-word !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+    hyphens: auto !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
 }
 
 .ready-screen p {
-    color: #555;
-    font-size: 3vmin;
-    line-height: 1.6;
-    margin-bottom: 4vmin;
-}
-
-/* Instructions plugin navigation buttons - Mobile-friendly styling */
-.jspsych-instructions-nav {
-    margin-top: 6vmin !important;
-    padding: 3vmin !important;
-    display: flex !important;
-    justify-content: center !important;
-    gap: 4vmin !important;
-    flex-wrap: wrap !important;
-}
-
-/* Target the actual button classes that exist */
-.jspsych-instructions-nav .jspsych-btn {
-    /* background-color: #ffffff !important;
-    color: rgb(0, 0, 0) !important; */
-    border: none !important;
-    padding: 4vmin 8vmin !important;
-    font-size: 4vmin !important;
-    border-radius: 2vmin !important;
-    cursor: pointer !important;
-    margin: 2vmin !important;
-    transition: all 0.3s ease !important;
-    min-height: 60px !important;
-    min-width: 120px !important;
-    box-shadow: 0 2vmin 3vmin rgba(0, 0, 0, 0.15) !important;
     font-weight: 600 !important;
-    touch-action: manipulation !important;
-    user-select: none !important;
-}
-
-.jspsych-instructions-nav .jspsych-btn:hover {
-    background-color: #c0c0c0 !important;
-}
-
-.jspsych-instructions-nav .jspsych-btn:active {
-    transform: translateY(0) !important;
-    box-shadow: 0 1vmin 2vmin rgba(0, 0, 0, 0.15) !important;
-}
-
-.jspsych-instructions-nav .jspsych-btn:disabled {
-    display: none !important;
-}
-
-/* Mobile-specific adjustments for instructions buttons */
-@media (max-width: 768px) {
-    .jspsych-instructions-nav {
-        gap: 3vmin !important;
-        padding: 2vmin !important;
-    }
+    margin: 2vmin !important;
+    font-size: clamp(15px, 6vmin, 30px) !important;
+    line-height: 1.6 !important;
+    margin-bottom: 4vmin !important;
+    color: #555 !important;
     
-    .jspsych-instructions-nav .jspsych-btn,
-    #jspsych-instructions-back,
-    #jspsych-instructions-next {
-        padding: 5vmin 10vmin !important;
-        font-size: 5vmin !important;
-        min-height: 80px !important;
-        min-width: 140px !important;
-        margin: 1.5vmin !important;
-    }
+    /* Prevent horizontal overflow */
+    word-wrap: break-word !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+    hyphens: auto !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
 }
 
-/* Extra large touch targets for very small screens */
-@media (max-width: 480px) {
-    .jspsych-instructions-nav .jspsych-btn,
-    #jspsych-instructions-back,
-    #jspsych-instructions-next {
-        padding: 6vmin 12vmin !important;
-        font-size: 6vmin !important;
-        min-height: 100px !important;
-        min-width: 160px !important;
-        border-radius: 3vmin !important;
-    }
-}
-
-/* .jspsych-btn {
-    display: inline-block;
-    padding: 8px 12px;
-    margin: 0.75em;
-    font-size: 14px;
-    font-weight: 400;
-    font-family: "Open Sans", "Arial", sans-serif;
-    cursor: pointer;
-    line-height: 1.4;
-    text-align: center;
-    white-space: nowrap;
-    vertical-align: middle;
-    background-image: none;
-    border: 1px solid transparent;
-    border-radius: 4px;
-    color: #333;
-    background-color: #fff;
-    border-color: #ccc;
-} */
