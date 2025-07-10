@@ -3529,38 +3529,14 @@ var trial_text = {
   too_slow_message: "Please respond faster"
 };
 var instruction_pages = [
-  `<div class="instructions-container">
-        <p>You will see a picture at the top.</p>
-    </div>`,
-  `<div class="instructions-container">
-        <p>Below it, you will see four pictures.</p>
-    </div>`,
-  `<div class="instructions-container">
-        <p>Click on the picture that matches the one at the top.</p>
-    </div>`,
-  `<div class="instructions-container">
-        <p>Work quickly but carefully.</p>
-    </div>`,
-  `<div class="instructions-container">
-        <p>Let's practice first.</p>
-    </div>`
+  "<b>You will see a picture at the top.</b>",
+  "Below it, you will see four pictures.",
+  "Click on the picture that matches the one at the top.",
+  "Work quickly but carefully.",
+  "Let's practice first."
 ];
 
 // src/index.ts
-function speakText(text) {
-  if ("speechSynthesis" in window) {
-    if ("speechSynthesis" in window) {
-      speechSynthesis.cancel();
-    }
-    setTimeout(() => {
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.rate = 0.8;
-      utterance.volume = 0.8;
-      utterance.voice = speechSynthesis.getVoices()[0] || null;
-      speechSynthesis.speak(utterance);
-    }, 100);
-  }
-}
 function getRandomTestItems(items, count = 4) {
   const shuffled = [...items].sort(() => 0.5 - Math.random());
   return shuffled.slice(0, Math.min(count, items.length));
@@ -3582,13 +3558,34 @@ function createTrialSet(items, target_index = 0, num_choices = 4) {
     target_index
   };
 }
-function createInstructions(instruction_pages_data = instruction_pages, enable_tts = false) {
-  function extractTextFromHtml(htmlString) {
-    return htmlString.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+function speakText(text) {
+  console.log("TTS Support:", "speechSynthesis" in window);
+  console.log("Voices available:", speechSynthesis.getVoices().length);
+  console.log("Text to speak:", text);
+  if ("speechSynthesis" in window) {
+    if ("speechSynthesis" in window) {
+      speechSynthesis.cancel();
+    }
+    setTimeout(() => {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = 0.8;
+      utterance.volume = 0.8;
+      utterance.voice = speechSynthesis.getVoices()[0] || null;
+      speechSynthesis.speak(utterance);
+    }, 100);
   }
+}
+function extractTextFromHtml(htmlString) {
+  var _a;
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(htmlString, "text/html");
+  return ((_a = doc.body.textContent) == null ? void 0 : _a.replace(/\s+/g, " ").trim()) || "";
+}
+function createInstructions(instruction_pages_data = instruction_pages, enable_tts = false) {
+  let handleButtonClick = null;
   return {
     type: InstructionsPlugin,
-    pages: instruction_pages_data,
+    pages: instruction_pages_data.map((page) => `<div class="instructions-container"><p>${page}</p></div>`),
     show_clickable_nav: true,
     allow_keys: true,
     key_forward: "ArrowRight",
@@ -3600,22 +3597,41 @@ function createInstructions(instruction_pages_data = instruction_pages, enable_t
     },
     on_load: function() {
       if (enable_tts) {
-        setTimeout(() => {
-          const instructionsContent = document.querySelector(".jspsych-instructions-content");
+        console.log("TTS enabled for instructions");
+        const speakCurrentPage = () => {
+          const instructionsContent = document.querySelector(".instructions-container");
           if (instructionsContent) {
             const pageText = extractTextFromHtml(instructionsContent.innerHTML);
             if (pageText.trim()) {
               speakText(pageText);
             }
           }
-        }, 100);
+        };
+        handleButtonClick = (event) => {
+          const target = event.target;
+          if (target && (target.id === "jspsych-instructions-next" || target.id === "jspsych-instructions-back")) {
+            speechSynthesis.cancel();
+            setTimeout(speakCurrentPage, 200);
+          }
+        };
+        document.addEventListener("click", handleButtonClick);
+        setTimeout(speakCurrentPage, 300);
       }
     },
     on_finish: function(data) {
       speechSynthesis.cancel();
-    },
-    data: {
-      task: "instruction-pages"
+      if (handleButtonClick) {
+        document.removeEventListener("click", handleButtonClick);
+        handleButtonClick = null;
+      }
+      if (enable_tts) {
+        speechSynthesis.cancel();
+      }
+      if (window.instructionsNavCleanup) {
+        window.instructionsNavCleanup();
+        delete window.instructionsNavCleanup;
+      }
+      data.phase = "instructions";
     }
   };
 }

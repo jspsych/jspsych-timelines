@@ -1,6 +1,6 @@
 import { JsPsych } from 'jspsych';
-import HtmlButtonResponsePlugin from '@jspsych/plugin-html-button-response';
-import InstructionsPlugin from '@jspsych/plugin-instructions';
+import jsPsychHtmlButtonResponse from '@jspsych/plugin-html-button-response';
+import jsPsychInstructions from '@jspsych/plugin-instructions';
 
 declare const test_items: string[];
 
@@ -50,11 +50,6 @@ interface SpeedMatchingConfig {
     instruction_texts?: typeof instruction_pages;
 }
 /**
- * Function to provide text-to-speech functionality
- * Researchers can modify speech settings like rate and volume
- */
-declare function speakText(text: string): void;
-/**
  * Function to get a random selection of test items for creating choice sets
  * This ensures variety in the stimuli presented to participants
  */
@@ -73,11 +68,12 @@ declare function createTrialSet(items: string[], target_index?: number, num_choi
     target_index: number;
 };
 /**
- * Creates instruction pages with configurable text and TTS support
- * Uses the jsPsych instructions plugin with simple HTML strings
+ * Function to provide text-to-speech functionality
+ * Researchers can modify speech settings like rate and volume
  */
+declare function speakText(text: string): void;
 declare function createInstructions(instruction_pages_data?: string[], enable_tts?: boolean): {
-    type: typeof InstructionsPlugin;
+    type: typeof jsPsychInstructions;
     pages: string[];
     show_clickable_nav: boolean;
     allow_keys: boolean;
@@ -88,9 +84,6 @@ declare function createInstructions(instruction_pages_data?: string[], enable_tt
     on_start: () => void;
     on_load: () => void;
     on_finish: (data: any) => void;
-    data: {
-        task: string;
-    };
 };
 /**
  * Creates practice rounds with voice instructions and visual demonstrations
@@ -101,7 +94,7 @@ declare function createPracticeRound(items: string[], enable_tts?: boolean, num_
  * Creates ready screen asking if user is ready for the actual test
  */
 declare function createReadyScreen(): {
-    type: typeof HtmlButtonResponsePlugin;
+    type: typeof jsPsychHtmlButtonResponse;
     stimulus: string;
     choices: string[];
     button_html: (choice: any) => string;

@@ -1,6 +1,6 @@
 import { JsPsych, TrialType } from "jspsych"
-import HtmlButtonResponsePlugin from "@jspsych/plugin-html-button-response"
-import InstructionsPlugin from "@jspsych/plugin-instructions"
+import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response"
+import jsPsychInstructions from "@jspsych/plugin-instructions"
 import { test_items } from "./test-items"
 import { trial_text, instruction_pages } from "./text"
 
@@ -25,29 +25,6 @@ interface SpeedMatchingConfig {
   practice_rounds?: number
   /** Custom instruction texts */
   instruction_texts?: typeof instruction_pages
-}
-
-/**
- * Function to provide text-to-speech functionality
- * Researchers can modify speech settings like rate and volume
- */
-function speakText(text: string) {
-  if ('speechSynthesis' in window) {
-    // Stop any ongoing speech
-    if ('speechSynthesis' in window) {
-      speechSynthesis.cancel();
-    }
-    
-    // Wait a brief moment for cancel to take effect
-    setTimeout(() => {
-      // Create and speak the utterance
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.rate = 0.8; // Slightly slower for clarity
-      utterance.volume = 0.8;
-      utterance.voice = speechSynthesis.getVoices()[0] || null; // Use first available voice
-      speechSynthesis.speak(utterance);
-    }, 100);
-  }
 }
 
 /**
@@ -91,21 +68,51 @@ function createTrialSet(items: string[], target_index: number = 0, num_choices: 
 }
 
 /**
+ * Function to provide text-to-speech functionality
+ * Researchers can modify speech settings like rate and volume
+ */
+function speakText(text: string) {
+  console.log('TTS Support:', 'speechSynthesis' in window);
+  console.log('Voices available:', speechSynthesis.getVoices().length);
+  console.log('Text to speak:', text);
+
+  if ('speechSynthesis' in window) {
+    // Stop any ongoing speech
+    if ('speechSynthesis' in window) {
+      speechSynthesis.cancel();
+    }
+    
+    // Wait a brief moment for cancel to take effect
+    setTimeout(() => {
+      // Create and speak the utterance
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = 0.8; // Slightly slower for clarity
+      utterance.volume = 0.8;
+      utterance.voice = speechSynthesis.getVoices()[0] || null; // Use first available voice
+      speechSynthesis.speak(utterance);
+    }, 100);
+  }
+}
+
+/**
  * Creates instruction pages with configurable text and TTS support
  * Uses the jsPsych instructions plugin with simple HTML strings
  */
+// Helper function to extract text from HTML for TTS
+function extractTextFromHtml(htmlString: string): string {
+  // Use DOMParser for robust HTML to text extraction
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(htmlString, 'text/html');
+  return doc.body.textContent?.replace(/\s+/g, ' ').trim() || '';
+}
+
 function createInstructions(instruction_pages_data = instruction_pages, enable_tts = false) {
-  // Helper function to extract text from HTML for TTS
-  function extractTextFromHtml(htmlString: string): string {
-    return htmlString
-      .replace(/<[^>]*>/g, ' ')
-      .replace(/\s+/g, ' ')
-      .trim();
-  }
+  // Closure variable to store the handler for cleanup
+  let handleButtonClick: ((event: Event) => void) | null = null;
 
   return {
-    type: InstructionsPlugin,
-    pages: instruction_pages_data,
+    type: jsPsychInstructions,
+    pages: instruction_pages_data.map(page => `<div class="instructions-container"><p>${page}</p></div>`),
     show_clickable_nav: true,
     allow_keys: true,
     key_forward: 'ArrowRight',
@@ -117,23 +124,50 @@ function createInstructions(instruction_pages_data = instruction_pages, enable_t
     },
     on_load: function() {
       if (enable_tts) {
-        // Wait a bit for the page to load, then read the current page
-        setTimeout(() => {
-          const instructionsContent = document.querySelector('.jspsych-instructions-content');
+        console.log('TTS enabled for instructions');
+        // Function to speak current page content
+        const speakCurrentPage = () => {
+          const instructionsContent = document.querySelector('.instructions-container');
           if (instructionsContent) {
             const pageText = extractTextFromHtml(instructionsContent.innerHTML);
             if (pageText.trim()) {
               speakText(pageText);
             }
           }
-        }, 100);
+        };
+
+        // Use closure variable for handler
+        handleButtonClick = (event: Event) => {
+          const target = event.target as HTMLElement;
+          if (target && (target.id === 'jspsych-instructions-next' || target.id === 'jspsych-instructions-back')) {
+            speechSynthesis.cancel();
+            setTimeout(speakCurrentPage, 200);
+          }
+        };
+
+        // Add single event listener to document
+        document.addEventListener('click', handleButtonClick);
+
+        // Speak initial page
+        setTimeout(speakCurrentPage, 300);
       }
     },
     on_finish: function(data: any) {
       speechSynthesis.cancel();
-    },
-    data: {
-      task: 'instruction-pages'
+      // Clean up event listener using closure variable
+      if (handleButtonClick) {
+        document.removeEventListener('click', handleButtonClick);
+        handleButtonClick = null;
+      }
+      if (enable_tts) {
+        speechSynthesis.cancel();
+      }
+      // Clean up navigation button listeners
+      if ((window as any).instructionsNavCleanup) {
+        (window as any).instructionsNavCleanup();
+        delete (window as any).instructionsNavCleanup;
+      }
+      data.phase = 'instructions';
     }
   };
 }
@@ -147,7 +181,7 @@ function createPracticeRound(items: string[], enable_tts: boolean = false, num_c
   
   // Practice instruction screen
   practice_timeline.push({
-    type: HtmlButtonResponsePlugin,
+    type: jsPsychHtmlButtonResponse,
     stimulus: `
       <div class="practice-container">
         <h2>${trial_text.practice_header}</h2>
@@ -171,7 +205,7 @@ function createPracticeRound(items: string[], enable_tts: boolean = false, num_c
     
     // Practice trial with voice instruction practice_look_instruction
     practice_timeline.push({
-      type: HtmlButtonResponsePlugin,
+      type: jsPsychHtmlButtonResponse,
       stimulus: `
         <div class="trial-container">
           <div class="task-instructions">
@@ -206,7 +240,7 @@ function createPracticeRound(items: string[], enable_tts: boolean = false, num_c
 
     // Practice trial with voice instruction "We are going to tap the picture down here"
     practice_timeline.push({
-      type: HtmlButtonResponsePlugin,
+      type: jsPsychHtmlButtonResponse,
       stimulus: `
         <div class="trial-container">
           <div class="task-instructions">
@@ -289,7 +323,7 @@ function createPracticeRound(items: string[], enable_tts: boolean = false, num_c
  */
 function createReadyScreen() {
   return {
-    type: HtmlButtonResponsePlugin,
+    type: jsPsychHtmlButtonResponse,
     stimulus: `
       <div class="ready-screen">
         <h2>${trial_text.practice_complete_header}</h2>
@@ -372,7 +406,7 @@ export function createTimeline(jsPsych: JsPsych, config: SpeedMatchingConfig = {
   trials.forEach((trial, index) => {
     // Create the main trial object
     const mainTrial: any = {
-      type: HtmlButtonResponsePlugin,
+      type: jsPsychHtmlButtonResponse,
       stimulus: `
         <div class="trial-container">
           <div class="task-instructions">
@@ -432,7 +466,7 @@ export function createTimeline(jsPsych: JsPsych, config: SpeedMatchingConfig = {
     // Inter-trial interval (fixation cross) - only if defined and > 0
     if (inter_trial_interval !== undefined && inter_trial_interval > 0 && index < trials.length - 1) {
       timeline.push({
-        type: HtmlButtonResponsePlugin,
+        type: jsPsychHtmlButtonResponse,
         stimulus: `<div class="fixation">${trial_text.fixation_cross}</div>`,
         choices: [],
         trial_duration: inter_trial_interval,
@@ -445,7 +479,7 @@ export function createTimeline(jsPsych: JsPsych, config: SpeedMatchingConfig = {
 
   // End screen
   timeline.push({
-    type: HtmlButtonResponsePlugin,
+    type: jsPsychHtmlButtonResponse,
     stimulus: `
       <div class="end-screen">
         <h2>${trial_text.task_complete_header}</h2>

@@ -49,19 +49,9 @@ export const trial_text = {
  */
 
 export const instruction_pages = [
-    `<div class="instructions-container">
-        <p>You will see a picture at the top.</p>
-    </div>`,
-    `<div class="instructions-container">
-        <p>Below it, you will see four pictures.</p>
-    </div>`,
-    `<div class="instructions-container">
-        <p>Click on the picture that matches the one at the top.</p>
-    </div>`,
-    `<div class="instructions-container">
-        <p>Work quickly but carefully.</p>
-    </div>`,
-    `<div class="instructions-container">
-        <p>Let's practice first.</p>
-    </div>`
+    "<b>You will see a picture at the top.</b>",
+    "Below it, you will see four pictures.",
+    "Click on the picture that matches the one at the top.",
+    "Work quickly but carefully.",
+    "Let's practice first."
 ];
