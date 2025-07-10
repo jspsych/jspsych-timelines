@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>jsPsychTimelineGoNogoTimeline Example</title>
+  <script src="https://unpkg.com/jspsych"></script>
+  <script src="../dist/index.global.js"></script>
+  <!-- Load the published timeline package here, e.g.
+<script src="https://unpkg.com/go-nogo-timeline"></script>
+<script src="../dist/index.global.js"></script> -->
+  <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css">
+</head>
+
+<body></body>
+<script>
+  const jsPsych = initJsPsych();
+
+  // Configuration options - uncomment and modify as needed
+  const config = {
+    // goStimuli: ['GO', 'X', 'O'],              // Custom GO stimuli (when varyStimulus is true)
+    // noGoStimuli: ['NO-GO', 'Y', 'Z'],         // Custom NO-GO stimuli (when varyStimulus is true)
+    // buttonText: 'Click',                      // Button label
+    // responseTimeout: 1500,                    // Max time to respond (ms)
+    // interTrialInterval: 500,                  // Pause between trials (ms)
+     numTrials: 30,                           // Total number of trials
+    // goTrialProbability: 0.7,                  // Probability of GO trials (0-1)
+    varyStimulus: false                        // true = varied stimuli, false = fixed "GO"/"NO GO"
+  };
+
+  const task = jsPsychTimelineGoNogoTimeline.createTimeline(jsPsych, config);
+
+  jsPsych.run([task])
+</script>
+
+</html>
