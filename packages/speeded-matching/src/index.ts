@@ -169,7 +169,7 @@ function createPracticeRound(items: string[], enable_tts: boolean = false, num_c
     const target_index = round % items.length;
     const practice_set = createTrialSet(items, target_index, num_choices);
     
-    // Practice trial with voice instruction "Look at this picture"
+    // Practice trial with voice instruction practice_look_instruction
     practice_timeline.push({
       type: HtmlButtonResponsePlugin,
       stimulus: `

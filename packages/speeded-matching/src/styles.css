@@ -93,9 +93,9 @@ p {
 /* PRACTICE TRIAL STYLES */
 
 .continue-button {
-    background-color: #3498db;
+    /* background-color: #3498db;
     color: white;
-    border: none;
+    border: none; */
     padding: clamp(15px, 6vmin, 35px) clamp(15px, 8vmin, 40px);
     font-size: clamp(15px, 6vmin, 35px);
     border-radius: 1vmin;
@@ -105,10 +105,10 @@ p {
     transition: background-color 0.3s;
     min-height: 48px;
 }
-
+/* 
 .continue-button:hover {
     background-color: #2980b9;
-}
+} */
 
 /* pre-practice and post-practice round pages */
 .practice-instructions, .ready-screen {
@@ -214,6 +214,7 @@ p {
     aspect-ratio: 1 !important;
 }
 
+/* Responsive sizing for different screen sizes */
 @media (max-width: 80vmin) {
     .choice-option {
         min-width: 12vmin !important;
@@ -222,7 +223,6 @@ p {
     }
 }
 
-/* Responsive sizing for different screen sizes */
 @media (max-width: 130vmin) {
     .choice-option {
         min-width: 35vmin !important;
@@ -232,12 +232,14 @@ p {
     }
 }
 
+/* Hover effect for choice options, only visible on desktop */
 .choice-option:hover {
     border-color: #3498db !important;
     transform: translateY(-0.5vmin) !important;
     box-shadow: 0 2vmin 3vmin rgba(0, 0, 0, 0.15) !important;
 }
 
+/* Flashing for practice round */
 .choice-option.flash-choices {
     animation: flash-choices 0.5s ease-in-out 3 !important;
 }
@@ -262,22 +264,4 @@ p {
 .choice-option svg {
     width: 100% !important;
     height: 100% !important;
-}
-
-/* END SCREEN */
-
-.end-screen {
-    text-align: center;
-    max-width: 90vw;
-    margin: 0 auto;
-    padding: 5vmin;
-    background-color: white;
-    border-radius: 2vmin;
-    box-shadow: 0 1vmin 2vmin rgba(0, 0, 0, 0.1);
-}
-
-.end-screen h2 {
-    color: #27ae60;
-    font-size: 5vmin;
-    margin-bottom: 3vmin;
 }
