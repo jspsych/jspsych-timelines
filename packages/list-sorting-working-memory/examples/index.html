@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>jsPsychTimelineListSortingWorkingMemory Example</title>
+    <script src="https://unpkg.com/jspsych"></script>
+    <script src="../dist/index.global.js"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-audio-keyboard-response"></script>
+    <!-- Once this timeline package is published, it can be loaded via
+<script src="https://unpkg.com/@jspsych-timelines/list-sorting-working-memory"></script> -->
+    <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css" />
+  </head>
+
+  <body></body>
+  <script>
+    const jsPsych = initJsPsych({
+      on_finish: function () {
+          jsPsych.data.displayData('json');
+      }
+    });
+
+    const task = jsPsychTimelineListSortingWorkingMemory.createTimeline(jsPsych, { });
+
+    jsPsych.run([task])
+  </script>
+</html>
