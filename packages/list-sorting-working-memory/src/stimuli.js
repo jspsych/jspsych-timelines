@@ -3,42 +3,50 @@ const ASSETS_REL_FILE_PATH_IMAGES = ASSETS_REL_FILE_PATH + "images/";
 const ASSETS_REL_FILE_PATH_AUDIO = ASSETS_REL_FILE_PATH + "audio/";
 
 // Image asset imports
-import { bearSvg } from `${ASSETS_REL_FILE_PATH_IMAGES}images-animals/bear.js`;
-import { beeSvg } from `${ASSETS_REL_FILE_PATH_IMAGES}images-animals/bee.js`;
-import { birdSvg } from `${ASSETS_REL_FILE_PATH_IMAGES}images-animals/bird.js`;
-import { butterflySvg } from `${ASSETS_REL_FILE_PATH_IMAGES}images-animals/butterfly.js`;
-import { camelSvg } from `${ASSETS_REL_FILE_PATH_IMAGES}images-animals/camel.js`;
-import { catSvg } from `${ASSETS_REL_FILE_PATH_IMAGES}images-animals/cat.js`;
-import { cowSvg } from `${ASSETS_REL_FILE_PATH_IMAGES}images-animals/cow.js`;
-import { dogSvg } from `${ASSETS_REL_FILE_PATH_IMAGES}images-animals/dog.js`;
-import { duckSvg } from `${ASSETS_REL_FILE_PATH_IMAGES}images-animals/duck.js`;
-import { elephantSvg } from `${ASSETS_REL_FILE_PATH_IMAGES}images-animals/elephant.js`;
-import { frogSvg } from `${ASSETS_REL_FILE_PATH_IMAGES}images-animals/frog.js`;
-import { horseSvg } from `${ASSETS_REL_FILE_PATH_IMAGES}images-animals/horse.js`;
-import { lionSvg } from `${ASSETS_REL_FILE_PATH_IMAGES}images-animals/lion.js`;
-import { monkeySvg } from `${ASSETS_REL_FILE_PATH_IMAGES}images-animals/monkey.js`;
-import { mouseSvg } from `${ASSETS_REL_FILE_PATH_IMAGES}images-animals/mouse.js`;
-import { pigSvg } from `${ASSETS_REL_FILE_PATH_IMAGES}images-animals/pig.js`;
-import { rabbitSvg } from `${ASSETS_REL_FILE_PATH_IMAGES}images-animals/rabbit.js`;
-import { sheepSvg } from `${ASSETS_REL_FILE_PATH_IMAGES}images-animals/sheep.js`;
-import { tigerSvg } from `${ASSETS_REL_FILE_PATH_IMAGES}images-animals/tiger.js`;
-import { turtleSvg } from `${ASSETS_REL_FILE_PATH_IMAGES}images-animals/turtle.js`;
-import { appleSvg } from `${ASSETS_REL_FILE_PATH_IMAGES}images-food/apple.js`;
-import { bananaSvg } from `${ASSETS_REL_FILE_PATH_IMAGES}images-food/banana.js`;
-import { beanSvg } from `${ASSETS_REL_FILE_PATH_IMAGES}images-food/bean.js`;
-import { cakeSvg } from `${ASSETS_REL_FILE_PATH_IMAGES}images-food/cake.js`;
-import { cherrySvg } from `${ASSETS_REL_FILE_PATH_IMAGES}images-food/cherry.js`;
-import { cornSvg } from `${ASSETS_REL_FILE_PATH_IMAGES}images-food/corn.js`;
-import { eggSvg } from `${ASSETS_REL_FILE_PATH_IMAGES}images-food/egg.js`;
-import { hamburgerSvg } from `${ASSETS_REL_FILE_PATH_IMAGES}images-food/hamburger.js`;
-import { limeSvg } from `${ASSETS_REL_FILE_PATH_IMAGES}images-food/lime.js`;
-import { orangeSvg } from `${ASSETS_REL_FILE_PATH_IMAGES}images-food/orange.js`;
-import { peachSvg } from `${ASSETS_REL_FILE_PATH_IMAGES}images-food/peach.js`;
-import { pearSvg } from `${ASSETS_REL_FILE_PATH_IMAGES}images-food/pear.js`;
-import { pineappleSvg } from `${ASSETS_REL_FILE_PATH_IMAGES}images-food/pineapple.js`;
-import { popcornSvg } from `${ASSETS_REL_FILE_PATH_IMAGES}images-food/popcorn.js`;
-import { strawberrySvg } from `${ASSETS_REL_FILE_PATH_IMAGES}images-food/strawberry.js`;
-import { watermelonSvg } from `${ASSETS_REL_FILE_PATH_IMAGES}images-food/watermelon.js`;
+import { bearSvg } from "../assets/images/images-animals/bear.js";
+import { beeSvg } from "../assets/images/images-animals/bee.js";
+import { birdSvg } from "../assets/images/images-animals/bird.js";
+import { butterflySvg } from "../assets/images/images-animals/butterfly.js";
+import { camelSvg } from "../assets/images/images-animals/camel.js";
+import { catSvg } from "../assets/images/images-animals/cat.js";
+import { cowSvg } from "../assets/images/images-animals/cow.js";
+import { dogSvg } from "../assets/images/images-animals/dog.js";
+import { duckSvg } from "../assets/images/images-animals/duck.js";
+import { elephantSvg } from "../assets/images/images-animals/elephant.js";
+import { frogSvg } from "../assets/images/images-animals/frog.js";
+import { horseSvg } from "../assets/images/images-animals/horse.js";
+import { lionSvg } from "../assets/images/images-animals/lion.js";
+import { monkeySvg } from "../assets/images/images-animals/monkey.js";
+import { mouseSvg } from "../assets/images/images-animals/mouse.js";
+import { pigSvg } from "../assets/images/images-animals/pig.js";
+import { rabbitSvg } from "../assets/images/images-animals/rabbit.js";
+import { sheepSvg } from "../assets/images/images-animals/sheep.js";
+import { tigerSvg } from "../assets/images/images-animals/tiger.js";
+import { turtleSvg } from "../assets/images/images-animals/turtle.js";
+import { appleSvg } from "../assets/images/images-food/apple.js";
+import { bananaSvg } from "../assets/images/images-food/banana.js";
+import { beanSvg } from "../assets/images/images-food/bean.js";
+import { cakeSvg } from "../assets/images/images-food/cake.js";
+import { cherrySvg } from "../assets/images/images-food/cherry.js";
+import { cornSvg } from "../assets/images/images-food/corn.js";
+import { eggSvg } from "../assets/images/images-food/egg.js";
+import { hamburgerSvg } from "../assets/images/images-food/hamburger.js";
+import { limeSvg } from "../assets/images/images-food/lime.js";
+import { orangeSvg } from "../assets/images/images-food/orange.js";
+import { peachSvg } from "../assets/images/images-food/peach.js";
+import { pearSvg } from "../assets/images/images-food/pear.js";
+import { pineappleSvg } from "../assets/images/images-food/pineapple.js";
+import { popcornSvg } from "../assets/images/images-food/popcorn.js";
+import { strawberrySvg } from "../assets/images/images-food/strawberry.js";
+import { watermelonSvg } from "../assets/images/images-food/watermelon.js";
+
+export function getAssetUrl(filename, basePath = ASSETS_REL_FILE_PATH) {
+  // If run locally, use the AssetBase from the window object, otherwise use the provided basePath
+  // If run online via CDN, give the option of setting window.AssetBase in HTML
+  const userBase = typeof window !== "undefined" && window.AssetBase;
+  const defaultBase = basePath;
+  return `${userBase || defaultBase}${filename}`;
+}
 
 // Audio asset imports
 // bee, butterfly → frog, bird, mouse -> turtle, rabbit, duck → cat, monkey -> dog, sheep, pig -> horse, cow, tiger → lion, bear, camel, elephant

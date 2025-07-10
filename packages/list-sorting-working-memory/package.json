@@ -3,9 +3,13 @@
   "version": "0.0.1",
   "description": "An implementation of the List Sorting Working Memory Task.",
   "type": "module",
-  "main": "dist/index.mjs",
+  "main": "dist/index.global.js",
+  "exports": {
+    "default": "./dist/index.global.js",
+    "require": "./dist/index.js"
+  },
   "types": "dist/index.d.ts",
-  "unpkg": "dist/index.browser.min.js",
+  "unpkg": "dist/index.global.js",
   "scripts": {
     "build": "tsup src/index.ts --format esm,iife --sourcemap --dts --treeshake --clean --global-name jsPsychTimelineListSortingWorkingMemory"
   },
@@ -14,6 +18,7 @@
     "src",
     "assets"
   ],
+  "source": "src/index.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jspsych/jspsych-timelines.git",
