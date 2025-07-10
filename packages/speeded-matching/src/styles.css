@@ -134,12 +134,7 @@ p {
     }
 }
 
-/* Target stimulus */
-.target-container {
-    margin-bottom: 4vmin;
-    text-align: center;
-}
-
+/* Target stimulus*/
 .target-stimulus {
     width: 30vmin;
     height: 30vmin;
@@ -150,7 +145,7 @@ p {
     align-items: center;
     justify-content: center;
     box-shadow: 0 2vmin 3vmin rgba(0, 0, 0, 0.15);
-    margin: 2vmin auto 5vmin auto;
+    margin: 2vmin;
     svg {
         width: 100%;
         height: 100%;
@@ -235,7 +230,7 @@ p {
     }
 }
 
-/* Fixed positioning for phones only */
+/* Styles for tablets */
 @media (max-width: 768px) {
     .jspsych-instructions-nav {
         position: fixed;
@@ -251,18 +246,34 @@ p {
 
     /* Experiment-specific, adjusting sizes of images */
     .target-stimulus {
-        width: 45vmin;
-        height: 45vmin;
+        width: 35vmin;
+        height: 35vmin;
 
     }
     .choice-option {
-        height: clamp(30vmin, calc(85vh / var(--num-choices, 4)), 30vh);
-        flex-basis: clamp(15vmin, calc(166vw / var(--num-choices, 4)), 43vw);
+        height: clamp(20vmin, calc(85vh / var(--num-choices, 4)), 30vh);
+        flex-basis: clamp(15vmin, calc(165vw / var(--num-choices, 4)), 43vw);
         /* width: clamp(30vmin, calc(150vw / var(--num-choices, 4)), 43vmin); */
         /* aspect-ratio: 1;*/
     }
 
 
+}
+
+/* Styles for phones to override tablet */
+@media (max-width: 480px) {    
+    /* Smaller padding for phone to allow more text */
+    .instructions-container {
+        padding-bottom: 40vmin;
+    }
+    .target-container {
+        margin-bottom: 4vmin; /* Adjusted for better spacing on small screens */
+    }
+    /* Experiment-specific, adjusting sizes of images */
+    .target-stimulus {
+        width: 45vmin;
+        height: 45vmin;
+    }
 }
 
 /* Landscape mode adjustments */
@@ -278,7 +289,6 @@ p {
         width: 30vmin;
         height: 30vmin;
         border: 4px solid #000000bd;
-        margin: 2px auto auto auto;
     }
     .choice-option {
         margin: 0;
@@ -286,5 +296,4 @@ p {
         height: clamp(15vmin, calc(135vh / var(--num-choices, 4)), 35vmin) !important;
         margin: -10px 2px;
     }
-
 }
