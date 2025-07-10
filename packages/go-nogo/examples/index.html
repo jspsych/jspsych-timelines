@@ -13,7 +13,9 @@
 
 <body></body>
 <script>
-  const jsPsych = initJsPsych();
+  const jsPsych = initJsPsych({
+    on_finish:() => jsPsych.data.displayData('json')
+  });
 
   // Configuration options - uncomment and modify as needed
   const config = {
@@ -22,14 +24,14 @@
     // buttonText: 'Click',                      // Button label
     // responseTimeout: 1500,                    // Max time to respond (ms)
     // interTrialInterval: 500,                  // Pause between trials (ms)
-     numTrials: 30,                           // Total number of trials
+     numTrials: 15,                           // Total number of trials
     // goTrialProbability: 0.7,                  // Probability of GO trials (0-1)
     varyStimulus: false                        // true = varied stimuli, false = fixed "GO"/"NO GO"
   };
 
   const task = jsPsychTimelineGoNogoTimeline.createTimeline(jsPsych, config);
 
-  jsPsych.run([task])
+  jsPsych.run([task]);
 </script>
 
 </html>

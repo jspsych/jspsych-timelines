@@ -238,7 +238,7 @@ describe("createTimeline", () => {
   describe("timeline structure", () => {
     it("should have correct instruction trial", () => {
       const timeline = createTimeline(jsPsych);
-      const instructionTrial = timeline.timeline[0];
+      const instructionTrial = timeline.timeline[0] as any;
       
       expect(instructionTrial.stimulus).toContain('Go/No-Go Task Instructions');
       expect(instructionTrial.stimulus).toContain('GO trials');
@@ -249,7 +249,7 @@ describe("createTimeline", () => {
 
     it("should have correct debrief trial", () => {
       const timeline = createTimeline(jsPsych);
-      const debriefTrial = timeline.timeline[2];
+      const debriefTrial = timeline.timeline[2] as any;
       
       expect(debriefTrial.choices).toEqual(['Finish']);
       expect(debriefTrial.data.trial_type).toBe('debrief');
@@ -283,7 +283,10 @@ describe("createTimeline", () => {
       const mockData = {
         stimulus_type: 'go',
         response: 0,
-        rt: 500
+        rt: 500,
+        correct: undefined as any,
+        accuracy: undefined as any,
+        reaction_time: undefined as any
       };
       
       const timeline = createTimeline(jsPsych);
@@ -301,7 +304,10 @@ describe("createTimeline", () => {
       const mockData = {
         stimulus_type: 'no-go',
         response: null,
-        rt: null
+        rt: null,
+        correct: undefined as any,
+        accuracy: undefined as any,
+        reaction_time: undefined as any
       };
       
       const timeline = createTimeline(jsPsych);
@@ -319,7 +325,10 @@ describe("createTimeline", () => {
       const mockData = {
         stimulus_type: 'go',
         response: null,
-        rt: null
+        rt: null,
+        correct: undefined as any,
+        accuracy: undefined as any,
+        reaction_time: undefined as any
       };
       
       const timeline = createTimeline(jsPsych);
@@ -336,7 +345,10 @@ describe("createTimeline", () => {
       const mockData = {
         stimulus_type: 'no-go',
         response: 0,
-        rt: 300
+        rt: 300,
+        correct: undefined as any,
+        accuracy: undefined as any,
+        reaction_time: undefined as any
       };
       
       const timeline = createTimeline(jsPsych);
@@ -406,11 +418,11 @@ describe("createTimeline", () => {
         trial.trial_type === 'no-go'
       );
       
-      goTrials.forEach(trial => {
+      goTrials.forEach((trial: any) => {
         expect(trial.stimulus).toContain('GO_SINGLE');
       });
       
-      noGoTrials.forEach(trial => {
+      noGoTrials.forEach((trial: any) => {
         expect(trial.stimulus).toContain('NOGO_SINGLE');
       });
     });

@@ -91,7 +91,7 @@ export function createTimeline(jsPsych: JsPsych, config: GoNoGoConfig = {}) {
     },
     on_finish: (data: any) => {
       const isGoTrial = data.stimulus_type === 'go'
-      const responded = data.response !== null
+      const responded = data.response !== null && data.response !== undefined
       
       if (isGoTrial) {
         data.correct = responded
@@ -101,9 +101,7 @@ export function createTimeline(jsPsych: JsPsych, config: GoNoGoConfig = {}) {
         data.accuracy = !responded ? 1 : 0
       }
       
-      if (responded && isGoTrial) {
-        data.reaction_time = data.rt
-      }
+      data.reaction_time = responded && isGoTrial && data.rt ? data.rt : null
     }
   }
 
@@ -124,16 +122,34 @@ export function createTimeline(jsPsych: JsPsych, config: GoNoGoConfig = {}) {
   const debriefTrial = {
     type: htmlButtonResponse,
     stimulus: () => {
-      const data = jsPsych.data.get().filter({ trial_type: 'go-no-go' })
-      const accuracy = Math.round(data.select('accuracy').mean() * 100)
-      const goTrials = data.filter({ stimulus_type: 'go' })
-      const meanRT = goTrials.select('rt').mean()
+      const allData = jsPsych.data.get()
+      
+      // Get all trials that have stimulus_type defined (go-no-go trials)
+      const allTrials = allData.values()
+      const goNoGoTrials = allTrials.filter((trial: any) => trial.stimulus_type === 'go' || trial.stimulus_type === 'no-go')
+      
+      let accuracy = 0
+      let meanRT = 0
+      
+      if (goNoGoTrials.length > 0) {
+        // Calculate overall accuracy
+        const accuracyValues = goNoGoTrials.map((trial: any) => trial.accuracy).filter((val: any) => val === 1 || val === 0)
+        const numCorrect = accuracyValues.filter((val: any) => val === 1).length
+        accuracy = accuracyValues.length > 0 ? Math.round((numCorrect / accuracyValues.length) * 100) : 0
+        
+        // Calculate mean reaction time for GO trials that were responded to
+        const goTrials = goNoGoTrials.filter((trial: any) => trial.stimulus_type === 'go' && trial.response !== null && trial.response !== undefined)
+        if (goTrials.length > 0) {
+          const rtValues = goTrials.map((trial: any) => trial.rt).filter((val: any) => val !== null && val !== undefined && val > 0)
+          meanRT = rtValues.length > 0 ? Math.round(rtValues.reduce((a: number, b: number) => a + b, 0) / rtValues.length) : 0
+        }
+      }
       
       return `
         <div style="font-size: 18px; line-height: 1.5; max-width: 600px; margin: 0 auto;">
           <h2>Task Complete!</h2>
           <p><strong>Overall Accuracy:</strong> ${accuracy}%</p>
-          <p><strong>Average Response Time (GO trials):</strong> ${Math.round(meanRT)}ms</p>
+          <p><strong>Average Response Time (GO trials):</strong> ${meanRT}ms</p>
           <p>Thank you for completing the Go/No-Go task!</p>
         </div>
       `
