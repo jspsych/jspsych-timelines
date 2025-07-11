@@ -8,6 +8,10 @@ export const trial_text = {
     start_button: "Start",
     ready_button: "I'm Ready",
     end_button: "End",
+    // Instruction pages buttons text, these will always have arrows < and >
+    // these do not work right now due to CSS fixed position, might fix later
+    next_button: "",
+    back_button: "", 
     practice_button: "Practice Again",
     left_button: "←",
     right_button: "→",
@@ -36,9 +40,11 @@ export const trial_text = {
     // Fixation and inter-trial
     fixation_cross: "+",
     
-    // Feedback messages
+    // Feedback messages (optional)
     correct_feedback: "Correct!",
-    incorrect_feedback: "Incorrect",
+    incorrect_feedback: "Try again",
+    
+    // Timing messages
     too_slow_message: "Please respond faster",
     
     // Progress messages
@@ -72,33 +78,6 @@ export const tts_config = {
     allow_skip: true, // Allow users to skip/stop speech
 };
 
-// Spoken versions of text (can be different from displayed text for clarity)
-export const tts_text = {
-    // Instruction spoken versions
-    welcome_spoken: "Welcome to the Flanker Inhibitory Control Task. This is an attention and focus test.",
-    task_explanation_spoken: "You will see a group of fish swimming on the screen. Your job is to focus only on the middle fish and ignore the other fish around it.",
-    directions_spoken: "Look at which direction the middle fish is swimming and click the corresponding button. Click the left arrow if it's swimming left, or the right arrow if it's swimming right.",
-    
-    // Trial spoken versions  
-    trial_prompt_spoken: "Look at the middle fish. Click the direction it's swimming.",
-    
-    // Feedback spoken versions
-    correct_spoken: "Correct",
-    incorrect_spoken: "Incorrect", 
-    
-    // Practice spoken versions
-    practice_start_spoken: "Let's practice. Look at the middle fish and click the button that shows which way it's swimming.",
-    practice_complete_spoken: "Practice complete. Great job! Now you're ready for the real task.",
-    
-    // Main task spoken versions
-    main_task_start_spoken: "Now we'll start the real task. Remember to focus on the middle fish.",
-    task_complete_spoken: "Task complete. Thank you for participating.",
-    
-    // Controls
-    skip_speech_text: "Press space to skip speech",
-    speech_controls_note: "Speech can be skipped by pressing the space bar at any time.",
-};
-
 /* 
  * This is an array of page objects that have configurable texts for the instruction pages
  * before the actual trials. Researchers can modify these instructions to change the
@@ -118,35 +97,19 @@ export const tts_text = {
  * - button_html: Custom HTML for buttons (optional)
  */
 
+/* 
+ * This is an array of HTML strings for instruction pages displayed before the actual trials.
+ * Researchers can modify these instructions to change the task description, add new instruction 
+ * pages, or translate to different languages.
+ * 
+ * Each string should contain valid HTML that will be displayed as an instruction page.
+ * You can add more pages by adding more strings to the array, or modify existing pages
+ * by editing the HTML content.
+ */
+
 export const instruction_pages = [
-    {
-        header: "Flanker Inhibitory Control Task",
-        header2: "Attention and Focus Test",
-        description: "In this task, you will see a group of fish swimming on the screen.",
-        task_explanation: "Your job is to <strong>focus only on the middle fish</strong> and ignore the other fish around it.",
-        performance_note: "Look at which direction the middle fish is swimming and click the corresponding button.",
-        start_prompt: "Click continue to learn more about the task.",
-        buttons: ["Continue"],
-    },
-    {
-        strategy_title: "Instructions",
-        strategy_intro: "For each trial:",
-        strategy_points: [
-            "Look at the <strong>middle fish only</strong> - ignore the other fish",
-            "See which direction the middle fish is swimming",
-            "Click the ← button if it's swimming left",
-            "Click the → button if it's swimming right",
-            "Try to respond as quickly and accurately as possible"
-        ],
-        start_prompt: "The other fish around the middle fish might be swimming in different directions - don't let them distract you!",
-        buttons: ["Continue"],
-    },
-    {
-        header2: "Button Instructions",
-        description: "Use these buttons to respond:",
-        task_explanation: "← Left Button = Middle fish swimming left<br/>→ Right Button = Middle fish swimming right",
-        performance_note: "Remember: Only pay attention to the middle fish, even if the other fish are swimming in different directions.",
-        start_prompt: "Click continue to start the practice round.",
-        buttons: ["Continue"],
-    }
+"حبيبي حبيبي حبيبي", "حبيبي حبيبي حبيبي",    "Look at the middle fish only - ignore the other fish. See which direction the middle fish is swimming. Click the ← button if it's swimming left, click the → button if it's swimming right.",
+    "Try to respond as quickly and accurately as possible. Remember: Only pay attention to the middle fish, even if the other fish are swimming in different directions. directionsdirections directions one. Try to respond as quickly and accurately as possible. Remember: Only pay attention to the middle fish, even if the other fish are swimming in different directions. directionsdirections directions TWOO. Try to respond as quickly and accurately as possible. Remember: Only pay attention to the middle fish, even if the other fish are swimming in different directions. directionsdirections directions THREE. Try to respond as quickly and accurately as possible. Remember: Only pay attention to the middle fish, even if the other fish are swimming in different directions. directionsdirections directions one. FOUR. Try to respond as quickly and accurately as possible. Remember: Only pay attention to the middle fish, even if the other fish are swimming in different directions. directionsdirections directions one. FIVE Try to respond as quickly and accurately as possible. Remember: Only pay attention to the middle fish, even if the other fish are swimming in different directions. directionsdirections directions one. SIX Try to respond as quickly and accurately as possible. Remember: Only pay attention to the middle fish, even if the other fish are swimming in different directions. directionsdirections directions one. SEVEN Try to respond as quickly and accurately as possible. Remember: Only pay attention to the middle fish, even if the other fish are swimming in different directions. directionsdirections directions one. EIGHT Try to respond as quickly and accurately as possible. Remember: Only pay attention to the middle fish, even if the other fish are swimming in different directions. directionsdirections directions one. NINE Try to respond as quickly and accurately as possible. Remember: Only pay attention to the middle fish, even if the other fish are swimming in different directions. directionsdirections directions one. TEN. Try to respond as quickly and accurately as possible. Remember: Only pay attention to the middle fish, even if the other fish are swimming in different directions. directionsdirections directions one. ELEVENTry to respond as quickly and accurately as possible. Remember: Only pay attention to the middle fish, even if the other fish are swimming in different directions. directionsdirections directions one. Try to respond as quickly and accurately as possible. Remember: Only pay attention to the middle fish, even if the other fish are swimming in different directions. directionsdirections directions TWOO. Try to respond as quickly and accurately as possible. Remember: Only pay attention to the middle fish, even if the other fish are swimming in different directions. directionsdirections directions THREE. Try to respond as quickly and accurately as possible. Remember: Only pay attention to the middle fish, even if the other fish are swimming in different directions. directionsdirections directions one. FOUR. Try to respond as quickly and accurately as possible. Remember: Only pay attention to the middle fish, even if the other fish are swimming in different directions. directionsdirections directions one. FIVE Try to respond as quickly and accurately as possible. Remember: Only pay attention to the middle fish, even if the other fish are swimming in different directions. directionsdirections directions one. SIX Try to respond as quickly and accurately as possible. Remember: Only pay attention to the middle fish, even if the other fish are swimming in different directions. directionsdirections directions one. SEVEN Try to respond as quickly and accurately as possible. Remember: Only pay attention to the middle fish, even if the other fish are swimming in different directions. directionsdirections directions one. EIGHT Try to respond as quickly and accurately as possible. Remember: Only pay attention to the middle fish, even if the other fish are swimming in different directions. directionsdirections directions one. NINE Try to respond as quickly and accurately as possible. Remember: Only pay attention to the middle fish, even if the other fish are swimming in different directions. directionsdirections directions one. TEN. Try to respond as quickly and accurately as possible. Remember: Only pay attention to the middle fish, even if the other fish are swimming in different directions. directionsdirections directions one. ELEVENTry to respond as quickly and accurately as possible. Remember: Only pay attention to the middle fish, even if the other fish are swimming in different directions. directionsdirections directions one. Try to respond as quickly and accurately as possible. Remember: Only pay attention to the middle fish, even if the other fish are swimming in different directions. directionsdirections directions TWOO. Try ",
+    "Click continue to start the practice round."
 ];
+

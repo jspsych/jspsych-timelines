@@ -1,3 +1,174 @@
+We are going to implement three things into this timeline project, some of which may already be implemented but we must adjust to match our files. Do not unnecessarily edit these implementations as they are standardized. For css ids and classes, comb the project's id's and classes to see if anything resembles what we have in the imported styles.css file (at the end of this file) and change it to match the imported file. We are trying to standardize styles, variables, and CSS here. If you make any notable or breaking changes make sure to alert me and describe them in detail. If there is a separate TTS object in text.ts or anything anywhere that you are unsure of what to do with just ask me.
+
+First, createInstructions() function that makes an instructions trial using jsPsychInstructions and supports TTS. This function will need the timeline to have a enable_tts parameter. If this does not exist in the project, add it, and then go to index.html and add it there as well and make sure it is set to true. Additionally, a text.ts file is required with specific variables: instruction_pages and trial_text. We have standardized these variable names so if there is similar objects or variables change them to match our format or just keep them separately.
+
+Implementation for createInstructions():
+
+/**
+ * Function to provide text-to-speech functionality
+ * Researchers can modify speech settings like rate and volume
+ */
+function speakText(text: string) {
+  if ('speechSynthesis' in window) {
+    // Stop any ongoing speech
+    if ('speechSynthesis' in window) {
+      speechSynthesis.cancel();
+    }
+    
+    // Wait a brief moment for cancel to take effect
+    setTimeout(() => {
+      // Create and speak the utterance
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = 0.8; // Slightly slower for clarity
+      utterance.volume = 0.8;
+      utterance.voice = speechSynthesis.getVoices()[0] || null; // Use first available voice
+      speechSynthesis.speak(utterance);
+    }, 100);
+  }
+}
+
+/**
+ * Creates instruction pages with configurable text and TTS support
+ * Uses the jsPsych instructions plugin with simple HTML strings
+ */
+// Helper function to extract text from HTML for TTS
+function extractTextFromHtml(htmlString: string): string {
+  // Use DOMParser for robust HTML to text extraction
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(htmlString, 'text/html');
+  return doc.body.textContent?.replace(/\s+/g, ' ').trim() || '';
+}
+
+function createInstructions(instruction_pages_data = instruction_pages, enable_tts = false) {
+  // Closure variable to store the handler for cleanup
+  let handleButtonClick: ((event: Event) => void) | null = null;
+
+  return {
+    type: jsPsychInstructions,
+    pages: instruction_pages_data.map(page => `<div class="instructions-container"><p>${page}</p></div>`),
+    show_clickable_nav: true,
+    allow_keys: true,
+    key_forward: 'ArrowRight',
+    key_backward: 'ArrowLeft',
+    button_label_previous: trial_text.back_button,
+    button_label_next: trial_text.next_button,
+    on_start: function() {
+      speechSynthesis.cancel();
+    },
+    on_load: function() {
+      if (enable_tts) {
+        // Function to speak current page content
+        const speakCurrentPage = () => {
+          const instructionsContent = document.querySelector('.instructions-container');
+          if (instructionsContent) {
+            const pageText = extractTextFromHtml(instructionsContent.innerHTML);
+            if (pageText.trim()) {
+              speakText(pageText);
+            }
+          }
+        };
+
+        // Use closure variable for handler
+        handleButtonClick = (event: Event) => {
+          const target = event.target as HTMLElement;
+          if (target && (target.id === 'jspsych-instructions-next' || target.id === 'jspsych-instructions-back')) {
+            speechSynthesis.cancel();
+            setTimeout(speakCurrentPage, 200);
+          }
+        };
+
+        // Add single event listener to document
+        document.addEventListener('click', handleButtonClick);
+
+        // Speak initial page
+        setTimeout(speakCurrentPage, 300);
+      }
+    },
+    on_finish: function(data: any) {
+      speechSynthesis.cancel();
+      // Clean up event listener using closure variable
+      if (handleButtonClick) {
+        document.removeEventListener('click', handleButtonClick);
+        handleButtonClick = null;
+      }
+      if (enable_tts) {
+        speechSynthesis.cancel();
+      }
+      // Clean up navigation button listeners
+      if ((window as any).instructionsNavCleanup) {
+        (window as any).instructionsNavCleanup();
+        delete (window as any).instructionsNavCleanup;
+      }
+      data.phase = 'instructions';
+    }
+  };
+}
+
+
+Implementation for text.ts file, do not import anything from trial_text except next_button and back_button, everything else only match to the variable in the existing text.ts file:
+
+/* This file contains the configurable text used in the speeded matching timeline.
+ * Researchers can modify these texts to change the language or instructions.
+ */
+
+export const trial_text = {
+    // Button texts
+    continue_button: "Continue",
+    start_button: "Start",
+    ready_button: "I'm Ready",
+    end_button: "End",
+    // Instruction pages buttons text, these will always have arrows < and >
+    // these do not work right now due to CSS fixed position, might fix later
+    next_button: "",
+    back_button: "", 
+    // Task completion messages
+    task_complete_header: "Task Complete!",
+    task_complete_message: "Thank you for participating in the speeded matching task.",
+    
+    // Practice phase text
+    practice_header: "Practice Round",
+    practice_intro_message: "We'll now do a practice round to show you how the task works.",
+    practice_look_instruction: "Look at this picture",
+    practice_tap_instruction: "Tap the matching picture below",
+    practice_complete_header: "Are you ready?",
+    practice_complete_message: "Practice complete! Ready for the full test?",
+    
+    // Main task instructions
+    main_task_prompt: "Tap the matching picture below",
+    
+    // Fixation and inter-trial
+    fixation_cross: "+",
+    
+    // Feedback messages (optional)
+    correct_feedback: "Correct!",
+    incorrect_feedback: "Try again",
+    
+    // Timing messages
+    too_slow_message: "Please respond faster",
+}
+
+/* 
+ * This is an array of HTML strings for instruction pages displayed before the actual trials.
+ * Researchers can modify these instructions to change the task description, add new instruction 
+ * pages, or translate to different languages.
+ * 
+ * Each string should contain valid HTML that will be displayed as an instruction page.
+ * You can add more pages by adding more strings to the array, or modify existing pages
+ * by editing the HTML content.
+ */
+
+export const instruction_pages = [
+    "<b>You will see a picture at the top.</b>",
+    "Below it, you will see four pictures.",
+    "Click on the picture that matches the one at the top.",
+    "Work quickly but carefully.",
+    "Let's practice first."
+];
+
+
+
+Now, we will implement a standardized styles.css. This file may have extraneous styles specific to the original timeline (such as choice-options and whatnot). Ignore these styles if they do not match anything in our current timeline project. If there are additional needed styles that are not in the imported styles, add them exactly as they are and do not change anything unneccesarily. Here is the imported styles.css:
+
 /* GENERAL STYLES */
 
 h1, h2, h3 {
@@ -228,134 +399,6 @@ p {
     }
 }
 
-/* FLANKER-SPECIFIC STYLES - Keep existing functionality */
-
-/* Trial display */
-.flanker-trial {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 50vh;
-    padding: 3vmin;
-    gap: 4vmin;
-}
-
-.trial-prompt {
-    font-size: 3vmin;
-    font-weight: 200;
-    color: #2c3e50;
-    text-align: center;
-    max-width: 90vw;
-    line-height: normal;
-}
-
-/* Flanker stimulus */
-.flanker-stim {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 3vmin 0;
-    padding: 3vmin;
-    width: 100%;
-    max-width: 95vw;
-    gap: max(0.5vmin, calc(90vw / var(--stimuli-count, 5) * 0.1));
-    
-    /* Dynamic sizing based on number of stimuli and screen space */
-    --base-size: min(
-        calc(85vw / var(--stimuli-count, 5)),
-        calc(70vh / 1),
-        20vmin
-    );
-    --min-size: 4vmin;
-    --max-size: 25vmin;
-    --svg-size: max(var(--min-size), min(var(--max-size), var(--base-size)));
-    
-    /* Special handling for many stimuli (> 7) to ensure readability */
-    --many-stimuli-adjustment: calc(max(0, var(--stimuli-count, 5) - 7) * 0.5vmin);
-    --adjusted-svg-size: max(calc(var(--svg-size) + var(--many-stimuli-adjustment)), var(--min-size));
-}
-
-.flanker-stim span {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    vertical-align: middle;
-    line-height: 0;
-}
-
-.flanker-stim svg {
-    width: var(--adjusted-svg-size, var(--svg-size));
-    height: var(--adjusted-svg-size, var(--svg-size));
-    display: block;
-}
-
-/* Practice highlighting */
-.flanker-stim.practice .center.highlighted {
-    background-color: #fff3cd;
-    border: 3px solid #ffc107;
-    border-radius: 50%;
-    padding: 1.5vmin;
-    animation: pulse 1.5s infinite;
-}
-
-@keyframes pulse {
-    0% {
-        box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.7);
-    }
-    70% {
-        box-shadow: 0 0 0 2vmin rgba(255, 193, 7, 0);
-    }
-    100% {
-        box-shadow: 0 0 0 0 rgba(255, 193, 7, 0);
-    }
-}
-
-/* Feedback */
-.feedback {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 20vh;
-    font-size: 6vmin;
-    font-weight: bold;
-    text-align: center;
-    padding: 3vmin;
-}
-
-.feedback.correct {
-    color: #27ae60;
-}
-
-.feedback.incorrect {
-    color: #e74c3c;
-}
-
-/* Performance summary */
-.performance-summary {
-    background-color: #f8f9fa;
-    border: 1px solid #dee2e6;
-    border-radius: 2vmin;
-    padding: 4vmin;
-    margin: 4vmin 0;
-    text-align: center;
-}
-
-.performance-summary h3 {
-    color: #495057;
-    margin-bottom: 3vmin;
-    text-align: center;
-    font-size: 4.5vmin;
-}
-
-.performance-summary p {
-    margin: 2vmin 0;
-    font-size: 3.5vmin;
-    color: #6c757d;
-    text-align: center;
-}
-
 /* Styles for tablets */
 @media (max-width: 768px) {
     .jspsych-instructions-nav {
@@ -383,20 +426,7 @@ p {
         /* aspect-ratio: 1;*/
     }
 
-    /* Flanker-specific tablet adjustments */
-    .flanker-stim {
-        gap: max(0.3vmin, calc(85vw / var(--stimuli-count, 5) * 0.08));
-        padding: 2vmin;
-        
-        /* Tighter sizing for tablets */
-        --base-size: min(
-            calc(80vw / var(--stimuli-count, 5)),
-            calc(50vh / 1),
-            15vmin
-        );
-        --min-size: 3vmin;
-        --max-size: 12vmin;
-    }
+
 }
 
 /* Styles for phones to override tablet */
@@ -412,25 +442,6 @@ p {
     .target-stimulus {
         width: 45vmin;
         height: 45vmin;
-    }
-
-    /* Flanker-specific phone adjustments */
-    .trial-prompt {
-        font-size: 4vmin;
-    }
-    
-    .flanker-stim {
-        gap: max(0.3vmin, calc(85vw / var(--stimuli-count, 5) * 0.08));
-        padding: 2vmin;
-        
-        /* Tighter sizing for small screens */
-        --base-size: min(
-            calc(80vw / var(--stimuli-count, 5)),
-            calc(50vh / 1),
-            15vmin
-        );
-        --min-size: 3vmin;
-        --max-size: 12vmin;
     }
 }
 
@@ -453,19 +464,5 @@ p {
         flex-basis: clamp(15vmin, calc(85vw / var(--num-choices, 4)), 25vw) !important;
         height: clamp(15vmin, calc(135vh / var(--num-choices, 4)), 35vmin) !important;
         margin: -10px 2px;
-    }
-
-    /* Flanker-specific landscape adjustments */
-    .flanker-stim {
-        gap: max(0.4vmin, calc(88vw / var(--stimuli-count, 5) * 0.09));
-        
-        /* Medium screen sizing */
-        --base-size: min(
-            calc(82vw / var(--stimuli-count, 5)),
-            calc(60vh / 1),
-            18vmin
-        );
-        --min-size: 3.5vmin;
-        --max-size: 18vmin;
     }
 }

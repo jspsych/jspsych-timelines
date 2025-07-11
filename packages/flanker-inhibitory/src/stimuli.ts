@@ -35,7 +35,8 @@ export const arrow_only = [
   arrow_svg
 ];
 
-// Custom stimulus - you can add more layers
+// Custom stimulus - you layer SVGs and add the directional svgs separately.
+// If you add only one direction, it will be transformed to the other direction automatically.
 export const custom_stimulus = {
   left: [
     '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><circle cx="24" cy="24" r="15" fill="yellow"/></svg>',
