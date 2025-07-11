@@ -4,16 +4,12 @@ import jsPsychInstructions from '@jspsych/plugin-instructions';
 import { trial_text, instruction_pages } from './text';
 import { layered_stimuli, fish_only, arrow_only, custom_stimulus } from './stimuli';
 
-// ============================================================================
-// STANDARDIZED CREATEINSTRUCTIONS FUNCTION
-// ============================================================================
-
 // Global audio reference for stopping Google TTS
 let currentGoogleAudio: HTMLAudioElement | null = null;
 
 /**
  * Intelligent TTS with user preference support
- * Tries user's preferred method first, then falls back to the alternative
+ * Tries user's preferred method first, then the other method as fallback
  */
 async function speakText(text: string, options: { lang?: string, volume?: number, method?: 'google' | 'system' } = {}) {
   // Stop any current speech first and wait for it to stop
@@ -21,36 +17,39 @@ async function speakText(text: string, options: { lang?: string, volume?: number
   
   const preferredMethod = options.method || 'google';
   
-  // User prefers Google: try Google first, fallback to system
-  if (preferredMethod === 'google') {
-    try {
+  // Try preferred method first
+  try {
+    if (preferredMethod === 'google') {
       await speakWithGoogleTTS(text, options.lang || 'en');
-    } catch (googleError) {
-      stopAllSpeech();
-      await new Promise(resolve => setTimeout(resolve, 100));
-      try {
-        await speakWithSystemTTS(text, options);
-      } catch (systemError) {
-        console.warn('🔊 TTS unavailable');
-      }
+      return;
+    } else {
+      await speakWithSystemTTS(text, options);
+      return;
     }
-    return;
+  } catch (preferredSpeechError) {
+    // Preferred method failed, continue to try all methods
   }
   
-  // User prefers System: try system first, fallback to Google
-  if (preferredMethod === 'system') {
-    try {
-      await speakWithSystemTTS(text, options);
-    } catch (systemError) {
-      stopAllSpeech();
-      await new Promise(resolve => setTimeout(resolve, 100));
-      try {
-        await speakWithGoogleTTS(text, options.lang || 'en');
-      } catch (googleError) {
-        console.warn('🔊 TTS unavailable');
-      }
-    }
+  // Try Google TTS regardless
+  stopAllSpeech();
+  await new Promise(resolve => setTimeout(resolve, 100));
+  
+  try {
+    await speakWithGoogleTTS(text, options.lang || 'en');
     return;
+  } catch (googleError) {
+    // Google failed, continue to system
+  }
+  
+  // Try system TTS as final fallback
+  stopAllSpeech();
+  await new Promise(resolve => setTimeout(resolve, 100));
+  
+  try {
+    await speakWithSystemTTS(text, options);
+    return;
+  } catch (systemError) {
+    console.warn('🔊 TTS unavailable');
   }
 }
 
