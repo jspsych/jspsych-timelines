@@ -362,11 +362,11 @@ export function createTimeline({
     // Create individual trial objects
     const trials = [];
     for (let i = 0; i < total_trials; i++) {
-        const trial_instructions = prompt
+        const trial_instructions = `<p>${prompt
             .replace(/{n_back}/g, n_back.toString())
             .replace(/{plural}/g, n_back > 1 ? 's' : '')
             .replace(/{trial}/g, (i + 1).toString())
-            .replace(/{total}/g, total_trials.toString());
+            .replace(/{total}/g, total_trials.toString())}</p>`;
 
         trials.push({
             type: jsPsychPluginSpatialNback,

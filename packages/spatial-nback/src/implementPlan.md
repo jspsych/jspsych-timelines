@@ -330,7 +330,7 @@ export const instruction_pages = [
 Now, we will implement a standardized styles.css. This file may have extraneous styles not specific to our current timeline project (such as choice-options and whatnot). Remove these styles if they do not match anything in our current timeline project. If there are additional styles in the project that are not in this styles.css file, add them exactly as they are and do not change anything unneccesarily. Additionally, if there are any class names for instructions or trials that are here but not in the index.ts trials, you should probably add them to that trial's HTML. For example, for any html button response plugin usage, you should add       button_html: (choice) => `<button class="jspsych-btn continue-button">${choice}</button>`,
  so that the styles will apply to the buttons. Do similar things for instructions container or anything that is in our styles.css but not in the index.ts if applicable. Be careful not to mess up things, if unsure just prompt me to decide on things even. Oh and if you change any HTML you should probably check the speakText functions again on what HTML and CSS containers they are querying and make sure you change those if necessary too.
 
-Here is the imported styles.css:
+Here is the styles.css, and also this is not invalid nested css, we have a compiler that reworks everything so do not worry about scss, it simplifies the code a little, also if there are trial-general classes/ids like .task-instructions, keep it called that and rename the actual div in index.ts to task instructions instead of something like speeded-matching-task-instructions:
 
 /* GENERAL STYLES */
 
