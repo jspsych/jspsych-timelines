@@ -104,11 +104,14 @@ p {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     font-family: Arial, sans-serif;
     padding: 2vmin;
     text-align: center;
+    min-height: 100vh;
+    box-sizing: border-box;
 }
+
 
 /* Response display area */
 .response-display {
@@ -122,18 +125,45 @@ p {
     min-width: 300px;
 }
 
+
+/* Number grid layout */
+.number-grid {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin-top: 20px;
+}
+
+.number-row {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 15px;
+    justify-content: center;
+}
+
 /* Number input buttons */
 .number-button {
-    margin: 5px;
-    padding: 10px 15px;
-    font-size: 18px;
+    margin: 0;
+    padding: 15px;
+    font-size: 22px;
     border: 2px solid #bdc3c7;
-    border-radius: 8px;
+    border-radius: 12px;
     background-color: white;
     cursor: pointer;
     transition: all 0.3s ease;
-    min-width: 50px;
-    min-height: 50px;
+    min-width: 60px;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
     
     /* Disable double-click zoom */
     touch-action: manipulation !important;
@@ -185,7 +215,7 @@ p {
 }
 
 /* Styles for tablets */
-@media (max-width: 768px) {
+@media (max-width: 768px) and (min-width: 481px) {
     .jspsych-instructions-nav {
         position: fixed;
         bottom: 30vmin;
@@ -203,15 +233,38 @@ p {
     }
 
     .number-button {
-        min-width: 12vw;
-        min-height: 12vw;
-        font-size: clamp(14px, 4vw, 20px);
+        width: 20vw;
+        height: 20vw;
+        min-width: 20vw;
+        min-height: 20vw;
+        font-size: clamp(18px, 5vw, 28px);
+        padding: 8px;
+    }
+    
+    .number-grid {
+        gap: 2vw;
+        margin-top: 4vh;
+    }
+    
+    .number-row {
+        gap: 2vw;
+    }
+    
+    .action-buttons {
+        margin-top: 3vh;
+    }
+    
+    .action-buttons .number-button {
+        width: 30vw;
+        height: 10vh;
+        min-width: 30vw;
+        min-height: 10vh;
+        font-size: clamp(16px, 4vw, 22px);
     }
 }
 
-/* Styles for phones to override tablet */
-@media (max-width: 480px) {    
-    /* Smaller padding for phone to allow more text */
+/* Mobile override - Force large buttons on ALL mobile devices */
+@media screen and (max-width: 480px) {
     .instructions-container {
         padding-bottom: 40vmin;
     }
@@ -221,16 +274,106 @@ p {
     }
 
     .response-display {
-        min-width: 90vw;
-        font-size: clamp(18px, 5vw, 24px);
+        min-width: 90vw !important;
+        font-size: clamp(16px, 4vw, 22px) !important;
+        margin: 2px 0 3px 0 !important;
+        min-height: 4vh !important;
+        padding: 3px !important;
     }
 
+    /* Ultra-specific selectors to override everything - BIGGER BUTTONS */
+    html body .recall-container .number-grid .number-row .number-button,
+    html body .recall-container .number-button,
+    html body .number-button,
+    .recall-container .number-grid .number-row .number-button,
     .number-button {
-        min-width: 15vw;
-        min-height: 15vw;
-        margin: 3px;
+        width: 28vw !important;
+        height: 28vw !important;
+        min-width: 28vw !important;
+        min-height: 28vw !important;
+        max-width: 28vw !important;
+        max-height: 28vw !important;
+        background-color: #4CAF50 !important;
+        color: white !important;
+        font-size: clamp(32px, 12vw, 50px) !important;
+        padding: 0 !important;
+        border-radius: 12px !important;
+        font-weight: bold !important;
+        border: 2px solid #2E7D32 !important;
+        margin: 0 !important;
+        box-sizing: border-box !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        touch-action: manipulation !important;
+        user-select: none !important;
+    }
+    
+    .number-grid {
+        gap: 1vw !important;
+        margin-top: 1vh !important;
+        width: 96vw !important;
+        padding: 0 2vw !important;
+        box-sizing: border-box !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+    }
+    
+    .number-row {
+        gap: 1vw !important;
+        justify-content: center !important;
+        width: 100% !important;
+        display: flex !important;
+    }
+    
+    .action-buttons {
+        gap: 2vw !important;
+        margin-top: 2vh !important;
+        width: 100% !important;
+        justify-content: center !important;
+        display: flex !important;
+    }
+    
+    .recall-container .number-grid .action-buttons .number-button,
+    .action-buttons .number-button {
+        width: 45vw !important;
+        height: 12vh !important;
+        min-width: 45vw !important;
+        min-height: 12vh !important;
+        max-width: 45vw !important;
+        max-height: 12vh !important;
+        background-color: #FF9800 !important;
+        color: white !important;
+        font-size: clamp(22px, 6vw, 30px) !important;
+        border: 2px solid #F57C00 !important;
+        border-radius: 10px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+    }
+    
+    .recall-container {
+        padding: 0.5vh 0 !important;
+        height: 100vh !important;
+        overflow: hidden !important;
+        justify-content: flex-start !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+    }
+    
+    .recall-container h3 {
+        margin: 0.5vh 0 !important;
+        font-size: clamp(16px, 4vw, 20px) !important;
+    }
+    
+    .recall-container p {
+        margin: 0.3vh 0 0.5vh 0 !important;
+        font-size: clamp(12px, 3vw, 16px) !important;
     }
 }
+
 
 /* Landscape mode adjustments */
 @media (orientation: landscape) {
@@ -244,6 +387,123 @@ p {
     }
 
     .number-button {
-        margin: 2px 4px;
+        min-width: 15vh;
+        min-height: 15vh;
+        font-size: clamp(16px, 4vh, 24px);
+    }
+    
+    .number-grid {
+        gap: 8px;
+        height: 80vh;
+        margin-top: 2vh;
+    }
+    
+    .number-row {
+        gap: 8px;
+        flex: 1;
+        align-items: center;
+    }
+    
+    .action-buttons {
+        margin-top: 2vh;
+        flex: 0 0 auto;
+    }
+    
+    .action-buttons .number-button {
+        min-width: 25vh;
+        min-height: 8vh;
+    }
+}
+
+/* MOBILE OVERRIDE - Force large buttons to take up most of screen */
+@media screen and (max-width: 480px) {
+    .mobile-number-grid {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 1.5vw !important;
+        width: 98vw !important;
+        margin: 1vh auto !important;
+    }
+    
+    .mobile-number-row {
+        display: flex !important;
+        gap: 1.5vw !important;
+        justify-content: center !important;
+    }
+    
+    .mobile-number-button {
+        width: 31vw !important;
+        height: 31vw !important;
+        min-width: 31vw !important;
+        min-height: 31vw !important;
+        max-width: 31vw !important;
+        max-height: 31vw !important;
+        background-color: #4CAF50 !important;
+        color: white !important;
+        font-size: 9vw !important;
+        font-weight: bold !important;
+        border: 2px solid #2E7D32 !important;
+        border-radius: 12px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+        cursor: pointer !important;
+        touch-action: manipulation !important;
+        user-select: none !important;
+    }
+    
+    .mobile-action-button {
+        width: 45vw !important;
+        height: 12vh !important;
+        min-width: 45vw !important;
+        min-height: 12vh !important;
+        max-width: 45vw !important;
+        max-height: 12vh !important;
+        background-color: #FF9800 !important;
+        color: white !important;
+        font-size: 5vw !important;
+        font-weight: bold !important;
+        border: 2px solid #F57C00 !important;
+        border-radius: 10px !important;
+        margin: 0 1vw !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+        cursor: pointer !important;
+        touch-action: manipulation !important;
+        user-select: none !important;
+    }
+    
+    /* Override any conflicting styles */
+    button.mobile-number-button,
+    button.mobile-action-button {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    
+    .recall-container {
+        padding: 0.5vh 0 !important;
+        justify-content: flex-start !important;
+        height: 100vh !important;
+        overflow: hidden !important;
+    }
+    
+    .recall-container h3 {
+        margin: 0.5vh 0 !important;
+        font-size: clamp(16px, 4vw, 20px) !important;
+    }
+    
+    .recall-container p {
+        margin: 0.3vh 0 0.5vh 0 !important;
+        font-size: clamp(12px, 3vw, 16px) !important;
+    }
+    
+    .response-display {
+        min-width: 90vw !important;
+        font-size: clamp(16px, 4vw, 22px) !important;
+        margin: 2px 0 3px 0 !important;
+        min-height: 4vh !important;
+        padding: 3px !important;
     }
 }

@@ -27,6 +27,7 @@ async function speakText(text: string, options: { lang?: string, volume?: number
     }
   } catch (preferredSpeechError) {
     // Preferred method failed, continue to try all methods
+    console.log(preferredSpeechError)
   }
   
   // Try Google TTS regardless
@@ -430,19 +431,83 @@ export function createTimeline(jsPsych: JsPsych, config: DigitSpanConfig = {}) {
               <div class="response-display">
                 <span id="entered-digits">${trial_text.recall_placeholder}</span>
               </div>
-              <div style="margin-top: 20px;">
-                <button onclick="addDigit(1)" class="number-button">1</button>
-                <button onclick="addDigit(2)" class="number-button">2</button>
-                <button onclick="addDigit(3)" class="number-button">3</button>
-                <button onclick="addDigit(4)" class="number-button">4</button>
-                <button onclick="addDigit(5)" class="number-button">5</button>
-                <button onclick="addDigit(6)" class="number-button">6</button>
-                <button onclick="addDigit(7)" class="number-button">7</button>
-                <button onclick="addDigit(8)" class="number-button">8</button>
-                <button onclick="addDigit(9)" class="number-button">9</button>
-                <br><br>
-                <button onclick="clearDigits()" class="number-button clear-button">${trial_text.clear_button}</button>
-                <button onclick="submitResponse()" class="number-button submit-button">${trial_text.submit_button}</button>
+              <style>
+                @media screen and (max-width: 480px) {
+                  .mobile-number-grid {
+                    display: flex !important;
+                    flex-direction: column !important;
+                    align-items: center !important;
+                    gap: 4vw !important;
+                    width: 95vw !important;
+                    margin: 2vh auto !important;
+                  }
+                  .mobile-number-row {
+                    display: flex !important;
+                    gap: 4vw !important;
+                    justify-content: center !important;
+                  }
+                  .mobile-number-button {
+                    width: 25vw !important;
+                    height: 25vw !important;
+                    min-width: 25vw !important;
+                    min-height: 25vw !important;
+                    max-width: 25vw !important;
+                    max-height: 25vw !important;
+                    background-color: #4CAF50 !important;
+                    color: white !important;
+                    font-size: 8vw !important;
+                    font-weight: bold !important;
+                    border: 2px solid #2E7D32 !important;
+                    border-radius: 12px !important;
+                    margin: 0 !important;
+                    padding: 0 !important;
+                    box-sizing: border-box !important;
+                    cursor: pointer !important;
+                    touch-action: manipulation !important;
+                    user-select: none !important;
+                  }
+                  .mobile-action-button {
+                    width: 35vw !important;
+                    height: 10vh !important;
+                    min-width: 35vw !important;
+                    min-height: 10vh !important;
+                    max-width: 35vw !important;
+                    max-height: 10vh !important;
+                    background-color: #FF9800 !important;
+                    color: white !important;
+                    font-size: 4vw !important;
+                    font-weight: bold !important;
+                    border: 2px solid #F57C00 !important;
+                    border-radius: 10px !important;
+                    margin: 0 2vw !important;
+                    padding: 0 !important;
+                    box-sizing: border-box !important;
+                    cursor: pointer !important;
+                    touch-action: manipulation !important;
+                    user-select: none !important;
+                  }
+                }
+              </style>
+              <div class="number-grid mobile-number-grid">
+                <div class="number-row mobile-number-row">
+                  <button onclick="addDigit(1)" class="number-button mobile-number-button">1</button>
+                  <button onclick="addDigit(2)" class="number-button mobile-number-button">2</button>
+                  <button onclick="addDigit(3)" class="number-button mobile-number-button">3</button>
+                </div>
+                <div class="number-row mobile-number-row">
+                  <button onclick="addDigit(4)" class="number-button mobile-number-button">4</button>
+                  <button onclick="addDigit(5)" class="number-button mobile-number-button">5</button>
+                  <button onclick="addDigit(6)" class="number-button mobile-number-button">6</button>
+                </div>
+                <div class="number-row mobile-number-row">
+                  <button onclick="addDigit(7)" class="number-button mobile-number-button">7</button>
+                  <button onclick="addDigit(8)" class="number-button mobile-number-button">8</button>
+                  <button onclick="addDigit(9)" class="number-button mobile-number-button">9</button>
+                </div>
+                <div class="action-buttons mobile-number-row" style="margin-top: 5vh; gap: 6vw !important;">
+                  <button onclick="clearDigits()" class="number-button clear-button mobile-action-button">${trial_text.clear_button}</button>
+                  <button onclick="submitResponse()" class="number-button submit-button mobile-action-button">${trial_text.submit_button}</button>
+                </div>
               </div>
             </div>
           `;

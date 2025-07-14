@@ -10,6 +10,19 @@
 <script src="../dist/index.global.js"></script> -->
   <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css">
   <link rel="stylesheet" href="../src/styles.css">
+  <style>
+    /* HIDE CONTENT INITIALLY TO PREVENT FLASH */
+    @media screen and (max-width: 480px) {
+      .jspsych-content {
+        opacity: 0 !important;
+        transition: opacity 0.1s !important;
+      }
+      
+      .jspsych-content.mobile-ready {
+        opacity: 1 !important;
+      }
+    }
+  </style>
 </head>
 
 <body></body>
@@ -36,6 +49,80 @@
   });
 
   jsPsych.run([task])
+</script>
+
+<script>
+  // Use MutationObserver to catch elements as they're created
+  const observer = new MutationObserver((mutations) => {
+    let hasButtons = false;
+    
+    mutations.forEach((mutation) => {
+      mutation.addedNodes.forEach((node) => {
+        if (node.nodeType === 1) { // Element node
+          // Check if this node or its children contain buttons
+          const buttons = node.querySelectorAll ? node.querySelectorAll('button') : [];
+          if (node.tagName === 'BUTTON') buttons.push(node);
+          
+          buttons.forEach(btn => {
+            const text = btn.textContent?.trim();
+            if (text && text.match(/^[1-9]$/)) {
+              hasButtons = true;
+              btn.style.cssText = `
+                width: 26vw !important;
+                height: 26vw !important;
+                min-width: 26vw !important;
+                min-height: 26vw !important;
+                max-width: 26vw !important;
+                max-height: 26vw !important;
+                font-size: 10vw !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                box-sizing: border-box !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+              `;
+            } else if (text === 'Clear' || text === 'Submit') {
+              hasButtons = true;
+              btn.style.cssText = `
+                width: 35vw !important;
+                height: 8vh !important;
+                font-size: 4vw !important;
+                margin: 0 1vw !important;
+                padding: 0 !important;
+                box-sizing: border-box !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+              `;
+            }
+          });
+        }
+      });
+    });
+    
+    // Show content once we've styled the buttons
+    if (hasButtons) {
+      const content = document.querySelector('.jspsych-content');
+      if (content) {
+        content.classList.add('mobile-ready');
+      }
+    }
+  });
+  
+  // Start observing
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true
+  });
+  
+  // Fallback: also show content after a short delay
+  setTimeout(() => {
+    const content = document.querySelector('.jspsych-content');
+    if (content) {
+      content.classList.add('mobile-ready');
+    }
+  }, 200);
 </script>
 
 </html>
