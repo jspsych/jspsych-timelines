@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>jsPsychTimelineDigitSpan Example</title>
+  <script src="https://unpkg.com/jspsych"></script>
+  <script src="../dist/index.global.js"></script>
+  <!-- Load the published timeline package here, e.g.
+<script src="https://unpkg.com/digit-span"></script>
+<script src="../dist/index.global.js"></script> -->
+  <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css">
+  <link rel="stylesheet" href="../src/styles.css">
+</head>
+
+<body></body>
+<script>
+  const jsPsych = initJsPsych();
+
+  const task = jsPsychTimelineDigitSpan.createTimeline(jsPsych, {
+    // ===== TRIAL SEQUENCE CONFIGURATION =====
+    // Custom trial sequence - researchers can specify exact order
+    trial_sequence: ['forward', 'forward', 'backward', 'forward', 'backward', 'backward'],
+    
+    // Alternative: use helper functions for common patterns
+    // trial_sequence: jsPsychTimelineDigitSpan.createAlternatingSequence(8),
+    // trial_sequence: jsPsychTimelineDigitSpan.createBlockedSequence(4, 4),
+    // trial_sequence: jsPsychTimelineDigitSpan.createBalancedRandomSequence(10),
+    
+    // ===== TEXT-TO-SPEECH CONFIGURATION =====
+    enable_tts: true, // Enable text-to-speech functionality
+    tts_method: 'google', // Preferred TTS method: 'google', 'system'
+    tts_rate: 1.0, // Speech rate (0.1 to 10)
+    tts_pitch: 1.0, // Speech pitch (0 to 2)
+    tts_volume: 1.0, // Speech volume (0 to 1)
+    tts_lang: 'en-US' // Language code for TTS
+  });
+
+  jsPsych.run([task])
+</script>
+
+</html>
