@@ -17,39 +17,27 @@ export const trial_text = {
     right_button: "→",
     
     // Task completion messages
-    task_complete_header: "Task Complete!",
-    task_complete_message: "Thank you for participating in the flanker inhibitory control task.",
+    task_complete: "Thank you for participating in the flanker inhibitory control task.",
     
-    // Practice phase text
-    practice_header: "Practice Round",
-    practice_intro_message: "Let's practice! Look at the middle fish and click the button that shows which way it's swimming.",
-    practice_complete_header: "Practice Complete!",
-    practice_complete_message: "Great job! Now you're ready for the real task.",
-    practice_failed_message: "Let's try the practice again. Remember to focus on the middle fish only.",
+    // Practice phase text: pre-practice intro and post-practice message.
+    practice_intro: "Let's practice! Look at the middle fish and click the button that shows which way it's swimming.",
+    practice_outro: "<h2>Practice Complete!</h2>Great job! Now you're ready for the real task.",
     
-    // Main task instructions and headers
-    main_task_header: "Main Task",
-    main_task_intro: "Now we'll start the real task. Remember to focus on the middle fish!",
-    main_task_prompt: "Look at the middle fish. Click the button for the direction it's swimming.",
-    
+    // Main task instructions and inter-task prompt
+    main_task_intro: "<h2>Main Task</h2>Now we'll start the real task. Are you ready?",
+    main_task_prompt: "",
+
     // Performance summary labels
     performance_title: "Your Performance:",
     accuracy_label: "Accuracy:",
     response_time_label: "Average Response Time:",
-    
+
     // Fixation and inter-trial
     fixation_cross: "+",
-    
+
     // Feedback messages (optional)
     correct_feedback: "Correct",
     incorrect_feedback: "Incorrect",
-    
-    // Timing messages
-    too_slow_message: "Please respond faster",
-    
-    // Progress messages
-    block_progress: "Block {current} of {total}",
-    trial_progress: "Trial {current} of {total}",
 };
 
 // TTS (Text-to-Speech) configuration

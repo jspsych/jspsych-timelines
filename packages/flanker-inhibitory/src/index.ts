@@ -529,8 +529,7 @@ export function createTimeline(jsPsych: JsPsych, config: FlankerConfig = {}) {
       type: jsPsychHtmlButtonResponse,
       stimulus: `
         <div class="practice-instructions">
-          <h2>${trial_text.practice_header}</h2>
-          <p>${trial_text.practice_intro_message}</p>
+          <p>${trial_text.practice_intro}</p>
         </div>
       `,
       choices: [trial_text.start_button],
@@ -641,14 +640,10 @@ export function createTimeline(jsPsych: JsPsych, config: FlankerConfig = {}) {
     timeline.push({
       type: jsPsychHtmlButtonResponse,
       stimulus: () => {
-        const practice_data = jsPsych.data.get().filter({task: 'flanker', phase: 'practice'}).values();
-        const performance = calculatePerformance(practice_data);
         
         return `
           <div class="practice-instructions">
-            <h2>${trial_text.practice_complete_header}</h2>
-            <p>${trial_text.practice_complete_message}</p>
-            <p>${trial_text.accuracy_label} ${performance.accuracy.toFixed(1)}%</p>
+            <p>${trial_text.practice_outro}</p>
           </div>
         `;
       },
@@ -672,7 +667,6 @@ export function createTimeline(jsPsych: JsPsych, config: FlankerConfig = {}) {
     type: jsPsychHtmlButtonResponse,
     stimulus: `
       <div class="ready-screen">
-        <h2>${trial_text.main_task_header}</h2>
         <p>${trial_text.main_task_intro}</p>
       </div>
     `,
@@ -766,8 +760,7 @@ export function createTimeline(jsPsych: JsPsych, config: FlankerConfig = {}) {
       
       return `
         <div class="ready-screen">
-          <h2>${trial_text.task_complete_header}</h2>
-          <p>${trial_text.task_complete_message}</p>
+          <p>${trial_text.task_complete}</p>
           <div class="performance-summary">
             <h3>${trial_text.performance_title}</h3>
             <p>${trial_text.accuracy_label} ${performance.accuracy.toFixed(1)}%</p>
