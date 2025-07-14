@@ -1,30 +1,196 @@
-We are going to implement three things into this timeline project, some of which may already be implemented but we must adjust to match our files. Do not unnecessarily edit these implementations as they are standardized. For css ids and classes, comb the project's id's and classes to see if anything resembles what we have in the imported styles.css file (at the end of this file) and change it to match the imported file. We are trying to standardize styles, variables, and CSS here. If you make any notable or breaking changes make sure to alert me and describe them in detail. If there is a separate TTS object in text.ts or anything anywhere that you are unsure of what to do with just ask me.
+We are going to implement four things (speaktext function, createinstructions function and text.ts, styles.css) into this timeline project, some of which may already be implemented but we must edit them to match our desired standardized outcome and current project. Do not unnecessarily edit these implementations as they are standardized across multiple projects, only edit if necessary to add some project-specific functionality or style. For css ids and classes, comb the project's id's and classes to see if anything resembles what we have in the imported styles.css file (at the end of this file) and change it to match the imported file. We are trying to standardize styles, variables, and CSS here. If you make any notable or breaking changes make sure to alert me and describe them in detail. If there is a separate TTS object in text.ts or anything anywhere that you are unsure of what to do with just ask me, but with separate TTS objects we probably want them replaced and fully automated using our speakText function.
 
-First, createInstructions() function that makes an instructions trial using jsPsychInstructions and supports TTS. This function will need the timeline to have a enable_tts parameter. If this does not exist in the project, add it, and then go to index.html and add it there as well and make sure it is set to true. Additionally, a text.ts file is required with specific variables: instruction_pages and trial_text. We have standardized these variable names so if there is similar objects or variables change them to match our format or just keep them separately.
+First, createInstructions() function that makes an instructions trial using jsPsychInstructions and supports TTS. This function will need the timeline to have a few parameters added to the config:
 
-Implementation for createInstructions():
+    // ===== TEXT-TO-SPEECH CONFIGURATION =====
+    enable_tts: true, // Enable text-to-speech functionality
+    tts_method: 'google', // Preferred TTS method: 'google', 'system'
+    tts_rate: 1.0, // Speech rate (0.1 to 10)
+    tts_pitch: 1.0, // Speech pitch (0 to 2)
+    tts_volume: 1.0, // Speech volume (0 to 1)
+    tts_lang: 'ar-SA', // Language code for TTS
+};
+
+in index.ts:
+  // TTS Configuration
+  enable_tts?: boolean; // Enable text-to-speech functionality
+  tts_method?: 'google' | 'system'; // Preferred TTS method (default: 'google')
+  tts_rate?: number; // Speech rate (0.1 to 10, default: 0.8)
+  tts_pitch?: number; // Speech pitch (0 to 2, default: 1.0)
+  tts_volume?: number; // Speech volume (0 to 1, default: 0.8)
+  tts_lang?: string; // Language code for TTS
+
+ If this does not exist in the project, add it, and then go to index.html and add it there as well and make sure it is set by default to the above config in index.ts and index.html. Additionally, a text.ts file is required with specific variables: instruction_pages and trial_text. We have standardized these variable names so if there is similar objects or variables change them to match our format or just create new array instruction_pages and object trial_text.
+
+If there is an existing speakText() function or any other speaking function, just replace it with what we have and make sure to go through every trial object and rewrite the speakText call to be similar to the one in our createInstructions. 
+
+Implementation for speakText and createInstructions():
+
+// Global audio reference for stopping Google TTS
+let currentGoogleAudio: HTMLAudioElement | null = null;
 
 /**
- * Function to provide text-to-speech functionality
- * Researchers can modify speech settings like rate and volume
+ * Intelligent TTS with user preference support
+ * Tries user's preferred method first, then the other method as fallback
  */
-function speakText(text: string) {
-  if ('speechSynthesis' in window) {
-    // Stop any ongoing speech
-    if ('speechSynthesis' in window) {
-      speechSynthesis.cancel();
+async function speakText(text: string, options: { lang?: string, volume?: number, method?: 'google' | 'system' } = {}) {
+  // Stop any current speech first and wait for it to stop
+  stopAllSpeech();
+  
+  const preferredMethod = options.method || 'google';
+  
+  // Try preferred method first
+  try {
+    if (preferredMethod === 'google') {
+      await speakWithGoogleTTS(text, options.lang || 'en');
+      return;
+    } else {
+      await speakWithSystemTTS(text, options);
+      return;
     }
-    
-    // Wait a brief moment for cancel to take effect
-    setTimeout(() => {
+  } catch (preferredSpeechError) {
+    // Preferred method failed, continue to try all methods
+  }
+  
+  // Try Google TTS regardless
+  stopAllSpeech();
+  await new Promise(resolve => setTimeout(resolve, 100));
+  
+  try {
+    await speakWithGoogleTTS(text, options.lang || 'en');
+    return;
+  } catch (googleError) {
+    // Google failed, continue to system
+  }
+  
+  // Try system TTS as final fallback
+  stopAllSpeech();
+  await new Promise(resolve => setTimeout(resolve, 100));
+  
+  try {
+    await speakWithSystemTTS(text, options);
+    return;
+  } catch (systemError) {
+    console.warn('🔊 TTS unavailable');
+  }
+}
+
+/**
+ * Stop all speech including Google TTS audio - aggressively stops everything
+ */
+function stopAllSpeech() {
+  // Stop system TTS aggressively
+  if ('speechSynthesis' in window) {
+      speechSynthesis.cancel();
+      speechSynthesis.pause();
+      speechSynthesis.resume();
+      speechSynthesis.cancel();
+  }
+  
+  // Stop Google TTS audio aggressively
+  if (currentGoogleAudio) {
+    try {
+      currentGoogleAudio.pause();
+      currentGoogleAudio.currentTime = 0; // Reset to beginning
+      currentGoogleAudio.src = ''; // Clear source to stop loading
+    } catch (e) {
+      // Ignore errors, just ensure we clear the reference
+    }
+    currentGoogleAudio = null;
+  }
+}
+
+/**
+ * Simple system TTS function 
+ * Browser will automatically select the best voice for the specified language
+ */
+function speakWithSystemTTS(text: string, options: { rate?: number, volume?: number, pitch?: number, lang?: string } = {}) {
+  return new Promise<void>((resolve, reject) => {
+    if ('speechSynthesis' in window) {
       // Create and speak the utterance
       const utterance = new SpeechSynthesisUtterance(text);
-      utterance.rate = 0.8; // Slightly slower for clarity
-      utterance.volume = 0.8;
-      utterance.voice = speechSynthesis.getVoices()[0] || null; // Use first available voice
+      
+      // Apply options with defaults
+      utterance.rate = options.rate ?? 0.8;
+      utterance.volume = options.volume ?? 0.8;
+      utterance.pitch = options.pitch ?? 1.0;
+      
+      // Set language if provided (browser will pick best voice)
+      if (options.lang) {
+        utterance.lang = options.lang;
+      }
+      
+      // Add event listeners
+      utterance.onstart = () => resolve();
+      utterance.onend = () => resolve();
+      utterance.onerror = (e) => {
+        if (e.error === 'not-allowed' || e.error === 'synthesis-failed') {
+          reject(new Error(e.error)); // Reject on critical errors
+        } else {
+          resolve(); // Don't fail on minor errors since this is a fallback
+        }
+      };
+      
       speechSynthesis.speak(utterance);
-    }, 100);
-  }
+    } else {
+      reject(new Error('speechSynthesis not supported'));
+    }
+  });
+}
+
+/**
+ * Defaultl TTS using Google Translate
+ * This works by creating an audio element that plays Google's TTS service
+ */
+function speakWithGoogleTTS(text: string, lang: string) {
+  return new Promise<void>((resolve, reject) => {
+    try {
+      // Convert language code to simple 2-letter format for Google
+      const googleLang = lang ? lang.substring(0, 2).toLowerCase() : 'en';
+      // Create Google Translate TTS URL
+      const encodedText = encodeURIComponent(text);
+      const googleTTSUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=${googleLang}&client=tw-ob&q=${encodedText}`;
+      
+      // Create and play audio
+      const audio = new Audio(googleTTSUrl);
+      
+      // Store reference to current audio for stopping immediately
+      currentGoogleAudio = audio;
+      
+      audio.oncanplay = () => {
+        // Check if we were cancelled while loading
+        if (currentGoogleAudio !== audio) {
+          audio.pause();
+          reject(new Error('Cancelled while loading'));
+          return;
+        }
+        audio.play().then(resolve).catch(reject);
+      };
+      
+      audio.onended = () => {
+        // Only clear if this is still the current audio
+        if (currentGoogleAudio === audio) {
+          currentGoogleAudio = null;
+        }
+        resolve();
+      };
+      
+      audio.onerror = (e) => {
+        // Always try to pause and clear, even on error
+        audio.pause();
+        if (currentGoogleAudio === audio) {
+          currentGoogleAudio = null;
+        }
+        reject(new Error('Google TTS failed'));
+      };
+      
+      // Load the audio
+      audio.load();
+      
+    } catch (error) {
+      reject(error);
+    }
+  });
 }
 
 /**
@@ -39,7 +205,7 @@ function extractTextFromHtml(htmlString: string): string {
   return doc.body.textContent?.replace(/\s+/g, ' ').trim() || '';
 }
 
-function createInstructions(instruction_pages_data = instruction_pages, enable_tts = false) {
+function createInstructions(instruction_pages_data = instruction_pages, enable_tts = false, ttsOptions = {}) {
   // Closure variable to store the handler for cleanup
   let handleButtonClick: ((event: Event) => void) | null = null;
 
@@ -53,7 +219,7 @@ function createInstructions(instruction_pages_data = instruction_pages, enable_t
     button_label_previous: trial_text.back_button,
     button_label_next: trial_text.next_button,
     on_start: function() {
-      speechSynthesis.cancel();
+      stopAllSpeech();
     },
     on_load: function() {
       if (enable_tts) {
@@ -63,7 +229,7 @@ function createInstructions(instruction_pages_data = instruction_pages, enable_t
           if (instructionsContent) {
             const pageText = extractTextFromHtml(instructionsContent.innerHTML);
             if (pageText.trim()) {
-              speakText(pageText);
+              speakText(pageText, ttsOptions);
             }
           }
         };
@@ -72,8 +238,9 @@ function createInstructions(instruction_pages_data = instruction_pages, enable_t
         handleButtonClick = (event: Event) => {
           const target = event.target as HTMLElement;
           if (target && (target.id === 'jspsych-instructions-next' || target.id === 'jspsych-instructions-back')) {
-            speechSynthesis.cancel();
-            setTimeout(speakCurrentPage, 200);
+            stopAllSpeech();
+            // Wait longer to ensure speech has stopped before starting new speech
+            setTimeout(speakCurrentPage, 100);
           }
         };
 
@@ -81,23 +248,15 @@ function createInstructions(instruction_pages_data = instruction_pages, enable_t
         document.addEventListener('click', handleButtonClick);
 
         // Speak initial page
-        setTimeout(speakCurrentPage, 300);
+        setTimeout(speakCurrentPage, 100);
       }
     },
     on_finish: function(data: any) {
-      speechSynthesis.cancel();
+      stopAllSpeech();
       // Clean up event listener using closure variable
       if (handleButtonClick) {
         document.removeEventListener('click', handleButtonClick);
         handleButtonClick = null;
-      }
-      if (enable_tts) {
-        speechSynthesis.cancel();
-      }
-      // Clean up navigation button listeners
-      if ((window as any).instructionsNavCleanup) {
-        (window as any).instructionsNavCleanup();
-        delete (window as any).instructionsNavCleanup;
       }
       data.phase = 'instructions';
     }
@@ -105,22 +264,20 @@ function createInstructions(instruction_pages_data = instruction_pages, enable_t
 }
 
 
-Implementation for text.ts file, do not import anything from trial_text except next_button and back_button, everything else only match to the variable in the existing text.ts file:
+Implementation for text.ts file, you can add text placeholders and objects specific to the project we are working on. You should probably go through the index.ts file and make sure every piece of text is customizable through text.ts 
 
 /* This file contains the configurable text used in the speeded matching timeline.
  * Researchers can modify these texts to change the language or instructions.
  */
 
 export const trial_text = {
-    // Button texts
-    continue_button: "Continue",
-    start_button: "Start",
-    ready_button: "I'm Ready",
-    end_button: "End",
     // Instruction pages buttons text, these will always have arrows < and >
     // these do not work right now due to CSS fixed position, might fix later
     next_button: "",
     back_button: "", 
+
+    (MESSAGE TO CLAUDE: THE FOLLOWING TEXT ITEMS MAY OR MAY NOT EXIST IN THIS PROJECT. IF THEY DO NOT EXIST OR MATCH ANYTHING SIMILAR, REMOVE THEM. OTHERWISE KEEP THEM WITH THE SAME NAMING SCHEME.)
+
     // Task completion messages
     task_complete_header: "Task Complete!",
     task_complete_message: "Thank you for participating in the speeded matching task.",
@@ -156,7 +313,7 @@ export const trial_text = {
  * You can add more pages by adding more strings to the array, or modify existing pages
  * by editing the HTML content.
  */
-
+(MESSAGE TO CLAUDE: WHATEVER THE CONTENT OF EACH PAGE IS FOR THE CURRENT PROJECT, IF ITS TOO LONG OR INCLUDES UNNECESSARY INFO TO THE PARTICIPANT (SUCH AS THE EXPERIMENTS NAME OR ANYTHING OTHER THAN WHAT THE PARTICIPANT NEEDS TO KNOW TO DO THE EXPERIMENT) THEN SIMPLIFY. APPROACH TO REWRITE INSTRUCTIONS: MORE PAGES WITH SHORT TEXT RATHER THAN LONG PARAGRAPHS OR BULLET POINTS.)
 export const instruction_pages = [
     "<b>You will see a picture at the top.</b>",
     "Below it, you will see four pictures.",
@@ -167,7 +324,10 @@ export const instruction_pages = [
 
 
 
-Now, we will implement a standardized styles.css. This file may have extraneous styles specific to the original timeline (such as choice-options and whatnot). Ignore these styles if they do not match anything in our current timeline project. If there are additional needed styles that are not in the imported styles, add them exactly as they are and do not change anything unneccesarily. Here is the imported styles.css:
+Now, we will implement a standardized styles.css. This file may have extraneous styles not specific to our current timeline project (such as choice-options and whatnot). Remove these styles if they do not match anything in our current timeline project. If there are additional styles in the project that are not in this styles.css file, add them exactly as they are and do not change anything unneccesarily. Additionally, if there are any class names for instructions or trials that are here but not in the index.ts trials, you should probably add them to that trial's HTML. For example, for any html button response plugin usage, you should add       button_html: (choice) => `<button class="jspsych-btn continue-button">${choice}</button>`,
+ so that the styles will apply to the buttons. Do similar things for instructions container or anything that is in our styles.css but not in the index.ts if applicable. Be careful not to mess up things, if unsure just prompt me to decide on things even. Oh and if you change any HTML you should probably check the speakText functions again on what HTML and CSS containers they are querying and make sure you change those if necessary too.
+
+Here is the imported styles.css:
 
 /* GENERAL STYLES */
 
