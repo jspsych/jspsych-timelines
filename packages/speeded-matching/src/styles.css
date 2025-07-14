@@ -64,8 +64,6 @@ p {
 
 /* Instruction navigation button styles */
 .jspsych-instructions-nav .jspsych-btn {
-    background-color: #fff;
-    color: #000;
     width: 20vmin;
     height: 20vmin;
     border: 3px solid #ccc;
