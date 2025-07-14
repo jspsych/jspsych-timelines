@@ -1,159 +1,225 @@
-/* Pattern Comparison Task Styles */
+/* GENERAL STYLES */
 
-/* Instruction page styles */
-.pattern-instructions-container {
-  max-width: 700px;
-  margin: 0 auto;
-  text-align: center;
-  padding: 40px 20px;
-  font-family: Arial, sans-serif;
+h1, h2, h3 {
+    line-height: 1.6;
+    margin: 3vmin;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
-.pattern-instructions-container h1 {
-  color: #2196F3;
-  margin-bottom: 10px;
+p {
+    margin: 5vmin 1vmin;
+    font-size: clamp(15px, 8vmin, 40px);
+    line-height: 1.6;    
+    /* Prevent horizontal overflow */
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
-.pattern-instructions-container h2 {
-  color: #666;
-  margin-bottom: 20px;
+/* Styles for any normal HTML button */
+.continue-button {
+    /* background-color: #3498db;
+    color: white;
+    border: none; */
+    padding: clamp(15px, 6vmin, 35px) clamp(15px, 8vmin, 40px);
+    font-size: clamp(15px, 6vmin, 35px);
+    border-radius: 1vmin;
+    cursor: pointer;
+    margin: 2vmin;
+    margin-top: 10vh;
+    transition: background-color 0.3s;
+    min-height: 48px;
+    
+    /* Disable double-click zoom */
+    touch-action: manipulation !important;
+    user-select: none !important;
 }
 
-.pattern-instructions-container h2.strategy-title {
-  color: #2196F3;
-  margin-top: 30px;
-  margin-bottom: 15px;
+/* INSTRUCTIONS TRIAL STYLES */
+
+.instructions-container {
+    max-width: 90vw; /* Limit width for better readability */
+    margin: 0 auto; /* Center the container */
+    padding: 2vmin; /* Add some padding */
+    box-sizing: border-box; /* Include padding in width calculations */
+    overflow-x: hidden; /* Prevent horizontal overflow */
 }
 
-.pattern-instructions-container p {
-  font-size: 18px;
-  line-height: 1.6;
-  margin-bottom: 15px;
+/* Mobile-friendly instruction navigation buttons */
+.jspsych-instructions-nav {
+    display: flex;
+    gap: 25vw;
+    justify-content: center;
+    margin-top: auto;
+    padding: clamp(20px, 5vmin, 40px) !important;
+    min-height: clamp(20px, 50vmin, 250px);
+    align-items: flex-end;
 }
 
-.pattern-instructions-container p.performance-note {
-  font-size: 16px;
-  color: #555;
-  margin-bottom: 20px;
+/* Instruction navigation button styles */
+.jspsych-instructions-nav .jspsych-btn {
+    color: #000;
+    width: 20vmin;
+    height: 20vmin;
+    border: 3px solid #ccc;
+    border-radius: 50%;
+    font-size: clamp(15px, 7vmin, 35px);
+    cursor: pointer;
+    min-height: 100px;
+    min-width: 100px;
+    font-weight: 600;
+
+    /* Disable double-click zoom */
+    touch-action: manipulation !important;
+    user-select: none !important;
 }
 
-.pattern-instructions-container p.strategy-intro {
-  font-size: 16px;
-  margin-bottom: 10px;
+.jspsych-instructions-nav .jspsych-btn:active {
+    background-color: #f0f0f0;
+    border-color: #999;
 }
 
-.pattern-instructions-container p.start-prompt {
-  font-weight: bold;
-  color: #2196F3;
-  margin-top: 30px;
-  font-size: 16px;
+.jspsych-instructions-nav .jspsych-btn:disabled {
+    visibility: hidden;  /* Keeps the space but hides the button */
 }
 
-.pattern-instructions-container ul {
-  text-align: left;
-  display: inline-block;
-  font-size: 16px;
-  line-height: 1.8;
+/* EXPERIMENT TRIAL STYLES */
+
+/* Fixation cross (inter-trial), set to invisible by default */
+.fixation, .pattern-fixation {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8vmin;
+    color: #ffffff; /* White color for invisibility */
+    font-weight: bold;
+    min-height: 20vmin;
 }
 
-/* Button styles */
-.pattern-start-button {
-  font-size: 16px;
-  padding: 12px 24px;
-  margin: 0 10px;
-  min-width: 120px;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  border-radius: 5px;
-}
-
-.pattern-continue-button {
-  font-size: 16px;
-  padding: 12px 24px;
-  margin: 0 10px;
-  min-width: 120px;
-  background-color: #2196F3;
-  color: white;
-  border: none;
-  border-radius: 5px;
-}
-
-.pattern-trial-button {
-  font-size: 16px;
-  padding: 12px 24px;
-  margin: 0 10px;
-  min-width: 100px;
-}
-
-/* Trial styles */
+/* Project-specific styles */
 .pattern-comparison-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 60vh;
-  padding: 20px;
-  font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    padding: 20px;
+    font-family: Arial, sans-serif;
 }
 
 .pattern-instructions {
-  font-size: 18px;
-  margin-bottom: 30px;
-  text-align: center;
+    font-size: clamp(15px, 6vmin, 35px);
+    margin-bottom: 30px;
+    text-align: center;
 }
 
 .patterns-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 50px;
-  margin-bottom: 30px;
-  flex-wrap: wrap;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 50px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
 }
 
 .pattern {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  border: 2px solid #ccc;
-  border-radius: 10px;
-  background-color: #f9f9f9;
-  width: 150px;
-  height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    width: clamp(120px, 20vmin, 150px);
+    height: clamp(120px, 20vmin, 150px);
 }
 
 .pattern svg {
-  max-width: 100%;
-  max-height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+/* Button styles */
+.pattern-continue-button, .continue-button {
+    font-size: clamp(15px, 6vmin, 35px);
+    padding: clamp(12px, 3vmin, 24px) clamp(15px, 6vmin, 30px);
+    margin: 2vmin;
+    min-width: 120px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    
+    /* Disable double-click zoom */
+    touch-action: manipulation !important;
+    user-select: none !important;
+}
+
+.pattern-trial-button {
+    font-size: clamp(15px, 6vmin, 35px);
+    padding: clamp(12px, 3vmin, 24px) clamp(15px, 6vmin, 30px);
+    margin: 2vmin;
+    min-width: 100px;
+    cursor: pointer;
+    
+    /* Disable double-click zoom */
+    touch-action: manipulation !important;
+    user-select: none !important;
 }
 
 /* End screen styles */
 .pattern-end-screen {
-  text-align: center;
-  padding: 40px;
-}
-
-/* Fixation cross styles */
-.pattern-fixation {
-  font-size: 24px;
-  text-align: center;
+    text-align: center;
+    padding: 40px;
+    max-width: 90vw;
+    margin: 0 auto;
 }
 
 /* Responsive styles */
 @media (max-width: 768px) {
-  .patterns-container {
-    flex-direction: column;
-    gap: 30px;
-  }
-  
-  .pattern {
-    width: 120px;
-    height: 120px;
-  }
-  
-  .pattern-instructions {
-    font-size: 16px;
-  }
+    .jspsych-instructions-nav {
+        position: fixed;
+        bottom: 30vmin;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    
+    /* Add padding to prevent content from going under fixed buttons */
+    .instructions-container {
+        padding-bottom: 45vmin; /* 30vmin for button position + 5vmin safety */
+    }
+
+    .patterns-container {
+        flex-direction: column;
+        gap: 30px;
+    }
+    
+    .pattern {
+        width: clamp(100px, 25vmin, 120px);
+        height: clamp(100px, 25vmin, 120px);
+    }
+    
+    .pattern-instructions {
+        font-size: clamp(14px, 5vmin, 20px);
+    }
+}
+
+@media (max-width: 480px) {    
+    /* Smaller padding for phone to allow more text */
+    .instructions-container {
+        padding-bottom: 40vmin;
+    }
+}
+
+/* Landscape mode adjustments */
+@media (orientation: landscape) {
+    .jspsych-instructions-nav {
+        bottom: 3vh;
+        gap: 30vw;
+    }
 }

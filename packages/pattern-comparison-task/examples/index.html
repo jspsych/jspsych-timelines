@@ -7,6 +7,7 @@
     <script src="https://unpkg.com/jspsych@8.2.1"></script>
     <script src="../dist/index.global.js"></script>
     <script src="https://unpkg.com/@jspsych/plugin-html-button-response@2.0.1"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-instructions@2.0.1"></script>
     <link href="https://unpkg.com/jspsych@8.2.1/css/jspsych.css" rel="stylesheet" type="text/css" />
     <link href="../src/styles.css" rel="stylesheet" type="text/css" />
 </head>
@@ -30,7 +31,13 @@
             trial_timeout: 8000,
             inter_trial_interval: 500,
             show_instructions: true, // Set to true to show instruction pages
-            instruction_texts: undefined // Uses default instruction_pages
+            instruction_texts: undefined, // Uses default instruction_pages
+            // ===== TEXT-TO-SPEECH CONFIGURATION =====
+            tts_method: 'google', // Preferred TTS method: 'google', 'system'
+            tts_rate: 1.0, // Speech rate (0.1 to 10)
+            tts_pitch: 1.0, // Speech pitch (0 to 2)
+            tts_volume: 1.0, // Speech volume (0 to 1)
+            tts_lang: 'ar-SA' // Language code for TTS
         };
 
         // Create and run timeline

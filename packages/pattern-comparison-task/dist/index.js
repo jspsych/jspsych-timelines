@@ -7,8 +7,9 @@ var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __require = /* @__PURE__ */ ((x) => typeof require !== "undefined" ? require : typeof Proxy !== "undefined" ? new Proxy(x, {
   get: (a, b) => (typeof require !== "undefined" ? require : a)[b]
 }) : x)(function(x) {
-  if (typeof require !== "undefined") return require.apply(this, arguments);
-  throw Error('Dynamic require of "' + x + '" is not supported');
+  if (typeof require !== "undefined")
+    return require.apply(this, arguments);
+  throw new Error('Dynamic require of "' + x + '" is not supported');
 });
 var __commonJS = (cb, mod) => function __require2() {
   return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
@@ -26,9 +27,29 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   // file that has been converted to a CommonJS file using a Babel-
   // compatible transform (i.e. "__esModule" has not been set), then set
   // "default" to the CommonJS "module.exports" for node compatibility.
-  __defProp(target, "default", { value: mod, enumerable: true }) ,
+  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
   mod
 ));
+var __async = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
 
 // ../../node_modules/auto-bind/index.js
 var require_auto_bind = __commonJS({
@@ -114,7 +135,8 @@ var require_alea = __commonJS({
         };
         prng.quick = prng;
         if (state) {
-          if (typeof state == "object") copy(state, xg);
+          if (typeof state == "object")
+            copy(state, xg);
           prng.state = function() {
             return copy(xg, {});
           };
@@ -205,7 +227,8 @@ var require_xor128 = __commonJS({
         prng.int32 = xg.next;
         prng.quick = prng;
         if (state) {
-          if (typeof state == "object") copy(state, xg);
+          if (typeof state == "object")
+            copy(state, xg);
           prng.state = function() {
             return copy(xg, {});
           };
@@ -285,7 +308,8 @@ var require_xorwow = __commonJS({
         prng.int32 = xg.next;
         prng.quick = prng;
         if (state) {
-          if (typeof state == "object") copy(state, xg);
+          if (typeof state == "object")
+            copy(state, xg);
           prng.state = function() {
             return copy(xg, {});
           };
@@ -345,10 +369,14 @@ var require_xorshift7 = __commonJS({
               X[j & 7] = X[j & 7] << 15 ^ seed2.charCodeAt(j) + X[j + 1 & 7] << 13;
             }
           }
-          while (X.length < 8) X.push(0);
-          for (j = 0; j < 8 && X[j] === 0; ++j) ;
-          if (j == 8) X[7] = -1;
-          else X[j];
+          while (X.length < 8)
+            X.push(0);
+          for (j = 0; j < 8 && X[j] === 0; ++j)
+            ;
+          if (j == 8)
+            X[7] = -1;
+          else
+            X[j];
           me2.x = X;
           me2.i = 0;
           for (j = 256; j > 0; --j) {
@@ -363,7 +391,8 @@ var require_xorshift7 = __commonJS({
         return t;
       }
       function impl(seed, opts) {
-        if (seed == null) seed = +/* @__PURE__ */ new Date();
+        if (seed == null)
+          seed = +/* @__PURE__ */ new Date();
         var xg = new XorGen(seed), state = opts && opts.state, prng = function() {
           return (xg.next() >>> 0) / 4294967296;
         };
@@ -376,7 +405,8 @@ var require_xorshift7 = __commonJS({
         prng.int32 = xg.next;
         prng.quick = prng;
         if (state) {
-          if (state.x) copy(state, xg);
+          if (state.x)
+            copy(state, xg);
           prng.state = function() {
             return copy(xg, {});
           };
@@ -432,8 +462,10 @@ var require_xor4096 = __commonJS({
             limit = Math.max(limit, seed2.length);
           }
           for (i = 0, j = -32; j < limit; ++j) {
-            if (seed2) v ^= seed2.charCodeAt((j + 32) % seed2.length);
-            if (j === 0) w = v;
+            if (seed2)
+              v ^= seed2.charCodeAt((j + 32) % seed2.length);
+            if (j === 0)
+              w = v;
             v ^= v << 10;
             v ^= v >>> 15;
             v ^= v << 4;
@@ -470,7 +502,8 @@ var require_xor4096 = __commonJS({
         return t;
       }
       function impl(seed, opts) {
-        if (seed == null) seed = +/* @__PURE__ */ new Date();
+        if (seed == null)
+          seed = +/* @__PURE__ */ new Date();
         var xg = new XorGen(seed), state = opts && opts.state, prng = function() {
           return (xg.next() >>> 0) / 4294967296;
         };
@@ -483,7 +516,8 @@ var require_xor4096 = __commonJS({
         prng.int32 = xg.next;
         prng.quick = prng;
         if (state) {
-          if (state.X) copy(state, xg);
+          if (state.X)
+            copy(state, xg);
           prng.state = function() {
             return copy(xg, {});
           };
@@ -562,7 +596,8 @@ var require_tychei = __commonJS({
         prng.int32 = xg.next;
         prng.quick = prng;
         if (state) {
-          if (typeof state == "object") copy(state, xg);
+          if (typeof state == "object")
+            copy(state, xg);
           prng.state = function() {
             return copy(xg, {});
           };
@@ -635,7 +670,8 @@ var require_seedrandom = __commonJS({
           if (is_math_call) {
             math[rngname] = prng2;
             return seed2;
-          } else return prng2;
+          } else
+            return prng2;
         })(
           prng,
           shortseed,
@@ -2788,9 +2824,9 @@ var require_random_words = __commonJS({
 });
 
 // ../../node_modules/jspsych/dist/index.js
-__toESM(require_auto_bind());
-__toESM(require_random_words());
-__toESM(require_alea());
+__toESM(require_auto_bind(), 1);
+__toESM(require_random_words(), 1);
+__toESM(require_alea(), 1);
 var ParameterType = /* @__PURE__ */ ((ParameterType2) => {
   ParameterType2[ParameterType2["BOOL"] = 0] = "BOOL";
   ParameterType2[ParameterType2["STRING"] = 1] = "STRING";
@@ -2942,7 +2978,7 @@ var info = {
     "bibtex": '@article{Leeuw2023jsPsych, 	author = {de Leeuw, Joshua R. and Gilbert, Rebecca A. and Luchterhandt, Bj{\\" o}rn}, 	journal = {Journal of Open Source Software}, 	doi = {10.21105/joss.05351}, 	issn = {2475-9066}, 	number = {85}, 	year = {2023}, 	month = {may 11}, 	pages = {5351}, 	publisher = {Open Journals}, 	title = {jsPsych: Enabling an {Open}-{Source} {Collaborative} {Ecosystem} of {Behavioral} {Experiments}}, 	url = {https://joss.theoj.org/papers/10.21105/joss.05351}, 	volume = {8}, }  '
   }
 };
-var _HtmlButtonResponsePlugin = class _HtmlButtonResponsePlugin {
+var _HtmlButtonResponsePlugin = class {
   constructor(jsPsych) {
     this.jsPsych = jsPsych;
   }
@@ -3064,8 +3100,347 @@ var _HtmlButtonResponsePlugin = class _HtmlButtonResponsePlugin {
     }
   }
 };
-_HtmlButtonResponsePlugin.info = info;
 var HtmlButtonResponsePlugin = _HtmlButtonResponsePlugin;
+(() => {
+  _HtmlButtonResponsePlugin.info = info;
+})();
+
+// ../../node_modules/@jspsych/plugin-instructions/dist/index.js
+var version2 = "2.1.0";
+var info2 = {
+  name: "instructions",
+  version: version2,
+  parameters: {
+    /** Each element of the array is the content for a single page. Each page should be an HTML-formatted string.  */
+    pages: {
+      type: ParameterType.HTML_STRING,
+      default: void 0,
+      array: true
+    },
+    /** This is the key that the participant can press in order to advance to the next page. This key should be
+     * specified as a string (e.g., `'a'`, `'ArrowLeft'`, `' '`, `'Enter'`). */
+    key_forward: {
+      type: ParameterType.KEY,
+      default: "ArrowRight"
+    },
+    /** This is the key that the participant can press to return to the previous page. This key should be specified as a
+     * string (e.g., `'a'`, `'ArrowLeft'`, `' '`, `'Enter'`). */
+    key_backward: {
+      type: ParameterType.KEY,
+      default: "ArrowLeft"
+    },
+    /** If true, the participant can return to previous pages of the instructions. If false, they may only advace to the next page. */
+    allow_backward: {
+      type: ParameterType.BOOL,
+      default: true
+    },
+    /** If `true`, the participant can use keyboard keys to navigate the pages. If `false`, they may not. */
+    allow_keys: {
+      type: ParameterType.BOOL,
+      default: true
+    },
+    /** If true, then a `Previous` and `Next` button will be displayed beneath the instructions. Participants can
+     * click the buttons to navigate. */
+    show_clickable_nav: {
+      type: ParameterType.BOOL,
+      default: false
+    },
+    /** If true, and clickable navigation is enabled, then Page x/y will be shown between the nav buttons. */
+    show_page_number: {
+      type: ParameterType.BOOL,
+      default: false
+    },
+    /** The text that appears before x/y pages displayed when show_page_number is true.*/
+    page_label: {
+      type: ParameterType.STRING,
+      default: "Page"
+    },
+    /** The text that appears on the button to go backwards. */
+    button_label_previous: {
+      type: ParameterType.STRING,
+      default: "Previous"
+    },
+    /** The text that appears on the button to go forwards. */
+    button_label_next: {
+      type: ParameterType.STRING,
+      default: "Next"
+    },
+    /** The callback function when page changes */
+    on_page_change: {
+      type: ParameterType.FUNCTION,
+      pretty_name: "Page change callback",
+      default: function(current_page) {
+      }
+    }
+  },
+  data: {
+    /** An array containing the order of pages the participant viewed (including when the participant returned to previous pages)
+     *  and the time spent viewing each page. Each object in the array represents a single page view,
+     * and contains keys called `page_index` (the page number, starting with 0) and `viewing_time`
+     * (duration of the page view). This will be encoded as a JSON string when data is saved using the `.json()` or `.csv()`
+     * functions.
+     */
+    view_history: {
+      type: ParameterType.COMPLEX,
+      array: true,
+      nested: {
+        page_index: {
+          type: ParameterType.INT
+        },
+        viewing_time: {
+          type: ParameterType.INT
+        }
+      }
+    },
+    /** The response time in milliseconds for the participant to view all of the pages. */
+    rt: {
+      type: ParameterType.INT
+    }
+  },
+  // prettier-ignore
+  citations: {
+    "apa": "de Leeuw, J. R., Gilbert, R. A., & Luchterhandt, B. (2023). jsPsych: Enabling an Open-Source Collaborative Ecosystem of Behavioral Experiments. Journal of Open Source Software, 8(85), 5351. https://doi.org/10.21105/joss.05351 ",
+    "bibtex": '@article{Leeuw2023jsPsych, 	author = {de Leeuw, Joshua R. and Gilbert, Rebecca A. and Luchterhandt, Bj{\\" o}rn}, 	journal = {Journal of Open Source Software}, 	doi = {10.21105/joss.05351}, 	issn = {2475-9066}, 	number = {85}, 	year = {2023}, 	month = {may 11}, 	pages = {5351}, 	publisher = {Open Journals}, 	title = {jsPsych: Enabling an {Open}-{Source} {Collaborative} {Ecosystem} of {Behavioral} {Experiments}}, 	url = {https://joss.theoj.org/papers/10.21105/joss.05351}, 	volume = {8}, }  '
+  }
+};
+var _InstructionsPlugin = class {
+  constructor(jsPsych) {
+    this.jsPsych = jsPsych;
+  }
+  trial(display_element, trial) {
+    var current_page = 0;
+    var view_history = [];
+    var start_time = performance.now();
+    var last_page_update_time = start_time;
+    function btnListener() {
+      if (this.id === "jspsych-instructions-back") {
+        back();
+      } else if (this.id === "jspsych-instructions-next") {
+        next();
+      }
+    }
+    function show_current_page() {
+      var html = trial.pages[current_page];
+      var pagenum_display = "";
+      if (trial.show_page_number) {
+        pagenum_display = "<span style='margin: 0 1em;' class='jspsych-instructions-pagenum'>" + trial.page_label + " " + (current_page + 1) + "/" + trial.pages.length + "</span>";
+      }
+      if (trial.show_clickable_nav) {
+        var nav_html = "<div class='jspsych-instructions-nav' style='padding: 10px 0px;'>";
+        if (trial.allow_backward) {
+          var allowed = current_page > 0 ? "" : "disabled='disabled'";
+          nav_html += "<button id='jspsych-instructions-back' class='jspsych-btn' style='margin-right: 5px;' " + allowed + ">&lt; " + trial.button_label_previous + "</button>";
+        }
+        if (trial.pages.length > 1 && trial.show_page_number) {
+          nav_html += pagenum_display;
+        }
+        nav_html += "<button id='jspsych-instructions-next' class='jspsych-btn'style='margin-left: 5px;'>" + trial.button_label_next + " &gt;</button></div>";
+        html += nav_html;
+        display_element.innerHTML = html;
+        if (current_page != 0 && trial.allow_backward) {
+          display_element.querySelector("#jspsych-instructions-back").addEventListener("click", btnListener, { once: true });
+        }
+        display_element.querySelector("#jspsych-instructions-next").addEventListener("click", btnListener, { once: true });
+      } else {
+        if (trial.show_page_number && trial.pages.length > 1) {
+          html += "<div class='jspsych-instructions-pagenum'>" + pagenum_display + "</div>";
+        }
+        display_element.innerHTML = html;
+      }
+    }
+    function next() {
+      add_current_page_to_view_history();
+      current_page++;
+      if (current_page >= trial.pages.length) {
+        endTrial();
+      } else {
+        show_current_page();
+      }
+      trial.on_page_change(current_page);
+    }
+    function back() {
+      add_current_page_to_view_history();
+      current_page--;
+      show_current_page();
+      trial.on_page_change(current_page);
+    }
+    function add_current_page_to_view_history() {
+      var current_time = performance.now();
+      var page_view_time = Math.round(current_time - last_page_update_time);
+      view_history.push({
+        page_index: current_page,
+        viewing_time: page_view_time
+      });
+      last_page_update_time = current_time;
+    }
+    const endTrial = () => {
+      if (trial.allow_keys) {
+        this.jsPsych.pluginAPI.cancelKeyboardResponse(keyboard_listener);
+      }
+      var trial_data = {
+        view_history,
+        rt: Math.round(performance.now() - start_time)
+      };
+      this.jsPsych.finishTrial(trial_data);
+    };
+    const after_response = (info22) => {
+      keyboard_listener = this.jsPsych.pluginAPI.getKeyboardResponse({
+        callback_function: after_response,
+        valid_responses: [trial.key_forward, trial.key_backward],
+        rt_method: "performance",
+        persist: false,
+        allow_held_key: false
+      });
+      if (this.jsPsych.pluginAPI.compareKeys(info22.key, trial.key_backward)) {
+        if (current_page !== 0 && trial.allow_backward) {
+          back();
+        }
+      }
+      if (this.jsPsych.pluginAPI.compareKeys(info22.key, trial.key_forward)) {
+        next();
+      }
+    };
+    show_current_page();
+    if (trial.allow_keys) {
+      var keyboard_listener = this.jsPsych.pluginAPI.getKeyboardResponse({
+        callback_function: after_response,
+        valid_responses: [trial.key_forward, trial.key_backward],
+        rt_method: "performance",
+        persist: false
+      });
+    }
+  }
+  simulate(trial, simulation_mode, simulation_options, load_callback) {
+    if (simulation_mode == "data-only") {
+      load_callback();
+      this.simulate_data_only(trial, simulation_options);
+    }
+    if (simulation_mode == "visual") {
+      this.simulate_visual(trial, simulation_options, load_callback);
+    }
+  }
+  create_simulation_data(trial, simulation_options) {
+    var _a, _b, _c, _d, _e, _f;
+    let curr_page = 0;
+    let rt = 0;
+    let view_history = [];
+    if (!((_a = simulation_options.data) == null ? void 0 : _a.view_history) && !((_b = simulation_options.data) == null ? void 0 : _b.rt)) {
+      while (curr_page !== trial.pages.length) {
+        const view_time = Math.round(
+          this.jsPsych.randomization.sampleExGaussian(3e3, 300, 1 / 300)
+        );
+        view_history.push({ page_index: curr_page, viewing_time: view_time });
+        rt += view_time;
+        if (curr_page == 0 || !trial.allow_backward) {
+          curr_page++;
+        } else {
+          if (this.jsPsych.randomization.sampleBernoulli(0.9) == 1) {
+            curr_page++;
+          } else {
+            curr_page--;
+          }
+        }
+      }
+    }
+    if (!((_c = simulation_options.data) == null ? void 0 : _c.view_history) && ((_d = simulation_options.data) == null ? void 0 : _d.rt)) {
+      rt = simulation_options.data.rt;
+      while (curr_page !== trial.pages.length) {
+        view_history.push({ page_index: curr_page, viewing_time: null });
+        if (curr_page == 0 || !trial.allow_backward) {
+          curr_page++;
+        } else {
+          if (this.jsPsych.randomization.sampleBernoulli(0.9) == 1) {
+            curr_page++;
+          } else {
+            curr_page--;
+          }
+        }
+      }
+      const avg_rt_per_page = simulation_options.data.rt / view_history.length;
+      let total_time = 0;
+      for (const page of view_history) {
+        const t = Math.round(
+          this.jsPsych.randomization.sampleExGaussian(
+            avg_rt_per_page,
+            avg_rt_per_page / 10,
+            1 / (avg_rt_per_page / 10)
+          )
+        );
+        page.viewing_time = t;
+        total_time += t;
+      }
+      const diff = simulation_options.data.rt - total_time;
+      const diff_per_page = Math.round(diff / view_history.length);
+      for (const page of view_history) {
+        page.viewing_time += diff_per_page;
+      }
+    }
+    if (((_e = simulation_options.data) == null ? void 0 : _e.view_history) && !((_f = simulation_options.data) == null ? void 0 : _f.rt)) {
+      view_history = simulation_options.data.view_history;
+      rt = 0;
+      for (const page of simulation_options.data.view_history) {
+        rt += page.viewing_time;
+      }
+    }
+    const default_data = {
+      view_history,
+      rt
+    };
+    const data = this.jsPsych.pluginAPI.mergeSimulationData(default_data, simulation_options);
+    this.jsPsych.pluginAPI.ensureSimulationDataConsistency(trial, data);
+    return data;
+  }
+  simulate_data_only(trial, simulation_options) {
+    const data = this.create_simulation_data(trial, simulation_options);
+    this.jsPsych.finishTrial(data);
+  }
+  simulate_visual(trial, simulation_options, load_callback) {
+    const data = this.create_simulation_data(trial, simulation_options);
+    const display_element = this.jsPsych.getDisplayElement();
+    this.trial(display_element, trial);
+    load_callback();
+    const advance = (rt) => {
+      if (trial.allow_keys) {
+        this.jsPsych.pluginAPI.pressKey(trial.key_forward, rt);
+      } else if (trial.show_clickable_nav) {
+        this.jsPsych.pluginAPI.clickTarget(
+          display_element.querySelector("#jspsych-instructions-next"),
+          rt
+        );
+      }
+    };
+    const backup = (rt) => {
+      if (trial.allow_keys) {
+        this.jsPsych.pluginAPI.pressKey(trial.key_backward, rt);
+      } else if (trial.show_clickable_nav) {
+        this.jsPsych.pluginAPI.clickTarget(
+          display_element.querySelector("#jspsych-instructions-back"),
+          rt
+        );
+      }
+    };
+    let curr_page = 0;
+    let t = 0;
+    for (let i = 0; i < data.view_history.length; i++) {
+      if (i == data.view_history.length - 1) {
+        advance(t + data.view_history[i].viewing_time);
+      } else {
+        if (data.view_history[i + 1].page_index > curr_page) {
+          advance(t + data.view_history[i].viewing_time);
+        }
+        if (data.view_history[i + 1].page_index < curr_page) {
+          backup(t + data.view_history[i].viewing_time);
+        }
+        t += data.view_history[i].viewing_time;
+        curr_page = data.view_history[i + 1].page_index;
+      }
+    }
+  }
+};
+var InstructionsPlugin = _InstructionsPlugin;
+(() => {
+  _InstructionsPlugin.info = info2;
+})();
 
 // src/test-categories.ts
 var test_categories = [
@@ -3252,132 +3627,192 @@ var test_categories = [
 
 // src/text.ts
 var trial_text = {
-  same_button: "Same",
-  different_button: "Different",
-  prompt: "Are these two patterns the same?",
+  // Instruction pages buttons text, these will always have arrows < and >
+  // these do not work right now due to CSS fixed position, might fix later
+  next_button: "",
+  back_button: "",
+  // Task completion messages
   task_complete_header: "Task Complete!",
   task_complete_message: "Thank you for participating in the pattern comparison task.",
-  fixation_cross: "+"
+  // Main task instructions
+  prompt: "Are these two patterns the same?",
+  // Fixation and inter-trial
+  fixation_cross: "+",
+  // Button text
+  same_button: "Same",
+  different_button: "Different"
 };
 var instruction_pages = [
-  {
-    //example page, you can remove any of the keys you do not want to use
-    header: "header1 in <h1>",
-    header2: "header2 in <h2>",
-    description: "This is a description of the task in <p>.",
-    task_explanation: "More detailed explanation of the task in <p>.",
-    performance_note: "Note about performance in <p>.",
-    strategy_title: "Strategy Title in <h2>",
-    strategy_intro: "Introduction to the strategy in <p>.",
-    strategy_points: [
-      "Point 1 about the strategy",
-      "Point 2 about the strategy",
-      "Point 3 about the strategy"
-    ],
-    start_prompt: "Click continue to start the task.",
-    buttons: ["button text", "All buttons will just move onto next page", "they will be registered in data though!"],
-    button_html: ["<button class='jspsych-btn'>{choice}</button>", "<button class='jspsych-btn'>{choice}</button>"]
-  },
-  {
-    header: "Pattern Comparison Task",
-    //<h1>
-    header2: "Visual Pattern Recognition",
-    //<h2>
-    description: "In this task, you will see two visual patterns displayed side by side.",
-    //<p>
-    task_explanation: "Your job is to determine whether the two patterns are exactly the <strong>same</strong> or <strong>different</strong>.",
-    //<p>
-    performance_note: "Try to respond as quickly and accurately as possible.",
-    //<p>
-    start_prompt: "Click continue to move to the next page.",
-    //<p> in bold and blue 
-    buttons: ["Continue"]
-  },
-  //page two, you can add more pages if needed by creating more objects in the array
-  {
-    strategy_title: "Instructions",
-    strategy_intro: "For each trial:",
-    strategy_points: [
-      "Look carefully at both patterns",
-      "Compare all visual elements (shape, color, size, quantity)",
-      "Click 'Same' if patterns are identical",
-      "Click 'Different' if patterns vary in any way",
-      "Respond as quickly and accurately as possible"
-    ],
-    start_prompt: "Click continue to start the task.",
-    buttons: ["Start"]
-  }
+  "You will see two patterns side by side.",
+  "Your job is to determine if they are the same or different.",
+  "Look carefully at all visual elements: shape, color, size, and quantity.",
+  "Click 'Same' if the patterns are identical.",
+  "Click 'Different' if the patterns vary in any way.",
+  "Work quickly but carefully.",
+  "Let's begin the task."
 ];
 
 // src/index.ts
-function speakText(text) {
+var currentGoogleAudio = null;
+function speakText(_0) {
+  return __async(this, arguments, function* (text, options = {}) {
+    stopAllSpeech();
+    const preferredMethod = options.method || "google";
+    try {
+      if (preferredMethod === "google") {
+        yield speakWithGoogleTTS(text, options.lang || "en");
+        return;
+      } else {
+        yield speakWithSystemTTS(text, options);
+        return;
+      }
+    } catch (preferredSpeechError) {
+    }
+    stopAllSpeech();
+    yield new Promise((resolve) => setTimeout(resolve, 100));
+    try {
+      yield speakWithGoogleTTS(text, options.lang || "en");
+      return;
+    } catch (googleError) {
+    }
+    stopAllSpeech();
+    yield new Promise((resolve) => setTimeout(resolve, 100));
+    try {
+      yield speakWithSystemTTS(text, options);
+      return;
+    } catch (systemError) {
+      console.warn("\u{1F50A} TTS unavailable");
+    }
+  });
+}
+function stopAllSpeech() {
   if ("speechSynthesis" in window) {
     speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.rate = 0.8;
-    utterance.volume = 0.8;
-    speechSynthesis.speak(utterance);
+    speechSynthesis.pause();
+    speechSynthesis.resume();
+    speechSynthesis.cancel();
+  }
+  if (currentGoogleAudio) {
+    try {
+      currentGoogleAudio.pause();
+      currentGoogleAudio.currentTime = 0;
+      currentGoogleAudio.src = "";
+    } catch (e) {
+    }
+    currentGoogleAudio = null;
   }
 }
-function createInstructions(instruction_pages_data = instruction_pages, enable_tts = false) {
-  const instruction_timeline = [];
-  instruction_pages_data.forEach((page_data, page_index) => {
-    const page_text = [
-      page_data.header,
-      page_data.header2,
-      page_data.description,
-      page_data.task_explanation,
-      page_data.performance_note,
-      page_data.strategy_title,
-      page_data.strategy_intro,
-      ...page_data.strategy_points || [],
-      page_data.start_prompt
-    ].filter(Boolean).join(" ");
-    instruction_timeline.push({
-      type: HtmlButtonResponsePlugin,
-      stimulus: `
-        <div class="pattern-instructions-container">
-          <h1>${page_data.header || ""}</h1>
-          <h2>${page_data.header2 || ""}</h2>
-          <p>${page_data.description || ""}</p>
-          <p>${page_data.task_explanation || ""}</p>
-          <p class="performance-note">${page_data.performance_note || ""}</p>
-          ${page_data.strategy_title ? `<h2>${page_data.strategy_title}</h2>` : ""}
-          ${page_data.strategy_intro ? `<p>${page_data.strategy_intro}</p>` : ""}
-          ${page_data.strategy_points ? `
-            <ul>
-              ${page_data.strategy_points.map((point) => `<li>${point}</li>`).join("")}
-            </ul>
-          ` : ""}
-          ${page_data.start_prompt ? `<p class="start-prompt">${page_data.start_prompt}</p>` : ""}
-        </div>
-      `,
-      choices: page_data.buttons,
-      margin_horizontal: "15px",
-      margin_vertical: "10px",
-      button_html: function(choice, choice_index) {
-        if (page_data.button_html && page_data.button_html[choice_index]) {
-          return page_data.button_html[choice_index].replace("{choice}", choice);
-        }
-        return `<button class="jspsych-btn pattern-continue-button">${choice}</button>`;
-      },
-      on_start: enable_tts ? function() {
-        speechSynthesis.cancel();
-        if (page_text.trim()) {
-          speakText(page_text);
-        }
-      } : void 0,
-      on_finish: function(data) {
-        speechSynthesis.cancel();
-      },
-      data: {
-        page_index,
-        task: "instruction-page"
+function speakWithSystemTTS(text, options = {}) {
+  return new Promise((resolve, reject) => {
+    var _a, _b, _c;
+    if ("speechSynthesis" in window) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = (_a = options.rate) != null ? _a : 0.8;
+      utterance.volume = (_b = options.volume) != null ? _b : 0.8;
+      utterance.pitch = (_c = options.pitch) != null ? _c : 1;
+      if (options.lang) {
+        utterance.lang = options.lang;
       }
-    });
+      utterance.onstart = () => resolve();
+      utterance.onend = () => resolve();
+      utterance.onerror = (e) => {
+        if (e.error === "not-allowed" || e.error === "synthesis-failed") {
+          reject(new Error(e.error));
+        } else {
+          resolve();
+        }
+      };
+      speechSynthesis.speak(utterance);
+    } else {
+      reject(new Error("speechSynthesis not supported"));
+    }
   });
+}
+function speakWithGoogleTTS(text, lang) {
+  return new Promise((resolve, reject) => {
+    try {
+      const googleLang = lang ? lang.substring(0, 2).toLowerCase() : "en";
+      const encodedText = encodeURIComponent(text);
+      const googleTTSUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=${googleLang}&client=tw-ob&q=${encodedText}`;
+      const audio = new Audio(googleTTSUrl);
+      currentGoogleAudio = audio;
+      audio.oncanplay = () => {
+        if (currentGoogleAudio !== audio) {
+          audio.pause();
+          reject(new Error("Cancelled while loading"));
+          return;
+        }
+        audio.play().then(resolve).catch(reject);
+      };
+      audio.onended = () => {
+        if (currentGoogleAudio === audio) {
+          currentGoogleAudio = null;
+        }
+        resolve();
+      };
+      audio.onerror = (e) => {
+        audio.pause();
+        if (currentGoogleAudio === audio) {
+          currentGoogleAudio = null;
+        }
+        reject(new Error("Google TTS failed"));
+      };
+      audio.load();
+    } catch (error) {
+      reject(error);
+    }
+  });
+}
+function extractTextFromHtml(htmlString) {
+  var _a;
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(htmlString, "text/html");
+  return ((_a = doc.body.textContent) == null ? void 0 : _a.replace(/\s+/g, " ").trim()) || "";
+}
+function createInstructions(instruction_pages_data = instruction_pages, enable_tts = false, ttsOptions = {}) {
+  let handleButtonClick = null;
   return {
-    timeline: instruction_timeline
+    type: InstructionsPlugin,
+    pages: instruction_pages_data.map((page) => `<div class="instructions-container"><p>${page}</p></div>`),
+    show_clickable_nav: true,
+    allow_keys: true,
+    key_forward: "ArrowRight",
+    key_backward: "ArrowLeft",
+    button_label_previous: trial_text.back_button,
+    button_label_next: trial_text.next_button,
+    on_start: function() {
+      stopAllSpeech();
+    },
+    on_load: function() {
+      if (enable_tts) {
+        const speakCurrentPage = () => {
+          const instructionsContent = document.querySelector(".instructions-container");
+          if (instructionsContent) {
+            const pageText = extractTextFromHtml(instructionsContent.innerHTML);
+            if (pageText.trim()) {
+              speakText(pageText, ttsOptions);
+            }
+          }
+        };
+        handleButtonClick = (event) => {
+          const target = event.target;
+          if (target && (target.id === "jspsych-instructions-next" || target.id === "jspsych-instructions-back")) {
+            stopAllSpeech();
+            setTimeout(speakCurrentPage, 100);
+          }
+        };
+        document.addEventListener("click", handleButtonClick);
+        setTimeout(speakCurrentPage, 100);
+      }
+    },
+    on_finish: function(data) {
+      stopAllSpeech();
+      if (handleButtonClick) {
+        document.removeEventListener("click", handleButtonClick);
+        handleButtonClick = null;
+      }
+      data.phase = "instructions";
+    }
   };
 }
 function generateTrials(config) {
@@ -3414,8 +3849,20 @@ function createTimeline(jsPsych, config = {}) {
     trial_timeout = 1e4,
     inter_trial_interval = 500,
     show_instructions = false,
-    instruction_texts = instruction_pages
+    instruction_texts = instruction_pages,
+    tts_method = "google",
+    tts_rate = 1,
+    tts_pitch = 1,
+    tts_volume = 1,
+    tts_lang = "ar-SA"
   } = config;
+  const ttsOptions = {
+    method: tts_method,
+    rate: tts_rate,
+    pitch: tts_pitch,
+    volume: tts_volume,
+    lang: tts_lang
+  };
   const trials = generateTrials(config);
   const timeline = [];
   trials.forEach((trial, index) => {
@@ -3434,7 +3881,7 @@ function createTimeline(jsPsych, config = {}) {
       margin_horizontal: "20px",
       margin_vertical: "15px",
       button_html: function(choice, choice_index) {
-        return `<button class="jspsych-btn pattern-trial-button">${choice}</button>`;
+        return `<button class="jspsych-btn continue-button pattern-trial-button">${choice}</button>`;
       },
       trial_duration: trial_timeout,
       data: {
@@ -3450,11 +3897,11 @@ function createTimeline(jsPsych, config = {}) {
       on_finish: function(data) {
         data.correct = data.response === data.correct_answer;
         data.reaction_time = data.rt;
-        speechSynthesis.cancel();
+        stopAllSpeech();
       },
       on_start: function() {
         if (enable_tts) {
-          speakText(prompt);
+          speakText(prompt, ttsOptions);
         }
       }
     });
@@ -3477,14 +3924,14 @@ function createTimeline(jsPsych, config = {}) {
     `,
     choices: ["End"],
     button_html: function(choice, choice_HTML) {
-      return `<button class="jspsych-btn pattern-continue-button">${choice}</button>`;
+      return `<button class="jspsych-btn continue-button pattern-continue-button">${choice}</button>`;
     }
   });
   const task_timeline = {
     timeline
   };
   if (show_instructions) {
-    const detailed_instructions = createInstructions(instruction_texts, enable_tts);
+    const detailed_instructions = createInstructions(instruction_texts, enable_tts, ttsOptions);
     const nested_timeline = {
       timeline: [detailed_instructions, task_timeline]
     };
@@ -3540,5 +3987,5 @@ var utils = {
 var src_default = { createTimeline, timelineUnits, utils };
 
 export { createInstructions, createTimeline, src_default as default, instruction_pages, timelineUnits, trial_text, utils };
-//# sourceMappingURL=index.js.map
+//# sourceMappingURL=out.js.map
 //# sourceMappingURL=index.js.map

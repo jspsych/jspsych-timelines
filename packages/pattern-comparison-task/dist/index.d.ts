@@ -1,50 +1,17 @@
 import { JsPsych } from 'jspsych';
+import jsPsychInstructions from '@jspsych/plugin-instructions';
 
 declare const trial_text: {
-    same_button: string;
-    different_button: string;
-    prompt: string;
+    next_button: string;
+    back_button: string;
     task_complete_header: string;
     task_complete_message: string;
+    prompt: string;
     fixation_cross: string;
+    same_button: string;
+    different_button: string;
 };
-declare const instruction_pages: ({
-    header: string;
-    header2: string;
-    description: string;
-    task_explanation: string;
-    performance_note: string;
-    strategy_title: string;
-    strategy_intro: string;
-    strategy_points: string[];
-    start_prompt: string;
-    buttons: string[];
-    button_html: string[];
-} | {
-    header: string;
-    header2: string;
-    description: string;
-    task_explanation: string;
-    performance_note: string;
-    start_prompt: string;
-    buttons: string[];
-    strategy_title?: undefined;
-    strategy_intro?: undefined;
-    strategy_points?: undefined;
-    button_html?: undefined;
-} | {
-    strategy_title: string;
-    strategy_intro: string;
-    strategy_points: string[];
-    start_prompt: string;
-    buttons: string[];
-    header?: undefined;
-    header2?: undefined;
-    description?: undefined;
-    task_explanation?: undefined;
-    performance_note?: undefined;
-    button_html?: undefined;
-})[];
+declare const instruction_pages: string[];
 
 interface PatternComparisonConfig {
     /** Array of test categories, each containing test pairs */
@@ -67,46 +34,33 @@ interface PatternComparisonConfig {
     show_instructions?: boolean;
     /** Custom instruction texts */
     instruction_texts?: typeof instruction_pages;
+    tts_method?: 'google' | 'system';
+    tts_rate?: number;
+    tts_pitch?: number;
+    tts_volume?: number;
+    tts_lang?: string;
 }
-declare function speakText(text: string): void;
-declare function createInstructions(instruction_pages_data?: ({
-    header: string;
-    header2: string;
-    description: string;
-    task_explanation: string;
-    performance_note: string;
-    strategy_title: string;
-    strategy_intro: string;
-    strategy_points: string[];
-    start_prompt: string;
-    buttons: string[];
-    button_html: string[];
-} | {
-    header: string;
-    header2: string;
-    description: string;
-    task_explanation: string;
-    performance_note: string;
-    start_prompt: string;
-    buttons: string[];
-    strategy_title?: undefined;
-    strategy_intro?: undefined;
-    strategy_points?: undefined;
-    button_html?: undefined;
-} | {
-    strategy_title: string;
-    strategy_intro: string;
-    strategy_points: string[];
-    start_prompt: string;
-    buttons: string[];
-    header?: undefined;
-    header2?: undefined;
-    description?: undefined;
-    task_explanation?: undefined;
-    performance_note?: undefined;
-    button_html?: undefined;
-})[], enable_tts?: boolean): {
-    timeline: any[];
+/**
+ * Intelligent TTS with user preference support
+ * Tries user's preferred method first, then the other method as fallback
+ */
+declare function speakText(text: string, options?: {
+    lang?: string;
+    volume?: number;
+    method?: 'google' | 'system';
+}): Promise<void>;
+declare function createInstructions(instruction_pages_data?: string[], enable_tts?: boolean, ttsOptions?: {}): {
+    type: typeof jsPsychInstructions;
+    pages: string[];
+    show_clickable_nav: boolean;
+    allow_keys: boolean;
+    key_forward: string;
+    key_backward: string;
+    button_label_previous: string;
+    button_label_next: string;
+    on_start: () => void;
+    on_load: () => void;
+    on_finish: (data: any) => void;
 };
 declare function generateTrials(config: PatternComparisonConfig): any[];
 declare function createTimeline(jsPsych: JsPsych, config?: PatternComparisonConfig): {
