@@ -33,11 +33,27 @@
     trials_per_block: 10, // number of trials per block
     trial_timeout: 15000, // 15 seconds timeout per trial (default)
     enable_timeout: true, // enable auto timeout (default)
+    // ===== TEXT-TO-SPEECH CONFIGURATION =====
+    enable_tts: true, // Enable text-to-speech functionality
+    tts_method: 'google', // Preferred TTS method: 'google', 'system'
+    tts_rate: 1.0, // Speech rate (0.1 to 10)
+    tts_pitch: 1.0, // Speech pitch (0 to 2)
+    tts_volume: 1.0, // Speech volume (0 to 1)
+    tts_lang: 'en-US', // Language code for TTS
    });
 
-   const instructions = jsPsychTimelineBart.utils.showStartInstructions();
+   // TTS options that match the task configuration
+   const ttsOptions = {
+     method: 'google',
+     rate: 1.0,
+     pitch: 1.0,
+     volume: 1.0,
+     lang: 'en-US'
+   };
 
-   const end = jsPsychTimelineBart.utils.showEndResults(jsPsych);
+   const instructions = jsPsychTimelineBart.utils.showStartInstructions(true, ttsOptions);
+
+   const end = jsPsychTimelineBart.utils.showEndResults(jsPsych, true, ttsOptions);
 
   jsPsych.run([instructions, task, end])
 </script>

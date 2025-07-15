@@ -1,5 +1,6 @@
 import { JsPsych, initJsPsych } from "jspsych";
 import { createTimeline, utils, timelineUnits } from ".";
+import { trial_text } from "./text";
 
 describe("createTimeline", () => {
     it("should return a timeline", () => {
@@ -207,15 +208,15 @@ describe('Button Configuration', () => {
       throw new Error('Expected trial.timeline[0] to have a timeline property');
     }
     
-    expect(pumpTrial.choices).toEqual(['Pump', 'Collect']);
+    expect(pumpTrial.choices).toEqual([trial_text.pump_button, trial_text.collect_button]);
     expect(typeof pumpTrial.button_html).toBe('function');
     
-    // Test button HTML generation
-    const pumpButton = pumpTrial.button_html('Pump', 0);
-    const collectButton = pumpTrial.button_html('Collect', 1);
+    // Test button HTML generation  
+    const pumpButton = pumpTrial.button_html(trial_text.pump_button, 0);
+    const collectButton = pumpTrial.button_html(trial_text.collect_button, 1);
     
-    expect(pumpButton).toContain('jspsych-bart-pump-button');
-    expect(collectButton).toContain('jspsych-bart-collect-button');
+    expect(pumpButton).toContain('continue-button');
+    expect(collectButton).toContain('continue-button');
   });
 });
 
