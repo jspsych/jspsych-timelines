@@ -14,7 +14,8 @@
       "Bash(npx jest:*)",
       "Bash(grep:*)",
       "Bash(npm ls:*)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "WebFetch(domain:www.jspsych.org)"
     ],
     "deny": []
   }
