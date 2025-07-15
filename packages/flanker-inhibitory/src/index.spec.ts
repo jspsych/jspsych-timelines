@@ -307,8 +307,8 @@ describe("Flanker Inhibitory Control Task", () => {
     it("should have properly structured instruction pages", () => {
       instruction_pages.forEach((page, index) => {
         expect(page).toBeDefined();
-        expect(page.buttons).toBeDefined();
-        expect(Array.isArray(page.buttons)).toBe(true);
+        expect(typeof page).toBe('string');
+        expect(page.length).toBeGreaterThan(0);
       });
     });
   });

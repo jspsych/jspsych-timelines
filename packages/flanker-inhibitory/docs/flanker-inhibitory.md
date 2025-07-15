@@ -27,15 +27,11 @@ show_practice | boolean | true | Whether to include practice trials with feedbac
 num_practice | number | 8 | Number of practice trials to present
 num_trials | number | 20 | Number of main task trials to present
 enable_tts | boolean | false | Enable text-to-speech functionality
-tts_voice | string | '' | Voice name for TTS (empty string uses default system voice)
-tts_rate | number | 1.0 | Speech rate (0.1 to 10, where 1.0 is normal speed)
+tts_method | string | 'google' | Preferred TTS method: 'google' or 'system'
+tts_rate | number | 0.8 | Speech rate (0.1 to 10, where 1.0 is normal speed)
 tts_pitch | number | 1.0 | Speech pitch (0 to 2, where 1.0 is normal pitch)
-tts_volume | number | 1.0 | Speech volume (0 to 1, where 1.0 is maximum volume)
+tts_volume | number | 0.8 | Speech volume (0 to 1, where 1.0 is maximum volume)
 tts_lang | string | 'en-US' | Language code for speech synthesis
-speak_instructions | boolean | true | Whether to speak instruction page content aloud
-speak_prompts | boolean | true | Whether to speak trial prompts aloud
-speak_feedback | boolean | true | Whether to speak feedback messages aloud
-auto_speak | boolean | true | Whether to automatically start speaking when content loads
 
 ### Stimulus Configuration Examples
 
@@ -65,11 +61,10 @@ const customTypeConfig = {
 // Enable TTS with custom voice settings
 const ttsConfig = {
   enable_tts: true,
-  speak_instructions: true,
-  speak_prompts: true,
-  speak_feedback: true,
+  tts_method: 'google',
   tts_rate: 0.8,
   tts_pitch: 1.1,
+  tts_volume: 0.8,
   tts_lang: 'en-US'
 };
 ```
@@ -214,15 +209,11 @@ The package includes comprehensive TTS functionality for accessibility:
 ```js
 const config = {
   enable_tts: true,
-  tts_voice: 'Google US English', // Specific voice name (optional)
+  tts_method: 'google', // Preferred TTS method: 'google' or 'system'
   tts_rate: 0.9,     // Slightly slower than normal
   tts_pitch: 1.0,    // Normal pitch
   tts_volume: 0.8,   // 80% volume
-  tts_lang: 'en-US', // Language code
-  speak_instructions: true,
-  speak_prompts: true,
-  speak_feedback: true,
-  auto_speak: true
+  tts_lang: 'en-US'  // Language code
 };
 ```
 

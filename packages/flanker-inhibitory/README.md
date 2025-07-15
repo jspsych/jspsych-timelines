@@ -47,15 +47,11 @@ The following parameters can be specified in the **options** parameter.
 | num_practice | number | 8 | Number of practice trials |
 | num_trials | number | 20 | Number of main task trials |
 | enable_tts | boolean | false | Enable text-to-speech functionality |
-| tts_voice | string | '' | Voice name for TTS (empty uses default) |
-| tts_rate | number | 1.0 | Speech rate (0.1 to 10) |
+| tts_method | string | 'google' | Preferred TTS method: 'google' or 'system' |
+| tts_rate | number | 0.8 | Speech rate (0.1 to 10) |
 | tts_pitch | number | 1.0 | Speech pitch (0 to 2) |
-| tts_volume | number | 1.0 | Speech volume (0 to 1) |
+| tts_volume | number | 0.8 | Speech volume (0 to 1) |
 | tts_lang | string | 'en-US' | Language code for TTS |
-| speak_instructions | boolean | true | Speak instruction page content |
-| speak_prompts | boolean | true | Speak trial prompts |
-| speak_feedback | boolean | true | Speak feedback messages |
-| auto_speak | boolean | true | Auto-start speaking when content loads |
 
 #### Example Usage
 
@@ -86,10 +82,9 @@ const svgTimeline = jsPsychTimelineFlankerInhibitory.createTimeline(jsPsych, {
 // With TTS enabled
 const ttsTimeline = jsPsychTimelineFlankerInhibitory.createTimeline(jsPsych, {
   enable_tts: true,
-  speak_instructions: true,
-  speak_prompts: true,
-  speak_feedback: true,
+  tts_method: 'google',
   tts_rate: 0.9,
+  tts_volume: 0.8,
   tts_lang: 'en-US'
 });
 

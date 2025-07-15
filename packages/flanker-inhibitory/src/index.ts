@@ -488,7 +488,7 @@ export function createTimeline(jsPsych: JsPsych, config: FlankerConfig = {}) {
     tts_rate = 0.8,
     tts_pitch = 1.0,
     tts_volume = 0.8,
-    tts_lang,
+    tts_lang = 'en-US',
   } = config;
 
   // Create TTS options object
