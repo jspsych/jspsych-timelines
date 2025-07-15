@@ -25,11 +25,11 @@ total_trials | number | 20 | Total number of trials in the timeline
 target_percentage | number | 25 | Percentage of trials that are targets
 stimulus_duration | number | 750 | Duration (ms) the stimulus is shown
 isi_duration | number | 250 | Inter-stimulus interval (ms)
-feedback_duration | number | 1000 | Duration (ms) of feedback display
+feedback_duration | number | 1000 | Duration (ms) of feedback display, takes effect if a show_feedback params is true 
 show_feedback_text | boolean | false | Whether to show feedback after each trial
 show_feedback_border | boolean | false | Whether to highlight the grid border for feedback
-show_feedback_no_click  | boolean | false | Show feedback if no response is made
-feedback_wait_no_click | boolean | true | Wait for feedback even if no response
+show_feedback_no_click  | boolean | true | Show feedback if no response is made
+feedback_wait_no_click | boolean | true | Wait for feedback_duration even if no response
 cell_size | number | 150 | Size (px) of each grid cell
 prompt | string | "Click the button when the position matches the one from {n} trial(s) ago" | Instructions template for each trial
 button_text | string | "MATCH" | Text for the match button

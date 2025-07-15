@@ -299,7 +299,7 @@ export function createTimeline({
     feedback_duration = 1000,
     show_feedback_text = false,
     show_feedback_border = false,
-    show_feedback_no_click = false,
+    show_feedback_no_click = true,
     feedback_wait_no_click = true,
     cell_size = 150,
     prompt = trial_text.prompt,
