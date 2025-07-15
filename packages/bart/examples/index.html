@@ -29,7 +29,10 @@
     max_pumps: 20,
     min_pumps: 1,
     currency_unit_per_pump: 1, //eg 1 cent per pump
-    num_trials: 5, // number of trials in the experiment
+    num_blocks: 3, // number of blocks in the experiment
+    trials_per_block: 10, // number of trials per block
+    trial_timeout: 15000, // 15 seconds timeout per trial (default)
+    enable_timeout: true, // enable auto timeout (default)
    });
 
    const instructions = jsPsychTimelineBart.utils.showStartInstructions();

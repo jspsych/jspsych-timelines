@@ -543,3 +543,55 @@ describe('Math.random Behavior', () => {
     Math.random = originalRandom;
   });
 });
+
+describe('Timeout Functionality', () => {
+  it('should create timeline with default timeout enabled (15 seconds)', () => {
+    const timeline = createTimeline(mockJsPsych);
+    const block = timeline.timeline[0]; // First block
+    const trial = block.timeline[0]; // First trial in block
+    const pumpLoop = trial.timeline[0];
+    const pumpTrial = pumpLoop.timeline[0];
+    
+    expect(pumpTrial.trial_duration).toBe(15000); // 15 seconds default
+  });
+  
+  it('should create timeline with custom timeout', () => {
+    const timeline = createTimeline(mockJsPsych, {
+      trial_timeout: 30000, // 30 seconds
+      enable_timeout: true
+    });
+    const block = timeline.timeline[0]; // First block
+    const trial = block.timeline[0]; // First trial in block
+    const pumpLoop = trial.timeline[0];
+    const pumpTrial = pumpLoop.timeline[0];
+    
+    expect(pumpTrial.trial_duration).toBe(30000);
+  });
+  
+  it('should disable timeout when enable_timeout is false', () => {
+    const timeline = createTimeline(mockJsPsych, {
+      enable_timeout: false
+    });
+    const block = timeline.timeline[0]; // First block
+    const trial = block.timeline[0]; // First trial in block
+    const pumpLoop = trial.timeline[0];
+    const pumpTrial = pumpLoop.timeline[0];
+    
+    expect(pumpTrial.trial_duration).toBe(null);
+  });
+  
+  it('should handle timeout response correctly', () => {
+    const timeline = createTimeline(mockJsPsych, {
+      trial_timeout: 1000,
+      enable_timeout: true
+    });
+    const block = timeline.timeline[0]; // First block
+    const trial = block.timeline[0]; // First trial in block
+    const pumpLoop = trial.timeline[0];
+    const pumpTrial = pumpLoop.timeline[0];
+    
+    // Simulate timeout (response = null)
+    const mockData = { response: null };
+    expect(() => pumpTrial.on_finish(mockData)).not.toThrow();
+  });
+});

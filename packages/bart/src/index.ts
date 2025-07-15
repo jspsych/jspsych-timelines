@@ -109,7 +109,7 @@ import HtmlButtonResponsePlugin from "@jspsych/plugin-html-button-response";
 
 
 
-function createTrialTimeline(jsPsych: JsPsych, max_pumps: number, min_pumps: number, currency_unit_per_pump: number) {
+function createTrialTimeline(jsPsych: JsPsych, max_pumps: number, min_pumps: number, currency_unit_per_pump: number, trial_timeout?: number, enable_timeout?: boolean) {
     
 // const explosion_range = max_pumps - min_pumps;
 //       //const explosion_point = Math.floor(Math.random() * explosion_range) + MIN_PUMPS;
@@ -122,6 +122,7 @@ function createTrialTimeline(jsPsych: JsPsych, max_pumps: number, min_pumps: num
     let pump_count: number;
     let balloon_popped: boolean;
     let cashed_out: boolean;
+    let timed_out: boolean;
     let explosion_point: number;
 
      let USDollar = new Intl.NumberFormat('en-US', {
@@ -158,6 +159,7 @@ function createTrialTimeline(jsPsych: JsPsych, max_pumps: number, min_pumps: num
            }
          },
          choices: ['Pump', 'Collect'],
+         trial_duration: enable_timeout ? trial_timeout : null,
          button_html: (choice, index)=>{
               if (choice === 'Pump') {
                  return `<button class="jspsych-btn jspsych-bart-pump-button">${choice}</button>`;
@@ -173,6 +175,10 @@ function createTrialTimeline(jsPsych: JsPsych, max_pumps: number, min_pumps: num
              }
            } else if (data.response === 1) {
              cashed_out = true;
+           } else if (data.response === null && enable_timeout) {
+             // Timeout occurred - auto collect
+             cashed_out = true;
+             timed_out = true;
            }
          }
        }],
@@ -200,9 +206,12 @@ function createTrialTimeline(jsPsych: JsPsych, max_pumps: number, min_pumps: num
          } else {
            const total_points = pump_count + jsPsych.data.get().filter({ task: 'bart', exploded: false, cashed_out: true }).select('pump_count').sum();
            const total_money = total_points * currency_unit_per_pump * 0.01;
+           
+           const timeoutMessage = timed_out ? '<p><em>Time limit reached - earnings automatically collected.</em></p>' : '';
 
            return `
              <p>You collected <strong>${USDollar.format(.01*pump_count)}</strong> this round.</p>
+             ${timeoutMessage}
              <p>Total earnings across all rounds: <strong>${USDollar.format(total_money)}</strong></p>
            `;
          }
@@ -223,6 +232,7 @@ function createTrialTimeline(jsPsych: JsPsych, max_pumps: number, min_pumps: num
       pump_count = 0;
       balloon_popped = false;
       cashed_out = false;
+      timed_out = false;
       explosion_point = Math.floor(Math.random() * (max_pumps - min_pumps)) + min_pumps;
     }
         
@@ -236,6 +246,8 @@ export function createTimeline(jsPsych:JsPsych, {
     currency_unit_per_pump = 1, //eg 1 cent per pump
     num_blocks = 3, // number of blocks in the experiment
     trials_per_block = 10, // number of trials per block
+    trial_timeout = 15000, // timeout per trial in milliseconds (15 seconds default)
+    enable_timeout = true, // whether to enable auto timeout
 
 } : {
     max_pumps?: number,
@@ -243,11 +255,13 @@ export function createTimeline(jsPsych:JsPsych, {
     currency_unit_per_pump?: number, // eg 1 cent per pump
     num_blocks?: number, // number of blocks in the experiment
     trials_per_block?: number, // number of trials per block
+    trial_timeout?: number, // timeout per trial in milliseconds
+    enable_timeout?: boolean, // whether to enable auto timeout
 } = {})
 { 
     //jsPsych = jsPsych;
 
-    const trial = createTrialTimeline(jsPsych, max_pumps, min_pumps, currency_unit_per_pump);
+    const trial = createTrialTimeline(jsPsych, max_pumps, min_pumps, currency_unit_per_pump, trial_timeout, enable_timeout);
     
     // Create block structure
     const blocks = [];
