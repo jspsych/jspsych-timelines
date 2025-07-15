@@ -7,23 +7,34 @@ import { layered_stimuli, fish_only, arrow_only, custom_stimulus } from './stimu
 // Global audio reference for stopping Google TTS
 let currentGoogleAudio: HTMLAudioElement | null = null;
 
+// Global speech cancellation token to prevent speech bleeding between pages
+let currentSpeechToken = 0;
+
 /**
  * Intelligent TTS with user preference support
  * Tries user's preferred method first, then the other method as fallback
  */
 async function speakText(text: string, options: { lang?: string, volume?: number, method?: 'google' | 'system' } = {}) {
-  // Stop any current speech first and wait for it to stop
+  // Stop any current speech first
   stopAllSpeech();
+  
+  // Create a unique token for this speech request
+  const speechToken = ++currentSpeechToken;
+  
+  // Check if we were cancelled before starting
+  if (speechToken !== currentSpeechToken) return;
   
   const preferredMethod = options.method || 'google';
   
   // Try preferred method first
   try {
     if (preferredMethod === 'google') {
-      await speakWithGoogleTTS(text, options.lang || 'en');
+      if (speechToken !== currentSpeechToken) return; // Check before starting
+      await speakWithGoogleTTS(text, options.lang || 'en', speechToken);
       return;
     } else {
-      await speakWithSystemTTS(text, options);
+      if (speechToken !== currentSpeechToken) return; // Check before starting
+      await speakWithSystemTTS(text, options, speechToken);
       return;
     }
   } catch (preferredSpeechError) {
@@ -31,22 +42,20 @@ async function speakText(text: string, options: { lang?: string, volume?: number
   }
   
   // Try Google TTS regardless
-  stopAllSpeech();
-  await new Promise(resolve => setTimeout(resolve, 100));
+  if (speechToken !== currentSpeechToken) return;
   
   try {
-    await speakWithGoogleTTS(text, options.lang || 'en');
+    await speakWithGoogleTTS(text, options.lang || 'en', speechToken);
     return;
   } catch (googleError) {
     // Google failed, continue to system
   }
   
   // Try system TTS as final fallback
-  stopAllSpeech();
-  await new Promise(resolve => setTimeout(resolve, 100));
+  if (speechToken !== currentSpeechToken) return;
   
   try {
-    await speakWithSystemTTS(text, options);
+    await speakWithSystemTTS(text, options, speechToken);
     return;
   } catch (systemError) {
     console.warn('🔊 TTS unavailable');
@@ -57,34 +66,40 @@ async function speakText(text: string, options: { lang?: string, volume?: number
  * Stop all speech including Google TTS audio - aggressively stops everything
  */
 function stopAllSpeech() {
-  // Stop system TTS aggressively
-  if ('speechSynthesis' in window) {
-      speechSynthesis.cancel();
-      speechSynthesis.pause();
-      speechSynthesis.resume();
-      speechSynthesis.cancel();
-  }
+  // Increment token to cancel any pending speech
+  currentSpeechToken++;
   
+  try {
+  // Stop system TTS aggressively
+    speechSynthesis.cancel();
+    speechSynthesis.pause();
+    speechSynthesis.resume();
+    speechSynthesis.cancel();
   // Stop Google TTS audio aggressively
-  if (currentGoogleAudio) {
-    try {
+    if (currentGoogleAudio) {
       currentGoogleAudio.pause();
       currentGoogleAudio.currentTime = 0; // Reset to beginning
       currentGoogleAudio.src = ''; // Clear source to stop loading
-    } catch (e) {
-      // Ignore errors, just ensure we clear the reference
     }
-    currentGoogleAudio = null;
+  } catch (e) {
+    // Ignore errors, just ensure we clear the reference
   }
+  currentGoogleAudio = null;
 }
 
 /**
  * Simple system TTS function 
  * Browser will automatically select the best voice for the specified language
  */
-function speakWithSystemTTS(text: string, options: { rate?: number, volume?: number, pitch?: number, lang?: string } = {}) {
+function speakWithSystemTTS(text: string, options: { rate?: number, volume?: number, pitch?: number, lang?: string } = {}, speechToken?: number) {
   return new Promise<void>((resolve, reject) => {
     if ('speechSynthesis' in window) {
+      // Check if cancelled before starting
+      if (speechToken && speechToken !== currentSpeechToken) {
+        resolve();
+        return;
+      }
+      
       // Create and speak the utterance
       const utterance = new SpeechSynthesisUtterance(text);
       
@@ -99,7 +114,15 @@ function speakWithSystemTTS(text: string, options: { rate?: number, volume?: num
       }
       
       // Add event listeners
-      utterance.onstart = () => resolve();
+      utterance.onstart = () => {
+        // Check if cancelled after starting
+        if (speechToken && speechToken !== currentSpeechToken) {
+          speechSynthesis.cancel();
+          resolve();
+          return;
+        }
+        resolve();
+      };
       utterance.onend = () => resolve();
       utterance.onerror = (e) => {
         if (e.error === 'not-allowed' || e.error === 'synthesis-failed') {
@@ -108,6 +131,12 @@ function speakWithSystemTTS(text: string, options: { rate?: number, volume?: num
           resolve(); // Don't fail on minor errors since this is a fallback
         }
       };
+      
+      // Final check before speaking
+      if (speechToken && speechToken !== currentSpeechToken) {
+        resolve();
+        return;
+      }
       
       speechSynthesis.speak(utterance);
     } else {
@@ -120,9 +149,15 @@ function speakWithSystemTTS(text: string, options: { rate?: number, volume?: num
  * Defaultl TTS using Google Translate
  * This works by creating an audio element that plays Google's TTS service
  */
-function speakWithGoogleTTS(text: string, lang: string) {
+function speakWithGoogleTTS(text: string, lang: string, speechToken?: number) {
   return new Promise<void>((resolve, reject) => {
     try {
+      // Check if cancelled before starting
+      if (speechToken && speechToken !== currentSpeechToken) {
+        resolve();
+        return;
+      }
+      
       // Convert language code to simple 2-letter format for Google
       const googleLang = lang ? lang.substring(0, 2).toLowerCase() : 'en';
       // Create Google Translate TTS URL
@@ -136,10 +171,10 @@ function speakWithGoogleTTS(text: string, lang: string) {
       currentGoogleAudio = audio;
       
       audio.oncanplay = () => {
-        // Check if we were cancelled while loading
-        if (currentGoogleAudio !== audio) {
+        // Check if we were cancelled while loading or if this is no longer the current audio
+        if ((speechToken && speechToken !== currentSpeechToken) || currentGoogleAudio !== audio) {
           audio.pause();
-          reject(new Error('Cancelled while loading'));
+          resolve();
           return;
         }
         audio.play().then(resolve).catch(reject);
@@ -161,6 +196,12 @@ function speakWithGoogleTTS(text: string, lang: string) {
         }
         reject(new Error('Google TTS failed'));
       };
+      
+      // Final check before loading
+      if (speechToken && speechToken !== currentSpeechToken) {
+        resolve();
+        return;
+      }
       
       // Load the audio
       audio.load();
@@ -217,16 +258,16 @@ function createInstructions(instruction_pages_data = instruction_pages, enable_t
           const target = event.target as HTMLElement;
           if (target && (target.id === 'jspsych-instructions-next' || target.id === 'jspsych-instructions-back')) {
             stopAllSpeech();
-            // Wait longer to ensure speech has stopped before starting new speech
-            setTimeout(speakCurrentPage, 100);
+            // Remove delay - speak immediately after stopping
+            speakCurrentPage();
           }
         };
 
         // Add single event listener to document
         document.addEventListener('click', handleButtonClick);
 
-        // Speak initial page
-        setTimeout(speakCurrentPage, 100);
+        // Speak initial page immediately
+        speakCurrentPage();
       }
     },
     on_finish: function(data: any) {
