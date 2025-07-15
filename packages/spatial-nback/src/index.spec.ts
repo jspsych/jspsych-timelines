@@ -6,7 +6,7 @@ describe('createTimeline', () => {
   it('should create timeline with default parameters', () => {
     const timeline = createTimeline();
     expect(timeline.timeline).toHaveLength(20);
-    expect(timeline.randomize_order).toBe(false);
+    expect(timeline.timeline[0].randomize_order).toBe(false);
     expect(timeline.timeline[0].rows).toBe(3);
     expect(timeline.timeline[0].cols).toBe(3);
     expect(timeline.timeline[0].data.n_back).toBe(1);
@@ -38,7 +38,7 @@ describe('createTimeline', () => {
 
   it('should randomize trials when specified', () => {
     const timeline = createTimeline({ randomize_trials: true });
-    expect(timeline.randomize_order).toBe(true);
+    expect(timeline.timeline[0].randomize_order).toBe(true);
   });
 
   it('should set correct trial properties', () => {

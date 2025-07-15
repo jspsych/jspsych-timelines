@@ -118,12 +118,6 @@ const customTimeline = createTimeline({
 | **tts_volume** | number | 1.0 | Speech volume (0 to 1) |
 | **tts_lang** | string | 'en-US' | Language code for TTS |
 
-### Advanced Parameters
-
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| **randomize_trials** | boolean | false | Randomize the order of trials |
-
 ## Data Generated
 
 In addition to the default data collected by jsPsych, this timeline records the following data for each trial:

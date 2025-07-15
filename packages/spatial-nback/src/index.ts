@@ -308,7 +308,6 @@ export function createTimeline({
     correct_color = "#4CAF50",
     incorrect_color = "#F44336",
     include_instructions = false,
-    randomize_trials = false,
     instruction_texts = instruction_pages,
     // TTS Configuration
     enable_tts = false,
@@ -337,7 +336,6 @@ export function createTimeline({
     correct_color?: string,
     incorrect_color?: string,
     include_instructions?: boolean,
-    randomize_trials?: boolean,
     instruction_texts?: typeof instruction_pages,
     // TTS Configuration
     enable_tts?: boolean,
@@ -401,7 +399,6 @@ export function createTimeline({
     // Create the main task timeline
     const task_timeline = {
         timeline: trials,
-        randomize_order: randomize_trials
     };
 
     // Return complete timeline with or without instructions
