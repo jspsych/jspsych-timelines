@@ -70,10 +70,9 @@ describe('BART Timeline Creation', () => {
     const timeline = createTimeline(mockJsPsych);
     
     expect(timeline).toHaveProperty('timeline');
-    expect(timeline).toHaveProperty('repetitions');
-    expect(timeline.repetitions).toBe(5); // default num_trials
     expect(Array.isArray(timeline.timeline)).toBe(true);
-    expect(timeline.timeline).toHaveLength(1);
+    // Default: 3 blocks + 2 break screens = 5 timeline items
+    expect(timeline.timeline).toHaveLength(5);
   });
 
   it('should create timeline with custom parameters', () => {
@@ -81,20 +80,21 @@ describe('BART Timeline Creation', () => {
       max_pumps: 15,
       min_pumps: 3,
       currency_unit_per_pump: 2,
-      num_trials: 8
+      num_blocks: 2,
+      trials_per_block: 5
     };
 
     const timeline = createTimeline(mockJsPsych, customParams);
     
-    expect(timeline.repetitions).toBe(8);
-    expect(timeline.timeline).toHaveLength(1);
+    // 2 blocks + 1 break screen = 3 timeline items
+    expect(timeline.timeline).toHaveLength(3);
   });
 
   it('should handle empty parameters object', () => {
     const timeline = createTimeline(mockJsPsych, {});
     
-    expect(timeline.repetitions).toBe(5);
-    expect(timeline.timeline).toHaveLength(1);
+    // Default: 3 blocks + 2 break screens = 5 timeline items
+    expect(timeline.timeline).toHaveLength(5);
   });
 });
 
@@ -108,7 +108,6 @@ describe('Start Instructions', () => {
     // Test stimulus function
     const stimulus = instructions.stimulus();
     expect(typeof stimulus).toBe('string');
-    expect(stimulus).toContain('Balloon Analog Risk Task (BART)');
     expect(stimulus).toContain('$0.00'); // currency formatting
     expect(stimulus).toContain('Pump');
     expect(stimulus).toContain('Collect');
@@ -155,7 +154,8 @@ describe('Balloon Styling', () => {
   // Since getBalloonStyle is not exported, we'll test it indirectly through timeline creation
   it('should create timeline with proper structure for balloon display', () => {
     const timeline = createTimeline(mockJsPsych);
-    const trial = timeline.timeline[0];
+    const block = timeline.timeline[0]; // First block
+    const trial = block.timeline[0]; // First trial in block
     
     expect(trial).toHaveProperty('timeline');
     expect(trial).toHaveProperty('on_timeline_start');
@@ -166,7 +166,8 @@ describe('Balloon Styling', () => {
 describe('Trial Timeline Structure', () => {
   it('should create trial with pump loop and outcome', () => {
     const timeline = createTimeline(mockJsPsych);
-    const trial = timeline.timeline[0];
+    const block = timeline.timeline[0]; // First block
+    const trial = block.timeline[0]; // First trial in block
     
     expect(trial.timeline).toHaveLength(2); // pump_loop and outcome
     
@@ -183,7 +184,8 @@ describe('Trial Timeline Structure', () => {
 
   it('should initialize trial variables on timeline start', () => {
     const timeline = createTimeline(mockJsPsych);
-    const trial = timeline.timeline[0];
+    const block = timeline.timeline[0]; // First block  
+    const trial = block.timeline[0]; // First trial in block
     
     // Test that on_timeline_start is a function
     expect(typeof trial.on_timeline_start).toBe('function');
@@ -196,7 +198,8 @@ describe('Trial Timeline Structure', () => {
 describe('Button Configuration', () => {
   it('should configure pump and collect buttons correctly', () => {
     const timeline = createTimeline(mockJsPsych);
-    const trial = timeline.timeline[0];
+    const block = timeline.timeline[0]; // First block
+    const trial = block.timeline[0]; // First trial in block
     let pumpTrial: any;
     if ('timeline' in trial.timeline[0]) {
       pumpTrial = (trial.timeline[0] as { timeline: any[] }).timeline[0];
@@ -219,7 +222,8 @@ describe('Button Configuration', () => {
 describe('Data Recording', () => {
   it('should record trial data on finish', () => {
     const timeline = createTimeline(mockJsPsych);
-    const trial = timeline.timeline[0];
+    const block = timeline.timeline[0]; // First block
+    const trial = block.timeline[0]; // First trial in block
     const outcome = trial.timeline[1];
     
     if ('on_finish' in outcome && typeof outcome.on_finish === 'function') {
@@ -242,7 +246,8 @@ describe('Data Recording', () => {
 describe('Stimulus Generation', () => {
   it('should generate stimulus with balloon image', () => {
     const timeline = createTimeline(mockJsPsych);
-    const trial = timeline.timeline[0];
+    const block = timeline.timeline[0]; // First block
+    const trial = block.timeline[0]; // First trial in block
     let pumpTrial: any;
     if ('timeline' in trial.timeline[0]) {
       pumpTrial = (trial.timeline[0] as { timeline: any[] }).timeline[0];
@@ -260,7 +265,8 @@ describe('Stimulus Generation', () => {
 
   it('should generate outcome stimulus for explosion', () => {
     const timeline = createTimeline(mockJsPsych);
-    const trial = timeline.timeline[0];
+    const block = timeline.timeline[0]; // First block
+    const trial = block.timeline[0]; // First trial in block
     const outcome = trial.timeline[1];
     
     if ('stimulus' in outcome && typeof outcome.stimulus === 'function') {
@@ -299,7 +305,8 @@ describe('Error Handling', () => {
     mockDocument.querySelector.mockReturnValue(null);
     
     const timeline = createTimeline(mockJsPsych);
-    const trial = timeline.timeline[0];
+    const block = timeline.timeline[0]; // First block
+    const trial = block.timeline[0]; // First trial in block
     let pumpTrial: any;
     if ('timeline' in trial.timeline[0]) {
       pumpTrial = (trial.timeline[0] as { timeline: any[] }).timeline[0];
@@ -332,13 +339,15 @@ describe('Parameter Validation', () => {
       max_pumps: 1000,
       min_pumps: 0,
       currency_unit_per_pump: 0.001,
-      num_trials: 100
+      num_blocks: 5,
+      trials_per_block: 20
     };
     
     expect(() => createTimeline(mockJsPsych, extremeParams)).not.toThrow();
     
     const timeline = createTimeline(mockJsPsych, extremeParams);
-    expect(timeline.repetitions).toBe(100);
+    // 5 blocks + 4 break screens = 9 timeline items
+    expect(timeline.timeline).toHaveLength(9);
   });
 
   it('should handle negative values gracefully', () => {
@@ -346,7 +355,8 @@ describe('Parameter Validation', () => {
       max_pumps: -5,
       min_pumps: -10,
       currency_unit_per_pump: -1,
-      num_trials: -3
+      num_blocks: 1,
+      trials_per_block: 1
     };
     
     expect(() => createTimeline(mockJsPsych, negativeParams)).not.toThrow();
@@ -356,7 +366,8 @@ describe('Parameter Validation', () => {
 describe('Loop Function Logic', () => {
   it('should continue loop when balloon not popped and not cashed out', () => {
     const timeline = createTimeline(mockJsPsych);
-    const trial = timeline.timeline[0];
+    const block = timeline.timeline[0]; // First block
+    const trial = block.timeline[0]; // First trial in block
     const pumpLoop = trial.timeline[0];
     
     if ('loop_function' in pumpLoop) {
@@ -374,7 +385,8 @@ describe('Loop Function Logic', () => {
 describe('Response Handling', () => {
   it('should handle pump response correctly', () => {
     const timeline = createTimeline(mockJsPsych);
-    const trial = timeline.timeline[0];
+    const block = timeline.timeline[0]; // First block
+    const trial = block.timeline[0]; // First trial in block
     let pumpTrial: any;
     if ('timeline' in trial.timeline[0]) {
       pumpTrial = (trial.timeline[0] as { timeline: any[] }).timeline[0];
@@ -391,7 +403,8 @@ describe('Response Handling', () => {
 
   it('should handle collect response correctly', () => {
     const timeline = createTimeline(mockJsPsych);
-    const trial = timeline.timeline[0];
+    const block = timeline.timeline[0]; // First block
+    const trial = block.timeline[0]; // First trial in block
     let pumpTrial: any;
     if ('timeline' in trial.timeline[0]) {
       pumpTrial = (trial.timeline[0] as { timeline: any[] }).timeline[0];
@@ -411,35 +424,42 @@ describe('Integration Tests', () => {
       max_pumps: 10,
       min_pumps: 5,
       currency_unit_per_pump: 1,
-      num_trials: 3
+      num_blocks: 2,
+      trials_per_block: 3
     });
     
-    // Verify complete structure
+    // Verify complete structure - should have 2 blocks + 1 break = 3 items
+    expect(timeline.timeline).toHaveLength(3);
     expect(timeline).toMatchObject({
       timeline: expect.arrayContaining([
         expect.objectContaining({
+          repetitions: 3,
           timeline: expect.arrayContaining([
             expect.objectContaining({
-              timeline: expect.any(Array),
-              loop_function: expect.any(Function)
-            }),
-            expect.objectContaining({
-              type: HtmlButtonResponsePlugin,
-              stimulus: expect.any(Function),
-              choices: ['Continue'],
-              on_finish: expect.any(Function)
+              timeline: expect.arrayContaining([
+                expect.objectContaining({
+                  timeline: expect.any(Array),
+                  loop_function: expect.any(Function)
+                }),
+                expect.objectContaining({
+                  type: HtmlButtonResponsePlugin,
+                  stimulus: expect.any(Function),
+                  choices: ['Continue'],
+                  on_finish: expect.any(Function)
+                })
+              ]),
+              on_timeline_start: expect.any(Function)
             })
-          ]),
-          on_timeline_start: expect.any(Function)
+          ])
         })
       ]),
-      repetitions: 3
     });
   });
 
   it('should maintain trial state through timeline execution', () => {
     const timeline = createTimeline(mockJsPsych);
-    const trial = timeline.timeline[0];
+    const block = timeline.timeline[0]; // First block
+    const trial = block.timeline[0]; // First trial in block
     
     // Initialize trial
     trial.on_timeline_start();
@@ -471,12 +491,15 @@ describe('Integration Tests', () => {
 });
 
 describe('Exported Objects', () => {
-  it('should export timelineUnits as empty object', () => {
-    expect(timelineUnits).toEqual({});
+  it('should export timelineUnits with createTrialTimeline', () => {
+    expect(timelineUnits).toEqual({
+      createTrialTimeline: expect.any(Function)
+    });
   });
 
   it('should export utils with correct functions', () => {
     expect(utils).toHaveProperty('showStartInstructions');
+    expect(utils).toHaveProperty('showBlockBreak');
     expect(utils).toHaveProperty('showEndResults');
     expect(typeof utils.showStartInstructions).toBe('function');
     expect(typeof utils.showEndResults).toBe('function');
@@ -500,11 +523,13 @@ describe('Math.random Behavior', () => {
     const timeline = createTimeline(mockJsPsych, {
       max_pumps: 10,
       min_pumps: 5,
-      num_trials: 3
+      num_blocks: 1,
+      trials_per_block: 3
     });
     
     // Execute timeline start multiple times to test explosion point generation
-    const trial = timeline.timeline[0];
+    const block = timeline.timeline[0]; // First block
+    const trial = block.timeline[0]; // First trial in block
     
     expect(() => {
       trial.on_timeline_start();

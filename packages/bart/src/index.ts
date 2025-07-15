@@ -56,6 +56,30 @@ import HtmlButtonResponsePlugin from "@jspsych/plugin-html-button-response";
   return instructions;
    }
 
+      //generate block break screen
+   function showBlockBreak(jsPsych: JsPsych, currentBlock: number, totalBlocks: number) {
+   let USDollar = new Intl.NumberFormat('en-US', {
+         style: 'currency',
+         currency: 'USD'
+     });
+
+ const instructions = {
+   type: HtmlButtonResponsePlugin,
+   
+    stimulus: () => {
+      // Calculate earnings dynamically when stimulus is displayed
+      const data = jsPsych.data.get().filter({ task: 'bart' });
+      const totalPoints = data.filter({ exploded: false, cashed_out: true }).select('pump_count').sum();
+      
+      return `<p>You have completed block ${currentBlock} of ${totalBlocks}.</p>
+     <p>Current total earnings: <strong>${USDollar.format(totalPoints * 0.01)}</strong></p>
+     <p>Take a break if you need one, then click Continue when ready for the next block.</p>`;
+    },
+   choices: ['Continue']
+ }
+ return instructions;
+  }
+
       //generate end results
    function showEndResults(jsPsych: JsPsych) {
 
@@ -210,21 +234,40 @@ export function createTimeline(jsPsych:JsPsych, {
     max_pumps = 20,
     min_pumps = 1,
     currency_unit_per_pump = 1, //eg 1 cent per pump
-    num_trials = 5, // number of trials in the experiment
+    num_blocks = 3, // number of blocks in the experiment
+    trials_per_block = 10, // number of trials per block
 
 } : {
     max_pumps?: number,
     min_pumps?: number,
     currency_unit_per_pump?: number, // eg 1 cent per pump
-    num_trials?: number, // number of trials in the experiment
+    num_blocks?: number, // number of blocks in the experiment
+    trials_per_block?: number, // number of trials per block
 } = {})
 { 
     //jsPsych = jsPsych;
 
     const trial = createTrialTimeline(jsPsych, max_pumps, min_pumps, currency_unit_per_pump);
+    
+    // Create block structure
+    const blocks = [];
+    for (let block = 1; block <= num_blocks; block++) {
+        // Add trials for this block
+        const blockTimeline = {
+            timeline: [trial],
+            repetitions: trials_per_block,
+        };
+        blocks.push(blockTimeline);
+        
+        // Add break screen between blocks (but not after the last block)
+        if (block < num_blocks) {
+            const blockBreak = showBlockBreak(jsPsych, block, num_blocks);
+            blocks.push(blockBreak);
+        }
+    }
+    
     const bart_timeline = {
-        timeline: [trial],
-        repetitions: num_trials,
+        timeline: blocks
     }
      return bart_timeline;;
 
@@ -235,5 +278,6 @@ export const timelineUnits = {
 
 export const utils = {
     showStartInstructions,
+    showBlockBreak,
     showEndResults 
 }
