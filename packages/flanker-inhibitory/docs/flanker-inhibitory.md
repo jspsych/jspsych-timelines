@@ -22,6 +22,7 @@ stimuli_type | string | 'layered' | Type of stimuli: 'fish', 'arrow', 'layered' 
 svg | array | undefined | Override parameter - array of right-facing SVG strings to layer (left version auto-generated)
 stimuli_amount | number | 5 | Number of stimuli in flanker display (must be odd number ≥3)
 fixation_duration | number | 500 | Duration of fixation cross display in milliseconds
+stimulus_duration | number | undefined | Maximum time for stimulus display before auto-advancing (undefined = no timeout)
 show_instructions | boolean | true | Whether to display instruction screens before the task
 show_practice | boolean | true | Whether to include practice trials with feedback
 num_practice | number | 8 | Number of practice trials to present

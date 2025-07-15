@@ -430,6 +430,7 @@ export interface FlankerConfig {
   svg?: string[]; // Override parameter - array of SVGs to layer
   stimuli_amount?: number; // Number of stimuli in flanker display (default: 5, must be odd ≥3)
   fixation_duration?: number;
+  stimulus_duration?: number; // Maximum time for stimulus display before auto-advancing (undefined = no timeout)
   show_instructions?: boolean;
   show_practice?: boolean;
   num_practice?: number;
@@ -479,6 +480,7 @@ export function createTimeline(jsPsych: JsPsych, config: FlankerConfig = {}) {
     svg,
     stimuli_amount = 5,
     fixation_duration = 500,
+    stimulus_duration,
     show_instructions = true,
     show_practice = true,
     num_practice = 8,
@@ -588,6 +590,7 @@ export function createTimeline(jsPsych: JsPsych, config: FlankerConfig = {}) {
         },
         choices: [trial_text.left_button, trial_text.right_button],
         button_html: (choice) => `<button class="jspsych-btn continue-button">${choice}</button>`,
+        trial_duration: stimulus_duration,
         data: {
           task: 'flanker',
           phase: 'practice',
@@ -725,6 +728,7 @@ export function createTimeline(jsPsych: JsPsych, config: FlankerConfig = {}) {
       },
       choices: [trial_text.left_button, trial_text.right_button],
       button_html: (choice) => `<button class="jspsych-btn continue-button">${choice}</button>`,
+      trial_duration: stimulus_duration,
       data: {
         task: 'flanker',
         phase: 'main',

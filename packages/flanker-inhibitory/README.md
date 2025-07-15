@@ -42,6 +42,7 @@ The following parameters can be specified in the **options** parameter.
 | svg | array | undefined | Override parameter - array of SVGs to layer (should be right-facing; left version auto-generated) |
 | stimuli_amount | number | 5 | Number of stimuli in flanker display (must be odd ≥3) |
 | fixation_duration | number | 500 | Duration of fixation cross in milliseconds |
+| stimulus_duration | number | undefined | Maximum time for stimulus display before auto-advancing (undefined = no timeout) |
 | show_instructions | boolean | true | Whether to show instruction screens |
 | show_practice | boolean | true | Whether to include practice trials |
 | num_practice | number | 8 | Number of practice trials |
