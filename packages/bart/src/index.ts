@@ -21,9 +21,9 @@ function createInstructions(instruction_pages_data = instruction_pages) {
     key_backward: 'ArrowLeft',
     button_label_previous: trial_text.back_button,
     button_label_next: trial_text.next_button,
-    on_finish: function(data: any) {
-      data.task = 'bart';
-      data.phase = 'instructions';
+    data: {
+      task: 'bart',
+      phase: 'instructions'
     }
   };
 }
@@ -75,9 +75,9 @@ function createInstructions(instruction_pages_data = instruction_pages) {
      },
     choices: [trial_text.start_button],
     button_html: (choice: string) => `<button class="jspsych-btn continue-button">${choice}</button>`,
-    on_finish: function(data: any) {
-      data.task = 'bart';
-      data.phase = 'instructions';
+    data: {
+      task: 'bart',
+      phase: 'instructions'
     }
   }
   return instructions;
@@ -103,9 +103,9 @@ function createInstructions(instruction_pages_data = instruction_pages) {
     },
    choices: [trial_text.continue_button],
    button_html: (choice: string) => `<button class="jspsych-btn continue-button">${choice}</button>`,
-   on_finish: function(data: any) {
-     data.task = 'bart';
-     data.phase = 'block-break';
+   data: {
+     task: 'bart',
+     phase: 'block-break'
    }
  }
  return instructions;
@@ -134,9 +134,9 @@ function createInstructions(instruction_pages_data = instruction_pages) {
      },
     choices: [trial_text.finish_button],
     button_html: (choice: string) => `<button class="jspsych-btn continue-button">${choice}</button>`,
-    on_finish: function(data: any) {
-      data.task = 'bart';
-      data.phase = 'end-results';
+    data: {
+      task: 'bart',
+      phase: 'end-results'
     }
   }
   return instructions;
@@ -256,13 +256,17 @@ function createTrialTimeline(jsPsych: JsPsych, max_pumps: number, min_pumps: num
        },
        choices: [trial_text.continue_button],
        button_html: (choice: string) => `<button class="jspsych-btn continue-button">${choice}</button>`,
+       data: {
+         task: 'bart',
+         phase: 'trial'
+       },
        on_finish: (data: any) => {
-         data.task = 'bart';
-         data.phase = 'trial';
-         //data.trial_num = trial + 1;
+         // Dynamic values based on trial execution
          data.pump_count = pump_count;
          data.exploded = balloon_popped;
          data.cashed_out = cashed_out;
+         data.timed_out = timed_out;
+         data.explosion_point = explosion_point;
        }
      };
 
