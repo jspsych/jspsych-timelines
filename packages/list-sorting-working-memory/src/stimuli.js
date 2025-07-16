@@ -40,232 +40,80 @@ import { popcornSvg } from "../assets/images/images-food/popcorn.js";
 import { strawberrySvg } from "../assets/images/images-food/strawberry.js";
 import { watermelonSvg } from "../assets/images/images-food/watermelon.js";
 
-export function getAssetUrl(filename, basePath = ASSETS_REL_FILE_PATH) {
+export function getAssetUrl(filename, extension = "", basePath = ASSETS_REL_FILE_PATH) {
   // If run locally, use the AssetBase from the window object, otherwise use the provided basePath
   // If run online via CDN, give the option of setting window.AssetBase in HTML
   const userBase = typeof window !== "undefined" && window.AssetBase;
   const defaultBase = basePath;
-  return `${userBase || defaultBase}${filename}`;
+  return `${userBase || defaultBase}${filename}${extension}`;
 }
 
 // Audio asset imports
 // bee, butterfly → frog, bird, mouse -> turtle, rabbit, duck → cat, monkey -> dog, sheep, pig -> horse, cow, tiger → lion, bear, camel, elephant
-const audioAnimalsFp = `${ASSETS_REL_FILE_PATH_AUDIO}audio-animals/`;
-export const animalStimuli = [
-  [
-    {
-      stimulus_name: "bee",
-      stimulus_image: beeSvg,
-      stimulus_audio: `${audioAnimalsFp}bee.mp3`,
-    },
-    {
-      stimulus_name: "butterfly",
-      stimulus_image: butterflySvg,
-      stimulus_audio: `${audioAnimalsFp}butterfly.mp3`,
-    },
-  ],
-  [
-    {
-      stimulus_name: "frog",
-      stimulus_image: frogSvg,
-      stimulus_audio: `${audioAnimalsFp}frog.mp3`,
-    },
-    {
-      stimulus_name: "mouse",
-      stimulus_image: mouseSvg,
-      stimulus_audio: `${audioAnimalsFp}mouse.mp3`,
-    },
-    {
-      stimulus_name: "bird",
-      stimulus_image: birdSvg,
-      stimulus_audio: `${audioAnimalsFp}bird.mp3`,
-    },
-  ],
-  [
-    {
-      stimulus_name: "turtle",
-      stimulus_image: turtleSvg,
-      stimulus_audio: `${audioAnimalsFp}turtle.mp3`,
-    },
-    {
-      stimulus_name: "rabbit",
-      stimulus_image: rabbitSvg,
-      stimulus_audio: `${audioAnimalsFp}rabbit.mp3`,
-    },
-    {
-      stimulus_name: "duck",
-      stimulus_image: duckSvg,
-      stimulus_audio: `${audioAnimalsFp}duck.mp3`,
-    },
-  ],
-  [
-    {
-      stimulus_name: "cat",
-      stimulus_image: catSvg,
-      stimulus_audio: `${audioAnimalsFp}cat.mp3`,
-    },
-    {
-      stimulus_name: "monkey",
-      stimulus_image: monkeySvg,
-      stimulus_audio: `${audioAnimalsFp}monkey.mp3`,
-    },
-  ],
-  [
-    {
-      stimulus_name: "dog",
-      stimulus_image: dogSvg,
-      stimulus_audio: `${audioAnimalsFp}dog.mp3`,
-    },
-    {
-      stimulus_name: "sheep",
-      stimulus_image: sheepSvg,
-      stimulus_audio: `${audioAnimalsFp}sheep.mp3`,
-    },
-    {
-      stimulus_name: "pig",
-      stimulus_image: pigSvg,
-      stimulus_audio: `${audioAnimalsFp}pig.mp3`,
-    },
-  ],
-  [
-    {
-      stimulus_name: "horse",
-      stimulus_image: horseSvg,
-      stimulus_audio: `${audioAnimalsFp}horse.mp3`,
-    },
-    {
-      stimulus_name: "cow",
-      stimulus_image: cowSvg,
-      stimulus_audio: `${audioAnimalsFp}cow.mp3`,
-    },
-    {
-      stimulus_name: "tiger",
-      stimulus_image: tigerSvg,
-      stimulus_audio: `${audioAnimalsFp}tiger.mp3`,
-    },
-  ],
-  [
-    {
-      stimulus_name: "lion",
-      stimulus_image: lionSvg,
-      stimulus_audio: `${audioAnimalsFp}lion.mp3`,
-    },
-    {
-      stimulus_name: "bear",
-      stimulus_image: bearSvg,
-      stimulus_audio: `${audioAnimalsFp}bear.mp3`,
-    },
-    {
-      stimulus_name: "camel",
-      stimulus_image: camelSvg,
-      stimulus_audio: `${audioAnimalsFp}camel.mp3`,
-    },
-    {
-      stimulus_name: "elephant",
-      stimulus_image: elephantSvg,
-      stimulus_audio: `${audioAnimalsFp}elephant.mp3`,
-    },
-  ],
+const AUDIO_ANIMALS_FP = `${ASSETS_REL_FILE_PATH_AUDIO}audio-animals/`;
+const AUDIO_FOOD_FP = `${ASSETS_REL_FILE_PATH_AUDIO}audio-food/`;
+const AUDIO_EXTENSION = ".mp3";
+
+const animalNames = [
+  ["bee", "butterfly"],
+  ["frog", "mouse", "bird"],
+  ["turtle", "rabbit", "duck"],
+  ["cat", "monkey"],
+  ["dog", "sheep", "pig"],
+  ["horse", "cow", "tiger"],
+  ["lion", "bear", "camel", "elephant"],
 ];
 
-// Bean, popcorn → cherry, strawberry → egg, lime -> peach, apple, orange, pear → corn, banana → pineapple, hamburger → cake, watermelon
-const audioFoodsFp = `${ASSETS_REL_FILE_PATH_AUDIO}audio-food/`;
-export const foodStimuli = [
-  [
-    {
-      stimulus_name: "bean",
-      stimulus_image: beanSvg,
-      stimulus_audio: `${audioFoodsFp}bean.mp3`,
-    },
-    {
-      stimulus_name: "popcorn",
-      stimulus_image: popcornSvg,
-      stimulus_audio: `${audioFoodsFp}popcorn.mp3`,
-    },
-  ],
-  [
-    {
-      stimulus_name: "cherry",
-      stimulus_image: cherrySvg,
-      stimulus_audio: `${audioFoodsFp}cherry.mp3`,
-    },
-    {
-      stimulus_name: "strawberry",
-      stimulus_image: strawberrySvg,
-      stimulus_audio: `${audioFoodsFp}strawberry.mp3`,
-    },
-  ],
-  [
-    {
-      stimulus_name: "egg",
-      stimulus_image: eggSvg,
-      stimulus_audio: `${audioFoodsFp}egg.mp3`,
-    },
-    {
-      stimulus_name: "lime",
-      stimulus_image: limeSvg,
-      stimulus_audio: `${audioFoodsFp}lime.mp3`,
-    },
-  ],
-  [
-    {
-      stimulus_name: "peach",
-      stimulus_image: peachSvg,
-      stimulus_audio: `${audioFoodsFp}peach.mp3`,
-    },
-    {
-      stimulus_name: "apple",
-      stimulus_image: appleSvg,
-      stimulus_audio: `${audioFoodsFp}apple.mp3`,
-    },
-    {
-      stimulus_name: "orange",
-      stimulus_image: orangeSvg,
-      stimulus_audio: `${audioFoodsFp}orange.mp3`,
-    },
-    {
-      stimulus_name: "pear",
-      stimulus_image: pearSvg,
-      stimulus_audio: `${audioFoodsFp}pear.mp3`,
-    },
-  ],
-  [
-    {
-      stimulus_name: "corn",
-      stimulus_image: cornSvg,
-      stimulus_audio: `${audioFoodsFp}corn.mp3`,
-    },
-    {
-      stimulus_name: "banana",
-      stimulus_image: bananaSvg,
-      stimulus_audio: `${audioFoodsFp}banana.mp3`,
-    },
-  ],
-  [
-    {
-      stimulus_name: "pineapple",
-      stimulus_image: pineappleSvg,
-      stimulus_audio: `${audioFoodsFp}pineapple.mp3`,
-    },
-    {
-      stimulus_name: "hamburger",
-      stimulus_image: hamburgerSvg,
-      stimulus_audio: `${audioFoodsFp}hamburger.mp3`,
-    },
-  ],
-  [
-    {
-      stimulus_name: "cake",
-      stimulus_image: cakeSvg,
-      stimulus_audio: `${audioFoodsFp}cake.mp3`,
-    },
-    {
-      stimulus_name: "watermelon",
-      stimulus_image: watermelonSvg,
-      stimulus_audio: `${audioFoodsFp}watermelon.mp3`,
-    },
-  ],
+const animalSvgs = [
+  [beeSvg, butterflySvg],
+  [frogSvg, mouseSvg, birdSvg],
+  [turtleSvg, rabbitSvg, duckSvg],
+  [catSvg, monkeySvg],
+  [dogSvg, sheepSvg, pigSvg],
+  [horseSvg, cowSvg, tigerSvg],
+  [lionSvg, bearSvg, camelSvg, elephantSvg],
 ];
+
+const foodNames = [
+  ["bean", "popcorn"],
+  ["cherry", "strawberry"],
+  ["egg", "lime"],
+  ["peach", "apple", "orange", "pear"],
+  ["corn", "banana"],
+  ["pineapple", "hamburger"],
+  ["cake", "watermelon"],
+];
+const foodSvgs = [
+  [beanSvg, popcornSvg],
+  [cherrySvg, strawberrySvg],
+  [eggSvg, limeSvg],
+  [peachSvg, appleSvg, orangeSvg, pearSvg],
+  [cornSvg, bananaSvg],
+  [pineappleSvg, hamburgerSvg],
+  [cakeSvg, watermelonSvg],
+];
+
+export const animalStimuli = {
+  stimulus_set_name: "animals",
+  stimulus_set: animalNames.map((group, group_idx) =>
+    group.map((name, idx) => ({
+      stimulus_name: name,
+      stimulus_image: animalSvgs[group_idx][idx],
+      stimulus_audio: getAssetUrl(name, AUDIO_EXTENSION, AUDIO_ANIMALS_FP),
+    }))
+  ),
+};
+
+export const foodStimuli = {
+  stimulus_set_name: "foods",
+  stimulus_set: foodNames.map((group, group_idx) =>
+    group.map((name, idx) => ({
+      stimulus_name: name,
+      stimulus_image: foodSvgs[group_idx][idx],
+      stimulus_audio: getAssetUrl(name, AUDIO_EXTENSION, AUDIO_FOOD_FP),
+    }))
+  ),
+};
 
 export const oneListPracticeStimuliA = [
   {
@@ -275,14 +123,14 @@ export const oneListPracticeStimuliA = [
         {
           stimulus_name: "dog",
           stimulus_image: dogSvg,
-          stimulus_audio: `${audioAnimalsFp}dog.mp3`,
+          stimulus_audio: `${AUDIO_ANIMALS_FP}dog.mp3`,
         },
       ],
       [
         {
           stimulus_name: "horse",
           stimulus_image: horseSvg,
-          stimulus_audio: `${audioAnimalsFp}horse.mp3`,
+          stimulus_audio: `${AUDIO_ANIMALS_FP}horse.mp3`,
         },
       ],
     ],
@@ -297,21 +145,21 @@ export const oneListPracticeStimuliB = [
         {
           stimulus_name: "rabbit",
           stimulus_image: rabbitSvg,
-          stimulus_audio: `${audioAnimalsFp}rabbit.mp3`,
+          stimulus_audio: `${AUDIO_ANIMALS_FP}rabbit.mp3`,
         },
       ],
       [
         {
           stimulus_name: "sheep",
           stimulus_image: sheepSvg,
-          stimulus_audio: `${audioAnimalsFp}sheep.mp3`,
+          stimulus_audio: `${AUDIO_ANIMALS_FP}sheep.mp3`,
         },
       ],
       [
         {
           stimulus_name: "elephant",
           stimulus_image: elephantSvg,
-          stimulus_audio: `${audioAnimalsFp}elephant.mp3`,
+          stimulus_audio: `${AUDIO_ANIMALS_FP}elephant.mp3`,
         },
       ],
     ],
@@ -326,7 +174,7 @@ export const twoListPracticeStimuliA = [
         {
           stimulus_name: "bear",
           stimulus_image: bearSvg,
-          stimulus_audio: `${audioAnimalsFp}bear.mp3`,
+          stimulus_audio: `${AUDIO_ANIMALS_FP}bear.mp3`,
         },
       ],
     ],
@@ -338,7 +186,7 @@ export const twoListPracticeStimuliA = [
         {
           stimulus_name: "banana",
           stimulus_image: bananaSvg,
-          stimulus_audio: `${audioFoodsFp}banana.mp3`,
+          stimulus_audio: `${AUDIO_FOOD_FP}banana.mp3`,
         },
       ],
     ],
@@ -353,14 +201,14 @@ export const twoListPracticeStimuliB = [
         {
           stimulus_name: "frog",
           stimulus_image: frogSvg,
-          stimulus_audio: `${audioAnimalsFp}frog.mp3`,
+          stimulus_audio: `${AUDIO_ANIMALS_FP}frog.mp3`,
         },
       ],
       [
         {
           stimulus_name: "tiger",
           stimulus_image: tigerSvg,
-          stimulus_audio: `${audioAnimalsFp}tiger.mp3`,
+          stimulus_audio: `${AUDIO_ANIMALS_FP}tiger.mp3`,
         },
       ],
     ],
@@ -372,20 +220,11 @@ export const twoListPracticeStimuliB = [
         {
           stimulus_name: "pineapple",
           stimulus_image: pineappleSvg,
-          stimulus_audio: `${audioFoodsFp}pineapple.mp3`,
+          stimulus_audio: `${AUDIO_FOOD_FP}pineapple.mp3`,
         },
       ],
     ],
   },
 ];
 
-export const defaultLiveStimuli = [
-  {
-    stimulus_set_name: "animals",
-    stimulus_set: animalStimuli,
-  },
-  {
-    stimulus_set_name: "foods",
-    stimulus_set: foodStimuli,
-  },
-];
+export const defaultLiveStimuli = [animalStimuli, foodStimuli];
