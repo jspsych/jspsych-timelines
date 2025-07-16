@@ -101,7 +101,7 @@ describe('BART Timeline Creation', () => {
 
 describe('Start Instructions', () => {
   it('should generate correct start instructions stimulus', () => {
-    const instructions = utils.showStartInstructions();
+    const instructions = timelineUnits.showStartInstructions();
     
     expect(instructions.type).toBe(HtmlButtonResponsePlugin);
     expect(instructions.choices).toEqual(['Start']);
@@ -119,7 +119,7 @@ describe('End Results', () => {
   it('should generate end results with zero earnings', () => {
     mockJsPsychData.sum.mockReturnValue(0);
     
-    const results = utils.showEndResults(mockJsPsych);
+    const results = timelineUnits.showEndResults(mockJsPsych);
     
     expect(results.type).toBe(HtmlButtonResponsePlugin);
     expect(results.choices).toEqual(['Finish']);
@@ -132,14 +132,14 @@ describe('End Results', () => {
   it('should generate end results with earnings', () => {
     mockJsPsychData.sum.mockReturnValue(50); // 50 pump counts
     
-    const results = utils.showEndResults(mockJsPsych);
+    const results = timelineUnits.showEndResults(mockJsPsych);
     const stimulus = results.stimulus();
     
     expect(stimulus).toContain('$0.50'); // 50 * 0.01
   });
 
   it('should filter data correctly', () => {
-    utils.showEndResults(mockJsPsych);
+    timelineUnits.showEndResults(mockJsPsych);
     
     expect(mockJsPsychData.get).toHaveBeenCalled();
     expect(mockJsPsychData.filter).toHaveBeenCalledWith({ task: 'bart' });
@@ -284,7 +284,7 @@ describe('Stimulus Generation', () => {
 
 describe('Currency Formatting', () => {
   it('should format currency correctly in instructions', () => {
-    const instructions = utils.showStartInstructions();
+    const instructions = timelineUnits.showStartInstructions();
     const stimulus = instructions.stimulus();
     
     // Should contain properly formatted currency
@@ -294,7 +294,7 @@ describe('Currency Formatting', () => {
   it('should format currency correctly in end results', () => {
     mockJsPsychData.sum.mockReturnValue(123); // 123 pump counts
     
-    const results = utils.showEndResults(mockJsPsych);
+    const results = timelineUnits.showEndResults(mockJsPsych);
     const stimulus = results.stimulus();
     
     expect(stimulus).toContain('$1.23'); // 123 * 0.01
@@ -330,7 +330,7 @@ describe('Error Handling', () => {
       })
     });
     
-    expect(() => utils.showEndResults(mockJsPsych)).not.toThrow();
+    expect(() => timelineUnits.showEndResults(mockJsPsych)).not.toThrow();
   });
 });
 
@@ -499,11 +499,11 @@ describe('Exported Objects', () => {
   });
 
   it('should export utils with correct functions', () => {
-    expect(utils).toHaveProperty('showStartInstructions');
-    expect(utils).toHaveProperty('showBlockBreak');
-    expect(utils).toHaveProperty('showEndResults');
-    expect(typeof utils.showStartInstructions).toBe('function');
-    expect(typeof utils.showEndResults).toBe('function');
+    expect(timelineUnits).toHaveProperty('showStartInstructions');
+    expect(timelineUnits).toHaveProperty('showBlockBreak');
+    expect(timelineUnits).toHaveProperty('showEndResults');
+    expect(typeof timelineUnits.showStartInstructions).toBe('function');
+    expect(typeof timelineUnits.showEndResults).toBe('function');
   });
 
   it('should export createTimeline function', () => {
