@@ -1,8 +1,3 @@
-const ASSETS_REL_FILE_PATH = "../assets/";
-const ASSETS_REL_FILE_PATH_IMAGES = ASSETS_REL_FILE_PATH + "images/";
-const ASSETS_REL_FILE_PATH_AUDIO = ASSETS_REL_FILE_PATH + "audio/";
-
-// Image asset imports
 import { bearSvg } from "../assets/images/images-animals/bear.js";
 import { beeSvg } from "../assets/images/images-animals/bee.js";
 import { birdSvg } from "../assets/images/images-animals/bird.js";
@@ -39,21 +34,15 @@ import { pineappleSvg } from "../assets/images/images-food/pineapple.js";
 import { popcornSvg } from "../assets/images/images-food/popcorn.js";
 import { strawberrySvg } from "../assets/images/images-food/strawberry.js";
 import { watermelonSvg } from "../assets/images/images-food/watermelon.js";
+import { getAssetUrl } from "./assets.js";
 
-export function getAssetUrl(filename, extension = "", basePath = ASSETS_REL_FILE_PATH) {
-  // If run locally, use the AssetBase from the window object, otherwise use the provided basePath
-  // If run online via CDN, give the option of setting window.AssetBase in HTML
-  const userBase = typeof window !== "undefined" && window.AssetBase;
-  const defaultBase = basePath;
-  return `${userBase || defaultBase}${filename}${extension}`;
-}
-
-// Audio asset imports
-// bee, butterfly → frog, bird, mouse -> turtle, rabbit, duck → cat, monkey -> dog, sheep, pig -> horse, cow, tiger → lion, bear, camel, elephant
+const ASSETS_REL_FILE_PATH = "../assets/";
+const ASSETS_REL_FILE_PATH_AUDIO = ASSETS_REL_FILE_PATH + "audio/";
 const AUDIO_ANIMALS_FP = `${ASSETS_REL_FILE_PATH_AUDIO}audio-animals/`;
-const AUDIO_FOOD_FP = `${ASSETS_REL_FILE_PATH_AUDIO}audio-food/`;
+const AUDIO_FOODS_FP = `${ASSETS_REL_FILE_PATH_AUDIO}audio-food/`;
 const AUDIO_EXTENSION = ".mp3";
 
+// Stimulus groupings in increasing size (7 groups)
 const animalNames = [
   ["bee", "butterfly"],
   ["frog", "mouse", "bird"],
@@ -83,6 +72,7 @@ const foodNames = [
   ["pineapple", "hamburger"],
   ["cake", "watermelon"],
 ];
+
 const foodSvgs = [
   [beanSvg, popcornSvg],
   [cherrySvg, strawberrySvg],
@@ -100,6 +90,8 @@ export const animalStimuli = {
       stimulus_name: name,
       stimulus_image: animalSvgs[group_idx][idx],
       stimulus_audio: getAssetUrl(name, AUDIO_EXTENSION, AUDIO_ANIMALS_FP),
+      stimulus_index: group_idx * 100 + idx,
+      stimulus_set_id: "animals",
     }))
   ),
 };
@@ -110,7 +102,9 @@ export const foodStimuli = {
     group.map((name, idx) => ({
       stimulus_name: name,
       stimulus_image: foodSvgs[group_idx][idx],
-      stimulus_audio: getAssetUrl(name, AUDIO_EXTENSION, AUDIO_FOOD_FP),
+      stimulus_audio: getAssetUrl(name, AUDIO_EXTENSION, AUDIO_FOODS_FP),
+      stimulus_index: group_idx * 100 + idx,
+      stimulus_set_id: "foods",
     }))
   ),
 };
@@ -186,7 +180,7 @@ export const twoListPracticeStimuliA = [
         {
           stimulus_name: "banana",
           stimulus_image: bananaSvg,
-          stimulus_audio: `${AUDIO_FOOD_FP}banana.mp3`,
+          stimulus_audio: `${AUDIO_FOODS_FP}banana.mp3`,
         },
       ],
     ],
@@ -220,7 +214,7 @@ export const twoListPracticeStimuliB = [
         {
           stimulus_name: "pineapple",
           stimulus_image: pineappleSvg,
-          stimulus_audio: `${AUDIO_FOOD_FP}pineapple.mp3`,
+          stimulus_audio: `${AUDIO_FOODS_FP}pineapple.mp3`,
         },
       ],
     ],
@@ -228,3 +222,7 @@ export const twoListPracticeStimuliB = [
 ];
 
 export const defaultLiveStimuli = [animalStimuli, foodStimuli];
+
+// For CDN users who need custom asset paths, use:
+// import { setAssetBase } from './assets.js';
+// setAssetBase('https://unpkg.com/@jspsych-timelines/list-sorting-working-memory@latest/assets/');

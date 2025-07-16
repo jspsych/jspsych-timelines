@@ -4,6 +4,8 @@ import jsPsychPreload from "@jspsych/plugin-preload";
 import jsPsychSurveyText from "@jspsych/plugin-survey-text";
 import { JsPsych } from "jspsych";
 
+// DEV: Cannot directly export because tsup will throw error
+import { getAssetUrl as _getAssetUrl, setAssetBase as _setAssetBase } from "./assets.js";
 // Import default stimulus assets from src/stimuli.js
 // NOTE: You can use own stimulus assets and/or change the file path to the assets folder by modifying the src/stimulus.js file
 import {
@@ -990,3 +992,6 @@ export const utils = {
   answerTrial,
   practiceFeedbackTrial,
 };
+
+export const getAssetUrl = _getAssetUrl;
+export const setAssetBase = _setAssetBase;

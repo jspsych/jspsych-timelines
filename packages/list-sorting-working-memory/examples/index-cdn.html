@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>List Sorting Working Memory - Loading via CDN Example</title>
+    <script src="https://unpkg.com/jspsych"></script>
+    <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css" />
+  </head>
+  <body></body>
+    <!-- Load the experiment package from CDN -->
+    <script src="https://unpkg.com/@jspsych-timelines/list-sorting-working-memory"></script>
+
+    <script>
+        const jsPsych = initJsPsych({
+            on_finish: function(data) {
+                jsPsych.data.displayData();
+            }
+        });
+        
+      // Option 1: Using default stimuli loaded via CDN
+      const { createTimeline, setAssetBase } = jsPsychTimelineListSortingWorkingMemory;
+      setAssetBase('https://unpkg.com/@jspsych-timelines/list-sorting-working-memory@latest/assets/');
+
+
+      const timeline = createTimeline(jsPsych, {});
+
+      // Option 2: Using custom stimuli loaded via alternative CDN URL
+      // Example:
+      const customStimuli = [
+          {
+              stimulus_set_name: "animals",
+              stimulus_set: [
+                  [{
+                      stimulus_name: "beaver",
+                      stimulus_image: "https://unpkg.com/@custom-workspace/assets/images/images-animals/beaver.svg",
+                      stimulus_audio: "https://unpkg.com/@custom-workspace/assets/audio/audio-animals/beaver.mp3",
+                      stimulus_index: 0,
+                      stimulus_set_id: "animals"
+                  }]
+                  // ... more stimuli items
+              ]
+          }
+          // ... more stimulus sets
+      ];
+
+      // Uncomment to use this custom stimuli instead:
+      // const timeline = createTimeline(jsPsych, {
+      //     stimulus_set_list: customStimuli
+      // });
+
+      // Run the experiment
+      jsPsych.run(timeline);
+    </script>
+  </body>
+</html>
