@@ -340,12 +340,12 @@ export function createTimeline(jsPsych:JsPsych, {
 
 };
 export const timelineUnits = {
+    showStartInstructions,
+    showBlockBreak,
+    showEndResults,
+    createInstructions,
     createTrialTimeline
 }
 
 export const utils = {
-    showStartInstructions,
-    showBlockBreak,
-    showEndResults,
-    createInstructions
 }

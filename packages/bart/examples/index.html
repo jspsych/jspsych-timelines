@@ -23,7 +23,7 @@
   });
 
   // Get instructions trial
-//const instructions = utils.showStartInstructions();
+//const instructions = timelineUnits.showStartInstructions();
 
   const task = jsPsychTimelineBart.createTimeline(jsPsych, {
     max_pumps: 20,
@@ -35,9 +35,9 @@
     enable_timeout: true, // enable auto timeout (default)
    });
 
-   const instructions = jsPsychTimelineBart.utils.showStartInstructions();
+   const instructions = jsPsychTimelineBart.timelineUnits.showStartInstructions();
 
-   const end = jsPsychTimelineBart.utils.showEndResults(jsPsych);
+   const end = jsPsychTimelineBart.timelineUnits.showEndResults(jsPsych);
 
   jsPsych.run([instructions, task, end])
 </script>
