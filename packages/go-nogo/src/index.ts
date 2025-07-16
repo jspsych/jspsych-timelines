@@ -3,75 +3,67 @@ import htmlButtonResponse from "@jspsych/plugin-html-button-response";
 
 
 interface GoNoGoConfig {
-  goStimuli?: string[]
-  noGoStimuli?: string[]
+  goStimulus?: string
+  noGoStimulus?: string
   buttonText?: string
   stimulusDisplayTime?: number
   responseTimeout?: number
   interTrialInterval?: number
-  numTrials?: number
+  numBlocks?: number
+  trialsPerBlock?: number
   goTrialProbability?: number
-  varyStimulus?: boolean
   showResultsDetails?: boolean
+  stimulusType?: 'text' | 'image' | 'mixed'
+  imageWidth?: number
+  imageHeight?: number
 }
 
 export function createTimeline(jsPsych: JsPsych, config: GoNoGoConfig = {}) {
   const {
-    goStimuli = ['GO', 'X', 'O'],
-    noGoStimuli = ['NO-GO', 'Y', 'Z'],
+    goStimulus = 'GO',
+    noGoStimulus = 'NO-GO',
     buttonText = 'Click',
     responseTimeout = 1500,
     interTrialInterval = 500,
-    numTrials = 100,
-    goTrialProbability = 0.7,
-    varyStimulus = true,
-    showResultsDetails = true
+    numBlocks = 3,
+    trialsPerBlock = 50,
+    goTrialProbability = 0.75,
+    showResultsDetails = true,
+    stimulusType = 'mixed',
+    imageWidth = 200,
+    imageHeight = 200
   } = config
 
-  // Override stimuli based on varyStimulus setting
-  const actualGoStimuli = varyStimulus ? goStimuli : ['GO']
-  const actualNoGoStimuli = varyStimulus ? noGoStimuli : ['NO GO']
+  // Use single stimuli directly
   
-  const generateTrials = () => {
-    const trials = []
-    let goTrialCount = 0
-    let noGoTrialCount = 0
-    
-    for (let i = 0; i < numTrials; i++) {
-      const randomValue = Math.random()
-      const isGoTrial = randomValue < goTrialProbability
-      
-      // Use separate counters for go and no-go stimuli to ensure variety
-      let stimulus
-      if (isGoTrial) {
-        const stimulusIndex = goTrialCount % actualGoStimuli.length
-        stimulus = actualGoStimuli[stimulusIndex]
-        goTrialCount++
-      } else {
-        const stimulusIndex = noGoTrialCount % actualNoGoStimuli.length
-        stimulus = actualNoGoStimuli[stimulusIndex]
-        noGoTrialCount++
-      }
-      
-      trials.push({
-        stimulus: `<div style="font-size: 48px; font-weight: bold; color: ${isGoTrial ? 'green' : 'red'}">${stimulus}</div>`,
-        trial_type: isGoTrial ? 'go' : 'no-go',
-        correct_response: isGoTrial ? 0 : null
-      })
-    }
-    return trials
+  // Helper function to detect if stimulus is an image path
+  const isImagePath = (stimulus: string): boolean => {
+    if (stimulusType === 'text') return false
+    if (stimulusType === 'image') return true
+    // For 'mixed' type, detect based on file extension
+    const imageExtensions = /\.(jpg|jpeg|png|gif|svg|webp)$/i
+    return imageExtensions.test(stimulus)
   }
-
-  const trials = generateTrials()
-
+  
+  // Helper function to format stimulus as HTML
+  const formatStimulus = (stimulus: string, isGoTrial: boolean): string => {
+    const color = isGoTrial ? 'green' : 'red'
+    
+    if (isImagePath(stimulus)) {
+      return `<img src="${stimulus}" style="width: ${imageWidth}px; height: ${imageHeight}px; border: 3px solid ${color}; object-fit: contain;" alt="${isGoTrial ? 'GO' : 'NO-GO'} stimulus" />`
+    } else {
+      return `<div style="font-size: 48px; font-weight: bold; color: ${color}">${stimulus}</div>`
+    }
+  }
+  
   const instructionTrial = {
     type: htmlButtonResponse,
     stimulus: `
       <div style="font-size: 18px; line-height: 1.5; max-width: 600px; margin: 0 auto;">
         <h2>Go/No-Go Task Instructions</h2>
         <p>In this task, you will see different stimuli appear on the screen.</p>
-        <p><strong>GO trials:</strong> When you see a green stimulus, click the button as quickly as possible.</p>
-        <p><strong>NO-GO trials:</strong> When you see a red stimulus, do NOT click the button.</p>
+        <p><strong>GO trials:</strong> When you see a green stimulus (text or image with green border), click the button as quickly as possible.</p>
+        <p><strong>NO-GO trials:</strong> When you see a red stimulus (text or image with red border), do NOT click the button.</p>
         <p>Try to respond as quickly and accurately as possible.</p>
         <p>Click "Start" when you're ready to begin.</p>
       </div>
@@ -115,11 +107,61 @@ export function createTimeline(jsPsych: JsPsych, config: GoNoGoConfig = {}) {
     response_ends_trial: false
   }
 
-  const trialProcedure = {
-    timeline: [goNoGoTrial, interTrialIntervalTrial],
-    timeline_variables: trials,
-    randomize_order: true
+  const generateTrialsForBlock = (blockNumber: number) => {
+    const trials = []
+    
+    for (let i = 0; i < trialsPerBlock; i++) {
+      const randomValue = Math.random()
+      const isGoTrial = randomValue < goTrialProbability
+      
+      // Use single stimulus for each trial type
+      const stimulus = isGoTrial ? goStimulus : noGoStimulus
+      
+      trials.push({
+        stimulus: formatStimulus(stimulus, isGoTrial),
+        trial_type: isGoTrial ? 'go' : 'no-go',
+        correct_response: isGoTrial ? 0 : null,
+        block: blockNumber
+      })
+    }
+    return trials
   }
+
+  // Generate blocks
+  const blocks = []
+  for (let blockNum = 1; blockNum <= numBlocks; blockNum++) {
+    const blockTrials = generateTrialsForBlock(blockNum)
+    
+    // Add block instructions (except for first block)
+    if (blockNum > 1) {
+      const blockInstructionTrial = {
+        type: htmlButtonResponse,
+        stimulus: `
+          <div style="font-size: 18px; line-height: 1.5; max-width: 600px; margin: 0 auto;">
+            <h2>Block ${blockNum} of ${numBlocks}</h2>
+            <p>Take a short break if needed.</p>
+            <p>Remember:</p>
+            <p><strong>GO trials:</strong> When you see a green stimulus (text or image with green border), click the button as quickly as possible.</p>
+            <p><strong>NO-GO trials:</strong> When you see a red stimulus (text or image with red border), do NOT click the button.</p>
+            <p>Click "Continue" when you're ready to continue.</p>
+          </div>
+        `,
+        choices: ['Continue'],
+        data: { trial_type: 'block-instructions', block: blockNum }
+      }
+      blocks.push(blockInstructionTrial)
+    }
+    
+    // Add block trials
+    const blockProcedure = {
+      timeline: [goNoGoTrial, interTrialIntervalTrial],
+      timeline_variables: blockTrials,
+      randomize_order: true
+    }
+    blocks.push(blockProcedure)
+  }
+
+  // Trials are already defined above
 
   const debriefTrial = {
     type: htmlButtonResponse,
@@ -170,7 +212,7 @@ export function createTimeline(jsPsych: JsPsych, config: GoNoGoConfig = {}) {
   }
 
   return {
-    timeline: [instructionTrial, trialProcedure, debriefTrial]
+    timeline: [instructionTrial, ...blocks, debriefTrial]
   }
 }
 
