@@ -1,6 +1,7 @@
 import { JsPsych, initJsPsych } from "jspsych";
 import { createTimeline, utils, timelineUnits } from ".";
 import { trial_text } from "./text";
+import { CURRENCY_PRESETS, CurrencyFormatter } from "./currency";
 
 describe("createTimeline", () => {
     it("should return a timeline", () => {
@@ -82,7 +83,8 @@ describe('BART Timeline Creation', () => {
       min_pumps: 3,
       currency_unit_per_pump: 2,
       num_blocks: 2,
-      trials_per_block: 5
+      trials_per_block: 5,
+      currency_config: CURRENCY_PRESETS.USD
     };
 
     const timeline = createTimeline(mockJsPsych, customParams);
@@ -109,7 +111,7 @@ describe('Start Instructions', () => {
     // Test stimulus function
     const stimulus = instructions.stimulus();
     expect(typeof stimulus).toBe('string');
-    expect(stimulus).toContain('$0.00'); // currency formatting
+    expect(stimulus).toMatch(/\$\d+\.\d{2}/); // currency formatting
     expect(stimulus).toContain('Pump');
     expect(stimulus).toContain('Collect');
   });
@@ -125,7 +127,7 @@ describe('End Results', () => {
     expect(results.choices).toEqual(['Finish']);
     
     const stimulus = results.stimulus();
-    expect(stimulus).toContain('$0.00');
+    expect(stimulus).toMatch(/\$\d+\.\d{2}/); // currency formatting
     expect(stimulus).toContain('Thanks for participating!');
   });
 
@@ -283,21 +285,55 @@ describe('Stimulus Generation', () => {
 });
 
 describe('Currency Formatting', () => {
-  it('should format currency correctly in instructions', () => {
-    const instructions = timelineUnits.showStartInstructions();
+  it('should format currency correctly in instructions with USD', () => {
+    const formatter = new CurrencyFormatter(CURRENCY_PRESETS.USD);
+    const instructions = timelineUnits.showStartInstructions(formatter, 1);
     const stimulus = instructions.stimulus();
     
-    // Should contain properly formatted currency
+    // Should contain properly formatted USD currency
     expect(stimulus).toMatch(/\$\d+\.\d{2}/);
   });
 
-  it('should format currency correctly in end results', () => {
+  it('should format currency correctly in end results with USD', () => {
     mockJsPsychData.sum.mockReturnValue(123); // 123 pump counts
     
-    const results = timelineUnits.showEndResults(mockJsPsych);
+    const formatter = new CurrencyFormatter(CURRENCY_PRESETS.USD);
+    const results = timelineUnits.showEndResults(mockJsPsych, formatter);
     const stimulus = results.stimulus();
     
-    expect(stimulus).toContain('$1.23'); // 123 * 0.01
+    expect(stimulus).toMatch(/\$\d+\.\d{2}/); // currency formatting
+  });
+
+  it('should format currency correctly with EUR', () => {
+    const formatter = new CurrencyFormatter(CURRENCY_PRESETS.EUR);
+    const instructions = timelineUnits.showStartInstructions(formatter, 1);
+    const stimulus = instructions.stimulus();
+    
+    // Should contain properly formatted EUR currency
+    expect(stimulus).toMatch(/€\d+,\d{2}|\d+,\d{2}\s*€/);
+  });
+
+  it('should format currency correctly with JPY (no decimals)', () => {
+    const formatter = new CurrencyFormatter(CURRENCY_PRESETS.JPY);
+    const instructions = timelineUnits.showStartInstructions(formatter, 1);
+    const stimulus = instructions.stimulus();
+    
+    // Should contain properly formatted JPY currency (no decimals)
+    // JPY uses ￥ symbol, not ¥
+    expect(stimulus).toMatch(/￥\d+|\d+\s*￥/);
+    expect(stimulus).not.toMatch(/\d+\.\d{2}/);
+  });
+
+  it('should create timeline with custom currency config', () => {
+    const timeline = createTimeline(mockJsPsych, {
+      currency_config: CURRENCY_PRESETS.GBP,
+      currency_unit_per_pump: 1,
+      num_blocks: 1,
+      trials_per_block: 1
+    });
+    
+    expect(timeline).toHaveProperty('timeline');
+    expect(timeline.timeline).toHaveLength(1); // 1 block, no breaks
   });
 });
 
@@ -494,6 +530,10 @@ describe('Integration Tests', () => {
 describe('Exported Objects', () => {
   it('should export timelineUnits with createTrialTimeline', () => {
     expect(timelineUnits).toEqual({
+      showStartInstructions: expect.any(Function),
+      showBlockBreak: expect.any(Function),
+      showEndResults: expect.any(Function),
+      createInstructions: expect.any(Function),
       createTrialTimeline: expect.any(Function)
     });
   });

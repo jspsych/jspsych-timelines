@@ -22,7 +22,7 @@ export const trial_text = {
     finish_button: "Finish",
     
     // Trial feedback messages
-    balloon_popped_message: "POP! The balloon exploded. You earned $0.00 this round.",
+    balloon_popped_message: "POP! The balloon exploded. You earned nothing this round.",
     collected_message: "You collected",
     timeout_message: "Time limit reached - earnings automatically collected.",
     total_earnings_message: "Total earnings across all rounds:",

@@ -2,6 +2,7 @@ import { JsPsych } from "jspsych"
 import HtmlButtonResponsePlugin from "@jspsych/plugin-html-button-response";
 import jsPsychInstructions from "@jspsych/plugin-instructions";
 import { trial_text, instruction_pages } from "./text";
+import { CurrencyFormatter, CurrencyConfig, CURRENCY_PRESETS } from "./currency";
 
 //console.log("jsPsych experiment loading...");
 
@@ -52,19 +53,14 @@ function createInstructions(instruction_pages_data = instruction_pages) {
    }
 
    //generate start instructions
-   function showStartInstructions() {
+   function showStartInstructions(currencyFormatter?: CurrencyFormatter, currency_unit_per_pump: number = 1) {
    // console.log("showStartInstructions called");
-    let USDollar = new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD'
-     });
-
-     let currency_unit_per_pump = .01;
+    const formatter = currencyFormatter || new CurrencyFormatter();
 
      const stimulus = `
          <div class="instructions-container">
          <p>In this task, you will inflate a balloon to earn money.</p>
-         <p>Click <strong>${trial_text.pump_button}</strong> to inflate the balloon and earn <strong>${USDollar.format(.01*currency_unit_per_pump)}</strong> per pump.</p>
+         <p>Click <strong>${trial_text.pump_button}</strong> to inflate the balloon and earn <strong>${formatter.formatBaseUnit(currency_unit_per_pump)}</strong> per pump.</p>
          <p>Click <strong>${trial_text.collect_button}</strong> to save your money and end the round.</p>
          <p>If the balloon pops, you lose the money for that round!</p>
           <p>Click below to start the task.</p>
@@ -88,11 +84,8 @@ function createInstructions(instruction_pages_data = instruction_pages) {
    }
 
       //generate block break screen
-   function showBlockBreak(jsPsych: JsPsych, currentBlock: number, totalBlocks: number) {
-   let USDollar = new Intl.NumberFormat('en-US', {
-         style: 'currency',
-         currency: 'USD'
-     });
+   function showBlockBreak(jsPsych: JsPsych, currentBlock: number, totalBlocks: number, currencyFormatter?: CurrencyFormatter) {
+   const formatter = currencyFormatter || new CurrencyFormatter();
 
  const instructions = {
    type: HtmlButtonResponsePlugin,
@@ -104,7 +97,7 @@ function createInstructions(instruction_pages_data = instruction_pages) {
       
       return `<div class="instructions-container">
       <p>${trial_text.block_complete_message} ${currentBlock} of ${totalBlocks}.</p>
-      <p>${trial_text.current_earnings_message} <strong>${USDollar.format(totalPoints * 0.01)}</strong></p>
+      <p>${trial_text.current_earnings_message} <strong>${formatter.formatBaseUnit(totalPoints)}</strong></p>
       <p>${trial_text.take_break_message}</p>
       </div>`;
     },
@@ -119,12 +112,9 @@ function createInstructions(instruction_pages_data = instruction_pages) {
   }
 
       //generate end results
-   function showEndResults(jsPsych: JsPsych) {
+   function showEndResults(jsPsych: JsPsych, currencyFormatter?: CurrencyFormatter) {
 
-    let USDollar = new Intl.NumberFormat('en-US', {
-          style: 'currency',
-          currency: 'USD'
-      });
+    const formatter = currencyFormatter || new CurrencyFormatter();
     
    // console.log("showEndResults called");
        const data = jsPsych.data.get().filter({ task: 'bart' });
@@ -132,7 +122,7 @@ function createInstructions(instruction_pages_data = instruction_pages) {
 
      const stimulus = 
      `<div class="instructions-container">
-      <p>${trial_text.final_earnings_message} <strong>${USDollar.format(totalPoints * 0.01)}</strong>!</p>
+      <p>${trial_text.final_earnings_message} <strong>${formatter.formatBaseUnit(totalPoints)}</strong>!</p>
       <p>${trial_text.thanks_message}</p>
       </div>`;
 
@@ -154,7 +144,7 @@ function createInstructions(instruction_pages_data = instruction_pages) {
 
 
 
-function createTrialTimeline(jsPsych: JsPsych, max_pumps: number, min_pumps: number, currency_unit_per_pump: number, trial_timeout?: number, enable_timeout?: boolean) {
+function createTrialTimeline(jsPsych: JsPsych, max_pumps: number, min_pumps: number, currency_unit_per_pump: number, trial_timeout?: number, enable_timeout?: boolean, currencyFormatter?: CurrencyFormatter) {
     
 // const explosion_range = max_pumps - min_pumps;
 //       //const explosion_point = Math.floor(Math.random() * explosion_range) + MIN_PUMPS;
@@ -170,10 +160,7 @@ function createTrialTimeline(jsPsych: JsPsych, max_pumps: number, min_pumps: num
     let timed_out: boolean;
     let explosion_point: number;
 
-     let USDollar = new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD'
-     });
+     const formatter = currencyFormatter || new CurrencyFormatter();
 
     
     const pump_loop = {
@@ -198,7 +185,7 @@ function createTrialTimeline(jsPsych: JsPsych, max_pumps: number, min_pumps: num
 
            const earningsText = document.createElement('div');
            earningsText.className = 'earnings-text';
-             earningsText.innerHTML = `${trial_text.possible_earnings_message} <strong>${USDollar.format(pump_count * currency_unit_per_pump * 0.01)}</strong>`;
+             earningsText.innerHTML = `${trial_text.possible_earnings_message} <strong>${formatter.formatPumpEarnings(pump_count, currency_unit_per_pump)}</strong>`;
 
            const content = document.querySelector('.jspsych-content');
            if (content) {
@@ -246,7 +233,7 @@ function createTrialTimeline(jsPsych: JsPsych, max_pumps: number, min_pumps: num
              </div>
                <div class="task-instructions">
                  <p><strong>POP!</strong> ${trial_text.balloon_popped_message}</p>
-                 <p>${trial_text.total_earnings_message} <strong>${USDollar.format(.01* jsPsych.data.get().filter({ task: 'bart', exploded: false, cashed_out: true }).select('pump_count').sum())}</strong></p>
+                 <p>${trial_text.total_earnings_message} <strong>${formatter.formatBaseUnit(jsPsych.data.get().filter({ task: 'bart', exploded: false, cashed_out: true }).select('pump_count').sum())}</strong></p>
                </div>
              </div>
            `;
@@ -259,9 +246,9 @@ function createTrialTimeline(jsPsych: JsPsych, max_pumps: number, min_pumps: num
            return `
            <div class="trial-container">
              <div class="task-instructions">
-             <p>${trial_text.collected_message} <strong>${USDollar.format(.01*pump_count)}</strong> this round.</p>
+             <p>${trial_text.collected_message} <strong>${formatter.formatBaseUnit(pump_count)}</strong> this round.</p>
              ${timeoutMessage}
-             <p>${trial_text.total_earnings_message} <strong>${USDollar.format(total_money)}</strong></p>
+             <p>${trial_text.total_earnings_message} <strong>${formatter.formatDecimal(total_money)}</strong></p>
              </div>
            </div>
            `;
@@ -297,6 +284,7 @@ export function createTimeline(jsPsych:JsPsych, {
     max_pumps = 20,
     min_pumps = 1,
     currency_unit_per_pump = 1, //eg 1 cent per pump
+    currency_config = CURRENCY_PRESETS.USD, // currency configuration
     num_blocks = 3, // number of blocks in the experiment
     trials_per_block = 10, // number of trials per block
     trial_timeout = 15000, // timeout per trial in milliseconds (15 seconds default)
@@ -306,6 +294,7 @@ export function createTimeline(jsPsych:JsPsych, {
     max_pumps?: number,
     min_pumps?: number,
     currency_unit_per_pump?: number, // eg 1 cent per pump
+    currency_config?: CurrencyConfig, // currency configuration
     num_blocks?: number, // number of blocks in the experiment
     trials_per_block?: number, // number of trials per block
     trial_timeout?: number, // timeout per trial in milliseconds
@@ -314,7 +303,8 @@ export function createTimeline(jsPsych:JsPsych, {
 { 
     //jsPsych = jsPsych;
 
-    const trial = createTrialTimeline(jsPsych, max_pumps, min_pumps, currency_unit_per_pump, trial_timeout, enable_timeout);
+    const currencyFormatter = new CurrencyFormatter(currency_config);
+    const trial = createTrialTimeline(jsPsych, max_pumps, min_pumps, currency_unit_per_pump, trial_timeout, enable_timeout, currencyFormatter);
     
     // Create block structure
     const blocks = [];
@@ -328,7 +318,7 @@ export function createTimeline(jsPsych:JsPsych, {
         
         // Add break screen between blocks (but not after the last block)
         if (block < num_blocks) {
-            const blockBreak = showBlockBreak(jsPsych, block, num_blocks);
+            const blockBreak = showBlockBreak(jsPsych, block, num_blocks, currencyFormatter);
             blocks.push(blockBreak);
         }
     }
@@ -349,3 +339,7 @@ export const timelineUnits = {
 
 export const utils = {
 }
+
+// Export currency functionality
+export { CurrencyFormatter, CURRENCY_PRESETS } from './currency';
+export type { CurrencyConfig } from './currency';
