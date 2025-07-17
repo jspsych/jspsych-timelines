@@ -60,7 +60,6 @@ export function createTimeline(jsPsych: JsPsych, config: GoNoGoConfig = {}) {
     type: htmlButtonResponse,
     stimulus: `
       <div style="font-size: 18px; line-height: 1.5; max-width: 600px; margin: 0 auto;">
-        <h2>Go/No-Go Task Instructions</h2>
         <p>In this task, you will see different stimuli appear on the screen.</p>
         <p><strong>GO trials:</strong> When you see a green stimulus (text or image with green border), click the button as quickly as possible.</p>
         <p><strong>NO-GO trials:</strong> When you see a red stimulus (text or image with red border), do NOT click the button.</p>

@@ -337,9 +337,10 @@ describe("createTimeline", () => {
       const timeline = createTimeline(jsPsych);
       const instructionTrial = timeline.timeline[0] as any;
       
-      expect(instructionTrial.stimulus).toContain('Go/No-Go Task Instructions');
+      expect(instructionTrial.stimulus).toContain('In this task, you will see different stimuli appear on the screen');
       expect(instructionTrial.stimulus).toContain('GO trials');
       expect(instructionTrial.stimulus).toContain('NO-GO trials');
+      expect(instructionTrial.stimulus).not.toContain('Go/No-Go Task Instructions');
       expect(instructionTrial.choices).toEqual(['Start']);
       expect(instructionTrial.data.trial_type).toBe('instructions');
     });
