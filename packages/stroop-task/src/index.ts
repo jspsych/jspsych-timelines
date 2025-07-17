@@ -244,7 +244,7 @@ function createStroopTrial(
         button_layout: 'grid',
         grid_rows: numberOfRows,
         grid_columns: numberOfColumns,
-        button_html: (choice) => `<div style="border: 3px solid #333; width: 150px; height: 60px; margin: 20px; background-color: ${choice}; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold;">${choice}</div>`,
+        button_html: (choice) => `<div style="border: 3px solid #333; width: 150px; height: 60px; margin: 20px; background-color: ${choice.toLowerCase()}; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold;">${choice}</div>`,
         margin_horizontal: '20px',
         margin_vertical: '20px',
         trial_duration: trialTimeout || DEFAULT_TRIAL_TIMEOUT,
@@ -376,46 +376,46 @@ function createResults(jsPsych: JsPsych) {
 export function createTimeline(
     jsPsych: JsPsych,
     {
-        practiceTrialsPerCondition = 2,
-        congruentMainTrials = 4,
-        incongruentMainTrials = 4,
-        trialTimeout = 3000,
-        fixationDuration = { min: 300, max: 1500 },
-        showPracticeFeedback = true,
-        includeFixation = true,
-        showWelcomeAndInstructions = true,
-        // showInstructions = true,
-        showResults = true,
-        randomiseMainTrialConditionOrder = true,
-        randomisePracticeTrialConditionOrder = true,
-        randomiseFixationDuration = true,
-        numberOfRows = 2,
-        numberOfColumns = 2,
-        choiceOfColors = ['RED', 'GREEN', 'BLUE', 'YELLOW']
+        practice_trials_per_condition = 2,
+        congruent_main_trials = 4,
+        incongruent_main_trials = 4,
+        trial_timeout = 3000,
+        fixation_duration = { min: 300, max: 1500 },
+        show_practice_feedback = true,
+        include_fixation = true,
+        show_welcome_and_instructions = true,
+        // show_instructions = true,
+        show_results = true,
+        randomise_main_trial_condition_order = true,
+        randomise_practice_trial_condition_order = true,
+        randomise_fixation_duration = true,
+        number_of_rows = 2,
+        number_of_columns = 2,
+        choice_of_colors = ['RED', 'GREEN', 'BLUE', 'YELLOW']
     }: {
-        practiceTrialsPerCondition?: number,
-        congruentMainTrials?: number,
-        incongruentMainTrials?: number,
-        trialTimeout?: number,
-        fixationDuration?: { min: number, max: number },
-        showPracticeFeedback?: boolean,
-        includeFixation?: boolean,
-        showWelcomeAndInstructions?: boolean,
-        // showInstructions?: boolean,
-        showResults?: boolean,
-        randomiseMainTrialConditionOrder?: boolean,
-        randomisePracticeTrialConditionOrder?: boolean,
-        randomiseFixationDuration?: boolean,
-        numberOfRows?: number,
-        numberOfColumns?: number,
-        choiceOfColors?: string[]
+        practice_trials_per_condition?: number,
+        congruent_main_trials?: number,
+        incongruent_main_trials?: number,
+        trial_timeout?: number,
+        fixation_duration?: { min: number, max: number },
+        show_practice_feedback?: boolean,
+        include_fixation?: boolean,
+        show_welcome_and_instructions?: boolean,
+        // show_instructions?: boolean,
+        show_results?: boolean,
+        randomise_main_trial_condition_order?: boolean,
+        randomise_practice_trial_condition_order?: boolean,
+        randomise_fixation_duration?: boolean,
+        number_of_rows?: number,
+        number_of_columns?: number,
+        choice_of_colors?: string[]
     } = {}
 ) {
     // Reset state for new timeline
     resetState();
 
     const timeline: any[] = [];
-    const stimuli = generateStimuli(choiceOfColors);
+    const stimuli = generateStimuli(choice_of_colors);
 
     // Separate congruent and incongruent stimuli
     const congruentStimuli = stimuli.filter(s => s.congruent);
@@ -425,8 +425,8 @@ export function createTimeline(
     // timeline.push(createWelcome());
 
     // Add createCelcomeAndInstruction function
-    if (showWelcomeAndInstructions) {
-        timeline.push(createWelcomeAndInstructions(choiceOfColors));
+    if (show_welcome_and_instructions) {
+        timeline.push(createWelcomeAndInstructions(choice_of_colors));
     }   
 
     // Add instructions if requested
@@ -436,19 +436,19 @@ export function createTimeline(
 
     // Create practice trials
     let practiceStimuli = [];
-    practiceStimuli.push(...congruentStimuli.slice(0, practiceTrialsPerCondition));
-    practiceStimuli.push(...incongruentStimuli.slice(0, practiceTrialsPerCondition));
+    practiceStimuli.push(...congruentStimuli.slice(0, practice_trials_per_condition));
+    practiceStimuli.push(...incongruentStimuli.slice(0, practice_trials_per_condition));
 
-    const shuffledPracticeStimuli = randomisePracticeTrialConditionOrder ? shuffleArray(practiceStimuli) : practiceStimuli;
+    const shuffledPracticeStimuli = randomise_practice_trial_condition_order ? shuffleArray(practiceStimuli) : practiceStimuli;
 
     // Add practice trials
     for (const stimulus of shuffledPracticeStimuli) {
-        if (includeFixation) {
-            timeline.push(createFixation(fixationDuration, randomiseFixationDuration));
+        if (include_fixation) {
+            timeline.push(createFixation(fixation_duration, randomise_fixation_duration));
         }
-        timeline.push(createStroopTrial(jsPsych, stimulus, true, trialTimeout, numberOfRows, numberOfColumns, choiceOfColors));
-        if (showPracticeFeedback) {
-            timeline.push(createPracticeFeedback(jsPsych, choiceOfColors));
+        timeline.push(createStroopTrial(jsPsych, stimulus, true, trial_timeout, number_of_rows, number_of_columns, choice_of_colors));
+        if (show_practice_feedback) {
+            timeline.push(createPracticeFeedback(jsPsych, choice_of_colors));
         }
     }
 
@@ -459,24 +459,24 @@ export function createTimeline(
     let mainStimuli = [];
 
     // Add congruent trials
-    mainStimuli.push(...congruentStimuli.slice(0, congruentMainTrials));
+    mainStimuli.push(...congruentStimuli.slice(0, congruent_main_trials));
 
     // Add incongruent trials  
-    mainStimuli.push(...incongruentStimuli.slice(0, incongruentMainTrials));
+    mainStimuli.push(...incongruentStimuli.slice(0, incongruent_main_trials));
 
-    const shuffledMainStimuli = randomiseMainTrialConditionOrder ? shuffleArray(mainStimuli) : mainStimuli;
+    const shuffledMainStimuli = randomise_main_trial_condition_order ? shuffleArray(mainStimuli) : mainStimuli;
     state.totalTrials = shuffledMainStimuli.length;
 
     // Add main trials
     for (const stimulus of shuffledMainStimuli) {
-        if (includeFixation) {
-            timeline.push(createFixation(fixationDuration, randomiseFixationDuration));
+        if (include_fixation) {
+            timeline.push(createFixation(fixation_duration, randomise_fixation_duration));
         }
-        timeline.push(createStroopTrial(jsPsych, stimulus, false, trialTimeout, numberOfRows, numberOfColumns, choiceOfColors));
+        timeline.push(createStroopTrial(jsPsych, stimulus, false, trial_timeout, number_of_rows, number_of_columns, choice_of_colors));
     }
 
     // Add results if requested
-    if (showResults) {
+    if (show_results) {
         timeline.push(createResults(jsPsych));
     }
 
