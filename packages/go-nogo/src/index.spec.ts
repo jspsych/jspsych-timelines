@@ -493,7 +493,7 @@ describe("createTimeline", () => {
     it("should handle extreme goTrialProbability values", () => {
       const config1 = { goTrialProbability: 0.0, numBlocks: 1, trialsPerBlock: 5 };
       const timeline1 = createTimeline(jsPsych, config1);
-      const firstBlock1 = timeline1.timeline[3] as any;
+      const firstBlock1 = timeline1.timeline[4] as any;
       
       const allNoGo = firstBlock1.timeline_variables.every((trial: any) => 
         trial.trial_type === 'no-go'
@@ -502,7 +502,7 @@ describe("createTimeline", () => {
       
       const config2 = { goTrialProbability: 1.0, numBlocks: 1, trialsPerBlock: 5 };
       const timeline2 = createTimeline(jsPsych, config2);
-      const firstBlock2 = timeline2.timeline[3] as any;
+      const firstBlock2 = timeline2.timeline[4] as any;
       
       const allGo = firstBlock2.timeline_variables.every((trial: any) => 
         trial.trial_type === 'go'
