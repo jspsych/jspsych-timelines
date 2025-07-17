@@ -258,7 +258,7 @@ describe("createTimeline", () => {
       const firstBlock = timeline.timeline[4] as any;
       const trial = firstBlock.timeline_variables[0];
       
-      expect(trial.stimulus).toContain('<div style=');
+      expect(trial.stimulus).toContain('<div class="go-nogo-stimulus-text">');
       expect(trial.stimulus).toContain('TEXT_GO');
       expect(trial.stimulus).toContain('font-size: 48px');
       expect(trial.stimulus).not.toContain('<img');
@@ -308,7 +308,7 @@ describe("createTimeline", () => {
       const textTrial = trials.find((t: any) => t.stimulus.includes('TEXT_GO'));
       const imageTrial = trials.find((t: any) => t.stimulus.includes('image.jpg'));
       
-      expect(textTrial.stimulus).toContain('<div style=');
+      expect(textTrial.stimulus).toContain('<div class="go-nogo-stimulus-text">');
       expect(textTrial.stimulus).toContain('TEXT_GO');
       
       expect(imageTrial.stimulus).toContain('<img src="image.jpg"');
@@ -353,16 +353,16 @@ describe("createTimeline", () => {
       expect(goTrial.stimulus).toContain(englishText.goPageTitle);
       expect(goTrial.stimulus).toContain(englishText.goPageText);
       expect(goTrial.stimulus).toContain(englishText.goPageAction);
-      expect(goTrial.stimulus).toContain(englishText.gotItButton);
-      expect(goTrial.choices).toEqual([englishText.nextButton]);
+      expect(goTrial.stimulus).toContain(englishText.defaultButtonText);
+      expect(goTrial.choices).toEqual([]);
       expect(goTrial.data.trial_type).toBe(englishText.trialTypes.instructions);
       
       // NO-GO trial
       expect(noGoTrial.stimulus).toContain(englishText.noGoPageTitle);
       expect(noGoTrial.stimulus).toContain(englishText.noGoPageText);
       expect(noGoTrial.stimulus).toContain(englishText.noGoPageAction);
-      expect(noGoTrial.stimulus).toContain(englishText.waitButton);
-      expect(noGoTrial.choices).toEqual([englishText.startButton]);
+      expect(noGoTrial.stimulus).toContain(englishText.defaultButtonText);
+      expect(noGoTrial.choices).toEqual([]);
       expect(noGoTrial.data.trial_type).toBe(englishText.trialTypes.instructions);
     });
 
