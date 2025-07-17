@@ -93,67 +93,118 @@ function shuffleArray<T>(array: T[]): T[] {
     return newArray;
 }
 
-/* Timeline component generating functions */
-function createWelcome() {
-    const welcome = {
-        type: jsPsychHtmlButtonResponse,
-        stimulus: `
-            <div style="max-width: 700px; margin: 0 auto; text-align: center; padding: 20px;">
-                <h1>Welcome to the Stroop Task!</h1>
-                <p>In this experiment, you will see words printed in different colors.</p>
-                <p>Your task is to identify the <strong>color of the ink</strong> the word is printed in, NOT the word itself.</p>
-                <p>Please respond as quickly and accurately as possible.</p>
-            </div>
-        `,
-        choices: ['Continue'],
-        post_trial_gap: 500
+// /* Timeline component generating functions */
+// function createWelcome() {
+//     const welcome = {
+//         type: jsPsychHtmlButtonResponse,
+//         stimulus: `
+//             <div style="max-width: 700px; margin: 0 auto; text-align: center; padding: 20px;">
+//                 <h1>Welcome to the Stroop Task!</h1>
+//                 <p>In this experiment, you will see words printed in different colors.</p>
+//                 <p>Your task is to identify the <strong>color of the ink</strong> the word is printed in, NOT the word itself.</p>
+//                 <p>Please respond as quickly and accurately as possible.</p>
+//             </div>
+//         `,
+//         choices: ['Continue'],
+//         post_trial_gap: 500
+//     };
+
+//     return welcome;
+// }
+
+function createWelcomeAndInstructions(
+    choiceOfColors?: string[]
+) {
+    const welcomeAndInstructions = {
+        type: jsPsychInstructions,
+        pages: [
+            `<div class="instructions-container"></div>
+            <h1>Welcome to the Stroop Task</h1>
+            <div>`,
+            `<div class="instructions-container"></div>
+            In this task, you will see words that name colors (like RED, BLUE, GREEN)
+            <div>`,
+            `<div class="instructions-container"></div>
+            The color of the letters might not match the word, for example <span style="color: red;">RED</span> (in <span style="color: blue;">blue</span>), <span style="color: blue;">BLUE</span> (in <span style="color: green;">green</span>).<br>
+            Your job is to press the button that matches the color of the word, not what the word says.<br>
+            In the above example, you would press first a blue button; then a green button.`,
+            `<div class="instructions-container"></div>
+            <p>You will have to click one of the buttons that will appear below for each color:</p>
+
+            ${(() => {
+                const selectedColors = choiceOfColors || ['RED', 'GREEN', 'BLUE', 'YELLOW'];
+                const dynamicColors = selectedColors.map((colorName, index) => ({
+                    name: colorName,
+                    hex: colorName.toLowerCase(),
+                    index: index
+                }));
+                return dynamicColors.map(color => `
+                    <div style="padding: 15px; border: 1px solid #ccc; border-radius: 8px; margin: 10px; min-width: 120px; text-align: center;">
+                        <span style="color: ${color.hex}; font-size: 24px; font-weight: bold; display: block; margin-bottom: 5px;">${color.name}</span>
+                    </div>
+                `).join('');
+            })()}
+        </div>`,
+            `<div class="instructions-container"></div>
+            More examples: <br>
+                • If the word RED appears in green ink → press GREEN <br>
+                • If the word BLUE appears in blue ink → press BLUE`,
+            `<div class="instructions-container"></div>
+            Try to go as fast and as accurately as possible.`
+        ],
+        show_clickable_nav: true,
+        allow_keys: true,
+        key_forward: 'ArrowRight',
+        key_backward: 'ArrowLeft',
+        button_label_previous: "",
+        button_label_next: "",
     };
 
-    return welcome;
+    return welcomeAndInstructions;
 }
 
 //need to change the code so that the choice of color shows up in the instructions, it is smth to do with changing the colors on line 125, better better prompting 
-function createInstructions(
-    choiceOfColors?: string[]
-) {
-    const instructions = {
-        type: jsPsychInstructions,
-        pages: [
-            `<div style="max-width: 700px; margin: 0 auto; padding: 20px;">
-                <h2>Instructions</h2>
-                <p>You will see a word (e.g., "RED", "BLUE") displayed in one of four ink colors: red, green, blue, or yellow.</p>
-                <p>Your task is to click the button corresponding to the <strong>INK COLOR</strong> of the word, ignoring what the word says.</p>
-                <p>Click the colored buttons that will appear below each word:</p><div style="display: flex; justify-content: space-around; margin: 20px 0; flex-wrap: wrap;">
+// function createInstructions(
+//     choiceOfColors?: string[]
+// ) {
+//     const instructions = {
+//         type: jsPsychInstructions,
+//         pages: [
+//             `<div style="max-width: 700px; margin: 0 auto; padding: 20px;">
+//                 <h2>Instructions</h2>
+//                 <p>You will see a word (e.g., "RED", "BLUE") displayed in one of four ink colors: red, green, blue, or yellow.</p>
+//                 <p>Your task is to click the button corresponding to the <strong>INK COLOR</strong> of the word, ignoring what the word says.</p>
+//                 <p>Click the colored buttons that will appear below each word:</p><div style="display: flex; justify-content: space-around; margin: 20px 0; flex-wrap: wrap;">
 
-                ${(() => {
-                    const selectedColors = choiceOfColors || ['RED', 'GREEN', 'BLUE', 'YELLOW'];
-                    const dynamicColors = selectedColors.map((colorName, index) => ({
-                        name: colorName,
-                        hex: colorName.toLowerCase(),
-                        index: index
-                    }));
-                    return dynamicColors.map(color => `
-                        <div style="padding: 15px; border: 1px solid #ccc; border-radius: 8px; margin: 10px; min-width: 120px; text-align: center;">
-                            <span style="color: ${color.hex}; font-size: 24px; font-weight: bold; display: block; margin-bottom: 5px;">${color.name}</span>
-                        </div>
-                    `).join('');
-                })()}
-            </div>`,
-            `<div style="max-width: 700px; margin: 0 auto; padding: 20px;">
-                <h2>Examples</h2>
-                <p>If you see the word <strong style="color:blue;">RED</strong> (written in BLUE ink), you should click the BLUE button.</p>
-                <p>If you see the word <strong style="color:green;">GREEN</strong> (written in GREEN ink), you should click the GREEN button.</p>
-                <p>There will be a short practice session first.</p>
-            </div>`
-        ],
-        show_clickable_nav: true,
-        button_label_previous: 'Previous',
-        button_label_next: 'Next',
-        button_label_finish: 'Begin Practice'
-    };
+//                 ${(() => {
+//                 const selectedColors = choiceOfColors || ['RED', 'GREEN', 'BLUE', 'YELLOW'];
+//                 const dynamicColors = selectedColors.map((colorName, index) => ({
+//                     name: colorName,
+//                     hex: colorName.toLowerCase(),
+//                     index: index
+//                 }));
+//                 return dynamicColors.map(color => `
+//                         <div style="padding: 15px; border: 1px solid #ccc; border-radius: 8px; margin: 10px; min-width: 120px; text-align: center;">
+//                             <span style="color: ${color.hex}; font-size: 24px; font-weight: bold; display: block; margin-bottom: 5px;">${color.name}</span>
+//                         </div>
+//                     `).join('');
+//             })()}
+//             </div>`,
+//             `<div style="max-width: 700px; margin: 0 auto; padding: 20px;">
+//                 <h2>Examples</h2>
+//                 <p>If you see the word <strong style="color:blue;">RED</strong> (written in BLUE ink), you should click the BLUE button.</p>
+//                 <p>If you see the word <strong style="color:green;">GREEN</strong> (written in GREEN ink), you should click the GREEN button.</p>
+//                 <p>There will be a short practice session first.</p>
+//             </div>`
+//         ],
+//         show_clickable_nav: true,
+//         button_label_previous: 'Previous',
+//         button_label_next: 'Next',
+//         button_label_finish: 'Begin Practice'
+//     };
 
-    return instructions;
-}
+//     return instructions;
+// }
 
 function createFixation(duration?: { min: number, max: number }, randomize: boolean = true) {
     const fixationDuration = duration || DEFAULT_FIXATION_DURATION;
@@ -325,21 +376,22 @@ function createResults(jsPsych: JsPsych) {
 export function createTimeline(
     jsPsych: JsPsych,
     {
-        practiceTrialsPerCondition = 2, 
+        practiceTrialsPerCondition = 2,
         congruentMainTrials = 4,
-        incongruentMainTrials = 4, 
+        incongruentMainTrials = 4,
         trialTimeout = 3000,
         fixationDuration = { min: 300, max: 1500 },
         showPracticeFeedback = true,
         includeFixation = true,
-        showInstructions = true,
+        showWelcomeAndInstructions = true,
+        // showInstructions = true,
         showResults = true,
         randomiseMainTrialConditionOrder = true,
         randomisePracticeTrialConditionOrder = true,
         randomiseFixationDuration = true,
         numberOfRows = 2,
         numberOfColumns = 2,
-        choiceOfColors = ['RED', 'GREEN', 'BLUE', 'PURPLE']    
+        choiceOfColors = ['RED', 'GREEN', 'BLUE', 'YELLOW']
     }: {
         practiceTrialsPerCondition?: number,
         congruentMainTrials?: number,
@@ -348,7 +400,8 @@ export function createTimeline(
         fixationDuration?: { min: number, max: number },
         showPracticeFeedback?: boolean,
         includeFixation?: boolean,
-        showInstructions?: boolean,
+        showWelcomeAndInstructions?: boolean,
+        // showInstructions?: boolean,
         showResults?: boolean,
         randomiseMainTrialConditionOrder?: boolean,
         randomisePracticeTrialConditionOrder?: boolean,
@@ -369,12 +422,17 @@ export function createTimeline(
     const incongruentStimuli = stimuli.filter(s => !s.congruent);
 
     // Add welcome
-    timeline.push(createWelcome());
+    // timeline.push(createWelcome());
+
+    // Add createCelcomeAndInstruction function
+    if (showWelcomeAndInstructions) {
+        timeline.push(createWelcomeAndInstructions(choiceOfColors));
+    }   
 
     // Add instructions if requested
-    if (showInstructions) {
-        timeline.push(createInstructions(choiceOfColors));
-    }
+    // if (showInstructions) {
+    //     timeline.push(createInstructions(choiceOfColors));
+    // }
 
     // Create practice trials
     let practiceStimuli = [];
@@ -427,8 +485,9 @@ export function createTimeline(
 
 /* Export individual components for custom timeline building */
 export const timelineComponents = {
-    createWelcome,
-    createInstructions,
+    // createWelcome,
+    // createInstructions,
+    createWelcomeAndInstructions,
     createFixation,
     createStroopTrial,
     createPracticeFeedback,

@@ -496,7 +496,7 @@ function createAdaptiveTrial(
         type: jsPsychHtmlButtonResponse,
         stimulus: createAdaptiveStimulus(stimulus),
         choices: stimulus.response_options,
-        button_html: '<img src="%choice%" style="width: 120px; height: 120px; margin: 10px; border: 3px solid #ccc; border-radius: 10px; cursor: pointer; transition: all 0.3s;">',
+        button_html: (choice) => `<img src="${choice}" style="width: 120px; height: 120px; margin: 10px; border: 3px solid #ccc; border-radius: 10px; cursor: pointer; transition: all 0.3s;">`,
         prompt: `${progressHTML}<p style="margin-top: 30px; font-size: 18px;">Select your answer</p>`,
         trial_duration: trial_timeout,
         data: {
@@ -631,7 +631,7 @@ export function createTimeline(
         //custom_item_bank,
         enable_admin_gesture = DEFAULT_ADMIN_GESTURE_ENABLED,
         // New seed parameters for visual reasoning experiments
-        use_seed_experiments = false,
+        use_seed_experiments = true,
         seed_parameters = {
             numberOfAnswerOptions: 4,
             numberOfExp1Trials: 5,
@@ -829,7 +829,7 @@ if (state.itemBank.length > 0) {
                         if (!item) return [];
                         return item.response_options;
                     },
-                    button_html: '<img src="%choice%" style="width: 120px; height: 120px; margin: 10px; border: 3px solid #ccc; border-radius: 10px; cursor: pointer; transition: all 0.3s;">',
+                    button_html: (choice) => `<img src="${choice}" style="width: 120px; height: 120px; margin: 10px; border: 3px solid #ccc; border-radius: 10px; cursor: pointer; transition: all 0.3s;">`,
                     prompt: () => {
                         const progressHTML = show_progress ?
                             `<div style="position: absolute; top: 10px; right: 10px; font-size: 14px; color: #666;">
@@ -1009,10 +1009,10 @@ export function createSeededTimeline(
             : '';
 
         const trialNode = {
-            type: jsPsychImageButtonResponse,
+            type: jsPsychHtmlButtonResponse,
             stimulus: stimulus,
             choices: trial.responseOptions,
-            button_html: '<img src="%choice%" class="jspsych-btn choice-option" style="width: 120px; height: 120px; margin: 10px; border: 3px solid #ccc; border-radius: 10px; cursor: pointer; transition: all 0.3s;">',
+            button_html: (choice) => `<img src="${choice}" class="jspsych-btn choice-option" style="width: 120px; height: 120px; margin: 10px; border: 3px solid #ccc; border-radius: 10px; cursor: pointer; transition: all 0.3s;">`,
             prompt: prompt,
             trial_duration: trial_timeout,
             data: {

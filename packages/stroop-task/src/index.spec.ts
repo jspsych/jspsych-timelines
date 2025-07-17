@@ -202,7 +202,9 @@ describe("stroop-task timeline components", () => {
             expect(typeof fixation.trial_duration).toBe('function');
 
             // Test duration function returns value in range
-            const duration = fixation.trial_duration();
+            const duration = typeof fixation.trial_duration === 'function'
+                ? fixation.trial_duration()
+                : fixation.trial_duration;
             expect(duration).toBeGreaterThanOrEqual(500);
             expect(duration).toBeLessThanOrEqual(1500);
         });
@@ -214,7 +216,9 @@ describe("stroop-task timeline components", () => {
 
         test("uses default duration when none provided", () => {
             const fixation = timelineComponents.createFixation();
-            const duration = fixation.trial_duration();
+            const duration = typeof fixation.trial_duration === 'function'
+                ? fixation.trial_duration()
+                : fixation.trial_duration;
             expect(duration).toBeGreaterThanOrEqual(300);
             expect(duration).toBeLessThanOrEqual(1000);
         });
@@ -238,7 +242,7 @@ describe("stroop-task timeline components", () => {
         });
 
         test("has correct choices", () => {
-            const trial = timelineComponents.createStroopTrial(jsPsych, mockStimulus, false);
+            const trial = timelineComponents.createStroopTrial(jsPsych, mockStimulus, false, 3000, 2, 2, ['RED', 'GREEN', 'BLUE', 'YELLOW']);
             expect(trial.choices).toEqual(['RED', 'GREEN', 'BLUE', 'YELLOW']);
         });
 
@@ -371,10 +375,11 @@ describe("stroop-task full timeline", () => {
 
     test("respects custom parameters", () => {
         const customParams = {
-            practiceTrialsPerCondition: 2,
-            mainTrialsPerCondition: 4,
-            showInstructions: false,
-            showResults: false
+            practice_trials_per_condition: 2,
+            congruent_main_trials: 4,
+            incongruent_main_trials: 4,
+            show_instructions: false,
+            show_results: false
         };
 
         const timeline = createTimeline(jsPsych, customParams);
@@ -395,7 +400,7 @@ describe("stroop-task full timeline", () => {
     });
 
     test("includes instructions when enabled", () => {
-        const timelineWithInstructions = createTimeline(jsPsych, { showInstructions: true });
+        const timelineWithInstructions = createTimeline(jsPsych, { show_instructions: true });
         const hasInstructions = timelineWithInstructions.some(trial =>
             trial.pages && Array.isArray(trial.pages)
         );
@@ -403,7 +408,7 @@ describe("stroop-task full timeline", () => {
     });
 
     test("excludes instructions when disabled", () => {
-        const timelineWithoutInstructions = createTimeline(jsPsych, { showInstructions: false });
+        const timelineWithoutInstructions = createTimeline(jsPsych, { show_instructions: false });
         const hasInstructions = timelineWithoutInstructions.some(trial =>
             trial.pages && Array.isArray(trial.pages)
         );
@@ -411,7 +416,7 @@ describe("stroop-task full timeline", () => {
     });
 
     test("includes results when enabled", () => {
-        const timelineWithResults = createTimeline(jsPsych, { showResults: true });
+        const timelineWithResults = createTimeline(jsPsych, { show_results: true });
         const hasResults = timelineWithResults.some(trial =>
             trial.choices && trial.choices.includes('Download Data')
         );
@@ -419,7 +424,7 @@ describe("stroop-task full timeline", () => {
     });
 
     test("excludes results when disabled", () => {
-        const timelineWithoutResults = createTimeline(jsPsych, { showResults: false });
+        const timelineWithoutResults = createTimeline(jsPsych, { show_results: false });
         const hasResults = timelineWithoutResults.some(trial =>
             trial.choices && trial.choices.includes('Download Data')
         );
@@ -428,10 +433,11 @@ describe("stroop-task full timeline", () => {
 
     test("works with minimal configuration", () => {
         const timeline = createTimeline(jsPsych, {
-            practiceTrialsPerCondition: 1,
-            mainTrialsPerCondition: 1,
-            showInstructions: false,
-            showResults: false
+            practice_trials_per_condition: 1,
+            congruent_main_trials: 1,
+            incongruent_main_trials: 1,
+            show_instructions: false,
+            show_results: false
         });
 
         expect(Array.isArray(timeline)).toBe(true);
@@ -439,7 +445,7 @@ describe("stroop-task full timeline", () => {
     });
 
     test("creates practice trials", () => {
-        const timeline = createTimeline(jsPsych, { practiceTrialsPerCondition: 2 });
+        const timeline = createTimeline(jsPsych, { practice_trials_per_condition: 2 });
         const practiceTrials = timeline.filter(trial =>
             trial.data && trial.data.task === 'practice'
         );
@@ -447,7 +453,10 @@ describe("stroop-task full timeline", () => {
     });
 
     test("creates main response trials", () => {
-        const timeline = createTimeline(jsPsych, { mainTrialsPerCondition: 2 });
+        const timeline = createTimeline(jsPsych, {
+            congruent_main_trials: 2,
+            incongruent_main_trials: 2
+        });
         const responseTrials = timeline.filter(trial =>
             trial.data && trial.data.task === 'response'
         );
@@ -455,7 +464,7 @@ describe("stroop-task full timeline", () => {
     });
 
     test("includes fixation trials when enabled", () => {
-        const timeline = createTimeline(jsPsych, { includeFixation: true });
+        const timeline = createTimeline(jsPsych, { include_fixation: true });
         const fixationTrials = timeline.filter(trial =>
             trial.data && trial.data.task === 'fixation'
         );
@@ -463,7 +472,7 @@ describe("stroop-task full timeline", () => {
     });
 
     test("excludes fixation trials when disabled", () => {
-        const timeline = createTimeline(jsPsych, { includeFixation: false });
+        const timeline = createTimeline(jsPsych, { include_fixation: false });
         const fixationTrials = timeline.filter(trial =>
             trial.data && trial.data.task === 'fixation'
         );
@@ -473,8 +482,9 @@ describe("stroop-task full timeline", () => {
     test("handles edge case parameters", () => {
         expect(() => {
             createTimeline(jsPsych, {
-                practiceTrialsPerCondition: 0,
-                mainTrialsPerCondition: 0
+                practice_trials_per_condition: 0,
+                congruent_main_trials: 0,
+                incongruent_main_trials: 0,
             });
         }).not.toThrow();
     });

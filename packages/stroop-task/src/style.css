@@ -84,7 +84,7 @@ body {
     margin: 20px 0;
 }
 
-.instructions-container {
+/* .instructions-container {
     max-width: 700px;
     margin: 20px auto;
     text-align: left;
@@ -92,6 +92,14 @@ body {
     border: 1px solid #ddd;
     border-radius: 8px;
     background-color: #f9f9f9;
+} */
+
+.instructions-container {
+    max-width: 90vw; /* Limit width for better readability */
+    margin: 0 auto; /* Center the container */
+    padding: 2vmin; /* Add some padding */
+    box-sizing: border-box; /* Include padding in width calculations */
+    overflow-x: hidden; /* Prevent horizontal overflow */
 }
 
 .instructions-container p,
@@ -144,4 +152,85 @@ body {
 
 .key-mapping {
     font-weight: bold;
+}
+
+.fixed-buttons-container .jspsych-content {
+    padding-bottom: 100px !important;
+}
+
+/* Styles for tablets */
+@media (max-width: 768px) {
+    .jspsych-instructions-nav {
+        position: fixed;
+        bottom: 30vmin;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    /* Add padding to prevent content from going under fixed buttons */
+    .instructions-container {
+        padding-bottom: 45vmin;
+        /* 30vmin for button position + 5vmin safety */
+    }
+
+    /* Experiment-specific, adjusting sizes of images */
+    .target-stimulus {
+        width: 35vmin;
+        height: 35vmin;
+
+    }
+
+    .choice-option {
+        height: clamp(20vmin, calc(85vh / var(--num-choices, 4)), 30vh);
+        flex-basis: clamp(15vmin, calc(165vw / var(--num-choices, 4)), 43vw);
+        /* width: clamp(30vmin, calc(150vw / var(--num-choices, 4)), 43vmin); */
+        /* aspect-ratio: 1;*/
+    }
+
+}
+
+
+/* Styles for phones to override tablet */
+@media (max-width: 480px) {
+
+    /* Smaller padding for phone to allow more text */
+    .instructions-container {
+        padding-bottom: 40vmin;
+    }
+
+    .target-container {
+        margin-bottom: 4vmin;
+        /* Adjusted for better spacing on small screens */
+    }
+
+    /* Experiment-specific, adjusting sizes of images */
+    .target-stimulus {
+        width: 45vmin;
+        height: 45vmin;
+    }
+}
+
+/* Landscape mode adjustments */
+@media (orientation: landscape) {
+    .jspsych-instructions-nav {
+        bottom: 3vh;
+        gap: 30vw;
+    }
+
+    .target-container {
+        margin-bottom: 1vmin;
+    }
+
+    .target-stimulus {
+        width: 30vmin;
+        height: 30vmin;
+        border: 4px solid #000000bd;
+    }
+
+    .choice-option {
+        margin: 0;
+        flex-basis: clamp(15vmin, calc(85vw / var(--num-choices, 4)), 25vw) !important;
+        height: clamp(15vmin, calc(135vh / var(--num-choices, 4)), 35vmin) !important;
+        margin: -10px 2px;
+    }
 }

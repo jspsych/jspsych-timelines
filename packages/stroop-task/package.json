@@ -28,9 +28,11 @@
     "homepage": "/stroop-timeline/README.md",
     "devDependencies": {
         "@jspsych/config": "^3.2.2",
+        "@types/jest": "^29.5.14",
         "jspsych": "^8.0.0",
+        "ts-jest": "^29.3.4",
         "tsup": "^6.7.0",
-        "typescript": "^5.0.2"
+        "typescript": "^5.8.3"
     },
     "dependencies": {
         "@jspsych/plugin-html-button-response": "^2.1.0",
