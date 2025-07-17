@@ -100,6 +100,11 @@ body {
     padding: 2vmin; /* Add some padding */
     box-sizing: border-box; /* Include padding in width calculations */
     overflow-x: hidden; /* Prevent horizontal overflow */
+    min-height: 60vh; /* Ensure consistent height */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
 }
 
 .instructions-container p,
@@ -158,13 +163,29 @@ body {
     padding-bottom: 100px !important;
 }
 
+/* Fixed positioning for instruction navigation buttons */
+.jspsych-instructions-nav {
+    position: fixed !important;
+    bottom: 20px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    z-index: 1000 !important;
+    display: flex !important;
+    gap: 20px !important;
+}
+
+/* Ensure content doesn't overlap with fixed buttons */
+.jspsych-content {
+    padding-bottom: 80px !important;
+}
+
 /* Styles for tablets */
 @media (max-width: 768px) {
     .jspsych-instructions-nav {
-        position: fixed;
-        bottom: 30vmin;
-        left: 50%;
-        transform: translateX(-50%);
+        position: fixed !important;
+        bottom: 30vmin !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
     }
 
     /* Add padding to prevent content from going under fixed buttons */
