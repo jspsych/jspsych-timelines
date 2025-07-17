@@ -1,5 +1,6 @@
 import { JsPsych, initJsPsych } from "jspsych";
 import { createTimeline, utils } from ".";
+import { englishText } from "./text";
 
 describe("createTimeline", () => {
   let jsPsych: JsPsych;
@@ -19,15 +20,18 @@ describe("createTimeline", () => {
       const timeline = createTimeline(jsPsych);
       
       expect(timeline).toBeDefined();
-      // Should have: instruction + block1 + block2-instruction + block2 + block3-instruction + block3 + debrief = 7 items
-      expect(timeline.timeline).toHaveLength(7);
-      expect(timeline.timeline[0]).toHaveProperty('stimulus'); // instruction
-      expect(timeline.timeline[1]).toHaveProperty('timeline'); // block 1
-      expect(timeline.timeline[2]).toHaveProperty('stimulus'); // block 2 instruction
-      expect(timeline.timeline[3]).toHaveProperty('timeline'); // block 2
-      expect(timeline.timeline[4]).toHaveProperty('stimulus'); // block 3 instruction
-      expect(timeline.timeline[5]).toHaveProperty('timeline'); // block 3
-      expect(timeline.timeline[6]).toHaveProperty('stimulus'); // debrief
+      // Should have: overview + go-instruction + nogo-instruction + practice-completion + block1 + block2-instruction + block2 + block3-instruction + block3 + debrief = 10 items
+      expect(timeline.timeline).toHaveLength(10);
+      expect(timeline.timeline[0]).toHaveProperty('stimulus'); // overview instruction
+      expect(timeline.timeline[1]).toHaveProperty('stimulus'); // go instruction
+      expect(timeline.timeline[2]).toHaveProperty('stimulus'); // nogo instruction
+      expect(timeline.timeline[3]).toHaveProperty('stimulus'); // practice completion
+      expect(timeline.timeline[4]).toHaveProperty('timeline'); // block 1
+      expect(timeline.timeline[5]).toHaveProperty('stimulus'); // block 2 instruction
+      expect(timeline.timeline[6]).toHaveProperty('timeline'); // block 2
+      expect(timeline.timeline[7]).toHaveProperty('stimulus'); // block 3 instruction
+      expect(timeline.timeline[8]).toHaveProperty('timeline'); // block 3
+      expect(timeline.timeline[9]).toHaveProperty('stimulus'); // debrief
     });
 
     it("should create timeline with custom configuration", () => {
@@ -45,11 +49,11 @@ describe("createTimeline", () => {
       const timeline = createTimeline(jsPsych, config);
       
       expect(timeline).toBeDefined();
-      // Should have: instruction + block1 + block2-instruction + block2 + debrief = 5 items
-      expect(timeline.timeline).toHaveLength(5);
+      // Should have: overview + go-instruction + nogo-instruction + practice-completion + block1 + block2-instruction + block2 + debrief = 8 items
+      expect(timeline.timeline).toHaveLength(8);
       
       // Check first block has correct number of trials
-      const firstBlock = timeline.timeline[1] as any;
+      const firstBlock = timeline.timeline[4] as any;
       expect(firstBlock.timeline_variables).toHaveLength(25);
     });
   });
@@ -69,7 +73,7 @@ describe("createTimeline", () => {
       };
 
       const timeline = createTimeline(jsPsych, config);
-      const firstBlock = timeline.timeline[1] as any;
+      const firstBlock = timeline.timeline[4] as any;
       
       // Check that custom stimuli are used
       const stimuli = firstBlock.timeline_variables.map((trial: any) => 
@@ -94,7 +98,7 @@ describe("createTimeline", () => {
       };
 
       const timeline = createTimeline(jsPsych, config);
-      const firstBlock = timeline.timeline[1] as any;
+      const firstBlock = timeline.timeline[4] as any;
       
       // Check that default stimuli are used
       const stimuli = firstBlock.timeline_variables.map((trial: any) => 
@@ -119,7 +123,7 @@ describe("createTimeline", () => {
       };
 
       const timeline = createTimeline(jsPsych, config);
-      const firstBlock = timeline.timeline[1] as any;
+      const firstBlock = timeline.timeline[4] as any;
       
       const goTrials = firstBlock.timeline_variables.filter((trial: any) => 
         trial.trial_type === 'go'
@@ -138,7 +142,7 @@ describe("createTimeline", () => {
       testCases.forEach(trialsPerBlock => {
         const config = { numBlocks: 1, trialsPerBlock };
         const timeline = createTimeline(jsPsych, config);
-        const firstBlock = timeline.timeline[1] as any;
+        const firstBlock = timeline.timeline[4] as any;
         
         expect(firstBlock.timeline_variables).toHaveLength(trialsPerBlock);
       });
@@ -147,7 +151,7 @@ describe("createTimeline", () => {
     it("should handle different responseTimeout values", () => {
       const config = { responseTimeout: 3000 };
       const timeline = createTimeline(jsPsych, config);
-      const trialProcedure = timeline.timeline[1] as any;
+      const trialProcedure = timeline.timeline[4] as any;
       const goNoGoTrial = trialProcedure.timeline[0];
       
       expect(goNoGoTrial.trial_duration).toBe(3000);
@@ -156,7 +160,7 @@ describe("createTimeline", () => {
     it("should handle different interTrialInterval values", () => {
       const config = { interTrialInterval: 1000 };
       const timeline = createTimeline(jsPsych, config);
-      const trialProcedure = timeline.timeline[1] as any;
+      const trialProcedure = timeline.timeline[4] as any;
       const interTrialTrial = trialProcedure.timeline[1];
       
       expect(interTrialTrial.trial_duration).toBe(1000);
@@ -165,7 +169,7 @@ describe("createTimeline", () => {
     it("should handle different buttonText values", () => {
       const config = { buttonText: 'Respond' };
       const timeline = createTimeline(jsPsych, config);
-      const trialProcedure = timeline.timeline[1] as any;
+      const trialProcedure = timeline.timeline[4] as any;
       const goNoGoTrial = trialProcedure.timeline[0];
       
       expect(goNoGoTrial.choices).toEqual(['Respond']);
@@ -176,7 +180,7 @@ describe("createTimeline", () => {
     it("should generate correct trial structure", () => {
       const config = { numTrials: 10 };
       const timeline = createTimeline(jsPsych, config);
-      const trialProcedure = timeline.timeline[1] as any;
+      const trialProcedure = timeline.timeline[4] as any;
       
       trialProcedure.timeline_variables.forEach((trial: any) => {
         expect(trial).toHaveProperty('stimulus');
@@ -196,7 +200,7 @@ describe("createTimeline", () => {
 
     it("should randomize trial order", () => {
       const timeline = createTimeline(jsPsych);
-      const trialProcedure = timeline.timeline[1] as any;
+      const trialProcedure = timeline.timeline[4] as any;
       
       expect(trialProcedure.randomize_order).toBe(true);
     });
@@ -212,7 +216,7 @@ describe("createTimeline", () => {
       };
       
       const timeline = createTimeline(jsPsych, config);
-      const firstBlock = timeline.timeline[1] as any;
+      const firstBlock = timeline.timeline[4] as any;
       const trial = firstBlock.timeline_variables[0];
       
       expect(trial.stimulus).toContain('TEST');
@@ -230,7 +234,7 @@ describe("createTimeline", () => {
       };
       
       const timeline = createTimeline(jsPsych, config);
-      const firstBlock = timeline.timeline[1] as any;
+      const firstBlock = timeline.timeline[4] as any;
       const trial = firstBlock.timeline_variables[0];
       
       expect(trial.stimulus).toContain('STOP');
@@ -251,7 +255,7 @@ describe("createTimeline", () => {
       };
       
       const timeline = createTimeline(jsPsych, config);
-      const firstBlock = timeline.timeline[1] as any;
+      const firstBlock = timeline.timeline[4] as any;
       const trial = firstBlock.timeline_variables[0];
       
       expect(trial.stimulus).toContain('<div style=');
@@ -272,7 +276,7 @@ describe("createTimeline", () => {
       };
       
       const timeline = createTimeline(jsPsych, config);
-      const firstBlock = timeline.timeline[1] as any;
+      const firstBlock = timeline.timeline[4] as any;
       const trial = firstBlock.timeline_variables[0];
       
       expect(trial.stimulus).toContain('<img src="path/to/image.png"');
@@ -297,7 +301,7 @@ describe("createTimeline", () => {
       jest.spyOn(Math, 'random').mockImplementation(() => mockValues.shift() || 0.5);
       
       const timeline = createTimeline(jsPsych, config);
-      const firstBlock = timeline.timeline[1] as any;
+      const firstBlock = timeline.timeline[4] as any;
       const trials = firstBlock.timeline_variables;
       
       // Find text and image trials
@@ -324,7 +328,7 @@ describe("createTimeline", () => {
       };
       
       const timeline = createTimeline(jsPsych, config);
-      const firstBlock = timeline.timeline[1] as any;
+      const firstBlock = timeline.timeline[4] as any;
       const trial = firstBlock.timeline_variables[0];
       
       expect(trial.stimulus).toContain('border: 3px solid red');
@@ -333,30 +337,47 @@ describe("createTimeline", () => {
   });
 
   describe("timeline structure", () => {
-    it("should have correct instruction trial", () => {
+    it("should have correct instruction trials", () => {
       const timeline = createTimeline(jsPsych);
-      const instructionTrial = timeline.timeline[0] as any;
+      const overviewTrial = timeline.timeline[0] as any;
+      const goTrial = timeline.timeline[1] as any;
+      const noGoTrial = timeline.timeline[2] as any;
       
-      expect(instructionTrial.stimulus).toContain('In this task, you will see different stimuli appear on the screen');
-      expect(instructionTrial.stimulus).toContain('GO trials');
-      expect(instructionTrial.stimulus).toContain('NO-GO trials');
-      expect(instructionTrial.stimulus).not.toContain('Go/No-Go Task Instructions');
-      expect(instructionTrial.choices).toEqual(['Start']);
-      expect(instructionTrial.data.trial_type).toBe('instructions');
+      // Overview trial
+      expect(overviewTrial.stimulus).toContain(englishText.overviewText);
+      expect(overviewTrial.stimulus).toContain(englishText.overviewPrompt);
+      expect(overviewTrial.choices).toEqual([englishText.nextButton]);
+      expect(overviewTrial.data.trial_type).toBe(englishText.trialTypes.instructions);
+      
+      // GO trial
+      expect(goTrial.stimulus).toContain(englishText.goPageTitle);
+      expect(goTrial.stimulus).toContain(englishText.goPageText);
+      expect(goTrial.stimulus).toContain(englishText.goPageAction);
+      expect(goTrial.stimulus).toContain(englishText.gotItButton);
+      expect(goTrial.choices).toEqual([englishText.nextButton]);
+      expect(goTrial.data.trial_type).toBe(englishText.trialTypes.instructions);
+      
+      // NO-GO trial
+      expect(noGoTrial.stimulus).toContain(englishText.noGoPageTitle);
+      expect(noGoTrial.stimulus).toContain(englishText.noGoPageText);
+      expect(noGoTrial.stimulus).toContain(englishText.noGoPageAction);
+      expect(noGoTrial.stimulus).toContain(englishText.waitButton);
+      expect(noGoTrial.choices).toEqual([englishText.startButton]);
+      expect(noGoTrial.data.trial_type).toBe(englishText.trialTypes.instructions);
     });
 
     it("should have correct debrief trial", () => {
       const timeline = createTimeline(jsPsych);
       const debriefTrial = timeline.timeline[timeline.timeline.length - 1] as any;
       
-      expect(debriefTrial.choices).toEqual(['Finish']);
-      expect(debriefTrial.data.trial_type).toBe('debrief');
+      expect(debriefTrial.choices).toEqual([englishText.finishButton]);
+      expect(debriefTrial.data.trial_type).toBe(englishText.trialTypes.debrief);
       expect(typeof debriefTrial.stimulus).toBe('function');
     });
 
     it("should have correct trial procedure structure", () => {
       const timeline = createTimeline(jsPsych);
-      const trialProcedure = timeline.timeline[1] as any;
+      const trialProcedure = timeline.timeline[4] as any;
       
       expect(trialProcedure.timeline).toHaveLength(2);
       expect(trialProcedure).toHaveProperty('timeline_variables');
@@ -365,7 +386,7 @@ describe("createTimeline", () => {
       // Check go-no-go trial structure
       const goNoGoTrial = trialProcedure.timeline[0];
       expect(goNoGoTrial.response_ends_trial).toBe(true);
-      expect(goNoGoTrial.data.trial_type).toBe('go-no-go');
+      expect(goNoGoTrial.data.trial_type).toBe(englishText.trialTypes.goNoGo);
       expect(typeof goNoGoTrial.on_finish).toBe('function');
       
       // Check inter-trial interval structure
@@ -388,7 +409,7 @@ describe("createTimeline", () => {
       };
       
       const timeline = createTimeline(jsPsych);
-      const trialProcedure = timeline.timeline[1] as any;
+      const trialProcedure = timeline.timeline[4] as any;
       const goNoGoTrial = trialProcedure.timeline[0];
       
       goNoGoTrial.on_finish(mockData);
@@ -409,7 +430,7 @@ describe("createTimeline", () => {
       };
       
       const timeline = createTimeline(jsPsych);
-      const trialProcedure = timeline.timeline[1] as any;
+      const trialProcedure = timeline.timeline[4] as any;
       const goNoGoTrial = trialProcedure.timeline[0];
       
       goNoGoTrial.on_finish(mockData);
@@ -430,7 +451,7 @@ describe("createTimeline", () => {
       };
       
       const timeline = createTimeline(jsPsych);
-      const trialProcedure = timeline.timeline[1] as any;
+      const trialProcedure = timeline.timeline[4] as any;
       const goNoGoTrial = trialProcedure.timeline[0];
       
       goNoGoTrial.on_finish(mockData);
@@ -450,7 +471,7 @@ describe("createTimeline", () => {
       };
       
       const timeline = createTimeline(jsPsych);
-      const trialProcedure = timeline.timeline[1] as any;
+      const trialProcedure = timeline.timeline[4] as any;
       const goNoGoTrial = trialProcedure.timeline[0];
       
       goNoGoTrial.on_finish(mockData);
@@ -464,7 +485,7 @@ describe("createTimeline", () => {
     it("should handle zero trials", () => {
       const config = { numBlocks: 1, trialsPerBlock: 0 };
       const timeline = createTimeline(jsPsych, config);
-      const firstBlock = timeline.timeline[1] as any;
+      const firstBlock = timeline.timeline[4] as any;
       
       expect(firstBlock.timeline_variables).toHaveLength(0);
     });
@@ -472,7 +493,7 @@ describe("createTimeline", () => {
     it("should handle extreme goTrialProbability values", () => {
       const config1 = { goTrialProbability: 0.0, numBlocks: 1, trialsPerBlock: 5 };
       const timeline1 = createTimeline(jsPsych, config1);
-      const firstBlock1 = timeline1.timeline[1] as any;
+      const firstBlock1 = timeline1.timeline[3] as any;
       
       const allNoGo = firstBlock1.timeline_variables.every((trial: any) => 
         trial.trial_type === 'no-go'
@@ -481,7 +502,7 @@ describe("createTimeline", () => {
       
       const config2 = { goTrialProbability: 1.0, numBlocks: 1, trialsPerBlock: 5 };
       const timeline2 = createTimeline(jsPsych, config2);
-      const firstBlock2 = timeline2.timeline[1] as any;
+      const firstBlock2 = timeline2.timeline[3] as any;
       
       const allGo = firstBlock2.timeline_variables.every((trial: any) => 
         trial.trial_type === 'go'
@@ -498,7 +519,7 @@ describe("createTimeline", () => {
       };
       
       const timeline = createTimeline(jsPsych, config);
-      const firstBlock = timeline.timeline[1] as any;
+      const firstBlock = timeline.timeline[4] as any;
       
       const goTrials = firstBlock.timeline_variables.filter((trial: any) => 
         trial.trial_type === 'go'
