@@ -119,20 +119,6 @@ The timeline includes several conditional branches:
 3. **Practice Feedback**: `show_practice_feedback` flag
 4. **Results Display**: `show_results` flag
 
-### State Management
-Internal state tracking enables:
-- Progress monitoring during experiment
-- Conditional logic based on completion status
-- Data validation and integrity checks
-
-```javascript
-interface StroopState {
-    practiceCompleted: boolean;
-    mainTrialsCompleted: number;
-    totalTrials: number;
-}
-```
-
 ## Timeline Customization
 
 ### Modular Design
@@ -152,11 +138,6 @@ Each component can be used independently:
 - Automatic response validation during trials
 - Timeout handling for non-responses
 - State consistency checks between phases
-
-### Recovery Mechanisms
-- State reset functionality for multiple timeline runs
-- Graceful degradation if components fail
-- Debug logging for troubleshooting
 
 ## Performance Considerations
 

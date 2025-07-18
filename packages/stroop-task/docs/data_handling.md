@@ -119,23 +119,6 @@ interface TrialData {
 
 ## Data Processing
 
-### Automatic Calculations
-
-#### Accuracy Computation
-```javascript
-on_finish: (data) => {
-    data.correct = (data.response === data.correct_response);
-}
-```
-
-#### State Tracking
-```javascript
-// Internal state updates
-if (!isPractice) {
-    state.mainTrialsCompleted++;
-}
-```
-
 ### Results Compilation
 The `createResults()` function automatically calculates:
 

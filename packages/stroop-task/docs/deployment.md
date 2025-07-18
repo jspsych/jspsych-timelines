@@ -122,12 +122,6 @@ stroop-experiment/
 <link href="https://unpkg.com/jspsych@8.0.0/css/jspsych.css" rel="stylesheet">
 ```
 
-#### Benefits of CDN
-- Faster loading times
-- Reduced server load
-- Automatic caching
-- Global distribution
-
 ## Pavlovia Deployment
 
 ### Platform Overview
@@ -240,24 +234,6 @@ function saveData(data) {
 
 #### CSS Modifications
 ```css
-/* Mobile-friendly styles */
-@media (max-width: 768px) {
-    .jspsych-btn {
-        min-height: 60px;
-        min-width: 120px;
-        font-size: 18px;
-        margin: 10px;
-    }
-    
-    .jspsych-display-element {
-        padding: 20px;
-    }
-    
-    .stimulus {
-        font-size: 36px;
-    }
-}
-```
 
 #### Touch Event Handling
 ```javascript

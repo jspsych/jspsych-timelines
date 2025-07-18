@@ -216,17 +216,6 @@ createTimeline(jsPsych, {
 });
 ```
 
-#### Clinical Assessment
-```javascript
-createTimeline(jsPsych, {
-    practice_trials_per_condition: 5,
-    congruent_main_trials: 15,
-    incongruent_main_trials: 15,
-    trial_timeout: 5000,
-    fixation_duration: { min: 500, max: 1000 },
-    show_practice_feedback: true
-});
-
 
 ## Parameter Validation
 
