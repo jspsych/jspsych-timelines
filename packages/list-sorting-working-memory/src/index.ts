@@ -425,7 +425,9 @@ function answerTrial(
       data.correct_answer = correctAnswer;
       data.correct = correctAnswer.reduce((acc, group) => {
         const response = data.response[`response_${group.stimulus_set_id}`];
-        const responseArray = response ? response.map((s) => s.trim()) : [];
+        const responseArray = response
+          ? response.map((s) => s.replace(/[^a-zA-Z\-_\s]/g, "").trim())
+          : [];
 
         acc[group.stimulus_set_id] =
           JSON.stringify(responseArray) === JSON.stringify(group.correct_order);
