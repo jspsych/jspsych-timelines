@@ -1,7 +1,7 @@
 import jsPsychAudioKeyboardResponse from "@jspsych/plugin-audio-keyboard-response";
 import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
 import jsPsychPreload from "@jspsych/plugin-preload";
-import jsPsychSurveyText from "@jspsych/plugin-survey-text";
+import jsPsychSurveyTextDynamic from "@jspsych/plugin-survey-text-dynamic";
 import { JsPsych } from "jspsych";
 
 import {
@@ -400,17 +400,18 @@ function answerTrial(
   });
 
   return {
-    type: jsPsychSurveyText,
+    type: jsPsychSurveyTextDynamic,
     questions: [], // to be set dynamically
     randomize_question_order: true,
     on_start: (trial) => {
       // Dynamically set the questions
       trial.questions = correctAnswer.map((group) => ({
-        prompt: `Order the <strong>${group.stimulus_set_id}</strong> from smallest to largest in size, separated by commas:`,
+        prompt: `Order the <strong>${group.stimulus_set_id}</strong> from smallest to largest in size. Type <strong>one</strong> item in each input field, then press Enter or spacebar to type the next item:`,
         name: `response_${group.stimulus_set_id}`,
         required: true,
         placeholder: "",
-        // DEV: placeholder: group.correct_order.join(", "),
+        // DEV: Comment above and uncomment below to display correct answer as placeholder
+        // placeholder: group.correct_order.join(" "),
       }));
     },
     on_finish: (data) => {
@@ -424,7 +425,7 @@ function answerTrial(
       data.correct_answer = correctAnswer;
       data.correct = correctAnswer.reduce((acc, group) => {
         const response = data.response[`response_${group.stimulus_set_id}`];
-        const responseArray = response ? response.split(",").map((s) => s.trim()) : [];
+        const responseArray = response ? response.map((s) => s.trim()) : [];
 
         acc[group.stimulus_set_id] =
           JSON.stringify(responseArray) === JSON.stringify(group.correct_order);
