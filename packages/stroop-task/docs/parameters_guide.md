@@ -66,19 +66,6 @@ createTimeline(jsPsych, {
 - **Standard**: `3000ms` - Balanced speed/accuracy
 - **Extended**: `5000ms` - Accommodates slower populations
 
-**Population Considerations:**
-```javascript
-// Children or older adults
-createTimeline(jsPsych, {
-    trial_timeout: 5000
-});
-
-// Speed emphasis
-createTimeline(jsPsych, {
-    trial_timeout: 1500
-});
-```
-
 #### `fixation_duration`
 - **Type**: `{ min: number, max: number }`
 - **Default**: `{ min: 300, max: 1500 }`
@@ -239,74 +226,7 @@ createTimeline(jsPsych, {
     fixation_duration: { min: 500, max: 1000 },
     show_practice_feedback: true
 });
-```
 
-#### Quick Screening
-```javascript
-createTimeline(jsPsych, {
-    practice_trials_per_condition: 2,
-    congruent_main_trials: 6,
-    incongruent_main_trials: 6,
-    trial_timeout: 2000,
-    show_practice_feedback: false,
-    include_fixation: false
-});
-```
-
-### Educational Settings
-
-#### Classroom Demonstration
-```javascript
-createTimeline(jsPsych, {
-    practice_trials_per_condition: 1,
-    congruent_main_trials: 3,
-    incongruent_main_trials: 3,
-    trial_timeout: 4000,
-    choice_of_colors: ['RED', 'BLUE'],
-    show_practice_feedback: true
-});
-```
-
-#### Student Research Project
-```javascript
-createTimeline(jsPsych, {
-    practice_trials_per_condition: 2,
-    congruent_main_trials: 8,
-    incongruent_main_trials: 8,
-    trial_timeout: 3000,
-    randomise_main_trial_condition_order: true,
-    show_results: true
-});
-```
-
-### Special Populations
-
-#### Children (Ages 6-12)
-```javascript
-createTimeline(jsPsych, {
-    practice_trials_per_condition: 4,
-    congruent_main_trials: 10,
-    incongruent_main_trials: 10,
-    trial_timeout: 5000,
-    fixation_duration: { min: 600, max: 1200 },
-    show_practice_feedback: true,
-    choice_of_colors: ['RED', 'BLUE', 'GREEN'] // Fewer colors
-});
-```
-
-#### Older Adults (65+)
-```javascript
-createTimeline(jsPsych, {
-    practice_trials_per_condition: 6,
-    congruent_main_trials: 12,
-    incongruent_main_trials: 12,
-    trial_timeout: 6000,
-    fixation_duration: { min: 800, max: 1500 },
-    show_practice_feedback: true,
-    number_of_rows: 1,
-    number_of_columns: 4 // Horizontal layout
-});
-```
 
 ## Parameter Validation
 

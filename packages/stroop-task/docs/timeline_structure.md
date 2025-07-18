@@ -74,13 +74,13 @@ The `generateStimuli()` function creates all possible combinations:
 // For default colors [RED, GREEN, BLUE, YELLOW]
 // Creates 16 total stimuli (4 words × 4 colors)
 
-Congruent stimuli (4):
+Congruent stimuli (4), the colors can vary based on what is choosen but this is for the defualt color:
 - RED in red ink
 - GREEN in green ink  
 - BLUE in blue ink
 - YELLOW in yellow ink
 
-Incongruent stimuli (12):
+Incongruent stimuli (12), this is under the defualt situation:
 - RED in green/blue/yellow ink
 - GREEN in red/blue/yellow ink
 - BLUE in red/green/yellow ink
