@@ -44,13 +44,6 @@
     correct_color: "#4CAF50",
     incorrect_color: "#F44336",
     include_instructions: false,
-    // ===== TEXT-TO-SPEECH CONFIGURATION =====
-    enable_tts: true,
-    tts_method: 'google', // Preferred TTS method: 'google', 'system'
-    tts_rate: 1.0, // Speech rate (0.1 to 10)
-    tts_pitch: 1.0, // Speech pitch (0 to 2)
-    tts_volume: 1.0, // Speech volume (0 to 1)
-    tts_lang: 'en-US' // Language code for TTS
   });
 
   // Or use a preset
@@ -61,9 +54,8 @@
   //     n_backs: [1, 2, 3],
   //     trials_per_level: 20
   // });
-  const spatial1BackTrials = spatial1Back.timeline;
 
-  jsPsych.run([instructions, spatial1BackTrials]);
+  jsPsych.run([instructions, spatial1Back]);
 </script>
 
 </html>

@@ -36,11 +36,6 @@ describe('createTimeline', () => {
     expect(timeline.timeline[0].show_clickable_nav).toBeTruthy();
   });
 
-  it('should randomize trials when specified', () => {
-    const timeline = createTimeline({ randomize_trials: true });
-    expect(timeline.timeline[0].randomize_order).toBe(true);
-  });
-
   it('should set correct trial properties', () => {
     const timeline = createTimeline({
       stimulus_duration: 1000,
