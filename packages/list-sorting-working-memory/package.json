@@ -37,7 +37,7 @@
     "@jspsych/plugin-html-keyboard-response": "^2.1.0",
     "@jspsych/plugin-html-button-response": "^2.1.0",
     "@jspsych/plugin-audio-keyboard-response": "^2.1.0",
-    "@jspsych/plugin-survey-text": "^2.1.0",
+    "@jspsych/plugin-survey-text-dynamic": "^0.0.1",
     "http-server": "^14.1.1"
   }
 }
