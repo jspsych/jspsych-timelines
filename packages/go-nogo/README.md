@@ -1,4 +1,4 @@
-# go-nogo-timeline
+# @jspsych-timelines/go-nogo
 
 ## Overview
 
@@ -10,7 +10,7 @@ Go/No-go Task
 
 ## Compatibility
 
-`go-nogo-timeline` requires jsPsych v8.0.0 or later.
+`@jspsych-timelines/go-nogo` requires jsPsych v8.0.0 or later.
 
 ## Documentation
 

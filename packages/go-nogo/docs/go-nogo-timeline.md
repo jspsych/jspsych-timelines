@@ -30,12 +30,12 @@ The Go/No-Go task measures response inhibition by requiring participants to resp
 
 ### NPM
 ```bash
-npm install go-nogo-timeline
+npm install @jspsych-timelines/go-nogo
 ```
 
 ### CDN
 ```html
-<script src="https://unpkg.com/go-nogo-timeline"></script>
+<script src="https://unpkg.com/@jspsych-timelines/go-nogo"></script>
 ```
 
 ## Quick Start
@@ -45,7 +45,7 @@ npm install go-nogo-timeline
 <html>
 <head>
   <script src="https://unpkg.com/jspsych"></script>
-  <script src="https://unpkg.com/go-nogo-timeline"></script>
+  <script src="https://unpkg.com/@jspsych-timelines/go-nogo"></script>
   <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css">
 </head>
 <body></body>
