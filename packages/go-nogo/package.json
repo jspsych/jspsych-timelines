@@ -7,29 +7,32 @@
     "types": "dist/index.d.ts",
     "unpkg": "dist/index.browser.min.js",
     "scripts": {
-      "build": "tsup src/index.ts --format esm,iife --sourcemap --dts --treeshake --clean --global-name jsPsychTimelineGoNogoTimeline"
+        "build": "tsup src/index.ts --format esm,iife --sourcemap --dts --treeshake --clean --global-name jsPsychTimelineGoNogoTimeline"
     },
     "repository": {
-      "type": "git",
-      "url": "https://github.com/jspsych/jspsych-timelines",
-      "directory": ""
+        "type": "git",
+        "url": "https://github.com/jspsych/jspsych-timelines",
+        "directory": ""
     },
     "keywords": [
-      "jsPsych"
+        "jsPsych"
     ],
     "author": {
-      "name": "Caroline Griem",
-      "url": "https://github.com/caroline-griem"
+        "name": "Caroline Griem",
+        "url": "https://github.com/caroline-griem"
     },
     "license": "MIT",
     "bugs": {
-      "url": "https://github.com/jspsych/jspsych-timelines/issues"
+        "url": "https://github.com/jspsych/jspsych-timelines/issues"
     },
     "homepage": "/@jspsych-timelines/go-nogo/README.md",
     "devDependencies": {
-      "jspsych": "^8.0.0",
-      "@jspsych/config": "^3.2.2",
-      "tsup": "^6.7.0",
-      "typescript": "^5.0.2"
+        "@jspsych/config": "^3.2.2",
+        "jspsych": "^8.0.0",
+        "tsup": "^6.7.0",
+        "typescript": "^5.0.2"
+    },
+    "dependencies": {
+        "@jspsych/plugin-html-button-response": "^2.1.0"
     }
-  }
+}
