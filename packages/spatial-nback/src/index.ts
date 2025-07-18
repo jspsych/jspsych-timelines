@@ -20,11 +20,10 @@ function createInstructions(instruction_pages_data = instruction_pages) {
   };
 }
 
-// Generate stimulus sequence for n-back task
 function generateNBackSequence(total_trials: number, n_back: number, target_percentage: number, rows: number, cols: number) {
     const positions: Array<{row: number, col: number}> = [];
     const is_target: boolean[] = [];
-    
+
     // Generate first n trials (cannot be targets)
     for (let i = 0; i < n_back; i++) {
         positions.push({
@@ -33,35 +32,42 @@ function generateNBackSequence(total_trials: number, n_back: number, target_perc
         });
         is_target.push(false);
     }
-    
-    // Calculate number of targets to place
+
+    // Calculate and place targets
     const n_targets = Math.round((target_percentage / 100) * (total_trials - n_back));
-    let targets_placed = 0;
+    const remaining_trials = total_trials - n_back;
+
+    // Create boolean array to signify how many targets we need
+    const target_indices: boolean[] = [];
+    for (let i = 0; i < remaining_trials; i++) {
+        target_indices.push(i < n_targets);
+    }
+    // Fisher-Yates shuffle that boolean array
+    for (let i = target_indices.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [target_indices[i], target_indices[j]] = [target_indices[j], target_indices[i]];
+    }
     
-    // Generate remaining trials with targets
-    for (let i = n_back; i < total_trials; i++) {
-        const can_be_target = targets_placed < n_targets;
-        const should_be_target = can_be_target && Math.random() < 0.5;
+    // Generate remaining trials based on target indices
+    for (let i = 0; i < remaining_trials; i++) {
+        const trial_index = n_back + i;
         
-        if (should_be_target) {
-            // Make this a target trial (same position as n trials back)
-            positions.push({
-                row: positions[i - n_back].row,
-                col: positions[i - n_back].col
-            });
+        if (target_indices[i]) {
+            // Target trial, share the same position object as the n_back trial
+            positions.push(positions[trial_index - n_back]);
             is_target.push(true);
-            targets_placed++;
         } else {
-            // Generate non-target position
+            // Non-target trial, find a new position
             let new_position: {row: number, col: number};
             do {
                 new_position = {
                     row: Math.floor(Math.random() * rows),
                     col: Math.floor(Math.random() * cols)
                 };
+                // Ensure the new position is not the same as the n_back trial
             } while (
-                new_position.row === positions[i - n_back].row &&
-                new_position.col === positions[i - n_back].col
+                new_position.row === positions[trial_index - n_back].row &&
+                new_position.col === positions[trial_index - n_back].col
             );
             positions.push(new_position);
             is_target.push(false);
