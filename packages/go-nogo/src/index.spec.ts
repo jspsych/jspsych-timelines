@@ -336,6 +336,150 @@ describe("createTimeline", () => {
     });
   });
 
+  describe("colorBorders parameter", () => {
+    it("should apply colored borders by default (colorBorders: true)", () => {
+      const config = { 
+        goStimulus: 'go.png',
+        noGoStimulus: 'nogo.png',
+        stimulusType: 'image' as const,
+        numBlocks: 1,
+        trialsPerBlock: 2,
+        goTrialProbability: 0.5,
+        colorBorders: true
+      };
+      
+      // Mock Math.random to get predictable stimulus selection
+      const mockValues = [0.3, 0.7]; // First call: go trial, second call: no-go trial
+      jest.spyOn(Math, 'random').mockImplementation(() => mockValues.shift() || 0.5);
+      
+      const timeline = createTimeline(jsPsych, config);
+      const firstBlock = timeline.timeline[4] as any;
+      const trials = firstBlock.timeline_variables;
+      
+      // Find go and no-go trials
+      const goTrial = trials.find((t: any) => t.stimulus.includes('go.png'));
+      const noGoTrial = trials.find((t: any) => t.stimulus.includes('nogo.png'));
+      
+      expect(goTrial.stimulus).toContain('border: 3px solid green');
+      expect(noGoTrial.stimulus).toContain('border: 3px solid red');
+      
+      // Restore Math.random
+      (Math.random as jest.Mock).mockRestore();
+    });
+
+    it("should not apply colored borders when colorBorders: false for images", () => {
+      const config = { 
+        goStimulus: 'go.png',
+        noGoStimulus: 'nogo.png',
+        stimulusType: 'image' as const,
+        numBlocks: 1,
+        trialsPerBlock: 2,
+        goTrialProbability: 0.5,
+        colorBorders: false
+      };
+      
+      // Mock Math.random to get predictable stimulus selection
+      const mockValues = [0.3, 0.7]; // First call: go trial, second call: no-go trial
+      jest.spyOn(Math, 'random').mockImplementation(() => mockValues.shift() || 0.5);
+      
+      const timeline = createTimeline(jsPsych, config);
+      const firstBlock = timeline.timeline[4] as any;
+      const trials = firstBlock.timeline_variables;
+      
+      // Find go and no-go trials
+      const goTrial = trials.find((t: any) => t.stimulus.includes('go.png'));
+      const noGoTrial = trials.find((t: any) => t.stimulus.includes('nogo.png'));
+      
+      expect(goTrial.stimulus).not.toContain('border: 3px solid green');
+      expect(goTrial.stimulus).not.toContain('border: 3px solid');
+      expect(noGoTrial.stimulus).not.toContain('border: 3px solid red');
+      expect(noGoTrial.stimulus).not.toContain('border: 3px solid');
+      
+      // Restore Math.random
+      (Math.random as jest.Mock).mockRestore();
+    });
+
+    it("should apply colored text by default (colorBorders: true) for text stimuli", () => {
+      const config = { 
+        goStimulus: 'GO',
+        noGoStimulus: 'STOP',
+        stimulusType: 'text' as const,
+        numBlocks: 1,
+        trialsPerBlock: 2,
+        goTrialProbability: 0.5,
+        colorBorders: true
+      };
+      
+      // Mock Math.random to get predictable stimulus selection
+      const mockValues = [0.3, 0.7]; // First call: go trial, second call: no-go trial
+      jest.spyOn(Math, 'random').mockImplementation(() => mockValues.shift() || 0.5);
+      
+      const timeline = createTimeline(jsPsych, config);
+      const firstBlock = timeline.timeline[4] as any;
+      const trials = firstBlock.timeline_variables;
+      
+      // Find go and no-go trials
+      const goTrial = trials.find((t: any) => t.stimulus.includes('GO'));
+      const noGoTrial = trials.find((t: any) => t.stimulus.includes('STOP'));
+      
+      expect(goTrial.stimulus).toContain('color: green;');
+      expect(noGoTrial.stimulus).toContain('color: red;');
+      
+      // Restore Math.random
+      (Math.random as jest.Mock).mockRestore();
+    });
+
+    it("should use black text when colorBorders: false for text stimuli", () => {
+      const config = { 
+        goStimulus: 'GO',
+        noGoStimulus: 'STOP',
+        stimulusType: 'text' as const,
+        numBlocks: 1,
+        trialsPerBlock: 2,
+        goTrialProbability: 0.5,
+        colorBorders: false
+      };
+      
+      // Mock Math.random to get predictable stimulus selection
+      const mockValues = [0.3, 0.7]; // First call: go trial, second call: no-go trial
+      jest.spyOn(Math, 'random').mockImplementation(() => mockValues.shift() || 0.5);
+      
+      const timeline = createTimeline(jsPsych, config);
+      const firstBlock = timeline.timeline[4] as any;
+      const trials = firstBlock.timeline_variables;
+      
+      // Find go and no-go trials
+      const goTrial = trials.find((t: any) => t.stimulus.includes('GO'));
+      const noGoTrial = trials.find((t: any) => t.stimulus.includes('STOP'));
+      
+      expect(goTrial.stimulus).toContain('color: black;');
+      expect(goTrial.stimulus).not.toContain('color: green;');
+      expect(noGoTrial.stimulus).toContain('color: black;');
+      expect(noGoTrial.stimulus).not.toContain('color: red;');
+      
+      // Restore Math.random
+      (Math.random as jest.Mock).mockRestore();
+    });
+
+    it("should default to true when colorBorders parameter is not specified", () => {
+      const config = { 
+        goStimulus: 'go.png',
+        stimulusType: 'image' as const,
+        numBlocks: 1,
+        trialsPerBlock: 1,
+        goTrialProbability: 1.0
+        // colorBorders not specified - should default to true
+      };
+      
+      const timeline = createTimeline(jsPsych, config);
+      const firstBlock = timeline.timeline[4] as any;
+      const trial = firstBlock.timeline_variables[0];
+      
+      // Should have colored border since colorBorders defaults to true
+      expect(trial.stimulus).toContain('border: 3px solid green');
+    });
+  });
+
   describe("timeline structure", () => {
     it("should have correct instruction trials", () => {
       const timeline = createTimeline(jsPsych);

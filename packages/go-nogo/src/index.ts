@@ -17,6 +17,7 @@ interface GoNoGoConfig {
   stimulusType?: 'text' | 'image' | 'mixed'
   imageWidth?: number
   imageHeight?: number
+  colorBorders?: boolean
 }
 
 // Helper function to detect if stimulus is an image path
@@ -29,18 +30,19 @@ const createIsImagePath = (stimulusType: 'text' | 'image' | 'mixed') => (stimulu
 }
 
 // Helper function to format stimulus as HTML
-const createFormatStimulus = (stimulusType: 'text' | 'image' | 'mixed', imageWidth: number, imageHeight: number) => 
+const createFormatStimulus = (stimulusType: 'text' | 'image' | 'mixed', imageWidth: number, imageHeight: number, colorBorders: boolean = true) => 
   (stimulus: string, isGoTrial: boolean): string => {
     const color = isGoTrial ? englishText.goColor : englishText.noGoColor
     const isImagePath = createIsImagePath(stimulusType)
     
     if (isImagePath(stimulus)) {
+      const borderStyle = colorBorders ? `border: 3px solid ${color};` : ''
       return `
         <style>
           .go-nogo-stimulus-img {
             width: ${imageWidth}px;
             height: ${imageHeight}px;
-            border: 3px solid ${color};
+            ${borderStyle}
             object-fit: contain;
           }
           @media (max-width: 768px) {
@@ -52,12 +54,13 @@ const createFormatStimulus = (stimulusType: 'text' | 'image' | 'mixed', imageWid
         </style>
         <img src="${stimulus}" class="go-nogo-stimulus-img" alt="${isGoTrial ? englishText.goStimulusAlt : englishText.noGoStimulusAlt}" />`
     } else {
+      const textColor = colorBorders ? `color: ${color};` : 'color: black;'
       return `
         <style>
           .go-nogo-stimulus-text {
             font-size: 48px;
             font-weight: bold;
-            color: ${color};
+            ${textColor}
           }
           @media (max-width: 768px) {
             .go-nogo-stimulus-text {
@@ -706,10 +709,11 @@ export function createTimeline(jsPsych: JsPsych, config: GoNoGoConfig = {}) {
     showResultsDetails = true,
     stimulusType = 'mixed',
     imageWidth = 200,
-    imageHeight = 200
+    imageHeight = 200,
+    colorBorders = true
   } = config
 
-  const formatStimulus = createFormatStimulus(stimulusType, imageWidth, imageHeight)
+  const formatStimulus = createFormatStimulus(stimulusType, imageWidth, imageHeight, colorBorders)
   
   const overviewInstructionTrial = createOverviewInstructionTrial()
   const goInstructionTrial = createGoInstructionTrial(goStimulus, buttonText, formatStimulus, jsPsych)
@@ -838,10 +842,11 @@ export const timelineUnits = {
       buttonText = englishText.defaultButtonText,
       stimulusType = 'mixed',
       imageWidth = 200,
-      imageHeight = 200
+      imageHeight = 200,
+      colorBorders = true
     } = config
 
-    const formatStimulus = createFormatStimulus(stimulusType, imageWidth, imageHeight)
+    const formatStimulus = createFormatStimulus(stimulusType, imageWidth, imageHeight, colorBorders)
     
     const overviewInstructionTrial = createOverviewInstructionTrial()
     const goInstructionTrial = createGoInstructionTrial(goStimulus, buttonText, formatStimulus, jsPsych)
@@ -861,10 +866,11 @@ export const timelineUnits = {
       noGoStimulus = englishText.defaultNoGoStimulus,
       stimulusType = 'mixed',
       imageWidth = 200,
-      imageHeight = 200
+      imageHeight = 200,
+      colorBorders = true
     } = config
 
-    const formatStimulus = createFormatStimulus(stimulusType, imageWidth, imageHeight)
+    const formatStimulus = createFormatStimulus(stimulusType, imageWidth, imageHeight, colorBorders)
     
     const goNoGoTrial = createGoNoGoTrial(jsPsych, buttonText, responseTimeout)
     const interTrialIntervalTrial = createInterTrialIntervalTrial(interTrialInterval)

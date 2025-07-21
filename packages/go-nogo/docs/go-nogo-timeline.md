@@ -21,6 +21,7 @@ The Go/No-Go task measures response inhibition by requiring participants to resp
 
 - Interactive step-by-step instructions with practice trials
 - Support for text, image, or mixed stimulus types
+- Optional colored borders/text for visual distinction between GO/NO-GO stimuli
 - Multi-block structure with break pages between blocks
 - Comprehensive trial-by-trial data collection
 - Automatic performance calculations (accuracy, reaction time)
@@ -120,6 +121,7 @@ const meanRT = calculateMeanRT(goNoGoData);
 | `stimulusType` | `'text' \| 'image' \| 'mixed'` | `'mixed'` | Stimulus type (auto-detect if mixed) |
 | `imageWidth` | number | `200` | Image width in pixels |
 | `imageHeight` | number | `200` | Image height in pixels |
+| `colorBorders` | boolean | `true` | Apply colored borders/text to stimuli |
 | `responseTimeout` | number | `1500` | Maximum response time (ms) |
 | `interTrialInterval` | number | `500` | Time between trials (ms) |
 | `numBlocks` | number | `3` | Number of blocks |
@@ -155,6 +157,20 @@ const config = {
   stimulusType: 'mixed'                // Auto-detect based on file extension
 };
 ```
+
+### Color Behavior
+
+By default (`colorBorders: true`), the timeline applies visual distinction between GO and NO-GO stimuli:
+
+- **Text stimuli**: GO text appears in green, NO-GO text appears in red
+- **Image stimuli**: GO images get a green border, NO-GO images get a red border
+
+When `colorBorders: false`:
+
+- **Text stimuli**: Both GO and NO-GO text appear in black
+- **Image stimuli**: No colored borders are applied
+
+This can be useful for experiments where color cues might interfere with the task or when you want purely neutral stimulus presentation.
 
 ## Data Generated
 
@@ -238,6 +254,29 @@ const config = {
   interTrialInterval: 300,   // Shorter intervals
   goTrialProbability: 0.8,   // More GO trials
   trialsPerBlock: 40
+};
+
+const timeline = jsPsychTimelineGoNogoTimeline.createTimeline(jsPsych, config);
+```
+
+### Without Colored Borders
+
+```javascript
+const config = {
+  goStimulus: 'images/arrow.png',
+  noGoStimulus: 'images/stop.png',
+  stimulusType: 'image',
+  colorBorders: false,          // Disable colored borders
+  imageWidth: 180,
+  imageHeight: 180
+};
+
+// For text stimuli, this would use black text instead of colored text
+const textConfig = {
+  goStimulus: 'GO',
+  noGoStimulus: 'STOP',
+  stimulusType: 'text',
+  colorBorders: false           // Use black text instead of green/red
 };
 
 const timeline = jsPsychTimelineGoNogoTimeline.createTimeline(jsPsych, config);
