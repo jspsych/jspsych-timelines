@@ -229,17 +229,21 @@ describe('Data Recording', () => {
     const trial = block.timeline[0]; // First trial in block
     const outcome = trial.timeline[1];
     
+    // Check that data object has task property
+    expect(outcome.data).toHaveProperty('task', 'bart');
+    
     if ('on_finish' in outcome && typeof outcome.on_finish === 'function') {
       expect(typeof outcome.on_finish).toBe('function');
       
-      // Test data recording
+      // Test that on_finish adds trial-specific properties
       const mockData = {};
       outcome.on_finish(mockData);
       
-      expect(mockData).toHaveProperty('task', 'bart');
       expect(mockData).toHaveProperty('pump_count');
       expect(mockData).toHaveProperty('exploded');
       expect(mockData).toHaveProperty('cashed_out');
+      expect(mockData).toHaveProperty('timed_out');
+      expect(mockData).toHaveProperty('explosion_point');
     } else {
       throw new Error('Expected outcome to have an on_finish function');
     }
