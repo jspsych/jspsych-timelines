@@ -8,6 +8,7 @@
   <script src="https://unpkg.com/jspsych"></script>
   <script src="https://unpkg.com/@jspsych/plugin-html-button-response"></script>
   <script src="../dist/index.global.js"></script>
+  <script src=""jatos.js"></script>
   <!-- Load the published timeline package here, e.g.
 <script src="https://unpkg.com/bart"></script>
 <script src="../dist/index.global.js"></script> -->
@@ -19,7 +20,8 @@
 <body></body>
 <script>
   const jsPsych = initJsPsych({
-    on_finish:() => jsPsych.data.displayData('json')
+    on_finish:() => jsPsych.data.displayData('json'),
+    on_finish: () => jatos.startNextComponent(jsPsych.data.get().json()),
   });
 
   // Get instructions trial
@@ -72,7 +74,13 @@
 
    const end = jsPsychTimelineBart.timelineUnits.showEndResults(jsPsych, currencyFormatter);
 
-  jsPsych.run([instructions, task, end])
+   const timeline = [instructions, task, end];
+
+  jsPsych.run(timeline);
+
+  jatos.onLoad(() => {
+    jsPsych.run(timeline);
+  });
 </script>
 
 </html>
