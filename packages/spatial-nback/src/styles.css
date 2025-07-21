@@ -97,17 +97,87 @@ p {
 }
 
 /* Task instructions in trial container, text on top. Usually there is none. */
-.nback-instructions {
+#nback-instructions {
     text-align: center;
     p {
-        font-size: clamp(15px, 4.5vmin, 35px);
+        font-size: clamp(15px, 4.5vmin, 30px);
         margin: 0vmin; /* smaller than default p */
-        margin-top: 2vmin; /* space between instructions and trial content */
     }
 }
 
-/* Styles for tablets */
+
+#nback-feedback-section {
+    gap: 1.5vmin !important;
+    margin-top: 0px !important;
+}
+#nback-grid-container {
+    /* Use consistent max sizing for both dimensions */
+    /* max-width: min(85vw, 85vh) !important;
+    max-height: min(85vw, 85vh) !important; */
+}
+
+/* Universal grid sizing - override plugin restrictions */
+#nback-grid {
+
+    /* Prevent flex container from overriding size */
+    /* Center the grid properly */
+    /* margin: 0 auto; */
+}
+
+/* Grid cells responsive sizing */
+#nback-grid > div > div {
+    min-width: min(12vh, 100px);
+    min-height: min(12vh, 100px);
+    width: 12vh !important;
+    height: 12vh !important;
+}
+
+/* N-back response button styling */
+#nback-response-btn {
+    padding: clamp(10px, 3vh, 50px) clamp(20px, 7vw, 60px);
+    font-size: clamp(20px, 7vmin, 60px);
+    min-height: clamp(60px, 15vmin, 100px);
+    min-width: clamp(120px, 25vmin, 200px);
+    border-radius: clamp(8px, 2vmin, 15px);
+    color: hsl(0, 0%, 100%);
+    background-color: rgb(77, 77, 77);
+    border: none;
+    font-weight: 600;
+    margin-bottom: 2.5vh;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    /* Disable double-click zoom */
+    touch-action: manipulation;
+    user-select: none;
+}
+
+#nback-response-btn:hover {
+    background-color: rgb(97, 97, 97);
+}
+
+#nback-response-btn:active {
+    background-color: rgb(57, 57, 57);
+    transform: translateY(1px);
+}
+
+/* Styles for tablets/iPads */
 @media (max-width: 768px) {
+}
+
+/* Styles for phones to override tablet */
+@media (max-width: 480px) {    
+    /* Smaller padding for phone to allow more text */
+    .instructions-container {
+        padding-bottom: 40vmin;
+    }
+}
+
+/* Specific styles for tablets/iPads */
+@media (min-width: 481px) and (max-width: 1024px) {
+    #nback-instructions p {
+        font-size: clamp(15px, 2.8vmin, 50px);
+    }
+    
     .jspsych-instructions-nav {
         position: fixed;
         bottom: 30vmin;
@@ -119,13 +189,11 @@ p {
     .instructions-container {
         padding-bottom: 45vmin; /* 30vmin for button position + 5vmin safety */
     }
-}
 
-/* Styles for phones to override tablet */
-@media (max-width: 480px) {    
-    /* Smaller padding for phone to allow more text */
-    .instructions-container {
-        padding-bottom: 40vmin;
+    
+    #nback-grid > div > div {
+        width: 15vh !important;
+        height: 15vh !important;
     }
 }
 
@@ -134,5 +202,38 @@ p {
     .jspsych-instructions-nav {
         bottom: 3vh;
         gap: 30vw;
+    }
+
+    #nback-instructions p {
+        font-size: clamp(10px, 2.5vh, 25px);
+    }
+    
+    #nback-container {
+        padding: 0px !important;
+        gap: 1.5vh !important;
+    }
+
+    #nback-grid-container {
+        margin: 0px !important;
+    }
+
+    #nback-feedback-section {
+        margin: 0px;
+        gap: 0px;
+    }
+
+    #nback-response-btn {
+        font-size: clamp(15px, 3vmin, 40px);
+        padding: clamp(3px, 2vh, 30px) clamp(10px, 7vw, 60px);
+        margin: 0px;
+        min-height: 5vh;
+    }
+}
+
+/* Specific styles for desktop/laptop (larger screens) */
+@media (min-width: 1025px) {
+    #nback-grid > div > div {
+        width: 20vh !important;
+        height: 20vh !important;
     }
 }

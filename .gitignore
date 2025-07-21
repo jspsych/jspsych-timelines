@@ -140,3 +140,6 @@ packages/pattern-comparison/
 packages/speeded-matching/
 packages/flanker-inhibitory/
 packages/visual-reasoning/
+
+# Claude
+.claude/

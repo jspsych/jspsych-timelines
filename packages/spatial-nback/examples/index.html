@@ -21,8 +21,8 @@
     }
   });
 
-  const instructions = jsPsychTimelineSpatialNback.utils.createInstructions();
-
+  const instructions = jsPsychTimelineSpatialNback.createInstructions();
+  const practice = jsPsychTimelineSpatialNback.createPracticeTimeline();
   // Create a custom timeline
   const spatial1Back = jsPsychTimelineSpatialNback.createTimeline({
     rows: 3,
@@ -35,9 +35,6 @@
     feedback_duration: 1000,
     show_feedback_text: true,
     show_feedback_border: true,
-    show_feedback_no_click : true,
-    feedback_wait_no_click: true,
-    cell_size: 150,
     prompt: "Click the button when the position matches the one from {n_back} trial{plural} ago", //overrides text.ts
     button_text: "MATCH",                                                                         //overrides text.ts
     stimulus_color: "#2196F3",
@@ -55,7 +52,7 @@
   //     trials_per_level: 20
   // });
 
-  jsPsych.run([instructions, spatial1Back]);
+  jsPsych.run([spatial1Back]);
 </script>
 
 </html>

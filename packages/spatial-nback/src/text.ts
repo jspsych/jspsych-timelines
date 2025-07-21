@@ -37,11 +37,11 @@ export const trial_text = {
  * by editing the HTML content.
  */
 export const instruction_pages = [
-    "You will see a grid with blue squares appearing in different positions.",
-    "Your job is to click the MATCH button when the current position matches the position from 1 trial ago.",
+    "We now ask you to play a type of game.",
+    "You will see a series of positions on a grid",
     "Watch the grid carefully.",
     "Remember positions from ONE trial ago.",
     "Click MATCH only when positions match.",
-    "Respond quickly but accurately.",
+    "Try to respond as quickly and accurately as you can.",
     "Let's start the task."
 ];
