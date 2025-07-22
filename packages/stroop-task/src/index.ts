@@ -250,7 +250,7 @@ function createStroopTrial(
         button_layout: 'grid',
         grid_rows: numberOfRows,
         grid_columns: numberOfColumns,
-        button_html: (choice) => `<div style="border: 3px solid #333; width: 150px; height: 60px; margin: 20px; background-color: ${choice.toLowerCase()}; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold;">${choice}</div>`,
+        button_html: (choice) => `<div style="border: 3px solid black; width: 150px; height: 60px; margin: 20px; background-color: white; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold; color: black;">${choice}</div>`,
         margin_horizontal: '20px',
         margin_vertical: '20px',
         trial_duration: trialTimeout || DEFAULT_TRIAL_TIMEOUT,
