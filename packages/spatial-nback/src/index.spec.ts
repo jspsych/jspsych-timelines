@@ -39,12 +39,12 @@ describe('createTimeline', () => {
   it('should set correct trial properties', () => {
     const timeline = createTimeline({
       stimulus_duration: 1000,
-      button_text: 'CLICK',
+      buttons: ['CLICK'],
       cell_size: 200
     });
     
     expect(timeline.timeline[0].stimulus_duration).toBe(1000);
-    expect(timeline.timeline[0].button_text).toBe('CLICK');
+    expect(timeline.timeline[0].buttons).toEqual(['CLICK']);
     expect(timeline.timeline[0].cell_size).toBe(200);
   });
 

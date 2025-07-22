@@ -103,7 +103,7 @@ const customTimeline = createTimeline({
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
 | **prompt** | string | "Click the MATCH button..." | Instructions template for each trial |
-| **button_text** | string | "MATCH" | Text for the match button |
+| **buttons** | string[] | ["O", "X"] | Array of button text strings. First button is "match", second is "no match" |
 | **include_instructions** | boolean | false | Whether to include instruction pages at the start |
 | **instruction_texts** | string[] | See text.ts | Custom instruction pages |
 

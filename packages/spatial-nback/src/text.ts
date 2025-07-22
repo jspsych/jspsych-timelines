@@ -19,8 +19,8 @@ export const trial_text = {
     // Fixation and inter-trial
     fixation_cross: "+",
     
-    // Button text
-    button: "MATCH",
+    // Button text array - first button is "match", second is "no match"
+    button: ["O", "X"],
     
     // Feedback messages
     correct: "Correct!",

@@ -96,9 +96,12 @@ p {
     padding: 2vmin;
 }
 
+#nback-container {
+    max-width: 92vw;
+}
+
 /* Task instructions in trial container, text on top. Usually there is none. */
 #nback-instructions {
-    text-align: center;
     p {
         font-size: clamp(15px, 4.5vmin, 30px);
         margin: 0vmin; /* smaller than default p */
@@ -110,6 +113,7 @@ p {
     gap: 1.5vmin !important;
     margin-top: 0px !important;
 }
+
 #nback-grid-container {
     /* Use consistent max sizing for both dimensions */
     /* max-width: min(85vw, 85vh) !important;
@@ -128,34 +132,30 @@ p {
 #nback-grid > div > div {
     min-width: min(12vh, 100px);
     min-height: min(12vh, 100px);
-    width: 12vh !important;
-    height: 12vh !important;
 }
 
 /* N-back response button styling */
-#nback-response-btn {
+.nback-response-btn {
     padding: clamp(10px, 3vh, 50px) clamp(20px, 7vw, 60px);
     font-size: clamp(20px, 7vmin, 60px);
     min-height: clamp(60px, 15vmin, 100px);
     min-width: clamp(120px, 25vmin, 200px);
-    border-radius: clamp(8px, 2vmin, 15px);
     color: hsl(0, 0%, 100%);
     background-color: rgb(77, 77, 77);
-    border: none;
     font-weight: 600;
+    margin: 0 7vw !important; /* buttons push each other to sides */
     margin-bottom: 2.5vh;
-    cursor: pointer;
     transition: background-color 0.2s ease;
     /* Disable double-click zoom */
     touch-action: manipulation;
     user-select: none;
 }
 
-#nback-response-btn:hover {
+.nback-response-btn:hover {
     background-color: rgb(97, 97, 97);
 }
 
-#nback-response-btn:active {
+.nback-response-btn:active {
     background-color: rgb(57, 57, 57);
     transform: translateY(1px);
 }
@@ -213,19 +213,15 @@ p {
         gap: 1.5vh !important;
     }
 
-    #nback-grid-container {
-        margin: 0px !important;
-    }
-
     #nback-feedback-section {
         margin: 0px;
         gap: 0px;
     }
 
-    #nback-response-btn {
+    .nback-response-btn {
         font-size: clamp(15px, 3vmin, 40px);
-        padding: clamp(3px, 2vh, 30px) clamp(10px, 7vw, 60px);
-        margin: 0px;
+        padding: clamp(3px, 3vh, 30px) clamp(10px, 7vw, 60px);
+        margin: 0px 15vw !important;
         min-height: 5vh;
     }
 }
@@ -235,5 +231,9 @@ p {
     #nback-grid > div > div {
         width: 20vh !important;
         height: 20vh !important;
+    }
+
+    .nback-response-btn {
+        margin: 0 3vw !important; /* Center the button */
     }
 }
