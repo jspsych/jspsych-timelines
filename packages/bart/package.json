@@ -27,18 +27,17 @@
     },
     "homepage": "/bart/README.md",
     "devDependencies": {
-        "@jspsych/config": "^3.2.2",
+        "@jspsych/config": "^3.3.0",
         "jspsych": "^8.2.1",
         "ts-loader": "^9.5.2",
         "tsup": "^6.7.0",
         "typescript": "^5.8.3"
-
-
     },
     "dependencies": {
         "@jspsych/plugin-fullscreen": "^2.1.0",
         "@jspsych/plugin-html-button-response": "^2.1.0",
         "@jspsych/plugin-html-keyboard-response": "^2.1.0",
-        "@jspsych/plugin-preload": "^2.1.0"
+        "@jspsych/plugin-preload": "^2.1.0",
+        "@jspsych/plugin-instructions": "^2.1.0"
     }
 }
