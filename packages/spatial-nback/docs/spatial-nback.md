@@ -70,21 +70,21 @@ const customTimeline = createTimeline({
 | **cols** | number | 3 | Number of columns in the grid |
 | **n_back** | number | 1 | The n-back level (how many trials back to match) |
 | **total_trials** | number | 20 | Total number of trials in the timeline |
-| **target_percentage** | number | 25 | Percentage of trials that should be targets |
+| **target_percentage** | number | 40 | Percentage of trials that should be targets |
 
 ### Timing Parameters
 
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
 | **stimulus_duration** | number | 750 | Duration (ms) the stimulus is displayed |
-| **isi_duration** | number | 250 | Inter-stimulus interval (ms) between trials |
-| **feedback_duration** | number | 1000 | Duration (ms) of feedback display when enabled |
+| **isi_duration** | number | 500 | Inter-stimulus interval (ms) between trials |
+| **feedback_duration** | number | 0 | Duration (ms) of feedback display when enabled |
 
 ### Visual Parameters
 
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
-| **cell_size** | number | 150 | Size (px) of each grid cell |
+| **cell_size** | number | null | Size (px) of each grid cell (null = responsive) |
 | **stimulus_color** | string | "#2196F3" | Color of the stimulus square |
 | **correct_color** | string | "#4CAF50" | Color for correct feedback |
 | **incorrect_color** | string | "#F44336" | Color for incorrect feedback |
@@ -106,17 +106,6 @@ const customTimeline = createTimeline({
 | **buttons** | string[] | ["O", "X"] | Array of button text strings. First button is "match", second is "no match" |
 | **include_instructions** | boolean | false | Whether to include instruction pages at the start |
 | **instruction_texts** | string[] | See text.ts | Custom instruction pages |
-
-### Text-to-Speech Configuration
-
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| **enable_tts** | boolean | false | Enable text-to-speech for instructions |
-| **tts_method** | 'google' \| 'system' | 'google' | Preferred TTS method |
-| **tts_rate** | number | 1.0 | Speech rate (0.1 to 10) |
-| **tts_pitch** | number | 1.0 | Speech pitch (0 to 2) |
-| **tts_volume** | number | 1.0 | Speech volume (0 to 1) |
-| **tts_lang** | string | 'en-US' | Language code for TTS |
 
 ## Data Generated
 
