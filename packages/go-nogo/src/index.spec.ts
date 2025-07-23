@@ -105,7 +105,7 @@ describe("createTimeline", () => {
         trial.stimulus.match(/>(.*?)</)[1]
       );
       
-      expect(stimuli).toEqual(expect.arrayContaining(['GO', 'NO-GO']));
+      expect(stimuli).toEqual(expect.arrayContaining(['Y', 'X']));
       
       // Restore Math.random
       (Math.random as jest.Mock).mockRestore();
@@ -244,11 +244,10 @@ describe("createTimeline", () => {
     });
   });
 
-  describe("stimulus types", () => {
-    it("should handle text stimuli by default", () => {
+  describe("HTML stimulus formatting", () => {
+    it("should handle plain text stimuli", () => {
       const config = { 
         goStimulus: 'TEXT_GO',
-        stimulusType: 'text' as const,
         numBlocks: 1,
         trialsPerBlock: 1,
         goTrialProbability: 1.0
@@ -258,39 +257,33 @@ describe("createTimeline", () => {
       const firstBlock = timeline.timeline[4] as any;
       const trial = firstBlock.timeline_variables[0];
       
-      expect(trial.stimulus).toContain('<div class="go-nogo-stimulus-text">');
+      expect(trial.stimulus).toContain('<div class="go-nogo-stimulus-content">');
       expect(trial.stimulus).toContain('TEXT_GO');
       expect(trial.stimulus).toContain('font-size: 48px');
-      expect(trial.stimulus).not.toContain('<img');
+      expect(trial.stimulus).toContain('color: green');
     });
 
-    it("should handle image stimuli", () => {
+    it("should handle HTML image stimuli", () => {
       const config = { 
-        goStimulus: 'path/to/image.png',
-        stimulusType: 'image' as const,
+        goStimulus: '<img src="path/to/image.png" alt="GO">',
         numBlocks: 1,
         trialsPerBlock: 1,
-        goTrialProbability: 1.0,
-        imageWidth: 150,
-        imageHeight: 150
+        goTrialProbability: 1.0
       };
       
       const timeline = createTimeline(jsPsych, config);
       const firstBlock = timeline.timeline[4] as any;
       const trial = firstBlock.timeline_variables[0];
       
-      expect(trial.stimulus).toContain('<img src="path/to/image.png"');
-      expect(trial.stimulus).toContain('width: 150px');
-      expect(trial.stimulus).toContain('height: 150px');
+      expect(trial.stimulus).toContain('<div class="go-nogo-stimulus-content">');
+      expect(trial.stimulus).toContain('<img src="path/to/image.png" alt="GO">');
       expect(trial.stimulus).toContain('border: 3px solid green');
-      expect(trial.stimulus).not.toContain('<div');
     });
 
-    it("should handle mixed stimuli (auto-detect for text)", () => {
+    it("should handle complex HTML stimuli", () => {
       const config = { 
-        goStimulus: 'TEXT_GO',
-        noGoStimulus: 'image.jpg',
-        stimulusType: 'mixed' as const,
+        goStimulus: '<div><span>Custom</span><br><strong>GO</strong></div>',
+        noGoStimulus: '<div style="color: red;">STOP</div>',
         numBlocks: 1,
         trialsPerBlock: 2,
         goTrialProbability: 0.5
@@ -304,24 +297,25 @@ describe("createTimeline", () => {
       const firstBlock = timeline.timeline[4] as any;
       const trials = firstBlock.timeline_variables;
       
-      // Find text and image trials
-      const textTrial = trials.find((t: any) => t.stimulus.includes('TEXT_GO'));
-      const imageTrial = trials.find((t: any) => t.stimulus.includes('image.jpg'));
+      // Find go and no-go trials
+      const goTrial = trials.find((t: any) => t.stimulus.includes('Custom'));
+      const noGoTrial = trials.find((t: any) => t.stimulus.includes('STOP'));
       
-      expect(textTrial.stimulus).toContain('<div class="go-nogo-stimulus-text">');
-      expect(textTrial.stimulus).toContain('TEXT_GO');
+      expect(goTrial.stimulus).toContain('<div class="go-nogo-stimulus-content">');
+      expect(goTrial.stimulus).toContain('<div><span>Custom</span><br><strong>GO</strong></div>');
+      expect(goTrial.stimulus).toContain('color: green');
       
-      expect(imageTrial.stimulus).toContain('<img src="image.jpg"');
-      expect(imageTrial.stimulus).toContain('border: 3px solid red');
+      expect(noGoTrial.stimulus).toContain('<div class="go-nogo-stimulus-content">');
+      expect(noGoTrial.stimulus).toContain('<div style="color: red;">STOP</div>');
+      expect(noGoTrial.stimulus).toContain('color: red');
       
       // Restore Math.random
       (Math.random as jest.Mock).mockRestore();
     });
 
-    it("should apply correct colors for no-go image stimuli", () => {
+    it("should apply correct colors for no-go stimuli", () => {
       const config = { 
-        noGoStimulus: 'nogo.png',
-        stimulusType: 'image' as const,
+        noGoStimulus: 'STOP',
         numBlocks: 1,
         trialsPerBlock: 1,
         goTrialProbability: 0.0
@@ -332,16 +326,16 @@ describe("createTimeline", () => {
       const trial = firstBlock.timeline_variables[0];
       
       expect(trial.stimulus).toContain('border: 3px solid red');
-      expect(trial.stimulus).toContain('alt="NO-GO stimulus"');
+      expect(trial.stimulus).toContain('color: red');
+      expect(trial.stimulus).toContain('STOP');
     });
   });
 
   describe("colorBorders parameter", () => {
     it("should apply colored borders by default (colorBorders: true)", () => {
       const config = { 
-        goStimulus: 'go.png',
-        noGoStimulus: 'nogo.png',
-        stimulusType: 'image' as const,
+        goStimulus: 'GO',
+        noGoStimulus: 'STOP',
         numBlocks: 1,
         trialsPerBlock: 2,
         goTrialProbability: 0.5,
@@ -357,21 +351,22 @@ describe("createTimeline", () => {
       const trials = firstBlock.timeline_variables;
       
       // Find go and no-go trials
-      const goTrial = trials.find((t: any) => t.stimulus.includes('go.png'));
-      const noGoTrial = trials.find((t: any) => t.stimulus.includes('nogo.png'));
+      const goTrial = trials.find((t: any) => t.stimulus.includes('GO'));
+      const noGoTrial = trials.find((t: any) => t.stimulus.includes('STOP'));
       
       expect(goTrial.stimulus).toContain('border: 3px solid green');
+      expect(goTrial.stimulus).toContain('color: green');
       expect(noGoTrial.stimulus).toContain('border: 3px solid red');
+      expect(noGoTrial.stimulus).toContain('color: red');
       
       // Restore Math.random
       (Math.random as jest.Mock).mockRestore();
     });
 
-    it("should not apply colored borders when colorBorders: false for images", () => {
+    it("should not apply colored borders when colorBorders: false", () => {
       const config = { 
-        goStimulus: 'go.png',
-        noGoStimulus: 'nogo.png',
-        stimulusType: 'image' as const,
+        goStimulus: 'GO',
+        noGoStimulus: 'STOP',
         numBlocks: 1,
         trialsPerBlock: 2,
         goTrialProbability: 0.5,
@@ -387,23 +382,24 @@ describe("createTimeline", () => {
       const trials = firstBlock.timeline_variables;
       
       // Find go and no-go trials
-      const goTrial = trials.find((t: any) => t.stimulus.includes('go.png'));
-      const noGoTrial = trials.find((t: any) => t.stimulus.includes('nogo.png'));
+      const goTrial = trials.find((t: any) => t.stimulus.includes('GO'));
+      const noGoTrial = trials.find((t: any) => t.stimulus.includes('STOP'));
       
       expect(goTrial.stimulus).not.toContain('border: 3px solid green');
       expect(goTrial.stimulus).not.toContain('border: 3px solid');
+      expect(goTrial.stimulus).toContain('color: black');
       expect(noGoTrial.stimulus).not.toContain('border: 3px solid red');
       expect(noGoTrial.stimulus).not.toContain('border: 3px solid');
+      expect(noGoTrial.stimulus).toContain('color: black');
       
       // Restore Math.random
       (Math.random as jest.Mock).mockRestore();
     });
 
-    it("should apply colored text by default (colorBorders: true) for text stimuli", () => {
+    it("should apply colored text by default (colorBorders: true)", () => {
       const config = { 
         goStimulus: 'GO',
         noGoStimulus: 'STOP',
-        stimulusType: 'text' as const,
         numBlocks: 1,
         trialsPerBlock: 2,
         goTrialProbability: 0.5,
@@ -429,11 +425,10 @@ describe("createTimeline", () => {
       (Math.random as jest.Mock).mockRestore();
     });
 
-    it("should use black text when colorBorders: false for text stimuli", () => {
+    it("should use black text when colorBorders: false", () => {
       const config = { 
         goStimulus: 'GO',
         noGoStimulus: 'STOP',
-        stimulusType: 'text' as const,
         numBlocks: 1,
         trialsPerBlock: 2,
         goTrialProbability: 0.5,
@@ -463,8 +458,7 @@ describe("createTimeline", () => {
 
     it("should default to true when colorBorders parameter is not specified", () => {
       const config = { 
-        goStimulus: 'go.png',
-        stimulusType: 'image' as const,
+        goStimulus: 'GO',
         numBlocks: 1,
         trialsPerBlock: 1,
         goTrialProbability: 1.0
@@ -477,6 +471,7 @@ describe("createTimeline", () => {
       
       // Should have colored border since colorBorders defaults to true
       expect(trial.stimulus).toContain('border: 3px solid green');
+      expect(trial.stimulus).toContain('color: green');
     });
   });
 

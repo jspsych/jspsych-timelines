@@ -115,12 +115,9 @@ const meanRT = calculateMeanRT(goNoGoData);
 
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
-| `goStimulus` | string | `'GO'` | GO stimulus (text or image path) |
-| `noGoStimulus` | string | `'NO-GO'` | NO-GO stimulus (text or image path) |
+| `goStimulus` | string | `'GO'` | GO stimulus (HTML string) |
+| `noGoStimulus` | string | `'NO-GO'` | NO-GO stimulus (HTML string) |
 | `buttonText` | string | `'Click'` | Response button label |
-| `stimulusType` | `'text' \| 'image' \| 'mixed'` | `'mixed'` | Stimulus type (auto-detect if mixed) |
-| `imageWidth` | number | `200` | Image width in pixels |
-| `imageHeight` | number | `200` | Image height in pixels |
 | `colorBorders` | boolean | `true` | Apply colored borders/text to stimuli |
 | `responseTimeout` | number | `1500` | Maximum response time (ms) |
 | `interTrialInterval` | number | `500` | Time between trials (ms) |
@@ -129,32 +126,41 @@ const meanRT = calculateMeanRT(goNoGoData);
 | `goTrialProbability` | number | `0.75` | Probability of GO trials (0-1) |
 | `showResultsDetails` | boolean | `true` | Show detailed results in debrief |
 
+### Stimulus Configuration
+
+All stimuli are treated as HTML strings, providing maximum flexibility for content and styling. You can use plain text, HTML tags, images, or complex HTML structures.
+
 ### Stimulus Types
 
 **Text Stimuli:**
 ```javascript
 const config = {
   goStimulus: 'GO',
-  noGoStimulus: 'STOP',
-  stimulusType: 'text'
+  noGoStimulus: 'STOP'
 };
 ```
 
-**Image Stimuli:**
+**Image Stimuli (using HTML img tags):**
 ```javascript
 const config = {
-  goStimulus: 'images/arrow.png',
-  noGoStimulus: 'images/stop.png',
-  stimulusType: 'image'
+  goStimulus: '<img src="images/arrow.png" alt="GO">',
+  noGoStimulus: '<img src="images/stop.png" alt="STOP">'
 };
 ```
 
-**Mixed Stimuli (auto-detect):**
+**Styled HTML Stimuli:**
 ```javascript
 const config = {
-  goStimulus: 'GO',                    // Text
-  noGoStimulus: 'images/stop.png',     // Image
-  stimulusType: 'mixed'                // Auto-detect based on file extension
+  goStimulus: '<div style="font-size: 60px; color: green;">✓</div>',
+  noGoStimulus: '<div style="font-size: 60px; color: red;">✗</div>'
+};
+```
+
+**Complex HTML with Images and Text:**
+```javascript
+const config = {
+  goStimulus: '<div><img src="images/arrow.png" style="width: 50px;"><br>PRESS</div>',
+  noGoStimulus: '<div><img src="images/stop.png" style="width: 50px;"><br>DON\'T PRESS</div>'
 };
 ```
 
@@ -236,11 +242,8 @@ const timeline = jsPsychTimelineGoNogoTimeline.createTimeline(jsPsych, config);
 
 ```javascript
 const config = {
-  goStimulus: 'images/green-arrow.png',
-  noGoStimulus: 'images/red-stop.png',
-  stimulusType: 'image',
-  imageWidth: 150,
-  imageHeight: 150
+  goStimulus: '<img src="images/green-arrow.png" style="width: 150px; height: 150px;" alt="GO">',
+  noGoStimulus: '<img src="images/red-stop.png" style="width: 150px; height: 150px;" alt="STOP">'
 };
 
 const timeline = jsPsychTimelineGoNogoTimeline.createTimeline(jsPsych, config);
@@ -263,20 +266,16 @@ const timeline = jsPsychTimelineGoNogoTimeline.createTimeline(jsPsych, config);
 
 ```javascript
 const config = {
-  goStimulus: 'images/arrow.png',
-  noGoStimulus: 'images/stop.png',
-  stimulusType: 'image',
-  colorBorders: false,          // Disable colored borders
-  imageWidth: 180,
-  imageHeight: 180
+  goStimulus: '<img src="images/arrow.png" style="width: 180px; height: 180px;" alt="GO">',
+  noGoStimulus: '<img src="images/stop.png" style="width: 180px; height: 180px;" alt="STOP">',
+  colorBorders: false          // Disable colored borders
 };
 
 // For text stimuli, this would use black text instead of colored text
 const textConfig = {
   goStimulus: 'GO',
   noGoStimulus: 'STOP',
-  stimulusType: 'text',
-  colorBorders: false           // Use black text instead of green/red
+  colorBorders: false          // Use black text instead of green/red  
 };
 
 const timeline = jsPsychTimelineGoNogoTimeline.createTimeline(jsPsych, config);

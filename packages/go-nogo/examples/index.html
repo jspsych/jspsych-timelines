@@ -22,32 +22,27 @@
   // Configuration options - uncomment and modify as needed
   const config = {
 
-    // Default stimuli
+    // Default stimuli (plain text)
     // goStimulus: 'X',                          // Default GO stimulus
-    // noGoStimulus: 'NO-GO',                    // Default NO-GO stimulus
+    // noGoStimulus: 'O',                        // Default NO-GO stimulus
 
-    // Text stimuli
-    // goStimulus: 'GO',                          // Single GO stimulus
-    // noGoStimulus: 'NO-GO',                     // Single NO-GO stimulus
+    // Text stimuli examples
+    // goStimulus: 'GO',                         // Single GO stimulus
+    // noGoStimulus: 'NO-GO',                    // Single NO-GO stimulus
     
-    // LOCAL IMAGE EXAMPLES - uncomment to test with your own images:
-    // Put your images in the 'images' folder next to this HTML file
+    // HTML/Image examples - all stimuli are treated as HTML strings:
     
-    // Example 1: Basic image stimuli
-    // goStimulus: 'images/go.png',             // Your GO image
-    // noGoStimulus: 'images/stop.png',         // Your NO-GO image
+    // Example 1: Image stimuli (using HTML img tags)
+    // goStimulus: '<img src="images/go.png" alt="GO">',
+    // noGoStimulus: '<img src="images/stop.png" alt="NO-GO">',
     
-    // Example 2: Mixed text + image
-    // goStimulus: 'GO',                        // Text for GO
-    // noGoStimulus: 'images/stop.png',         // Image for NO-GO
-    // stimulusType: 'mixed',                   // Auto-detects text vs image
+    // Example 2: Styled HTML content
+    // goStimulus: '<div style="font-size: 60px; color: green;">✓</div>',
+    // noGoStimulus: '<div style="font-size: 60px; color: red;">✗</div>',
     
-    // Example 3: Different image sizes
-    // goStimulus: 'images/arrow.png',
-    // noGoStimulus: 'images/no-cat.gif',
-    // stimulusType: 'image',
-    // imageWidth: 150,
-    // imageHeight: 150,
+    // Example 3: Complex HTML with images and text
+    // goStimulus: '<div><img src="images/arrow.png" style="width: 100px;"><br>PRESS</div>',
+    // noGoStimulus: '<div><img src="images/stop.png" style="width: 100px;"><br>DON\'T PRESS</div>',
     
     buttonText: 'Click',                       // Button label
     responseTimeout: 1500,                     // Max time to respond (ms)
