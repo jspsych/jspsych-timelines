@@ -12,7 +12,7 @@ h1, h2, h3 {
 
 p {
     margin: 5vmin 1vmin;
-    font-size: clamp(15px, 8vmin, 40px);
+    font-size: clamp(15px, 7vmin, 40px);
     line-height: 1.6;    
     /* Prevent horizontal overflow */
     word-wrap: break-word;
@@ -85,16 +85,15 @@ p {
     visibility: hidden;  /* Keeps the space but hides the button */
 }
 
-/* EXPERIMENT TRIAL STYLES */
-
-.trial-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    font-family: Arial, sans-serif;
-    padding: 2vmin;
+/* Smaller grid for instructions */
+.nback-grid-instructions > div > div {
+    width: 10vmin;
+    height: 10vmin;
+    min-width: 50px;
+    min-height: 50px;
 }
+
+/* EXPERIMENT TRIAL STYLES */
 
 #nback-container {
     max-width: 92vw;
@@ -108,30 +107,16 @@ p {
     }
 }
 
-
-#nback-feedback-section {
-    gap: 1.5vmin !important;
-    margin-top: 0px !important;
-}
-
-#nback-grid-container {
-    /* Use consistent max sizing for both dimensions */
-    /* max-width: min(85vw, 85vh) !important;
-    max-height: min(85vw, 85vh) !important; */
-}
-
-/* Universal grid sizing - override plugin restrictions */
-#nback-grid {
-
-    /* Prevent flex container from overriding size */
-    /* Center the grid properly */
-    /* margin: 0 auto; */
-}
-
 /* Grid cells responsive sizing */
 #nback-grid > div > div {
     min-width: min(12vh, 100px);
     min-height: min(12vh, 100px);
+}
+
+/* Feedback and buttons section styling */
+#nback-feedback-section {
+    gap: 1.5vmin !important;
+    margin-top: 0px !important;
 }
 
 /* N-back response button styling */
@@ -141,10 +126,9 @@ p {
     min-height: clamp(60px, 15vmin, 100px);
     min-width: clamp(120px, 25vmin, 200px);
     color: hsl(0, 0%, 100%);
-    background-color: rgb(77, 77, 77);
+    background-color: rgb(77, 77, 77) !important;
     font-weight: 600;
-    margin: 0 7vw !important; /* buttons push each other to sides */
-    margin-bottom: 2.5vh;
+    margin: 0 7vw 12vh !important; /* buttons push each other to sides */
     transition: background-color 0.2s ease;
     /* Disable double-click zoom */
     touch-action: manipulation;
@@ -160,27 +144,31 @@ p {
     transform: translateY(1px);
 }
 
-/* Styles for tablets/iPads */
-@media (max-width: 768px) {
+.nback-response-btn:disabled {
+
+    opacity: 0.75;
+    cursor: not-allowed;
+    transform: none;
 }
 
-/* Styles for phones to override tablet */
-@media (max-width: 480px) {    
-    /* Smaller padding for phone to allow more text */
+/* Smaller instructions padding for phone to allow more text */
+/* @media (max-width: 480px) {    
     .instructions-container {
         padding-bottom: 40vmin;
     }
-}
+} */
 
 /* Specific styles for tablets/iPads */
 @media (min-width: 481px) and (max-width: 1024px) {
+    /* Smaller font size for instructions */
     #nback-instructions p {
         font-size: clamp(15px, 2.8vmin, 50px);
     }
     
+    /* Fixing instruction navigation button position */
     .jspsych-instructions-nav {
         position: fixed;
-        bottom: 30vmin;
+        bottom: 5vmin;
         left: 50%;
         transform: translateX(-50%);
     }
@@ -190,7 +178,7 @@ p {
         padding-bottom: 45vmin; /* 30vmin for button position + 5vmin safety */
     }
 
-    
+    /* Adjusting grid cell size for tablets (bigger)*/
     #nback-grid > div > div {
         width: 15vh !important;
         height: 15vh !important;

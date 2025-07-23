@@ -36,12 +36,14 @@ export const trial_text = {
  * You can add more pages by adding more strings to the array, or modify existing pages
  * by editing the HTML content.
  */
+
+const grid = "<div class='nback-grid-instructions' style='border: 3px solid #000; box-sizing: border-box; display: inline-block;'><div style='display: flex;'><div id='cell-0-0' style='width: 40px; height: 40px; border: 1px solid #ccc; box-sizing: border-box;'></div><div id='cell-0-1' style='width: 40px; height: 40px; border: 1px solid #ccc; box-sizing: border-box;'></div><div id='cell-0-2' style='width: 40px; height: 40px; border: 1px solid #ccc; box-sizing: border-box;'></div></div><div style='display: flex;'><div id='cell-1-0' style='width: 40px; height: 40px; border: 1px solid #ccc; box-sizing: border-box;'></div><div id='cell-1-1' style='width: 40px; height: 40px; border: 1px solid #ccc; box-sizing: border-box;'></div><div id='cell-1-2' style='width: 40px; height: 40px; border: 1px solid #ccc; box-sizing: border-box;'></div></div><div style='display: flex;'><div id='cell-2-0' style='width: 40px; height: 40px; border: 1px solid #ccc; box-sizing: border-box;'></div><div id='cell-2-1' style='width: 40px; height: 40px; border: 1px solid #ccc; box-sizing: border-box;'></div><div id='cell-2-2' style='width: 40px; height: 40px; border: 1px solid #ccc; box-sizing: border-box;'></div></div></div>";
 export const instruction_pages = [
     "We now ask you to play a type of game.",
-    "You will see a series of positions on a grid",
-    "Watch the grid carefully.",
+    "You will see a series of positions on a 3×3 grid<br><br>" + grid,
+    "Tap O if the current position matches the one you saw just before it.",
     "Remember positions from ONE trial ago.",
-    "Click MATCH only when positions match.",
+    "Tap O if the positions match. Tap X if they do not match.",
     "Try to respond as quickly and accurately as you can.",
-    "Let's start the task."
+    "Let's start with a short practice round.",
 ];

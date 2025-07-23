@@ -85,7 +85,7 @@ export function createTimeline({
     target_percentage = 40,
     stimulus_duration = 750,
     isi_duration = 500,
-    feedback_duration = 500,
+    feedback_duration = 0,
     show_feedback_text = false,
     show_feedback_border = false,
     cell_size = null,

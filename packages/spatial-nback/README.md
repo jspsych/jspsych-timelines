@@ -38,29 +38,30 @@ const jsPsych = initJsPsych({
   }
 });
 
-// Create a basic 2-back task
+// Create a basic 1-back task with instructions
 const timeline = createTimeline({
-  n_back: 2,
-  total_trials: 30,
-  target_percentage: 25,
-  include_instructions: true
+  n_back: 1,
+  total_trials: 20,
+  target_percentage: 40,
+  include_instructions: true,
+  show_feedback_text: true
 });
 
 jsPsych.run(timeline);
 ```
 
-### With Instructions and TTS
+### Practice Session
 
 ```javascript
-const timeline = createTimeline({
+import { createPracticeTimeline } from '@jspsych-timelines/spatial-nback';
+
+// Short practice with feedback
+const practiceTimeline = createPracticeTimeline({
   n_back: 1,
-  total_trials: 20,
-  target_percentage: 30,
-  include_instructions: true,
-  enable_tts: true,
-  tts_method: 'google',
-  show_feedback_text: true
+  include_instructions: true
 });
+
+jsPsych.run(practiceTimeline);
 ```
 
 ### Using Presets
@@ -88,12 +89,11 @@ Creates a spatial n-back timeline with the specified parameters.
 |-----------|------|---------|-------------|
 | n_back | number | 1 | The n-back level (trials to remember back) |
 | total_trials | number | 20 | Total number of trials |
-| target_percentage | number | 25 | Percentage of trials that are targets |
+| target_percentage | number | 40 | Percentage of trials that are targets |
 | rows | number | 3 | Grid rows |
 | cols | number | 3 | Grid columns |
 | include_instructions | boolean | false | Include instruction pages |
 | show_feedback_text | boolean | false | Show correctness feedback |
-| enable_tts | boolean | false | Enable text-to-speech |
 
 ### timelineUnits
 

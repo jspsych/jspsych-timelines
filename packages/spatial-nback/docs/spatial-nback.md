@@ -1,6 +1,6 @@
 # Spatial N-Back Timeline
 
-A deployable spatial grid n-back timeline for jsPsych. This module provides a flexible implementation of the spatial n-back task, supporting custom grid sizes, n-back levels, feedback, text-to-speech, and more.
+A deployable spatial grid n-back timeline for jsPsych. This module provides a flexible implementation of the spatial n-back task, supporting custom grid sizes, n-back levels, feedback, and more.
 
 ## Overview
 
@@ -34,6 +34,7 @@ const jsPsych = initJsPsych({
 const timeline = createTimeline({
   n_back: 2,
   total_trials: 30,
+  target_percentage: 40,
   include_instructions: true
 });
 
@@ -54,9 +55,7 @@ const customTimeline = createTimeline({
   show_feedback_border: true,
   cell_size: 120,
   stimulus_color: "#FF5722",
-  include_instructions: true,
-  enable_tts: true,
-  tts_method: 'google'
+  include_instructions: true
 });
 ```
 
@@ -95,8 +94,6 @@ const customTimeline = createTimeline({
 |-----------|------|---------|-------------|
 | **show_feedback_text** | boolean | false | Whether to show text feedback after each trial |
 | **show_feedback_border** | boolean | false | Whether to highlight the grid border for feedback |
-| **show_feedback_no_click** | boolean | true | Show feedback if no response is made |
-| **feedback_wait_no_click** | boolean | true | Wait for feedback_duration even if no response |
 
 ### Text & Instructions
 
@@ -137,8 +134,8 @@ Creates a short practice timeline optimized for learning the task.
 **Default Configuration:**
 - 6 trials total
 - 50% target percentage
-- Feedback enabled
-- Instructions included
+- Feedback enabled (text and border)
+- Instructions disabled by default
 
 **Parameters:**
 - `params` (object): Same as createTimeline, overrides practice defaults
@@ -189,15 +186,13 @@ Generates the sequence of positions and target flags for the task.
 
 **Returns:** Object with `positions` and `is_target` arrays
 
-### createInstructions(instruction_pages, enable_tts, ttsOptions)
-Creates instruction pages with optional text-to-speech.
+### createInstructions(instruction_pages)
+Creates instruction pages. Takes an array of strings.
 
 **Parameters:**
 - `instruction_pages` (string[]): Array of instruction HTML strings
-- `enable_tts` (boolean): Enable text-to-speech
-- `ttsOptions` (object): TTS configuration options
 
-**Returns:** A jsPsych instructions trial object
+**Returns:** A jsPsych instructions trial object with a page for each string.
 
 ## Examples
 
@@ -206,7 +201,7 @@ Creates instruction pages with optional text-to-speech.
 const timeline = createTimeline({
   n_back: 2,
   total_trials: 30,
-  target_percentage: 25,
+  target_percentage: 40,
   include_instructions: true
 });
 ```
@@ -216,22 +211,20 @@ const timeline = createTimeline({
 const timeline = createMultiLevelNBackTimeline({
   n_backs: [1, 2, 3],
   trials_per_level: 50,
-  target_percentage: 25,
+  target_percentage: 40,
   show_feedback_text: false,
   randomize_levels: true
 });
 ```
 
-### Accessible Version with TTS
+### Version with Feedback
 ```javascript
 const timeline = createTimeline({
   n_back: 1,
   total_trials: 20,
   include_instructions: true,
-  enable_tts: true,
-  tts_method: 'google',
-  tts_lang: 'en-US',
-  show_feedback_text: true
+  show_feedback_text: true,
+  show_feedback_border: true
 });
 ```
 
@@ -242,7 +235,7 @@ const timeline = createTimeline({
   rows: 4,
   cols: 4,
   total_trials: 60,
-  target_percentage: 20,
+  target_percentage: 30,
   stimulus_duration: 500,
   isi_duration: 1500,
   cell_size: 100
@@ -263,7 +256,6 @@ const experiment = [
   
   // Practice trials
   createPracticeTimeline({
-    enable_tts: true,
     show_feedback_text: true
   }),
   
@@ -271,7 +263,7 @@ const experiment = [
   createTimeline({
     n_back: 2,
     total_trials: 100,
-    target_percentage: 25
+    target_percentage: 40
   }),
   
   // Debrief
@@ -308,26 +300,21 @@ const jsPsych = initJsPsych({
 
 ### Common Issues
 
-**TTS not working:**
-- Ensure browser supports the chosen TTS method
-- Check browser permissions for audio
-- Try switching between 'google' and 'system' TTS methods
-
 **Grid not displaying correctly:**
 - Verify CSS imports are included
 - Check container dimensions
 - Ensure cell_size parameter is appropriate
 
 **Performance issues:**
-- Reduce grid size for better performance
+- Reduce grid size for better performance (can override auto-size using cell_size)
 - Decrease stimulus_duration for faster trials
 - Consider disabling feedback for production use
 
 ### Browser Compatibility
 
-- Chrome/Edge: Full support including Google TTS
-- Firefox: Full support with system TTS
-- Safari: Limited TTS support
+- Chrome/Edge: Full support
+- Firefox: Full support
+- Safari: Full support
 - Mobile browsers: Basic functionality supported
 
 ## Author / Citation

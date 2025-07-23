@@ -5,6 +5,7 @@
   <title>Spatial N-Back Task</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <script src="https://unpkg.com/jspsych"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-html-button-response@2.1.0"></script>
   <script src="../dist/index.global.js"></script>
   <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css">
   <link rel="stylesheet" href="../src/styles.css">
@@ -13,16 +14,18 @@
 <body></body>
 <script>
   const jsPsych = initJsPsych({
-    //progress_bar for whole timeline
-    show_progress_bar: true,
-    auto_update_progress_bar: true,
-    on_finish: function () {
+      on_finish: function () {
       jsPsych.data.displayData();
     }
   });
 
   const instructions = jsPsychTimelineSpatialNback.createInstructions();
   const practice = jsPsychTimelineSpatialNback.createPracticeTimeline();
+  const confirm = {
+    type: jsPsychHtmlButtonResponse,
+    stimulus: '<p>Press CONTINUE to start the main task.</p>',
+    choices: ['CONTINUE'],
+  };
   // Create a custom timeline
   const spatial1Back = jsPsychTimelineSpatialNback.createTimeline({
     rows: 3,
@@ -33,9 +36,9 @@
     stimulus_duration: 750,
     isi_duration: 250,
     feedback_duration: 1000,
-    show_feedback_text: true,
-    show_feedback_border: true,
-    prompt: "Click the button when the position matches the one from {n_back} trial{plural} ago", //overrides text.ts
+    show_feedback_text: false,
+    show_feedback_border: false,
+    prompt: "", //overrides text.ts
     buttons: ["O", "X"],                                                                         //overrides text.ts
     stimulus_color: "#2196F3",
     correct_color: "#4CAF50",
@@ -52,7 +55,7 @@
   //     trials_per_level: 20
   // });
 
-  jsPsych.run([spatial1Back]);
+  jsPsych.run([instructions, practice, spatial1Back]);
 </script>
 
 </html>
