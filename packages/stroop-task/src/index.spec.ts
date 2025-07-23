@@ -114,71 +114,43 @@ describe("stroop-task timeline components", () => {
         jsPsych = initJsPsych();
     });
 
-    describe("createWelcome", () => {
-        test("creates welcome trial with correct structure", () => {
-            const welcome = timelineComponents.createWelcome();
+    describe("createWelcomeAndInstructions", () => {
+        test("creates welcome and instructions with correct structure", () => {
+            const welcome = timelineComponents.createWelcomeAndInstructions();
             expect(welcome).toHaveProperty('type');
-            expect(welcome).toHaveProperty('stimulus');
-            expect(welcome).toHaveProperty('choices');
-            expect(welcome).toHaveProperty('post_trial_gap');
+            expect(welcome).toHaveProperty('pages');
+            expect(welcome).toHaveProperty('show_clickable_nav');
+            expect(welcome).toHaveProperty('allow_keys');
         });
 
-        test("has correct choices", () => {
-            const welcome = timelineComponents.createWelcome();
-            expect(welcome.choices).toEqual(['Continue']);
+        test("has multiple pages with instructions", () => {
+            const welcome = timelineComponents.createWelcomeAndInstructions();
+            expect(Array.isArray(welcome.pages)).toBe(true);
+            expect(welcome.pages.length).toBeGreaterThan(1);
         });
 
-        test("stimulus contains key instructions", () => {
-            const welcome = timelineComponents.createWelcome();
-            const stimulus = welcome.stimulus.toLowerCase();
-            expect(stimulus).toContain('stroop');
-            expect(stimulus).toContain('color');
-            expect(stimulus).toContain('ink');
-            expect(stimulus).toContain('welcome');
+        test("pages contain key instructions", () => {
+            const welcome = timelineComponents.createWelcomeAndInstructions();
+            const allPages = welcome.pages.join(' ').toLowerCase();
+            expect(allPages).toContain('stroop');
+            expect(allPages).toContain('color');
+            expect(allPages).toContain('welcome');
         });
 
         test("has proper HTML structure", () => {
-            const welcome = timelineComponents.createWelcome();
-            expect(welcome.stimulus).toMatch(/<div[^>]*>/);
-            expect(welcome.stimulus).toMatch(/<h1[^>]*>/);
-            expect(welcome.stimulus).toMatch(/<p[^>]*>/);
+            const welcome = timelineComponents.createWelcomeAndInstructions();
+            const firstPage = welcome.pages[0];
+            expect(firstPage).toMatch(/<div[^>]*>/);
+            expect(firstPage).toMatch(/<h1[^>]*>/);
         });
 
-        test("post_trial_gap is reasonable value", () => {
-            const welcome = timelineComponents.createWelcome();
-            expect(typeof welcome.post_trial_gap).toBe('number');
-            expect(welcome.post_trial_gap).toBeGreaterThanOrEqual(0);
-            expect(welcome.post_trial_gap).toBeLessThan(5000);
+        test("has navigation settings", () => {
+            const welcome = timelineComponents.createWelcomeAndInstructions();
+            expect(welcome.show_clickable_nav).toBe(true);
+            expect(welcome.allow_keys).toBe(true);
         });
     });
 
-    describe("createInstructions", () => {
-        test("creates instructions with multiple pages", () => {
-            const instructions = timelineComponents.createInstructions();
-            expect(instructions).toHaveProperty('type');
-            expect(instructions).toHaveProperty('pages');
-            expect(Array.isArray(instructions.pages)).toBe(true);
-            expect(instructions.pages.length).toBeGreaterThan(1);
-        });
-
-        test("includes navigation buttons", () => {
-            const instructions = timelineComponents.createInstructions();
-            expect(instructions.show_clickable_nav).toBe(true);
-            expect(instructions).toHaveProperty('button_label_previous');
-            expect(instructions).toHaveProperty('button_label_next');
-            expect(instructions).toHaveProperty('button_label_finish');
-        });
-
-        test("contains essential instruction content", () => {
-            const instructions = timelineComponents.createInstructions();
-            const allPages = instructions.pages.join(' ').toLowerCase();
-            expect(allPages).toContain('ink color');
-            expect(allPages).toContain('red');
-            expect(allPages).toContain('green');
-            expect(allPages).toContain('blue');
-            expect(allPages).toContain('yellow');
-        });
-    });
 
     describe("createFixation", () => {
         test("creates fixation cross with correct properties", () => {
@@ -233,7 +205,7 @@ describe("stroop-task timeline components", () => {
         };
 
         test("creates trial with correct structure", () => {
-            const trial = timelineComponents.createStroopTrial(jsPsych, mockStimulus, false);
+            const trial = timelineComponents.createStroopTrial(mockStimulus, false, 3000, 2, 2, ['RED', 'GREEN', 'BLUE', 'YELLOW']);
             expect(trial).toHaveProperty('type');
             expect(trial).toHaveProperty('stimulus');
             expect(trial).toHaveProperty('choices');
@@ -242,19 +214,19 @@ describe("stroop-task timeline components", () => {
         });
 
         test("has correct choices", () => {
-            const trial = timelineComponents.createStroopTrial(jsPsych, mockStimulus, false, 3000, 2, 2, ['RED', 'GREEN', 'BLUE', 'YELLOW']);
+            const trial = timelineComponents.createStroopTrial(mockStimulus, false, 3000, 2, 2, ['RED', 'GREEN', 'BLUE', 'YELLOW']);
             expect(trial.choices).toEqual(['RED', 'GREEN', 'BLUE', 'YELLOW']);
         });
 
         test("stimulus displays word in correct color", () => {
-            const trial = timelineComponents.createStroopTrial(jsPsych, mockStimulus, false);
+            const trial = timelineComponents.createStroopTrial(mockStimulus, false, 3000, 2, 2, ['RED', 'GREEN', 'BLUE', 'YELLOW']);
             expect(trial.stimulus).toContain('RED');
             expect(trial.stimulus).toContain('blue');
             expect(trial.stimulus).toMatch(/color:\s*blue/);
         });
 
         test("sets correct data properties", () => {
-            const trial = timelineComponents.createStroopTrial(jsPsych, mockStimulus, true);
+            const trial = timelineComponents.createStroopTrial(mockStimulus, true, 3000, 2, 2, ['RED', 'GREEN', 'BLUE', 'YELLOW']);
             expect(trial.data.task).toBe('practice');
             expect(trial.data.word).toBe('RED');
             expect(trial.data.color).toBe('blue');
@@ -263,8 +235,8 @@ describe("stroop-task timeline components", () => {
         });
 
         test("distinguishes practice from main trials", () => {
-            const practiceTrial = timelineComponents.createStroopTrial(jsPsych, mockStimulus, true);
-            const mainTrial = timelineComponents.createStroopTrial(jsPsych, mockStimulus, false);
+            const practiceTrial = timelineComponents.createStroopTrial(mockStimulus, true, 3000, 2, 2, ['RED', 'GREEN', 'BLUE', 'YELLOW']);
+            const mainTrial = timelineComponents.createStroopTrial(mockStimulus, false, 3000, 2, 2, ['RED', 'GREEN', 'BLUE', 'YELLOW']);
 
             expect(practiceTrial.data.task).toBe('practice');
             expect(mainTrial.data.task).toBe('response');
@@ -272,17 +244,17 @@ describe("stroop-task timeline components", () => {
 
         test("accepts custom trial timeout", () => {
             const customTimeout = 5000;
-            const trial = timelineComponents.createStroopTrial(jsPsych, mockStimulus, false, customTimeout);
+            const trial = timelineComponents.createStroopTrial(mockStimulus, false, customTimeout, 2, 2, ['RED', 'GREEN', 'BLUE', 'YELLOW']);
             expect(trial.trial_duration).toBe(customTimeout);
         });
 
         test("uses default timeout when none provided", () => {
-            const trial = timelineComponents.createStroopTrial(jsPsych, mockStimulus, false);
+            const trial = timelineComponents.createStroopTrial(mockStimulus, false, undefined, 2, 2, ['RED', 'GREEN', 'BLUE', 'YELLOW']);
             expect(trial.trial_duration).toBe(3000); // DEFAULT_TRIAL_TIMEOUT
         });
 
         test("on_finish function sets correct property", () => {
-            const trial = timelineComponents.createStroopTrial(jsPsych, mockStimulus, false);
+            const trial = timelineComponents.createStroopTrial(mockStimulus, false, 3000, 2, 2, ['RED', 'GREEN', 'BLUE', 'YELLOW']);
             const mockData: { response: number; correct_response: number; correct?: boolean } = { response: 2, correct_response: 2 };
             trial.on_finish(mockData);
             expect(mockData.correct).toBe(true);
@@ -378,7 +350,7 @@ describe("stroop-task full timeline", () => {
             practice_trials_per_condition: 2,
             congruent_main_trials: 4,
             incongruent_main_trials: 4,
-            show_instructions: false,
+            show_welcome_and_instructions: false,
             show_results: false
         };
 
@@ -393,14 +365,14 @@ describe("stroop-task full timeline", () => {
     test("includes welcome component", () => {
         const timeline = createTimeline(jsPsych);
         const hasWelcome = timeline.some(trial =>
-            trial.stimulus && typeof trial.stimulus === 'string' &&
-            trial.stimulus.toLowerCase().includes('welcome')
+            trial.pages && Array.isArray(trial.pages) &&
+            trial.pages.some(page => page.toLowerCase().includes('welcome'))
         );
         expect(hasWelcome).toBe(true);
     });
 
     test("includes instructions when enabled", () => {
-        const timelineWithInstructions = createTimeline(jsPsych, { show_instructions: true });
+        const timelineWithInstructions = createTimeline(jsPsych, { show_welcome_and_instructions: true });
         const hasInstructions = timelineWithInstructions.some(trial =>
             trial.pages && Array.isArray(trial.pages)
         );
@@ -408,7 +380,7 @@ describe("stroop-task full timeline", () => {
     });
 
     test("excludes instructions when disabled", () => {
-        const timelineWithoutInstructions = createTimeline(jsPsych, { show_instructions: false });
+        const timelineWithoutInstructions = createTimeline(jsPsych, { show_welcome_and_instructions: false });
         const hasInstructions = timelineWithoutInstructions.some(trial =>
             trial.pages && Array.isArray(trial.pages)
         );
@@ -436,7 +408,7 @@ describe("stroop-task full timeline", () => {
             practice_trials_per_condition: 1,
             congruent_main_trials: 1,
             incongruent_main_trials: 1,
-            show_instructions: false,
+            show_welcome_and_instructions: false,
             show_results: false
         });
 

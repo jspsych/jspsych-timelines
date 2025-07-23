@@ -7,12 +7,12 @@ A comprehensive jsPsych timeline implementation of the classic Stroop task. This
 ## Loading
 
 ```javascript
-import { createTimeline } from '@jspsych/stroop-task';
+import { createTimeline } from '@jspsych-timeline/stroop-task-timeline';
 ```
 
 ## Compatibility
 
-`stroop-timeline` requires jsPsych v8.0.0 or later.
+`stroop-task-timeline` requires jsPsych v8.0.0 or later.
 
 ## Documentation
 

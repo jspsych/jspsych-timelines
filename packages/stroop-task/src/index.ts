@@ -4,20 +4,8 @@ import jsPsychHtmlButtonResponse from '@jspsych/plugin-html-button-response';
 import jsPsychInstructions from '@jspsych/plugin-instructions';
 
 /* Constants */
-const DEFAULT_PRACTICE_TRIALS_PER_CONDITION = 1;
-const DEFAULT_MAIN_TRIALS_PER_CONDITION = 6;
 const DEFAULT_TRIAL_TIMEOUT = 3000;
 const DEFAULT_FIXATION_DURATION = { min: 300, max: 1000 };
-const DEFAULT_SHOW_PRACTICE_FEEDBACK = true;
-const DEFAULT_INCLUDE_FIXATION = true;
-
-// const COLORS = [
-//     { name: 'RED', hex: 'red', index: 0 },
-//     { name: 'GREEN', hex: 'green', index: 1 },
-//     { name: 'BLUE', hex: 'blue', index: 2 },
-//     { name: 'YELLOW', hex: 'yellow', index: 3 }
-// ];
-
 const WORDS = ['RED', 'GREEN', 'BLUE', 'YELLOW'];
 
 /* Types */
@@ -93,24 +81,6 @@ function shuffleArray<T>(array: T[]): T[] {
     return newArray;
 }
 
-// /* Timeline component generating functions */
-// function createWelcome() {
-//     const welcome = {
-//         type: jsPsychHtmlButtonResponse,
-//         stimulus: `
-//             <div style="max-width: 700px; margin: 0 auto; text-align: center; padding: 20px;">
-//                 <h1>Welcome to the Stroop Task!</h1>
-//                 <p>In this experiment, you will see words printed in different colors.</p>
-//                 <p>Your task is to identify the <strong>color of the ink</strong> the word is printed in, NOT the word itself.</p>
-//                 <p>Please respond as quickly and accurately as possible.</p>
-//             </div>
-//         `,
-//         choices: ['Continue'],
-//         post_trial_gap: 500
-//     };
-
-//     return welcome;
-// }
 
 function createWelcomeAndInstructions(
     choiceOfColors?: string[]
@@ -169,49 +139,6 @@ function createWelcomeAndInstructions(
     return welcomeAndInstructions;
 }
 
-//need to change the code so that the choice of color shows up in the instructions, it is smth to do with changing the colors on line 125, better better prompting 
-// function createInstructions(
-//     choiceOfColors?: string[]
-// ) {
-//     const instructions = {
-//         type: jsPsychInstructions,
-//         pages: [
-//             `<div style="max-width: 700px; margin: 0 auto; padding: 20px;">
-//                 <h2>Instructions</h2>
-//                 <p>You will see a word (e.g., "RED", "BLUE") displayed in one of four ink colors: red, green, blue, or yellow.</p>
-//                 <p>Your task is to click the button corresponding to the <strong>INK COLOR</strong> of the word, ignoring what the word says.</p>
-//                 <p>Click the colored buttons that will appear below each word:</p><div style="display: flex; justify-content: space-around; margin: 20px 0; flex-wrap: wrap;">
-
-//                 ${(() => {
-//                 const selectedColors = choiceOfColors || ['RED', 'GREEN', 'BLUE', 'YELLOW'];
-//                 const dynamicColors = selectedColors.map((colorName, index) => ({
-//                     name: colorName,
-//                     hex: colorName.toLowerCase(),
-//                     index: index
-//                 }));
-//                 return dynamicColors.map(color => `
-//                         <div style="padding: 15px; border: 1px solid #ccc; border-radius: 8px; margin: 10px; min-width: 120px; text-align: center;">
-//                             <span style="color: ${color.hex}; font-size: 24px; font-weight: bold; display: block; margin-bottom: 5px;">${color.name}</span>
-//                         </div>
-//                     `).join('');
-//             })()}
-//             </div>`,
-//             `<div style="max-width: 700px; margin: 0 auto; padding: 20px;">
-//                 <h2>Examples</h2>
-//                 <p>If you see the word <strong style="color:blue;">RED</strong> (written in BLUE ink), you should click the BLUE button.</p>
-//                 <p>If you see the word <strong style="color:green;">GREEN</strong> (written in GREEN ink), you should click the GREEN button.</p>
-//                 <p>There will be a short practice session first.</p>
-//             </div>`
-//         ],
-//         show_clickable_nav: true,
-//         button_label_previous: 'Previous',
-//         button_label_next: 'Next',
-//         button_label_finish: 'Begin Practice'
-//     };
-
-//     return instructions;
-// }
-
 function createFixation(duration?: { min: number, max: number }, randomize: boolean = true) {
     const fixationDuration = duration || DEFAULT_FIXATION_DURATION;
 
@@ -235,7 +162,6 @@ function createFixation(duration?: { min: number, max: number }, randomize: bool
 }
 
 function createStroopTrial(
-    jsPsych: JsPsych,
     stimulus: StroopStimulus,
     isPractice: boolean,
     trialTimeout?: number,
@@ -329,7 +255,6 @@ function createResults(jsPsych: JsPsych) {
         type: jsPsychHtmlButtonResponse,
         stimulus: () => {
             const trials = jsPsych.data.get().filter({ task: 'response' });
-            const correctTrials = trials.filter({ correct: true });
 
             if (trials.count() === 0) {
                 return `<p>No trial data found.</p>`;
@@ -390,7 +315,6 @@ export function createTimeline(
         show_practice_feedback = true,
         include_fixation = true,
         show_welcome_and_instructions = true,
-        // show_instructions = true,
         show_results = true,
         randomise_main_trial_condition_order = true,
         randomise_practice_trial_condition_order = true,
@@ -407,7 +331,6 @@ export function createTimeline(
         show_practice_feedback?: boolean,
         include_fixation?: boolean,
         show_welcome_and_instructions?: boolean,
-        // show_instructions?: boolean,
         show_results?: boolean,
         randomise_main_trial_condition_order?: boolean,
         randomise_practice_trial_condition_order?: boolean,
@@ -427,18 +350,11 @@ export function createTimeline(
     const congruentStimuli = stimuli.filter(s => s.congruent);
     const incongruentStimuli = stimuli.filter(s => !s.congruent);
 
-    // Add welcome
-    // timeline.push(createWelcome());
-
     // Add createCelcomeAndInstruction function
     if (show_welcome_and_instructions) {
         timeline.push(createWelcomeAndInstructions(choice_of_colors));
     }   
 
-    // Add instructions if requested
-    // if (showInstructions) {
-    //     timeline.push(createInstructions(choiceOfColors));
-    // }
 
     // Create practice trials
     let practiceStimuli = [];
@@ -452,7 +368,7 @@ export function createTimeline(
         if (include_fixation) {
             timeline.push(createFixation(fixation_duration, randomise_fixation_duration));
         }
-        timeline.push(createStroopTrial(jsPsych, stimulus, true, trial_timeout, number_of_rows, number_of_columns, choice_of_colors));
+        timeline.push(createStroopTrial(stimulus, true, trial_timeout, number_of_rows, number_of_columns, choice_of_colors));
         if (show_practice_feedback) {
             timeline.push(createPracticeFeedback(jsPsych, choice_of_colors));
         }
@@ -478,7 +394,7 @@ export function createTimeline(
         if (include_fixation) {
             timeline.push(createFixation(fixation_duration, randomise_fixation_duration));
         }
-        timeline.push(createStroopTrial(jsPsych, stimulus, false, trial_timeout, number_of_rows, number_of_columns, choice_of_colors));
+        timeline.push(createStroopTrial(stimulus, false, trial_timeout, number_of_rows, number_of_columns, choice_of_colors));
     }
 
     // Add results if requested
@@ -491,8 +407,6 @@ export function createTimeline(
 
 /* Export individual components for custom timeline building */
 export const timelineComponents = {
-    // createWelcome,
-    // createInstructions,
     createWelcomeAndInstructions,
     createFixation,
     createStroopTrial,
