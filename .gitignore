@@ -134,12 +134,5 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-# Ignore specific packages, 
-packages/pattern-comparison-task/
-packages/pattern-comparison/
-packages/speeded-matching/
-packages/flanker-inhibitory/
-packages/visual-reasoning/
-
 # Claude
 .claude/
