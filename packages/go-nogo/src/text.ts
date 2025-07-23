@@ -1,7 +1,7 @@
 export const englishText = {
   // Default stimuli
-  defaultGoStimulus: 'GO',
-  defaultNoGoStimulus: 'NO-GO',
+  defaultGoStimulus: 'Y',
+  defaultNoGoStimulus: 'X',
   defaultButtonText: 'Click',
   
   // Instructions
