@@ -4,7 +4,7 @@ A comprehensive implementation of the digit span working memory task for jsPsych
 
 ## Overview
 
-The digit span task presents participants with sequences of single digits (1-9) displayed one at a time. After viewing the complete sequence, participants use an on-screen number pad to enter their response. The task supports both forward and backward conditions, configurable sequence generation, and includes text-to-speech functionality for accessibility.
+The digit span task presents participants with sequences of single digits (1-9) displayed one at a time. After viewing the complete sequence, participants use an on-screen number pad to enter their response. The task supports both forward and backward conditions and configurable sequence generation.
 
 ## Parameters
 
@@ -18,8 +18,7 @@ import { createTimeline } from '@jspsych-timelines/digit-span';
 const timeline = createTimeline(jsPsych, {
   includeForward: true,
   includeBackward: true,
-  startingSpan: 3,
-  enable_tts: true
+  startingSpan: 3
 });
 ```
 
@@ -34,12 +33,6 @@ Parameter | Type | Default Value | Description
 `betweenDigitDelay` | number | `500` | Delay between digits (ms)
 `responseTimeLimit` | number | `30000` | Maximum time for response (ms)
 `trial_sequence` | Array | - | Custom sequence of 'forward'/'backward' trials
-`enable_tts` | boolean | `true` | Enable text-to-speech for instructions
-`tts_method` | string | `'google'` | TTS method: 'google' or 'system'
-`tts_rate` | number | `1.0` | Speech rate (0.1 to 10)
-`tts_pitch` | number | `1.0` | Speech pitch (0 to 2)
-`tts_volume` | number | `1.0` | Speech volume (0 to 1)
-`tts_lang` | string | `'en-US'` | Language code for TTS
 
 ### Usage with jsPsych
 
@@ -51,8 +44,7 @@ import { createTimeline } from '@jspsych-timelines/digit-span';
 // Create the timeline
 const digitSpanTimeline = createTimeline(jsPsych, {
   startingSpan: 4,
-  maxSpan: 8,
-  enable_tts: false
+  maxSpan: 8
 });
 
 // Add to your experiment
@@ -193,22 +185,12 @@ const timeline = createTimeline(jsPsych, {
 });
 ```
 
-### With TTS Configuration
-```js
-const accessibleTimeline = createTimeline(jsPsych, {
-  enable_tts: true,
-  tts_method: 'system',
-  tts_rate: 0.8,
-  tts_lang: 'en-US'
-});
-```
 
 ## Features
 
 - **Forward and Backward Conditions**: Test both forward recall (same order) and backward recall (reverse order)
 - **Adaptive Difficulty**: Sequences start short and can increase in length based on performance
 - **Mobile-Optimized Interface**: Responsive number pad that works well on touch devices
-- **Text-to-Speech Support**: Built-in TTS functionality with Google TTS and system TTS fallbacks
 - **Flexible Trial Sequencing**: Multiple options for controlling the order of forward/backward trials
 - **Comprehensive Data Collection**: Detailed trial-by-trial data including response accuracy and timing
 - **Customizable Presentation**: Configurable timing parameters for digit display and inter-digit delays
@@ -221,5 +203,4 @@ const accessibleTimeline = createTimeline(jsPsych, {
 - Safari 11+
 - Edge 79+
 
-TTS functionality requires modern browser support for either Web Speech API or audio playback capabilities.
 

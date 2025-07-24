@@ -7,23 +7,11 @@ import {
 } from './index';
 import { initJsPsych } from 'jspsych';
 
-// Mock DOM and audio for TTS testing
-const mockAudio = {
-  play: jest.fn().mockResolvedValue(undefined),
-  pause: jest.fn(),
-  load: jest.fn(),
-  addEventListener: jest.fn(),
-  currentTime: 0,
-  src: ''
-};
-
-// Mock HTMLAudioElement
-(global as any).Audio = jest.fn(() => mockAudio);
 
 // Mock document methods
 Object.defineProperty(global, 'document', {
   value: {
-    getElementById: jest.fn((id) => ({
+    getElementById: jest.fn(() => ({
       textContent: '',
       innerHTML: ''
     })),
@@ -38,33 +26,6 @@ Object.defineProperty(global, 'document', {
   }
 });
 
-// Mock DOMParser
-(global as any).DOMParser = jest.fn(() => ({
-  parseFromString: jest.fn(() => ({
-    body: { textContent: 'Test content' }
-  }))
-}));
-
-// Mock speechSynthesis
-Object.defineProperty(global, 'speechSynthesis', {
-  value: {
-    speak: jest.fn(),
-    cancel: jest.fn(),
-    pause: jest.fn(),
-    resume: jest.fn()
-  }
-});
-
-// Mock SpeechSynthesisUtterance
-(global as any).SpeechSynthesisUtterance = jest.fn(() => ({
-  rate: 1,
-  volume: 1,
-  pitch: 1,
-  lang: '',
-  onstart: null,
-  onend: null,
-  onerror: null
-}));
 
 describe('Helper Functions', () => {
   describe('createAlternatingSequence', () => {
@@ -243,48 +204,36 @@ describe('createTimeline', () => {
   describe('Span Configuration', () => {
     test('custom span range', () => {
       const timeline = createTimeline(jsPsych, { 
-        startingSpan: 2, 
-        maxSpan: 8 
+        startingSpan: 2
       });
       expect(timeline).toBeDefined();
     });
 
     test('single digit span', () => {
       const timeline = createTimeline(jsPsych, { 
-        startingSpan: 1, 
-        maxSpan: 1 
+        startingSpan: 1
       });
       expect(timeline).toBeDefined();
     });
 
     test('large span range', () => {
       const timeline = createTimeline(jsPsych, { 
-        startingSpan: 10, 
-        maxSpan: 15 
+        startingSpan: 10
       });
       expect(timeline).toBeDefined();
     });
 
-    test('invalid span range (starting > max)', () => {
-      const timeline = createTimeline(jsPsych, { 
-        startingSpan: 8, 
-        maxSpan: 5 
-      });
-      expect(timeline).toBeDefined(); // Should still work, just might behave oddly
-    });
 
     test('zero span values', () => {
       const timeline = createTimeline(jsPsych, { 
-        startingSpan: 0, 
-        maxSpan: 0 
+        startingSpan: 0
       });
       expect(timeline).toBeDefined();
     });
 
     test('negative span values', () => {
       const timeline = createTimeline(jsPsych, { 
-        startingSpan: -1, 
-        maxSpan: -5 
+        startingSpan: -1
       });
       expect(timeline).toBeDefined();
     });
@@ -310,8 +259,7 @@ describe('createTimeline', () => {
     test('very long timing values', () => {
       const timeline = createTimeline(jsPsych, { 
         digitPresentationTime: 10000,
-        betweenDigitDelay: 5000,
-        responseTimeLimit: 60000 
+        betweenDigitDelay: 5000
       });
       expect(timeline).toBeDefined();
     });
@@ -325,73 +273,13 @@ describe('createTimeline', () => {
     });
   });
 
-  describe('TTS Configuration', () => {
-    test('TTS enabled with default settings', () => {
-      const timeline = createTimeline(jsPsych, { enable_tts: true });
-      expect(timeline).toBeDefined();
-    });
-
-    test('TTS disabled', () => {
-      const timeline = createTimeline(jsPsych, { enable_tts: false });
-      expect(timeline).toBeDefined();
-    });
-
-    test('Google TTS method', () => {
-      const timeline = createTimeline(jsPsych, { 
-        enable_tts: true, 
-        tts_method: 'google' 
-      });
-      expect(timeline).toBeDefined();
-    });
-
-    test('System TTS method', () => {
-      const timeline = createTimeline(jsPsych, { 
-        enable_tts: true, 
-        tts_method: 'system' 
-      });
-      expect(timeline).toBeDefined();
-    });
-
-    test('custom TTS parameters', () => {
-      const timeline = createTimeline(jsPsych, { 
-        enable_tts: true,
-        tts_rate: 0.5,
-        tts_pitch: 1.5,
-        tts_volume: 0.7,
-        tts_lang: 'es-ES'
-      });
-      expect(timeline).toBeDefined();
-    });
-
-    test('extreme TTS parameter values', () => {
-      const timeline = createTimeline(jsPsych, { 
-        enable_tts: true,
-        tts_rate: 10,
-        tts_pitch: 2,
-        tts_volume: 1,
-        tts_lang: 'invalid-lang'
-      });
-      expect(timeline).toBeDefined();
-    });
-
-    test('negative TTS parameter values', () => {
-      const timeline = createTimeline(jsPsych, { 
-        enable_tts: true,
-        tts_rate: -1,
-        tts_pitch: -1,
-        tts_volume: -1
-      });
-      expect(timeline).toBeDefined();
-    });
-  });
 
   describe('Complex Configuration Combinations', () => {
     test('minimal configuration', () => {
       const timeline = createTimeline(jsPsych, { 
         trial_sequence: ['forward'],
         startingSpan: 1,
-        digitPresentationTime: 100,
-        enable_tts: false
+        digitPresentationTime: 100
       });
       expect(timeline).toBeDefined();
     });
@@ -402,17 +290,8 @@ describe('createTimeline', () => {
         includeForward: true,
         includeBackward: true,
         startingSpan: 5,
-        maxSpan: 12,
-        trialsPerSpan: 3,
         digitPresentationTime: 2000,
-        betweenDigitDelay: 1000,
-        responseTimeLimit: 45000,
-        enable_tts: true,
-        tts_method: 'google',
-        tts_rate: 0.8,
-        tts_pitch: 1.2,
-        tts_volume: 0.9,
-        tts_lang: 'en-GB'
+        betweenDigitDelay: 1000
       });
       expect(timeline).toBeDefined();
     });
@@ -499,13 +378,6 @@ describe('createTimeline', () => {
       }
     });
 
-    test('instructions have TTS configuration applied', () => {
-      const timeline = createTimeline(jsPsych, { enable_tts: true });
-      const instructions = timeline[0];
-      
-      expect(instructions).toHaveProperty('on_load');
-      expect(instructions).toHaveProperty('on_finish');
-    });
   });
 
   describe('Data Collection Validation', () => {
@@ -541,8 +413,7 @@ describe('createTimeline', () => {
       const timeline = createTimeline(jsPsych, { 
         includeForward: true,
         includeBackward: true,
-        startingSpan: 3,
-        maxSpan: 7
+        startingSpan: 3
       });
       expect(timeline).toBeDefined();
     });
@@ -610,29 +481,17 @@ describe('Real-world Scenarios', () => {
       trial_sequence: createBlockedSequence(10, 10),
       startingSpan: 3,
       digitPresentationTime: 1000,
-      betweenDigitDelay: 500,
-      enable_tts: false
+      betweenDigitDelay: 500
     });
     expect(timeline).toBeDefined();
   });
 
-  test('accessibility study with TTS', () => {
-    const timeline = createTimeline(jsPsych, {
-      trial_sequence: createAlternatingSequence(16),
-      enable_tts: true,
-      tts_method: 'system',
-      tts_rate: 0.7,
-      tts_volume: 1.0
-    });
-    expect(timeline).toBeDefined();
-  });
 
   test('pilot study configuration', () => {
     const timeline = createTimeline(jsPsych, {
       trial_sequence: ['forward', 'backward'],
       startingSpan: 2,
-      digitPresentationTime: 1500,
-      responseTimeLimit: 10000
+      digitPresentationTime: 1500
     });
     expect(timeline).toBeDefined();
   });
@@ -642,8 +501,7 @@ describe('Real-world Scenarios', () => {
       trial_sequence: Array(8).fill('forward'), // Only forward for children
       startingSpan: 2,
       digitPresentationTime: 2000,
-      betweenDigitDelay: 1000,
-      enable_tts: true
+      betweenDigitDelay: 1000
     });
     expect(timeline).toBeDefined();
   });
@@ -652,10 +510,7 @@ describe('Real-world Scenarios', () => {
     const timeline = createTimeline(jsPsych, {
       trial_sequence: createBalancedRandomSequence(30),
       startingSpan: 3,
-      maxSpan: 9,
-      digitPresentationTime: 1000,
-      responseTimeLimit: 30000,
-      enable_tts: false
+      digitPresentationTime: 1000
     });
     expect(timeline).toBeDefined();
   });

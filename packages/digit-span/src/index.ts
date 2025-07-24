@@ -3,190 +3,12 @@ import htmlButtonResponse from "@jspsych/plugin-html-button-response";
 import jsPsychInstructions from "@jspsych/plugin-instructions";
 import { instruction_pages, trial_text } from "./text";
 
-// Global audio reference for stopping Google TTS
-let currentGoogleAudio: HTMLAudioElement | null = null;
 
 /**
- * Intelligent TTS with user preference support
- * Tries user's preferred method first, then the other method as fallback
- */
-async function speakText(text: string, options: { lang?: string, volume?: number, method?: 'google' | 'system' } = {}) {
-  // Stop any current speech first and wait for it to stop
-  stopAllSpeech();
-  
-  const preferredMethod = options.method || 'google';
-  
-  // Try preferred method first
-  try {
-    if (preferredMethod === 'google') {
-      await speakWithGoogleTTS(text, options.lang || 'en');
-      return;
-    } else {
-      await speakWithSystemTTS(text, options);
-      return;
-    }
-  } catch (preferredSpeechError) {
-    // Preferred method failed, continue to try all methods
-    console.log(preferredSpeechError)
-  }
-  
-  // Try Google TTS regardless
-  stopAllSpeech();
-  await new Promise(resolve => setTimeout(resolve, 100));
-  
-  try {
-    await speakWithGoogleTTS(text, options.lang || 'en');
-    return;
-  } catch (googleError) {
-    // Google failed, continue to system
-  }
-  
-  // Try system TTS as final fallback
-  stopAllSpeech();
-  await new Promise(resolve => setTimeout(resolve, 100));
-  
-  try {
-    await speakWithSystemTTS(text, options);
-    return;
-  } catch (systemError) {
-    console.warn('🔊 TTS unavailable');
-  }
-}
-
-/**
- * Stop all speech including Google TTS audio - aggressively stops everything
- */
-function stopAllSpeech() {
-  // Stop system TTS aggressively
-  if ('speechSynthesis' in window) {
-      speechSynthesis.cancel();
-      speechSynthesis.pause();
-      speechSynthesis.resume();
-      speechSynthesis.cancel();
-  }
-  
-  // Stop Google TTS audio aggressively
-  if (currentGoogleAudio) {
-    try {
-      currentGoogleAudio.pause();
-      currentGoogleAudio.currentTime = 0; // Reset to beginning
-      currentGoogleAudio.src = ''; // Clear source to stop loading
-    } catch (e) {
-      // Ignore errors, just ensure we clear the reference
-    }
-    currentGoogleAudio = null;
-  }
-}
-
-/**
- * Simple system TTS function 
- * Browser will automatically select the best voice for the specified language
- */
-function speakWithSystemTTS(text: string, options: { rate?: number, volume?: number, pitch?: number, lang?: string } = {}) {
-  return new Promise<void>((resolve, reject) => {
-    if ('speechSynthesis' in window) {
-      // Create and speak the utterance
-      const utterance = new SpeechSynthesisUtterance(text);
-      
-      // Apply options with defaults
-      utterance.rate = options.rate ?? 0.8;
-      utterance.volume = options.volume ?? 0.8;
-      utterance.pitch = options.pitch ?? 1.0;
-      
-      // Set language if provided (browser will pick best voice)
-      if (options.lang) {
-        utterance.lang = options.lang;
-      }
-      
-      // Add event listeners
-      utterance.onstart = () => resolve();
-      utterance.onend = () => resolve();
-      utterance.onerror = (e) => {
-        if (e.error === 'not-allowed' || e.error === 'synthesis-failed') {
-          reject(new Error(e.error)); // Reject on critical errors
-        } else {
-          resolve(); // Don't fail on minor errors since this is a fallback
-        }
-      };
-      
-      speechSynthesis.speak(utterance);
-    } else {
-      reject(new Error('speechSynthesis not supported'));
-    }
-  });
-}
-
-/**
- * Default TTS using Google Translate
- * This works by creating an audio element that plays Google's TTS service
- */
-function speakWithGoogleTTS(text: string, lang: string) {
-  return new Promise<void>((resolve, reject) => {
-    try {
-      // Convert language code to simple 2-letter format for Google
-      const googleLang = lang ? lang.substring(0, 2).toLowerCase() : 'en';
-      // Create Google Translate TTS URL
-      const encodedText = encodeURIComponent(text);
-      const googleTTSUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=${googleLang}&client=tw-ob&q=${encodedText}`;
-      
-      // Create and play audio
-      const audio = new Audio(googleTTSUrl);
-      
-      // Store reference to current audio for stopping immediately
-      currentGoogleAudio = audio;
-      
-      audio.oncanplay = () => {
-        // Check if we were cancelled while loading
-        if (currentGoogleAudio !== audio) {
-          audio.pause();
-          reject(new Error('Cancelled while loading'));
-          return;
-        }
-        audio.play().then(resolve).catch(reject);
-      };
-      
-      audio.onended = () => {
-        // Only clear if this is still the current audio
-        if (currentGoogleAudio === audio) {
-          currentGoogleAudio = null;
-        }
-        resolve();
-      };
-      
-      audio.onerror = (e) => {
-        // Always try to pause and clear, even on error
-        audio.pause();
-        if (currentGoogleAudio === audio) {
-          currentGoogleAudio = null;
-        }
-        reject(new Error('Google TTS failed'));
-      };
-      
-      // Load the audio
-      audio.load();
-      
-    } catch (error) {
-      reject(error);
-    }
-  });
-}
-
-// Helper function to extract text from HTML for TTS
-function extractTextFromHtml(htmlString: string): string {
-  // Use DOMParser for robust HTML to text extraction
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(htmlString, 'text/html');
-  return doc.body.textContent?.replace(/\s+/g, ' ').trim() || '';
-}
-
-/**
- * Creates instruction pages with configurable text and TTS support
+ * Creates instruction pages
  * Uses the jsPsych instructions plugin with simple HTML strings
  */
-function createInstructions(instruction_pages_data = instruction_pages, enable_tts = false, ttsOptions = {}) {
-  // Closure variable to store the handler for cleanup
-  let handleButtonClick: ((event: Event) => void) | null = null;
-
+function createInstructions(instruction_pages_data = instruction_pages) {
   return {
     type: jsPsychInstructions,
     pages: instruction_pages_data.map(page => `<div class="instructions-container"><p>${page}</p></div>`),
@@ -196,46 +18,7 @@ function createInstructions(instruction_pages_data = instruction_pages, enable_t
     key_backward: 'ArrowLeft',
     button_label_previous: trial_text.back_button,
     button_label_next: trial_text.next_button,
-    on_start: function() {
-      stopAllSpeech();
-    },
-    on_load: function() {
-      if (enable_tts) {
-        // Function to speak current page content
-        const speakCurrentPage = () => {
-          const instructionsContent = document.querySelector('.instructions-container');
-          if (instructionsContent) {
-            const pageText = extractTextFromHtml(instructionsContent.innerHTML);
-            if (pageText.trim()) {
-              speakText(pageText, ttsOptions);
-            }
-          }
-        };
-
-        // Use closure variable for handler
-        handleButtonClick = (event: Event) => {
-          const target = event.target as HTMLElement;
-          if (target && (target.id === 'jspsych-instructions-next' || target.id === 'jspsych-instructions-back')) {
-            stopAllSpeech();
-            // Wait longer to ensure speech has stopped before starting new speech
-            setTimeout(speakCurrentPage, 100);
-          }
-        };
-
-        // Add single event listener to document
-        document.addEventListener('click', handleButtonClick);
-
-        // Speak initial page
-        setTimeout(speakCurrentPage, 100);
-      }
-    },
     on_finish: function(data: any) {
-      stopAllSpeech();
-      // Clean up event listener using closure variable
-      if (handleButtonClick) {
-        document.removeEventListener('click', handleButtonClick);
-        handleButtonClick = null;
-      }
       data.task = 'digit-span';
       data.phase = 'instructions';
     }
@@ -293,20 +76,10 @@ interface DigitSpanConfig {
   includeForward?: boolean;
   includeBackward?: boolean;
   startingSpan?: number;
-  maxSpan?: number;
-  trialsPerSpan?: number;
   digitPresentationTime?: number;
   betweenDigitDelay?: number;
-  responseTimeLimit?: number;
   // Trial sequence configuration
   trial_sequence?: ('forward' | 'backward')[];
-  // TTS Configuration
-  enable_tts?: boolean; // Enable text-to-speech functionality
-  tts_method?: 'google' | 'system'; // Preferred TTS method (default: 'google')
-  tts_rate?: number; // Speech rate (0.1 to 10, default: 0.8)
-  tts_pitch?: number; // Speech pitch (0 to 2, default: 1.0)
-  tts_volume?: number; // Speech volume (0 to 1, default: 0.8)
-  tts_lang?: string; // Language code for TTS
 }
 
 export function createTimeline(jsPsych: JsPsych, config: DigitSpanConfig = {}) {
@@ -322,20 +95,10 @@ export function createTimeline(jsPsych: JsPsych, config: DigitSpanConfig = {}) {
     includeForward = true,
     includeBackward = true,
     startingSpan = 3,
-    maxSpan = 9,
-    trialsPerSpan = 2,
     digitPresentationTime = 1000,
     betweenDigitDelay = 500,
-    responseTimeLimit = 30000,
     // Trial sequence configuration
-    trial_sequence,
-    // TTS Configuration
-    enable_tts = true,
-    tts_method = 'google',
-    tts_rate = 1.0,
-    tts_pitch = 1.0,
-    tts_volume = 1.0,
-    tts_lang = 'en-US'
+    trial_sequence
   } = safeConfig;
 
   // Generate default trial sequence if not provided
@@ -364,13 +127,7 @@ export function createTimeline(jsPsych: JsPsych, config: DigitSpanConfig = {}) {
     return digits;
   }
 
-  const instructions = createInstructions(instruction_pages, enable_tts, {
-    method: tts_method,
-    lang: tts_lang,
-    volume: tts_volume,
-    rate: tts_rate,
-    pitch: tts_pitch
-  });
+  const instructions = createInstructions(instruction_pages);
 
 
 

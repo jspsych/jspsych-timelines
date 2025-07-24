@@ -37,15 +37,7 @@
     // Alternative: use helper functions for common patterns
     // trial_sequence: jsPsychTimelineDigitSpan.createAlternatingSequence(8),
     // trial_sequence: jsPsychTimelineDigitSpan.createBlockedSequence(4, 4),
-    // trial_sequence: jsPsychTimelineDigitSpan.createBalancedRandomSequence(10),
-    
-    // ===== TEXT-TO-SPEECH CONFIGURATION =====
-    enable_tts: true, // Enable text-to-speech functionality
-    tts_method: 'google', // Preferred TTS method: 'google', 'system'
-    tts_rate: 1.0, // Speech rate (0.1 to 10)
-    tts_pitch: 1.0, // Speech pitch (0 to 2)
-    tts_volume: 1.0, // Speech volume (0 to 1)
-    tts_lang: 'en-US' // Language code for TTS
+    // trial_sequence: jsPsychTimelineDigitSpan.createBalancedRandomSequence(10)
   });
 
   jsPsych.run([task])
