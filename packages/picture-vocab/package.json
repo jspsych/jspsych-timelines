@@ -42,6 +42,7 @@
         "typescript": "^5.0.2"
     },
     "dependencies": {
-        "@jspsych/plugin-image-button-response": "^2.1.0"
+        "@jspsych/plugin-image-button-response": "^2.1.0",
+        "@jspsych/plugin-instructions": "^2.1.0"
     }
 }
