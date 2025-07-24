@@ -7,7 +7,7 @@
     "types": "dist/index.d.ts",
     "unpkg": "dist/index.browser.min.js",
     "scripts": {
-      "build": "tsup src/index.ts --format esm,iife --sourcemap --dts --treeshake --clean --global-name jsPsychTimelinePatternComparisonTask",
+      "build": "tsup src/index.ts --format esm,iife --sourcemap --dts --treeshake --clean --global-name jsPsychTimelinePatternComparisonTask --external jspsych --external @jspsych/plugin-html-button-response --external @jspsych/plugin-instructions",
       "test": "jest"
     },
     "repository": {
@@ -22,8 +22,8 @@
       "cognitive-assessment"
     ],
     "author": {
-      "name": "Abdullah Hunter Farhat",
-      "url": "github.com/farhat60"
+      "name": "A. Hunter Farhat",
+      "url": "https://github.com/farhat60"
     },
     "license": "MIT",
     "bugs": {
