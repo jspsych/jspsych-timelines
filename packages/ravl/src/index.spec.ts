@@ -150,6 +150,20 @@ describe('RAVL Timeline Tests', () => {
       expect(taskTypes).not.toContain('trial_a6_instructions');
       expect(taskTypes).not.toContain('recognition_trial');
     });
+
+    test('should handle read_words_aloud parameter correctly', () => {
+      // Test with read_words_aloud enabled
+      const timelineWithAudio = createTimeline(mockJsPsych as any, {
+        read_words_aloud: true
+      });
+      expect(timelineWithAudio).toBeDefined();
+      
+      // Test with read_words_aloud disabled (default)
+      const timelineWithoutAudio = createTimeline(mockJsPsych as any, {
+        read_words_aloud: false
+      });
+      expect(timelineWithoutAudio).toBeDefined();
+    });
   });
 
   describe('Word List Management', () => {
@@ -277,19 +291,38 @@ describe('RAVL Timeline Tests', () => {
       expect(mockAudioContext).toHaveBeenCalled();
     });
 
-    test('should speak text when TTS enabled', () => {
-      speakText('Test message', { text_to_speech_enabled: true });
-      expect(mockSpeechSynthesis.speak).toHaveBeenCalled();
+    test('should not speak text (TTS disabled for instructions)', () => {
+      speakText('Test message');
+      expect(mockSpeechSynthesis.speak).not.toHaveBeenCalled();
     });
 
-    test('should not speak text when TTS disabled', () => {
+    test('should call onComplete callback when provided', () => {
       const mockCallback = jest.fn();
       speakText('Test message', { 
-        text_to_speech_enabled: false,
         onComplete: mockCallback
       });
       expect(mockSpeechSynthesis.speak).not.toHaveBeenCalled();
       expect(mockCallback).toHaveBeenCalled();
+    });
+
+    test('should still support word reading TTS when read_words_aloud is enabled', () => {
+      const timeline = createTimeline(mockJsPsych as any, {
+        read_words_aloud: true
+      });
+      
+      // Find a word presentation trial
+      const wordTrial = timeline.find(trial => 
+        trial.data && trial.data.task === 'ravlt_word_presentation'
+      );
+      
+      if (wordTrial && wordTrial.on_load) {
+        // Mock the word display element
+        const mockWordDisplay = { textContent: '' };
+        (document.getElementById as jest.Mock).mockReturnValue(mockWordDisplay);
+        
+        // Should not throw when loading (word TTS should still work)
+        expect(() => wordTrial.on_load()).not.toThrow();
+      }
     });
 
     test('should handle audio gracefully when APIs unavailable', () => {

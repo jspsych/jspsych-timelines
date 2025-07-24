@@ -18,7 +18,6 @@ interface TimelineConfig {
   min_delay_minutes?: number; // Minimum delay before delayed recall (default: 15)
   max_delay_minutes?: number; // Maximum delay before delayed recall (default: 30)
   show_delay_timer?: boolean; // Whether to show progress bar during delay (default: true)
-  text_to_speech_enabled?: boolean; // Whether to enable text-to-speech for instructions (default: false)
   read_words_aloud?: boolean; // Whether to read words from the word list aloud during presentation (default: false)
 }
 
@@ -38,7 +37,6 @@ export function createTimeline(jsPsych: JsPsych, config: TimelineConfig = {}) {
     min_delay_minutes = 15, // More realistic minimum
     max_delay_minutes = 30,
     show_delay_timer = true,
-    text_to_speech_enabled = false,
     read_words_aloud = false
   } = config;
 
@@ -107,52 +105,13 @@ export function createTimeline(jsPsych: JsPsych, config: TimelineConfig = {}) {
     }
   }
 
-  // Helper function for text-to-speech
+  // Helper function for text-to-speech (disabled for instructions)
   function speakText(text: string, delay: number = 500, onComplete?: () => void) {
-    if (!text_to_speech_enabled || !window.speechSynthesis) {
-      // If TTS is disabled but callback is provided, call it after the delay
-      if (onComplete) {
-        setTimeout(onComplete, delay);
-      }
-      return;
+    // TTS for instructions is now disabled - only call callback after delay
+    if (onComplete) {
+      setTimeout(onComplete, delay);
     }
-    
-    // Clean HTML tags from text for TTS
-    const cleanText = text.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
-    
-    if (cleanText.length === 0) {
-      if (onComplete) {
-        setTimeout(onComplete, delay);
-      }
-      return;
-    }
-
-    setTimeout(() => {
-      // Cancel any ongoing speech
-      window.speechSynthesis.cancel();
-      
-      const utterance = new SpeechSynthesisUtterance(cleanText);
-      utterance.rate = 0.9;
-      utterance.pitch = 1.0;
-      utterance.volume = 0.8;
-      
-      // Use a clear, neutral voice if available
-      const voices = window.speechSynthesis.getVoices();
-      const preferredVoice = voices.find(voice => 
-        voice.lang.startsWith('en') && 
-        (voice.name.includes('Google') || voice.name.includes('Microsoft'))
-      );
-      if (preferredVoice) {
-        utterance.voice = preferredVoice;
-      }
-      
-      // Call the completion callback when TTS finishes
-      if (onComplete) {
-        utterance.onend = onComplete;
-      }
-      
-      window.speechSynthesis.speak(utterance);
-    }, delay);
+    return;
   }
 
     const delayedRecallInstructions = {
@@ -426,18 +385,8 @@ export function createTimeline(jsPsych: JsPsych, config: TimelineConfig = {}) {
           setTimeout(presentWord, 1000); // Start after 1 second
         };
         
-        // Announce trial instructions with TTS and start words when it completes
-        if (text_to_speech_enabled) {
-          // Start word presentation only after instruction TTS completes
-          speakText(
-            `${englishText.trial} ${trialNumber}. ${englishText.listen_carefully}. ${englishText.create_word_presentation_text}.`,
-            500,
-            startWordPresentation
-          );
-        } else {
-          // No instruction TTS, start word presentation immediately
-          startWordPresentation();
-        }
+        // Instructions TTS is now disabled, start word presentation immediately
+        startWordPresentation();
       },
       data: {
         task: 'ravlt_word_presentation',
@@ -654,18 +603,8 @@ export function createTimeline(jsPsych: JsPsych, config: TimelineConfig = {}) {
         setTimeout(presentWord, 1000); // Start after 1 second
       };
       
-      // Announce trial instructions with TTS and start words when it completes
-      if (text_to_speech_enabled) {
-        // Start word presentation only after instruction TTS completes
-        speakText(
-          `${englishText.interference_trial} ${englishText.list_b}. ${englishText.listen_carefully}. ${englishText.create_word_presentation_text}.`,
-          500,
-          startWordPresentation
-        );
-      } else {
-        // No instruction TTS, start word presentation immediately
-        startWordPresentation();
-      }
+      // Instructions TTS is now disabled, start word presentation immediately
+      startWordPresentation();
     },
     data: {
       task: 'interference_word_presentation',
@@ -1657,7 +1596,6 @@ export function createTimelineComponents(jsPsych: JsPsych, config: TimelineConfi
     min_delay_minutes = 15, // More realistic minimum
     max_delay_minutes = 30,
     show_delay_timer = true,
-    text_to_speech_enabled = false,
     read_words_aloud = false
   } = config;
 
@@ -1701,45 +1639,11 @@ export function createTimelineComponents(jsPsych: JsPsych, config: TimelineConfi
   }
 
   function speakText(text: string, delay: number = 500, onComplete?: () => void) {
-    if (!text_to_speech_enabled || !window.speechSynthesis) {
-      if (onComplete) {
-        setTimeout(onComplete, delay);
-      }
-      return;
+    // TTS for instructions is now disabled - only call callback after delay
+    if (onComplete) {
+      setTimeout(onComplete, delay);
     }
-    
-    const cleanText = text.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
-    
-    if (cleanText.length === 0) {
-      if (onComplete) {
-        setTimeout(onComplete, delay);
-      }
-      return;
-    }
-
-    setTimeout(() => {
-      window.speechSynthesis.cancel();
-      
-      const utterance = new SpeechSynthesisUtterance(cleanText);
-      utterance.rate = 0.9;
-      utterance.pitch = 1.0;
-      utterance.volume = 0.8;
-      
-      const voices = window.speechSynthesis.getVoices();
-      const preferredVoice = voices.find(voice => 
-        voice.lang.startsWith('en') && 
-        (voice.name.includes('Google') || voice.name.includes('Microsoft'))
-      );
-      if (preferredVoice) {
-        utterance.voice = preferredVoice;
-      }
-      
-      if (onComplete) {
-        utterance.onend = onComplete;
-      }
-      
-      window.speechSynthesis.speak(utterance);
-    }, delay);
+    return;
   }
 
   const getWordList = () => {
@@ -1912,15 +1816,8 @@ export function createTimelineComponents(jsPsych: JsPsych, config: TimelineConfi
             setTimeout(presentWord, 1000);
           };
           
-          if (text_to_speech_enabled) {
-            speakText(
-              `${englishText.trial} ${trialNumber}. ${englishText.listen_carefully}. ${englishText.create_word_presentation_text}.`,
-              500,
-              startWordPresentation
-            );
-          } else {
-            startWordPresentation();
-          }
+          // Instructions TTS is now disabled, start word presentation immediately
+          startWordPresentation();
         },
         data: {
           task: 'ravlt_word_presentation',
@@ -1991,55 +1888,19 @@ export function playChime() {
 }
 
 export function speakText(text: string, config: {
-  text_to_speech_enabled?: boolean;
   delay?: number;
   onComplete?: () => void;
 } = {}) {
   const {
-    text_to_speech_enabled = true,
     delay = 500,
     onComplete
   } = config;
 
-  if (!text_to_speech_enabled || !window.speechSynthesis) {
-    if (onComplete) {
-      setTimeout(onComplete, delay);
-    }
-    return;
+  // TTS for instructions is now disabled - only call callback after delay
+  if (onComplete) {
+    setTimeout(onComplete, delay);
   }
-  
-  const cleanText = text.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
-  
-  if (cleanText.length === 0) {
-    if (onComplete) {
-      setTimeout(onComplete, delay);
-    }
-    return;
-  }
-
-  setTimeout(() => {
-    window.speechSynthesis.cancel();
-    
-    const utterance = new SpeechSynthesisUtterance(cleanText);
-    utterance.rate = 0.9;
-    utterance.pitch = 1.0;
-    utterance.volume = 0.8;
-    
-    const voices = window.speechSynthesis.getVoices();
-    const preferredVoice = voices.find(voice => 
-      voice.lang.startsWith('en') && 
-      (voice.name.includes('Google') || voice.name.includes('Microsoft'))
-    );
-    if (preferredVoice) {
-      utterance.voice = preferredVoice;
-    }
-    
-    if (onComplete) {
-      utterance.onend = onComplete;
-    }
-    
-    window.speechSynthesis.speak(utterance);
-  }, delay);
+  return;
 }
 
 export const utils = {
