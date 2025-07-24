@@ -31,6 +31,10 @@
       "url": "https://github.com/jspsych/jspsych-timelines/issues"
     },
     "homepage": "https://github.com/jspsych/jspsych-timelines/tree/main/packages/flanker-inhibitory#readme",
+    "dependencies": {
+      "@jspsych/plugin-html-button-response": "^2.0.0",
+      "@jspsych/plugin-instructions": "^2.0.0"
+    },
     "devDependencies": {
       "jspsych": "^8.0.0",
       "@jspsych/config": "^3.2.2",
