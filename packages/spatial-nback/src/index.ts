@@ -147,6 +147,13 @@ export function createTimeline({
             stimulus_color: stimulus_color,
             correct_color: correct_color,
             incorrect_color: incorrect_color,
+            on_load: function() {
+                // Automatically set CSS variable for button count
+                const buttonContainer = document.getElementById('nback-buttons-container');
+                if (buttonContainer) {
+                    buttonContainer.style.setProperty('--button-count', buttons.length.toString());
+                }
+            },
             data: {
                 trial_number: i + 1,
                 n_back: n_back,
@@ -180,7 +187,7 @@ export function createTimeline({
 export function createPracticeTimeline(options: Parameters<typeof createTimeline>[0] = {}) {
     return createTimeline({
         ...options,
-        total_trials: 6,
+        total_trials: 5,
         target_percentage: 50,
         show_feedback_text: true,
         show_feedback_border: true,

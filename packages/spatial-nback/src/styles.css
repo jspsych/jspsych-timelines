@@ -119,6 +119,11 @@ p {
     margin-top: 0px !important;
 }
 
+/* Buttons container with dynamic button count */
+#nback-buttons-container {
+    --button-count: 3; /* Default fallback, will be overridden by JavaScript */
+}
+
 /* N-back response button styling */
 .nback-response-btn {
     padding: clamp(10px, 3vh, 50px) clamp(20px, 7vw, 60px);
@@ -128,11 +133,16 @@ p {
     color: hsl(0, 0%, 100%);
     background-color: rgb(77, 77, 77) !important;
     font-weight: 600;
-    margin: 0 7vw 12vh !important; /* buttons push each other to sides */
+    margin: 0 7vw calc(24vh / var(--button-count, 2)) !important; /* buttons push each other to sides */
     transition: background-color 0.2s ease;
     /* Disable double-click zoom */
     touch-action: manipulation;
     user-select: none;
+}
+
+/* Color specific buttons if you have multiple */
+#nback-response-btn-0 {
+    background-color: rgb(77, 77, 77) !important;
 }
 
 .nback-response-btn:hover {
@@ -209,7 +219,7 @@ p {
     .nback-response-btn {
         font-size: clamp(15px, 3vmin, 40px);
         padding: clamp(3px, 3vh, 30px) clamp(10px, 7vw, 60px);
-        margin: 0px 15vw !important;
+        margin: 0px calc(6vw / var(--button-count, 2)) !important;
         min-height: 5vh;
     }
 }
@@ -222,6 +232,6 @@ p {
     }
 
     .nback-response-btn {
-        margin: 0 3vw !important; /* Center the button */
+        margin: 0 calc(5vw / var(--button-count, 2)) !important; /* Center the button */
     }
 }
