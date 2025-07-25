@@ -4,6 +4,76 @@ import jsPsychHtmlButtonResponse from '@jspsych/plugin-html-button-response';
 import jsPsychInstructions from '@jspsych/plugin-instructions';
 import { welcomeAndInstructionsText } from './text';
 
+/* Essential CSS styles moved from style.css for basic experiment functionality */
+const ESSENTIAL_STYLES = `
+body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+}
+
+#jspsych-target {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.jspsych-content {
+    max-width: 800px;
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    flex-direction: column !important;
+    max-width: none !important;
+}
+
+.jspsych-content-wrapper {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    min-height: 100vh !important;
+    padding: 20px !important;
+}
+
+.jspsych-btn {
+    font-size: 18px !important;
+    font-weight: bold !important;
+    padding: 15px 25px !important;
+    margin: 10px !important;
+    border: 2px solid #333 !important;
+    border-radius: 8px !important;
+    min-width: 100px !important;
+    min-height: 60px !important;
+    cursor: pointer !important;
+}
+
+.stimulus {
+    font-size: 60px;
+    font-weight: bold;
+    margin: 20px 0;
+}
+`;
+
+/* Inject essential styles */
+function injectEssentialStyles() {
+    if (typeof document !== 'undefined') {
+        const styleElement = document.createElement('style');
+        styleElement.textContent = ESSENTIAL_STYLES;
+        document.head.appendChild(styleElement);
+    }
+}
+
 /* Constants */
 const DEFAULT_TRIAL_TIMEOUT = 3000;
 const DEFAULT_FIXATION_DURATION = { min: 300, max: 1000 };
@@ -275,10 +345,10 @@ function createResults(jsPsych: JsPsych) {
 export function createTimeline(
     jsPsych: JsPsych,
     {
-        practice_trials_per_condition = 2,
+        practice_trials_per_condition = 3,
         congruent_main_trials = 4,
         incongruent_main_trials = 4,
-        trial_timeout = 3000,
+        trial_timeout = 2000,
         fixation_duration = { min: 300, max: 1500 },
         show_practice_feedback = true,
         include_fixation = true,
@@ -310,6 +380,9 @@ export function createTimeline(
 ) {
     // Reset state for new timeline
     resetState();
+    
+    // Inject essential styles
+    injectEssentialStyles();
 
     const timeline: any[] = [];
     const stimuli = generateStimuli(choice_of_colors);
