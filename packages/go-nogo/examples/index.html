@@ -21,34 +21,13 @@
 
   // Configuration options - uncomment and modify as needed
   const config = {
-
-    // Default stimuli (plain text)
-    // goStimulus: 'X',                          // Default GO stimulus
-    // noGoStimulus: 'O',                        // Default NO-GO stimulus
-
-    // Text stimuli examples
-    // goStimulus: 'GO',                         // Single GO stimulus
-    // noGoStimulus: 'NO-GO',                    // Single NO-GO stimulus
-    
-    // HTML/Image examples - all stimuli are treated as HTML strings:
-    
-    // Example 1: Image stimuli (using HTML img tags)
-    // goStimulus: '<img src="images/go.png" alt="GO">',
-    // noGoStimulus: '<img src="images/stop.png" alt="NO-GO">',
-    
-    // Example 2: Styled HTML content
-    // goStimulus: '<div style="font-size: 60px; color: green;">✓</div>',
-    // noGoStimulus: '<div style="font-size: 60px; color: red;">✗</div>',
-    
-    // Example 3: Complex HTML with images and text
-    // goStimulus: '<div><img src="images/arrow.png" style="width: 100px;"><br>PRESS</div>',
-    // noGoStimulus: '<div><img src="images/stop.png" style="width: 100px;"><br>DON\'T PRESS</div>',
-    
     buttonText: 'Click',                       // Button label
-    responseTimeout: 1500,                     // Max time to respond (ms)
+    responseTimeout: 500,                     // Max time to respond (ms)
     interTrialInterval: 500,                   // Pause between trials (ms)
     goTrialProbability: 0.75,                  // Probability of GO trials (0-1)
-    showResultsDetails: true                   // Show detailed results
+    showResultsDetails: true,                   // Show detailed results
+    numBlocks: 3,                        // Number of blocks
+    numTrialsPerBlock: 50,                // Number of trials per block
   };
 
   const task = jsPsychTimelineGoNogoTimeline.createTimeline(jsPsych, config);
