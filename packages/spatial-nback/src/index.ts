@@ -149,7 +149,9 @@ export function createTimeline({
             incorrect_color: incorrect_color,
             on_load: function() {
                 // Automatically set CSS variable for button count
-                const buttonContainer = document.getElementById('nback-buttons-container');
+                const buttonContainer = document.getElementById('nback-buttons-container'); 
+                document.getElementById('nback-grid-container')?.classList.add('timeline-trial');
+                buttonContainer.classList.add('timeline-btn-container');
                 if (buttonContainer) {
                     buttonContainer.style.setProperty('--button-count', buttons.length.toString());
                 }

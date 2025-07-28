@@ -120,7 +120,7 @@ p {
 }
 
 /* Buttons container with dynamic button count */
-#nback-buttons-container {
+#timeline-btn-container {
     --button-count: 3; /* Default fallback, will be overridden by JavaScript */
 }
 
