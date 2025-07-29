@@ -29,14 +29,11 @@
     numTrialsPerBlock: 50,                // Number of trials per block
   };
 
-const instructions = jsPsychTimelineGoNogoTimeline.createInstructions(
-    jsPsych,
-    {    }
-  );
-  const practice = jsPsychTimelineGoNogoTimeline.timelineUnits.practiceTrial(jsPsych, config);
-  const task = jsPsychTimelineGoNogoTimeline.createTimeline(jsPsych, config);
+const instructions = jsPsychTimelineGoNogoTimeline.createInstructions(jsPsych,{});
+const practice = jsPsychTimelineGoNogoTimeline.timelineUnits.practiceTrial(jsPsych, config);
+const task = jsPsychTimelineGoNogoTimeline.createTimeline(jsPsych, config);
 
-  jsPsych.run([instructions, ...practice, task]);
+jsPsych.run([instructions, ...practice, task]);
 </script>
 
 </html>
