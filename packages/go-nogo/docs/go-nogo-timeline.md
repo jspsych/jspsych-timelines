@@ -64,13 +64,10 @@ npm install @jspsych-timelines/go-nogo
 
   // Create instructions and main task separately
   const instructions = jsPsychTimelineGoNogoTimeline.createInstructions(jsPsych, {});
-  const practice = jsPsychTimelineGoNogoTimeline.timelineUnits.instructionTrial(jsPsych, config);
+  const practice = jsPsychTimelineGoNogoTimeline.timelineUnits.practiceTrial(jsPsych, config);
   const task = jsPsychTimelineGoNogoTimeline.createTimeline(jsPsych, config);
 
-  // Skip the first practice trial (overview) to avoid duplication
-  const practiceWithoutOverview = practice.slice(1);
-  
-  jsPsych.run([instructions, ...practiceWithoutOverview, task]);
+  jsPsych.run([instructions, ...practice, task]);
 </script>
 </html>
 ```
@@ -111,10 +108,10 @@ jsPsych.run([instructions, task]);
 Access individual components for custom timeline construction:
 
 ```javascript
-const { instructionTrial, goNoGoTrial, debriefTrial } = jsPsychTimelineGoNogoTimeline.timelineUnits;
+const { practiceTrial, goNoGoTrial, debriefTrial } = jsPsychTimelineGoNogoTimeline.timelineUnits;
 
 // Get instruction trials
-const instructions = instructionTrial(jsPsych, config);
+const instructions = practiceTrial(jsPsych, config);
 
 // Get trial components
 const { trial, interTrialInterval, generateTrialsForBlock } = goNoGoTrial(jsPsych, config);
@@ -285,10 +282,10 @@ const config = {
 };
 
 const instructions = jsPsychTimelineGoNogoTimeline.createInstructions();
-const practice = jsPsychTimelineGoNogoTimeline.timelineUnits.instructionTrial(jsPsych, config);
+const practice = jsPsychTimelineGoNogoTimeline.timelineUnits.practiceTrial(jsPsych, config);
 const task = jsPsychTimelineGoNogoTimeline.createTimeline(jsPsych, config);
 
-jsPsych.run([instructions, ...practice.slice(1), task]);
+jsPsych.run([instructions, ...practice, task]);
 ```
 
 ### Image Task
@@ -300,10 +297,10 @@ const config = {
 };
 
 const instructions = jsPsychTimelineGoNogoTimeline.createInstructions();
-const practice = jsPsychTimelineGoNogoTimeline.timelineUnits.instructionTrial(jsPsych, config);
+const practice = jsPsychTimelineGoNogoTimeline.timelineUnits.practiceTrial(jsPsych, config);
 const task = jsPsychTimelineGoNogoTimeline.createTimeline(jsPsych, config);
 
-jsPsych.run([instructions, ...practice.slice(1), task]);
+jsPsych.run([instructions, ...practice, task]);
 ```
 
 ### Fast-Paced Task
@@ -317,10 +314,10 @@ const config = {
 };
 
 const instructions = jsPsychTimelineGoNogoTimeline.createInstructions();
-const practice = jsPsychTimelineGoNogoTimeline.timelineUnits.instructionTrial(jsPsych, config);
+const practice = jsPsychTimelineGoNogoTimeline.timelineUnits.practiceTrial(jsPsych, config);
 const task = jsPsychTimelineGoNogoTimeline.createTimeline(jsPsych, config);
 
-jsPsych.run([instructions, ...practice.slice(1), task]);
+jsPsych.run([instructions, ...practice, task]);
 ```
 
 ### With Colored Styling
@@ -341,19 +338,19 @@ const imageConfig = {
 };
 
 const instructions = jsPsychTimelineGoNogoTimeline.createInstructions();
-const practice = jsPsychTimelineGoNogoTimeline.timelineUnits.instructionTrial(jsPsych, config);
+const practice = jsPsychTimelineGoNogoTimeline.timelineUnits.practiceTrial(jsPsych, config);
 const task = jsPsychTimelineGoNogoTimeline.createTimeline(jsPsych, config);
 
-jsPsych.run([instructions, ...practice.slice(1), task]);
+jsPsych.run([instructions, ...practice, task]);
 ```
 
 ### Custom Timeline Structure
 
 ```javascript
 // Create individual components
-const { instructionTrial, goNoGoTrial, debriefTrial } = jsPsychTimelineGoNogoTimeline.timelineUnits;
+const { practiceTrial, goNoGoTrial, debriefTrial } = jsPsychTimelineGoNogoTimeline.timelineUnits;
 
-const instructions = instructionTrial(jsPsych, config);
+const instructions = practiceTrial(jsPsych, config);
 const { trial, interTrialInterval, generateTrialsForBlock } = goNoGoTrial(jsPsych, config);
 const debrief = debriefTrial(jsPsych, config);
 
@@ -418,12 +415,11 @@ The timeline is now modular with separate components:
 ### createInstructions()
 Basic instruction pages explaining the task concept.
 
-### timelineUnits.instructionTrial()
+### timelineUnits.practiceTrial()
 Interactive practice trials:
-1. **Overview Instructions**: Task introduction (typically skipped to avoid duplication)
-2. **GO Practice**: Interactive practice with GO stimuli
-3. **NO-GO Practice**: Interactive practice with NO-GO stimuli  
-4. **Practice Complete**: Transition to main task
+1. **GO Practice**: Interactive practice with GO stimuli
+2. **NO-GO Practice**: Interactive practice with NO-GO stimuli  
+3. **Practice Complete**: Transition to main task
 
 ### createTimeline()
 Main task blocks:
@@ -437,13 +433,10 @@ Main task blocks:
 ### Recommended Setup
 ```javascript
 const instructions = jsPsychTimelineGoNogoTimeline.createInstructions();
-const practice = jsPsychTimelineGoNogoTimeline.timelineUnits.instructionTrial(jsPsych, config);
+const practice = jsPsychTimelineGoNogoTimeline.timelineUnits.practiceTrial(jsPsych, config);
 const task = jsPsychTimelineGoNogoTimeline.createTimeline(jsPsych, config);
 
-// Skip first practice trial to avoid duplication with instructions
-const practiceWithoutOverview = practice.slice(1);
-
-jsPsych.run([instructions, ...practiceWithoutOverview, task]);
+jsPsych.run([instructions, ...practice, task]);
 ```
 
 Each trial block includes both GO and NO-GO trials randomized according to the configured probability (default 75% GO trials).

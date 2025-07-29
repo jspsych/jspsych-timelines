@@ -33,13 +33,10 @@ const instructions = jsPsychTimelineGoNogoTimeline.createInstructions(
     jsPsych,
     {    }
   );
-  const practice = jsPsychTimelineGoNogoTimeline.timelineUnits.instructionTrial(jsPsych, config);
+  const practice = jsPsychTimelineGoNogoTimeline.timelineUnits.practiceTrial(jsPsych, config);
   const task = jsPsychTimelineGoNogoTimeline.createTimeline(jsPsych, config);
 
-  // Skip the first trial (overview) from practice to avoid duplication
-  const practiceWithoutOverview = practice.slice(1);
-  
-  jsPsych.run([instructions, ...practiceWithoutOverview, task]);
+  jsPsych.run([instructions, ...practice, task]);
 </script>
 
 </html>

@@ -51,41 +51,6 @@ const createFormatStimulus = (colorText: boolean = false) =>
       <div class="go-nogo-stimulus-content">${stimulus}</div>`
   }
 
-const createOverviewInstructionTrial = () => {
-  return {
-    type: htmlButtonResponse,
-    stimulus: `
-      <style>
-        .go-nogo-instructions {
-          font-size: 18px;
-          line-height: 1.5;
-          max-width: 600px;
-          margin: 0 auto;
-          text-align: center;
-          padding: 0 20px;
-        }
-        @media (max-width: 768px) {
-          .go-nogo-instructions {
-            font-size: 14px;
-            line-height: 1.3;
-            padding: 10px 20px;
-            margin: 0 auto;
-          }
-          .go-nogo-instructions p {
-            margin: 8px 0;
-          }
-        }
-      </style>
-      <div class="go-nogo-instructions">
-        <p>${englishText.overviewText}</p>
-        <p>${englishText.overviewPrompt}</p>
-      </div>
-    `,
-    choices: [englishText.nextButton],
-    data: { trial_type: englishText.trialTypes.instructions }
-  }
-}
-
 const createGoInstructionTrial = (goStimulus: string, buttonText: string, formatStimulus: (stimulus: string, isGoTrial: boolean) => string, jsPsych: JsPsych) => {
   const goExample = formatStimulus(goStimulus, true)
   
@@ -865,7 +830,7 @@ export function createTimeline(jsPsych: JsPsych, config: GoNoGoConfig = {}) {
 }
 
 export const timelineUnits = {
-  instructionTrial: (jsPsych: JsPsych, config: GoNoGoConfig = {}) => {
+  practiceTrial: (jsPsych: JsPsych, config: GoNoGoConfig = {}) => {
     const {
       goStimulus,
       noGoStimulus,
@@ -882,12 +847,11 @@ export const timelineUnits = {
     
     const formatStimulus = createFormatStimulus(useColors)
     
-    const overviewInstructionTrial = createOverviewInstructionTrial()
     const goInstructionTrial = createGoInstructionTrial(actualGoStimuli[0], buttonText, formatStimulus, jsPsych)
     const noGoInstructionTrial = createNoGoInstructionTrial(actualNoGoStimuli[0], buttonText, formatStimulus, jsPsych)
     const practiceCompletionTrial = createPracticeCompletionTrial()
     
-    return [overviewInstructionTrial, goInstructionTrial, noGoInstructionTrial, practiceCompletionTrial]
+    return [goInstructionTrial, noGoInstructionTrial, practiceCompletionTrial]
   },
   goNoGoTrial: (jsPsych: JsPsych, config: GoNoGoConfig = {}) => {
     const {
