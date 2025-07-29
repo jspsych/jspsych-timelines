@@ -1,11 +1,14 @@
 import { JsPsych } from "jspsych"
 import htmlButtonResponse from "@jspsych/plugin-html-button-response";
-import { englishText } from "./text";
+import jsPsychInstructions from "@jspsych/plugin-instructions";
+import { englishText, instructions_pages } from "./text";
 
 
 interface GoNoGoConfig {
   goStimulus?: string
   noGoStimulus?: string
+  goStimuli?: string[]
+  noGoStimuli?: string[]
   buttonText?: string
   stimulusDisplayTime?: number
   responseTimeout?: number
@@ -13,23 +16,24 @@ interface GoNoGoConfig {
   numBlocks?: number
   trialsPerBlock?: number
   goTrialProbability?: number
+  varyStimulus?: boolean
   showResultsDetails?: boolean
   colorBorders?: boolean
+  colorText?: boolean
 }
 
 // Helper function to format stimulus as HTML
-const createFormatStimulus = (colorBorders: boolean = true) => 
+const createFormatStimulus = (colorText: boolean = false) => 
   (stimulus: string, isGoTrial: boolean): string => {
-    const color = isGoTrial ? englishText.goColor : englishText.noGoColor
-    const borderStyle = colorBorders ? `border: 3px solid ${color};` : ''
-    const textColor = colorBorders ? `color: ${color};` : 'color: black;'
+    const color = colorText ? (isGoTrial ? englishText.goColor : englishText.noGoColor) : 'black'
+    const borderStyle = colorText ? `border: 3px solid ${color};` : ''
     
     return `
       <style>
         .go-nogo-stimulus-content {
           font-size: 48px;
           font-weight: bold;
-          ${textColor}
+          color: ${color};
           ${borderStyle}
           display: inline-block;
           padding: 20px;
@@ -552,15 +556,26 @@ const createInterTrialIntervalTrial = (interTrialInterval: number) => {
   }
 }
 
-const createGenerateTrialsForBlock = (trialsPerBlock: number, goTrialProbability: number, goStimulus: string, noGoStimulus: string, formatStimulus: (stimulus: string, isGoTrial: boolean) => string) => {
+const createGenerateTrialsForBlock = (trialsPerBlock: number, goTrialProbability: number, actualGoStimuli: string[], actualNoGoStimuli: string[], formatStimulus: (stimulus: string, isGoTrial: boolean) => string) => {
   return (blockNumber: number) => {
     const trials = []
+    let goTrialCount = 0
+    let noGoTrialCount = 0
     
     for (let i = 0; i < trialsPerBlock; i++) {
       const randomValue = Math.random()
       const isGoTrial = randomValue < goTrialProbability
       
-      const stimulus = isGoTrial ? goStimulus : noGoStimulus
+      let stimulus: string
+      if (isGoTrial) {
+        const stimulusIndex = goTrialCount % actualGoStimuli.length
+        stimulus = actualGoStimuli[stimulusIndex]
+        goTrialCount++
+      } else {
+        const stimulusIndex = noGoTrialCount % actualNoGoStimuli.length
+        stimulus = actualNoGoStimuli[stimulusIndex]
+        noGoTrialCount++
+      }
       
       trials.push({
         stimulus: formatStimulus(stimulus, isGoTrial),
@@ -671,10 +686,50 @@ const createDebriefTrial = (jsPsych: JsPsych, showResultsDetails: boolean) => {
   }
 }
 
+
+export function createInstructions(jsPsych?: JsPsych, config: any = {}) {
+  // Use default instruction pages - config parameter reserved for future use
+  const pages = instructions_pages;
+  
+  return {
+    type: jsPsychInstructions,
+    pages: pages.map(page => `
+      <style>
+        .jspsych-instructions-nav .jspsych-btn {
+          width: 25vmin !important;
+          height: 25vmin !important;
+          border: 3px solid #ccc !important;
+          border-radius: 50% !important;
+          font-size: clamp(40px, 7vmin, 50px) !important;
+          cursor: pointer !important;
+          min-height: 100px !important;
+          min-width: 100px !important;
+          font-weight: 600 !important;
+        }
+      </style>
+      <div class="instructions-container"><p>${page}</p></div>
+    `),
+    show_clickable_nav: true,
+    allow_keys: true,
+    key_forward: 'ArrowRight',
+    key_backward: 'ArrowLeft',
+    button_label_previous: '',
+    button_label_next: '',
+    data: {
+      task: 'go-nogo',
+      phase: 'instructions'
+    }
+  };
+}
+
+
+
 export function createTimeline(jsPsych: JsPsych, config: GoNoGoConfig = {}) {
   const {
-    goStimulus = englishText.defaultGoStimulus,
-    noGoStimulus = englishText.defaultNoGoStimulus,
+    goStimulus,
+    noGoStimulus,
+    goStimuli,
+    noGoStimuli,
     buttonText = englishText.defaultButtonText,
     responseTimeout = 500,
     interTrialInterval = 500,
@@ -682,20 +737,23 @@ export function createTimeline(jsPsych: JsPsych, config: GoNoGoConfig = {}) {
     trialsPerBlock = 50,
     goTrialProbability = 0.75,
     showResultsDetails = true,
-    colorBorders = true
+    colorBorders,
+    colorText,
   } = config
 
-  const formatStimulus = createFormatStimulus(colorBorders)
+  // Handle backward compatibility for single stimulus parameters
+  const actualGoStimuli = goStimuli || (goStimulus ? [goStimulus] : [englishText.defaultGoStimulus])
+  const actualNoGoStimuli = noGoStimuli || (noGoStimulus ? [noGoStimulus] : [englishText.defaultNoGoStimulus])
   
-  const overviewInstructionTrial = createOverviewInstructionTrial()
-  const goInstructionTrial = createGoInstructionTrial(goStimulus, buttonText, formatStimulus, jsPsych)
-  const noGoInstructionTrial = createNoGoInstructionTrial(noGoStimulus, buttonText, formatStimulus, jsPsych)
-  const practiceCompletionTrial = createPracticeCompletionTrial()
-
+  // Handle backward compatibility for colorBorders parameter
+  const useColors = colorText !== undefined ? colorText : (colorBorders !== undefined ? colorBorders : false)
+  
+  const formatStimulus = createFormatStimulus(useColors)
+  
   const goNoGoTrial = createGoNoGoTrial(jsPsych, buttonText, responseTimeout)
   const interTrialIntervalTrial = createInterTrialIntervalTrial(interTrialInterval)
 
-  const generateTrialsForBlock = createGenerateTrialsForBlock(trialsPerBlock, goTrialProbability, goStimulus, noGoStimulus, formatStimulus)
+  const generateTrialsForBlock = createGenerateTrialsForBlock(trialsPerBlock, goTrialProbability, actualGoStimuli, actualNoGoStimuli, formatStimulus)
 
   // Generate blocks
   const blocks = []
@@ -802,45 +860,57 @@ export function createTimeline(jsPsych: JsPsych, config: GoNoGoConfig = {}) {
   const debriefTrial = createDebriefTrial(jsPsych, showResultsDetails)
 
   return {
-    timeline: [overviewInstructionTrial, goInstructionTrial, noGoInstructionTrial, practiceCompletionTrial, ...blocks, debriefTrial]
+    timeline: [...blocks, debriefTrial]
   }
 }
 
 export const timelineUnits = {
   instructionTrial: (jsPsych: JsPsych, config: GoNoGoConfig = {}) => {
     const {
-      goStimulus = englishText.defaultGoStimulus,
-      noGoStimulus = englishText.defaultNoGoStimulus,
+      goStimulus,
+      noGoStimulus,
+      goStimuli,
+      noGoStimuli,
       buttonText = englishText.defaultButtonText,
-      colorBorders = true
+      colorBorders,
+      colorText
     } = config
 
-    const formatStimulus = createFormatStimulus(colorBorders)
+    const actualGoStimuli = goStimuli || (goStimulus ? [goStimulus] : [englishText.defaultGoStimulus])
+    const actualNoGoStimuli = noGoStimuli || (noGoStimulus ? [noGoStimulus] : [englishText.defaultNoGoStimulus])
+    const useColors = colorText !== undefined ? colorText : (colorBorders !== undefined ? colorBorders : false)
+    
+    const formatStimulus = createFormatStimulus(useColors)
     
     const overviewInstructionTrial = createOverviewInstructionTrial()
-    const goInstructionTrial = createGoInstructionTrial(goStimulus, buttonText, formatStimulus, jsPsych)
-    const noGoInstructionTrial = createNoGoInstructionTrial(noGoStimulus, buttonText, formatStimulus, jsPsych)
+    const goInstructionTrial = createGoInstructionTrial(actualGoStimuli[0], buttonText, formatStimulus, jsPsych)
+    const noGoInstructionTrial = createNoGoInstructionTrial(actualNoGoStimuli[0], buttonText, formatStimulus, jsPsych)
     const practiceCompletionTrial = createPracticeCompletionTrial()
     
     return [overviewInstructionTrial, goInstructionTrial, noGoInstructionTrial, practiceCompletionTrial]
   },
   goNoGoTrial: (jsPsych: JsPsych, config: GoNoGoConfig = {}) => {
     const {
+      goStimulus,
+      noGoStimulus,
+      goStimuli,
+      noGoStimuli,
       buttonText = englishText.defaultButtonText,
       responseTimeout = 1500,
       interTrialInterval = 500,
       trialsPerBlock = 50,
       goTrialProbability = 0.75,
-      goStimulus = englishText.defaultGoStimulus,
-      noGoStimulus = englishText.defaultNoGoStimulus,
-      colorBorders = true
+      colorBorders,
+      colorText
     } = config
-
-    const formatStimulus = createFormatStimulus(colorBorders)
+    
+    const actualGoStimuli = goStimuli || (goStimulus ? [goStimulus] : [englishText.defaultGoStimulus])
+    const actualNoGoStimuli = noGoStimuli || (noGoStimulus ? [noGoStimulus] : [englishText.defaultNoGoStimulus])
+    const useColors = colorText !== undefined ? colorText : (colorBorders !== undefined ? colorBorders : false)
     
     const goNoGoTrial = createGoNoGoTrial(jsPsych, buttonText, responseTimeout)
     const interTrialIntervalTrial = createInterTrialIntervalTrial(interTrialInterval)
-    const generateTrialsForBlock = createGenerateTrialsForBlock(trialsPerBlock, goTrialProbability, goStimulus, noGoStimulus, formatStimulus)
+    const generateTrialsForBlock = createGenerateTrialsForBlock(trialsPerBlock, goTrialProbability, actualGoStimuli, actualNoGoStimuli, createFormatStimulus(useColors))
     
     return { trial: goNoGoTrial, interTrialInterval: interTrialIntervalTrial, generateTrialsForBlock }
   },

@@ -16,10 +16,9 @@
 <body></body>
 <script>
   const jsPsych = initJsPsych({
-    on_finish:() => jsPsych.data.displayData('json')
+     
   });
 
-  // Configuration options - uncomment and modify as needed
   const config = {
     buttonText: 'Click',                       // Button label
     responseTimeout: 500,                     // Max time to respond (ms)
@@ -30,9 +29,17 @@
     numTrialsPerBlock: 50,                // Number of trials per block
   };
 
+const instructions = jsPsychTimelineGoNogoTimeline.createInstructions(
+    jsPsych,
+    {    }
+  );
+  const practice = jsPsychTimelineGoNogoTimeline.timelineUnits.instructionTrial(jsPsych, config);
   const task = jsPsychTimelineGoNogoTimeline.createTimeline(jsPsych, config);
 
-  jsPsych.run([task]);
+  // Skip the first trial (overview) from practice to avoid duplication
+  const practiceWithoutOverview = practice.slice(1);
+  
+  jsPsych.run([instructions, ...practiceWithoutOverview, task]);
 </script>
 
 </html>

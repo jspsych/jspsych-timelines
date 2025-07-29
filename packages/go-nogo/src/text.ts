@@ -1,3 +1,11 @@
+export const instructions_pages = [
+    "In this task, you will see different stimuli appear on the screen.",
+    "When you see a 'go' stimulus, click the button as quickly as possible.\nWhen you see a 'no go' stimulus, do NOT click the button.",
+    "Try to respond as quickly and accurately as possible.",
+    "Click 'Start' when you're ready to begin.",
+]
+
+
 export const englishText = {
   // Default stimuli
   defaultGoStimulus: 'Y',
@@ -62,6 +70,10 @@ export const englishText = {
   // CSS colors
   goColor: 'green',
   noGoColor: 'red',
+
+  //button labels
+  back_button: 'Back',
+  next_button: 'Next',
   
   // Trial types (used in data)
   trialTypes: {
