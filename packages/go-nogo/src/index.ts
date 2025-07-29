@@ -127,25 +127,29 @@ const createGoInstructionTrial = (goStimulus: string, buttonText: string, format
           }
         }
       </style>
-      <div class="go-nogo-instruction-page">
-        <h2 class="go-nogo-instruction-header">${englishText.goPageTitle}</h2>
-        
-        <div class="go-nogo-instruction-content">
-          <p>${englishText.goPageText}</p>
-          <p class="go-nogo-instruction-action">${englishText.goPageAction}</p>
-          <p>${englishText.goPageInstructions}</p>
-        </div>
-        
-        <div id="trial-container" class="go-nogo-trial-container">
-          <div class="go-nogo-stimulus-container">
-            ${goExample}
+      <div class="timeline-trial">
+        <div class="go-nogo-instruction-page">
+          <h2 class="go-nogo-instruction-header">${englishText.goPageTitle}</h2>
+          
+          <div class="go-nogo-instruction-content">
+            <p>${englishText.goPageText}</p>
+            <p class="go-nogo-instruction-action">${englishText.goPageAction}</p>
+            <p>${englishText.goPageInstructions}</p>
           </div>
-          <button id="practice-button" class="jspsych-btn">
-            ${buttonText}
-          </button>
+          
+          <div id="trial-container" class="go-nogo-trial-container">
+            <div class="go-nogo-stimulus-container">
+              ${goExample}
+            </div>
+            <div class="timeline-html-btn">
+              <button id="practice-button" class="jspsych-btn">
+                ${buttonText}
+              </button>
+            </div>
+          </div>
+          
+          <div id="feedback-container" class="go-nogo-feedback"></div>
         </div>
-        
-        <div id="feedback-container" class="go-nogo-feedback"></div>
       </div>
     `,
     choices: [],
@@ -283,28 +287,32 @@ const createNoGoInstructionTrial = (noGoStimulus: string, buttonText: string, fo
           }
         }
       </style>
-      <div class="go-nogo-instruction-page">
-        <h2 class="go-nogo-instruction-header">${englishText.noGoPageTitle}</h2>
-        
-        <div class="go-nogo-instruction-content">
-          <p>${englishText.noGoPageText}</p>
-          <p class="go-nogo-instruction-action">${englishText.noGoPageAction}</p>
-          <p>${englishText.noGoPageInstructions}</p>
-        </div>
-        
-        <div id="trial-container" class="go-nogo-trial-container">
-          <div class="go-nogo-stimulus-container">
-            ${noGoExample}
+      <div class="timeline-trial">
+        <div class="go-nogo-instruction-page">
+          <h2 class="go-nogo-instruction-header">${englishText.noGoPageTitle}</h2>
+          
+          <div class="go-nogo-instruction-content">
+            <p>${englishText.noGoPageText}</p>
+            <p class="go-nogo-instruction-action">${englishText.noGoPageAction}</p>
+            <p>${englishText.noGoPageInstructions}</p>
           </div>
-          <button id="practice-button" class="jspsych-btn">
-            ${buttonText}
-          </button>
-        </div>
-        
-        <div id="feedback-container" class="go-nogo-feedback"></div>
-        
-        <div id="ready-message" class="go-nogo-ready-message">
-          <p class="go-nogo-ready-text">${englishText.readyToStart}</p>
+          
+          <div id="trial-container" class="go-nogo-trial-container">
+            <div class="go-nogo-stimulus-container">
+              ${noGoExample}
+            </div>
+            <div class="timeline-html-btn">
+              <button id="practice-button" class="jspsych-btn">
+                ${buttonText}
+              </button>
+            </div>
+          </div>
+          
+          <div id="feedback-container" class="go-nogo-feedback"></div>
+          
+          <div id="ready-message" class="go-nogo-ready-message">
+            <p class="go-nogo-ready-text">${englishText.readyToStart}</p>
+          </div>
         </div>
       </div>
     `,
@@ -433,17 +441,31 @@ const createPracticeCompletionTrial = () => {
           }
         }
       </style>
-      <div class="go-nogo-practice-complete">
-        <h2 class="go-nogo-practice-complete-header">${englishText.practiceCompleteTitle}</h2>
-        
-        <div class="go-nogo-practice-complete-content">
-          <p class="go-nogo-practice-complete-message">${englishText.practiceCompleteMessage}</p>
-          <p class="go-nogo-practice-complete-prompt">${englishText.startTaskPrompt}</p>
+      <div class="timeline-trial">
+        <div class="go-nogo-practice-complete">
+          <h2 class="go-nogo-practice-complete-header">${englishText.practiceCompleteTitle}</h2>
+          
+          <div class="go-nogo-practice-complete-content">
+            <p class="go-nogo-practice-complete-message">${englishText.practiceCompleteMessage}</p>
+            <p class="go-nogo-practice-complete-prompt">${englishText.startTaskPrompt}</p>
+          </div>
         </div>
       </div>
     `,
     choices: [englishText.beginTaskButton],
-    data: { trial_type: englishText.trialTypes.instructions }
+    data: { trial_type: englishText.trialTypes.instructions },
+    on_load: () => {
+      // Wrap the button in timeline-html-btn class
+      setTimeout(() => {
+        const button = document.querySelector('.jspsych-btn');
+        if (button && !button.parentElement?.classList.contains('timeline-html-btn')) {
+          const wrapper = document.createElement('div');
+          wrapper.className = 'timeline-html-btn';
+          button.parentNode?.insertBefore(wrapper, button);
+          wrapper.appendChild(button);
+        }
+      }, 50);
+    }
   }
 }
 
@@ -493,6 +515,17 @@ const createGoNoGoTrial = (jsPsych: JsPsych, buttonText: string, responseTimeout
         `;
         document.head.appendChild(style);
       }
+      
+      // Wrap main task button in timeline-html-btn class
+      setTimeout(() => {
+        const button = document.querySelector('.jspsych-btn');
+        if (button && !button.parentElement?.classList.contains('timeline-html-btn')) {
+          const wrapper = document.createElement('div');
+          wrapper.className = 'timeline-html-btn';
+          button.parentNode?.insertBefore(wrapper, button);
+          wrapper.appendChild(button);
+        }
+      }, 50);
     },
     on_finish: (data: any) => {
       const isGoTrial = data.stimulus_type === englishText.stimulusTypes.go
@@ -579,9 +612,11 @@ const createDebriefTrial = (jsPsych: JsPsych, showResultsDetails: boolean) => {
               }
             }
           </style>
-          <div class="go-nogo-debrief">
-            <h2>${englishText.taskComplete}</h2>
-            <p>${englishText.thankYouMessage}</p>
+          <div class="timeline-trial">
+            <div class="go-nogo-debrief">
+              <h2>${englishText.taskComplete}</h2>
+              <p>${englishText.thankYouMessage}</p>
+            </div>
           </div>
         `
       }
@@ -636,23 +671,37 @@ const createDebriefTrial = (jsPsych: JsPsych, showResultsDetails: boolean) => {
             }
           }
         </style>
-        <div class="go-nogo-debrief">
-          <h2>${englishText.taskComplete}</h2>
-          <div class="go-nogo-debrief-results">
-            <p><strong>${englishText.overallAccuracy}</strong> ${accuracy}%</p>
-            <p><strong>${englishText.averageResponseTime}</strong> ${meanRT}ms</p>
+        <div class="timeline-trial">
+          <div class="go-nogo-debrief">
+            <h2>${englishText.taskComplete}</h2>
+            <div class="go-nogo-debrief-results">
+              <p><strong>${englishText.overallAccuracy}</strong> ${accuracy}%</p>
+              <p><strong>${englishText.averageResponseTime}</strong> ${meanRT}ms</p>
+            </div>
+            <p>${englishText.thankYouMessage}</p>
           </div>
-          <p>${englishText.thankYouMessage}</p>
         </div>
       `
     },
     choices: [englishText.finishButton],
-    data: { trial_type: englishText.trialTypes.debrief }
+    data: { trial_type: englishText.trialTypes.debrief },
+    on_load: () => {
+      // Wrap the button in timeline-html-btn class
+      setTimeout(() => {
+        const button = document.querySelector('.jspsych-btn');
+        if (button && !button.parentElement?.classList.contains('timeline-html-btn')) {
+          const wrapper = document.createElement('div');
+          wrapper.className = 'timeline-html-btn';
+          button.parentNode?.insertBefore(wrapper, button);
+          wrapper.appendChild(button);
+        }
+      }, 50);
+    }
   }
 }
 
 
-export function createInstructions(jsPsych?: JsPsych, config: any = {}) {
+export function createInstructions(_jsPsych?: JsPsych, _config: any = {}) {
   // Use default instruction pages - config parameter reserved for future use
   const pages = instructions_pages;
   
@@ -672,7 +721,12 @@ export function createInstructions(jsPsych?: JsPsych, config: any = {}) {
           font-weight: 600 !important;
         }
       </style>
-      <div class="instructions-container"><p>${page}</p></div>
+      <div class="timeline-trial">
+        <div class="instructions-container"><p>${page}</p></div>
+        <div class="timeline-btn-container">
+          <!-- Navigation buttons will be inserted here by jsPsych -->
+        </div>
+      </div>
     `),
     show_clickable_nav: true,
     allow_keys: true,
@@ -800,23 +854,37 @@ export function createTimeline(jsPsych: JsPsych, config: GoNoGoConfig = {}) {
               }
             }
           </style>
-          <div class="go-nogo-block-break">
-            <h2 class="go-nogo-block-break-header">Block ${blockNum} Complete!</h2>
-            
-            <div class="go-nogo-block-break-content">
-              <p class="go-nogo-block-break-progress">You have completed block ${blockNum} of ${numBlocks}.</p>
-              <p class="go-nogo-block-break-rest">Take a short break if you need to.</p>
-              <div class="go-nogo-block-break-reminder">
-                <p><strong>Reminder:</strong></p>
-                <p><strong>GO trials:</strong> ${englishText.goTrialInstructions}</p>
-                <p><strong>NO-GO trials:</strong> ${englishText.noGoTrialInstructions}</p>
+          <div class="timeline-trial">
+            <div class="go-nogo-block-break">
+              <h2 class="go-nogo-block-break-header">Block ${blockNum} Complete!</h2>
+              
+              <div class="go-nogo-block-break-content">
+                <p class="go-nogo-block-break-progress">You have completed block ${blockNum} of ${numBlocks}.</p>
+                <p class="go-nogo-block-break-rest">Take a short break if you need to.</p>
+                <div class="go-nogo-block-break-reminder">
+                  <p><strong>Reminder:</strong></p>
+                  <p><strong>GO trials:</strong> ${englishText.goTrialInstructions}</p>
+                  <p><strong>NO-GO trials:</strong> ${englishText.noGoTrialInstructions}</p>
+                </div>
+                <p class="go-nogo-block-break-continue">Click below to continue to block ${blockNum + 1}.</p>
               </div>
-              <p class="go-nogo-block-break-continue">Click below to continue to block ${blockNum + 1}.</p>
             </div>
           </div>
         `,
         choices: [`Continue to Block ${blockNum + 1}`],
-        data: { trial_type: 'block-break', block: blockNum }
+        data: { trial_type: 'block-break', block: blockNum },
+        on_load: () => {
+          // Wrap the button in timeline-html-btn class
+          setTimeout(() => {
+            const button = document.querySelector('.jspsych-btn');
+            if (button && !button.parentElement?.classList.contains('timeline-html-btn')) {
+              const wrapper = document.createElement('div');
+              wrapper.className = 'timeline-html-btn';
+              button.parentNode?.insertBefore(wrapper, button);
+              wrapper.appendChild(button);
+            }
+          }, 50);
+        }
       }
       blocks.push(blockBreakTrial)
     }
