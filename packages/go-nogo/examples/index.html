@@ -7,10 +7,12 @@
   <title>jsPsychTimelineGoNogoTimeline Example</title>
   <script src="https://unpkg.com/jspsych"></script>
   <script src="../dist/index.global.js"></script>
+  
   <!-- Load the published timeline package here, e.g.
 <script src="https://unpkg.com/@jspsych-timelines/go-nogo"></script>
 <script src="../dist/index.global.js"></script> -->
   <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css">
+  <link rel="stylesheet" href="../src/styles.css">
 </head>
 
 <body></body>
@@ -24,7 +26,6 @@
     responseTimeout: 500,                     // Max time to respond (ms)
     interTrialInterval: 500,                   // Pause between trials (ms)
     goTrialProbability: 0.75,                  // Probability of GO trials (0-1)
-    showResultsDetails: true,                   // Show detailed results
     numBlocks: 3,                        // Number of blocks
     numTrialsPerBlock: 50,                // Number of trials per block
   };

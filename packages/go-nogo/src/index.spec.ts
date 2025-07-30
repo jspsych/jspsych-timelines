@@ -16,18 +16,17 @@ describe("createTimeline", () => {
   });
 
   describe("basic functionality", () => {
-    it("should return a timeline with default configuration", () => {
+    it("should return a timeline with default configuration (no debrief)", () => {
       const timeline = createTimeline(jsPsych);
       
       expect(timeline).toBeDefined();
-      // Should have: block1 + block2-instruction + block2 + block3-instruction + block3 + debrief = 6 items
-      expect(timeline.timeline).toHaveLength(6);
+      // Should have: block1 + block2-instruction + block2 + block3-instruction + block3 = 5 items (no debrief by default)
+      expect(timeline.timeline).toHaveLength(5);
       expect(timeline.timeline[0]).toHaveProperty('timeline'); // block 1
       expect(timeline.timeline[1]).toHaveProperty('stimulus'); // block 2 instruction
       expect(timeline.timeline[2]).toHaveProperty('timeline'); // block 2
       expect(timeline.timeline[3]).toHaveProperty('stimulus'); // block 3 instruction
-      expect(timeline.timeline[0]).toHaveProperty('timeline'); // block 3
-      expect(timeline.timeline[5]).toHaveProperty('stimulus'); // debrief
+      expect(timeline.timeline[4]).toHaveProperty('timeline'); // block 3
     });
 
     it("should create timeline with custom configuration", () => {
@@ -45,12 +44,87 @@ describe("createTimeline", () => {
       const timeline = createTimeline(jsPsych, config);
       
       expect(timeline).toBeDefined();
-      // Should have: block1 + block2-instruction + block2 + debrief = 4 items
-      expect(timeline.timeline).toHaveLength(4);
+      // Should have: block1 + block2-instruction + block2 = 3 items (no debrief by default)
+      expect(timeline.timeline).toHaveLength(3);
       
       // Check first block has correct number of trials
       const firstBlock = timeline.timeline[0] as any;
       expect(firstBlock.timeline_variables).toHaveLength(25);
+    });
+  });
+
+  describe("showDebrief parameter", () => {
+    it("should not include debrief trial when showDebrief is false (default)", () => {
+      const timeline = createTimeline(jsPsych, { showDebrief: false });
+      
+      expect(timeline).toBeDefined();
+      // Should have: block1 + block2-instruction + block2 + block3-instruction + block3 = 5 items
+      expect(timeline.timeline).toHaveLength(5);
+      
+      // None of the timeline items should be a debrief trial
+      const hasDebriefTrial = timeline.timeline.some((item: any) => 
+        item.data && item.data.trial_type === englishText.trialTypes.debrief
+      );
+      expect(hasDebriefTrial).toBe(false);
+    });
+
+    it("should include debrief trial when showDebrief is true", () => {
+      const timeline = createTimeline(jsPsych, { showDebrief: true });
+      
+      expect(timeline).toBeDefined();
+      // Should have: block1 + block2-instruction + block2 + block3-instruction + block3 + debrief = 6 items
+      expect(timeline.timeline).toHaveLength(6);
+      
+      // Last item should be the debrief trial
+      const debriefTrial = timeline.timeline[timeline.timeline.length - 1] as any;
+      expect(debriefTrial.choices).toEqual([englishText.finishButton]);
+      expect(debriefTrial.data.trial_type).toBe(englishText.trialTypes.debrief);
+      expect(typeof debriefTrial.stimulus).toBe('function');
+    });
+
+    it("should not include debrief trial by default when showDebrief not specified", () => {
+      const timeline = createTimeline(jsPsych);
+      
+      expect(timeline).toBeDefined();
+      // Should have: block1 + block2-instruction + block2 + block3-instruction + block3 = 5 items
+      expect(timeline.timeline).toHaveLength(5);
+      
+      // None of the timeline items should be a debrief trial
+      const hasDebriefTrial = timeline.timeline.some((item: any) => 
+        item.data && item.data.trial_type === englishText.trialTypes.debrief
+      );
+      expect(hasDebriefTrial).toBe(false);
+    });
+
+    it("should work with different numBlocks when showDebrief is false", () => {
+      const timeline = createTimeline(jsPsych, { numBlocks: 1, showDebrief: false });
+      
+      expect(timeline).toBeDefined();
+      // Should have: block1 only = 1 item
+      expect(timeline.timeline).toHaveLength(1);
+      
+      // Should be a block, not debrief
+      const firstItem = timeline.timeline[0] as any;
+      expect(firstItem).toHaveProperty('timeline'); // Should be a block
+      expect(firstItem).toHaveProperty('timeline_variables');
+    });
+
+    it("should work with different numBlocks when showDebrief is true", () => {
+      const timeline = createTimeline(jsPsych, { numBlocks: 1, showDebrief: true });
+      
+      expect(timeline).toBeDefined();
+      // Should have: block1 + debrief = 2 items
+      expect(timeline.timeline).toHaveLength(2);
+      
+      // First should be block, second should be debrief
+      const firstItem = timeline.timeline[0] as any;
+      const secondItem = timeline.timeline[1] as any;
+      
+      expect(firstItem).toHaveProperty('timeline'); // Should be a block
+      expect(firstItem).toHaveProperty('timeline_variables');
+      
+      expect(secondItem.choices).toEqual([englishText.finishButton]);
+      expect(secondItem.data.trial_type).toBe(englishText.trialTypes.debrief);
     });
   });
 
@@ -174,7 +248,7 @@ describe("createTimeline", () => {
 
   describe("trial generation", () => {
     it("should generate correct trial structure", () => {
-      const config = { numTrials: 10 };
+      const config = { trialsPerBlock: 10 };
       const timeline = createTimeline(jsPsych, config);
       const trialProcedure = timeline.timeline[0] as any;
       
@@ -216,9 +290,8 @@ describe("createTimeline", () => {
       const trial = firstBlock.timeline_variables[0];
       
       expect(trial.stimulus).toContain('TEST');
-      expect(trial.stimulus).toContain('black');
-      expect(trial.stimulus).toContain('font-size: 48px');
-      expect(trial.stimulus).toContain('font-weight: bold');
+      expect(trial.stimulus).toContain('color: black');
+      expect(trial.stimulus).toContain('class="go-nogo-stimulus-content"');
     });
 
     it("should format no-go stimuli correctly", () => {
@@ -234,9 +307,8 @@ describe("createTimeline", () => {
       const trial = firstBlock.timeline_variables[0];
       
       expect(trial.stimulus).toContain('STOP');
-      expect(trial.stimulus).toContain('black');
-      expect(trial.stimulus).toContain('font-size: 48px');
-      expect(trial.stimulus).toContain('font-weight: bold');
+      expect(trial.stimulus).toContain('color: black');
+      expect(trial.stimulus).toContain('class="go-nogo-stimulus-content"');
     });
   });
 
@@ -253,9 +325,8 @@ describe("createTimeline", () => {
       const firstBlock = timeline.timeline[0] as any;
       const trial = firstBlock.timeline_variables[0];
       
-      expect(trial.stimulus).toContain('<div class="go-nogo-stimulus-content">');
+      expect(trial.stimulus).toContain('class="go-nogo-stimulus-content"');
       expect(trial.stimulus).toContain('TEXT_GO');
-      expect(trial.stimulus).toContain('font-size: 48px');
       expect(trial.stimulus).toContain('color: black');
     });
 
@@ -271,7 +342,7 @@ describe("createTimeline", () => {
       const firstBlock = timeline.timeline[0] as any;
       const trial = firstBlock.timeline_variables[0];
       
-      expect(trial.stimulus).toContain('<div class="go-nogo-stimulus-content">');
+      expect(trial.stimulus).toContain('class="go-nogo-stimulus-content"');
       expect(trial.stimulus).toContain('<img src="path/to/image.png" alt="GO">');
       expect(trial.stimulus).not.toContain('border: 3px solid');
       expect(trial.stimulus).toContain('color: black');
@@ -298,11 +369,11 @@ describe("createTimeline", () => {
       const goTrial = trials.find((t: any) => t.stimulus.includes('Custom'));
       const noGoTrial = trials.find((t: any) => t.stimulus.includes('STOP'));
       
-      expect(goTrial.stimulus).toContain('<div class="go-nogo-stimulus-content">');
+      expect(goTrial.stimulus).toContain('class="go-nogo-stimulus-content"');
       expect(goTrial.stimulus).toContain('<div><span>Custom</span><br><strong>GO</strong></div>');
       expect(goTrial.stimulus).toContain('color: black');
       
-      expect(noGoTrial.stimulus).toContain('<div class="go-nogo-stimulus-content">');
+      expect(noGoTrial.stimulus).toContain('class="go-nogo-stimulus-content"');
       expect(noGoTrial.stimulus).toContain('<div style="color: red;">STOP</div>');
       expect(noGoTrial.stimulus).toContain('color: black');
       
@@ -488,8 +559,8 @@ describe("createTimeline", () => {
       expect(hasInstructionTrials).toBe(false);
     });
 
-    it("should have correct debrief trial", () => {
-      const timeline = createTimeline(jsPsych);
+    it("should have correct debrief trial when showDebrief is true", () => {
+      const timeline = createTimeline(jsPsych, { showDebrief: true });
       const debriefTrial = timeline.timeline[timeline.timeline.length - 1] as any;
       
       expect(debriefTrial.choices).toEqual([englishText.finishButton]);
@@ -680,7 +751,7 @@ describe("createTimeline", () => {
         timelineVariable: (name: string) => `timeline_variable_${name}`
       };
 
-      const timeline = createTimeline(mockJsPsych as any);
+      const timeline = createTimeline(mockJsPsych as any, { showDebrief: true });
       const debriefTrial = timeline.timeline[timeline.timeline.length - 1] as any;
       const stimulus = debriefTrial.stimulus();
 
@@ -705,7 +776,7 @@ describe("createTimeline", () => {
         timelineVariable: (name: string) => `timeline_variable_${name}`
       };
 
-      const timeline = createTimeline(mockJsPsych as any);
+      const timeline = createTimeline(mockJsPsych as any, { showDebrief: true });
       const debriefTrial = timeline.timeline[timeline.timeline.length - 1] as any;
       const stimulus = debriefTrial.stimulus();
 
@@ -730,7 +801,7 @@ describe("createTimeline", () => {
         timelineVariable: (name: string) => `timeline_variable_${name}`
       };
 
-      const timeline = createTimeline(mockJsPsych as any);
+      const timeline = createTimeline(mockJsPsych as any, { showDebrief: true });
       const debriefTrial = timeline.timeline[timeline.timeline.length - 1] as any;
       const stimulus = debriefTrial.stimulus();
 
@@ -753,7 +824,7 @@ describe("createTimeline", () => {
         timelineVariable: (name: string) => `timeline_variable_${name}`
       };
 
-      const timeline = createTimeline(mockJsPsych as any);
+      const timeline = createTimeline(mockJsPsych as any, { showDebrief: true });
       const debriefTrial = timeline.timeline[timeline.timeline.length - 1] as any;
       const stimulus = debriefTrial.stimulus();
 
@@ -777,7 +848,7 @@ describe("createTimeline", () => {
         timelineVariable: (name: string) => `timeline_variable_${name}`
       };
 
-      const timeline = createTimeline(mockJsPsych as any);
+      const timeline = createTimeline(mockJsPsych as any, { showDebrief: true });
       const debriefTrial = timeline.timeline[timeline.timeline.length - 1] as any;
       const stimulus = debriefTrial.stimulus();
 
@@ -801,7 +872,7 @@ describe("createTimeline", () => {
         timelineVariable: (name: string) => `timeline_variable_${name}`
       };
 
-      const timeline = createTimeline(mockJsPsych as any);
+      const timeline = createTimeline(mockJsPsych as any, { showDebrief: true });
       const debriefTrial = timeline.timeline[timeline.timeline.length - 1] as any;
       const stimulus = debriefTrial.stimulus();
 
@@ -827,7 +898,7 @@ describe("createTimeline", () => {
         timelineVariable: (name: string) => `timeline_variable_${name}`
       };
 
-      const timeline = createTimeline(mockJsPsych as any);
+      const timeline = createTimeline(mockJsPsych as any, { showDebrief: true });
       const debriefTrial = timeline.timeline[timeline.timeline.length - 1] as any;
       const stimulus = debriefTrial.stimulus();
 
@@ -852,7 +923,7 @@ describe("createTimeline", () => {
         timelineVariable: (name: string) => `timeline_variable_${name}`
       };
 
-      const timeline = createTimeline(mockJsPsych as any);
+      const timeline = createTimeline(mockJsPsych as any, { showDebrief: true });
       const debriefTrial = timeline.timeline[timeline.timeline.length - 1] as any;
       const stimulus = debriefTrial.stimulus();
 
@@ -875,7 +946,7 @@ describe("createTimeline", () => {
         timelineVariable: (name: string) => `timeline_variable_${name}`
       };
 
-      const timeline = createTimeline(mockJsPsych as any, { showResultsDetails: false });
+      const timeline = createTimeline(mockJsPsych as any, { showResultsDetails: false, showDebrief: true });
       const debriefTrial = timeline.timeline[timeline.timeline.length - 1] as any;
       const stimulus = debriefTrial.stimulus();
 
@@ -899,7 +970,7 @@ describe("createTimeline", () => {
         timelineVariable: (name: string) => `timeline_variable_${name}`
       };
 
-      const timeline = createTimeline(mockJsPsych as any, { showResultsDetails: true });
+      const timeline = createTimeline(mockJsPsych as any, { showResultsDetails: true, showDebrief: true });
       const debriefTrial = timeline.timeline[timeline.timeline.length - 1] as any;
       const stimulus = debriefTrial.stimulus();
 
@@ -923,7 +994,7 @@ describe("createTimeline", () => {
         timelineVariable: (name: string) => `timeline_variable_${name}`
       };
 
-      const timeline = createTimeline(mockJsPsych as any); // No config parameter
+      const timeline = createTimeline(mockJsPsych as any, { showDebrief: true }); // No config parameter
       const debriefTrial = timeline.timeline[timeline.timeline.length - 1] as any;
       const stimulus = debriefTrial.stimulus();
 
