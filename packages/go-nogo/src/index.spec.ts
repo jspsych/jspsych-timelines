@@ -291,7 +291,7 @@ describe("createTimeline", () => {
       
       expect(trial.stimulus).toContain('TEST');
       expect(trial.stimulus).toContain('color: black');
-      expect(trial.stimulus).toContain('class="go-nogo-stimulus-content"');
+      expect(trial.stimulus).toContain('class="go-nogo-stimulus-content timeline-trial"');
     });
 
     it("should format no-go stimuli correctly", () => {
@@ -308,7 +308,7 @@ describe("createTimeline", () => {
       
       expect(trial.stimulus).toContain('STOP');
       expect(trial.stimulus).toContain('color: black');
-      expect(trial.stimulus).toContain('class="go-nogo-stimulus-content"');
+      expect(trial.stimulus).toContain('class="go-nogo-stimulus-content timeline-trial"');
     });
   });
 
@@ -325,7 +325,7 @@ describe("createTimeline", () => {
       const firstBlock = timeline.timeline[0] as any;
       const trial = firstBlock.timeline_variables[0];
       
-      expect(trial.stimulus).toContain('class="go-nogo-stimulus-content"');
+      expect(trial.stimulus).toContain('class="go-nogo-stimulus-content timeline-trial"');
       expect(trial.stimulus).toContain('TEXT_GO');
       expect(trial.stimulus).toContain('color: black');
     });
@@ -342,7 +342,7 @@ describe("createTimeline", () => {
       const firstBlock = timeline.timeline[0] as any;
       const trial = firstBlock.timeline_variables[0];
       
-      expect(trial.stimulus).toContain('class="go-nogo-stimulus-content"');
+      expect(trial.stimulus).toContain('class="go-nogo-stimulus-content timeline-trial"');
       expect(trial.stimulus).toContain('<img src="path/to/image.png" alt="GO">');
       expect(trial.stimulus).not.toContain('border: 3px solid');
       expect(trial.stimulus).toContain('color: black');
@@ -369,11 +369,11 @@ describe("createTimeline", () => {
       const goTrial = trials.find((t: any) => t.stimulus.includes('Custom'));
       const noGoTrial = trials.find((t: any) => t.stimulus.includes('STOP'));
       
-      expect(goTrial.stimulus).toContain('class="go-nogo-stimulus-content"');
+      expect(goTrial.stimulus).toContain('class="go-nogo-stimulus-content timeline-trial"');
       expect(goTrial.stimulus).toContain('<div><span>Custom</span><br><strong>GO</strong></div>');
       expect(goTrial.stimulus).toContain('color: black');
       
-      expect(noGoTrial.stimulus).toContain('class="go-nogo-stimulus-content"');
+      expect(noGoTrial.stimulus).toContain('class="go-nogo-stimulus-content timeline-trial"');
       expect(noGoTrial.stimulus).toContain('<div style="color: red;">STOP</div>');
       expect(noGoTrial.stimulus).toContain('color: black');
       
@@ -751,7 +751,7 @@ describe("createTimeline", () => {
         timelineVariable: (name: string) => `timeline_variable_${name}`
       };
 
-      const timeline = createTimeline(mockJsPsych as any, { showDebrief: true });
+      const timeline = createTimeline(mockJsPsych as any, { showDebrief: true, showResultsDetails: true });
       const debriefTrial = timeline.timeline[timeline.timeline.length - 1] as any;
       const stimulus = debriefTrial.stimulus();
 
@@ -776,7 +776,7 @@ describe("createTimeline", () => {
         timelineVariable: (name: string) => `timeline_variable_${name}`
       };
 
-      const timeline = createTimeline(mockJsPsych as any, { showDebrief: true });
+      const timeline = createTimeline(mockJsPsych as any, { showDebrief: true, showResultsDetails: true });
       const debriefTrial = timeline.timeline[timeline.timeline.length - 1] as any;
       const stimulus = debriefTrial.stimulus();
 
@@ -801,7 +801,7 @@ describe("createTimeline", () => {
         timelineVariable: (name: string) => `timeline_variable_${name}`
       };
 
-      const timeline = createTimeline(mockJsPsych as any, { showDebrief: true });
+      const timeline = createTimeline(mockJsPsych as any, { showDebrief: true, showResultsDetails: true });
       const debriefTrial = timeline.timeline[timeline.timeline.length - 1] as any;
       const stimulus = debriefTrial.stimulus();
 
@@ -824,7 +824,7 @@ describe("createTimeline", () => {
         timelineVariable: (name: string) => `timeline_variable_${name}`
       };
 
-      const timeline = createTimeline(mockJsPsych as any, { showDebrief: true });
+      const timeline = createTimeline(mockJsPsych as any, { showDebrief: true, showResultsDetails: true });
       const debriefTrial = timeline.timeline[timeline.timeline.length - 1] as any;
       const stimulus = debriefTrial.stimulus();
 
@@ -848,7 +848,7 @@ describe("createTimeline", () => {
         timelineVariable: (name: string) => `timeline_variable_${name}`
       };
 
-      const timeline = createTimeline(mockJsPsych as any, { showDebrief: true });
+      const timeline = createTimeline(mockJsPsych as any, { showDebrief: true, showResultsDetails: true });
       const debriefTrial = timeline.timeline[timeline.timeline.length - 1] as any;
       const stimulus = debriefTrial.stimulus();
 
@@ -872,7 +872,7 @@ describe("createTimeline", () => {
         timelineVariable: (name: string) => `timeline_variable_${name}`
       };
 
-      const timeline = createTimeline(mockJsPsych as any, { showDebrief: true });
+      const timeline = createTimeline(mockJsPsych as any, { showDebrief: true, showResultsDetails: true });
       const debriefTrial = timeline.timeline[timeline.timeline.length - 1] as any;
       const stimulus = debriefTrial.stimulus();
 
@@ -898,7 +898,7 @@ describe("createTimeline", () => {
         timelineVariable: (name: string) => `timeline_variable_${name}`
       };
 
-      const timeline = createTimeline(mockJsPsych as any, { showDebrief: true });
+      const timeline = createTimeline(mockJsPsych as any, { showDebrief: true, showResultsDetails: true });
       const debriefTrial = timeline.timeline[timeline.timeline.length - 1] as any;
       const stimulus = debriefTrial.stimulus();
 
@@ -923,7 +923,7 @@ describe("createTimeline", () => {
         timelineVariable: (name: string) => `timeline_variable_${name}`
       };
 
-      const timeline = createTimeline(mockJsPsych as any, { showDebrief: true });
+      const timeline = createTimeline(mockJsPsych as any, { showDebrief: true, showResultsDetails: true });
       const debriefTrial = timeline.timeline[timeline.timeline.length - 1] as any;
       const stimulus = debriefTrial.stimulus();
 
@@ -946,7 +946,7 @@ describe("createTimeline", () => {
         timelineVariable: (name: string) => `timeline_variable_${name}`
       };
 
-      const timeline = createTimeline(mockJsPsych as any, { showResultsDetails: false, showDebrief: true });
+      const timeline = createTimeline(mockJsPsych as any, { showDebrief: true, showResultsDetails: false });
       const debriefTrial = timeline.timeline[timeline.timeline.length - 1] as any;
       const stimulus = debriefTrial.stimulus();
 
@@ -980,7 +980,7 @@ describe("createTimeline", () => {
       expect(stimulus).toContain('<strong>Average Response Time (GO trials):</strong>');
     });
 
-    it("should show detailed results by default when showResultsDetails is not specified", () => {
+    it("should show simple results by default when showResultsDetails is not specified", () => {
       const mockTrialData = [
         { stimulus_type: 'go', accuracy: 1, response: 0, rt: 400 }
       ];
@@ -994,12 +994,14 @@ describe("createTimeline", () => {
         timelineVariable: (name: string) => `timeline_variable_${name}`
       };
 
-      const timeline = createTimeline(mockJsPsych as any, { showDebrief: true }); // No config parameter
+      const timeline = createTimeline(mockJsPsych as any, { showDebrief: true }); // showResultsDetails not specified, should default to false
       const debriefTrial = timeline.timeline[timeline.timeline.length - 1] as any;
       const stimulus = debriefTrial.stimulus();
 
-      expect(stimulus).toContain('<strong>Overall Accuracy:</strong>');
-      expect(stimulus).toContain('<strong>Average Response Time (GO trials):</strong>');
+      expect(stimulus).toContain('<h2>Task Complete!</h2>');
+      expect(stimulus).toContain('Thank you for completing the Go/No-Go task!');
+      expect(stimulus).not.toContain('<strong>Overall Accuracy:</strong>');
+      expect(stimulus).not.toContain('<strong>Average Response Time (GO trials):</strong>');
     });
   });
 
