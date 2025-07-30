@@ -31,11 +31,13 @@ export const englishText = {
   `<b>GO Trials</b><br>When you see this stimulus, click the button as quickly as possible!<br>Try clicking the button below to practice:`,
   gotItButton: 'Got it!',
   goFeedbackMessage: 'Perfect! You clicked quickly for the GO stimulus.',
+  goodJobMessage: 'Good job!',
   
   // Page 3: NO-GO Practice  
 
   noGoPageContent:
   `<b>NO-GO Trials</b><br>When you see this stimulus, do NOT click the button!<br>Try waiting without clicking the button below:`,
+  rememberNoGo: 'Remember, you should NOT click for the NO-GO stimulus!',
   noGoFeedbackMessage: 'Excellent! You correctly did NOT click for the NO-GO stimulus.',
   readyToStart: 'Now you understand the task.',
   

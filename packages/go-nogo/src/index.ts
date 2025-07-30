@@ -30,7 +30,7 @@ const createFormatStimulus = (colorText: boolean = false) =>
     const borderStyle = colorText ? `border: 3px solid ${color};` : ''
     
     return `
-      <div style= "color: ${color}; ${borderStyle}" class="go-nogo-stimulus-content">${stimulus}</div>`
+      <div style= "color: ${color}; ${borderStyle}" class="go-nogo-stimulus-content timeline-trial">${stimulus}</div>`
   }
 
 const createGoInstructionTrial = (goStimulus: string, buttonText: string, formatStimulus: (stimulus: string, isGoTrial: boolean) => string, jsPsych: JsPsych) => {
@@ -90,7 +90,7 @@ const createGoInstructionTrial = (goStimulus: string, buttonText: string, format
             (practiceButton as HTMLButtonElement).disabled = true;
             practiceButton.style.opacity = '0.5';
             
-            showFeedback('Good job!', true);
+            showFeedback(englishText.goodJobMessage, true);
           }
         });
       }
@@ -105,88 +105,6 @@ const createNoGoInstructionTrial = (noGoStimulus: string, buttonText: string, fo
   return {
     type: htmlButtonResponse,
     stimulus: `
-      <style>
-        .go-nogo-instruction-page {
-          font-size: 18px;
-          line-height: 1.5;
-          max-width: 600px;
-          margin: 0 auto;
-          padding: 0 20px;
-        }
-        .go-nogo-instruction-header {
-          text-align: center;
-          color: #dc3545;
-          margin-bottom: 20px;
-        }
-        .go-nogo-instruction-content {
-          text-align: center;
-          margin: 20px 0;
-        }
-        .go-nogo-instruction-action {
-          color: #dc3545;
-          font-weight: bold;
-          font-size: 20px;
-        }
-        .go-nogo-trial-container {
-          text-align: center;
-          margin: 30px 0;
-          min-height: 180px;
-        }
-        .go-nogo-stimulus-container {
-          margin: 15px 0;
-        }
-        .go-nogo-feedback {
-          text-align: center;
-          margin: 15px 0;
-          min-height: 40px;
-          font-weight: bold;
-          font-size: 18px;
-        }
-        .go-nogo-ready-message {
-          text-align: center;
-          margin-top: 20px;
-          display: none;
-        }
-        .go-nogo-ready-text {
-          font-weight: bold;
-          color: #28a745;
-        }
-        @media (max-width: 768px) {
-          .go-nogo-instruction-page {
-            font-size: 14px;
-            line-height: 1.3;
-            padding: 5px 15px;
-          }
-          .go-nogo-instruction-header {
-            font-size: 18px;
-            margin-bottom: 8px;
-          }
-          .go-nogo-instruction-content {
-            margin: 8px 0;
-          }
-          .go-nogo-instruction-content p {
-            margin: 4px 0;
-          }
-          .go-nogo-instruction-action {
-            font-size: 16px;
-          }
-          .go-nogo-trial-container {
-            margin: 10px 0;
-            min-height: 100px;
-          }
-          .go-nogo-stimulus-container {
-            margin: 8px 0;
-          }
-          .go-nogo-feedback {
-            margin: 8px 0;
-            min-height: 25px;
-            font-size: 14px;
-          }
-          .go-nogo-ready-message {
-            margin-top: 10px;
-          }
-        }
-      </style>
             <p>${englishText.noGoPageContent}</p>
           
             <div class="go-nogo-stimulus-container timeline-trial">
@@ -197,7 +115,6 @@ const createNoGoInstructionTrial = (noGoStimulus: string, buttonText: string, fo
               </button>
           
           <div id="feedback-container" class="go-nogo-feedback"></div>
-
     `,
     choices: [],
     trial_duration: null,
@@ -236,7 +153,7 @@ const createNoGoInstructionTrial = (noGoStimulus: string, buttonText: string, fo
           }
           
           if (clicked) {
-            showFeedback('Remember you are not supposed to click for NO-GO stimulus', false);
+            showFeedback(englishText.rememberNoGo, false);
           } else {
             showFeedback(englishText.noGoFeedbackMessage, true);
             const readyMessage = document.getElementById('ready-message');
@@ -256,7 +173,7 @@ const createNoGoInstructionTrial = (noGoStimulus: string, buttonText: string, fo
         practiceButton.addEventListener('click', function() {
           if (!practiceCompleted) {
             clicked = true;
-            showFeedback('Remember you are not supposed to click for NO-GO stimulus', false);
+            showFeedback(englishText.rememberNoGo, false);
           }
         });
       }
@@ -277,11 +194,9 @@ const createPracticeCompletionTrial = () => {
   return {
     type: htmlButtonResponse,
     stimulus: `
-      <div class="timeline-trial">
         <div class="go-nogo-practice-complete">
           <p>${englishText.practiceCompleteContent}<p>
         </div>
-      </div>
     `,
     choices: [englishText.beginTaskButton],
     data: { trial_type: englishText.trialTypes.instructions },
@@ -313,40 +228,6 @@ const createGoNoGoTrial = (jsPsych: JsPsych, buttonText: string, responseTimeout
       correct_response: jsPsych.timelineVariable('correct_response')
     },
     on_load: () => {
-      // Add global button styling (applies to practice and main trial buttons)
-      if (!document.getElementById('go-nogo-global-button-styles')) {
-        const style = document.createElement('style');
-        style.id = 'go-nogo-global-button-styles';
-        style.textContent = `
-          .jspsych-btn {
-            text-align: center !important;
-            display: block !important;
-            margin: 15px auto !important;
-            padding: 12px 20px !important;
-            white-space: normal !important;
-            word-wrap: break-word !important;
-            min-width: 120px !important;
-            width: auto !important;
-            max-width: 90% !important;
-            line-height: 1.4 !important;
-          }
-          @media (max-width: 768px) {
-            .jspsych-btn {
-              padding: 15px 20px !important;
-              font-size: 16px !important;
-              min-height: 50px !important;
-              width: auto !important;
-              max-width: 95% !important;
-              margin: 15px auto !important;
-              white-space: normal !important;
-              word-wrap: break-word !important;
-              line-height: 1.2 !important;
-            }
-          }
-        `;
-        document.head.appendChild(style);
-      }
-      
       // Wrap main task button in timeline-html-btn class
       setTimeout(() => {
         const button = document.querySelector('.jspsych-btn');
@@ -446,12 +327,10 @@ const createDebriefTrial = (jsPsych: JsPsych, showResultsDetails: boolean) => {
     stimulus: () => {
       if (!showResultsDetails) {
         return `
-          <div class="timeline-trial">
             <div class="go-nogo-debrief">
               <h2>${englishText.taskComplete}</h2>
               <p>${englishText.thankYouMessage}</p>
             </div>
-          </div>
         `
       }
 
@@ -476,7 +355,6 @@ const createDebriefTrial = (jsPsych: JsPsych, showResultsDetails: boolean) => {
       }
       
       return `
-        <div class="timeline-trial">
           <div class="go-nogo-debrief">
             <h2>${englishText.taskComplete}</h2>
             <div class="go-nogo-debrief-results">
@@ -485,7 +363,6 @@ const createDebriefTrial = (jsPsych: JsPsych, showResultsDetails: boolean) => {
             </div>
             <p>${englishText.thankYouMessage}</p>
           </div>
-        </div>
       `
     },
     choices: [englishText.finishButton],
@@ -513,9 +390,7 @@ export function createInstructions(_jsPsych?: JsPsych, _config: any = {}) {
   return {
     type: jsPsychInstructions,
     pages: pages.map(page => `
-      <div class="timeline-trial">
         <div class="instructions-container"><p>${page}</p></div>
-      </div>
     `),
     show_clickable_nav: true,
     allow_keys: true,
