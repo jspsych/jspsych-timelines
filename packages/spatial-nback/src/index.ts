@@ -6,7 +6,7 @@ import { trial_text, instruction_pages } from "./text";
 function createInstructions(instruction_pages_data = instruction_pages) {
   return {
     type: jsPsychInstructions,
-    pages: instruction_pages_data.map(page => `<div class="instructions-container"><p>${page}</p></div>`),
+    pages: instruction_pages_data.map(page => `<div class="timeline-instructions"><p>${page}</p></div>`),
     show_clickable_nav: true,
     allow_keys: true,
     key_forward: 'ArrowRight',
@@ -148,9 +148,10 @@ export function createTimeline({
             correct_color: correct_color,
             incorrect_color: incorrect_color,
             on_load: function() {
-                // Automatically set CSS variable for button count
-                const buttonContainer = document.getElementById('nback-buttons-container'); 
+                // Automatically set CSS variable for button count, should add this to plugin later maybe
                 document.getElementById('nback-grid-container')?.classList.add('timeline-trial');
+                
+                const buttonContainer = document.getElementById('nback-buttons-container'); 
                 buttonContainer.classList.add('timeline-btn-container');
                 if (buttonContainer) {
                     buttonContainer.style.setProperty('--button-count', buttons.length.toString());

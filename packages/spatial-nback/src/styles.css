@@ -40,7 +40,7 @@ p {
 
 /* INSTRUCTIONS TRIAL STYLES */
 
-.instructions-container {
+.timeline-instructions {
     max-width: 90vw; /* Limit width for better readability */
     margin: 0 auto; /* Center the container */
     padding: 2vmin; /* Add some padding */
@@ -163,7 +163,7 @@ p {
 
 /* Smaller instructions padding for phone to allow more text */
 /* @media (max-width: 480px) {    
-    .instructions-container {
+    .timeline-instructions {
         padding-bottom: 40vmin;
     }
 } */
@@ -184,7 +184,7 @@ p {
     }
     
     /* Add padding to prevent content from going under fixed buttons */
-    .instructions-container {
+    .timeline-instructions {
         padding-bottom: 45vmin; /* 30vmin for button position + 5vmin safety */
     }
 
