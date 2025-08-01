@@ -119,6 +119,8 @@ const createNoGoInstructionTrial = (noGoStimulus: string, buttonText: string, fo
     choices: [],
     trial_duration: null,
     response_ends_trial: false,
+    button_html: (choice, choice_index) => `<button class="jspsych-btn timeline-html-btn">${choice}</button>`,
+
     on_start: () => {
       setTimeout(() => {
         const buttons = document.querySelectorAll('.jspsych-btn');
@@ -200,18 +202,7 @@ const createPracticeCompletionTrial = () => {
     `,
     choices: [englishText.beginTaskButton],
     data: { trial_type: englishText.trialTypes.instructions },
-    on_load: () => {
-      // Wrap the button in timeline-html-btn class
-      setTimeout(() => {
-        const button = document.querySelector('.jspsych-btn');
-        if (button && !button.parentElement?.classList.contains('timeline-html-btn')) {
-          const wrapper = document.createElement('div');
-          wrapper.className = 'timeline-html-btn';
-          button.parentNode?.insertBefore(wrapper, button);
-          wrapper.appendChild(button);
-        }
-      }, 50);
-    }
+    button_html: (choice, choice_index) => `<button class="jspsych-btn timeline-html-btn">${choice}</button>`,
   }
 }
 
@@ -227,18 +218,8 @@ const createGoNoGoTrial = (jsPsych: JsPsych, buttonText: string, responseTimeout
       stimulus_type: jsPsych.timelineVariable('trial_type'),
       correct_response: jsPsych.timelineVariable('correct_response')
     },
-    on_load: () => {
-      // Wrap main task button in timeline-html-btn class
-      setTimeout(() => {
-        const button = document.querySelector('.jspsych-btn');
-        if (button && !button.parentElement?.classList.contains('timeline-html-btn')) {
-          const wrapper = document.createElement('div');
-          wrapper.className = 'timeline-html-btn';
-          button.parentNode?.insertBefore(wrapper, button);
-          wrapper.appendChild(button);
-        }
-      }, 50);
-    },
+    button_html: (choice, choice_index) => `<button class="jspsych-btn timeline-html-btn">${choice}</button>`,
+
     on_finish: (data: any) => {
       const isGoTrial = data.stimulus_type === englishText.stimulusTypes.go
       const responded = data.response !== null && data.response !== undefined
