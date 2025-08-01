@@ -3,7 +3,7 @@ import jsPsychPluginSpatialNback from "@jspsych-contrib/plugin-spatial-nback";
 import jsPsychInstructions from "@jspsych/plugin-instructions";
 import { trial_text, instruction_pages } from "./text";
 
-function createInstructions(instruction_pages_data = instruction_pages) {
+function createInstructions(instruction_pages_data = instruction_pages, texts = trial_text) {
   return {
     type: jsPsychInstructions,
     pages: instruction_pages_data.map(page => `<div class="timeline-instructions"><p>${page}</p></div>`),
@@ -11,8 +11,8 @@ function createInstructions(instruction_pages_data = instruction_pages) {
     allow_keys: true,
     key_forward: 'ArrowRight',
     key_backward: 'ArrowLeft',
-    button_label_previous: trial_text.back_button,
-    button_label_next: trial_text.next_button,
+    button_label_previous: texts?.back_button ?? trial_text.back_button,
+    button_label_next: texts?.next_button ?? trial_text.next_button,
     data: {
       task: 'spatial-nback',
       phase: 'instructions'
@@ -119,14 +119,17 @@ export function createTimeline({
     texts?: typeof trial_text
 } = {}) {
 
+    // Use texts object if provided, otherwise fall back to defaults
+    const effective_prompt = prompt ?? texts?.prompt ?? trial_text.prompt;
+    const effective_buttons = buttons ?? texts?.button ?? trial_text.button;
+
     // Generate the sequence
     const sequence = generateNBackSequence(total_trials, n_back, target_percentage, rows, cols);
     
     // Create individual trial objects
     const trials = [];
     for (let i = 0; i < total_trials; i++) {
-        // Use the provided prompt or fall back to default text, then replace placeholders
-        const trial_instructions = `<p>${prompt || texts.prompt
+        const trial_instructions = `<p>${effective_prompt
             .replace(/{n_back}/g, n_back.toString())
             .replace(/{plural}/g, n_back > 1 ? 's' : '')
             .replace(/{trial}/g, (i + 1).toString())
@@ -146,7 +149,7 @@ export function createTimeline({
             show_feedback_border: show_feedback_border,
             cell_size: cell_size,
             instructions: trial_instructions,
-            buttons: buttons || texts.button,
+            buttons: effective_buttons,
             stimulus_color: stimulus_color,
             correct_color: correct_color,
             incorrect_color: incorrect_color,
@@ -157,7 +160,7 @@ export function createTimeline({
                 const buttonContainer = document.getElementById('nback-buttons-container'); 
                 buttonContainer.classList.add('timeline-btn-container');
                 if (buttonContainer) {
-                    buttonContainer.style.setProperty('--button-count', (buttons || texts.button).length.toString());
+                    buttonContainer.style.setProperty('--button-count', effective_buttons.length.toString());
                 }
             },
             data: {
@@ -177,7 +180,7 @@ export function createTimeline({
 
     // Return complete timeline with or without instructions
     if (include_instructions) {
-        const instructions = createInstructions(instruction_texts);
+        const instructions = createInstructions(instruction_texts, texts);
         
         const nested_timeline = {
             timeline: [instructions, task_timeline]
@@ -198,6 +201,7 @@ export function createPracticeTimeline(options: Parameters<typeof createTimeline
         show_feedback_text: true,
         show_feedback_border: true,
         include_instructions: false,
+        prompt: "Match the current position with the position from {n_back} trial{plural} ago. (trial {trial} of {total})",
     });
 }
 

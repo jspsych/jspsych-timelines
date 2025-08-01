@@ -8,23 +8,12 @@ export const trial_text = {
     // these do not work right now due to CSS fixed position, might fix later
     next_button: "",
     back_button: "", 
-
-    // Task completion messages
-    task_complete_header: "Task Complete!",
-    task_complete_message: "Thank you for participating in the spatial n-back task.",
     
     // Main task instructions
     prompt: "Click the MATCH button if the current position matches the position from {n_back} trial{plural} ago. (trial {trial} of {total})",
     
-    // Fixation and inter-trial
-    fixation_cross: "+",
-    
     // Button text array - first button is "match", second is "no match"
     button: ["O", "X"],
-    
-    // Feedback messages
-    correct: "Correct!",
-    incorrect: "Incorrect!",
 }
 
 /* 
