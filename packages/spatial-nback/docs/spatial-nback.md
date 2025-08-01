@@ -59,6 +59,25 @@ const customTimeline = createTimeline({
 });
 ```
 
+### With Custom Text Object
+```javascript
+const customTexts = {
+  prompt: "Press YES if the position matches {n_back} steps back (trial {trial}/{total})",
+  button: ["YES", "NO"],
+  correct: "Great job!",
+  incorrect: "Try again!",
+  next_button: "Continue",
+  back_button: "Previous"
+};
+
+const timelineWithCustomTexts = createTimeline({
+  n_back: 2,
+  total_trials: 20,
+  texts: customTexts,
+  include_instructions: true
+});
+```
+
 ## Parameters
 
 ### Core Configuration
@@ -103,6 +122,7 @@ const customTimeline = createTimeline({
 | **buttons** | string[] | ["O", "X"] | Array of button text strings. First button is "match", second is "no match" |
 | **include_instructions** | boolean | false | Whether to include instruction pages at the start |
 | **instruction_texts** | string[] | See text.ts | Custom instruction pages |
+| **texts** | object | trial_text | Custom text object containing prompt, buttons, and other text elements |
 
 ## Data Generated
 

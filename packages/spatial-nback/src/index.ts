@@ -89,13 +89,14 @@ export function createTimeline({
     show_feedback_text = false,
     show_feedback_border = false,
     cell_size = null,
-    prompt = trial_text.prompt,
-    buttons = trial_text.button,
+    prompt = null,
+    buttons = null,
     stimulus_color = "#2196F3",
     correct_color = "#4CAF50",
     incorrect_color = "#F44336",
     include_instructions = false,
-    instruction_texts = instruction_pages
+    instruction_texts = instruction_pages,
+    texts = trial_text
 }: {
     rows?: number,
     cols?: number,
@@ -114,7 +115,8 @@ export function createTimeline({
     correct_color?: string,
     incorrect_color?: string,
     include_instructions?: boolean,
-    instruction_texts?: typeof instruction_pages
+    instruction_texts?: typeof instruction_pages,
+    texts?: typeof trial_text
 } = {}) {
 
     // Generate the sequence
@@ -123,7 +125,8 @@ export function createTimeline({
     // Create individual trial objects
     const trials = [];
     for (let i = 0; i < total_trials; i++) {
-        const trial_instructions = `<p>${prompt
+        // Use the provided prompt or fall back to default text, then replace placeholders
+        const trial_instructions = `<p>${prompt || texts.prompt
             .replace(/{n_back}/g, n_back.toString())
             .replace(/{plural}/g, n_back > 1 ? 's' : '')
             .replace(/{trial}/g, (i + 1).toString())
@@ -143,7 +146,7 @@ export function createTimeline({
             show_feedback_border: show_feedback_border,
             cell_size: cell_size,
             instructions: trial_instructions,
-            buttons: buttons,
+            buttons: buttons || texts.button,
             stimulus_color: stimulus_color,
             correct_color: correct_color,
             incorrect_color: incorrect_color,
@@ -154,7 +157,7 @@ export function createTimeline({
                 const buttonContainer = document.getElementById('nback-buttons-container'); 
                 buttonContainer.classList.add('timeline-btn-container');
                 if (buttonContainer) {
-                    buttonContainer.style.setProperty('--button-count', buttons.length.toString());
+                    buttonContainer.style.setProperty('--button-count', (buttons || texts.button).length.toString());
                 }
             },
             data: {
