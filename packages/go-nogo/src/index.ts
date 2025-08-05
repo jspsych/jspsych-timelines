@@ -1,7 +1,7 @@
 import { JsPsych } from "jspsych"
 import htmlButtonResponse from "@jspsych/plugin-html-button-response";
 import jsPsychInstructions from "@jspsych/plugin-instructions";
-import { englishText, instructions_pages } from "./text";
+import { englishText, instruction_pages } from "./text";
 
 
 interface GoNoGoConfig {
@@ -42,29 +42,17 @@ const createGoInstructionTrial = (goStimulus: string, buttonText: string, format
      
             <p>${englishText.goPageContent}</p>
           
-            <div class="go-nogo-stimulus-container timeline-trial">
+            <p class="go-nogo-stimulus-container timeline-trial">
               ${goExample}
-            </div>
-              <button id="practice-button" class="jspsych-btn timeline-html-btn">
-                ${buttonText}
-              </button>
+            </p>
         
           <div id="feedback-container" class="go-nogo-feedback"></div>
 
     `,
-    choices: [],
+    choices: [buttonText],
+    button_html: (choice, choice_index) => `<button class="jspsych-btn timeline-html-btn">${choice}</button>`,
     trial_duration: null,
     response_ends_trial: false,
-    on_start: () => {
-      setTimeout(() => {
-        const buttons = document.querySelectorAll('.jspsych-btn');
-        buttons.forEach(btn => {
-          if (btn.id !== 'practice-button') {
-            (btn as HTMLElement).style.display = 'none';
-          }
-        });
-      }, 50);
-    },
     on_load: () => {
       let practiceCompleted = false;
       
@@ -81,7 +69,7 @@ const createGoInstructionTrial = (goStimulus: string, buttonText: string, format
           }, 2000);
         }
       }
-      
+    
       const practiceButton = document.getElementById('practice-button');
       if (practiceButton) {
         practiceButton.addEventListener('click', function() {
@@ -364,10 +352,10 @@ const createDebriefTrial = (jsPsych: JsPsych, showResultsDetails: boolean) => {
 }
 
 
-export function createInstructions(_jsPsych?: JsPsych, _config: any = {}) {
+export function createInstructions(instructions: string[] = instruction_pages) {
   // Use default instruction pages - config parameter reserved for future use
-  const pages = instructions_pages;
-  
+  const pages = instructions || [];
+
   return {
     type: jsPsychInstructions,
     pages: pages.map(page => `

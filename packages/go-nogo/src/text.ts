@@ -1,4 +1,4 @@
-export const instructions_pages = [
+export const instruction_pages = [
     "In this task, you will see different stimuli appear on the screen.",
     "When you see a 'go' stimulus, click the button as quickly as possible.\nWhen you see a 'no go' stimulus, do NOT click the button.",
     "Try to respond as quickly and accurately as possible.",
