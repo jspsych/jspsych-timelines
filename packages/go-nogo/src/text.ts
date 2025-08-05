@@ -11,7 +11,7 @@ export const englishText = {
   defaultGoStimulus: 'Y',
   defaultNoGoStimulus: 'X',
   defaultButtonText: 'Click',
-  
+
   // Instructions
   instructionText: 'In this task, you will see different stimuli appear on the screen.',
   goTrialInstructions: 'When you see a \'go\' stimulus, click the button as quickly as possible.',

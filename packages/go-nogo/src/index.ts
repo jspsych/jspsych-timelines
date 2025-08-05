@@ -30,7 +30,7 @@ const createFormatStimulus = (colorText: boolean = false) =>
     const borderStyle = colorText ? `border: 3px solid ${color};` : ''
     
     return `
-      <div style= "color: ${color}; ${borderStyle}" class="go-nogo-stimulus-content timeline-trial">${stimulus}</div>`
+      <div style= "color: ${color}; ${borderStyle}" class="go-nogo-stimulus-content timeline-trial"><p>${stimulus}</p></div>`
   }
 
 const createGoInstructionTrial = (goStimulus: string, buttonText: string, formatStimulus: (stimulus: string, isGoTrial: boolean) => string, jsPsych: JsPsych) => {
@@ -41,18 +41,27 @@ const createGoInstructionTrial = (goStimulus: string, buttonText: string, format
     stimulus: `
      
             <p>${englishText.goPageContent}</p>
-          
-            <p class="go-nogo-stimulus-container timeline-trial">
-              ${goExample}
-            </p>
+            ${goExample}
+              <button id="practice-button" class="jspsych-btn timeline-html-btn">
+                ${buttonText}
+              </button>
         
           <div id="feedback-container" class="go-nogo-feedback"></div>
 
     `,
-    choices: [buttonText],
-    button_html: (choice, choice_index) => `<button class="jspsych-btn timeline-html-btn">${choice}</button>`,
+    choices: [],
     trial_duration: null,
     response_ends_trial: false,
+    on_start: () => {
+      setTimeout(() => {
+        const buttons = document.querySelectorAll('.jspsych-btn');
+        buttons.forEach(btn => {
+          if (btn.id !== 'practice-button') {
+            (btn as HTMLElement).style.display = 'none';
+          }
+        });
+      }, 50);
+    },
     on_load: () => {
       let practiceCompleted = false;
       
@@ -69,7 +78,7 @@ const createGoInstructionTrial = (goStimulus: string, buttonText: string, format
           }, 2000);
         }
       }
-    
+      
       const practiceButton = document.getElementById('practice-button');
       if (practiceButton) {
         practiceButton.addEventListener('click', function() {
@@ -95,10 +104,9 @@ const createNoGoInstructionTrial = (noGoStimulus: string, buttonText: string, fo
     stimulus: `
             <p>${englishText.noGoPageContent}</p>
           
-            <div class="go-nogo-stimulus-container timeline-trial">
               ${noGoExample}
-            </div>
-              <button id="practice-button" class="jspsych-btn timeline-html-btn">
+
+              <button id="jspsych-btn" class="jspsych-btn timeline-html-btn">
                 ${buttonText}
               </button>
           
@@ -352,23 +360,31 @@ const createDebriefTrial = (jsPsych: JsPsych, showResultsDetails: boolean) => {
 }
 
 
-export function createInstructions(instructions: string[] = instruction_pages) {
-  // Use default instruction pages - config parameter reserved for future use
-  const pages = instructions || [];
-
+export function createInstructions(instructions: string[] = instruction_pages, texts = englishText) {
+  // Debug logging to help identify the issue
+  console.log('createInstructions called with:', { 
+    instructions, 
+    isArray: Array.isArray(instructions),
+    instructionPagesImport: instruction_pages,
+    isImportArray: Array.isArray(instruction_pages)
+  });
+  
+  // Ensure instructions is an array with better fallback
+  const instructionArray = Array.isArray(instructions) ? instructions : 
+                          Array.isArray(instruction_pages) ? instruction_pages : 
+                          ["Default instruction page"];
+  
   return {
     type: jsPsychInstructions,
-    pages: pages.map(page => `
-        <div class="instructions-container"><p>${page}</p></div>
-    `),
+    pages: instructionArray.map(page => `<div class="timeline-instructions"><p>${page}</p></div>`),
     show_clickable_nav: true,
     allow_keys: true,
     key_forward: 'ArrowRight',
     key_backward: 'ArrowLeft',
-    button_label_previous: '',
-    button_label_next: '',
+    button_label_previous: texts?.back_button ?? texts.back_button,
+    button_label_next: texts?.next_button ?? texts.next_button,
     data: {
-      task: 'go-nogo',
+      task: 'go-no-go',
       phase: 'instructions'
     }
   };
