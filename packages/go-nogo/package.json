@@ -1,0 +1,38 @@
+{
+    "name": "@jspsych-timelines/go-nogo",
+    "version": "0.0.1",
+    "description": "Go/No-go Task",
+    "type": "module",
+    "main": "dist/index.mjs",
+    "types": "dist/index.d.ts",
+    "unpkg": "dist/index.browser.min.js",
+    "scripts": {
+        "build": "tsup src/index.ts --format esm,iife --sourcemap --dts --treeshake --clean --global-name jsPsychTimelineGoNogoTimeline"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/jspsych/jspsych-timelines",
+        "directory": ""
+    },
+    "keywords": [
+        "jsPsych"
+    ],
+    "author": {
+        "name": "Caroline Griem",
+        "url": "https://github.com/caroline-griem"
+    },
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/jspsych/jspsych-timelines/issues"
+    },
+    "homepage": "/@jspsych-timelines/go-nogo/README.md",
+    "devDependencies": {
+        "@jspsych/config": "^3.2.2",
+        "jspsych": "^8.0.0",
+        "tsup": "^6.7.0",
+        "typescript": "^5.0.2"
+    },
+    "dependencies": {
+        "@jspsych/plugin-html-button-response": "^2.1.0"
+    }
+}

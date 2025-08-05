@@ -1,0 +1,334 @@
+/* Stimulus Content */
+.go-nogo-stimulus-content {
+  font-size: 48px;
+  font-weight: bold;
+  display: inline-block;
+  padding: 20px;
+}
+
+.go-nogo-stimulus-content img {
+  max-width: 100%;
+  height: auto;
+}
+
+@media (max-width: 768px) {
+  .go-nogo-stimulus-content {
+    font-size: min(20vw, 120px);
+  }
+}
+
+/* Instruction Pages */
+.go-nogo-instruction-page {
+  font-size: 18px;
+  line-height: 1.5;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.go-nogo-instruction-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.go-nogo-instruction-header.go-trial {
+  color: #28a745;
+}
+
+.go-nogo-instruction-header.nogo-trial {
+  color: #dc3545;
+}
+
+.go-nogo-instruction-content {
+  text-align: center;
+  margin: 20px 0;
+}
+
+.go-nogo-instruction-action {
+  font-size: 20px;
+}
+
+.go-nogo-instruction-action.nogo-trial {
+  color: #dc3545;
+  font-weight: bold;
+}
+
+.go-nogo-trial-container {
+  text-align: center;
+  margin: 30px 0;
+  min-height: 180px;
+}
+
+.go-nogo-stimulus-container {
+  margin: 15px 0;
+}
+
+.go-nogo-feedback {
+  text-align: center;
+  margin: 15px 0;
+  min-height: 40px;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.go-nogo-ready-message {
+  text-align: center;
+  margin-top: 20px;
+  display: none;
+}
+
+.go-nogo-ready-text {
+  font-weight: bold;
+  color: #28a745;
+}
+
+@media (max-width: 768px) {
+  .go-nogo-instruction-page {
+    font-size: 14px;
+    line-height: 1.3;
+    padding: 5px 15px;
+  }
+  
+  .go-nogo-instruction-header {
+    font-size: 18px;
+    margin-bottom: 8px;
+  }
+  
+  .go-nogo-instruction-content {
+    margin: 8px 0;
+  }
+  
+  .go-nogo-instruction-content p {
+    margin: 4px 0;
+  }
+  
+  .go-nogo-instruction-action {
+    font-size: 16px;
+  }
+  
+  .go-nogo-trial-container {
+    margin: 10px 0;
+    min-height: 100px;
+  }
+  
+  .go-nogo-stimulus-container {
+    margin: 8px 0;
+  }
+  
+  .go-nogo-feedback {
+    margin: 8px 0;
+    min-height: 25px;
+    font-size: 14px;
+  }
+  
+  .go-nogo-ready-message {
+    margin-top: 10px;
+  }
+}
+
+/* Practice Complete */
+.go-nogo-practice-complete {
+  font-size: 18px;
+  line-height: 1.5;
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 0 20px;
+}
+
+.go-nogo-practice-complete-header {
+  color: #28a745;
+  margin-bottom: 20px;
+}
+
+.go-nogo-practice-complete-content {
+  margin: 30px 0;
+}
+
+.go-nogo-practice-complete-message {
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+.go-nogo-practice-complete-prompt {
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+  .go-nogo-practice-complete {
+    font-size: 14px;
+    line-height: 1.3;
+    padding: 5px 15px;
+  }
+  
+  .go-nogo-practice-complete-header {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+  
+  .go-nogo-practice-complete-content {
+    margin: 15px 0;
+  }
+  
+  .go-nogo-practice-complete-message {
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+  
+  .go-nogo-practice-complete-prompt {
+    font-size: 14px;
+    margin-bottom: 15px;
+  }
+}
+
+/* Block Break */
+.go-nogo-block-break {
+  font-size: 18px;
+  line-height: 1.5;
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 0 20px;
+}
+
+.go-nogo-block-break-header {
+  color: #28a745;
+  margin-bottom: 20px;
+}
+
+.go-nogo-block-break-content {
+  margin: 30px 0;
+}
+
+.go-nogo-block-break-progress {
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+.go-nogo-block-break-rest {
+  font-size: 18px;
+  margin-bottom: 15px;
+}
+
+.go-nogo-block-break-reminder {
+  margin: 15px 0;
+}
+
+.go-nogo-block-break-continue {
+  margin-top: 20px;
+}
+
+@media (max-width: 768px) {
+  .go-nogo-block-break {
+    font-size: 14px;
+    line-height: 1.3;
+    padding: 5px 15px;
+  }
+  
+  .go-nogo-block-break-header {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+  
+  .go-nogo-block-break-content {
+    margin: 15px 0;
+  }
+  
+  .go-nogo-block-break-progress {
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+  
+  .go-nogo-block-break-rest {
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+  
+  .go-nogo-block-break-reminder {
+    margin: 10px 0;
+  }
+  
+  .go-nogo-block-break-reminder p {
+    margin: 4px 0;
+  }
+  
+  .go-nogo-block-break-continue {
+    margin-top: 15px;
+  }
+}
+
+/* Debrief */
+.go-nogo-debrief {
+  font-size: 18px;
+  line-height: 1.5;
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 0 20px;
+}
+
+.go-nogo-debrief-results {
+  margin: 20px 0;
+}
+
+@media (max-width: 768px) {
+  .go-nogo-debrief {
+    font-size: 14px;
+    line-height: 1.3;
+    padding: 5px 15px;
+  }
+  
+  .go-nogo-debrief h2 {
+    font-size: 18px;
+  }
+  
+  .go-nogo-debrief-results {
+    margin: 15px 0;
+  }
+  
+  .go-nogo-debrief-results p {
+    margin: 6px 0;
+  }
+}
+
+/* Instructions Navigation Buttons */
+.jspsych-instructions-nav .jspsych-btn {
+  width: 25vmin !important;
+  height: 25vmin !important;
+  border: 3px solid #ccc !important;
+  border-radius: 50% !important;
+  font-size: clamp(40px, 7vmin, 50px) !important;
+  cursor: pointer !important;
+  min-height: 100px !important;
+  min-width: 100px !important;
+  font-weight: 600 !important;
+}
+
+/* Go-No-Go Trial Button Styles */
+.jspsych-btn {
+  text-align: center !important;
+  display: block !important;
+  margin: 15px auto !important;
+  padding: 12px 20px !important;
+  white-space: normal !important;
+  word-wrap: break-word !important;
+  min-width: 120px !important;
+  width: auto !important;
+  max-width: 90% !important;
+  line-height: 1.4 !important;
+}
+
+@media (max-width: 768px) {
+  .jspsych-btn {
+    padding: 15px 20px !important;
+    font-size: 16px !important;
+    min-height: 50px !important;
+    width: auto !important;
+    max-width: 95% !important;
+    margin: 15px auto !important;
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    line-height: 1.2 !important;
+  }
+}
