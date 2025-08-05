@@ -30,7 +30,7 @@ const createFormatStimulus = (colorText: boolean = false) =>
     const borderStyle = colorText ? `border: 3px solid ${color};` : ''
     
     return `
-      <div style= "color: ${color}; ${borderStyle}" class="go-nogo-stimulus-content timeline-trial"><p>${stimulus}</p></div>`
+      <div style= "color: ${color}; ${borderStyle}" class="go-nogo-container timeline-trial"><p id="go-nogo-stimulus">${stimulus}</p></div>`
   }
 
 const createGoInstructionTrial = (goStimulus: string, buttonText: string, formatStimulus: (stimulus: string, isGoTrial: boolean) => string, jsPsych: JsPsych) => {
@@ -42,10 +42,13 @@ const createGoInstructionTrial = (goStimulus: string, buttonText: string, format
      
             <p>${englishText.goPageContent}</p>
             ${goExample}
-              <button id="practice-button" class="jspsych-btn timeline-html-btn">
+
+            <div class="timeline-btn-container">
+              <button id="jspsych-btn" class="continue-btn go-nogo-btn timeline-html-btn">
                 ${buttonText}
               </button>
-        
+            </div>
+
           <div id="feedback-container" class="go-nogo-feedback"></div>
 
     `,
@@ -54,9 +57,9 @@ const createGoInstructionTrial = (goStimulus: string, buttonText: string, format
     response_ends_trial: false,
     on_start: () => {
       setTimeout(() => {
-        const buttons = document.querySelectorAll('.jspsych-btn');
+        const buttons = document.querySelectorAll('#jspsych-btn');
         buttons.forEach(btn => {
-          if (btn.id !== 'practice-button') {
+          if (btn.id !== 'jspsych-btn') {
             (btn as HTMLElement).style.display = 'none';
           }
         });
@@ -79,7 +82,7 @@ const createGoInstructionTrial = (goStimulus: string, buttonText: string, format
         }
       }
       
-      const practiceButton = document.getElementById('practice-button');
+      const practiceButton = document.getElementById('jspsych-btn');
       if (practiceButton) {
         practiceButton.addEventListener('click', function() {
           if (!practiceCompleted) {
@@ -105,23 +108,22 @@ const createNoGoInstructionTrial = (noGoStimulus: string, buttonText: string, fo
             <p>${englishText.noGoPageContent}</p>
           
               ${noGoExample}
-
-              <button id="jspsych-btn" class="jspsych-btn timeline-html-btn">
+            <div class="timeline-btn-container">
+              <button id="jspsych-btn" class="continue-btn go-nogo-btn timeline-html-btn">
                 ${buttonText}
               </button>
-          
+            </div>
+
           <div id="feedback-container" class="go-nogo-feedback"></div>
     `,
     choices: [],
     trial_duration: null,
     response_ends_trial: false,
-    button_html: (choice, choice_index) => `<button class="jspsych-btn timeline-html-btn">${choice}</button>`,
-
     on_start: () => {
       setTimeout(() => {
-        const buttons = document.querySelectorAll('.jspsych-btn');
+        const buttons = document.querySelectorAll('#jspsych-btn');
         buttons.forEach(btn => {
-          if (btn.id !== 'practice-button') {
+          if (btn.id !== 'jspsych-btn') {
             (btn as HTMLElement).style.display = 'none';
           }
         });
@@ -144,7 +146,7 @@ const createNoGoInstructionTrial = (noGoStimulus: string, buttonText: string, fo
         const elapsedTime = Date.now() - startTime;
         if (elapsedTime >= 3000 && !practiceCompleted) {
           practiceCompleted = true;
-          const practiceButton = document.getElementById('practice-button');
+          const practiceButton = document.getElementById('jspsych-btn');
           if (practiceButton) {
             (practiceButton as HTMLButtonElement).disabled = true;
             practiceButton.style.opacity = '0.5';
@@ -166,7 +168,7 @@ const createNoGoInstructionTrial = (noGoStimulus: string, buttonText: string, fo
         }
       }
       
-      const practiceButton = document.getElementById('practice-button');
+      const practiceButton = document.getElementById('jspsych-btn');
       if (practiceButton) {
         practiceButton.addEventListener('click', function() {
           if (!practiceCompleted) {
@@ -192,13 +194,25 @@ const createPracticeCompletionTrial = () => {
   return {
     type: htmlButtonResponse,
     stimulus: `
-        <div class="go-nogo-practice-complete">
+        <div class="go-nogo-practice">
           <p>${englishText.practiceCompleteContent}<p>
         </div>
     `,
     choices: [englishText.beginTaskButton],
     data: { trial_type: englishText.trialTypes.instructions },
-    button_html: (choice, choice_index) => `<button class="jspsych-btn timeline-html-btn">${choice}</button>`,
+    button_html: (choice, choice_index) => `<button id="jspsych-btn" class="continue-btn go-nogo-btn timeline-html-btn">${choice}</button>`,
+    on_load: () => {
+      // Wrap the button in timeline-html-container class
+      setTimeout(() => {
+        const button = document.querySelector('#jspsych-btn');
+        if (button && !button.parentElement?.classList.contains('timeline-html-container')) {
+          const wrapper = document.createElement('div');
+          wrapper.className = 'timeline-html-container';
+          button.parentNode?.insertBefore(wrapper, button);
+          wrapper.appendChild(button);
+        }
+      }, 50);
+    }
   }
 }
 
@@ -214,8 +228,20 @@ const createGoNoGoTrial = (jsPsych: JsPsych, buttonText: string, responseTimeout
       stimulus_type: jsPsych.timelineVariable('trial_type'),
       correct_response: jsPsych.timelineVariable('correct_response')
     },
-    button_html: (choice, choice_index) => `<button class="jspsych-btn timeline-html-btn">${choice}</button>`,
+    button_html: (choice, choice_index) => `<button id="jspsych-btn" class="continue-btn timeline-html-btn">${choice}</button>`,
 
+    on_load: () => {
+      // Wrap the button in timeline-html-container class
+      setTimeout(() => {
+        const button = document.querySelector('#jspsych-btn');
+        if (button && !button.parentElement?.classList.contains('timeline-html-container')) {
+          const wrapper = document.createElement('div');
+          wrapper.className = 'timeline-html-container';
+          button.parentNode?.insertBefore(wrapper, button);
+          wrapper.appendChild(button);
+        }
+      }, 50);
+    },
     on_finish: (data: any) => {
       const isGoTrial = data.stimulus_type === englishText.stimulusTypes.go
       const responded = data.response !== null && data.response !== undefined
@@ -283,13 +309,14 @@ const createBlockBreak = (blockNum: number, numBlocks: number) => {
     `,
     choices: [englishText.continueButton],
     data: { trial_type: 'block-break', block: blockNum },
+    button_html: (choice, choice_index) => `<button id="jspsych-btn" class="continue-btn go-nogo-btn timeline-html-btn">${choice}</button>`,
     on_load: () => {
-      // Wrap the button in timeline-html-btn class
+      // Wrap the button in timeline-html-container class
       setTimeout(() => {
-        const button = document.querySelector('.jspsych-btn');
-        if (button && !button.parentElement?.classList.contains('timeline-html-btn')) {
+        const button = document.querySelector('#jspsych-btn');
+        if (button && !button.parentElement?.classList.contains('timeline-html-container')) {
           const wrapper = document.createElement('div');
-          wrapper.className = 'timeline-html-btn';
+          wrapper.className = 'timeline-html-container';
           button.parentNode?.insertBefore(wrapper, button);
           wrapper.appendChild(button);
         }
@@ -334,23 +361,22 @@ const createDebriefTrial = (jsPsych: JsPsych, showResultsDetails: boolean) => {
       return `
           <div class="go-nogo-debrief">
             <h2>${englishText.taskComplete}</h2>
-            <div class="go-nogo-debrief-results">
               <p><strong>${englishText.overallAccuracy}</strong> ${accuracy}%</p>
               <p><strong>${englishText.averageResponseTime}</strong> ${meanRT}ms</p>
-            </div>
             <p>${englishText.thankYouMessage}</p>
           </div>
       `
     },
     choices: [englishText.finishButton],
     data: { trial_type: englishText.trialTypes.debrief },
+    button_html: (choice, choice_index) => `<button id="jspsych-btn" class="continue-btn go-nogo-btn timeline-html-btn">${choice}</button>`,
     on_load: () => {
-      // Wrap the button in timeline-html-btn class
+      // Wrap the button in timeline-html-container class
       setTimeout(() => {
-        const button = document.querySelector('.jspsych-btn');
-        if (button && !button.parentElement?.classList.contains('timeline-html-btn')) {
+        const button = document.querySelector('#jspsych-btn');
+        if (button && !button.parentElement?.classList.contains('timeline-html-container')) {
           const wrapper = document.createElement('div');
-          wrapper.className = 'timeline-html-btn';
+          wrapper.className = 'timeline-html-container';
           button.parentNode?.insertBefore(wrapper, button);
           wrapper.appendChild(button);
         }
