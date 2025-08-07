@@ -30,7 +30,7 @@ const createFormatStimulus = (colorText: boolean = false) =>
     const borderStyle = colorText ? `border: 3px solid ${color};` : ''
     
     return `
-      <div style= "color: ${color}; ${borderStyle}" class="go-nogo-container timeline-trial"><h1 id="go-nogo-stimulus">${stimulus}</h1></div>`
+      <div style="color: ${color}; ${borderStyle}" class="go-nogo-container timeline-trial"><h1 id="go-nogo-stimulus">${stimulus}</h1></div>`
   }
 
 const createGoInstructionTrial = (goStimulus: string, formatStimulus: (stimulus: string, isGoTrial: boolean) => string, jsPsych: JsPsych, texts = englishText) => {
@@ -55,17 +55,14 @@ const createGoInstructionTrial = (goStimulus: string, formatStimulus: (stimulus:
     choices: [],
     trial_duration: null,
     response_ends_trial: false,
-    on_start: () => {
-      setTimeout(() => {
-        const buttons = document.querySelectorAll('.jspsych-btn');
-        buttons.forEach(btn => {
-          if (btn.id !== 'go-nogo-btn') {
-            (btn as HTMLElement).style.display = 'none';
-          }
-        });
-      }, 50);
-    },
     on_load: () => {
+      const buttons = document.querySelectorAll(".jspsych-btn-group-grid");
+      buttons.forEach((btn) => {
+        if (btn.id == "jspsych-html-button-response-btngroup") {
+          (btn as HTMLElement).style.display = "none";
+        }
+      });
+
       let practiceCompleted = false;
       
       function showFeedback(message: string, isCorrect: boolean) {
@@ -76,7 +73,7 @@ const createGoInstructionTrial = (goStimulus: string, formatStimulus: (stimulus:
           
           setTimeout(() => {
             if (practiceCompleted) {
-              jsPsych.finishTrial();
+            jsPsych.finishTrial();
             }
           }, 2000);
         }
@@ -95,7 +92,7 @@ const createGoInstructionTrial = (goStimulus: string, formatStimulus: (stimulus:
         });
       }
     },
-    data: { trial_type: texts.trialTypes.instructions }
+    data: { task: 'go-no-go', phase: 'go-practice' }
   }
 }
 
@@ -107,7 +104,7 @@ const createNoGoInstructionTrial = (noGoStimulus: string, formatStimulus: (stimu
     stimulus: `
             <p>${texts.noGoPageContent}</p>
               ${noGoExample}
-            <div class="timeline-btn-container">
+            <div class="timeline-btn-container jspsych-btn-group-grid">
               <button id="go-nogo-btn" class="continue-btn timeline-html-btn jspsych-btn">
                 ${texts.defaultButtonText}
               </button>
@@ -119,6 +116,13 @@ const createNoGoInstructionTrial = (noGoStimulus: string, formatStimulus: (stimu
     trial_duration: null,
     response_ends_trial: false,
     on_load: () => {
+      const buttons = document.querySelectorAll(".jspsych-btn-group-grid");
+      buttons.forEach((btn) => {
+        if (btn.id == "jspsych-html-button-response-btngroup") {
+          (btn as HTMLElement).style.display = "none";
+        }
+      });
+
       let practiceCompleted = false;
       let clicked = false;
       let startTime = Date.now();
@@ -162,7 +166,15 @@ const createNoGoInstructionTrial = (noGoStimulus: string, formatStimulus: (stimu
         practiceButton.addEventListener('click', function() {
           if (!practiceCompleted) {
             clicked = true;
+            practiceCompleted = true;
+            (practiceButton as HTMLButtonElement).disabled = true;
+            practiceButton.style.opacity = '0.5';
+            
             showFeedback(texts.rememberNoGo, false);
+            
+            setTimeout(() => {
+              jsPsych.finishTrial();
+            }, 2000);
           }
         });
       }
@@ -175,7 +187,7 @@ const createNoGoInstructionTrial = (noGoStimulus: string, formatStimulus: (stimu
         }
       }, 100);
     },
-    data: { trial_type: texts.trialTypes.instructions }
+    data: { task: 'go-no-go', phase: 'nogo-practice' }
   }
 }
 
@@ -188,19 +200,14 @@ const createPracticeCompletionTrial = (texts = englishText) => {
         </div>
     `,
     choices: [texts.beginTaskButton],
-    data: { trial_type: texts.trialTypes.instructions },
+    data: { task: 'go-no-go', phase: 'practice-complete' },
     button_html: (choice, choice_index) => `<button id="go-nogo-btn" class="continue-btn jspsych-btn timeline-html-btn">${choice}</button>`,
     on_load: () => {
-      // Wrap the button in timeline-btn-container class
-      setTimeout(() => {
-        const button = document.querySelector('#go-nogo-btn');
-        if (button && !button.parentElement?.classList.contains('timeline-btn-container')) {
-          const wrapper = document.createElement('div');
-          wrapper.className = 'timeline-btn-container';
-          button.parentNode?.insertBefore(wrapper, button);
-          wrapper.appendChild(button);
-        }
-      }, 50);
+      // Add timeline-btn-container class to button group
+      const buttonGroup = document.querySelector('.jspsych-btn-group-grid');
+      if (buttonGroup) {
+        buttonGroup.classList.add('timeline-btn-container');
+      }
     }
   }
 }
@@ -213,26 +220,19 @@ const createGoNoGoTrial = (jsPsych: JsPsych, buttonText: string, responseTimeout
     trial_duration: responseTimeout,
     response_ends_trial: true,
     data: {
-      trial_type: englishText.trialTypes.goNoGo,
-      stimulus_type: jsPsych.timelineVariable('trial_type'),
-      correct_response: jsPsych.timelineVariable('correct_response')
+      task: 'go-no-go',
+      phase: 'main-trial'
     },
     button_html: (choice, choice_index) => `<button id="go-nogo-btn" class="continue-btn timeline-html-btn jspsych-btn">${choice}</button>`,
-
     on_load: () => {
-      // Wrap the button in timeline-btn-container class
-      setTimeout(() => {
-        const button = document.querySelector('#go-nogo-btn');
-        if (button && !button.parentElement?.classList.contains('timeline-btn-container')) {
-          const wrapper = document.createElement('div');
-          wrapper.className = 'timeline-btn-container';
-          button.parentNode?.insertBefore(wrapper, button);
-          wrapper.appendChild(button);
-        }
-      }, 50);
+      // Add timeline-btn-container class to button group
+      const buttonGroup = document.querySelector('.jspsych-btn-group-grid');
+      if (buttonGroup) {
+        buttonGroup.classList.add('timeline-btn-container');
+      }
     },
     on_finish: (data: any) => {
-      const isGoTrial = data.stimulus_type === englishText.stimulusTypes.go
+      const isGoTrial = data.stimulus_type === 'go'
       const responded = data.response !== null && data.response !== undefined
       
       if (isGoTrial) {
@@ -281,7 +281,7 @@ const createGenerateTrialsForBlock = (trialsPerBlock: number, goTrialProbability
       
       trials.push({
         stimulus: formatStimulus(stimulus, isGoTrial),
-        trial_type: isGoTrial ? englishText.stimulusTypes.go : englishText.stimulusTypes.noGo,
+        trial_type: isGoTrial ? 'go' : 'no-go',
         correct_response: isGoTrial ? 0 : null,
         block: blockNumber
       })
@@ -297,19 +297,14 @@ const createBlockBreak = (blockNum: number, numBlocks: number) => {
             <p>${englishText.blockBreakContent(blockNum, numBlocks)}</p>
     `,
     choices: [englishText.continueButton],
-    data: { trial_type: 'block-break', block: blockNum },
+    data: { task: 'go-no-go', phase: 'block-break' },
     button_html: (choice, choice_index) => `<button id="block-break-btn" class="continue-btn jspsych-btn timeline-html-btn">${choice}</button>`,
     on_load: () => {
-      // Wrap the button in timeline-btn-container class
-      setTimeout(() => {
-        const button = document.querySelector('#block-break-btn');
-        if (button && !button.parentElement?.classList.contains('timeline-btn-container')) {
-          const wrapper = document.createElement('div');
-          wrapper.className = 'timeline-btn-container';
-          button.parentNode?.insertBefore(wrapper, button);
-          wrapper.appendChild(button);
-        }
-      }, 50);
+      // Add timeline-btn-container class to button group
+      const buttonGroup = document.querySelector('.jspsych-btn-group-grid');
+      if (buttonGroup) {
+        buttonGroup.classList.add('timeline-btn-container');
+      }
     }
   }
 }
@@ -357,41 +352,26 @@ const createDebriefTrial = (jsPsych: JsPsych, showResultsDetails: boolean) => {
       `
     },
     choices: [englishText.finishButton],
-    data: { trial_type: englishText.trialTypes.debrief },
+    data: { task: 'go-no-go', phase: 'debrief' },
     button_html: (choice, choice_index) => `<button id="debrief-btn" class="continue-btn jspsych-btn timeline-html-btn">${choice}</button>`,
     on_load: () => {
-      // Wrap the button in timeline-btn-container class
-      setTimeout(() => {
-        const button = document.querySelector('#debrief-btn');
-        if (button && !button.parentElement?.classList.contains('timeline-btn-container')) {
-          const wrapper = document.createElement('div');
-          wrapper.className = 'timeline-btn-container';
-          button.parentNode?.insertBefore(wrapper, button);
-          wrapper.appendChild(button);
-        }
-      }, 50);
+      // Add timeline-btn-container class to button group
+      const buttonGroup = document.querySelector('.jspsych-btn-group-grid');
+      if (buttonGroup) {
+        buttonGroup.classList.add('timeline-btn-container');
+      }
     }
   }
 }
 
 
 export function createInstructions(instructions: string[] = instruction_pages, texts = englishText) {
-  // Debug logging to help identify the issue
-  console.log('createInstructions called with:', { 
-    instructions, 
-    isArray: Array.isArray(instructions),
-    instructionPagesImport: instruction_pages,
-    isImportArray: Array.isArray(instruction_pages)
-  });
-  
-  // Ensure instructions is an array with better fallback
-  const instructionArray = Array.isArray(instructions) ? instructions : 
-                          Array.isArray(instruction_pages) ? instruction_pages : 
-                          ["Default instruction page"];
-  
+  if (instructions.length === 0) {
+    instructions = instruction_pages;
+  }
   return {
     type: jsPsychInstructions,
-    pages: instructionArray.map(page => `<div class="timeline-instructions"><p>${page}</p></div>`),
+    pages: instructions.map(page => `<div class="timeline-instructions"><p>${page}</p></div>`),
     show_clickable_nav: true,
     allow_keys: true,
     key_forward: 'ArrowRight',
@@ -523,14 +503,4 @@ export const timelineUnits = {
   }
 }
 
-export const utils = {
-  calculateAccuracy: (data: any) => {
-    const goNoGoData = data.filter({ trial_type: englishText.trialTypes.goNoGo })
-    return goNoGoData.select(englishText.dataProperties.accuracy).mean()
-  },
-  
-  calculateMeanRT: (data: any) => {
-    const goTrials = data.filter({ trial_type: englishText.trialTypes.goNoGo, stimulus_type: englishText.stimulusTypes.go })
-    return goTrials.select(englishText.dataProperties.rt).mean()
-  }
-}
+export const utils = {}

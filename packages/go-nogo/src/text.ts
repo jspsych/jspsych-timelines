@@ -1,8 +1,9 @@
 export const instruction_pages = [
-    "In this task, you will see different stimuli appear on the screen.",
-    "When you see a 'go' stimulus, click the button as quickly as possible.\nWhen you see a 'no go' stimulus, do NOT click the button.",
-    "Try to respond as quickly and accurately as possible.",
-    "Click 'Start' when you're ready to begin.",
+    "In this task, you will see symbols appear one at a time on the screen. <img src='go-nogo.gif' alt='Go/No-Go task instructions gif'>",
+    "When you see a 'go' stimulus, click the button as quickly as possible. <h2>Y</h2>",
+    "But if you see the No-Go symbol, do nothing — don’t press anything. <h2>X</h2>",
+    "Try to be fast, but also careful. Only press when it’s a Go.",
+    "Continue when ready to start the practice.",
 ]
 
 
