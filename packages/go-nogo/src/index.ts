@@ -49,7 +49,7 @@ const createGoInstructionTrial = (goStimulus: string, formatStimulus: (stimulus:
               </button>
             </div>
 
-          <div id="feedback-container" class="go-nogo-feedback"></div>
+          <div id="feedback-container" class="go-nogo-feedback" style="visibility: hidden;"><span>Good job!</span></div>
 
     `,
     choices: [],
@@ -70,6 +70,7 @@ const createGoInstructionTrial = (goStimulus: string, formatStimulus: (stimulus:
         if (feedbackEl) {
           feedbackEl.innerHTML = message;
           feedbackEl.style.color = isCorrect ? '#28a745' : '#dc3545';
+          feedbackEl.style.visibility = 'visible';
           
           setTimeout(() => {
             if (practiceCompleted) {
@@ -110,7 +111,7 @@ const createNoGoInstructionTrial = (noGoStimulus: string, formatStimulus: (stimu
               </button>
             </div>
 
-          <div id="feedback-container" class="go-nogo-feedback"></div>
+          <div id="feedback-container" class="go-nogo-feedback" style="visibility: hidden;"><span>Good job!</span></div>
     `,
     choices: [],
     trial_duration: null,
@@ -132,6 +133,7 @@ const createNoGoInstructionTrial = (noGoStimulus: string, formatStimulus: (stimu
         if (feedbackEl) {
           feedbackEl.innerHTML = message;
           feedbackEl.style.color = isCorrect ? '#28a745' : '#dc3545';
+          feedbackEl.style.visibility = 'visible';
         }
       }
       
