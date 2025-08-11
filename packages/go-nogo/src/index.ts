@@ -16,7 +16,6 @@ interface GoNoGoConfig {
   numBlocks?: number
   trialsPerBlock?: number
   goTrialProbability?: number
-  varyStimulus?: boolean
   showResultsDetails?: boolean
   colorBorders?: boolean
   colorText?: boolean
@@ -30,7 +29,7 @@ const createFormatStimulus = (colorText: boolean = false) =>
     const borderStyle = colorText ? `border: 3px solid ${color};` : ''
     
     return `
-      <div style="color: ${color}; ${borderStyle}" class="go-nogo-container timeline-trial"><h1 id="go-nogo-stimulus">${stimulus}</h1></div>`
+      <div class="go-nogo-container timeline-trial"><h1 id="go-nogo-stimulus" style="color: ${color}; ${borderStyle}">${stimulus}</h1></div>`
   }
 
 const createGoInstructionTrial = (goStimulus: string, formatStimulus: (stimulus: string, isGoTrial: boolean) => string, jsPsych: JsPsych, texts = englishText) => {

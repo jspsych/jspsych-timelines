@@ -12,7 +12,7 @@
 <script src="https://unpkg.com/@jspsych-timelines/go-nogo"></script>
 <script src="../dist/index.global.js"></script> -->
   <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css">
-  <link rel="stylesheet" href="../src/styles.css">
+  <!-- <link rel="stylesheet" href="../src/styles.css"> -->
 </head>
 
 <body></body>
@@ -23,11 +23,24 @@
 
   const config = {
     buttonText: 'Click',                       // Button label
-    responseTimeout: 500,                     // Max time to respond (ms)
+    responseTimeout: 500000,                     // Max time to respond (ms)
     interTrialInterval: 500,                   // Pause between trials (ms)
     goTrialProbability: 0.75,                  // Probability of GO trials (0-1)
     numBlocks: 3,                        // Number of blocks
     numTrialsPerBlock: 50,                // Number of trials per block
+      stimulusDisplayTime: 1000,              // Time to display stimulus (ms)
+
+      goStimulus: 'Go',                    // GO stimulus
+  noGoStimulus: 'NoGo',                  // NOGO stimulus
+  goStimuli: ['Go1', 'Go2', 'Go3'],     // Array of GO stimuli
+  noGoStimuli: ['NoGo1', 'NoGo2', 'NoGo3'], // Array of NOGO stimuli
+  buttonText: 'Click',                   // Button label
+  varyStimulus: false,                     // Whether to vary stimulus
+  showResultsDetails: true,                // Whether to show detailed results
+  colorBorders: true,                       // Whether to color borders
+  colorText: true,                          // Whether to color text
+  showDebrief: true                         // Whether to show debrief
+
   };
 
 const instructions = jsPsychTimelineGoNogoTimeline.createInstructions();
