@@ -17,22 +17,20 @@ interface GoNoGoConfig {
   trialsPerBlock?: number
   goTrialProbability?: number
   showResultsDetails?: boolean
-  colorText?: boolean
   showDebrief?: boolean
 }
 
-// Helper function to format stimulus as HTML
-const createFormatStimulus = (colorText: boolean = false) => 
+// Helper function to create stimulus HTML
+const createStimulusHTML = () => 
   (stimulus: string, isGoTrial: boolean): string => {
-    const color = colorText ? (isGoTrial ? englishText.goColor : englishText.noGoColor) : 'black'
-    const borderStyle = colorText ? `border: 3px solid ${color};` : ''
+    const id = isGoTrial ? 'go-stimulus' : 'nogo-stimulus'
     
     return `
-      <div class="go-nogo-container timeline-trial"><h1 id="go-nogo-stimulus" style="color: ${color}; ${borderStyle}">${stimulus}</h1></div>`
+      <div id="${id}" class="go-nogo-container timeline-trial"><h1 class="go-nogo-stimulus" id="${id}">${stimulus}</h1></div>`
   }
 
-const createGoInstructionTrial = (goStimulus: string, formatStimulus: (stimulus: string, isGoTrial: boolean) => string, jsPsych: JsPsych, texts = englishText) => {
-  const goExample = formatStimulus(goStimulus, true)
+const createGoInstructionTrial = (goStimulus: string, createStimulus: (stimulus: string, isGoTrial: boolean) => string, jsPsych: JsPsych, texts = englishText) => {
+  const goExample = createStimulus(goStimulus, true)
   
   return {
     type: htmlButtonResponse,
@@ -95,8 +93,8 @@ const createGoInstructionTrial = (goStimulus: string, formatStimulus: (stimulus:
   }
 }
 
-const createNoGoInstructionTrial = (noGoStimulus: string, formatStimulus: (stimulus: string, isGoTrial: boolean) => string, jsPsych: JsPsych, texts = englishText) => {
-  const noGoExample = formatStimulus(noGoStimulus, false)
+const createNoGoInstructionTrial = (noGoStimulus: string, createStimulus: (stimulus: string, isGoTrial: boolean) => string, jsPsych: JsPsych, texts = englishText) => {
+  const noGoExample = createStimulus(noGoStimulus, false)
   
   return {
     type: htmlButtonResponse,
@@ -258,7 +256,7 @@ const createInterTrialIntervalTrial = (interTrialInterval: number) => {
   }
 }
 
-const createGenerateTrialsForBlock = (trialsPerBlock: number, goTrialProbability: number, actualGoStimuli: string[], actualNoGoStimuli: string[], formatStimulus: (stimulus: string, isGoTrial: boolean) => string) => {
+const createGenerateTrialsForBlock = (trialsPerBlock: number, goTrialProbability: number, actualGoStimuli: string[], actualNoGoStimuli: string[], createStimulus: (stimulus: string, isGoTrial: boolean) => string) => {
   return (blockNumber: number) => {
     const trials = []
     let goTrialCount = 0
@@ -280,7 +278,7 @@ const createGenerateTrialsForBlock = (trialsPerBlock: number, goTrialProbability
       }
       
       trials.push({
-        stimulus: formatStimulus(stimulus, isGoTrial),
+        stimulus: createStimulus(stimulus, isGoTrial),
         trial_type: isGoTrial ? 'go' : 'no-go',
         correct_response: isGoTrial ? 0 : null,
         block: blockNumber
@@ -398,20 +396,18 @@ export function createTimeline(jsPsych: JsPsych, config: GoNoGoConfig = {}) {
     trialsPerBlock = 50,
     goTrialProbability = 0.75,
     showResultsDetails = false,
-    colorText,
     showDebrief = false,
   } = config
 
   const actualGoStimuli = goStimuli || (goStimulus ? [goStimulus] : [englishText.defaultGoStimulus])
   const actualNoGoStimuli = noGoStimuli || (noGoStimulus ? [noGoStimulus] : [englishText.defaultNoGoStimulus])
 
-  const useColors = !!colorText
-  const formatStimulus = createFormatStimulus(useColors)
+  const createStimulus = createStimulusHTML()
   
   const goNoGoTrial = createGoNoGoTrial(jsPsych, buttonText, responseTimeout)
   const interTrialIntervalTrial = createInterTrialIntervalTrial(interTrialInterval)
 
-  const generateTrialsForBlock = createGenerateTrialsForBlock(trialsPerBlock, goTrialProbability, actualGoStimuli, actualNoGoStimuli, formatStimulus)
+  const generateTrialsForBlock = createGenerateTrialsForBlock(trialsPerBlock, goTrialProbability, actualGoStimuli, actualNoGoStimuli, createStimulus)
 
   // Generate blocks
   const blocks = []
@@ -451,18 +447,16 @@ export const timelineUnits = {
       goStimulus,
       noGoStimulus,
       goStimuli,
-      noGoStimuli,
-      colorText
+      noGoStimuli
     } = config
 
     const actualGoStimuli = goStimuli || (goStimulus ? [goStimulus] : [texts.defaultGoStimulus])
     const actualNoGoStimuli = noGoStimuli || (noGoStimulus ? [noGoStimulus] : [texts.defaultNoGoStimulus])
-    const useColors = !!colorText // true -> colored, false (undefined/null/false) -> black
 
-    const formatStimulus = createFormatStimulus(useColors)
+    const createStimulus = createStimulusHTML()
 
-    const goInstructionTrial = createGoInstructionTrial(actualGoStimuli[0], formatStimulus, jsPsych, texts)
-    const noGoInstructionTrial = createNoGoInstructionTrial(actualNoGoStimuli[0], formatStimulus, jsPsych, texts)
+    const goInstructionTrial = createGoInstructionTrial(actualGoStimuli[0], createStimulus, jsPsych, texts)
+    const noGoInstructionTrial = createNoGoInstructionTrial(actualNoGoStimuli[0], createStimulus, jsPsych, texts)
     const practiceCompletionTrial = createPracticeCompletionTrial(texts)
     
     return [goInstructionTrial, noGoInstructionTrial, practiceCompletionTrial]
@@ -477,17 +471,15 @@ export const timelineUnits = {
       responseTimeout = 1500,
       interTrialInterval = 500,
       trialsPerBlock = 50,
-      goTrialProbability = 0.75,
-      colorText
+      goTrialProbability = 0.75
     } = config
     
     const actualGoStimuli = goStimuli || (goStimulus ? [goStimulus] : [englishText.defaultGoStimulus])
     const actualNoGoStimuli = noGoStimuli || (noGoStimulus ? [noGoStimulus] : [englishText.defaultNoGoStimulus])
-    const useColors = !!colorText
 
     const goNoGoTrial = createGoNoGoTrial(jsPsych, buttonText, responseTimeout)
     const interTrialIntervalTrial = createInterTrialIntervalTrial(interTrialInterval)
-    const generateTrialsForBlock = createGenerateTrialsForBlock(trialsPerBlock, goTrialProbability, actualGoStimuli, actualNoGoStimuli, createFormatStimulus(useColors))
+    const generateTrialsForBlock = createGenerateTrialsForBlock(trialsPerBlock, goTrialProbability, actualGoStimuli, actualNoGoStimuli, createStimulusHTML())
     
     return { trial: goNoGoTrial, interTrialInterval: interTrialIntervalTrial, generateTrialsForBlock }
   },
