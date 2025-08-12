@@ -17,7 +17,6 @@ interface GoNoGoConfig {
   trialsPerBlock?: number
   goTrialProbability?: number
   showResultsDetails?: boolean
-  colorBorders?: boolean
   colorText?: boolean
   showDebrief?: boolean
 }
@@ -399,18 +398,14 @@ export function createTimeline(jsPsych: JsPsych, config: GoNoGoConfig = {}) {
     trialsPerBlock = 50,
     goTrialProbability = 0.75,
     showResultsDetails = false,
-    colorBorders,
     colorText,
     showDebrief = false,
   } = config
 
-  // Handle backward compatibility for single stimulus parameters
   const actualGoStimuli = goStimuli || (goStimulus ? [goStimulus] : [englishText.defaultGoStimulus])
   const actualNoGoStimuli = noGoStimuli || (noGoStimulus ? [noGoStimulus] : [englishText.defaultNoGoStimulus])
-  
-  // Handle backward compatibility for colorBorders parameter
-  const useColors = colorText !== undefined ? colorText : (colorBorders !== undefined ? colorBorders : false)
-  
+
+  const useColors = !!colorText
   const formatStimulus = createFormatStimulus(useColors)
   
   const goNoGoTrial = createGoNoGoTrial(jsPsych, buttonText, responseTimeout)
@@ -457,16 +452,15 @@ export const timelineUnits = {
       noGoStimulus,
       goStimuli,
       noGoStimuli,
-      colorBorders,
       colorText
     } = config
 
     const actualGoStimuli = goStimuli || (goStimulus ? [goStimulus] : [texts.defaultGoStimulus])
     const actualNoGoStimuli = noGoStimuli || (noGoStimulus ? [noGoStimulus] : [texts.defaultNoGoStimulus])
-    const useColors = colorText !== undefined ? colorText : (colorBorders !== undefined ? colorBorders : false)
-    
+    const useColors = !!colorText // true -> colored, false (undefined/null/false) -> black
+
     const formatStimulus = createFormatStimulus(useColors)
-    
+
     const goInstructionTrial = createGoInstructionTrial(actualGoStimuli[0], formatStimulus, jsPsych, texts)
     const noGoInstructionTrial = createNoGoInstructionTrial(actualNoGoStimuli[0], formatStimulus, jsPsych, texts)
     const practiceCompletionTrial = createPracticeCompletionTrial(texts)
@@ -484,14 +478,13 @@ export const timelineUnits = {
       interTrialInterval = 500,
       trialsPerBlock = 50,
       goTrialProbability = 0.75,
-      colorBorders,
       colorText
     } = config
     
     const actualGoStimuli = goStimuli || (goStimulus ? [goStimulus] : [englishText.defaultGoStimulus])
     const actualNoGoStimuli = noGoStimuli || (noGoStimulus ? [noGoStimulus] : [englishText.defaultNoGoStimulus])
-    const useColors = colorText !== undefined ? colorText : (colorBorders !== undefined ? colorBorders : false)
-    
+    const useColors = !!colorText
+
     const goNoGoTrial = createGoNoGoTrial(jsPsych, buttonText, responseTimeout)
     const interTrialIntervalTrial = createInterTrialIntervalTrial(interTrialInterval)
     const generateTrialsForBlock = createGenerateTrialsForBlock(trialsPerBlock, goTrialProbability, actualGoStimuli, actualNoGoStimuli, createFormatStimulus(useColors))
