@@ -33,6 +33,7 @@ export const englishText = {
   gotItButton: 'Got it!',
   goFeedbackMessage: 'Perfect! You clicked quickly for the GO stimulus.',
   goodJobMessage: 'Good job!',
+  goFailureMessage: 'You failed to click in time. Please try again!',
   
   // Page 3: NO-GO Practice  
 

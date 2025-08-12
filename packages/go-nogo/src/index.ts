@@ -32,44 +32,105 @@ const createStimulusHTML = (html?: string, isGoTrial?: boolean): string => {
     <div id="${id}-container" class="go-nogo-container timeline-trial"><h1 id="${id}" class="go-nogo-stimulus">${isGoTrial ? 'Y' : 'X'}</h1></div>`
 }
 
+/**
+ * Creates a Go instruction trial with practice and infinite retry logic.
+ * 
+ * This function creates a dynamic timeline that teaches users how to respond to "go" stimuli.
+ * Users must click the button within 10 seconds to proceed. If they fail to click in time,
+ * they receive failure feedback and the trial repeats until they succeed.
+ * 
+ * @param goStimulus - The stimulus content to display (can be text or HTML)
+ * @param texts - Text configuration object containing all messages and labels
+ * 
+ * @returns A timeline object containing:
+ *   - Practice task with 10-second timeout
+ *   - Success feedback (if clicked in time)
+ *   - Failure feedback + retry loop (if timeout occurs)
+ */
 const createGoInstructionTrial = (goStimulus: string, texts = englishText) => {
   const goExample = createStimulusHTML(goStimulus, true)
   
-  return [
-    {
-      type: htmlButtonResponse,
-      stimulus: `
-        <p>${texts.goPageContent}</p>
-        ${goExample}
-        <div class="go-nogo-feedback" style="visibility: hidden;">${texts.goodJobMessage}</div>
-      `,
-      choices: [texts.defaultButtonText],
-      data: { task: 'go-no-go', phase: 'go-practice' },
-      button_html: (choice, choice_index) => `<button id="go-nogo-btn" class="jspsych-btn timeline-html-btn">${choice}</button>`,
-    },
-    {
-      type: htmlButtonResponse,
-      stimulus: `
-        <p>${texts.goPageContent}</p>
-        ${goExample}
-        <div class="go-nogo-feedback" style="color: #28a745;">${texts.goodJobMessage}</div>
-      `,
-      choices: [texts.defaultButtonText],
-      trial_duration: 2000,
-      response_ends_trial: false,
-      data: { task: 'go-no-go', phase: 'go-practice-feedback' },
-      button_html: (choice, choice_index) => `<button id="go-nogo-btn" class="jspsych-btn timeline-html-btn" style="opacity: 0.5;" disabled>${choice}</button>`,
+  // Create a timeline to hold the practice trials
+  // This will allow us to conditionally push trials for retry logic
+  const practiceGoTimeline = []
+  
+  const practiceTask = {
+    type: htmlButtonResponse,
+    stimulus: `
+      <p>${texts.goPageContent}</p>
+      ${goExample}
+      <div class="go-nogo-feedback" style="visibility: hidden;">${texts.goodJobMessage}</div>
+    `,
+    choices: [texts.defaultButtonText],
+    trial_duration: 10000, // 10 seconds timeout
+    data: { task: 'go-no-go', phase: 'go-practice' },
+    button_html: (choice, choice_index) => `<button id="go-nogo-btn" class="jspsych-btn timeline-html-btn">${choice}</button>`,
+    on_finish: (data: any) => {
+      if (data.response !== null) {
+        // They clicked - show success feedback
+        practiceGoTimeline.push(successFeedback)
+      } else {
+        // They failed to click in time - show failure feedback then retry
+        practiceGoTimeline.push(failureFeedback)
+        practiceGoTimeline.push(practiceTask) // infinite retying until they succeed in clicking.
+      }
     }
-  ]
+  }
+  
+  const successFeedback = {
+    type: htmlButtonResponse,
+    stimulus: `
+      <p>${texts.goPageContent}</p>
+      ${goExample}
+      <div class="go-nogo-feedback" style="color: #28a745;">${texts.goodJobMessage}</div>
+    `,
+    choices: [texts.defaultButtonText],
+    trial_duration: 2000,
+    response_ends_trial: false,
+    data: { task: 'go-no-go', phase: 'go-practice-feedback-success' },
+    button_html: (choice) => `<button id="go-nogo-btn" class="jspsych-btn timeline-html-btn" style="opacity: 0.5;" disabled>${choice}</button>`,
+  }
+  
+  const failureFeedback = {
+    type: htmlButtonResponse,
+    stimulus: `
+      <p>${texts.goPageContent}</p>
+      ${goExample}
+      <div class="go-nogo-feedback" style="color: #dc3545;">${texts.goFailureMessage}</div>
+    `,
+    choices: [texts.defaultButtonText],
+    trial_duration: 2000,
+    response_ends_trial: false,
+    data: { task: 'go-no-go', phase: 'go-practice-feedback-failure' },
+    button_html: (choice) => `<button id="go-nogo-btn" class="jspsych-btn timeline-html-btn" style="opacity: 0.5;" disabled>${choice}</button>`,
+  }
+
+  practiceGoTimeline.push(practiceTask)
+  return { timeline: practiceGoTimeline }
 }
 
+/**
+ * Creates a No-Go instruction trial with practice and infinite retry logic.
+ * 
+ * This function creates a dynamic timeline that teaches users how to respond to "no-go" stimuli.
+ * Users must resist clicking the button for 3 seconds to proceed. If they click the button,
+ * they receive failure feedback and the trial repeats until they succeed.
+ * 
+ * @param noGoStimulus - The stimulus content to display (can be text or HTML)
+ * @param texts - Text configuration object containing all messages and labels
+ * 
+ * @returns A timeline object containing:
+ *   - Practice task with 3-second duration and button available
+ *   - Success feedback (if they resist clicking)
+ *   - Failure feedback + retry loop (if they click)
+ */
 const createNoGoInstructionTrial = (noGoStimulus: string, texts = englishText) => {
   const noGoExample = createStimulusHTML(noGoStimulus, false)
   
   // Create a timeline to hold the practice trials
   // This will allow us to conditionally push trials to show feedback later
   const practiceNoGoTimeline = []
-  
+
   const practiceTask = {
     type: htmlButtonResponse,
     stimulus: `
@@ -82,11 +143,17 @@ const createNoGoInstructionTrial = (noGoStimulus: string, texts = englishText) =
     data: { task: 'go-no-go', phase: 'nogo-practice' },
     button_html: (choice, choice_index) => `<button id="go-nogo-btn" class="continue-btn jspsych-btn timeline-html-btn">${choice}</button>`,
     on_finish: (data: any) => {
-      // if null (no response), push correct feedback, else push incorrect feedback
-      data.response === null ? practiceNoGoTimeline.push(correctFeedback) : practiceNoGoTimeline.push(incorrectFeedback)
-        }
+      if (data.response === null) {
+        // They correctly didn't click - show success feedback
+        practiceNoGoTimeline.push(correctFeedback)
+      } else {
+        // They failed by clicking - show failure feedback then retry
+        practiceNoGoTimeline.push(incorrectFeedback)
+        practiceNoGoTimeline.push(practiceTask) // infinite retrying until they succeed by not clicking
       }
-      
+    }
+  }
+  
   const correctFeedback = {
     type: htmlButtonResponse,
     stimulus: `
@@ -104,8 +171,8 @@ const createNoGoInstructionTrial = (noGoStimulus: string, texts = englishText) =
   const incorrectFeedback = {
     type: htmlButtonResponse,
     stimulus: `
-            <p>${texts.noGoPageContent}</p>
-              ${noGoExample}
+      <p>${texts.noGoPageContent}</p>
+      ${noGoExample}
       <div class="go-nogo-feedback" style="color: #dc3545;">${texts.rememberNoGo}</div>
     `,
     choices: [texts.defaultButtonText],
@@ -381,8 +448,8 @@ export const timelineUnits = {
     const actualGoStimuli = goStimuli || (goStimulus ? [goStimulus] : [texts.defaultGoStimulus])
     const actualNoGoStimuli = noGoStimuli || (noGoStimulus ? [noGoStimulus] : [texts.defaultNoGoStimulus])
 
-    const goInstructionTrial = createGoInstructionTrial(actualGoStimuli[0], jsPsych, texts)
-    const noGoInstructionTrial = createNoGoInstructionTrial(actualNoGoStimuli[0], jsPsych, texts)
+    const goInstructionTrial = createGoInstructionTrial(actualGoStimuli[0], texts)
+    const noGoInstructionTrial = createNoGoInstructionTrial(actualNoGoStimuli[0], texts)
     const practiceCompletionTrial = createPracticeCompletionTrial(texts)
     
     return [goInstructionTrial, noGoInstructionTrial, practiceCompletionTrial]
