@@ -66,161 +66,57 @@ const createGoInstructionTrial = (goStimulus: string, texts = englishText) => {
 const createNoGoInstructionTrial = (noGoStimulus: string, texts = englishText) => {
   const noGoExample = createStimulusHTML(noGoStimulus, false)
   
+  // Create a timeline to hold the practice trials
+  // This will allow us to conditionally push trials to show feedback later
+  const practiceNoGoTimeline = []
+  
   const practiceTask = {
     type: htmlButtonResponse,
     stimulus: `
-     
-            <p>${texts.goPageContent}</p>
-            ${goExample}
-
-            <div class="timeline-btn-container">
-              <button id="go-nogo-btn" class="continue-btn timeline-html-btn jspsych-btn">
-                ${texts.defaultButtonText}
-              </button>
-            </div>
-
-          <div id="feedback-container" class="go-nogo-feedback" style="visibility: hidden;"><span>Good job!</span></div>
-
+      <p>${texts.noGoPageContent}</p>
+      ${noGoExample}
+      <div class="go-nogo-feedback" style="visibility: hidden;">${texts.noGoFeedbackMessage}</div>
     `,
-    choices: [],
-    trial_duration: null,
+    choices: [texts.defaultButtonText],
+    trial_duration: 3000,
+    data: { task: 'go-no-go', phase: 'nogo-practice' },
+    button_html: (choice, choice_index) => `<button id="go-nogo-btn" class="continue-btn jspsych-btn timeline-html-btn">${choice}</button>`,
+    on_finish: (data: any) => {
+      // if null (no response), push correct feedback, else push incorrect feedback
+      data.response === null ? practiceNoGoTimeline.push(correctFeedback) : practiceNoGoTimeline.push(incorrectFeedback)
+        }
+      }
+      
+  const correctFeedback = {
+    type: htmlButtonResponse,
+    stimulus: `
+      <p>${texts.noGoPageContent}</p>
+      ${noGoExample}
+      <div class="go-nogo-feedback" style="color: #28a745;">${texts.noGoFeedbackMessage}</div>
+    `,
+    choices: [texts.defaultButtonText],
+    trial_duration: 2000,
     response_ends_trial: false,
-    on_load: () => {
-      const buttons = document.querySelectorAll(".jspsych-btn-group-grid");
-      buttons.forEach((btn) => {
-        if (btn.id == "jspsych-html-button-response-btngroup") {
-          (btn as HTMLElement).style.display = "none";
-        }
-      });
-
-      let practiceCompleted = false;
-      
-      function showFeedback(message: string, isCorrect: boolean) {
-        const feedbackEl = document.getElementById('feedback-container');
-        if (feedbackEl) {
-          feedbackEl.innerHTML = message;
-          feedbackEl.style.color = isCorrect ? '#28a745' : '#dc3545';
-          feedbackEl.style.visibility = 'visible';
-          
-          setTimeout(() => {
-            if (practiceCompleted) {
-            jsPsych.finishTrial();
-            }
-          }, 2000);
-        }
-      }
-      
-      const practiceButton = document.getElementById('go-nogo-btn');
-      if (practiceButton) {
-        practiceButton.addEventListener('click', function() {
-          if (!practiceCompleted) {
-            practiceCompleted = true;
-            (practiceButton as HTMLButtonElement).disabled = true;
-            practiceButton.style.opacity = '0.5';
-            
-            showFeedback(texts.goodJobMessage, true);
-          }
-        });
-      }
-    },
-    data: { task: 'go-no-go', phase: 'go-practice' }
+    data: { task: 'go-no-go', phase: 'nogo-practice-feedback-correct' },
+    button_html: (choice) => `<button id="go-nogo-btn" class="continue-btn jspsych-btn timeline-html-btn" style="opacity: 0.5;" disabled>${choice}</button>`,
   }
-}
-
-const createNoGoInstructionTrial = (noGoStimulus: string, jsPsych: JsPsych, texts = englishText) => {
-  const noGoExample = createStimulusHTML(noGoStimulus, false)
   
-  return {
+  const incorrectFeedback = {
     type: htmlButtonResponse,
     stimulus: `
             <p>${texts.noGoPageContent}</p>
               ${noGoExample}
-            <div class="timeline-btn-container jspsych-btn-group-grid">
-              <button id="go-nogo-btn" class="continue-btn timeline-html-btn jspsych-btn">
-                ${texts.defaultButtonText}
-              </button>
-            </div>
-
-          <div id="feedback-container" class="go-nogo-feedback" style="visibility: hidden;"><span>Good job!</span></div>
+      <div class="go-nogo-feedback" style="color: #dc3545;">${texts.rememberNoGo}</div>
     `,
-    choices: [],
-    trial_duration: null,
+    choices: [texts.defaultButtonText],
+    trial_duration: 2000,
     response_ends_trial: false,
-    on_load: () => {
-      const buttons = document.querySelectorAll(".jspsych-btn-group-grid");
-      buttons.forEach((btn) => {
-        if (btn.id == "jspsych-html-button-response-btngroup") {
-          (btn as HTMLElement).style.display = "none";
-        }
-      });
-
-      let practiceCompleted = false;
-      let clicked = false;
-      let startTime = Date.now();
-      
-      function showFeedback(message: string, isCorrect: boolean) {
-        const feedbackEl = document.getElementById('feedback-container');
-        if (feedbackEl) {
-          feedbackEl.innerHTML = message;
-          feedbackEl.style.color = isCorrect ? '#28a745' : '#dc3545';
-          feedbackEl.style.visibility = 'visible';
-        }
-      }
-      
-      function checkAndAdvance() {
-        const elapsedTime = Date.now() - startTime;
-        if (elapsedTime >= 3000 && !practiceCompleted) {
-          practiceCompleted = true;
-          const practiceButton = document.getElementById('go-nogo-btn');
-          if (practiceButton) {
-            (practiceButton as HTMLButtonElement).disabled = true;
-            practiceButton.style.opacity = '0.5';
-          }
-          
-          if (clicked) {
-            showFeedback(texts.rememberNoGo, false);
-          } else {
-            showFeedback(texts.noGoFeedbackMessage, true);
-            const readyMessage = document.getElementById('ready-message');
-            if (readyMessage) {
-              readyMessage.style.display = 'block';
-            }
-          }
-          
-          setTimeout(() => {
-            jsPsych.finishTrial();
-          }, 2000);
-        }
-      }
-      
-      const practiceButton = document.getElementById('go-nogo-btn');
-      if (practiceButton) {
-        practiceButton.addEventListener('click', function() {
-          if (!practiceCompleted) {
-            clicked = true;
-            practiceCompleted = true;
-            (practiceButton as HTMLButtonElement).disabled = true;
-            practiceButton.style.opacity = '0.5';
-            
-            showFeedback(texts.rememberNoGo, false);
-            
-            setTimeout(() => {
-              jsPsych.finishTrial();
-            }, 2000);
-          }
-        });
-      }
-      
-      const checkInterval = setInterval(() => {
-        if (practiceCompleted) {
-          clearInterval(checkInterval);
-        } else {
-          checkAndAdvance();
-        }
-      }, 100);
-    },
-    data: { task: 'go-no-go', phase: 'nogo-practice' }
+    data: { task: 'go-no-go', phase: 'nogo-practice-feedback-incorrect' },
+    button_html: (choice) => `<button id="go-nogo-btn" class="continue-btn jspsych-btn timeline-html-btn" style="opacity: 0.5;" disabled>${choice}</button>`,
   }
+
+  practiceNoGoTimeline.push(practiceTask)
+  return { timeline: practiceNoGoTimeline }
 }
 
 const createPracticeCompletionTrial = (texts = englishText) => {
