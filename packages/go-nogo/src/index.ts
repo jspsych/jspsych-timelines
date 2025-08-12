@@ -32,10 +32,41 @@ const createStimulusHTML = (html?: string, isGoTrial?: boolean): string => {
     <div id="${id}-container" class="go-nogo-container timeline-trial"><h1 id="${id}" class="go-nogo-stimulus">${isGoTrial ? 'Y' : 'X'}</h1></div>`
 }
 
-const createGoInstructionTrial = (goStimulus: string, jsPsych: JsPsych, texts = englishText) => {
+const createGoInstructionTrial = (goStimulus: string, texts = englishText) => {
   const goExample = createStimulusHTML(goStimulus, true)
   
-  return {
+  return [
+    {
+      type: htmlButtonResponse,
+      stimulus: `
+        <p>${texts.goPageContent}</p>
+        ${goExample}
+        <div class="go-nogo-feedback" style="visibility: hidden;">${texts.goodJobMessage}</div>
+      `,
+      choices: [texts.defaultButtonText],
+      data: { task: 'go-no-go', phase: 'go-practice' },
+      button_html: (choice, choice_index) => `<button id="go-nogo-btn" class="jspsych-btn timeline-html-btn">${choice}</button>`,
+    },
+    {
+      type: htmlButtonResponse,
+      stimulus: `
+        <p>${texts.goPageContent}</p>
+        ${goExample}
+        <div class="go-nogo-feedback" style="color: #28a745;">${texts.goodJobMessage}</div>
+      `,
+      choices: [texts.defaultButtonText],
+      trial_duration: 2000,
+      response_ends_trial: false,
+      data: { task: 'go-no-go', phase: 'go-practice-feedback' },
+      button_html: (choice, choice_index) => `<button id="go-nogo-btn" class="jspsych-btn timeline-html-btn" style="opacity: 0.5;" disabled>${choice}</button>`,
+    }
+  ]
+}
+
+const createNoGoInstructionTrial = (noGoStimulus: string, texts = englishText) => {
+  const noGoExample = createStimulusHTML(noGoStimulus, false)
+  
+  const practiceTask = {
     type: htmlButtonResponse,
     stimulus: `
      
