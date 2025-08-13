@@ -127,7 +127,7 @@ Utility functions for data analysis:
 ```javascript
 const { calculateAccuracy, calculateMeanRT } = jsPsychTimelineGoNogoTimeline.utils;
 
-const goNoGoData = jsPsych.data.filter({trial_type: 'go-no-go'});
+const goNoGoData = jsPsych.data.filter({trial_type: 'go-nogo'});
 const accuracy = calculateAccuracy(goNoGoData);
 const meanRT = calculateMeanRT(goNoGoData);
 ```
@@ -230,7 +230,7 @@ const config = {
 
 | Property | Type | Description |
 |----------|------|-------------|
-| `trial_type` | string | Type of trial (`'go-no-go'`, `'instructions'`, `'debrief'`, etc.) |
+| `trial_type` | string | Type of trial (`'go-nogo'`, `'instructions'`, `'debrief'`, etc.) |
 | `stimulus_type` | string | `'go'` or `'no-go'` for main trials |
 | `response` | number \| null | Button pressed (0) or no response (null) |
 | `rt` | number \| null | Reaction time in milliseconds |
@@ -245,7 +245,7 @@ const config = {
 | Trial Type | Description |
 |------------|-------------|
 | `'instructions'` | Instruction and practice trials |
-| `'go-no-go'` | Main experimental trials |
+| `'go-nogo'` | Main experimental trials |
 | `'block-break'` | Block completion and break screens |
 | `'debrief'` | Final results screen |
 
@@ -253,7 +253,7 @@ const config = {
 
 ```javascript
 // Get all Go/No-Go trial data
-const goNoGoData = jsPsych.data.filter({trial_type: 'go-no-go'});
+const goNoGoData = jsPsych.data.filter({trial_type: 'go-nogo'});
 
 // Calculate performance metrics
 const accuracy = goNoGoData.select('accuracy').mean();
@@ -376,7 +376,7 @@ jsPsych.run([customTimeline]);
 const jsPsych = initJsPsych({
   on_trial_finish: (data) => {
     // Log each Go/No-Go trial
-    if (data.trial_type === 'go-no-go') {
+    if (data.trial_type === 'go-nogo') {
       console.log(`Trial: ${data.stimulus_type}, Correct: ${data.correct}, RT: ${data.rt}`);
     }
   },

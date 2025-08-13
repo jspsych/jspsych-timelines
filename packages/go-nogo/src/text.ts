@@ -7,7 +7,7 @@ export const instruction_pages = [
 ]
 
 
-export const englishText = {
+export const trial_text = {
   // Default stimuli
   defaultGoStimulus: 'Y',
   defaultNoGoStimulus: 'X',
@@ -78,7 +78,7 @@ export const englishText = {
   // Trial types (used in data)
   trialTypes: {
     instructions: 'instructions',
-    goNoGo: 'go-no-go',
+    goNoGo: 'go-nogo',
     blockInstructions: 'block-instructions',
     debrief: 'debrief'
   },
@@ -92,7 +92,7 @@ export const englishText = {
   // Timeline unit names
   timelineUnits: {
     instructionTrial: 'instructions',
-    goNoGoTrial: 'go-no-go-trial',
+    goNoGoTrial: 'go-nogo-trial',
     debriefTrial: 'debrief'
   },
   

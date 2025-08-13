@@ -1,6 +1,6 @@
 import { JsPsych, initJsPsych } from "jspsych";
 import { createTimeline, utils } from ".";
-import { englishText } from "./text";
+import { trial_text } from "./text";
 
 describe("createTimeline", () => {
   let jsPsych: JsPsych;
@@ -63,7 +63,7 @@ describe("createTimeline", () => {
       
       // None of the timeline items should be a debrief trial
       const hasDebriefTrial = timeline.timeline.some((item: any) => 
-        item.data && item.data.trial_type === englishText.trialTypes.debrief
+        item.data && item.data.trial_type === trial_text.trialTypes.debrief
       );
       expect(hasDebriefTrial).toBe(false);
     });
@@ -77,8 +77,8 @@ describe("createTimeline", () => {
       
       // Last item should be the debrief trial
       const debriefTrial = timeline.timeline[timeline.timeline.length - 1] as any;
-      expect(debriefTrial.choices).toEqual([englishText.finishButton]);
-      expect(debriefTrial.data.trial_type).toBe(englishText.trialTypes.debrief);
+      expect(debriefTrial.choices).toEqual([trial_text.finishButton]);
+      expect(debriefTrial.data.trial_type).toBe(trial_text.trialTypes.debrief);
       expect(typeof debriefTrial.stimulus).toBe('function');
     });
 
@@ -91,7 +91,7 @@ describe("createTimeline", () => {
       
       // None of the timeline items should be a debrief trial
       const hasDebriefTrial = timeline.timeline.some((item: any) => 
-        item.data && item.data.trial_type === englishText.trialTypes.debrief
+        item.data && item.data.trial_type === trial_text.trialTypes.debrief
       );
       expect(hasDebriefTrial).toBe(false);
     });
@@ -123,8 +123,8 @@ describe("createTimeline", () => {
       expect(firstItem).toHaveProperty('timeline'); // Should be a block
       expect(firstItem).toHaveProperty('timeline_variables');
       
-      expect(secondItem.choices).toEqual([englishText.finishButton]);
-      expect(secondItem.data.trial_type).toBe(englishText.trialTypes.debrief);
+      expect(secondItem.choices).toEqual([trial_text.finishButton]);
+      expect(secondItem.data.trial_type).toBe(trial_text.trialTypes.debrief);
     });
   });
 
@@ -554,7 +554,7 @@ describe("createTimeline", () => {
       
       // No instruction trials should be present
       const hasInstructionTrials = timeline.timeline.some((item: any) => 
-        item.data && item.data.trial_type === englishText.trialTypes.instructions
+        item.data && item.data.trial_type === trial_text.trialTypes.instructions
       );
       expect(hasInstructionTrials).toBe(false);
     });
@@ -563,8 +563,8 @@ describe("createTimeline", () => {
       const timeline = createTimeline(jsPsych, { showDebrief: true });
       const debriefTrial = timeline.timeline[timeline.timeline.length - 1] as any;
       
-      expect(debriefTrial.choices).toEqual([englishText.finishButton]);
-      expect(debriefTrial.data.trial_type).toBe(englishText.trialTypes.debrief);
+      expect(debriefTrial.choices).toEqual([trial_text.finishButton]);
+      expect(debriefTrial.data.trial_type).toBe(trial_text.trialTypes.debrief);
       expect(typeof debriefTrial.stimulus).toBe('function');
     });
 
@@ -576,10 +576,10 @@ describe("createTimeline", () => {
       expect(trialProcedure).toHaveProperty('timeline_variables');
       expect(trialProcedure.randomize_order).toBe(true);
       
-      // Check go-no-go trial structure
+      // Check go-nogo trial structure
       const goNoGoTrial = trialProcedure.timeline[0];
       expect(goNoGoTrial.response_ends_trial).toBe(true);
-      expect(goNoGoTrial.data.trial_type).toBe(englishText.trialTypes.goNoGo);
+      expect(goNoGoTrial.data.trial_type).toBe(trial_text.trialTypes.goNoGo);
       expect(typeof goNoGoTrial.on_finish).toBe('function');
       
       // Check inter-trial interval structure
@@ -809,7 +809,7 @@ describe("createTimeline", () => {
       expect(stimulus).toContain('<strong>Average Response Time (GO trials):</strong> 0ms'); // No valid GO responses
     });
 
-    it("should handle no go-no-go trials", () => {
+    it("should handle no go-nogo trials", () => {
       const mockTrialData = [
         { trial_type: 'instructions', response: 0 },
         { trial_type: 'html-button-response', response: 0 }
@@ -1015,7 +1015,7 @@ describe("createTimeline", () => {
       
       const accuracy = utils.calculateAccuracy(mockData);
       
-      expect(mockData.filter).toHaveBeenCalledWith({ trial_type: 'go-no-go' });
+      expect(mockData.filter).toHaveBeenCalledWith({ trial_type: 'go-nogo' });
       expect(mockData.select).toHaveBeenCalledWith('accuracy');
       expect(accuracy).toBe(0.85);
     });
@@ -1030,7 +1030,7 @@ describe("createTimeline", () => {
       const meanRT = utils.calculateMeanRT(mockData);
       
       expect(mockData.filter).toHaveBeenCalledWith({ 
-        trial_type: 'go-no-go', 
+        trial_type: 'go-nogo', 
         stimulus_type: 'go' 
       });
       expect(mockData.select).toHaveBeenCalledWith('rt');
