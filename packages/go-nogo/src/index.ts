@@ -124,9 +124,11 @@ const createGoInstructionTrial = (go_stimulus: string, texts = trial_text, timeo
     on_finish: (data: any) => {
       if (data.response !== null) {
         // They clicked - show success feedback
+        data.correct = true // They clicked on go trial
         practiceGoTimeline.push(successFeedback)
       } else {
         // They failed to click in time - show failure feedback then retry
+        data.correct = false // They did not click on go trial
         practiceGoTimeline.push(failureFeedback)
         practiceGoTimeline.push(practiceTask) // infinite retying until they succeed in clicking.
       }
@@ -182,7 +184,7 @@ const createGoInstructionTrial = (go_stimulus: string, texts = trial_text, timeo
  *   - Success feedback (if they resist clicking)
  *   - Failure feedback + retry loop (if they click)
  */
-const createNoGoInstructionTrial = (nogo_stimulus: string, texts = trial_text, timeout: number = 3000) => {
+const createNoGoInstruction = (nogo_stimulus: string, texts = trial_text, timeout: number = 3000) => {
   const noGoExample = createStimulusHTML(nogo_stimulus, false)
   
   // Create a timeline to hold the practice trials
@@ -203,9 +205,11 @@ const createNoGoInstructionTrial = (nogo_stimulus: string, texts = trial_text, t
     on_finish: (data: any) => {
       if (data.response === null) {
         // They correctly didn't click - show success feedback
+        data.correct = true // They didn't click on no go trial
         practiceNoGoTimeline.push(correctFeedback)
       } else {
         // They failed by clicking - show failure feedback then retry
+        data.correct = false // They clicked on no go trial
         practiceNoGoTimeline.push(incorrectFeedback)
         practiceNoGoTimeline.push(practiceTask) // infinite retrying until they succeed by not clicking
       }
@@ -455,9 +459,7 @@ const createDebrief = (jsPsych: JsPsych) => {
  */
 export function createTimeline(
   jsPsych: JsPsych,
-  config: GoNoGoConfig = {}
-) {
-  const {
+  {
     // general
     show_instructions = false,
     show_practice = false,
@@ -478,8 +480,10 @@ export function createTimeline(
     // texts
     instructions_array: instructions = instruction_pages,
     text_object: texts = trial_text,
-  } = config
+  } : GoNoGoConfig = {})
   
+  
+  {
   const timeline = []
 
   if (show_instructions) {
@@ -559,7 +563,7 @@ function createPractice(config: GoNoGoConfig = {}): any[] {
 
   return [
     createGoInstructionTrial(actualGoStimuli[0], texts, go_practice_timeout),
-    createNoGoInstructionTrial(actualNoGoStimuli[0], texts, nogo_practice_timeout),
+    createNoGoInstruction(actualNoGoStimuli[0], texts, nogo_practice_timeout),
     createPracticeCompletionTrial(texts)
   ]
 }
