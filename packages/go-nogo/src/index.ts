@@ -231,7 +231,7 @@ const createGoNoGoTrial = (jsPsych: JsPsych, buttonText: string, responseTimeout
 const createInterTrialIntervalTrial = (interTrialInterval: number) => {
   return {
     type: jsPsychHtmlKeyboardResponse,
-    stimulus: '',
+    stimulus: '+',
     choices: [],
     trial_duration: interTrialInterval,
     response_ends_trial: false
