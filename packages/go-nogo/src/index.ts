@@ -6,20 +6,23 @@ import { trial_text, instruction_pages } from "./text";
 
 
 interface GoNoGoConfig {
-  goStimulus?: string
-  noGoStimulus?: string
+  //general configuration
+  show_instructions?: boolean
+  show_practice?: boolean
+  num_blocks?: number
+  num_trials?: number
+  trial_timeout?: number
+  isi_timeout?: number
+  probability?: number
+  show_debrief?: boolean
+  //stimuli configuration
+  go_stimulus?: string
+  nogo_stimulus?: string
   goStimuli?: string[]
   noGoStimuli?: string[]
-  buttonText?: string
-  stimulusDisplayTime?: number
-  responseTimeout?: number
-  interTrialInterval?: number
-  numBlocks?: number
-  trialsPerBlock?: number
-  goTrialProbability?: number
-  showResultsDetails?: boolean
-  showDebrief?: boolean
+  button_text?: string
 }
+
 /**
  * Creates a set of instructions for the Go/No-Go task.
  * 
@@ -63,7 +66,7 @@ const createStimulusHTML = (html?: string, isGoTrial?: boolean): string => {
  * Users must click the button within 10 seconds to proceed. If they fail to click in time,
  * they receive failure feedback and the trial repeats until they succeed.
  * 
- * @param goStimulus - The stimulus content to display (can be text or HTML)
+ * @param go_stimulus - The stimulus content to display (can be text or HTML)
  * @param texts - Text configuration object containing all messages and labels
  * 
  * @returns A timeline object containing:
@@ -71,8 +74,8 @@ const createStimulusHTML = (html?: string, isGoTrial?: boolean): string => {
  *   - Success feedback (if clicked in time)
  *   - Failure feedback + retry loop (if timeout occurs)
  */
-const createGoInstructionTrial = (goStimulus: string, texts = trial_text) => {
-  const goExample = createStimulusHTML(goStimulus, true)
+const createGoInstructionTrial = (go_stimulus: string, texts = trial_text) => {
+  const goExample = createStimulusHTML(go_stimulus, true)
   
   // Create a timeline to hold the practice trials
   // This will allow us to conditionally push trials for retry logic
@@ -142,7 +145,7 @@ const createGoInstructionTrial = (goStimulus: string, texts = trial_text) => {
  * Users must resist clicking the button for 3 seconds to proceed. If they click the button,
  * they receive failure feedback and the trial repeats until they succeed.
  * 
- * @param noGoStimulus - The stimulus content to display (can be text or HTML)
+ * @param nogo_stimulus - The stimulus content to display (can be text or HTML)
  * @param texts - Text configuration object containing all messages and labels
  * 
  * @returns A timeline object containing:
@@ -150,8 +153,8 @@ const createGoInstructionTrial = (goStimulus: string, texts = trial_text) => {
  *   - Success feedback (if they resist clicking)
  *   - Failure feedback + retry loop (if they click)
  */
-const createNoGoInstructionTrial = (noGoStimulus: string, texts = trial_text) => {
-  const noGoExample = createStimulusHTML(noGoStimulus, false)
+const createNoGoInstructionTrial = (nogo_stimulus: string, texts = trial_text) => {
+  const noGoExample = createStimulusHTML(nogo_stimulus, false)
   
   // Create a timeline to hold the practice trials
   // This will allow us to conditionally push trials to show feedback later
@@ -219,7 +222,7 @@ const createPracticeCompletionTrial = (texts = trial_text) => {
     type: jsPsychHtmlButtonResponse,
     stimulus: `
         <div class="go-nogo-practice">
-          <p>${texts.practiceCompleteContent}<p>
+          <p>${texts.practiceCompleteContent}</p>
         </div>
     `,
     choices: [texts.beginTaskButton],
@@ -228,12 +231,12 @@ const createPracticeCompletionTrial = (texts = trial_text) => {
   }
 }
 
-const createGoNoGoTrial = (jsPsych: JsPsych, buttonText: string, responseTimeout: number) => {
+const createGoNoGoTrial = (jsPsych: JsPsych, button_text: string, trial_timeout: number) => {
   return {
     type: jsPsychHtmlButtonResponse,
     stimulus: jsPsych.timelineVariable('stimulus'),
-    choices: [buttonText],
-    trial_duration: responseTimeout,
+    choices: [button_text],
+    trial_duration: trial_timeout,
     response_ends_trial: true,
     data: {
       task: 'go-nogo',
@@ -248,12 +251,12 @@ const createGoNoGoTrial = (jsPsych: JsPsych, buttonText: string, responseTimeout
   }
 }
 
-const createInterTrialIntervalTrial = (interTrialInterval: number) => {
+const createisi_timeoutTrial = (isi_timeout: number) => {
   return {
     type: jsPsychHtmlKeyboardResponse,
     stimulus: '<div class="fixation" style="font-size:60px;">+</div>',
     choices: [],
-    trial_duration: interTrialInterval,
+    trial_duration: isi_timeout,
     response_ends_trial: false,
     data: {
       task: 'go-nogo', // unified task label
@@ -268,16 +271,16 @@ const createInterTrialIntervalTrial = (interTrialInterval: number) => {
 // It returns a FUNCTION that can be called with a block number to generate the trials for that block.
 // what is going on with higher order functions here brooooo
 // OK so it creates timeline VARIABLES, not createGenereateTrialsForBlock
-const createTimelineVariables = (jsPsych: JsPsych, blockNumber: number, trialsPerBlock: number, goTrialProbability: number, actualGoStimuli: string[], actualNoGoStimuli: string[]) => {
+const createTimelineVariables = (jsPsych: JsPsych, blockNumber: number, num_trials: number, probability: number, actualGoStimuli: string[], actualNoGoStimuli: string[]) => {
     const trials: any[] = []
     
     // Calculate exact counts
-    const numGoTrials = Math.round(trialsPerBlock * goTrialProbability)
-    const numNoGoTrials = trialsPerBlock - numGoTrials
+    const numGoTrials = Math.round(num_trials * probability)
+    const numNoGoTrials = num_trials - numGoTrials
 
     // Validate inputs
     if (numGoTrials < 0 || numNoGoTrials < 0) {
-        throw new Error(`Invalid trial configuration: goTrialProbability (${goTrialProbability}) results in ${numGoTrials} go trials and ${numNoGoTrials} no-go trials for ${trialsPerBlock} total trials. Both must be non-negative.`)
+        throw new Error(`Invalid trial configuration: probability (${probability}) results in ${numGoTrials} go trials and ${numNoGoTrials} no-go trials for ${num_trials} total trials. Both must be non-negative.`)
     }
 
     // Create fixed array of trial types
@@ -313,11 +316,11 @@ const createTimelineVariables = (jsPsych: JsPsych, blockNumber: number, trialsPe
     return trials
 }
 
-const createBlockBreak = (blockNum: number, numBlocks: number) => {
+const createBlockBreak = (blockNum: number, num_blocks: number) => {
   return {
     type: jsPsychHtmlButtonResponse,
     stimulus: `
-            <p>${trial_text.blockBreakContent(blockNum, numBlocks)}</p>
+            <p>${trial_text.blockBreakContent(blockNum, num_blocks)}</p>
     `,
     choices: [trial_text.continueButton],
     data: { task: 'go-nogo', phase: 'block-break'+ blockNum, block_number: blockNum },
@@ -369,49 +372,48 @@ const createDebrief = (jsPsych: JsPsych) => {
 
 export function createTimeline(jsPsych: JsPsych, config: GoNoGoConfig = {}) {
   const {
-    goStimulus,
-    noGoStimulus,
+    go_stimulus,
+    nogo_stimulus,
     goStimuli,
     noGoStimuli,
-    buttonText = trial_text.defaultButtonText,
-    responseTimeout = 500,
-    interTrialInterval = 500,
-    numBlocks = 3,
-    trialsPerBlock = 50,
-    goTrialProbability = 0.75,
-    showResultsDetails = false,
-    showDebrief = false,
+    button_text = trial_text.defaultButtonText,
+    trial_timeout = 500,
+    isi_timeout = 500,
+    num_blocks = 3,
+    num_trials = 50,
+    probability = 0.75,
+    show_debrief = false,
   } = config
 
-  const actualGoStimuli = goStimuli || (goStimulus ? [goStimulus] : [trial_text.defaultGoStimulus])
-  const actualNoGoStimuli = noGoStimuli || (noGoStimulus ? [noGoStimulus] : [trial_text.defaultNoGoStimulus])
+  const actualGoStimuli = goStimuli || (go_stimulus ? [go_stimulus] : [trial_text.defaultGoStimulus])
+  const actualNoGoStimuli = noGoStimuli || (nogo_stimulus ? [nogo_stimulus] : [trial_text.defaultNoGoStimulus])
   
-  const goNoGoTrial = createGoNoGoTrial(jsPsych, buttonText, responseTimeout)
-  const interTrialIntervalTrial = createInterTrialIntervalTrial(interTrialInterval)
+  const goNoGoTrial = createGoNoGoTrial(jsPsych, button_text, trial_timeout)
+  const isi_timeoutTrial = createisi_timeoutTrial(isi_timeout)
 
   // Generate blocks
   const blocks = []
-  for (let blockNum = 1; blockNum <= numBlocks; blockNum++) {
-    const blockTrials = createTimelineVariables(jsPsych, blockNum, trialsPerBlock, goTrialProbability, actualGoStimuli, actualNoGoStimuli)
+  for (let blockNum = 1; blockNum <= num_blocks; blockNum++) {
+    const blockTrials = createTimelineVariables(jsPsych, blockNum, num_trials, probability, actualGoStimuli, actualNoGoStimuli)
 
     // Add block trials
     const blockProcedure = {
-      timeline: [goNoGoTrial, interTrialIntervalTrial],
+      timeline: [goNoGoTrial, isi_timeoutTrial],
       timeline_variables: blockTrials,
       randomize_order: true
     }
     blocks.push(blockProcedure)
     
     // Add block break page between blocks (except after last block)
-    if (blockNum < numBlocks) {
-      const blockBreakTrial = createBlockBreak(blockNum, numBlocks)
+    if (blockNum < num_blocks) {
+      const blockBreakTrial = createBlockBreak(blockNum, num_blocks)
       blocks.push(blockBreakTrial)
     }
   }
 
   const timeline = [...blocks]
   
-  if (showDebrief) {
+  if (show_debrief) {
     const debriefTrial = createDebrief(jsPsych)
     timeline.push(debriefTrial)
   }
@@ -422,10 +424,10 @@ export function createTimeline(jsPsych: JsPsych, config: GoNoGoConfig = {}) {
 }
 
 // This function creates a practice timeline for the Go/No-Go task
-function createPractice(jsPsych: JsPsych, config: GoNoGoConfig = {}): any[] {
-  const { goStimulus, noGoStimulus, goStimuli, noGoStimuli } = config
-  const actualGoStimuli = goStimuli || (goStimulus ? [goStimulus] : [trial_text.defaultGoStimulus])
-  const actualNoGoStimuli = noGoStimuli || (noGoStimulus ? [noGoStimulus] : [trial_text.defaultNoGoStimulus])
+function createPractice(config: GoNoGoConfig = {}): any[] {
+  const { go_stimulus, nogo_stimulus, goStimuli, noGoStimuli } = config
+  const actualGoStimuli = goStimuli || (go_stimulus ? [go_stimulus] : [trial_text.defaultGoStimulus])
+  const actualNoGoStimuli = noGoStimuli || (nogo_stimulus ? [nogo_stimulus] : [trial_text.defaultNoGoStimulus])
 
   return [
     createGoInstructionTrial(actualGoStimuli[0], trial_text),
@@ -434,21 +436,9 @@ function createPractice(jsPsych: JsPsych, config: GoNoGoConfig = {}): any[] {
   ]
 }
 
-function createDebriefTrialUnit(jsPsych: JsPsych, config: GoNoGoConfig = {}) {
-  return createDebrief(jsPsych)
-}
-
 export const timelineUnits = {
-  practiceTrial: createPractice,
-  debriefTrial: createDebriefTrialUnit
+  createPractice,
+  createDebrief
 }
 
-export const utils = {
-  calculateAccuracy: (data: any) => {
-    return data.filter({ trial_type: 'go-nogo' }).select('accuracy').mean()
-  },
-  
-  calculateMeanRT: (data: any) => {
-    return data.filter({ trial_type: 'go-nogo', stimulus_type: 'go' }).select('rt').mean()
-  }
-}
+export const utils = {}
