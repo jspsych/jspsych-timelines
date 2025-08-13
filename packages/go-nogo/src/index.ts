@@ -299,10 +299,10 @@ const createTimelineVariables = (jsPsych: JsPsych, blockNumber: number, trialsPe
       trials.push({
         stimulus: createStimulusHTML(stimulus, isGoTrial),
         is_go_trial: isGoTrial,
-        block_number: blockNumber,
         task: 'go-nogo',
         phase: 'main-trial',
-        page: isGoTrial ? 'go' : 'nogo'
+        page: isGoTrial ? 'go' : 'nogo',
+        block_number: blockNumber,
       })
     }
     return trials
@@ -315,7 +315,7 @@ const createBlockBreak = (blockNum: number, numBlocks: number) => {
             <p>${trial_text.blockBreakContent(blockNum, numBlocks)}</p>
     `,
     choices: [trial_text.continueButton],
-    data: { task: 'go-nogo', phase: 'block-break' },
+    data: { task: 'go-nogo', phase: 'block-break'+ blockNum, block_number: blockNum },
     button_html: (choice) => `<button id="block-break-btn" class="continue-btn jspsych-btn timeline-html-btn">${choice}</button>`,
   }
 }
@@ -420,6 +420,23 @@ export function createTimeline(jsPsych: JsPsych, config: GoNoGoConfig = {}) {
   return {
     timeline
   }
+}
+
+// This function creates a practice timeline for the Go/No-Go task
+function createPractice(jsPsych: JsPsych, config: GoNoGoConfig = {}): any[] {
+  const { goStimulus, noGoStimulus, goStimuli, noGoStimuli } = config
+  const actualGoStimuli = goStimuli || (goStimulus ? [goStimulus] : [trial_text.defaultGoStimulus])
+  const actualNoGoStimuli = noGoStimuli || (noGoStimulus ? [noGoStimulus] : [trial_text.defaultNoGoStimulus])
+
+  return [
+    createGoInstructionTrial(actualGoStimuli[0], trial_text),
+    createNoGoInstructionTrial(actualNoGoStimuli[0], trial_text),
+    createPracticeCompletionTrial(trial_text)
+  ]
+}
+
+function createDebriefTrialUnit(jsPsych: JsPsych, config: GoNoGoConfig = {}) {
+  return createDebriefTrial(jsPsych)
 }
 
 export const timelineUnits = {
