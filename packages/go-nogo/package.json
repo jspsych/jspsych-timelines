@@ -1,7 +1,7 @@
 {
     "name": "@jspsych-timelines/go-nogo",
     "version": "0.0.1",
-    "description": "Go/No-go Task",
+    "description": "A complete Go/No-Go task implementation for jsPsych measuring response inhibition and sustained attention. Includes interactive practice, configurable parameters, and comprehensive data collection.",
     "type": "module",
     "main": "dist/index.mjs",
     "types": "dist/index.d.ts",
@@ -12,15 +12,21 @@
     "repository": {
         "type": "git",
         "url": "https://github.com/jspsych/jspsych-timelines",
-        "directory": ""
+        "directory": "packages/go-nogo"
     },
     "keywords": [
         "jsPsych"
     ],
-    "author": {
-        "name": "Caroline Griem",
-        "url": "https://github.com/caroline-griem"
-    },
+    "authors": [
+        {
+            "name": "Caroline Griem",
+            "url": "https://github.com/caroline-griem"
+        },
+        {
+            "name": "Abdullah Hunter Farhat",
+            "url": "https://github.com/farhat60"
+        }
+    ],
     "license": "MIT",
     "bugs": {
         "url": "https://github.com/jspsych/jspsych-timelines/issues"

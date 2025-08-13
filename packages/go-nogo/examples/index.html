@@ -42,9 +42,10 @@
       // text_object: texts = trial_text,
     };
 
-const instructions = jsPsychTimelineGoNogoTimeline.createInstructions();
-const practice = jsPsychTimelineGoNogoTimeline.timelineUnits.createPractice(jsPsych, config);
-const task = jsPsychTimelineGoNogoTimeline.createTimeline(jsPsych, config);
+  // Can separate timeline units like this:
+  const instructions = jsPsychTimelineGoNogoTimeline.createInstructions();
+  const practice = jsPsychTimelineGoNogoTimeline.timelineUnits.createPractice(config);
+  const task = jsPsychTimelineGoNogoTimeline.createTimeline(jsPsych, config);
 
 jsPsych.run([instructions, ...practice, task]);
 </script>

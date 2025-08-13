@@ -103,7 +103,7 @@ const createStimulusHTML = (html: string, isGoTrial: boolean): string => {
  *   - Success feedback (if clicked in time)
  *   - Failure feedback + retry loop (if timeout occurs)
  */
-const createGoInstructionTrial = (go_stimulus: string, texts = trial_text, timeout: number = 10000) => {
+const createGoPractice = (go_stimulus: string, texts = trial_text, timeout: number = 10000) => {
   const goExample = createStimulusHTML(go_stimulus, true)
   
   // Create a timeline to hold the practice trials
@@ -184,7 +184,7 @@ const createGoInstructionTrial = (go_stimulus: string, texts = trial_text, timeo
  *   - Success feedback (if they resist clicking)
  *   - Failure feedback + retry loop (if they click)
  */
-const createNoGoInstruction = (nogo_stimulus: string, texts = trial_text, timeout: number = 3000) => {
+const createNoGoPractice = (nogo_stimulus: string, texts = trial_text, timeout: number = 3000) => {
   const noGoExample = createStimulusHTML(nogo_stimulus, false)
   
   // Create a timeline to hold the practice trials
@@ -256,7 +256,7 @@ const createNoGoInstruction = (nogo_stimulus: string, texts = trial_text, timeou
  * @param texts Text configuration to render labels.
  * @returns A jsPsych trial for the practice completion screen.
  */
-const createPracticeCompletionTrial = (texts = trial_text) => {
+const createPracticeCompletion = (texts = trial_text) => {
   return {
     type: jsPsychHtmlButtonResponse,
     stimulus: `
@@ -278,7 +278,7 @@ const createPracticeCompletionTrial = (texts = trial_text) => {
  * @param trial_timeout Trial duration in milliseconds.
  * @returns A jsPsych trial definition to be used within a procedure.
  */
-const createGoNoGoTrial = (jsPsych: JsPsych, button_text: string, trial_timeout: number) => {
+const createGoNoGo = (jsPsych: JsPsych, button_text: string, trial_timeout: number) => {
   return {
     type: jsPsychHtmlButtonResponse,
     stimulus: jsPsych.timelineVariable('stimulus'),
@@ -332,7 +332,7 @@ const createISIFixation = (isi_timeout: number) => {
  * @param probability Probability of a Go trial (0..1).
  * @param actualGoStimuli List of Go stimuli used in rotation order.
  * @param actualNoGoStimuli List of No-Go stimuli used in rotation order.
- * @returns An array of timeline_variables entries consumed by createGoNoGoTrial.
+ * @returns An array of timeline_variables entries consumed by createGoNoGo.
  */
 const createTimelineVariables = (jsPsych: JsPsych, blockNumber: number, num_trials: number, probability: number, actualGoStimuli: string[], actualNoGoStimuli: string[]) => {
     const trials: any[] = []
@@ -506,7 +506,7 @@ export function createTimeline(
   const actualGoStimuli = go_stimuli?.length ? go_stimuli : [go_stimulus]
   const actualNoGoStimuli = nogo_stimuli?.length ? nogo_stimuli : [nogo_stimulus]
   
-  const goNoGoTrial = createGoNoGoTrial(jsPsych, button_text, trial_timeout)
+  const goNoGoTrial = createGoNoGo(jsPsych, button_text, trial_timeout)
   const isi_timeoutTrial = createISIFixation(isi_timeout)
 
   // Generate blocks
@@ -562,9 +562,9 @@ function createPractice(config: GoNoGoConfig = {}): any[] {
   const actualNoGoStimuli = nogo_stimuli?.length ? nogo_stimuli : [nogo_stimulus]
 
   return [
-    createGoInstructionTrial(actualGoStimuli[0], texts, go_practice_timeout),
-    createNoGoInstruction(actualNoGoStimuli[0], texts, nogo_practice_timeout),
-    createPracticeCompletionTrial(texts)
+    createGoPractice(actualGoStimuli[0], texts, go_practice_timeout),
+    createNoGoPractice(actualNoGoStimuli[0], texts, nogo_practice_timeout),
+    createPracticeCompletion(texts)
   ]
 }
 
@@ -572,6 +572,7 @@ function createPractice(config: GoNoGoConfig = {}): any[] {
  * Namespaced access to building blocks for advanced composition and testing.
  */
 export const timelineUnits = {
+  createInstructions,
   createPractice,
   createDebrief
 }
