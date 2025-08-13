@@ -21,29 +21,29 @@
     on_finish: () => jsPsych.data.displayData()
   });
 
-  const config = {
-    buttonText: 'Click',                       // Button label
-    responseTimeout: 500000,                     // Max time to respond (ms)
-    interTrialInterval: 500,                   // Pause between trials (ms)
-    goTrialProbability: 0.75,                  // Probability of GO trials (0-1)
-    numBlocks: 2,                        // Number of blocks
-    trialsPerBlock: 2,                // Number of trials per block
-
-      goStimulus: 'Go',                    // GO stimulus
-  noGoStimulus: 'NoGo',                  // NOGO stimulus
-  goStimuli: ['Go1', 'Go2', 'Go3'],     // Array of GO stimuli
-  noGoStimuli: ['NoGo1', 'NoGo2', 'NoGo3'], // Array of NOGO stimuli
-  buttonText: 'Click',                   // Button label
-  varyStimulus: false,                     // Whether to vary stimulus
-  showResultsDetails: true,                // Whether to show detailed results
-  colorBorders: true,                       // Whether to color borders
-  colorText: true,                          // Whether to color text
-  showDebrief: true                         // Whether to show debrief
-
-  };
+    const config = {
+      // general
+      show_instructions: false,
+      show_practice: false,
+      num_blocks: 3,
+      num_trials: 50,
+      trial_timeout: 500,
+      isi_timeout: 500,
+      probability: 0.75,
+      show_debrief: false,
+      // stimuli
+      go_stimulus: "Y",
+      nogo_stimulus: "X",
+      // go_stimuli,
+      // nogo_stimuli,
+      button_text: "Continue",
+      // texts
+      // instructions_array: instructions = instruction_pages,
+      // text_object: texts = trial_text,
+    };
 
 const instructions = jsPsychTimelineGoNogoTimeline.createInstructions();
-const practice = jsPsychTimelineGoNogoTimeline.timelineUnits.practiceTrial(jsPsych, config);
+const practice = jsPsychTimelineGoNogoTimeline.timelineUnits.createPractice(jsPsych, config);
 const task = jsPsychTimelineGoNogoTimeline.createTimeline(jsPsych, config);
 
 jsPsych.run([instructions, ...practice, task]);

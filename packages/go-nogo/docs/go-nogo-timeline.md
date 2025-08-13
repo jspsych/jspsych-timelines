@@ -56,10 +56,10 @@ npm install @jspsych-timelines/go-nogo
   });
 
   const config = {
-    goStimulus: 'GO',
-    noGoStimulus: 'NO-GO',
-    numBlocks: 3,
-    trialsPerBlock: 50
+    go_stimulus: 'GO',
+    nogo_stimulus: 'NO-GO',
+    num_blocks: 3,
+    num_trials: 50
   };
 
   // Create instructions and main task separately
@@ -114,7 +114,7 @@ const { practiceTrial, goNoGoTrial, debriefTrial } = jsPsychTimelineGoNogoTimeli
 const instructions = practiceTrial(jsPsych, config);
 
 // Get trial components
-const { trial, interTrialInterval, generateTrialsForBlock } = goNoGoTrial(jsPsych, config);
+const { trial, isi_timeout, generateTrialsForBlock } = goNoGoTrial(jsPsych, config);
 
 // Get debrief trial
 const debrief = debriefTrial(jsPsych, config);
@@ -138,18 +138,18 @@ const meanRT = calculateMeanRT(goNoGoData);
 
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
-| `goStimulus` | string | `'Y'` | Single GO stimulus (HTML string) - for backward compatibility |
-| `noGoStimulus` | string | `'X'` | Single NO-GO stimulus (HTML string) - for backward compatibility |
-| `goStimuli` | string[] | `['Y']` | Array of GO stimuli (HTML strings) |
-| `noGoStimuli` | string[] | `['X']` | Array of NO-GO stimuli (HTML strings) |
-| `buttonText` | string | `'Click'` | Response button label |
+| `go_stimulus` | string | `'Y'` | Single GO stimulus (HTML string) - for backward compatibility |
+| `nogo_stimulus` | string | `'X'` | Single NO-GO stimulus (HTML string) - for backward compatibility |
+| `go_stimuli` | string[] | `['Y']` | Array of GO stimuli (HTML strings) |
+| `nogo_stimuli` | string[] | `['X']` | Array of NO-GO stimuli (HTML strings) |
+| `button_text` | string | `'Click'` | Response button label |
 | `colorBorders` | boolean | `false` | Apply colored borders/text to stimuli (legacy parameter) |
 | `colorText` | boolean | `false` | Apply colored text/borders to stimuli |
-| `responseTimeout` | number | `500` | Maximum response time (ms) |
-| `interTrialInterval` | number | `500` | Time between trials (ms) |
-| `numBlocks` | number | `3` | Number of blocks |
-| `trialsPerBlock` | number | `50` | Trials per block |
-| `goTrialProbability` | number | `0.75` | Probability of GO trials (0-1) |
+| `trial_timeout` | number | `500` | Maximum response time (ms) |
+| `isi_timeout` | number | `500` | Time between trials (ms) |
+| `num_blocks` | number | `3` | Number of blocks |
+| `num_trials` | number | `50` | Trials per block |
+| `probability` | number | `0.75` | Probability of GO trials (0-1) |
 | `varyStimulus` | boolean | `true` | Whether to use multiple stimuli (if available) |
 | `showResultsDetails` | boolean | `true` | Show detailed results in debrief |
 
@@ -162,32 +162,32 @@ All stimuli are treated as HTML strings, providing maximum flexibility for conte
 **Text Stimuli:**
 ```javascript
 const config = {
-  goStimulus: 'GO',
-  noGoStimulus: 'STOP'
+  go_stimulus: 'GO',
+  nogo_stimulus: 'STOP'
 };
 ```
 
 **Image Stimuli (using HTML img tags):**
 ```javascript
 const config = {
-  goStimulus: '<img src="images/arrow.png" alt="GO">',
-  noGoStimulus: '<img src="images/stop.png" alt="STOP">'
+  go_stimulus: '<img src="images/arrow.png" alt="GO">',
+  nogo_stimulus: '<img src="images/stop.png" alt="STOP">'
 };
 ```
 
 **Styled HTML Stimuli:**
 ```javascript
 const config = {
-  goStimulus: '<div style="font-size: 60px; color: green;">✓</div>',
-  noGoStimulus: '<div style="font-size: 60px; color: red;">✗</div>'
+  go_stimulus: '<div style="font-size: 60px; color: green;">✓</div>',
+  nogo_stimulus: '<div style="font-size: 60px; color: red;">✗</div>'
 };
 ```
 
 **Complex HTML with Images and Text:**
 ```javascript
 const config = {
-  goStimulus: '<div><img src="images/arrow.png" style="width: 50px;"><br>PRESS</div>',
-  noGoStimulus: '<div><img src="images/stop.png" style="width: 50px;"><br>DON\'T PRESS</div>'
+  go_stimulus: '<div><img src="images/arrow.png" style="width: 50px;"><br>PRESS</div>',
+  nogo_stimulus: '<div><img src="images/stop.png" style="width: 50px;"><br>DON\'T PRESS</div>'
 };
 ```
 
@@ -209,8 +209,8 @@ You can provide arrays of stimuli for variety:
 
 ```javascript
 const config = {
-  goStimuli: ['GO', 'PRESS', '→'],
-  noGoStimuli: ['STOP', 'NO-GO', '✗'],
+  go_stimuli: ['GO', 'PRESS', '→'],
+  nogo_stimuli: ['STOP', 'NO-GO', '✗'],
   varyStimulus: true  // Use all stimuli in rotation
 };
 ```
@@ -219,8 +219,8 @@ For backward compatibility, single stimulus parameters are still supported:
 
 ```javascript
 const config = {
-  goStimulus: 'GO',      // Will be converted to ['GO']
-  noGoStimulus: 'STOP'   // Will be converted to ['STOP']
+  go_stimulus: 'GO',      // Will be converted to ['GO']
+  nogo_stimulus: 'STOP'   // Will be converted to ['STOP']
 };
 ```
 
@@ -275,10 +275,10 @@ console.log('Performance:', {
 
 ```javascript
 const config = {
-  goStimulus: 'GO',
-  noGoStimulus: 'STOP',
-  numBlocks: 2,
-  trialsPerBlock: 30
+  go_stimulus: 'GO',
+  nogo_stimulus: 'STOP',
+  num_blocks: 2,
+  num_trials: 30
 };
 
 const instructions = jsPsychTimelineGoNogoTimeline.createInstructions();
@@ -292,8 +292,8 @@ jsPsych.run([instructions, ...practice, task]);
 
 ```javascript
 const config = {
-  goStimulus: '<img src="images/green-arrow.png" style="width: 150px; height: 150px;" alt="GO">',
-  noGoStimulus: '<img src="images/red-stop.png" style="width: 150px; height: 150px;" alt="STOP">'
+  go_stimulus: '<img src="images/green-arrow.png" style="width: 150px; height: 150px;" alt="GO">',
+  nogo_stimulus: '<img src="images/red-stop.png" style="width: 150px; height: 150px;" alt="STOP">'
 };
 
 const instructions = jsPsychTimelineGoNogoTimeline.createInstructions();
@@ -307,10 +307,10 @@ jsPsych.run([instructions, ...practice, task]);
 
 ```javascript
 const config = {
-  responseTimeout: 1000,     // Faster responses required
-  interTrialInterval: 300,   // Shorter intervals
-  goTrialProbability: 0.8,   // More GO trials
-  trialsPerBlock: 40
+  trial_timeout: 1000,     // Faster responses required
+  isi_timeout: 300,   // Shorter intervals
+  probability: 0.8,   // More GO trials
+  num_trials: 40
 };
 
 const instructions = jsPsychTimelineGoNogoTimeline.createInstructions();
@@ -325,15 +325,15 @@ jsPsych.run([instructions, ...practice, task]);
 ```javascript
 // Colors are disabled by default, enable them with colorText: true
 const config = {
-  goStimulus: 'GO',
-  noGoStimulus: 'STOP',
+  go_stimulus: 'GO',
+  nogo_stimulus: 'STOP',
   colorText: true             // Enable colored text/borders
 };
 
 // For images with colored borders
 const imageConfig = {
-  goStimulus: '<img src="images/arrow.png" style="width: 180px; height: 180px;" alt="GO">',
-  noGoStimulus: '<img src="images/stop.png" style="width: 180px; height: 180px;" alt="STOP">',
+  go_stimulus: '<img src="images/arrow.png" style="width: 180px; height: 180px;" alt="GO">',
+  nogo_stimulus: '<img src="images/stop.png" style="width: 180px; height: 180px;" alt="STOP">',
   colorText: true             // Enable colored borders
 };
 
@@ -351,7 +351,7 @@ jsPsych.run([instructions, ...practice, task]);
 const { practiceTrial, goNoGoTrial, debriefTrial } = jsPsychTimelineGoNogoTimeline.timelineUnits;
 
 const instructions = practiceTrial(jsPsych, config);
-const { trial, interTrialInterval, generateTrialsForBlock } = goNoGoTrial(jsPsych, config);
+const { trial, isi_timeout, generateTrialsForBlock } = goNoGoTrial(jsPsych, config);
 const debrief = debriefTrial(jsPsych, config);
 
 // Custom timeline with single block
@@ -359,7 +359,7 @@ const customTimeline = {
   timeline: [
     ...instructions,
     {
-      timeline: [trial, interTrialInterval],
+      timeline: [trial, isi_timeout],
       timeline_variables: generateTrialsForBlock(1),
       randomize_order: true
     },
