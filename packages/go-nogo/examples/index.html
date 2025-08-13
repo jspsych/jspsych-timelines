@@ -18,7 +18,7 @@
 <body></body>
 <script>
   const jsPsych = initJsPsych({
-     
+    on_finish: () => jsPsych.data.displayData()
   });
 
   const config = {
@@ -26,9 +26,8 @@
     responseTimeout: 500000,                     // Max time to respond (ms)
     interTrialInterval: 500,                   // Pause between trials (ms)
     goTrialProbability: 0.75,                  // Probability of GO trials (0-1)
-    numBlocks: 3,                        // Number of blocks
-    numTrialsPerBlock: 50,                // Number of trials per block
-      stimulusDisplayTime: 1000,              // Time to display stimulus (ms)
+    numBlocks: 2,                        // Number of blocks
+    trialsPerBlock: 2,                // Number of trials per block
 
       goStimulus: 'Go',                    // GO stimulus
   noGoStimulus: 'NoGo',                  // NOGO stimulus
