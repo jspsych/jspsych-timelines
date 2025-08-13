@@ -1,5 +1,5 @@
-export const welcomeAndInstructionsText = {
-    pages: [
+export const defaultText = {
+    instructions: [
         `<div class="instructions-container">
             <h1>Welcome to the Stroop Task</h1>
         </div>`,

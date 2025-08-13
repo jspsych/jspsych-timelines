@@ -3,26 +3,33 @@ import jsPsychHtmlKeyboardResponse from "@jspsych/plugin-html-keyboard-response"
 import jsPsychInstructions from "@jspsych/plugin-instructions";
 import { JsPsych } from "jspsych";
 
-import { welcomeAndInstructionsText } from "./text";
+import { defaultText } from "./text";
 
-/* Types */
+interface StroopConfig {
+  practice_trials_per_condition?: number;
+  congruent_main_trials?: number;
+  incongruent_main_trials?: number;
+  trial_timeout?: number;
+  fixation_duration?: { min: number; max: number };
+  show_practice_feedback?: boolean;
+  include_fixation?: boolean;
+  show_instructions?: boolean;
+  show_results?: boolean;
+  randomize_main_trial_condition_order?: boolean;
+  randomize_practice_trial_condition_order?: boolean;
+  randomize_fixation_duration?: boolean;
+  number_of_rows?: number;
+  number_of_columns?: number;
+  choice_of_colors?: string[];
+  text?: typeof defaultText;
+}
+
 interface StroopStimulus {
   word: string;
   color: string;
   correct_response: number;
   congruent: boolean;
 }
-
-interface TrialData {
-  task: string;
-  word?: string;
-  color?: string;
-  correct_response?: number;
-  congruent?: boolean;
-  correct?: boolean;
-  rt?: number;
-}
-
 
 function generateStimuli(selectedColors: string[]): StroopStimulus[] {
   const stimuli: StroopStimulus[] = [];
@@ -47,15 +54,15 @@ function generateStimuli(selectedColors: string[]): StroopStimulus[] {
   return stimuli;
 }
 
-function createWelcomeAndInstructions(choiceOfColors?: string[]) {
-  const pages = welcomeAndInstructionsText.pages.map((page) => {
+function createInstructions(instructionsText: any[], choiceOfColors?: string[]) {
+  const pages = instructionsText.map((page) => {
     if (typeof page === "function") {
       return page(choiceOfColors);
     }
     return page;
   });
 
-  const welcomeAndInstructions = {
+  const instructions = {
     type: jsPsychInstructions,
     pages: pages,
     show_clickable_nav: true,
@@ -66,7 +73,7 @@ function createWelcomeAndInstructions(choiceOfColors?: string[]) {
     button_label_next: "",
   };
 
-  return welcomeAndInstructions;
+  return instructions;
 }
 
 function createFixation(fixationDuration: number) {
@@ -238,7 +245,7 @@ export function createTimeline(
     fixation_duration = { min: 300, max: 1500 },
     show_practice_feedback = true,
     include_fixation = true,
-    show_welcome_and_instructions = true,
+    show_instructions = true,
     show_results = true,
     randomize_main_trial_condition_order = true,
     randomize_practice_trial_condition_order = true,
@@ -246,23 +253,8 @@ export function createTimeline(
     number_of_rows = 2,
     number_of_columns = 2,
     choice_of_colors = ["RED", "GREEN", "BLUE", "YELLOW"],
-  }: {
-    practice_trials_per_condition?: number;
-    congruent_main_trials?: number;
-    incongruent_main_trials?: number;
-    trial_timeout?: number;
-    fixation_duration?: { min: number; max: number };
-    show_practice_feedback?: boolean;
-    include_fixation?: boolean;
-    show_welcome_and_instructions?: boolean;
-    show_results?: boolean;
-    randomize_main_trial_condition_order?: boolean;
-    randomize_practice_trial_condition_order?: boolean;
-    randomize_fixation_duration?: boolean;
-    number_of_rows?: number;
-    number_of_columns?: number;
-    choice_of_colors?: string[];
-  } = {}
+    text = defaultText,
+  }: StroopConfig = {}
 ) {
   const timeline: any[] = [];
   const stimuli = generateStimuli(choice_of_colors);
@@ -271,9 +263,9 @@ export function createTimeline(
   const congruentStimuli = stimuli.filter((s) => s.congruent);
   const incongruentStimuli = stimuli.filter((s) => !s.congruent);
 
-  // Add createWelcomeAndInstructions function
-  if (show_welcome_and_instructions) {
-    timeline.push(createWelcomeAndInstructions(choice_of_colors));
+  // Add createInstructions function
+  if (show_instructions) {
+    timeline.push(createInstructions(text.instructions, choice_of_colors));
   }
 
   // Create practice trials
@@ -364,7 +356,7 @@ export function createTimeline(
 
 /* Export individual components for custom timeline building */
 export const timelineComponents = {
-  createWelcomeAndInstructions,
+  createInstructions,
   createFixation,
   createStroopTrial,
   createPracticeFeedback,
@@ -378,4 +370,4 @@ export const utils = {
 };
 
 /* Export types */
-export type { StroopStimulus, TrialData };
+export type { StroopStimulus };
