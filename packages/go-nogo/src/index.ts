@@ -275,6 +275,11 @@ const createTimelineVariables = (jsPsych: JsPsych, blockNumber: number, trialsPe
     const numGoTrials = Math.round(trialsPerBlock * goTrialProbability)
     const numNoGoTrials = trialsPerBlock - numGoTrials
 
+    // Validate inputs
+    if (numGoTrials < 0 || numNoGoTrials < 0) {
+        throw new Error(`Invalid trial configuration: goTrialProbability (${goTrialProbability}) results in ${numGoTrials} go trials and ${numNoGoTrials} no-go trials for ${trialsPerBlock} total trials. Both must be non-negative.`)
+    }
+
     // Create fixed array of trial types
     const trialTypes = Array(numGoTrials).fill(true).concat(Array(numNoGoTrials).fill(false))
     // Shuffle trial types
@@ -320,46 +325,40 @@ const createBlockBreak = (blockNum: number, numBlocks: number) => {
   }
 }
 
-const createDebriefTrial = (jsPsych: JsPsych, showResultsDetails: boolean) => {
+const createDebrief = (jsPsych: JsPsych) => {
+  // Calculate stats when trial starts, not when displayed
+  const calculateStats = () => {
+    const allTrials = jsPsych.data.get().filter({ task: 'go-nogo', phase: 'main-trial' }).values()
+    
+    if (allTrials.length === 0) return { accuracy: 0, meanRT: 0 }
+    
+    // Calculate accuracy (percentage of correct responses)
+    const correctTrials = allTrials.filter((trial: any) => trial.correct === true)
+    const accuracy = Math.round((correctTrials.length / allTrials.length) * 100)
+    
+    // Calculate mean RT for GO trials where response was made
+    const goTrialsWithResponse = allTrials.filter((trial: any) => 
+      trial.is_go_trial === true && trial.response !== null && trial.rt > 0
+    )
+    const meanRT = goTrialsWithResponse.length > 0 
+      ? Math.round(goTrialsWithResponse.reduce((sum: number, trial: any) => sum + trial.rt, 0) / goTrialsWithResponse.length)
+      : 0
+    
+    return { accuracy, meanRT }
+  }
+
   return {
     type: jsPsychHtmlButtonResponse,
     stimulus: () => {
-      if (!showResultsDetails) {
-        return `
-            <div class="go-nogo-debrief">
-              <h2>${trial_text.taskComplete}</h2>
-              <p>${trial_text.thankYouMessage}</p>
-            </div>
-        `
-      }
-
-      const allData = jsPsych.data.get()
-      
-      const allTrials = allData.values()
-      const goNoGoTrials = allTrials.filter((trial: any) => trial.stimulus_type === trial_text.stimulusTypes.go || trial.stimulus_type === trial_text.stimulusTypes.noGo)
-      
-      let accuracy = 0
-      let meanRT = 0
-      
-      if (goNoGoTrials.length > 0) {
-        const accuracyValues = goNoGoTrials.map((trial: any) => trial.accuracy).filter((val: any) => val === 1 || val === 0)
-        const numCorrect = accuracyValues.filter((val: any) => val === 1).length
-        accuracy = accuracyValues.length > 0 ? Math.round((numCorrect / accuracyValues.length) * 100) : 0
-        
-        const goTrials = goNoGoTrials.filter((trial: any) => trial.stimulus_type === trial_text.stimulusTypes.go && trial.response !== null && trial.response !== undefined)
-        if (goTrials.length > 0) {
-          const rtValues = goTrials.map((trial: any) => trial.rt).filter((val: any) => val !== null && val !== undefined && val > 0)
-          meanRT = rtValues.length > 0 ? Math.round(rtValues.reduce((a: number, b: number) => a + b, 0) / rtValues.length) : 0
-        }
-      }
+      const { accuracy, meanRT } = calculateStats()
       
       return `
-          <div class="go-nogo-debrief">
-            <h2>${trial_text.taskComplete}</h2>
-              <p><strong>${trial_text.overallAccuracy}</strong> ${accuracy}%</p>
-              <p><strong>${trial_text.averageResponseTime}</strong> ${meanRT}ms</p>
-            <p>${trial_text.thankYouMessage}</p>
-          </div>
+        <div class="go-nogo-debrief">
+          <h2>${trial_text.taskComplete}</h2>
+          <p><strong>${trial_text.overallAccuracy}</strong> ${accuracy}%</p>
+          <p><strong>${trial_text.averageResponseTime}</strong> ${meanRT}ms</p>
+          <p>${trial_text.thankYouMessage}</p>
+        </div>
       `
     },
     choices: [trial_text.finishButton],
@@ -413,7 +412,7 @@ export function createTimeline(jsPsych: JsPsych, config: GoNoGoConfig = {}) {
   const timeline = [...blocks]
   
   if (showDebrief) {
-    const debriefTrial = createDebriefTrial(jsPsych, showResultsDetails)
+    const debriefTrial = createDebrief(jsPsych)
     timeline.push(debriefTrial)
   }
 
@@ -436,53 +435,20 @@ function createPractice(jsPsych: JsPsych, config: GoNoGoConfig = {}): any[] {
 }
 
 function createDebriefTrialUnit(jsPsych: JsPsych, config: GoNoGoConfig = {}) {
-  return createDebriefTrial(jsPsych)
+  return createDebrief(jsPsych)
 }
 
 export const timelineUnits = {
-  practiceTrial: (jsPsych: JsPsych, config: GoNoGoConfig = {}, texts = trial_text) => {
-    const {
-      goStimulus,
-      noGoStimulus,
-      goStimuli,
-      noGoStimuli
-    } = config
-
-    const actualGoStimuli = goStimuli || (goStimulus ? [goStimulus] : [texts.defaultGoStimulus])
-    const actualNoGoStimuli = noGoStimuli || (noGoStimulus ? [noGoStimulus] : [texts.defaultNoGoStimulus])
-
-    const goInstructionTrial = createGoInstructionTrial(actualGoStimuli[0], texts)
-    const noGoInstructionTrial = createNoGoInstructionTrial(actualNoGoStimuli[0], texts)
-    const practiceCompletionTrial = createPracticeCompletionTrial(texts)
-    
-    return [goInstructionTrial, noGoInstructionTrial, practiceCompletionTrial]
-  },
-  goNoGoTrial: (jsPsych: JsPsych, config: GoNoGoConfig = {}) => {
-    const {
-      goStimulus,
-      noGoStimulus,
-      goStimuli,
-      noGoStimuli,
-      buttonText = trial_text.defaultButtonText,
-      responseTimeout = 1500,
-      interTrialInterval = 500,
-      trialsPerBlock = 50,
-      goTrialProbability = 0.75
-    } = config
-    
-    const actualGoStimuli = goStimuli || (goStimulus ? [goStimulus] : [trial_text.defaultGoStimulus])
-    const actualNoGoStimuli = noGoStimuli || (noGoStimulus ? [noGoStimulus] : [trial_text.defaultNoGoStimulus])
-
-    const goNoGoTrial = createGoNoGoTrial(jsPsych, buttonText, responseTimeout)
-    const interTrialIntervalTrial = createInterTrialIntervalTrial(interTrialInterval)
-    const generateTrialsForBlock = createTimelineVariables(jsPsych, 1, trialsPerBlock, goTrialProbability, actualGoStimuli, actualNoGoStimuli)
-    
-    return { trial: goNoGoTrial, interTrialInterval: interTrialIntervalTrial, generateTrialsForBlock }
-  },
-  debriefTrial: (jsPsych: JsPsych, config: GoNoGoConfig = {}) => {
-    const { showResultsDetails = true } = config
-    return createDebriefTrial(jsPsych, showResultsDetails)
-  }
+  practiceTrial: createPractice,
+  debriefTrial: createDebriefTrialUnit
 }
 
-export const utils = {}
+export const utils = {
+  calculateAccuracy: (data: any) => {
+    return data.filter({ trial_type: 'go-nogo' }).select('accuracy').mean()
+  },
+  
+  calculateMeanRT: (data: any) => {
+    return data.filter({ trial_type: 'go-nogo', stimulus_type: 'go' }).select('rt').mean()
+  }
+}
