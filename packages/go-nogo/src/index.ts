@@ -24,6 +24,8 @@ import { trial_text, instruction_pages } from "./text";
  * @property {string[]} [go_stimuli] Optional list of Go stimuli to rotate through.
  * @property {string[]} [nogo_stimuli] Optional list of No-Go stimuli to rotate through.
  * @property {string}   [button_text=trial_text.defaultButtonText] Label for the response button during trials.
+ * @property {number}   [go_practice_timeout=10000] Duration of Go practice trial.
+ * @property {number}   [nogo_practice_timeout=3000] Duration of No-Go practice trial.
  *
  * Texts
  * @property {string[]}            [instructions_array=instruction_pages] Pages for the instructions screen.
@@ -104,7 +106,7 @@ const createStimulusHTML = (html: string, isGoTrial: boolean): string => {
  *   - Failure feedback + retry loop (if timeout occurs)
  */
 const createGoPractice = (go_stimulus: string, texts = trial_text, timeout: number = 10000) => {
-  const goExample = createStimulusHTML(go_stimulus, true)
+  const go_html = createStimulusHTML(go_stimulus, true)
   
   // Create a timeline to hold the practice trials
   // This will allow us to conditionally push trials for retry logic
@@ -114,11 +116,11 @@ const createGoPractice = (go_stimulus: string, texts = trial_text, timeout: numb
     type: jsPsychHtmlButtonResponse,
     stimulus: `
       <p>${texts.goPageContent}</p>
-      ${goExample}
+      ${go_html}
       <div class="go-nogo-feedback" style="visibility: hidden;">${texts.goodJobMessage}</div>
     `,
     choices: [texts.defaultButtonText],
-    trial_duration: timeout, // 10 seconds timeout
+    trial_duration: timeout, // default 10 seconds
     data: { task: 'go-nogo', phase: 'go-practice' },
     button_html: (choice, choice_index) => `<button id="go-nogo-btn" class="jspsych-btn timeline-html-btn">${choice}</button>`,
     on_finish: (data: any) => {
@@ -139,7 +141,7 @@ const createGoPractice = (go_stimulus: string, texts = trial_text, timeout: numb
     type: jsPsychHtmlButtonResponse,
     stimulus: `
       <p>${texts.goPageContent}</p>
-      ${goExample}
+      ${go_html}
       <div class="go-nogo-feedback" style="color: #28a745;">${texts.goodJobMessage}</div>
     `,
     choices: [texts.defaultButtonText],
@@ -154,7 +156,7 @@ const createGoPractice = (go_stimulus: string, texts = trial_text, timeout: numb
     type: jsPsychHtmlButtonResponse,
     stimulus: `
       <p>${texts.goPageContent}</p>
-      ${goExample}
+      ${go_html}
       <div class="go-nogo-feedback" style="color: #dc3545;">${texts.goFailureMessage}</div>
     `,
     choices: [texts.defaultButtonText],
@@ -185,7 +187,7 @@ const createGoPractice = (go_stimulus: string, texts = trial_text, timeout: numb
  *   - Failure feedback + retry loop (if they click)
  */
 const createNoGoPractice = (nogo_stimulus: string, texts = trial_text, timeout: number = 3000) => {
-  const noGoExample = createStimulusHTML(nogo_stimulus, false)
+  const nogo_html = createStimulusHTML(nogo_stimulus, false)
   
   // Create a timeline to hold the practice trials
   // This will allow us to conditionally push trials to show feedback later
@@ -195,7 +197,7 @@ const createNoGoPractice = (nogo_stimulus: string, texts = trial_text, timeout: 
     type: jsPsychHtmlButtonResponse,
     stimulus: `
       <p>${texts.noGoPageContent}</p>
-      ${noGoExample}
+      ${nogo_html}
       <div class="go-nogo-feedback" style="visibility: hidden;">${texts.noGoFeedbackMessage}</div>
     `,
     choices: [texts.defaultButtonText],
@@ -220,7 +222,7 @@ const createNoGoPractice = (nogo_stimulus: string, texts = trial_text, timeout: 
     type: jsPsychHtmlButtonResponse,
     stimulus: `
       <p>${texts.noGoPageContent}</p>
-      ${noGoExample}
+      ${nogo_html}
       <div class="go-nogo-feedback" style="color: #28a745;">${texts.noGoFeedbackMessage}</div>
     `,
     choices: [texts.defaultButtonText],
@@ -235,7 +237,7 @@ const createNoGoPractice = (nogo_stimulus: string, texts = trial_text, timeout: 
     type: jsPsychHtmlButtonResponse,
     stimulus: `
       <p>${texts.noGoPageContent}</p>
-      ${noGoExample}
+      ${nogo_html}
       <div class="go-nogo-feedback" style="color: #dc3545;">${texts.rememberNoGo}</div>
     `,
     choices: [texts.defaultButtonText],
@@ -547,8 +549,7 @@ export function createTimeline(
  * @param config Partial configuration to select sample stimuli and texts.
  * @returns An array of practice timeline segments to be inserted into the main timeline.
  */
-function createPractice(config: GoNoGoConfig = {}): any[] {
-  const {
+function createPractice({
     go_stimulus = trial_text.defaultGoStimulus,
     nogo_stimulus = trial_text.defaultNoGoStimulus,
     go_stimuli,
@@ -556,14 +557,14 @@ function createPractice(config: GoNoGoConfig = {}): any[] {
     text_object: texts = trial_text,
     go_practice_timeout = 10000,
     nogo_practice_timeout = 3000
-  } = config
-
-  const actualGoStimuli = go_stimuli?.length ? go_stimuli : [go_stimulus]
-  const actualNoGoStimuli = nogo_stimuli?.length ? nogo_stimuli : [nogo_stimulus]
+  } : GoNoGoConfig = {}) {
+  
+  const actual_go_stimuli = go_stimuli?.length ? go_stimuli : [go_stimulus]
+  const actual_nogo_stimuli = nogo_stimuli?.length ? nogo_stimuli : [nogo_stimulus]
 
   return [
-    createGoPractice(actualGoStimuli[0], texts, go_practice_timeout),
-    createNoGoPractice(actualNoGoStimuli[0], texts, nogo_practice_timeout),
+    createGoPractice(actual_go_stimuli[0], texts, go_practice_timeout),
+    createNoGoPractice(actual_nogo_stimuli[0], texts, nogo_practice_timeout),
     createPracticeCompletion(texts)
   ]
 }
