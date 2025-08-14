@@ -1,4 +1,12 @@
+/**
+ * Default text content for the Stroop task.
+ * Contains all instruction pages, feedback messages, and result templates.
+ */
 export const defaultText = {
+    /**
+     * Array of instruction pages. Can contain HTML strings or functions that return HTML.
+     * Functions receive choiceOfColors array as parameter for dynamic content generation.
+     */
     instructions: [
         `<div class="instructions-container">
             <h1>Welcome to the Stroop Task</h1>
@@ -40,9 +48,18 @@ export const defaultText = {
             <p>Try to go as fast and as accurately as possible.</p>
         </div>`
     ],
+    /** HTML content displayed for correct responses during practice trials
+     * Use %ANSWER% placeholder which will be replaced with the correct color name.
+     */
     correct_feedback: `<div style="font-size: 24px; text-align: center;"><p>✓ CORRECT!</p></div>`,
+    /** 
+     * HTML content displayed for incorrect responses during practice trials.
+     * Use %ANSWER% placeholder which will be replaced with the correct color name.
+     */
     incorrect_feedback: `<div style="font-size: 24px; text-align: center;"><p>✗ INCORRECT. The correct answer was %ANSWER%.</p></div>`,
+    /** Text for the continue button in feedback screens */
     continue_button: "Continue",
+    /** HTML content for the screen shown between practice and main experiment */
     practice_debrief: `
             <div style="max-width: 700px; margin: 0 auto; text-align: center; padding: 20px;">
                 <h2>Practice Complete!</h2>
@@ -56,7 +73,12 @@ export const defaultText = {
                 </ul>
             </div>
         `,
+    /** Text for the start button after practice debrief */
     start_button: "Start",
+    /** 
+     * HTML template for results display. Supports placeholders:
+     * %congruentAccuracy%, %congruentRt%, %incongruentAccuracy%, %incongruentRt%, %stroopEffect%
+     */
     results: `
                 <div style="text-align: center; max-width: 600px; margin: 0 auto;">
                     <h2>Experiment Complete!</h2>
