@@ -39,5 +39,22 @@ export const defaultText = {
         `<div class="instructions-container">
             <p>Try to go as fast and as accurately as possible.</p>
         </div>`
-    ]
+    ],
+    correct_feedback: `<div style="font-size: 24px; text-align: center;"><p>✓ CORRECT!</p></div>`,
+    incorrect_feedback: `<div style="font-size: 24px; text-align: center;"><p>✗ INCORRECT. The correct answer was %ANSWER%.</p></div>`,
+    continue_button: "Continue",
+    practice_debrief: `
+            <div style="max-width: 700px; margin: 0 auto; text-align: center; padding: 20px;">
+                <h2>Practice Complete!</h2>
+                <p>Great job! You've finished the practice trials.</p>
+                <p>Now you'll begin the main experiment.</p>
+                <p>Remember:</p>
+                <ul style="text-align: left; display: inline-block;">
+                    <li>Respond to the <strong>ink color</strong>, not the word</li>
+                    <li>Be as fast and accurate as possible</li>
+                    <li>Click the colored buttons for Red, Green, Blue, Yellow</li>
+                </ul>
+            </div>
+        `,
+    start_button: "Start"
 };
