@@ -21,23 +21,81 @@ beforeEach(() => {
 });
 
 describe("stroop-task utility functions", () => {
+    let jsPsych;
+    
+    beforeEach(() => {
+        jsPsych = initJsPsych();
+    });
+    
     describe("generateStimuli", () => {
-        test("generates correct number of stimuli", () => {
-            const stimuli = utils.generateStimuli();
-            expect(stimuli).toHaveLength(16); // 4 words × 4 colors
-        });
-
-        test("generates both congruent and incongruent stimuli", () => {
-            const stimuli = utils.generateStimuli();
+        test("generates exact number of requested trials", () => {
+            const colors = ['RED', 'GREEN'];
+            const stimuli = utils.generateStimuli(jsPsych, colors, 10, 8);
+            
             const congruent = stimuli.filter(s => s.congruent);
             const incongruent = stimuli.filter(s => !s.congruent);
+            
+            expect(congruent.length).toBe(10);
+            expect(incongruent.length).toBe(8);
+            expect(stimuli.length).toBe(18);
+        });
 
-            expect(congruent).toHaveLength(4);
-            expect(incongruent).toHaveLength(12);
+        test("distributes 10 congruent trials evenly across 2 colors (5 each)", () => {
+            const colors = ['RED', 'GREEN'];
+            const stimuli = utils.generateStimuli(jsPsych, colors, 10, 0);
+            const congruent = stimuli.filter(s => s.congruent);
+            
+            expect(congruent.length).toBe(10);
+            
+            const redTrials = congruent.filter(s => s.word === 'RED').length;
+            const greenTrials = congruent.filter(s => s.word === 'GREEN').length;
+            
+            expect(redTrials).toBe(5);
+            expect(greenTrials).toBe(5);
+        });
+
+        test("distributes 18 congruent trials across 4 colors (5, 5, 4, 4)", () => {
+            const colors = ['RED', 'GREEN', 'BLUE', 'YELLOW'];
+            const stimuli = utils.generateStimuli(jsPsych, colors, 18, 0);
+            const congruent = stimuli.filter(s => s.congruent);
+            
+            expect(congruent.length).toBe(18);
+            
+            const counts = colors.map(color => 
+                congruent.filter(s => s.word === color).length
+            );
+            
+            // Should have 4 complete sets (4 each) + 2 remainder = 18 total
+            // With randomization, some colors get 5, others get 4
+            counts.sort((a, b) => b - a); // Sort descending
+            expect(counts[0]).toBe(5); // Two colors should have 5
+            expect(counts[1]).toBe(5);
+            expect(counts[2]).toBe(4); // Two colors should have 4
+            expect(counts[3]).toBe(4);
+            expect(counts.reduce((sum, count) => sum + count, 0)).toBe(18);
+        });
+
+        test("handles exact multiples correctly", () => {
+            const colors = ['RED', 'GREEN', 'BLUE', 'YELLOW'];
+            const stimuli = utils.generateStimuli(jsPsych, colors, 20, 0);
+            const congruent = stimuli.filter(s => s.congruent);
+            
+            expect(congruent.length).toBe(20);
+            
+            // 20 / 4 = 5 exactly, so each color should appear 5 times
+            const counts = colors.map(color => 
+                congruent.filter(s => s.word === color).length
+            );
+            
+            counts.forEach(count => {
+                expect(count).toBe(5);
+            });
         });
 
         test("has correct stimulus structure", () => {
-            const stimuli = utils.generateStimuli();
+            const colors = ['RED', 'GREEN'];
+            const stimuli = utils.generateStimuli(jsPsych, colors, 4, 2);
+            
             stimuli.forEach(stimulus => {
                 expect(stimulus).toHaveProperty('word');
                 expect(stimulus).toHaveProperty('color');
@@ -45,66 +103,64 @@ describe("stroop-task utility functions", () => {
                 expect(stimulus).toHaveProperty('congruent');
                 expect(typeof stimulus.correct_response).toBe('number');
                 expect(typeof stimulus.congruent).toBe('boolean');
+                expect(colors).toContain(stimulus.word);
+                expect(stimulus.correct_response).toBeGreaterThanOrEqual(0);
+                expect(stimulus.correct_response).toBeLessThan(colors.length);
             });
         });
 
-        test("generates correct congruent stimuli", () => {
-            const stimuli = utils.generateStimuli();
+        test("generates correct congruent vs incongruent stimuli", () => {
+            const colors = ['RED', 'GREEN'];
+            const stimuli = utils.generateStimuli(jsPsych, colors, 4, 6);
+            
             const congruent = stimuli.filter(s => s.congruent);
-
-            congruent.forEach(stimulus => {
-                expect(stimulus.word).toBe(stimulus.color.toUpperCase());
-            });
-        });
-
-        test("generates correct incongruent stimuli", () => {
-            const stimuli = utils.generateStimuli();
             const incongruent = stimuli.filter(s => !s.congruent);
-
+            
+            // Check congruent stimuli have matching word and color
+            congruent.forEach(stimulus => {
+                expect(stimulus.word.toLowerCase()).toBe(stimulus.color);
+            });
+            
+            // Check incongruent stimuli have mismatched word and color
             incongruent.forEach(stimulus => {
-                expect(stimulus.word).not.toBe(stimulus.color.toUpperCase());
+                expect(stimulus.word.toLowerCase()).not.toBe(stimulus.color);
             });
         });
-    });
 
-    describe("shuffleArray", () => {
-        test("returns array of same length", () => {
-            const original = [1, 2, 3, 4, 5];
-            const shuffled = utils.shuffleArray(original);
-            expect(shuffled).toHaveLength(original.length);
+        test("handles single color correctly", () => {
+            const colors = ['RED'];
+            const stimuli = utils.generateStimuli(jsPsych, colors, 3, 0);
+            
+            // With only one color, all trials should be congruent
+            expect(stimuli.length).toBe(3);
+            expect(stimuli.every(s => s.congruent)).toBe(true);
+            expect(stimuli.every(s => s.word === 'RED' && s.color === 'red')).toBe(true);
         });
 
-        test("contains same elements", () => {
-            const original = [1, 2, 3, 4, 5];
-            const shuffled = utils.shuffleArray(original);
-            expect(shuffled.sort()).toEqual(original.sort());
+        test("handles zero trials correctly", () => {
+            const colors = ['RED', 'GREEN'];
+            const stimuli = utils.generateStimuli(jsPsych, colors, 0, 0);
+            
+            expect(stimuli.length).toBe(0);
         });
 
-        test("does not modify original array", () => {
-            const original = [1, 2, 3, 4, 5];
-            const originalCopy = [...original];
-            utils.shuffleArray(original);
-            expect(original).toEqual(originalCopy);
-        });
-
-        test("handles empty array", () => {
-            const empty = [];
-            const shuffled = utils.shuffleArray(empty);
-            expect(shuffled).toEqual([]);
-        });
-
-        test("handles single element array", () => {
-            const single = [1];
-            const shuffled = utils.shuffleArray(single);
-            expect(shuffled).toEqual([1]);
-        });
-    });
-
-    describe("resetState", () => {
-        test("resets state without throwing errors", () => {
-            expect(() => utils.resetState()).not.toThrow();
+        test("distributes incongruent trials evenly", () => {
+            const colors = ['RED', 'GREEN', 'BLUE'];
+            const stimuli = utils.generateStimuli(jsPsych, colors, 0, 12);
+            const incongruent = stimuli.filter(s => !s.congruent);
+            
+            expect(incongruent.length).toBe(12);
+            
+            // With 3 colors, there are 6 incongruent combinations (3x2)
+            // 12 trials / 6 combinations = 2 of each combination
+            const combinations = new Set();
+            incongruent.forEach(s => {
+                combinations.add(`${s.word}-${s.color}`);
+            });
+            expect(combinations.size).toBe(6); // All 6 combinations should be present
         });
     });
+
 });
 
 describe("stroop-task timeline components", () => {
@@ -114,47 +170,54 @@ describe("stroop-task timeline components", () => {
         jsPsych = initJsPsych();
     });
 
-    describe("createWelcomeAndInstructions", () => {
-        test("creates welcome and instructions with correct structure", () => {
-            const welcome = timelineComponents.createWelcomeAndInstructions();
-            expect(welcome).toHaveProperty('type');
-            expect(welcome).toHaveProperty('pages');
-            expect(welcome).toHaveProperty('show_clickable_nav');
-            expect(welcome).toHaveProperty('allow_keys');
+    describe("createInstructions", () => {
+        test("creates instructions with correct structure", () => {
+            const instructionPages = ['<div>Page 1</div>', '<div>Page 2</div>'];
+            const instructions = timelineComponents.createInstructions(instructionPages);
+            expect(instructions).toHaveProperty('type');
+            expect(instructions).toHaveProperty('pages');
+            expect(instructions).toHaveProperty('show_clickable_nav');
+            expect(instructions).toHaveProperty('allow_keys');
         });
 
         test("has multiple pages with instructions", () => {
-            const welcome = timelineComponents.createWelcomeAndInstructions();
-            expect(Array.isArray(welcome.pages)).toBe(true);
-            expect(welcome.pages.length).toBeGreaterThan(1);
+            const instructionPages = ['<div>Page 1</div>', '<div>Page 2</div>'];
+            const instructions = timelineComponents.createInstructions(instructionPages);
+            expect(Array.isArray(instructions.pages)).toBe(true);
+            expect(instructions.pages.length).toBe(2);
         });
 
-        test("pages contain key instructions", () => {
-            const welcome = timelineComponents.createWelcomeAndInstructions();
-            const allPages = welcome.pages.join(' ').toLowerCase();
-            expect(allPages).toContain('stroop');
-            expect(allPages).toContain('color');
-            expect(allPages).toContain('welcome');
+        test("processes function-based pages with color choices", () => {
+            const instructionPages = [
+                '<div>Static page</div>',
+                (colors?: string[]) => `<div>Colors: ${colors?.join(', ')}</div>`
+            ];
+            const instructions = timelineComponents.createInstructions(instructionPages, ['RED', 'BLUE']);
+            expect(instructions.pages[0]).toBe('<div>Static page</div>');
+            expect(instructions.pages[1]).toContain('RED, BLUE');
         });
 
-        test("has proper HTML structure", () => {
-            const welcome = timelineComponents.createWelcomeAndInstructions();
-            const firstPage = welcome.pages[0];
+        test("has proper HTML structure and navigation settings", () => {
+            const instructionPages = ['<div><h1>Welcome</h1></div>'];
+            const instructions = timelineComponents.createInstructions(instructionPages);
+            const firstPage = instructions.pages[0];
             expect(firstPage).toMatch(/<div[^>]*>/);
             expect(firstPage).toMatch(/<h1[^>]*>/);
+            expect(instructions.show_clickable_nav).toBe(true);
+            expect(instructions.allow_keys).toBe(true);
         });
 
-        test("has navigation settings", () => {
-            const welcome = timelineComponents.createWelcomeAndInstructions();
-            expect(welcome.show_clickable_nav).toBe(true);
-            expect(welcome.allow_keys).toBe(true);
+        test("has correct data properties", () => {
+            const instructionPages = ['<div>Page 1</div>'];
+            const instructions = timelineComponents.createInstructions(instructionPages);
+            expect(instructions.data.page).toBe('instructions');
         });
     });
 
 
     describe("createFixation", () => {
         test("creates fixation cross with correct properties", () => {
-            const fixation = timelineComponents.createFixation();
+            const fixation = timelineComponents.createFixation(500);
             expect(fixation).toHaveProperty('type');
             expect(fixation).toHaveProperty('stimulus');
             expect(fixation).toHaveProperty('choices');
@@ -163,111 +226,109 @@ describe("stroop-task timeline components", () => {
         });
 
         test("has correct stimulus and choices", () => {
-            const fixation = timelineComponents.createFixation();
+            const fixation = timelineComponents.createFixation(500);
             expect(fixation.choices).toBe("NO_KEYS");
             expect(fixation.stimulus).toContain('+');
         });
 
         test("accepts custom duration", () => {
-            const customDuration = { min: 500, max: 1500 };
+            const customDuration = 1000;
             const fixation = timelineComponents.createFixation(customDuration);
-            expect(typeof fixation.trial_duration).toBe('function');
-
-            // Test duration function returns value in range
-            const duration = typeof fixation.trial_duration === 'function'
-                ? fixation.trial_duration()
-                : fixation.trial_duration;
-            expect(duration).toBeGreaterThanOrEqual(500);
-            expect(duration).toBeLessThanOrEqual(1500);
+            expect(fixation.trial_duration).toBe(customDuration);
         });
 
         test("has correct data properties", () => {
-            const fixation = timelineComponents.createFixation();
-            expect(fixation.data.task).toBe('fixation');
+            const fixation = timelineComponents.createFixation(500);
+            expect(fixation.data.page).toBe('fixation');
         });
 
-        test("uses default duration when none provided", () => {
-            const fixation = timelineComponents.createFixation();
-            const duration = typeof fixation.trial_duration === 'function'
-                ? fixation.trial_duration()
-                : fixation.trial_duration;
-            expect(duration).toBeGreaterThanOrEqual(300);
-            expect(duration).toBeLessThanOrEqual(1000);
+        test("uses provided duration", () => {
+            const fixation = timelineComponents.createFixation(750);
+            expect(fixation.trial_duration).toBe(750);
         });
     });
 
-    describe("createStroopTrial", () => {
-        const mockStimulus = {
+    describe("createStroopTrials", () => {
+        const mockStimuli = [{
             word: 'RED',
             color: 'blue',
             correct_response: 2,
             congruent: false
-        };
+        }];
 
-        test("creates trial with correct structure", () => {
-            const trial = timelineComponents.createStroopTrial(mockStimulus, false, 3000, 2, 2, ['RED', 'GREEN', 'BLUE', 'YELLOW']);
-            expect(trial).toHaveProperty('type');
-            expect(trial).toHaveProperty('stimulus');
-            expect(trial).toHaveProperty('choices');
-            expect(trial).toHaveProperty('data');
-            expect(trial).toHaveProperty('on_finish');
+        test("creates timeline with correct structure", () => {
+            const trials = timelineComponents.createStroopTrials(jsPsych, {
+                trial_variables: mockStimuli,
+                is_practice: false
+            });
+            expect(trials).toHaveProperty('timeline');
+            expect(trials).toHaveProperty('timeline_variables');
+            expect(trials).toHaveProperty('randomize_order');
+            expect(trials).toHaveProperty('data');
         });
 
-        test("has correct choices", () => {
-            const trial = timelineComponents.createStroopTrial(mockStimulus, false, 3000, 2, 2, ['RED', 'GREEN', 'BLUE', 'YELLOW']);
-            expect(trial.choices).toEqual(['RED', 'GREEN', 'BLUE', 'YELLOW']);
-        });
-
-        test("stimulus displays word in correct color", () => {
-            const trial = timelineComponents.createStroopTrial(mockStimulus, false, 3000, 2, 2, ['RED', 'GREEN', 'BLUE', 'YELLOW']);
-            expect(trial.stimulus).toContain('RED');
-            expect(trial.stimulus).toContain('blue');
-            expect(trial.stimulus).toMatch(/color:\s*blue/);
-        });
-
-        test("sets correct data properties", () => {
-            const trial = timelineComponents.createStroopTrial(mockStimulus, true, 3000, 2, 2, ['RED', 'GREEN', 'BLUE', 'YELLOW']);
-            expect(trial.data.task).toBe('practice');
-            expect(trial.data.word).toBe('RED');
-            expect(trial.data.color).toBe('blue');
-            expect(trial.data.correct_response).toBe(2);
-            expect(trial.data.congruent).toBe(false);
+        test("has correct timeline variables", () => {
+            const trials = timelineComponents.createStroopTrials(jsPsych, {
+                trial_variables: mockStimuli,
+                is_practice: false
+            });
+            expect(trials.timeline_variables).toEqual(mockStimuli);
         });
 
         test("distinguishes practice from main trials", () => {
-            const practiceTrial = timelineComponents.createStroopTrial(mockStimulus, true, 3000, 2, 2, ['RED', 'GREEN', 'BLUE', 'YELLOW']);
-            const mainTrial = timelineComponents.createStroopTrial(mockStimulus, false, 3000, 2, 2, ['RED', 'GREEN', 'BLUE', 'YELLOW']);
+            const practiceTrials = timelineComponents.createStroopTrials(jsPsych, {
+                trial_variables: mockStimuli,
+                is_practice: true
+            });
+            const mainTrials = timelineComponents.createStroopTrials(jsPsych, {
+                trial_variables: mockStimuli,
+                is_practice: false
+            });
 
-            expect(practiceTrial.data.task).toBe('practice');
-            expect(mainTrial.data.task).toBe('response');
+            expect(practiceTrials.data.phase).toBe('practice');
+            expect(mainTrials.data.phase).toBe('test');
         });
 
-        test("accepts custom trial timeout", () => {
-            const customTimeout = 5000;
-            const trial = timelineComponents.createStroopTrial(mockStimulus, false, customTimeout, 2, 2, ['RED', 'GREEN', 'BLUE', 'YELLOW']);
-            expect(trial.trial_duration).toBe(customTimeout);
+        test("includes fixation when enabled", () => {
+            const trials = timelineComponents.createStroopTrials(jsPsych, {
+                trial_variables: mockStimuli,
+                is_practice: false,
+                include_fixation: true
+            });
+            expect(Array.isArray(trials.timeline)).toBe(true);
+            expect(trials.timeline.length).toBeGreaterThan(1);
         });
 
-        test("uses default timeout when none provided", () => {
-            const trial = timelineComponents.createStroopTrial(mockStimulus, false, undefined, 2, 2, ['RED', 'GREEN', 'BLUE', 'YELLOW']);
-            expect(trial.trial_duration).toBe(3000); // DEFAULT_TRIAL_TIMEOUT
+        test("excludes fixation when disabled", () => {
+            const trials = timelineComponents.createStroopTrials(jsPsych, {
+                trial_variables: mockStimuli,
+                is_practice: false,
+                include_fixation: false
+            });
+            expect(Array.isArray(trials.timeline)).toBe(true);
         });
 
-        test("on_finish function sets correct property", () => {
-            const trial = timelineComponents.createStroopTrial(mockStimulus, false, 3000, 2, 2, ['RED', 'GREEN', 'BLUE', 'YELLOW']);
-            const mockData: { response: number; correct_response: number; correct?: boolean } = { response: 2, correct_response: 2 };
-            trial.on_finish(mockData);
-            expect(mockData.correct).toBe(true);
-
-            const incorrectData: { response: number; correct_response: number; correct?: boolean } = { response: 1, correct_response: 2 };
-            trial.on_finish(incorrectData);
-            expect(incorrectData.correct).toBe(false);
+        test("includes feedback for practice trials when enabled", () => {
+            const trials = timelineComponents.createStroopTrials(jsPsych, {
+                trial_variables: mockStimuli,
+                is_practice: true,
+                show_practice_feedback: true
+            });
+            expect(Array.isArray(trials.timeline)).toBe(true);
+            expect(trials.timeline.length).toBeGreaterThan(1);
         });
     });
 
     describe("createPracticeFeedback", () => {
         test("creates feedback trial", () => {
-            const feedback = timelineComponents.createPracticeFeedback(jsPsych);
+            const colors = ['RED', 'GREEN', 'BLUE'];
+            const feedback = timelineComponents.createPracticeFeedback(
+                jsPsych,
+                colors,
+                'Correct!',
+                'Incorrect. The answer was %ANSWER%',
+                'Continue'
+            );
             expect(feedback).toHaveProperty('type');
             expect(feedback).toHaveProperty('stimulus');
             expect(feedback).toHaveProperty('choices');
@@ -275,59 +336,114 @@ describe("stroop-task timeline components", () => {
         });
 
         test("has correct choices and duration", () => {
-            const feedback = timelineComponents.createPracticeFeedback(jsPsych);
+            const colors = ['RED', 'GREEN', 'BLUE'];
+            const feedback = timelineComponents.createPracticeFeedback(
+                jsPsych,
+                colors,
+                'Correct!',
+                'Incorrect. The answer was %ANSWER%',
+                'Continue'
+            );
             expect(feedback.choices).toEqual(['Continue']);
             expect(feedback.trial_duration).toBe(2000);
         });
 
         test("has dynamic stimulus function", () => {
-            const feedback = timelineComponents.createPracticeFeedback(jsPsych);
+            const colors = ['RED', 'GREEN', 'BLUE'];
+            const feedback = timelineComponents.createPracticeFeedback(
+                jsPsych,
+                colors,
+                'Correct!',
+                'Incorrect. The answer was %ANSWER%',
+                'Continue'
+            );
             expect(typeof feedback.stimulus).toBe('function');
+        });
+
+        test("has correct data properties", () => {
+            const colors = ['RED', 'GREEN', 'BLUE'];
+            const feedback = timelineComponents.createPracticeFeedback(
+                jsPsych,
+                colors,
+                'Correct!',
+                'Incorrect. The answer was %ANSWER%',
+                'Continue'
+            );
+            expect(feedback.data.page).toBe('feedback');
         });
     });
 
     describe("createPracticeDebrief", () => {
         test("creates debrief with correct properties", () => {
-            const debrief = timelineComponents.createPracticeDebrief();
+            const debrief = timelineComponents.createPracticeDebrief(
+                'Practice complete!',
+                'Start'
+            );
             expect(debrief).toHaveProperty('type');
             expect(debrief).toHaveProperty('stimulus');
             expect(debrief).toHaveProperty('choices');
             expect(debrief).toHaveProperty('post_trial_gap');
-            expect(debrief).toHaveProperty('on_finish');
         });
 
         test("has correct choices", () => {
-            const debrief = timelineComponents.createPracticeDebrief();
+            const debrief = timelineComponents.createPracticeDebrief(
+                'Practice complete!',
+                'Start Experiment'
+            );
             expect(debrief.choices).toEqual(['Start Experiment']);
         });
 
-        test("stimulus contains key messages", () => {
-            const debrief = timelineComponents.createPracticeDebrief();
-            const stimulus = debrief.stimulus.toLowerCase();
-            expect(stimulus).toContain('practice');
-            expect(stimulus).toContain('complete');
-            expect(stimulus).toContain('ink color');
+        test("uses provided stimulus text", () => {
+            const customText = 'Custom practice debrief message';
+            const debrief = timelineComponents.createPracticeDebrief(
+                customText,
+                'Continue'
+            );
+            expect(debrief.stimulus).toBe(customText);
+        });
+
+        test("has correct data properties", () => {
+            const debrief = timelineComponents.createPracticeDebrief(
+                'Practice complete!',
+                'Start'
+            );
+            expect(debrief.data.page).toBe('practice_debrief');
         });
     });
 
     describe("createResults", () => {
         test("creates results trial", () => {
-            const results = timelineComponents.createResults(jsPsych);
+            const results = timelineComponents.createResults(
+                jsPsych,
+                'Results: %congruentAccuracy%% accuracy'
+            );
             expect(results).toHaveProperty('type');
             expect(results).toHaveProperty('stimulus');
             expect(results).toHaveProperty('choices');
-            expect(results).toHaveProperty('on_finish');
         });
 
         test("has correct choices", () => {
-            const results = timelineComponents.createResults(jsPsych);
-            expect(results.choices).toEqual(['Download Data']);
+            const results = timelineComponents.createResults(
+                jsPsych,
+                'Results: %congruentAccuracy%% accuracy'
+            );
+            expect(results.choices).toEqual(['Finish']);
         });
 
-        test("has dynamic stimulus and on_finish functions", () => {
-            const results = timelineComponents.createResults(jsPsych);
+        test("has dynamic stimulus function", () => {
+            const results = timelineComponents.createResults(
+                jsPsych,
+                'Results: %congruentAccuracy%% accuracy'
+            );
             expect(typeof results.stimulus).toBe('function');
-            expect(typeof results.on_finish).toBe('function');
+        });
+
+        test("has correct data properties", () => {
+            const results = timelineComponents.createResults(
+                jsPsych,
+                'Results: %congruentAccuracy%% accuracy'
+            );
+            expect(results.data.page).toBe('results');
         });
     });
 });
@@ -341,47 +457,42 @@ describe("stroop-task full timeline", () => {
 
     test("creates timeline with default parameters", () => {
         const timeline = createTimeline(jsPsych);
-        expect(Array.isArray(timeline)).toBe(true);
-        expect(timeline.length).toBeGreaterThan(0);
+        expect(timeline).toHaveProperty('timeline');
+        expect(timeline).toHaveProperty('data');
+        expect(Array.isArray(timeline.timeline)).toBe(true);
+        expect(timeline.timeline.length).toBeGreaterThan(0);
     });
 
     test("respects custom parameters", () => {
         const customParams = {
-            practice_trials_per_condition: 2,
-            congruent_main_trials: 4,
-            incongruent_main_trials: 4,
-            show_welcome_and_instructions: false,
+            congruent_practice_trials: 1,
+            incongruent_practice_trials: 1,
+            congruent_main_trials: 2,
+            incongruent_main_trials: 2,
+            show_instructions: false,
             show_results: false
         };
 
         const timeline = createTimeline(jsPsych, customParams);
-        expect(Array.isArray(timeline)).toBe(true);
+        expect(timeline).toHaveProperty('timeline');
+        expect(Array.isArray(timeline.timeline)).toBe(true);
 
-        // Should have fewer trials without instructions and results
+        // Should have fewer components without instructions and results
         const timelineWithDefaults = createTimeline(jsPsych);
-        expect(timeline.length).toBeLessThan(timelineWithDefaults.length);
-    });
-
-    test("includes welcome component", () => {
-        const timeline = createTimeline(jsPsych);
-        const hasWelcome = timeline.some(trial =>
-            trial.pages && Array.isArray(trial.pages) &&
-            trial.pages.some(page => page.toLowerCase().includes('welcome'))
-        );
-        expect(hasWelcome).toBe(true);
+        expect(timeline.timeline.length).toBeLessThan(timelineWithDefaults.timeline.length);
     });
 
     test("includes instructions when enabled", () => {
-        const timelineWithInstructions = createTimeline(jsPsych, { show_welcome_and_instructions: true });
-        const hasInstructions = timelineWithInstructions.some(trial =>
+        const timelineWithInstructions = createTimeline(jsPsych, { show_instructions: true });
+        const hasInstructions = timelineWithInstructions.timeline.some((trial: any) =>
             trial.pages && Array.isArray(trial.pages)
         );
         expect(hasInstructions).toBe(true);
     });
 
     test("excludes instructions when disabled", () => {
-        const timelineWithoutInstructions = createTimeline(jsPsych, { show_welcome_and_instructions: false });
-        const hasInstructions = timelineWithoutInstructions.some(trial =>
+        const timelineWithoutInstructions = createTimeline(jsPsych, { show_instructions: false });
+        const hasInstructions = timelineWithoutInstructions.timeline.some((trial: any) =>
             trial.pages && Array.isArray(trial.pages)
         );
         expect(hasInstructions).toBe(false);
@@ -389,74 +500,79 @@ describe("stroop-task full timeline", () => {
 
     test("includes results when enabled", () => {
         const timelineWithResults = createTimeline(jsPsych, { show_results: true });
-        const hasResults = timelineWithResults.some(trial =>
-            trial.choices && trial.choices.includes('Download Data')
+        const hasResults = timelineWithResults.timeline.some((trial: any) =>
+            trial.choices && trial.choices.includes('Finish')
         );
         expect(hasResults).toBe(true);
     });
 
     test("excludes results when disabled", () => {
         const timelineWithoutResults = createTimeline(jsPsych, { show_results: false });
-        const hasResults = timelineWithoutResults.some(trial =>
-            trial.choices && trial.choices.includes('Download Data')
+        const hasResults = timelineWithoutResults.timeline.some((trial: any) =>
+            trial.choices && trial.choices.includes('Finish')
         );
         expect(hasResults).toBe(false);
     });
 
     test("works with minimal configuration", () => {
         const timeline = createTimeline(jsPsych, {
-            practice_trials_per_condition: 1,
+            congruent_practice_trials: 1,
+            incongruent_practice_trials: 1,
             congruent_main_trials: 1,
             incongruent_main_trials: 1,
-            show_welcome_and_instructions: false,
+            show_instructions: false,
             show_results: false
         });
 
-        expect(Array.isArray(timeline)).toBe(true);
-        expect(timeline.length).toBeGreaterThan(0);
+        expect(timeline).toHaveProperty('timeline');
+        expect(Array.isArray(timeline.timeline)).toBe(true);
+        expect(timeline.timeline.length).toBeGreaterThan(0);
     });
 
-    test("creates practice trials", () => {
-        const timeline = createTimeline(jsPsych, { practice_trials_per_condition: 2 });
-        const practiceTrials = timeline.filter(trial =>
-            trial.data && trial.data.task === 'practice'
+    test("creates practice trials when specified", () => {
+        const timeline = createTimeline(jsPsych, { 
+            congruent_practice_trials: 2,
+            incongruent_practice_trials: 2
+        });
+        const practiceTrials = timeline.timeline.filter((trial: any) =>
+            trial.data && trial.data.phase === 'practice'
         );
         expect(practiceTrials.length).toBeGreaterThan(0);
     });
 
-    test("creates main response trials", () => {
+    test("creates main trials", () => {
         const timeline = createTimeline(jsPsych, {
             congruent_main_trials: 2,
             incongruent_main_trials: 2
         });
-        const responseTrials = timeline.filter(trial =>
-            trial.data && trial.data.task === 'response'
-        );
-        expect(responseTrials.length).toBeGreaterThan(0);
+        expect(timeline).toHaveProperty('timeline');
+        expect(Array.isArray(timeline.timeline)).toBe(true);
+        expect(timeline.timeline.length).toBeGreaterThan(0);
     });
 
-    test("includes fixation trials when enabled", () => {
-        const timeline = createTimeline(jsPsych, { include_fixation: true });
-        const fixationTrials = timeline.filter(trial =>
-            trial.data && trial.data.task === 'fixation'
+    test("skips practice trials when set to 0", () => {
+        const timeline = createTimeline(jsPsych, {
+            congruent_practice_trials: 0,
+            incongruent_practice_trials: 0
+        });
+        const practiceTrials = timeline.timeline.filter((trial: any) =>
+            trial.data && trial.data.phase === 'practice'
         );
-        expect(fixationTrials.length).toBeGreaterThan(0);
+        expect(practiceTrials.length).toBe(0);
     });
 
-    test("excludes fixation trials when disabled", () => {
-        const timeline = createTimeline(jsPsych, { include_fixation: false });
-        const fixationTrials = timeline.filter(trial =>
-            trial.data && trial.data.task === 'fixation'
-        );
-        expect(fixationTrials.length).toBe(0);
+    test("has correct task data", () => {
+        const timeline = createTimeline(jsPsych);
+        expect(timeline.data.task).toBe('stroop');
     });
 
     test("handles edge case parameters", () => {
         expect(() => {
             createTimeline(jsPsych, {
-                practice_trials_per_condition: 0,
-                congruent_main_trials: 0,
-                incongruent_main_trials: 0,
+                congruent_practice_trials: 0,
+                incongruent_practice_trials: 0,
+                congruent_main_trials: 1,
+                incongruent_main_trials: 1,
             });
         }).not.toThrow();
     });

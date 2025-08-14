@@ -154,34 +154,33 @@ function generateStimuli(
 
   // Randomly select the specified number of trials,
   // selecting each stimulus the same number of times if possible
+  let result: StroopStimulus[] = [];
+  const completeCongruentSets = Math.floor(congruent_trials / congruentStimuli.length);
+  result.push(...jsPsych.randomization.repeat(congruentStimuli, completeCongruentSets));
+  const completeIncongruentSets = Math.floor(incongruent_trials / incongruentStimuli.length);
+  result.push(...jsPsych.randomization.repeat(incongruentStimuli, completeIncongruentSets));
 
-  const completeCongruentSets = Math.floor(congruentStimuli.length / congruent_trials);
-  stimuli = stimuli.concat(jsPsych.randomization.repeat(congruentStimuli, completeCongruentSets));
-  const completeIncongruentSets = Math.floor(incongruentStimuli.length / incongruent_trials);
-  stimuli = stimuli.concat(
-    jsPsych.randomization.repeat(incongruentStimuli, completeIncongruentSets)
-  );
 
-  if (congruentStimuli.length % congruent_trials !== 0) {
+  if (congruent_trials % congruentStimuli.length !== 0) {
     const remainingCongruent = jsPsych.randomization.sampleWithoutReplacement(
       congruentStimuli,
-      congruentStimuli.length % congruent_trials
+      congruent_trials % congruentStimuli.length
     );
-    stimuli = stimuli.concat(remainingCongruent);
+    result.push(...remainingCongruent);
   }
 
-  if (incongruentStimuli.length % incongruent_trials !== 0) {
+  if (incongruent_trials % incongruentStimuli.length !== 0) {
     const remainingIncongruent = jsPsych.randomization.sampleWithoutReplacement(
       incongruentStimuli,
-      incongruentStimuli.length % incongruent_trials
+      incongruent_trials % incongruentStimuli.length
     );
-    stimuli = stimuli.concat(remainingIncongruent);
+    result.push(...remainingIncongruent);
   }
 
   // Shuffle the final stimuli array
-  stimuli = jsPsych.randomization.shuffle(stimuli);
+  result = jsPsych.randomization.shuffle(result);
 
-  return stimuli;
+  return result;
 }
 
 /**
