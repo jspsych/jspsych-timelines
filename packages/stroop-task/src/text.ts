@@ -56,5 +56,16 @@ export const defaultText = {
                 </ul>
             </div>
         `,
-    start_button: "Start"
+    start_button: "Start",
+    results: `
+                <div style="text-align: center; max-width: 600px; margin: 0 auto;">
+                    <h2>Experiment Complete!</h2>
+                    <div style="text-align: left; background-color: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                        <p><strong>Congruent trials:</strong> %congruentAccuracy%% correct, %congruentRt%ms average</p>
+                        <p><strong>Incongruent trials:</strong> %incongruentAccuracy%% correct, %incongruentRt%ms average</p>
+                        <p><strong>Stroop Effect:</strong> %stroopEffect%ms</p>
+                    </div>
+                    <p>Thank you for participating!</p>
+                </div>
+            `
 };

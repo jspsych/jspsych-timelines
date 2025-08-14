@@ -256,7 +256,7 @@ function createPracticeDebrief(practiceDebriefText:string, continueBtnText:strin
   return debrief;
 }
 
-function createResults(jsPsych: JsPsych) {
+function createResults(jsPsych: JsPsych, text:string) {
   const results = {
     type: jsPsychHtmlButtonResponse,
     choices: ["Finish"],
@@ -291,17 +291,13 @@ function createResults(jsPsych: JsPsych) {
 
       const stroopEffect = incongruentRt - congruentRt;
 
-      return `
-                <div style="text-align: center; max-width: 600px; margin: 0 auto;">
-                    <h2>Experiment Complete!</h2>
-                    <div style="text-align: left; background-color: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0;">
-                        <p><strong>Congruent trials:</strong> ${congruentAccuracy}% correct, ${congruentRt}ms average</p>
-                        <p><strong>Incongruent trials:</strong> ${incongruentAccuracy}% correct, ${incongruentRt}ms average</p>
-                        <p><strong>Stroop Effect:</strong> ${stroopEffect}ms</p>
-                    </div>
-                    <p>Thank you for participating!</p>
-                </div>
-            `;
+      const resultsText = text.replace("%congruentAccuracy%", congruentAccuracy.toString())
+        .replace("%congruentRt%", congruentRt.toString())
+        .replace("%incongruentAccuracy%", incongruentAccuracy.toString())
+        .replace("%incongruentRt%", incongruentRt.toString())
+        .replace("%stroopEffect%", stroopEffect.toString());
+
+      return resultsText;
     },
     data: {
       page: "results",
@@ -385,7 +381,7 @@ export function createTimeline(
 
   // Add results if requested
   if (show_results) {
-    timeline.push(createResults(jsPsych));
+    timeline.push(createResults(jsPsych, text.results));
   }
 
   const stroop = {
