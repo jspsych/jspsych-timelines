@@ -132,10 +132,10 @@ const nogoHtml = createStimulusHTML('STOP', false);
 | `isi_timeout` | number | `500` | Inter-stimulus interval (ms) |
 | `probability` | number | `0.75` | Probability of GO trials (0-1) |
 | **Stimulus Configuration** |
-| `go_stimulus` | string | `'Y'` | Single GO stimulus |
-| `nogo_stimulus` | string | `'X'` | Single NO-GO stimulus |
-| `go_stimuli` | string[] | - | Array of GO stimuli (rotates through) |
-| `nogo_stimuli` | string[] | - | Array of NO-GO stimuli (rotates through) |
+| `go_stimulus` | HTML_STRING | `'Y'` | Single GO stimulus |
+| `nogo_stimulus` | HTML_STRING | `'X'` | Single NO-GO stimulus |
+| `go_stimuli` | HTML_STRING[] | - | Array of GO stimuli (rotates through) |
+| `nogo_stimuli` | HTML_STRING[] | - | Array of NO-GO stimuli (rotates through) |
 | `button_text` | string | `'Click'` | Response button label |
 | `go_practice_timeout` | number | `10000` | GO practice timeout (ms) |
 | `nogo_practice_timeout` | number | `3000` | NO-GO practice timeout (ms) |
@@ -158,8 +158,8 @@ const config = {
 **HTML Stimuli:**
 ```javascript
 const config = {
-  go_stimulus: '<div style="color: green; font-size: 48px;">→</div>',
-  nogo_stimulus: '<div style="color: red; font-size: 48px;">✋</div>'
+  go_stimulus: '<span style="color: green; font-size: 48px;">→</span>',
+  nogo_stimulus: '<span style="color: red; font-size: 48px;">✋</span>'
 };
 ```
 
@@ -174,7 +174,7 @@ const config = {
 **Multiple Stimuli (Sequential Cycling):**
 ```javascript
 const config = {
-  go_stimuli: ['GO', 'PRESS', '→'],      // Cycles: GO, PRESS, →, GO, PRESS, →...
+  go_stimuli: ['<h1>GO</h1>', '<h2>PRESS</h2>', '<strong>→</strong>'],      // Cycles: GO, PRESS, →, GO, PRESS, →...
   nogo_stimuli: ['STOP', 'NO-GO', '✋']  // Cycles: STOP, NO-GO, ✋, STOP, NO-GO, ✋...
 };
 ```
@@ -194,10 +194,6 @@ const config = {
 | `block_number` | number | Block number (1-indexed) |
 | `page` | string | `'go'`, `'nogo'`, `'isi'`, etc. |
 
-### Correct Response Logic
-
-- **GO trials**: Correct if `response === 0` (button pressed)
-- **NO-GO trials**: Correct if `response === null` (no button press)
 
 ### Data Filtering Examples
 
@@ -244,8 +240,8 @@ jsPsych.run(timeline);
 ### Custom Stimuli and Timing
 ```javascript
 const config = {
-  go_stimulus: '<div style="color: green; font-size: 60px;">✓</div>',
-  nogo_stimulus: '<div style="color: red; font-size: 60px;">✗</div>',
+  go_stimulus: '<span style="color: green; font-size: 60px;">✓</span>',
+  nogo_stimulus: '<span style="color: red; font-size: 60px;">✗</span>',
   trial_timeout: 1000,
   isi_timeout: 300,
   button_text: 'PRESS'

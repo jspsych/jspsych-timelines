@@ -307,18 +307,24 @@ const createGoNoGo = (jsPsych: JsPsych, button_text: string, trial_timeout: numb
  * @param isi_timeout Duration (ms) to show the fixation.
  * @returns A non-responsive jsPsych trial showing a fixation cross.
  */
-const createISIFixation = (isi_timeout: number) => {
+const createISIFixation = (isi_timeout: number, button_text: string) => {
   return {
-    type: jsPsychHtmlKeyboardResponse,
+    // Use button plugin so we can provide button_html
+    type: jsPsychHtmlButtonResponse,
     stimulus: '<div class="fixation" style="font-size:60px;">+</div>',
-    choices: [],
+    choices: [button_text],
     trial_duration: isi_timeout,
     response_ends_trial: false,
     data: {
-      task: 'go-nogo', // unified task label
+      task: 'go-nogo',
       phase: 'main',
       page: 'isi'
     },
+    // Hidden and disabled button to keep layout consistent but non-interactive
+    button_html: (choice) =>
+      `<button id="isi-btn" class="continue-btn timeline-html-btn jspsych-btn is-disabled"
+               style="visibility: hidden; pointer-events: none;"
+               disabled aria-disabled="true" tabindex="-1">${choice}</button>`,
   }
 }
 
@@ -509,7 +515,7 @@ export function createTimeline(
   const actualNoGoStimuli = nogo_stimuli?.length ? nogo_stimuli : [nogo_stimulus]
   
   const goNoGoTrial = createGoNoGo(jsPsych, button_text, trial_timeout)
-  const isi_timeoutTrial = createISIFixation(isi_timeout)
+  const isi_timeoutTrial = createISIFixation(isi_timeout, button_text)
 
   // Generate blocks
   const blocks = []
