@@ -87,7 +87,7 @@ export function createInstructions(instructions: string[] = instruction_pages, t
  */
 const createStimulusHTML = (html: string, isGoTrial: boolean): string => {
   const id = isGoTrial ? 'go-stimulus' : 'nogo-stimulus'
-  return `<div id="${id}-container" class="go-nogo-container timeline-trial">${html}</div>`
+  return `<div id="${id}-container" class="go-nogo-container timeline-trial" style="font-size: 3em; margin: 1em 0;">${html}</div>`
 }
 
 /**
@@ -311,7 +311,7 @@ const createISIFixation = (isi_timeout: number, button_text: string) => {
   return {
     // Use button plugin so we can provide button_html
     type: jsPsychHtmlButtonResponse,
-    stimulus: '<div class="fixation" style="font-size:60px;">+</div>',
+    stimulus: '<div class="fixation" style="font-size: 3em; margin: 1em 0;">+</div>',
     choices: [button_text],
     trial_duration: isi_timeout,
     response_ends_trial: false,
@@ -320,11 +320,10 @@ const createISIFixation = (isi_timeout: number, button_text: string) => {
       phase: 'main',
       page: 'isi'
     },
-    // Hidden and disabled button to keep layout consistent but non-interactive
+    // Hidden and disabled button to keep layout consistent with createGoNoGo but non-interactive
     button_html: (choice) =>
       `<button id="isi-btn" class="continue-btn timeline-html-btn jspsych-btn is-disabled"
-               style="visibility: hidden; pointer-events: none;"
-               disabled aria-disabled="true" tabindex="-1">${choice}</button>`,
+               style="visibility: hidden;" disabled>${choice}</button>`,
   }
 }
 
