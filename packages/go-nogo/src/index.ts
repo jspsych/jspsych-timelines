@@ -87,7 +87,7 @@ export function createInstructions(instructions: string[] = instruction_pages, t
  */
 const createStimulusHTML = (html: string, isGoTrial: boolean): string => {
   const id = isGoTrial ? 'go-stimulus' : 'nogo-stimulus'
-  return `<div id="${id}-container" class="go-nogo-container timeline-trial" style="font-size: 3em; margin: 1em 0;">${html}</div>`
+  return `<div id="${id}-container" class="go-nogo-container timeline-trial" style="font-size: 3em;">${html}</div>`
 }
 
 /**
@@ -311,7 +311,7 @@ const createISIFixation = (isi_timeout: number, button_text: string) => {
   return {
     // Use button plugin so we can provide button_html
     type: jsPsychHtmlButtonResponse,
-    stimulus: '<div class="fixation" style="font-size: 3em; margin: 1em 0;">+</div>',
+    stimulus: '<div class="fixation" style="font-size: 3em;">+</div>',
     choices: [button_text],
     trial_duration: isi_timeout,
     response_ends_trial: false,

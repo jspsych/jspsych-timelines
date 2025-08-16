@@ -71,9 +71,9 @@ export const trial_text = {
   goColor: 'green',
   noGoColor: 'red',
 
-  //button labels
-  back_button: 'Back',
-  next_button: 'Next',
+  //button labels, empty strings give us just arrows per jsPsychInstructions
+  back_button: '',
+  next_button: '',
   
   // Trial types (used in data)
   trialTypes: {

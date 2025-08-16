@@ -7,11 +7,10 @@
   <title>jsPsychTimelineGoNogoTimeline Example</title>
   <script src="https://unpkg.com/jspsych"></script>
   <script src="../dist/index.global.js"></script>
-  
-  <!-- Load the published timeline package here, e.g.
-<script src="https://unpkg.com/@jspsych-timelines/go-nogo"></script>
-<script src="../dist/index.global.js"></script> -->
+  <!-- Can also load the published timeline package here instead of locally, e.g. -->
+  <!-- <script src="https://unpkg.com/@jspsych-timelines/go-nogo"></script> -->
   <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css">
+  <!-- optional CSS: -->
   <!-- <link rel="stylesheet" href="../src/styles.css"> -->
 </head>
 
@@ -22,7 +21,7 @@
   });
 
     const config = {
-      // general
+      /* general */
       show_instructions: false,
       show_practice: false,
       num_blocks: 3,
@@ -31,13 +30,13 @@
       isi_timeout: 500,
       probability: 0.75,
       show_debrief: false,
-      // stimuli
+      /* trial-specific */
       go_stimulus: "<h1>Y</h1>",
-      nogo_stimuli: ["<h1>X</h1>","NO-GO"],
+      // nogo_stimulus: "<h1>N</h1>",
       // go_stimuli,
-      // nogo_stimuli,
+      nogo_stimuli: ["<h1>X</h1>","NO-GO"],
       button_text: "Continue",
-      // texts
+      /* texts */
       // instructions_array: instructions = instruction_pages,
       // text_object: texts = trial_text,
     };
