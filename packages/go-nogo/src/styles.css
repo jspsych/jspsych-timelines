@@ -106,10 +106,8 @@ p { /* From: spatial-nback-styles.css */
 }
 
 /* go-nogo feedback container to not go under button */
-#feedback-container {
-    position: relative;
-    margin: 2vh 0;
-    top: -3vh;
+.go-nogo-feedback {
+    margin: 2vh 0 5vh 0;
 }
 
 .jspsych-btn:hover { /* From: columbia-card-styles.css */
