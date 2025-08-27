@@ -24,7 +24,7 @@ h2 {
 
 p { /* From: spatial-nback-styles.css */
     margin: 5vmin 0;
-    font-size: clamp(15px, 5vmin, 60px);
+    font-size: clamp(15px, 5vmin, 120px);
     line-height: 1.5;    
     word-wrap: break-word;
     overflow-wrap: break-word;
@@ -49,7 +49,7 @@ p { /* From: spatial-nback-styles.css */
 
 /* bigger font */
 .timeline-instructions p {
-    font-size: clamp(15px, 7vmin, 40px);
+    font-size: clamp(15px, 7vmin, 100px);
 }
 
 /* Main trial container - stimulus display area */
