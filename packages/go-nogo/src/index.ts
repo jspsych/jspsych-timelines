@@ -198,7 +198,7 @@ const createNoGoPractice = (nogo_stimulus: string, texts = trial_text, timeout: 
     stimulus: `
       <p>${texts.noGoPageContent}</p>
       ${nogo_html}
-      <div class="go-nogo-feedback" style="visibility: hidden;">${texts.NoGoSuccess}</div>
+      <div class="go-nogo-feedback" style="visibility: hidden;">${texts.noGoSuccess}</div>
     `,
     choices: [texts.defaultButtonText],
     trial_duration: timeout,
@@ -223,7 +223,7 @@ const createNoGoPractice = (nogo_stimulus: string, texts = trial_text, timeout: 
     stimulus: `
       <p>${texts.noGoPageContent}</p>
       ${nogo_html}
-      <div class="go-nogo-feedback" style="color: #28a745;">${texts.NoGoSuccess}</div>
+      <div class="go-nogo-feedback" style="color: #28a745;">${texts.noGoSuccess}</div>
     `,
     choices: [texts.defaultButtonText],
     trial_duration: 2000,
@@ -238,7 +238,7 @@ const createNoGoPractice = (nogo_stimulus: string, texts = trial_text, timeout: 
     stimulus: `
       <p>${texts.noGoPageContent}</p>
       ${nogo_html}
-      <div class="go-nogo-feedback" style="color: #dc3545;">${texts.NoGoFailure}</div>
+      <div class="go-nogo-feedback" style="color: #dc3545;">${texts.noGoFailure}</div>
     `,
     choices: [texts.defaultButtonText],
     trial_duration: 2000,

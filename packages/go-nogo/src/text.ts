@@ -31,8 +31,8 @@ export const trial_text = {
   `<b>NO-GO Trials</b><br>
   When you see this stimulus, do NOT click the button!<br>
   Try waiting without clicking the button below:`,
-  NoGoSuccess: 'Excellent! You correctly did NOT click for the NO-GO stimulus.',
-  NoGoFailure: 'Remember, you should NOT click for the NO-GO stimulus!',
+  noGoSuccess: 'Excellent! You correctly did NOT click for the NO-GO stimulus.',
+  noGoFailure: 'Remember, you should NOT click for the NO-GO stimulus!',
   
   // Practice completion page
   practiceCompleteContent:
