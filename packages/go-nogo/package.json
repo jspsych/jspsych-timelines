@@ -7,7 +7,7 @@
     "types": "dist/index.d.ts",
     "unpkg": "dist/index.browser.min.js",
     "scripts": {
-        "build": "tsup src/index.ts --format esm,iife --sourcemap --dts --treeshake --clean --global-name jsPsychTimelineGoNogoTimeline"
+        "build": "tsup src/index.ts --format esm,iife --sourcemap --dts --treeshake --clean --global-name jsPsychTimelineGoNoGo"
     },
     "repository": {
         "type": "git",
@@ -40,7 +40,6 @@
     },
     "dependencies": {
         "@jspsych/plugin-html-button-response": "^2.1.0",
-        "@jspsych/plugin-html-keyboard-response": "^2.1.0",
         "@jspsych/plugin-instructions": "^2.1.0"
     }
 }

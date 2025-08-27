@@ -62,7 +62,7 @@ npm install @jspsych-timelines/go-nogo
     num_trials: 30
   };
 
-  const timeline = jsPsychTimelineGoNogoTimeline.createTimeline(jsPsych, config);
+  const timeline = jsPsychTimelineGoNoGo.createTimeline(jsPsych, config);
   jsPsych.run(timeline);
 </script>
 </html>
@@ -95,7 +95,7 @@ Creates standalone instruction pages.
 Access individual components:
 
 ```javascript
-const { createPractice, createDebrief } = jsPsychTimelineGoNogoTimeline.timelineUnits;
+const { createPractice, createDebrief } = jsPsychTimelineGoNoGo.timelineUnits;
 
 // Custom practice trials
 const practice = createPractice({ go_practice_timeout: 15000 });
@@ -109,7 +109,7 @@ const debrief = createDebrief(jsPsych);
 Utility functions:
 
 ```javascript
-const { createStimulusHTML } = jsPsychTimelineGoNogoTimeline.utils;
+const { createStimulusHTML } = jsPsychTimelineGoNoGo.utils;
 
 // Format stimulus HTML
 const goHtml = createStimulusHTML('GO', true);
@@ -132,8 +132,8 @@ const nogoHtml = createStimulusHTML('STOP', false);
 | `isi_timeout` | number | `500` | Inter-stimulus interval (ms) |
 | `probability` | number | `0.75` | Probability of GO trials (0-1) |
 | **Stimulus Configuration** |
-| `go_stimulus` | HTML_STRING | `'Y'` | Single GO stimulus |
-| `nogo_stimulus` | HTML_STRING | `'X'` | Single NO-GO stimulus |
+| `go_stimulus` | HTML_STRING | `'<h2>Y</h2>'` | Single GO stimulus |
+| `nogo_stimulus` | HTML_STRING | `'<h2>X</h2>'` | Single NO-GO stimulus |
 | `go_stimuli` | HTML_STRING[] | - | Array of GO stimuli (rotates through) |
 | `nogo_stimuli` | HTML_STRING[] | - | Array of NO-GO stimuli (rotates through) |
 | `button_text` | string | `'Click'` | Response button label |
@@ -218,7 +218,7 @@ const omissionErrors = mainTrials.filter({ is_go_trial: true, response: null }).
 ### Minimal Setup
 ```javascript
 const jsPsych = initJsPsych();
-const timeline = jsPsychTimelineGoNogoTimeline.createTimeline(jsPsych);
+const timeline = jsPsychTimelineGoNoGo.createTimeline(jsPsych);
 jsPsych.run(timeline);
 ```
 
@@ -233,7 +233,7 @@ const config = {
   probability: 0.8
 };
 
-const timeline = jsPsychTimelineGoNogoTimeline.createTimeline(jsPsych, config);
+const timeline = jsPsychTimelineGoNoGo.createTimeline(jsPsych, config);
 jsPsych.run(timeline);
 ```
 
@@ -247,19 +247,19 @@ const config = {
   button_text: 'PRESS'
 };
 
-const timeline = jsPsychTimelineGoNogoTimeline.createTimeline(jsPsych, config);
+const timeline = jsPsychTimelineGoNoGo.createTimeline(jsPsych, config);
 jsPsych.run(timeline);
 ```
 
 ### Modular Timeline Construction
 ```javascript
-const instructions = jsPsychTimelineGoNogoTimeline.createInstructions();
-const practice = jsPsychTimelineGoNogoTimeline.timelineUnits.createPractice({
+const instructions = jsPsychTimelineGoNoGo.createInstructions();
+const practice = jsPsychTimelineGoNoGo.timelineUnits.createPractice({
   go_practice_timeout: 15000,
   nogo_practice_timeout: 5000
 });
 
-const mainTask = jsPsychTimelineGoNogoTimeline.createTimeline(jsPsych, {
+const mainTask = jsPsychTimelineGoNoGo.createTimeline(jsPsych, {
   show_instructions: false,  // Already included above
   show_practice: false,      // Already included above
   show_debrief: true

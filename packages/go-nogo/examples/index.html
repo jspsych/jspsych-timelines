@@ -4,13 +4,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>jsPsychTimelineGoNogoTimeline Example</title>
+  <title>jsPsych Go-NoGo Task</title>
   <script src="https://unpkg.com/jspsych"></script>
   <script src="../dist/index.global.js"></script>
   <!-- Can also load the published timeline package here instead of locally, e.g. -->
   <!-- <script src="https://unpkg.com/@jspsych-timelines/go-nogo"></script> -->
   <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css">
-  <!-- optional CSS: -->
+  <!-- optional mobile-compatible CSS file: -->
   <!-- <link rel="stylesheet" href="../src/styles.css"> -->
 </head>
 
@@ -30,11 +30,13 @@
       isi_timeout: 500,
       probability: 0.75,
       show_debrief: false,
-      /* trial-specific */
-      go_stimulus: "<h1>Y</h1>",
+      /* trial-specific, can be overridden by text.ts properties */
+      // go_stimulus: "<h1>Y</h1>",
       // nogo_stimulus: "<h1>N</h1>",
       // go_stimuli,
-      nogo_stimuli: ["<h1>X</h1>","NO-GO"],
+      // nogo_stimuli: ["<h1>X</h1>","NO-GO"],
+      // go_practice_timeout: 10000,
+      // nogo_practice_timeout: 3000,
       button_text: "Continue",
       /* texts */
       // instructions_array: instructions = instruction_pages,
@@ -42,11 +44,11 @@
     };
 
   // Can separate timeline units like this:
-  const instructions = jsPsychTimelineGoNogoTimeline.createInstructions();
-  const practice = jsPsychTimelineGoNogoTimeline.timelineUnits.createPractice(config);
-  const task = jsPsychTimelineGoNogoTimeline.createTimeline(jsPsych, config);
+  const instructions = jsPsychTimelineGoNoGo.createInstructions();
+  const practice = jsPsychTimelineGoNoGo.timelineUnits.createPractice(config);
+  const task = jsPsychTimelineGoNoGo.createTimeline(jsPsych, config);
 
-jsPsych.run([instructions, ...practice, task]);
+jsPsych.run([instructions, practice, task]);
 </script>
 
 </html>

@@ -21,9 +21,9 @@ npm install @jspsych-timelines/go-nogo
 const jsPsych = initJsPsych();
 
 // Complete timeline with instructions and practice
-const instructions = jsPsychTimelineGoNogoTimeline.createInstructions();
-const practice = jsPsychTimelineGoNogoTimeline.timelineUnits.createPractice();
-const task = jsPsychTimelineGoNogoTimeline.createTimeline(jsPsych, {
+const instructions = jsPsychTimelineGoNoGo.createInstructions();
+const practice = jsPsychTimelineGoNoGo.timelineUnits.createPractice();
+const task = jsPsychTimelineGoNoGo.createTimeline(jsPsych, {
   num_blocks: 2,
   num_trials: 30,
   show_debrief: true
@@ -82,8 +82,8 @@ Utility functions:
 | `trial_timeout` | number | `500` | Max response time (ms) |
 | `isi_timeout` | number | `500` | Inter-stimulus interval (ms) |
 | `probability` | number | `0.75` | Probability of GO trials (0-1) |
-| `go_stimulus` | string | `'Y'` | Single GO stimulus |
-| `nogo_stimulus` | string | `'X'` | Single NO-GO stimulus |
+| `go_stimulus` | string | `'<h2>Y</h2>'` | Single GO stimulus |
+| `nogo_stimulus` | string | `'<h2>X</h2>'` | Single NO-GO stimulus |
 | `go_stimuli` | string[] | - | Array of GO stimuli (overrides go_stimulus) |
 | `nogo_stimuli` | string[] | - | Array of NO-GO stimuli (overrides nogo_stimulus) |
 | `button_text` | string | `'Click'` | Response button label |
