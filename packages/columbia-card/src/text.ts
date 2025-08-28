@@ -28,23 +28,23 @@ export const trial_text = {
     
     /* BLOCK BREAK PAGES */
     blockBreakContent: (blockNum: number, totalBlocks: number, blockPoints?: number, totalPoints?: number, showSummary: boolean = true) => 
-        `<p><b>Round ${blockNum} Complete!</b><br>
+        `<b>Round ${blockNum} Complete!</b><br>
         You have completed round ${blockNum} of ${totalBlocks}.<br>
-        Take a short break if needed.</p>` +
-        (showSummary ? `
-            <p><b>Points This Round:</b> ${blockPoints}</p>
-            <p><b>Total Points So Far:</b> ${totalPoints}</p>
+        Take a short break if needed.` +
+        (showSummary ? `<br>
+            <b>Points This Round:</b> ${blockPoints}
+            <b>Total Points So Far:</b> ${totalPoints}
             ` : ''),
     continueButton: "Continue",
 
     /* DEBRIEF PAGE */
     debriefContent: (totalScore: number, totalCards: number, avgPointsPerCard: number, riskScore: string) => 
-        `<p>Final Score: ${totalScore}</p>
-        <p>Total Cards Flipped: ${totalCards}</p>
-        <p>Average Points Per Card: ${avgPointsPerCard}</p>
-        <p>Risk-Taking Score:</p>
-        <p>${riskScore}</p>
-        <p>Thank you for completing the Columbia Card Task!</p>`,
+        `Final Score: ${totalScore}<br>
+        Total Cards Flipped: ${totalCards}<br>
+        Average Points Per Card: ${avgPointsPerCard}<br>
+        Risk-Taking Score:<br>
+        ${riskScore}<br>
+        Thank you for completing the Columbia Card Task!`,
     finishButton: "Finish",
 
     riskConservative: "You played conservatively, flipping fewer cards to minimize risk.",

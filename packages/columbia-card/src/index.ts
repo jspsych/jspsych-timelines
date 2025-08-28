@@ -196,7 +196,7 @@ const createBlockBreak = (jsPsych: JsPsych, blockNum: number, num_blocks: number
     type: jsPsychHtmlButtonResponse,
     stimulus: () => {
       const { blockPoints, totalPoints } = calculateBlockStats()
-      return texts.blockBreakContent(blockNum, num_blocks, blockPoints, totalPoints, showBlockSummary)
+      return `<p>${texts.blockBreakContent(blockNum, num_blocks, blockPoints, totalPoints, showBlockSummary)}</p>`
     },
     choices: [texts.continueButton],
     data: { 
@@ -454,7 +454,7 @@ function createDebrief(jsPsych: JsPsych, texts = trial_text) {
       }
       
       return `<div class="columbia-card-debrief">
-          ${blockTable + texts.debriefContent(totalScore, totalCards, avgPointsPerCard, riskScore)}
+          ${blockTable + `<p>${texts.debriefContent(totalScore, totalCards, avgPointsPerCard, riskScore)}</p>`}
         </div>`
     },
     choices: [texts.finishButton],
