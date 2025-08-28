@@ -3,11 +3,14 @@
 
 <head>
   <title>Columbia Card Task Timeline Example</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://unpkg.com/jspsych"></script>
   <script src="../dist/index.global.js"></script>
   <!-- Once this timeline package is published, it can be loaded via
 <script src="https://unpkg.com/@jspsych-timelines/columbia-card"></script> -->
   <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css">
+  <!-- Optional CSS styling -->
+   <!-- <link rel="stylesheet" href="../src/styles.css"> -->
 </head>
 
 <body></body>
@@ -19,15 +22,15 @@
     // General configuration
     show_instructions: true,
     show_practice: true,
-    num_blocks: 3,
-    num_trials: 5,
+    num_blocks: 2,
+    num_trials: 2,
     show_debrief: true,
     show_block_summary: true,
     
     // Columbia Card Task specific configuration
     num_cards: 32,
     num_loss_cards: 3,
-    // grid_columns: 8,
+    grid_columns: 4,
     // card_width: 60,
     // card_height: 80,
     // flip_duration: 300,

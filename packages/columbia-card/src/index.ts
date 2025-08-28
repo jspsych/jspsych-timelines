@@ -2,7 +2,7 @@ import { JsPsych } from "jspsych"
 import jsPsychColumbiaCardTask from "@jspsych-contrib/plugin-columbia-card-task";
 import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
 import jsPsychInstructions from "@jspsych/plugin-instructions";
-import { trial_text, instruction_pages } from "./text";
+import { trial_text } from "./text";
 
 /**
  * Configuration options for the Columbia Card Task timeline and helpers.
@@ -39,7 +39,7 @@ import { trial_text, instruction_pages } from "./text";
  * @property {number}  [practice_loss_value=-50] Points lost per card in practice.
  *
  * Texts
- * @property {string[]}            [instructions_array=instruction_pages] Pages for the instructions screen.
+ * @property {string[]}            [instructions_array] Pages for the instructions screen.
  * @property {typeof trial_text}   [text_object=trial_text] Text/config object with UI strings.
  */
 interface ColumbiaCardConfig {
@@ -82,23 +82,21 @@ interface ColumbiaCardConfig {
 /**
  * Creates a set of instructions for the Columbia Card Task.
  * 
- * @param {string[]} instructions - Array of instruction pages to display.
+ * @param {string[]} instructions - Optional array of instruction pages to display. If not provided, uses texts.instructions_pages.
  * @param {object} texts - Text configuration object containing messages and labels.
  * @returns {object} jsPsychInstructions trial object.
  */
-export function createInstructions(instructions: string[] = instruction_pages, texts = trial_text) {
-  if (instructions.length === 0) {
-    instructions = instruction_pages;
-  }
+export function createInstructions(instructions: string[], texts?: typeof trial_text) {
+  const pages = instructions || texts?.instructions_pages || ["instructions_array undefined."];
   return {
     type: jsPsychInstructions,
-    pages: instructions.map(page => `<div class="timeline-instructions"><p>${page}</p></div>`),
+    pages: pages.map(page => `<div class="timeline-instructions"><p>${page}</p></div>`),
     show_clickable_nav: true,
     allow_keys: true,
     key_forward: 'ArrowRight',
     key_backward: 'ArrowLeft',
-    button_label_previous: texts?.back_button ?? texts.back_button,
-    button_label_next: texts?.next_button ?? texts.next_button,
+    button_label_previous: texts?.back_button || "",
+    button_label_next: texts?.next_button || "",
     data: { task: 'columbia-card', phase: 'instructions' }
   };
 }
@@ -198,19 +196,7 @@ const createBlockBreak = (jsPsych: JsPsych, blockNum: number, num_blocks: number
     type: jsPsychHtmlButtonResponse,
     stimulus: () => {
       const { blockPoints, totalPoints } = calculateBlockStats()
-      
-      let content = `<p>${texts.blockBreakContent(blockNum, num_blocks)}</p>`
-      
-      if (showBlockSummary) {
-        content += `
-          <div style="margin: 20px 0; padding: 15px; background-color: #f8f9fa; border-radius: 5px;">
-            <p><strong>${texts.blockPointsLabel}</strong> ${blockPoints}</p>
-            <p><strong>${texts.totalPointsLabel}</strong> ${totalPoints}</p>
-          </div>
-        `
-      }
-      
-      return content
+      return texts.blockBreakContent(blockNum, num_blocks, blockPoints, totalPoints, showBlockSummary)
     },
     choices: [texts.continueButton],
     data: { 
@@ -275,7 +261,7 @@ export function createTimeline(
     practice_gain_value = 5,
     practice_loss_value = -50,
     // texts
-    instructions_array: instructions = instruction_pages,
+    instructions_array: instructions,
     text_object: texts = trial_text,
   } : ColumbiaCardConfig = {})
 {
@@ -423,11 +409,11 @@ function createDebrief(jsPsych: JsPsych, texts = trial_text) {
     
     let riskScore = ''
     if (riskPercentage < 30) {
-      riskScore = texts.riskAssessmentConservative
+      riskScore = texts.riskConservative
     } else if (riskPercentage < 60) {
-      riskScore = texts.riskAssessmentModerate
+      riskScore = texts.riskModerate
     } else {
-      riskScore = texts.riskAssessmentAggressive
+      riskScore = texts.riskAggressive
     }
     
     return { totalScore, totalCards, avgPointsPerCard, riskScore, blockBreakdown }
@@ -439,17 +425,17 @@ function createDebrief(jsPsych: JsPsych, texts = trial_text) {
       const { totalScore, totalCards, avgPointsPerCard, riskScore, blockBreakdown } = calculateStats()
       
       let blockTable = ''
-      if (blockBreakdown.length > 1) {
+      if (blockBreakdown.length > 1 && texts.blockBreakdownTitle) {
         blockTable = `
-          <div style="margin: 20px 0;">
-            <h3>Round-by-Round Breakdown:</h3>
-            <table style="border-collapse: collapse; margin: 0 auto; text-align: center;">
+          <div id="block-breakdown" style="margin: 20px 0;">
+            <h4>${texts.blockBreakdownTitle}</h4>
+            <table id="breakdown-table" style="border-collapse: collapse; margin: 0 auto; text-align: center;">
               <thead>
                 <tr style="background-color: #f8f9fa;">
-                  <th style="border: 1px solid #dee2e6; padding: 8px;">Round</th>
-                  <th style="border: 1px solid #dee2e6; padding: 8px;">Points</th>
-                  <th style="border: 1px solid #dee2e6; padding: 8px;">Cards</th>
-                  <th style="border: 1px solid #dee2e6; padding: 8px;">Avg/Card</th>
+                  <th style="border: 1px solid #dee2e6; padding: 8px;">${texts.round}</th>
+                  <th style="border: 1px solid #dee2e6; padding: 8px;">${texts.points}</th>
+                  <th style="border: 1px solid #dee2e6; padding: 8px;">${texts.cards}</th>
+                  <th style="border: 1px solid #dee2e6; padding: 8px;">${texts.avgPerCard}</th>
                 </tr>
               </thead>
               <tbody>
@@ -467,18 +453,9 @@ function createDebrief(jsPsych: JsPsych, texts = trial_text) {
         `
       }
       
-      return `
-        <div class="columbia-card-debrief">
-          <h2>${texts.taskComplete}</h2>
-          <p><strong>${texts.finalScoreLabel}</strong> ${totalScore}</p>
-          <p><strong>${texts.totalCardsFlippedLabel}</strong> ${totalCards}</p>
-          <p><strong>${texts.averagePointsPerCardLabel}</strong> ${avgPointsPerCard}</p>
-          ${blockTable}
-          <p><strong>${texts.riskTakingScoreLabel}</strong></p>
-          <p style="font-style: italic;">${riskScore}</p>
-          <p>${texts.thanksMessage}</p>
-        </div>
-      `
+      return `<div class="columbia-card-debrief">
+          ${blockTable + texts.debriefContent(totalScore, totalCards, avgPointsPerCard, riskScore)}
+        </div>`
     },
     choices: [texts.finishButton],
     data: { task: 'columbia-card', phase: 'debrief' },
