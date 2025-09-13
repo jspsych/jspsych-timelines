@@ -1,37 +1,30 @@
 // constant shapes to use across the task
-const square = `
+export const square = `
   <div role="img" aria-label="Go square"
     style="height:25vh;aspect-ratio:1;background:#000;margin:auto;"></div>`;
-const circle = `
+export const circle = `
   <div role="img" aria-label="No-Go circle"
     style="height:25vh;aspect-ratio:1;background:#000;border-radius:50%;margin:auto;"></div>`;
-
-
-/**
- * Instruction pages array for the Go/No-Go task. Every string is a new page.
- */
-export const instruction_pages = [
-    "In this task, you will see symbols appear one at a time on the screen.",
-    "When you see a square, click the button as quickly as possible." + square,
-    "But if you see the circle, do nothing — don’t press anything." + circle,
-    "Try to be fast, but also careful. Only press when it’s a square.",
-    "Continue when ready to start the practice.",
-]
 
 /**
  * Object with text properties used in the Go/No-Go task.
  */
 export const trial_text = {
+  // Instruction pages
+  instructions_pages: [
+    "In this task, you will see symbols appear one at a time on the screen.",
+    "When you see a square, click the button as quickly as possible." + square,
+    "But if you see the circle, do nothing — don't press anything." + circle,
+    "Try to be fast, but also careful. Only press when it's a square.",
+    "Continue when ready to start the practice.",
+  ],
+
   // Default stimuli
-  // defaultGoStimulus: 'Y',
-  // defaultNoGoStimulus: 'X',
-  defaultGoStimulus: square,
-  defaultNoGoStimulus: circle,
-  defaultButtonText: 'Click',
+  buttonText: 'Click',
 
   //instructions button labels, empty strings give us just arrows per jsPsychInstructions
-  back_button: '',
-  next_button: '',
+  backButton: '',
+  nextButton: '',
 
   // Page 1: GO Practice
   goPageContent: 

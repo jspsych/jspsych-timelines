@@ -82,14 +82,12 @@ Utility functions:
 | `trial_timeout` | number | `500` | Max response time (ms) |
 | `isi_timeout` | number | `500` | Inter-stimulus interval (ms) |
 | `probability` | number | `0.75` | Probability of GO trials (0-1) |
-| `go_stimulus` | string | `'<h2>Y</h2>'` | Single GO stimulus |
-| `nogo_stimulus` | string | `'<h2>X</h2>'` | Single NO-GO stimulus |
+| `go_stimulus` | string | `square` | Single GO stimulus |
+| `nogo_stimulus` | string | `circle` | Single NO-GO stimulus |
 | `go_stimuli` | string[] | - | Array of GO stimuli (overrides go_stimulus) |
 | `nogo_stimuli` | string[] | - | Array of NO-GO stimuli (overrides nogo_stimulus) |
-| `button_text` | string | `'Click'` | Response button label |
 | `go_practice_timeout` | number | `10000` | GO practice trial timeout (ms) |
 | `nogo_practice_timeout` | number | `3000` | NO-GO practice trial timeout (ms) |
-| `instructions_array` | string[] | default pages | Custom instruction pages |
 | `text_object` | object | trial_text | Custom text configuration |
 
 ## Authors / Citation
