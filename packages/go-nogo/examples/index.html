@@ -32,20 +32,20 @@
       show_debrief: false,
       /* trial-specific, can be overridden by text.ts properties */
       // go_stimulus: "<h1>Y</h1>",
-      // go_stimuli,
+      // nogo_stimulus: circle,
       // nogo_stimuli: ["<h1>X</h1>","NO-GO"],
       // go_practice_timeout: 10000,
       // nogo_practice_timeout: 3000,
       /* texts */
       // text_object: texts = trial_text,
     };
+  const timeline = jsPsychTimelineGoNoGo.createTimeline(jsPsych, config);
+  // Can use timeline units like this:
+  // const instructions = jsPsychTimelineGoNoGo.createInstructions(text_trial.instructions_pages, text_trial);
+  // const practice = jsPsychTimelineGoNoGo.timelineUnits.createPractice(config);
+  // const debrief = jsPsychTimelineGoNoGo.createTimeline(jsPsych, config);
 
-  // Can separate timeline units like this:
-  const instructions = jsPsychTimelineGoNoGo.createInstructions(text_trial.instructions_pages, text_trial);
-  const practice = jsPsychTimelineGoNoGo.timelineUnits.createPractice(config);
-  const task = jsPsychTimelineGoNoGo.createTimeline(jsPsych, config);
-
-jsPsych.run([instructions, practice, task]);
+jsPsych.run(timeline);
 </script>
 
 </html>
