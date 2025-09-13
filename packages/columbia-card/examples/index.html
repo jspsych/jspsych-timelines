@@ -37,12 +37,8 @@
     loss_value: -250,
     gain_value: 10,
     // starting_score: 0,
-    // card_front_symbol: "?",
-    // task_instructions: "Tap the cards to flip them over. Gain cards give you points, loss cards lose points!",
-    // gain_cards_label: "Gain Cards",
-    // loss_cards_label: "Loss Cards",
-    // score_label: "Points:",
-    // continue_button_text: "Stop",
+    // Text-related parameters are now managed through the text_object below
+    // (card_front_symbol, task_instructions, gain_cards_label, etc.)
     
     // Practice configuration
     // practice_num_cards: 16,
@@ -57,8 +53,13 @@
     // ],
     // text_object: {
     //   // Override any text from the default trial_text object
-    //   taskComplete: "Task Finished!",
-    //   thanksMessage: "Thank you for participating!"
+    //   defaultCardFrontSymbol: "!",
+    //   defaultInstructions: "Custom instructions here",
+    //   defaultGainCardsLabel: "Good Cards",
+    //   defaultLossCardsLabel: "Bad Cards",
+    //   defaultScoreLabel: "Score:",
+    //   defaultContinueButtonText: "Continue",
+    //   // ... and any other text properties from text.ts
     // }
   });
 

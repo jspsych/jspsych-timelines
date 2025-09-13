@@ -25,12 +25,6 @@ import { trial_text } from "./text";
  * @property {number}  [loss_value=-250] Points lost when selecting a loss card.
  * @property {number}  [gain_value=10] Points gained when selecting a gain card.
  * @property {number}  [starting_score=0] Starting score for each trial.
- * @property {string}  [card_front_symbol="?"] Symbol displayed on card fronts.
- * @property {string}  [task_instructions] Instructions displayed above the card grid.
- * @property {string}  [gain_cards_label] Text label for gain cards.
- * @property {string}  [loss_cards_label] Text label for loss cards.
- * @property {string}  [score_label] Text label for the score display.
- * @property {string}  [continue_button_text] Text for the continue button.
  *
  * Practice configuration  
  * @property {number}  [practice_num_cards=16] Number of cards in practice rounds.
@@ -61,12 +55,6 @@ interface ColumbiaCardConfig {
   loss_value?: number
   gain_value?: number
   starting_score?: number
-  card_front_symbol?: string
-  task_instructions?: string
-  gain_cards_label?: string
-  loss_cards_label?: string
-  score_label?: string
-  continue_button_text?: string
   
   // practice configuration
   practice_num_cards?: number
@@ -95,8 +83,8 @@ export function createInstructions(instructions: string[], texts?: typeof trial_
     allow_keys: true,
     key_forward: 'ArrowRight',
     key_backward: 'ArrowLeft',
-    button_label_previous: texts?.back_button || "",
-    button_label_next: texts?.next_button || "",
+    button_label_previous: texts?.backButton || "",
+    button_label_next: texts?.nextButton || "",
     data: { task: 'columbia-card', phase: 'instructions' }
   };
 }
@@ -142,12 +130,12 @@ const createColumbiaCardTrial = (config: ColumbiaCardConfig, texts = trial_text,
     loss_value: config.loss_value ?? -250,
     gain_value: config.gain_value ?? 10,
     starting_score: config.starting_score ?? 0,
-    card_front_symbol: config.card_front_symbol ?? texts.defaultCardFrontSymbol,
-    instructions: config.task_instructions ?? texts.defaultInstructions,
-    gain_cards_label: config.gain_cards_label ?? texts.defaultGainCardsLabel,
-    loss_cards_label: config.loss_cards_label ?? texts.defaultLossCardsLabel,
-    score_label: config.score_label ?? texts.defaultScoreLabel,
-    continue_button_text: config.continue_button_text ?? texts.defaultContinueButtonText,
+    card_front_symbol: texts.defaultCardFrontSymbol,
+    instructions: texts.defaultInstructions,
+    gain_cards_label: texts.defaultGainCardsLabel,
+    loss_cards_label: texts.defaultLossCardsLabel,
+    score_label: texts.defaultScoreLabel,
+    continue_button_text: texts.defaultContinueButtonText,
     data: {
       task: 'columbia-card',
       phase: 'main-trial',
@@ -249,12 +237,6 @@ export function createTimeline(
     loss_value = -250,
     gain_value = 10,
     starting_score = 0,
-    card_front_symbol = trial_text.defaultCardFrontSymbol,
-    task_instructions = trial_text.defaultInstructions,
-    gain_cards_label = trial_text.defaultGainCardsLabel,
-    loss_cards_label = trial_text.defaultLossCardsLabel,
-    score_label = trial_text.defaultScoreLabel,
-    continue_button_text = trial_text.defaultContinueButtonText,
     // practice configuration
     practice_num_cards = 16,
     practice_num_loss_cards = 2,
@@ -282,12 +264,6 @@ export function createTimeline(
       loss_value: practice_loss_value,
       gain_value: practice_gain_value,
       starting_score,
-      card_front_symbol,
-      task_instructions,
-      gain_cards_label,
-      loss_cards_label,
-      score_label,
-      continue_button_text,
       text_object: texts
     })
     timeline.push(...practiceTrials)
@@ -306,13 +282,7 @@ export function createTimeline(
         flip_duration,
         loss_value,
         gain_value,
-        starting_score,
-        card_front_symbol,
-        task_instructions,
-        gain_cards_label,
-        loss_cards_label,
-        score_label,
-        continue_button_text
+        starting_score
       }, texts, blockNum, trialNum, jsPsych)
       
       timeline.push(cardTrial)
