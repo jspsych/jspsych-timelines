@@ -68,7 +68,7 @@ interface ColumbiaCardConfig {
 /**
  * Creates a set of instructions for the Columbia Card Task.
  * 
- * @param {string[]} instructions - Optional array of instruction pages to display. If not provided, uses texts.instructions_pages.
+ * @param {string[]} instructions - Array of instruction pages to display.
  * @param {object} texts - Text configuration object containing messages and labels.
  * @returns {object} jsPsychInstructions trial object.
  */
@@ -110,8 +110,8 @@ const createPracticeCompletion = (texts = trial_text) => {
 /**
  * Creates a Columbia Card Task trial.
  *
+ * @param jsPsych Active jsPsych instance for data tracking.
  * @param config Configuration options for the card task.
- * @param texts Text configuration object.
  * @param blockNumber Block number for data tracking.
  * @param trialNumber Trial number for data tracking.
  * @returns A jsPsych trial definition for the Columbia Card Task.

@@ -56,7 +56,6 @@ The following parameters can be specified in the **options** parameter.
 | practice_num_loss_cards | number | 2 | Loss cards in practice |
 | practice_gain_value | number | 5 | Points gained in practice |
 | practice_loss_value | number | -50 | Points lost in practice |
-| instructions_array | string[] | - | Custom instruction pages |
 | text_object | object | trial_text | Text configuration object |
 
 

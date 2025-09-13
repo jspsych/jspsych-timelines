@@ -44,7 +44,6 @@ practice_num_cards | number | 16 | Cards in practice rounds
 practice_num_loss_cards | number | 2 | Loss cards in practice
 practice_gain_value | number | 5 | Points gained in practice
 practice_loss_value | number | -50 | Points lost in practice
-instructions_array | string[] | - | Custom instruction pages
 text_object | object | trial_text | Text configuration object
 
 ## Data Generated
@@ -78,7 +77,7 @@ Creates practice trials with introduction and completion screens.
 
 Creates the final debrief screen with performance summary and risk-taking analysis.
 
-### utils.createColumbiaCardTrial(config, texts, blockNumber, trialNumber, jsPsych)
+### utils.createColumbiaCardTrial(jsPsych, config, blockNumber, trialNumber)
 
 Creates a single Columbia Card Task trial.
 
