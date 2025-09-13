@@ -33,7 +33,6 @@ import { trial_text } from "./text";
  * @property {number}  [practice_loss_value=-50] Points lost per card in practice.
  *
  * Texts
- * @property {string[]}            [instructions_array] Pages for the instructions screen.
  * @property {typeof trial_text}   [text_object=trial_text] Text/config object with UI strings.
  */
 interface ColumbiaCardConfig {
@@ -63,7 +62,6 @@ interface ColumbiaCardConfig {
   practice_loss_value?: number
   
   // texts
-  instructions_array?: string[]
   text_object?: typeof trial_text
 }
 
@@ -75,7 +73,7 @@ interface ColumbiaCardConfig {
  * @returns {object} jsPsychInstructions trial object.
  */
 export function createInstructions(instructions: string[], texts?: typeof trial_text) {
-  const pages = instructions || texts?.instructions_pages || ["instructions_array undefined."];
+  const pages = instructions;
   return {
     type: jsPsychInstructions,
     pages: pages.map(page => `<div class="timeline-instructions"><p>${page}</p></div>`),
@@ -118,7 +116,7 @@ const createPracticeCompletion = (texts = trial_text) => {
  * @param trialNumber Trial number for data tracking.
  * @returns A jsPsych trial definition for the Columbia Card Task.
  */
-const createColumbiaCardTrial = (config: ColumbiaCardConfig, texts = trial_text, blockNumber?: number, trialNumber?: number, jsPsych?: JsPsych) => {
+const createColumbiaCardTrial = (jsPsych: JsPsych, config: ColumbiaCardConfig, blockNumber?: number, trialNumber?: number) => {  
   return {
     type: jsPsychColumbiaCardTask,
     num_cards: config.num_cards ?? 32,
@@ -130,12 +128,12 @@ const createColumbiaCardTrial = (config: ColumbiaCardConfig, texts = trial_text,
     loss_value: config.loss_value ?? -250,
     gain_value: config.gain_value ?? 10,
     starting_score: config.starting_score ?? 0,
-    card_front_symbol: texts.defaultCardFrontSymbol,
-    instructions: texts.defaultInstructions,
-    gain_cards_label: texts.defaultGainCardsLabel,
-    loss_cards_label: texts.defaultLossCardsLabel,
-    score_label: texts.defaultScoreLabel,
-    continue_button_text: texts.defaultContinueButtonText,
+    card_front_symbol: config.text_object.defaultCardFrontSymbol,
+    instructions: config.text_object.defaultInstructions,
+    gain_cards_label: config.text_object.defaultGainCardsLabel,
+    loss_cards_label: config.text_object.defaultLossCardsLabel,
+    score_label: config.text_object.defaultScoreLabel,
+    continue_button_text: config.text_object.defaultContinueButtonText,
     data: {
       task: 'columbia-card',
       phase: 'main-trial',
@@ -243,14 +241,14 @@ export function createTimeline(
     practice_gain_value = 5,
     practice_loss_value = -50,
     // texts
-    instructions_array: instructions,
-    text_object: texts = trial_text,
+    text_object = trial_text,
   } : ColumbiaCardConfig = {})
 {
+  text_object = {...trial_text, ...(text_object ?? {})}  // Merge default texts with any overrides from config
   const timeline = []
 
   if (show_instructions) {
-    timeline.push(createInstructions(instructions, texts))
+    timeline.push(createInstructions(text_object.instructions_pages))
   }
 
   if (show_practice) {
@@ -264,16 +262,18 @@ export function createTimeline(
       loss_value: practice_loss_value,
       gain_value: practice_gain_value,
       starting_score,
-      text_object: texts
+      text_object
     })
-    timeline.push(...practiceTrials)
+    timeline.push(practiceTrials)
   }
 
   // Generate blocks
   for (let blockNum = 1; blockNum <= num_blocks; blockNum++) {
     // Add block trials
     for (let trialNum = 1; trialNum <= num_trials; trialNum++) {
-      const cardTrial = createColumbiaCardTrial({
+      const cardTrial = createColumbiaCardTrial(
+        jsPsych, 
+        {
         num_cards,
         num_loss_cards,
         grid_columns,
@@ -282,21 +282,22 @@ export function createTimeline(
         flip_duration,
         loss_value,
         gain_value,
-        starting_score
-      }, texts, blockNum, trialNum, jsPsych)
+        starting_score,
+        text_object
+      }, blockNum, trialNum)
       
       timeline.push(cardTrial)
     }
     
     // Add block break page between blocks (except after last block)
     if (blockNum < num_blocks) {
-      const blockBreakTrial = createBlockBreak(jsPsych, blockNum, num_blocks, texts, show_block_summary)
+      const blockBreakTrial = createBlockBreak(jsPsych, blockNum, num_blocks, text_object, show_block_summary)
       timeline.push(blockBreakTrial)
     }
   }
 
   if (show_debrief) {
-    const debriefTrial = createDebrief(jsPsych, texts)
+    const debriefTrial = createDebrief(jsPsych, text_object)
     timeline.push(debriefTrial)
   }
 
@@ -324,7 +325,7 @@ function createPractice(config: ColumbiaCardConfig = {}) {
   }
 
   // Single practice trial
-  const practiceTrial = createColumbiaCardTrial(config, texts, 0, 0) // block 0, trial 0 for practice
+  const practiceTrial = createColumbiaCardTrial(undefined, config, 0, 0) // no need for jspsych (dont want extra data), also block 0, trial 0 for practice
   practiceTrial.data.phase = 'practice-trial'
 
   return [
