@@ -248,7 +248,7 @@ export function createTimeline(
   const timeline = []
 
   if (show_instructions) {
-    timeline.push(createInstructions(text_object.instructions_pages))
+    timeline.push(createInstructions(text_object.instructions_pages, trial_text))
   }
 
   if (show_practice) {
