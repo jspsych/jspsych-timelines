@@ -132,15 +132,13 @@ const nogoHtml = createStimulusHTML('STOP', false);
 | `isi_timeout` | number | `500` | Inter-stimulus interval (ms) |
 | `probability` | number | `0.75` | Probability of GO trials (0-1) |
 | **Stimulus Configuration** |
-| `go_stimulus` | HTML_STRING | `'<h2>Y</h2>'` | Single GO stimulus |
-| `nogo_stimulus` | HTML_STRING | `'<h2>X</h2>'` | Single NO-GO stimulus |
+| `go_stimulus` | HTML_STRING | `square` | Single GO stimulus |
+| `nogo_stimulus` | HTML_STRING | `circle` | Single NO-GO stimulus |
 | `go_stimuli` | HTML_STRING[] | - | Array of GO stimuli (rotates through) |
 | `nogo_stimuli` | HTML_STRING[] | - | Array of NO-GO stimuli (rotates through) |
-| `button_text` | string | `'Click'` | Response button label |
 | `go_practice_timeout` | number | `10000` | GO practice timeout (ms) |
 | `nogo_practice_timeout` | number | `3000` | NO-GO practice timeout (ms) |
 | **Text Configuration** |
-| `instructions_array` | string[] | default | Custom instruction pages |
 | `text_object` | object | trial_text | Custom text/UI strings |
 
 ### Stimulus Configuration
@@ -244,7 +242,6 @@ const config = {
   nogo_stimulus: '<span style="color: red; font-size: 60px;">✗</span>',
   trial_timeout: 1000,
   isi_timeout: 300,
-  button_text: 'PRESS'
 };
 
 const timeline = jsPsychTimelineGoNoGo.createTimeline(jsPsych, config);
