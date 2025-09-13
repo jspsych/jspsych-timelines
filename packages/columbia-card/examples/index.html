@@ -22,8 +22,8 @@
     // General configuration
     show_instructions: true,
     show_practice: true,
-    num_blocks: 2,
-    num_trials: 2,
+    num_blocks: 3,
+    num_trials: 5,
     show_debrief: true,
     show_block_summary: true,
     
@@ -37,8 +37,6 @@
     loss_value: -250,
     gain_value: 10,
     // starting_score: 0,
-    // Text-related parameters are now managed through the text_object below
-    // (card_front_symbol, task_instructions, gain_cards_label, etc.)
     
     // Practice configuration
     // practice_num_cards: 16,
@@ -46,21 +44,8 @@
     // practice_gain_value: 5,
     // practice_loss_value: -50,
     
-    // Text configuration (uncomment to customize)
-    // instructions_array: [
-    //   "Custom instruction page 1",
-    //   "Custom instruction page 2"
-    // ],
-    // text_object: {
-    //   // Override any text from the default trial_text object
-    //   defaultCardFrontSymbol: "!",
-    //   defaultInstructions: "Custom instructions here",
-    //   defaultGainCardsLabel: "Good Cards",
-    //   defaultLossCardsLabel: "Bad Cards",
-    //   defaultScoreLabel: "Score:",
-    //   defaultContinueButtonText: "Continue",
-    //   // ... and any other text properties from text.ts
-    // }
+    // Text configuration (import src/text to override defaults)
+    // text_object: trial_text
   });
 
   jsPsych.run(timeline);
