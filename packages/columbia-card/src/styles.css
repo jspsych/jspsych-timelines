@@ -1,0 +1,315 @@
+/* UNIFIED EXPERIMENTAL STYLES */
+/* Based on spatial-nback as primary inspiration with common timeline-* patterns */
+
+/* ========================================
+   GENERAL STYLES
+======================================== */
+
+h1, h2, h3 { /* From: spatial-nback-styles.css */
+    line-height: 1;
+    margin: 0vmin;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+/* h1 is used in Go-NOGO, single big letter */
+h1 {
+    font-size: clamp(40px, 55vmin, 300px);
+}
+
+/* h2 is used in stroop, big word*/
+h2 {
+    font-size: clamp(40px, 16vmin, 160px);
+}
+
+p { /* From: spatial-nback-styles.css */
+    margin: 5vmin 0;
+    font-size: clamp(15px, 5vmin, 60px);
+    line-height: 1.5;    
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+    max-width: 95%;
+    box-sizing: border-box;
+    justify-self: center;
+}
+
+/* ========================================
+   TIMELINE CONTAINERS
+======================================== */
+
+/* INSTRUCTIONS PHASE */
+.timeline-instructions { /* From: spatial-nback-styles.css exactly */
+    max-width: 90vw; /* Limit width for better readability */
+    margin: 0 auto; /* Center the container */
+    padding: 2vmin; /* Add some padding */
+    box-sizing: border-box; /* Include padding in width calculations */
+    overflow-x: hidden; /* Prevent horizontal overflow */
+}
+
+/* bigger font */
+.timeline-instructions p {
+    font-size: clamp(15px, 7vmin, 100px);
+}
+
+/* TRIAL PHASE */
+/* Task instructions in trial container, text above experiment. Usually used in practice phases. */
+#nback-instructions p, p.task-prompt { /* for nback and columbia-card */
+    font-size: clamp(15px, 4.5vmin, 30px);
+    margin: 0vmin; /* smaller than default p */
+}
+
+/* Main trial container - stimulus display area - works across tasks */
+.timeline-trial { /* From: stroop-styles.css + columbia-card-styles.css */
+    width: 100vw;
+    display: flex;
+    flex-direction: row; /* reconsider columning dis later */
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    font-weight: bold;
+    /* Consider removing margin */
+    margin: clamp(5px, 3vh, 80px) 0;
+}
+
+/* ========================================
+   COLUMBIA CARD TASK STYLES
+======================================== */
+.cct-container .jspsych-btn { /* From: stroop-styles.css + columbia-card-styles.css */
+    position: fixed;
+    bottom: 2.5vh;
+    left: 50% !important;
+    transform: translateX(-50%);
+    z-index: 1000;
+    width: 95vw;
+    max-width: none;
+    /* height: 20vh;*/
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-end;
+    margin: 0;
+}
+
+/* Card grid mobile responsiveness */
+.cct-grid {
+    grid-template-columns: repeat(4, 8fr);
+}
+
+/* Card mobile styling */
+/* .cct-card {
+    width: 100%;
+    aspect-ratio: 3/4;
+    min-height: clamp(80px, 12vw, 120px);
+    touch-action: manipulation;
+} */
+
+/* Card face text scaling */
+/* .cct-card-face {
+    font-size: clamp(12px, 3.5vw, 16px);
+} */
+
+/* ========================================
+   BUTTON CONTAINERS & POSITIONING
+======================================== */
+
+/* Fixed button container at bottom of screen */
+.jspsych-btn-group-grid, .timeline-btn-container { /* From: stroop-styles.css + columbia-card-styles.css */
+    position: fixed;
+    bottom: 2.5vh;
+    left: 50% !important;
+    transform: translateX(-50%);
+    z-index: 1000;
+    width: 95vw;
+    max-width: none;
+    height: 20vh; /* Take up 20% of screen height */
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-end;
+    margin: 0;
+}
+
+/* ========================================
+   BUTTON STYLES
+======================================== */
+
+/* Primary button styling */
+.jspsych-btn { /* From: spatial-nback-styles.css exactly */
+    font-size: clamp(20px, 4vmin, 60px);
+    flex: 1 30vw;
+    padding: clamp(15px, 6vmin, 35px) clamp(15px, 4vmin, 40px);
+    max-height: 15vh; /* was 10vh if padding is too much */
+    color: hsl(0, 0%, 100%);
+    background-color: rgb(77, 77, 77) !important;
+    font-weight: 600;
+    transition: background-color 0.2s ease;
+    margin: 1vmin;
+    place-content: center; /* Center text vertically (and horizontally) */
+    /* Disable double-click zoom */
+    touch-action: manipulation;
+    user-select: none;
+}
+
+/* go-nogo feedback container to not go under button */
+#feedback-container {
+    position: relative;
+    margin: 2vh 0;
+    top: -3vh;
+}
+
+.jspsych-btn:hover { /* From: columbia-card-styles.css */
+    background-color: rgb(97, 97, 97);
+    transform: translateY(-2px);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+}
+
+.jspsych-btn:active { /* From: columbia-card-styles.css */
+    background-color: rgb(57, 57, 57);
+    transform: translateY(1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.jspsych-btn:disabled { /* From: columbia-card-styles.css */
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Continue button variant */
+.continue-button { /* From: spatial-nback-styles.css */
+    padding: clamp(15px, 6vmin, 35px) clamp(15px, 8vmin, 40px);
+    font-size: clamp(15px, 6vmin, 35px);
+    border-radius: 1vmin;
+    cursor: pointer;
+    margin: 2vmin;
+    margin-top: 10vh;
+    transition: background-color 0.3s;
+    min-height: 48px;
+    touch-action: manipulation !important;
+    user-select: none !important;
+}
+
+/* ========================================
+   INSTRUCTION NAVIGATION
+======================================== */
+
+/* Mobile-friendly instruction navigation buttons */
+.jspsych-instructions-nav { /* From: spatial-nback-styles.css exactly */
+    display: flex;
+    gap: 25vw;
+    justify-content: center;
+    position: absolute;
+    bottom: 2.5vh;
+    left: 50%;
+    transform: translateX(-50%);
+    align-items: flex-end;
+}
+
+/* Instruction navigation button styles */
+.jspsych-instructions-nav .jspsych-btn { /* From: spatial-nback-styles.css exactly */
+    height: 25vmin;
+    border: 3px solid #000000;
+    border-radius: 50%;
+    font-size: clamp(15px, 7vmin, 35px);
+    cursor: pointer;
+    min-height: 100px;
+    min-width: 100px;
+    aspect-ratio: 1;
+    font-weight: 600;
+    max-height: 16vmin;
+
+    /* Disable double-click zoom */
+    touch-action: manipulation !important;
+    user-select: none !important;
+}
+/* For the left button on first page, keep space but hide button */
+.jspsych-instructions-nav .jspsych-btn:disabled {
+    visibility: hidden;
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+======================================== */
+
+/* Specific styles for tablets/iPads */
+@media (min-width: 481px) and (max-width: 1024px) { /* From: spatial-nback-styles.css exactly */
+
+    /* Adjusting grid cell size for tablets (bigger)*/
+    #nback-grid > div > div {
+        width: 15vh !important;
+        height: 15vh !important;
+    }
+}
+
+/* Mobile styles */
+@media (max-width: 768px) {
+    /* Columbia Card Task mobile grid adjustments */
+    .cct-grid {
+        grid-template-columns: repeat(6, 1fr);
+        gap: clamp(6px, 1.5vw, 10px);
+        padding: 0 clamp(8px, 2vw, 15px);
+    }
+
+    .cct-card-face {
+        font-size: clamp(10px, 2.8vw, 14px);
+    }
+}
+
+/* Phone styles */
+@media (max-width: 480px) {
+    /* Columbia Card Task phone grid adjustments */
+    /* .cct-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: clamp(4px, 1.2vw, 8px);
+        padding: 0 clamp(5px, 1.5vw, 10px);
+    }
+
+    .cct-card-face {
+        font-size: clamp(9px, 2.5vw, 12px);
+    } */
+}
+
+/* Landscape mode adjustment, targeting landscape phone issues */
+@media (orientation: landscape) {
+    /* make text smaller */
+    p {
+        font-size: clamp(15px, 4vmin, 60px);
+    }
+
+    /* go-nogo, make text smaller sideways */
+    @media (max-width: 940px) { h1 {
+        font-size: revert;
+    } }
+
+    /* spatial nback */
+    /* pushes whole experiment up to not go under buttons */
+    #nback-feedback-section {
+    margin-bottom: 10vh;
+    }
+
+    #nback-grid-container {
+        margin: 0; /* pushes grid up */
+    }
+    
+    .jspsych-btn { /* reduce padding and font size on small screens */
+        padding: clamp(5px, 3.5vmin, 35px) clamp(15px, 4vmin, 40px);
+    }
+
+    /* Columbia Card Task landscape adjustments */
+    /* .cct-grid {
+        margin-bottom: 20vh;
+        gap: clamp(4px, 1.2vw, 8px);
+        padding: 0 clamp(5px, 1.5vw, 15px);
+    }
+
+    .cct-card-face {
+        font-size: clamp(9px, 2.2vw, 12px);
+    } */
+}
