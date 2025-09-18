@@ -1,0 +1,35 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: Stroop-task-timeline
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Vishnu
+    family-names: Lakshman
+    email: vlakshman@vassar.edu
+    affiliation: Vassar College
+repository-code: >-
+  https://github.com/jspsych/jspsych-timelines/tree/main/packages
+abstract: >-
+  A comprehensive jsPsych timeline implementation of the
+  classic Stroop task. This package provides a complete
+  experiment including instructions, practice trials, main
+  trials, and results display. The Stroop task measures
+  cognitive interference by presenting color words (in this
+  case the default options are RED, GREEN, BLUE, YELLOW) in
+  matching or non-matching ink colors. The aim is for
+  participants to identify the color of the word not the
+  word itself.
+keywords:
+  - jspsych
+  - jspsych-timelines
+  - stroop-task
+  - timeline
+license: MIT
+commit: First release
+version: 0.0.1
+date-released: '2024-07-18'

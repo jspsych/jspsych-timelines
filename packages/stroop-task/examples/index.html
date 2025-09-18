@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>jsPsychTimelineStroopTimeline Example</title>
+  <script src="https://unpkg.com/jspsych"></script>
+  <script src="../dist/index.global.js"></script>
+  <!-- Load the published timeline package here, e.g.
+<script src="https://unpkg.com/stroop-timeline"></script>
+<script src="../dist/index.global.js"></script> -->
+  <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body></body>
+<script>
+  const taskConfig = {
+      practice_trials_per_condition: 2,               // Number of practice trials per condition
+      congruent_main_trials: 4,                       // Number of congruent main trials per condition
+      incongruent_main_trials: 4,                     // Number of incongruent main trials per condition
+      trial_timeout: 3000,                            // Time limit for each trial (milliseconds)
+      fixation_duration: {                            // Fixation cross duration range
+        min: 300,                                     // Minimum duration (milliseconds), if you do not want to randomise fixation cross duration, set randomiseFixationDuration parameter to false and set min to the duration of the fixation cross you desire
+        max: 1500                                     // Maximum duration (milliseconds), if you do not want to randomise fixation cross duration, set randomiseFixationDuration parameter to false and set min to the duration of the fixation cross you desire
+      },
+      show_practice_feedback: true,                    // Show feedback during practice trials
+      include_fixation: true,                          // Include fixation cross before trials
+      showWelcomeAndInstructions: true,                // Show welcome message and instructions
+      show_results: true,                              // Show results at the end,
+      randomise_main_trial_condition_order: true,      // Randomise the order of conditions
+      randomise_practice_trial_condition_order: false, // Randomise the order of conditions in practice trials
+      randomise_fixation_duration: true,               // Randomise fixation duration between min/max, if you set this to false then duration of fixation cross will be the value of the min in the parameter fixationDuration
+      number_of_rows: 2,                               // Number of rows in the display grid
+      number_of_columns: 2,                            // Number of columns in the display grid
+      choice_of_colors: [                              // Array of colors to use (length determines number of colors), add colour names, hex codes or RGB values
+        'red',
+        'blue',
+        'green',
+        'yellow'
+      ]
+    };
+  const jsPsych = new initJsPsych();
+
+  const task = jsPsychTimelineStroopTimeline.createTimeline(jsPsych, taskConfig);
+
+  jsPsych.run([task])
+</script>
+
+</html>

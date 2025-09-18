@@ -1,0 +1,42 @@
+{
+    "name": "@jspsych-timeline/stroop-task-timeline",
+    "version": "0.0.1",
+    "description": "A comprehensive jsPsych timeline implementation of the classic Stroop task. This package provides a complete experiment including instructions, practice trials, main trials, and results display. The Stroop task measures cognitive interference by presenting color words (RED, GREEN, BLUE, YELLOW is the default) in matching or non-matching ink colors.",
+    "type": "module",
+    "main": "dist/index.mjs",
+    "types": "dist/index.d.ts",
+    "unpkg": "dist/index.browser.min.js",
+    "scripts": {
+        "build": "tsup src/index.ts --format esm,iife --sourcemap --dts --treeshake --clean --global-name jsPsychTimelineStroopTimeline"
+    },
+    "repository": {
+        "type": "git",
+        "url": "",
+        "directory": "./"
+    },
+    "keywords": [
+        "jsPsych"
+    ],
+    "author": {
+        "name": "Vishnu Lakshman",
+        "url": ""
+    },
+    "license": "MIT",
+    "bugs": {
+        "url": "/issues"
+    },
+    "homepage": "/stroop-timeline/README.md",
+    "devDependencies": {
+        "@jspsych/config": "^3.2.2",
+        "@types/jest": "^29.5.14",
+        "jspsych": "^8.0.0",
+        "ts-jest": "^29.3.4",
+        "tsup": "^6.7.0",
+        "typescript": "^5.8.3"
+    },
+    "dependencies": {
+        "@jspsych/plugin-html-button-response": "^2.1.0",
+        "@jspsych/plugin-html-keyboard-response": "^2.1.0",
+        "@jspsych/plugin-instructions": "^2.1.0"
+    }
+}
