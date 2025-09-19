@@ -11,9 +11,13 @@
 
   <body></body>
   <script>
-    const jsPsych = initJsPsych();
+    const jsPsych = initJsPsych({
+      on_finish: () => jsPsych.data.displayData(),
+    });
 
-    const task = jsPsychTimelineHeartsAndFlowers.createTimeline(jsPsych, { });
+    const task = jsPsychTimelineHeartsAndFlowers.createTimeline(jsPsych, { 
+      n_trials: 5
+    });
 
     jsPsych.run([task])
   </script>

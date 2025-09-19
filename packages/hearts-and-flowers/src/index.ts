@@ -162,7 +162,7 @@ function createTrial(jsPsych: JsPsych, stimulusInfo: StimulusInfo, instruction: 
  */
 function createFeedbackTrial(jsPsych: JsPsych) {
   return {
-    plugin: jsPsychHtmlKeyboardResponse,
+    type: jsPsychHtmlKeyboardResponse,
     stimulus: () => {
       return `<div class="jspsych-hearts-and-flowers-instruction">
         <h3>${
@@ -400,7 +400,9 @@ export function createTimeline(jsPsych: JsPsych, options: Partial<CreateTimeline
     },
     demo: true,
     start_instruction_text: "Time to play!",
+    end_instruction: true,
     end_instruction_text: "Great job! You're all done.",
+    end_instruction_duration: 4000,
   };
 
   // Merge default options with user options (deep merge for stimulusInfo)
@@ -451,6 +453,7 @@ export function createTimeline(jsPsych: JsPsych, options: Partial<CreateTimeline
     type: jsPsychHtmlKeyboardResponse,
     stimulus: options.end_instruction_text,
     choices: "NO_KEYS",
+    trial_duration: options.end_instruction_duration,
   });
 
   return { timeline: heartsAndFlowersTimeline };
@@ -503,10 +506,22 @@ export interface CreateTimelineOptions {
   start_instruction_text: string;
 
   /**
+   * Whether to show the end instruction screen.
+   * @defaultValue true
+   */
+  end_instruction: boolean; 
+
+  /**
    * The instruction text at the end of the experiment.
    * @defaultValue "Great job! You're all done."
    */
   end_instruction_text: string;
+
+  /**
+   * The duration of time to show the end instruction screen, in milliseconds.
+   * @defaultValue 4000
+   */
+  end_instruction_duration?: number;
 }
 
 /**
