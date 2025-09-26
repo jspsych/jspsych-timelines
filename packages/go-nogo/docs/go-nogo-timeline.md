@@ -141,42 +141,6 @@ const nogoHtml = createStimulusHTML('STOP', false);
 | **Text Configuration** |
 | `text_object` | object | trial_text | Custom text/UI strings |
 
-### Stimulus Configuration
-
-All stimuli accept HTML strings for maximum flexibility:
-
-**Text Stimuli:**
-```javascript
-const config = {
-  go_stimulus: 'GO',
-  nogo_stimulus: 'STOP'
-};
-```
-
-**HTML Stimuli:**
-```javascript
-const config = {
-  go_stimulus: '<span style="color: green; font-size: 48px;">→</span>',
-  nogo_stimulus: '<span style="color: red; font-size: 48px;">✋</span>'
-};
-```
-
-**Image Stimuli:**
-```javascript
-const config = {
-  go_stimulus: '<img src="images/go-arrow.png" style="width: 200px;">',
-  nogo_stimulus: '<img src="images/stop-sign.png" style="width: 200px;">'
-};
-```
-
-**Multiple Stimuli (Sequential Cycling):**
-```javascript
-const config = {
-  go_stimuli: ['<h1>GO</h1>', '<h2>PRESS</h2>', '<strong>→</strong>'],      // Cycles: GO, PRESS, →, GO, PRESS, →...
-  nogo_stimuli: ['STOP', 'NO-GO', '✋']  // Cycles: STOP, NO-GO, ✋, STOP, NO-GO, ✋...
-};
-```
-
 ## Data Generated
 
 ### Trial Data Properties
@@ -282,53 +246,6 @@ const jsPsych = initJsPsych({
   }
 });
 ```
-
-## Best Practices
-
-### Stimulus Design
-1. **Keep stimuli simple and easily distinguishable**
-2. **Use consistent sizing** (200x200px works well for images)
-3. **Test stimulus visibility** across different devices/screens
-4. **Preload images** if using image stimuli
-
-### Timing Considerations
-1. **Standard timing**: 500-1000ms response window
-2. **ISI**: 300-1000ms between trials
-3. **Practice timing**: Longer timeouts (10s GO, 3s NO-GO) for learning
-
-### Performance Optimization
-```javascript
-// Preload images before starting
-const preload = {
-  type: jsPsychPreload,
-  images: ['images/go.png', 'images/nogo.png']
-};
-
-jsPsych.run([preload, timeline]);
-```
-
-### Error Handling
-```javascript
-// Validate probability input
-const config = {
-  probability: Math.max(0, Math.min(1, userInput)) // Clamp to 0-1
-};
-```
-
-## Timeline Structure
-
-The complete timeline when all options are enabled:
-
-1. **Instructions**: Basic task explanation
-2. **GO Practice**: Interactive GO stimulus practice with retry logic  
-3. **NO-GO Practice**: Interactive NO-GO stimulus practice with retry logic
-4. **Practice Complete**: Transition screen
-5. **Block 1**: Main experimental trials
-6. **Block Break** (if multiple blocks)
-7. **Block 2**: Main experimental trials  
-8. **Debrief**: Results summary with accuracy and mean RT
-
-Each block contains randomized GO/NO-GO trials according to the specified probability, with stimuli cycling through arrays if provided.
 
 ## Authors
 
