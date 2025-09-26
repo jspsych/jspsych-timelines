@@ -401,7 +401,7 @@ const createBlockBreak = (blockNum: number, num_blocks: number) => {
  * @param jsPsych Active jsPsych instance from which results are derived.
  * @returns A jsPsych trial object for the debrief.
  */
-const createDebrief = (jsPsych: JsPsych) => {
+const createDebrief = (jsPsych: JsPsych, text_object = trial_text) => {
   // Calculate stats when trial starts, not when displayed
   const calculateStats = () => {
     const allTrials = jsPsych.data.get().filter({ task: 'go-nogo', phase: 'main-trial' }).values()
@@ -428,15 +428,9 @@ const createDebrief = (jsPsych: JsPsych) => {
     stimulus: () => {
       const { accuracy, meanRT } = calculateStats()
       
-      return `
-        <div class="go-nogo-debrief">
-          <p>${trial_text.thankYouMessage}</p>
-          <p><strong>${trial_text.overallAccuracy}</strong> ${accuracy}%</p>
-          <p><strong>${trial_text.averageResponseTime}</strong> ${meanRT}ms</p>
-        </div>
-      `
+      return text_object.debriefContent(accuracy, meanRT)
     },
-    choices: [trial_text.finishButton],
+    choices: [text_object.finishButton],
     data: { task: 'go-nogo', phase: 'debrief' },
     button_html: (choice, choice_index) => `<button id="debrief-btn" class="continue-btn jspsych-btn timeline-html-btn">${choice}</button>`,
   }
@@ -525,7 +519,7 @@ export function createTimeline(
   timeline.push([...blocks])
 
   if (show_debrief) {
-    const debriefTrial = createDebrief(jsPsych)
+    const debriefTrial = createDebrief(jsPsych, text_object)
     timeline.push(debriefTrial)
   }
 
@@ -574,5 +568,6 @@ export const timelineUnits = {
  * Utility exports used by consumers and tests.
  */
 export const utils = {
-  createStimulusHTML
+  createStimulusHTML,
+  trial_text
 }

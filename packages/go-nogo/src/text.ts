@@ -53,6 +53,12 @@ export const trial_text = {
   continueButton: 'Continue',
 
   // Results/Debrief
+  debriefContent: (accuracy: number, meanRT: number) => `
+    <div class="go-nogo-debrief">
+      <p>Thank you for completing the Go/No-Go task!</p>
+      <p><strong>Overall Accuracy:</strong> ${accuracy}%</p>
+      <p><strong>Average Response Time (GO trials):</strong> ${meanRT}ms</p>
+    </div>`,
   thankYouMessage: 'Thank you for completing the Go/No-Go task!',
   overallAccuracy: 'Overall Accuracy:',
   averageResponseTime: 'Average Response Time (GO trials):',
