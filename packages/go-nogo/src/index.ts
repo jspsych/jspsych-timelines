@@ -251,7 +251,7 @@ const createNoGoPractice = (nogo_stimulus: string, texts = trial_text, timeout: 
  * @returns A jsPsych trial for the practice completion screen.
  */
 const createPracticeCompletion = (texts = trial_text) => {
-  return {
+  const completionTrial = {
     type: jsPsychHtmlButtonResponse,
     stimulus: `
         <div class="go-nogo-practice">
@@ -262,6 +262,8 @@ const createPracticeCompletion = (texts = trial_text) => {
     data: { task: 'go-nogo', phase: 'practice', page: 'completion' },
     button_html: (choice, choice_index) => `<button id="go-nogo-btn" class="continue-btn jspsych-btn timeline-html-btn">${choice}</button>`,
   }
+  
+  return { timeline: [completionTrial] }
 }
 
 /**
@@ -561,7 +563,15 @@ function createPractice({
 export const timelineUnits = {
   createInstructions,
   createPractice,
-  createDebrief
+  createDebrief,
+  createGoPractice,
+  createNoGoPractice,
+  createPracticeCompletion,
+  createGoNoGo,
+  createISIFixation,
+  createTimelineVariables,
+  createBlockBreak,
+  createStimulusHTML
 }
 
 /**
