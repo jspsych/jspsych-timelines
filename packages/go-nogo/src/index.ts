@@ -577,7 +577,90 @@ export const timelineUnits = {
 /**
  * Utility exports used by consumers and tests.
  */
+// CSS styles as a string for injection
+export const styles = `
+/* Go/No-Go Timeline Styles */
+h1, h2, h3 {
+    line-height: 1;
+    margin: 0vmin;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+h1 {
+    font-size: clamp(40px, 55vmin, 300px);
+}
+
+h2 {
+    font-size: clamp(40px, 16vmin, 160px);
+}
+
+.go-nogo-container {
+    width: 100vw;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    font-weight: bold;
+    margin: clamp(5px, 3vh, 80px) 0;
+}
+
+.go-nogo-feedback {
+    margin: 2vh 0 5vh 0;
+}
+
+.timeline-instructions {
+    max-width: 90vw;
+    margin: 0 auto;
+    padding: 2vmin;
+    box-sizing: border-box;
+    overflow-x: hidden;
+}
+
+.timeline-btn-container {
+    position: fixed;
+    bottom: 2.5vh;
+    left: 50% !important;
+    transform: translateX(-50%);
+    z-index: 1000;
+    width: 95vw;
+    max-width: none;
+    height: 20vh;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-end;
+    margin: 0;
+}
+`;
+
+/**
+ * Inject the Go/No-Go timeline styles into the document head.
+ * Call this function before running the timeline to ensure proper styling.
+ */
+export function injectStyles() {
+  if (typeof document !== 'undefined') {
+    const styleId = 'go-nogo-timeline-styles';
+    
+    // Check if styles are already injected
+    if (!document.getElementById(styleId)) {
+      const styleElement = document.createElement('style');
+      styleElement.id = styleId;
+      styleElement.textContent = styles;
+      document.head.appendChild(styleElement);
+    }
+  }
+}
+
 export const utils = {
   createStimulusHTML,
-  trial_text
+  trial_text,
+  styles,
+  injectStyles
 }

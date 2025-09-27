@@ -16,6 +16,20 @@ npm install @jspsych-timelines/go-nogo
 <script src="https://unpkg.com/@jspsych-timelines/go-nogo"></script>
 ```
 
+## Optional CSS Styling
+
+This package includes an optional CSS file for enhanced mobile-friendly styling:
+
+### NPM/Bundler Import
+```javascript
+import '@jspsych-timelines/go-nogo/styles.css';
+```
+
+### CDN/HTML Link
+```html
+<link rel="stylesheet" href="https://unpkg.com/@jspsych-timelines/go-nogo/dist/css/styles.css">
+```
+
 ### Basic Usage
 ```javascript
 const jsPsych = initJsPsych();

@@ -11,15 +11,14 @@
             "import": "./dist/index.mjs",
             "require": "./dist/index.cjs"
         },
-        "./styles.css": "./css/styles.css"
+        "./styles.css": "./dist/css/styles.css"
     },
     "files": [
         "src",
-        "dist",
-        "css"
+        "dist"
     ],
     "scripts": {
-        "build": "tsup src/index.ts --format esm,iife --sourcemap --dts --treeshake --clean --global-name jsPsychTimelineGoNoGo && node -e \"const fs = require('fs'); if (!fs.existsSync('css')) fs.mkdirSync('css'); fs.copyFileSync('src/styles.css', 'css/styles.css');\"",
+        "build": "tsup src/index.ts --format esm,iife --sourcemap --dts --treeshake --clean --global-name jsPsychTimelineGoNoGo && node -e \"const fs = require('fs'); const path = require('path'); function copyDir(src, dest) { if (!fs.existsSync(dest)) fs.mkdirSync(dest, {recursive: true}); fs.readdirSync(src).forEach(file => { const srcFile = path.join(src, file); const destFile = path.join(dest, file); if (fs.lstatSync(srcFile).isDirectory()) copyDir(srcFile, destFile); else fs.copyFileSync(srcFile, destFile); }); } copyDir('src/css', 'dist/css');\"",
         "test": "jest",
         "test:watch": "jest --watch",
         "test:coverage": "jest --coverage"

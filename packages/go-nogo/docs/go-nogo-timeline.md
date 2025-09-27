@@ -11,7 +11,6 @@ A jsPsych implementation of the Go/No-Go task for measuring response inhibition 
 - [Configuration Options](#configuration-options)
 - [Data Generated](#data-generated)
 - [Examples](#examples)
-- [Best Practices](#best-practices)
 
 ## Overview
 
@@ -36,6 +35,20 @@ npm install @jspsych-timelines/go-nogo
 ### CDN
 ```html
 <script src="https://unpkg.com/@jspsych-timelines/go-nogo"></script>
+```
+
+### Optional CSS Styling
+
+This package includes optional CSS files for enhanced mobile-friendly styling and responsive design:
+
+#### Option 1: NPM/Bundler
+```javascript
+import '@jspsych-timelines/go-nogo/styles.css';
+```
+
+#### Option 2: CDN/HTML
+```html
+<link rel="stylesheet" href="https://unpkg.com/@jspsych-timelines/go-nogo/dist/css/styles.css">
 ```
 
 ## Quick Start
@@ -155,25 +168,6 @@ const nogoHtml = createStimulusHTML('STOP', false);
 | `correct` | boolean | Whether response was correct |
 | `block_number` | number | Block number (1-indexed) |
 | `page` | string | `'go'`, `'nogo'`, `'isi'`, etc. |
-
-
-### Data Filtering Examples
-
-```javascript
-// Get all main experimental trials
-const mainTrials = jsPsych.data.filter({ task: 'go-nogo', phase: 'main-trial' });
-
-// Calculate accuracy
-const accuracy = mainTrials.select('correct').mean();
-
-// Get GO trials with responses
-const goTrialsWithResponse = mainTrials.filter({ is_go_trial: true, response: 0 });
-const meanGoRT = goTrialsWithResponse.select('rt').mean();
-
-// Count errors
-const commissionErrors = mainTrials.filter({ is_go_trial: false, response: 0 }).count();
-const omissionErrors = mainTrials.filter({ is_go_trial: true, response: null }).count();
-```
 
 ## Examples
 
