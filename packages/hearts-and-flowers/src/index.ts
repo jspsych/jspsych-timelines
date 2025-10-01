@@ -1,4 +1,4 @@
-import './styles.css';
+import "./styles.css";
 import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
 import jsPsychHtmlKeyboardResponse from "@jspsych/plugin-html-keyboard-response";
 import { JsPsych } from "jspsych";
@@ -59,25 +59,23 @@ function generateStimulus(
   targetSide: "same" | "opposite",
   stimulusSide: "left" | "right",
   stimulusInfo: StimulusInfo,
-  instruction: boolean = false
+  instruction: boolean = false,
 ) {
   return `
-    <div class="jspsych-hearts-and-flowers-instruction">
-      ${
-        instruction
-          ? `<h3>When you see a ${stimulusInfo[targetSide].stimulus_name}, press
-          the button on the ${targetSide} side.</h3>`
-          : ""
-      }
-      </div>
-      <div class="hearts-and-flowers-stimulus-grid">
-        <div class="hearts-and-flowers-stimulus-grid-item">${
-          stimulusSide === "left" ? stimulusInfo[targetSide].stimulus_src : blankIconSvg
-        }</div>
-        <div class="hearts-and-flowers-stimulus-grid-item">${
-          stimulusSide === "right" ? stimulusInfo[targetSide].stimulus_src : blankIconSvg
-        }</div>
-      </div>
+    ${
+      instruction 
+      ? `<div class="jspsych-hearts-and-flowers-instruction">
+        When you see a ${stimulusInfo[targetSide].stimulus_name}, press the button on the ${targetSide} side.
+      </div>`
+      : ""
+    }
+    <div class="jspsych-hearts-and-flowers-stimulus-grid">
+      <div class="jspsych-hearts-and-flowers-stimulus-grid-item">${
+        stimulusSide === "left" ? stimulusInfo[targetSide].stimulus_src : blankIconSvg
+      }</div>
+      <div class="jspsych-hearts-and-flowers-stimulus-grid-item">${
+        stimulusSide === "right" ? stimulusInfo[targetSide].stimulus_src : blankIconSvg
+      }</div>
     </div>`;
 }
 
@@ -94,8 +92,8 @@ function getCorrectResponse(targetSide: "same" | "opposite", stimulusSide: "left
       ? "left"
       : "right"
     : stimulusSide === "left"
-    ? "right"
-    : "left";
+      ? "right"
+      : "left";
 }
 
 // trials
@@ -108,8 +106,7 @@ function getCorrectResponse(targetSide: "same" | "opposite", stimulusSide: "left
 function createGametypeTrial(stimulusName: string) {
   return {
     type: jsPsychHtmlButtonResponse,
-    stimulus: `<div class="jspsych-hearts-and-flowers-instruction"><h3>
-      This is the ${stimulusName}s game. Here's how you play it.</h3></div>`,
+    stimulus: `<div class="jspsych-hearts-and-flowers-instruction">This is the ${stimulusName}s game. Here's how you play it.</div>`,
     choices: ["OK"],
     data: { trial_type: "demo_gametype", stimulus_name: stimulusName },
   };
@@ -147,7 +144,7 @@ function createTrial(jsPsych: JsPsych, stimulusInfo: StimulusInfo, instruction: 
     on_finish: (data) => {
       data.correct = jsPsych.pluginAPI.compareKeys(
         data.response == 0 ? "left" : "right", // clicking "left" button results in data.response = 0
-        data.correct_response
+        data.correct_response,
       );
     },
   };
@@ -164,11 +161,9 @@ function createFeedbackTrial(jsPsych: JsPsych) {
   return {
     type: jsPsychHtmlKeyboardResponse,
     stimulus: () => {
-      return `<div class="jspsych-hearts-and-flowers-instruction">
-        <h3>${
-          jsPsych.data.get().last(1).select("correct").values[0] ? "Great job!" : "Try again."
-        }</h3>
-      </div>`;
+      return `<div class="jspsych-hearts-and-flowers-instruction">${
+        jsPsych.data.get().last(1).select("correct").values[0] ? "Great job!" : "Try again."
+      }</div>`;
     },
     trial_duration: 1000,
     data: {
@@ -188,7 +183,7 @@ function createFeedbackTrial(jsPsych: JsPsych) {
 function createFixationTrial(jsPsych: JsPsych, fixationDurationFunction: () => number) {
   return {
     type: jsPsychHtmlKeyboardResponse,
-    stimulus: "<div class='jspsych-hearts-and-flowers-instruction'><h3>+</h3></div>",
+    stimulus: "<div class='jspsych-hearts-and-flowers-fixation'>+</div>",
     trial_duration: fixationDurationFunction,
     save_trial_parameters: {
       trial_duration: true,
@@ -210,7 +205,7 @@ function createFixationTrial(jsPsych: JsPsych, fixationDurationFunction: () => n
 function createDemoSubTimeline(
   jsPsych: JsPsych,
   targetSide: keyof StimulusInfo | "both",
-  stimulusInfo: StimulusInfo
+  stimulusInfo: StimulusInfo,
 ) {
   return {
     timeline: [
@@ -267,7 +262,7 @@ function createDemoSubTimeline(
  */
 function createTrialsSubTimeline(
   jsPsych: JsPsych,
-  options: Partial<CreateTrialsSubTimelineOptions> = {}
+  options: Partial<CreateTrialsSubTimelineOptions> = {},
 ) {
   const defaultOptions = {
     target_side: "both" as keyof StimulusInfo | "both",
@@ -369,12 +364,8 @@ export interface CreateTrialsSubTimelineOptions {
 }
 
 /**
- * This timeline shows a sequence of hearts and flowers trials. In each trial,
- * participants are shown a stimulus on one side of the screen. There are only
- * two types of stimuli, and participants are taught and expected to respond to
- * one type by pressing the button on the same side as it (traditionally a
- * heart), and to the other by pressing the button on the opposite side
- * (traditionally a flower), as quickly as possible.
+ * Generates a timeline with the given options that constitute a hearts
+ * and flowers task.
  *
  * @param {JsPsych} jsPsych - The jsPsych object that runs the experiment.
  * @param {CreateTimelineOptions} options - The options object that includes the number of trials, the weights
@@ -447,7 +438,7 @@ export function createTimeline(jsPsych: JsPsych, options: Partial<CreateTimeline
       target_side_weights: options.target_side_weights,
       fixation_duration_function: options.fixation_duration_function,
       stimulus_info: stimulusInfo,
-    })
+    }),
   );
   heartsAndFlowersTimeline.push({
     type: jsPsychHtmlKeyboardResponse,
@@ -458,8 +449,9 @@ export function createTimeline(jsPsych: JsPsych, options: Partial<CreateTimeline
 
   return { timeline: heartsAndFlowersTimeline };
 }
+
 /**
- * Define and export the interface for the `options` parameter in {@link createTimeline}.
+ * Interface for the `options` parameter in {@link createTimeline}.
  */
 export interface CreateTimelineOptions {
   /**
@@ -509,7 +501,7 @@ export interface CreateTimelineOptions {
    * Whether to show the end instruction screen.
    * @defaultValue true
    */
-  end_instruction: boolean; 
+  end_instruction: boolean;
 
   /**
    * The instruction text at the end of the experiment.
@@ -525,7 +517,7 @@ export interface CreateTimelineOptions {
 }
 
 /**
- * Define and export the interface for the `stimulus_options` property in {@link CreateTimelineOptions}.
+ * Interface for the `stimulus_options` property in {@link CreateTimelineOptions}.
  */
 export interface StimulusOptions {
   /**
