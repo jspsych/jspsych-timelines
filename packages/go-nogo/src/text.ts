@@ -20,7 +20,7 @@ export const trial_text = {
   ],
 
   // Default stimuli
-  buttonText: 'Click',
+  stimulusButton: 'Click',
 
   //instructions button labels, empty strings give us just arrows per jsPsychInstructions
   backButton: '',

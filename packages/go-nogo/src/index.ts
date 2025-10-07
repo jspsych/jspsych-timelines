@@ -1,8 +1,7 @@
-import { JsPsych } from "jspsych"
+import { JsPsych } from "jspsych";
 import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
 import jsPsychInstructions from "@jspsych/plugin-instructions";
 import { trial_text, square, circle } from "./text";
-
 
 /**
  * Configuration options for the Go/No-Go timeline and helpers.
@@ -30,28 +29,28 @@ import { trial_text, square, circle } from "./text";
  */
 interface GoNoGoConfig {
   //general configuration
-  show_instructions?: boolean
-  show_practice?: boolean
-  num_blocks?: number
-  num_trials?: number
-  trial_timeout?: number
-  isi_timeout?: number
-  probability?: number
-  show_debrief?: boolean
+  show_instructions?: boolean;
+  show_practice?: boolean;
+  num_blocks?: number;
+  num_trials?: number;
+  trial_timeout?: number;
+  isi_timeout?: number;
+  probability?: number;
+  show_debrief?: boolean;
   //stimuli configuration
-  go_stimulus?: string
-  nogo_stimulus?: string
-  go_stimuli?: string[]
-  nogo_stimuli?: string[]
-  go_practice_timeout?: number
-  nogo_practice_timeout?: number
+  go_stimulus?: string;
+  nogo_stimulus?: string;
+  go_stimuli?: string[];
+  nogo_stimuli?: string[];
+  go_practice_timeout?: number;
+  nogo_practice_timeout?: number;
   //texts
-  text_object?: typeof trial_text
+  text_object?: typeof trial_text;
 }
 
 /**
  * Creates a set of instructions for the Go/No-Go Task.
- * 
+ *
  * @param {string[]} instructions - Array of instruction pages to display.
  * @param {object} texts - Text configuration object containing messages and labels.
  * @returns {object} jsPsychInstructions trial object.
@@ -59,14 +58,14 @@ interface GoNoGoConfig {
 export function createInstructions(instructions: string[], texts?) {
   return {
     type: jsPsychInstructions,
-    pages: instructions.map(page => `<div class="timeline-instructions"><p>${page}</p></div>`),
+    pages: instructions.map((page) => `<div class="timeline-instructions"><p>${page}</p></div>`),
     show_clickable_nav: true,
     allow_keys: true,
-    key_forward: 'ArrowRight',
-    key_backward: 'ArrowLeft',
+    key_forward: "ArrowRight",
+    key_backward: "ArrowLeft",
     button_label_previous: texts?.backButton || "",
     button_label_next: texts?.nextButton || "",
-    data: { task: 'go-nogo', phase: 'instructions' }
+    data: { task: "go-nogo", phase: "instructions" },
   };
 }
 
@@ -78,32 +77,32 @@ export function createInstructions(instructions: string[], texts?) {
  * @returns HTML string for inclusion in a jsPsych stimulus field.
  */
 const createStimulusHTML = (html: string, isGoTrial: boolean): string => {
-  const id = isGoTrial ? 'go-stimulus' : 'nogo-stimulus'
-  return `<div id="${id}-container" class="go-nogo-container timeline-trial" style="font-size: 3em;">${html}</div>`
-}
+  const id = isGoTrial ? "go-stimulus" : "nogo-stimulus";
+  return `<div id="${id}-container" class="go-nogo-container timeline-trial" style="font-size: 3em;">${html}</div>`;
+};
 
 /**
  * Creates a Go instruction trial with practice and infinite retry logic.
- * 
+ *
  * This function creates a dynamic timeline that teaches users how to respond to "go" stimuli.
  * Users must click the button within 10 seconds to proceed. If they fail to click in time,
  * they receive failure feedback and the trial repeats until they succeed.
- * 
+ *
  * @param go_stimulus - The stimulus content to display (can be text or HTML)
  * @param texts - Text configuration object containing all messages and labels
- * 
+ *
  * @returns A timeline object containing:
  *   - Practice task with 10-second timeout
  *   - Success feedback (if clicked in time)
  *   - Failure feedback + retry loop (if timeout occurs)
  */
 const createGoPractice = (go_stimulus: string, texts = trial_text, timeout: number = 10000) => {
-  const go_html = createStimulusHTML(go_stimulus, true)
-  
+  const go_html = createStimulusHTML(go_stimulus, true);
+
   // Create a timeline to hold the practice trials
   // This will allow us to conditionally push trials for retry logic
-  const practiceGoTimeline = []
-  
+  const practiceGoTimeline = [];
+
   const practiceTask = {
     type: jsPsychHtmlButtonResponse,
     stimulus: `
@@ -111,24 +110,25 @@ const createGoPractice = (go_stimulus: string, texts = trial_text, timeout: numb
       ${go_html}
       <p class="go-nogo-feedback" style="visibility: hidden;">${texts.goSuccess}</p>
     `,
-    choices: [texts.buttonText],
+    choices: [texts.stimulusButton],
     trial_duration: timeout, // default 10 seconds
-    data: { task: 'go-nogo', phase: 'go-practice' },
-    button_html: (choice, choice_index) => `<button id="go-nogo-btn" class="jspsych-btn timeline-html-btn">${choice}</button>`,
+    data: { task: "go-nogo", phase: "go-practice" },
+    button_html: (choice, choice_index) =>
+      `<button id="go-nogo-btn" class="jspsych-btn timeline-html-btn">${choice}</button>`,
     on_finish: (data: any) => {
       if (data.response !== null) {
         // They clicked - show success feedback
-        data.correct = true // They clicked on go trial
-        practiceGoTimeline.push(successFeedback)
+        data.correct = true; // They clicked on go trial
+        practiceGoTimeline.push(successFeedback);
       } else {
         // They failed to click in time - show failure feedback then retry
-        data.correct = false // They did not click on go trial
-        practiceGoTimeline.push(failureFeedback)
-        practiceGoTimeline.push(practiceTask) // infinite retying until they succeed in clicking.
+        data.correct = false; // They did not click on go trial
+        practiceGoTimeline.push(failureFeedback);
+        practiceGoTimeline.push(practiceTask); // infinite retying until they succeed in clicking.
       }
-    }
-  }
-  
+    },
+  };
+
   const successFeedback = {
     type: jsPsychHtmlButtonResponse,
     stimulus: `
@@ -136,14 +136,15 @@ const createGoPractice = (go_stimulus: string, texts = trial_text, timeout: numb
       ${go_html}
       <p class="go-nogo-feedback" style="color: #28a745;">${texts.goSuccess}</p>
     `,
-    choices: [texts.buttonText],
+    choices: [texts.stimulusButton],
     trial_duration: 2000,
     response_ends_trial: false,
-    data: { task: 'go-nogo', phase: 'practice', page: 'success' },
+    data: { task: "go-nogo", phase: "practice", page: "success" },
     //disabled button to signify click
-    button_html: (choice) => `<button id="go-nogo-btn" class="jspsych-btn timeline-html-btn" style="opacity: 0.5;" disabled>${choice}</button>`,
-  }
-  
+    button_html: (choice) =>
+      `<button id="go-nogo-btn" class="jspsych-btn timeline-html-btn" style="opacity: 0.5;" disabled>${choice}</button>`,
+  };
+
   const failureFeedback = {
     type: jsPsychHtmlButtonResponse,
     stimulus: `
@@ -151,39 +152,40 @@ const createGoPractice = (go_stimulus: string, texts = trial_text, timeout: numb
       ${go_html}
       <p class="go-nogo-feedback" style="color: #dc3545;">${texts.goFailure}</p>
     `,
-    choices: [texts.buttonText],
+    choices: [texts.stimulusButton],
     trial_duration: 2000,
     response_ends_trial: false,
-    data: { task: 'go-nogo', phase: 'practice', page: 'failure' },
+    data: { task: "go-nogo", phase: "practice", page: "failure" },
     //disabled button to signify click
-    button_html: (choice) => `<button id="go-nogo-btn" class="jspsych-btn timeline-html-btn" style="opacity: 0.5;" disabled>${choice}</button>`,
-  }
+    button_html: (choice) =>
+      `<button id="go-nogo-btn" class="jspsych-btn timeline-html-btn" style="opacity: 0.5;" disabled>${choice}</button>`,
+  };
 
-  practiceGoTimeline.push(practiceTask)
-  return { timeline: practiceGoTimeline }
-}
+  practiceGoTimeline.push(practiceTask);
+  return { timeline: practiceGoTimeline };
+};
 
 /**
  * Creates a No-Go instruction trial with practice and infinite retry logic.
- * 
+ *
  * This function creates a dynamic timeline that teaches users how to respond to "no-go" stimuli.
  * Users must resist clicking the button for 3 seconds to proceed. If they click the button,
  * they receive failure feedback and the trial repeats until they succeed.
- * 
+ *
  * @param nogo_stimulus - The stimulus content to display (can be text or HTML)
  * @param texts - Text configuration object containing all messages and labels
- * 
+ *
  * @returns A timeline object containing:
  *   - Practice task with 3-second duration and button available
  *   - Success feedback (if they resist clicking)
  *   - Failure feedback + retry loop (if they click)
  */
 const createNoGoPractice = (nogo_stimulus: string, texts = trial_text, timeout: number = 3000) => {
-  const nogo_html = createStimulusHTML(nogo_stimulus, false)
-  
+  const nogo_html = createStimulusHTML(nogo_stimulus, false);
+
   // Create a timeline to hold the practice trials
   // This will allow us to conditionally push trials to show feedback later
-  const practiceNoGoTimeline = []
+  const practiceNoGoTimeline = [];
 
   const practiceTask = {
     type: jsPsychHtmlButtonResponse,
@@ -192,24 +194,25 @@ const createNoGoPractice = (nogo_stimulus: string, texts = trial_text, timeout: 
       ${nogo_html}
       <p class="go-nogo-feedback" style="visibility: hidden;">${texts.noGoSuccess}</p>
     `,
-    choices: [texts.buttonText],
+    choices: [texts.stimulusButton],
     trial_duration: timeout,
-    data: { task: 'go-nogo', phase: 'nogo-practice' },
-    button_html: (choice, choice_index) => `<button id="go-nogo-btn" class="continue-btn jspsych-btn timeline-html-btn">${choice}</button>`,
+    data: { task: "go-nogo", phase: "nogo-practice" },
+    button_html: (choice, choice_index) =>
+      `<button id="go-nogo-btn" class="continue-btn jspsych-btn timeline-html-btn">${choice}</button>`,
     on_finish: (data: any) => {
       if (data.response === null) {
         // They correctly didn't click - show success feedback
-        data.correct = true // They didn't click on no go trial
-        practiceNoGoTimeline.push(correctFeedback)
+        data.correct = true; // They didn't click on no go trial
+        practiceNoGoTimeline.push(correctFeedback);
       } else {
         // They failed by clicking - show failure feedback then retry
-        data.correct = false // They clicked on no go trial
-        practiceNoGoTimeline.push(incorrectFeedback)
-        practiceNoGoTimeline.push(practiceTask) // infinite retrying until they succeed by not clicking
+        data.correct = false; // They clicked on no go trial
+        practiceNoGoTimeline.push(incorrectFeedback);
+        practiceNoGoTimeline.push(practiceTask); // infinite retrying until they succeed by not clicking
       }
-    }
-  }
-  
+    },
+  };
+
   const correctFeedback = {
     type: jsPsychHtmlButtonResponse,
     stimulus: `
@@ -217,14 +220,15 @@ const createNoGoPractice = (nogo_stimulus: string, texts = trial_text, timeout: 
       ${nogo_html}
       <p class="go-nogo-feedback" style="color: #28a745;">${texts.noGoSuccess}</p>
     `,
-    choices: [texts.buttonText],
+    choices: [texts.stimulusButton],
     trial_duration: 2000,
     response_ends_trial: false,
-    data: { task: 'go-nogo', phase: 'practice', page: 'success' },
+    data: { task: "go-nogo", phase: "practice", page: "success" },
     //disabled button to signify click
-    button_html: (choice) => `<button id="go-nogo-btn" class="continue-btn jspsych-btn timeline-html-btn" style="opacity: 0.5;" disabled>${choice}</button>`,
-  }
-  
+    button_html: (choice) =>
+      `<button id="go-nogo-btn" class="continue-btn jspsych-btn timeline-html-btn" style="opacity: 0.5;" disabled>${choice}</button>`,
+  };
+
   const incorrectFeedback = {
     type: jsPsychHtmlButtonResponse,
     stimulus: `
@@ -232,17 +236,18 @@ const createNoGoPractice = (nogo_stimulus: string, texts = trial_text, timeout: 
       ${nogo_html}
       <p class="go-nogo-feedback" style="color: #dc3545;">${texts.noGoFailure}</p>
     `,
-    choices: [texts.buttonText],
+    choices: [texts.stimulusButton],
     trial_duration: 2000,
     response_ends_trial: false,
-    data: { task: 'go-nogo', phase: 'practice', page: 'failure' },
+    data: { task: "go-nogo", phase: "practice", page: "failure" },
     //disabled button to signify click
-    button_html: (choice) => `<button id="go-nogo-btn" class="continue-btn jspsych-btn timeline-html-btn" style="opacity: 0.5;" disabled>${choice}</button>`,
-  }
+    button_html: (choice) =>
+      `<button id="go-nogo-btn" class="continue-btn jspsych-btn timeline-html-btn" style="opacity: 0.5;" disabled>${choice}</button>`,
+  };
 
-  practiceNoGoTimeline.push(practiceTask)
-  return { timeline: practiceNoGoTimeline }
-}
+  practiceNoGoTimeline.push(practiceTask);
+  return { timeline: practiceNoGoTimeline };
+};
 
 /**
  * Create a small completion screen at the end of practice.
@@ -259,12 +264,13 @@ const createPracticeCompletion = (texts = trial_text) => {
         </div>
     `,
     choices: [texts.beginTaskButton],
-    data: { task: 'go-nogo', phase: 'practice', page: 'completion' },
-    button_html: (choice, choice_index) => `<button id="go-nogo-btn" class="continue-btn jspsych-btn timeline-html-btn">${choice}</button>`,
-  }
-  
-  return { timeline: [completionTrial] }
-}
+    data: { task: "go-nogo", phase: "practice", page: "completion" },
+    button_html: (choice, choice_index) =>
+      `<button id="go-nogo-btn" class="continue-btn jspsych-btn timeline-html-btn">${choice}</button>`,
+  };
+
+  return { timeline: [completionTrial] };
+};
 
 /**
  * Factory for the main Go/No-Go trial (stimulus + response button).
@@ -277,23 +283,25 @@ const createPracticeCompletion = (texts = trial_text) => {
 const createGoNoGo = (jsPsych: JsPsych, button_text: string, trial_timeout: number) => {
   return {
     type: jsPsychHtmlButtonResponse,
-    stimulus: jsPsych.timelineVariable('stimulus'),
+    stimulus: jsPsych.timelineVariable("stimulus"),
     choices: [button_text],
     trial_duration: trial_timeout,
     response_ends_trial: true,
     data: {
-      task: 'go-nogo',
-      phase: 'main-trial',
-      is_go_trial: jsPsych.timelineVariable('is_go_trial'),
-      block_number: jsPsych.timelineVariable('block_number'),
-      page: jsPsych.timelineVariable('page'),
+      task: "go-nogo",
+      phase: "main-trial",
+      is_go_trial: jsPsych.timelineVariable("is_go_trial"),
+      block_number: jsPsych.timelineVariable("block_number"),
+      page: jsPsych.timelineVariable("page"),
     },
-    button_html: (choice, choice_index) => `<button id="go-nogo-btn" class="continue-btn timeline-html-btn jspsych-btn">${choice}</button>`,
+    button_html: (choice, choice_index) =>
+      `<button id="go-nogo-btn" class="continue-btn timeline-html-btn jspsych-btn">${choice}</button>`,
     on_finish: (data: any) => {
-      data.correct = (data.is_go_trial && data.response === 0) || (!data.is_go_trial && data.response === null);
-    }
-  }
-}
+      data.correct =
+        (data.is_go_trial && data.response === 0) || (!data.is_go_trial && data.response === null);
+    },
+  };
+};
 
 /**
  * Creates an inter-stimulus interval (ISI) fixation screen.
@@ -310,19 +318,17 @@ const createISIFixation = (isi_timeout: number, button_text: string) => {
     trial_duration: isi_timeout,
     response_ends_trial: false,
     data: {
-      task: 'go-nogo',
-      phase: 'main',
-      page: 'isi'
+      task: "go-nogo",
+      phase: "main",
+      page: "isi",
     },
     // Hidden and disabled button to keep layout consistent with createGoNoGo but non-interactive
     button_html: (choice) =>
       `<button id="isi-btn" class="continue-btn timeline-html-btn jspsych-btn is-disabled"
                style="visibility: hidden;" disabled>${choice}</button>`,
-  }
-}
+  };
+};
 
-// This function generates timelineVariables for a block based on the specified parameters
-// It creates a mix of go and no-go trials according to the specified probabilities and stimuli
 /**
  * Generate timeline variables for a single block.
  * Ensures the requested Go/No-Go ratio and rotates through provided stimuli.
@@ -335,50 +341,59 @@ const createISIFixation = (isi_timeout: number, button_text: string) => {
  * @param actualNoGoStimuli List of No-Go stimuli used in rotation order.
  * @returns An array of timeline_variables entries consumed by createGoNoGo.
  */
-const createTimelineVariables = (jsPsych: JsPsych, blockNumber: number, num_trials: number, probability: number, actualGoStimuli: string[], actualNoGoStimuli: string[]) => {
-    const trials: any[] = []
-    
-    // Calculate exact counts
-    const numGoTrials = Math.round(num_trials * probability)
-    const numNoGoTrials = num_trials - numGoTrials
+const createTimelineVariables = (
+  jsPsych: JsPsych,
+  blockNumber: number,
+  num_trials: number,
+  probability: number,
+  actualGoStimuli: string[],
+  actualNoGoStimuli: string[],
+) => {
+  const trials: any[] = [];
 
-    // Validate inputs
-    if (numGoTrials < 0 || numNoGoTrials < 0) {
-        throw new Error(`Invalid trial configuration: probability (${probability}) results in ${numGoTrials} go trials and ${numNoGoTrials} no-go trials for ${num_trials} total trials. Both must be non-negative.`)
+  // Calculate exact counts
+  const numGoTrials = Math.round(num_trials * probability);
+  const numNoGoTrials = num_trials - numGoTrials;
+
+  // Validate inputs
+  if (numGoTrials < 0 || numNoGoTrials < 0) {
+    throw new Error(
+      `Invalid trial configuration: probability (${probability}) results in ${numGoTrials} go trials and ${numNoGoTrials} no-go trials for ${num_trials} total trials. Both must be non-negative.`,
+    );
+  }
+
+  // Create fixed array of trial types
+  const trialTypes = Array(numGoTrials).fill(true).concat(Array(numNoGoTrials).fill(false));
+  // Shuffle trial types
+  jsPsych.randomization.shuffle(trialTypes);
+
+  let goTrialCount = 0;
+  let noGoTrialCount = 0;
+
+  for (let i = 0; i < trialTypes.length; i++) {
+    const isGoTrial = trialTypes[i];
+    let stimulus: string;
+    if (isGoTrial) {
+      const stimulusIndex = goTrialCount % actualGoStimuli.length;
+      stimulus = actualGoStimuli[stimulusIndex];
+      goTrialCount++;
+    } else {
+      const stimulusIndex = noGoTrialCount % actualNoGoStimuli.length;
+      stimulus = actualNoGoStimuli[stimulusIndex];
+      noGoTrialCount++;
     }
 
-    // Create fixed array of trial types
-    const trialTypes = Array(numGoTrials).fill(true).concat(Array(numNoGoTrials).fill(false))
-    // Shuffle trial types
-    jsPsych.randomization.shuffle(trialTypes)
-
-    let goTrialCount = 0
-    let noGoTrialCount = 0
-
-    for (let i = 0; i < trialTypes.length; i++) {
-      const isGoTrial = trialTypes[i]
-      let stimulus: string
-      if (isGoTrial) {
-        const stimulusIndex = goTrialCount % actualGoStimuli.length
-        stimulus = actualGoStimuli[stimulusIndex]
-        goTrialCount++
-      } else {
-        const stimulusIndex = noGoTrialCount % actualNoGoStimuli.length
-        stimulus = actualNoGoStimuli[stimulusIndex]
-        noGoTrialCount++
-      }
-
-      trials.push({
-        stimulus: createStimulusHTML(stimulus, isGoTrial),
-        is_go_trial: isGoTrial,
-        task: 'go-nogo',
-        phase: 'main-trial',
-        page: isGoTrial ? 'go' : 'nogo',
-        block_number: blockNumber,
-      })
-    }
-    return trials
-}
+    trials.push({
+      stimulus: createStimulusHTML(stimulus, isGoTrial),
+      is_go_trial: isGoTrial,
+      task: "go-nogo",
+      phase: "main-trial",
+      page: isGoTrial ? "go" : "nogo",
+      block_number: blockNumber,
+    });
+  }
+  return trials;
+};
 
 /**
  * Insert a short break screen between blocks.
@@ -392,10 +407,11 @@ const createBlockBreak = (blockNum: number, num_blocks: number) => {
     type: jsPsychHtmlButtonResponse,
     stimulus: `<p>${trial_text.blockBreakContent(blockNum, num_blocks)}</p>`,
     choices: [trial_text.continueButton],
-    data: { task: 'go-nogo', phase: 'block-break'+ blockNum, block_number: blockNum },
-    button_html: (choice) => `<button id="block-break-btn" class="continue-btn jspsych-btn timeline-html-btn">${choice}</button>`,
-  }
-}
+    data: { task: "go-nogo", phase: "block-break" + blockNum, block_number: blockNum },
+    button_html: (choice) =>
+      `<button id="block-break-btn" class="continue-btn jspsych-btn timeline-html-btn">${choice}</button>`,
+  };
+};
 
 /**
  * Create the end-of-experiment debrief screen showing accuracy and mean RT.
@@ -406,37 +422,42 @@ const createBlockBreak = (blockNum: number, num_blocks: number) => {
 const createDebrief = (jsPsych: JsPsych, text_object = trial_text) => {
   // Calculate stats when trial starts, not when displayed
   const calculateStats = () => {
-    const allTrials = jsPsych.data.get().filter({ task: 'go-nogo', phase: 'main-trial' }).values()
-    
-    if (allTrials.length === 0) return { accuracy: 0, meanRT: 0 }
-    
+    const allTrials = jsPsych.data.get().filter({ task: "go-nogo", phase: "main-trial" }).values();
+
+    if (allTrials.length === 0) return { accuracy: 0, meanRT: 0 };
+
     // Calculate accuracy (percentage of correct responses)
-    const correctTrials = allTrials.filter((trial: any) => trial.correct === true)
-    const accuracy = Math.round((correctTrials.length / allTrials.length) * 100)
-    
+    const correctTrials = allTrials.filter((trial: any) => trial.correct === true);
+    const accuracy = Math.round((correctTrials.length / allTrials.length) * 100);
+
     // Calculate mean RT for GO trials where response was made
-    const goTrialsWithResponse = allTrials.filter((trial: any) => 
-      trial.is_go_trial === true && trial.response !== null && trial.rt > 0
-    )
-    const meanRT = goTrialsWithResponse.length > 0 
-      ? Math.round(goTrialsWithResponse.reduce((sum: number, trial: any) => sum + trial.rt, 0) / goTrialsWithResponse.length)
-      : 0
-    
-    return { accuracy, meanRT }
-  }
+    const goTrialsWithResponse = allTrials.filter(
+      (trial: any) => trial.is_go_trial === true && trial.response !== null && trial.rt > 0,
+    );
+    const meanRT =
+      goTrialsWithResponse.length > 0
+        ? Math.round(
+            goTrialsWithResponse.reduce((sum: number, trial: any) => sum + trial.rt, 0) /
+              goTrialsWithResponse.length,
+          )
+        : 0;
+
+    return { accuracy, meanRT };
+  };
 
   return {
     type: jsPsychHtmlButtonResponse,
     stimulus: () => {
-      const { accuracy, meanRT } = calculateStats()
-      
-      return text_object.debriefContent(accuracy, meanRT)
+      const { accuracy, meanRT } = calculateStats();
+
+      return text_object.debriefContent(accuracy, meanRT);
     },
     choices: [text_object.finishButton],
-    data: { task: 'go-nogo', phase: 'debrief' },
-    button_html: (choice, choice_index) => `<button id="debrief-btn" class="continue-btn jspsych-btn timeline-html-btn">${choice}</button>`,
-  }
-}
+    data: { task: "go-nogo", phase: "debrief" },
+    button_html: (choice, choice_index) =>
+      `<button id="debrief-btn" class="continue-btn jspsych-btn timeline-html-btn">${choice}</button>`,
+  };
+};
 
 /**
  * High-level factory that assembles the full Go/No-Go jsPsych timeline.
@@ -470,13 +491,13 @@ export function createTimeline(
     nogo_practice_timeout = 3000,
     // texts
     text_object = trial_text,
-  } : GoNoGoConfig = {}) {
-
-  text_object = {...trial_text, ...(text_object ?? {})}  // Merge default texts with any overrides from config
-  const timeline = []
+  }: GoNoGoConfig = {},
+) {
+  text_object = { ...trial_text, ...(text_object ?? {}) }; // Merge default texts with any overrides from config
+  const timeline = [];
 
   if (show_instructions) {
-    timeline.push(createInstructions(text_object.instructions_pages, text_object))
+    timeline.push(createInstructions(text_object.instructions_pages, text_object));
   }
 
   if (show_practice) {
@@ -487,47 +508,54 @@ export function createTimeline(
       nogo_stimuli,
       text_object: text_object,
       go_practice_timeout,
-      nogo_practice_timeout
-    })
-    timeline.push(practiceTrials)
+      nogo_practice_timeout,
+    });
+    timeline.push(practiceTrials);
   }
-  //check for array stimuli then fallback on go_stimulus
+  // check for array stimuli then fallback on go_stimulus
   const actualGoStimuli = go_stimuli?.length > 0 ? go_stimuli : [go_stimulus];
   const actualNoGoStimuli = nogo_stimuli?.length > 0 ? nogo_stimuli : [nogo_stimulus];
 
-  const goNoGoTrial = createGoNoGo(jsPsych, text_object.buttonText, trial_timeout)
-  const isi_timeoutTrial = createISIFixation(isi_timeout, text_object.buttonText)
+  const goNoGoTrial = createGoNoGo(jsPsych, text_object.stimulusButton, trial_timeout);
+  const isi_timeoutTrial = createISIFixation(isi_timeout, text_object.stimulusButton);
 
   // Generate blocks
-  const blocks = []
+  const blocks = [];
   for (let blockNum = 1; blockNum <= num_blocks; blockNum++) {
-    const blockTrials = createTimelineVariables(jsPsych, blockNum, num_trials, probability, actualGoStimuli, actualNoGoStimuli)
+    const blockTrials = createTimelineVariables(
+      jsPsych,
+      blockNum,
+      num_trials,
+      probability,
+      actualGoStimuli,
+      actualNoGoStimuli,
+    );
 
     // Add block trials
     const blockProcedure = {
       timeline: [goNoGoTrial, isi_timeoutTrial],
       timeline_variables: blockTrials,
-      randomize_order: true
-    }
-    blocks.push(blockProcedure)
-    
+      randomize_order: true,
+    };
+    blocks.push(blockProcedure);
+
     // Add block break page between blocks (except after last block)
     if (blockNum < num_blocks) {
-      const blockBreakTrial = createBlockBreak(blockNum, num_blocks)
-      blocks.push(blockBreakTrial)
+      const blockBreakTrial = createBlockBreak(blockNum, num_blocks);
+      blocks.push(blockBreakTrial);
     }
   }
 
-  timeline.push([...blocks])
+  timeline.push([...blocks]);
 
   if (show_debrief) {
-    const debriefTrial = createDebrief(jsPsych, text_object)
-    timeline.push(debriefTrial)
+    const debriefTrial = createDebrief(jsPsych, text_object);
+    timeline.push(debriefTrial);
   }
 
   return {
-    timeline
-  }
+    timeline,
+  };
 }
 
 /**
@@ -537,15 +565,14 @@ export function createTimeline(
  * @returns An array of practice timeline segments to be inserted into the main timeline.
  */
 function createPractice({
-    go_stimulus,
-    nogo_stimulus,
-    go_stimuli,
-    nogo_stimuli,
-    text_object= trial_text,
-    go_practice_timeout = 10000,
-    nogo_practice_timeout = 3000
-  } : GoNoGoConfig = {}) {
-  
+  go_stimulus,
+  nogo_stimulus,
+  go_stimuli,
+  nogo_stimuli,
+  text_object = trial_text,
+  go_practice_timeout = 10000,
+  nogo_practice_timeout = 3000,
+}: GoNoGoConfig = {}) {
   //check for array stimuli then fallback on go_stimulus
   const actualGoStimuli = go_stimuli?.length > 0 ? go_stimuli : [go_stimulus];
   const actualNoGoStimuli = nogo_stimuli?.length > 0 ? nogo_stimuli : [nogo_stimulus];
@@ -553,8 +580,8 @@ function createPractice({
   return [
     createGoPractice(actualGoStimuli[0], text_object, go_practice_timeout),
     createNoGoPractice(actualNoGoStimuli[0], text_object, nogo_practice_timeout),
-    createPracticeCompletion(text_object)
-  ]
+    createPracticeCompletion(text_object),
+  ];
 }
 
 /**
@@ -571,8 +598,8 @@ export const timelineUnits = {
   createISIFixation,
   createTimelineVariables,
   createBlockBreak,
-  createStimulusHTML
-}
+  createStimulusHTML,
+};
 
 /**
  * Utility exports used by consumers and tests.
@@ -645,12 +672,12 @@ h2 {
  * Call this function before running the timeline to ensure proper styling.
  */
 export function injectStyles() {
-  if (typeof document !== 'undefined') {
-    const styleId = 'go-nogo-timeline-styles';
-    
+  if (typeof document !== "undefined") {
+    const styleId = "go-nogo-timeline-styles";
+
     // Check if styles are already injected
     if (!document.getElementById(styleId)) {
-      const styleElement = document.createElement('style');
+      const styleElement = document.createElement("style");
       styleElement.id = styleId;
       styleElement.textContent = styles;
       document.head.appendChild(styleElement);
@@ -662,5 +689,5 @@ export const utils = {
   createStimulusHTML,
   trial_text,
   styles,
-  injectStyles
-}
+  injectStyles,
+};

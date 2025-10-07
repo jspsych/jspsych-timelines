@@ -21,32 +21,31 @@
     on_finish: () => jsPsych.data.displayData()
   });
 
-    const config = {
-      /* general */
-      show_instructions: true,
-      show_practice: true,
-      num_blocks: 3,
-      num_trials: 50,
-      trial_timeout: 500,
-      isi_timeout: 500,
-      probability: 0.75, // probability of GO trials (0-1)
-      show_debrief: false,
-      /* trial-specific, can be overridden by text.ts properties */
-      // go_stimulus: "<h1>Y</h1>",
-      // nogo_stimulus: circle,
-      // nogo_stimuli: ["<h1>X</h1>","NO-GO"],
-      // go_practice_timeout: 10000,
-      // nogo_practice_timeout: 3000,
-      /* texts */
-      // text_object: texts = trial_text,
-    };
+  const config = {
+    /* general */
+    show_instructions: true,
+    show_practice: true,
+    num_blocks: 3,
+    num_trials: 50,
+    trial_timeout: 500,
+    isi_timeout: 500,
+    probability: 0.75, // probability of GO trials (0-1)
+    show_debrief: false,
+    /* trial-specific, can be overridden by text.ts properties */
+    // go_stimulus: "<h1>Y</h1>",
+    // nogo_stimulus: circle,
+    // nogo_stimuli: ["<h1>X</h1>","NO-GO"],
+    // go_practice_timeout: 10000,
+    // nogo_practice_timeout: 3000,
+    /* texts */
+    // text_object: texts = trial_text,
+  };
   const timeline = jsPsychTimelineGoNoGo.createTimeline(jsPsych, config);
   // Can use timeline units like this:
   // const instructions = jsPsychTimelineGoNoGo.createInstructions(text_trial.instructions_pages, text_trial);
   // const practice = jsPsychTimelineGoNoGo.timelineUnits.createPractice(config);
   // const debrief = jsPsychTimelineGoNoGo.createTimeline(jsPsych, config);
 
-jsPsych.run(timeline);
+  jsPsych.run(timeline);
 </script>
-
 </html>

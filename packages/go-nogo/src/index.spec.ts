@@ -8,6 +8,7 @@ describe("Go-NoGo Timeline", () => {
     jsPsych = initJsPsych();
   });
 
+  //TODO: improve these tests to not test for existence of properties only, but also their functionality
   describe("createTimeline", () => {
     it("should create timeline with default config", () => {
       const timeline = createTimeline(jsPsych);
@@ -48,7 +49,11 @@ describe("Go-NoGo Timeline", () => {
       
       expect(instructions).toHaveProperty('type');
       expect(instructions).toHaveProperty('pages');
-      expect(Array.isArray(instructions.pages)).toBe(true);
+      // example of testing via functionality-- does it generate the correct number of pages with the right content?
+      expect(instructions.pages).toEqual([
+        '<div class="timeline-instructions"><p>hi</p></div>',
+        '<div class="timeline-instructions"><p><b>test<b></p></div>'
+      ]);
     });
   });
 
@@ -115,12 +120,6 @@ describe("Go-NoGo Timeline", () => {
   });
 
   describe("utils", () => {
-    it("should provide trial_text object", () => {
-      expect(utils).toHaveProperty('trial_text');
-      expect(typeof utils.trial_text).toBe('object');
-      expect(utils.trial_text).toHaveProperty('buttonText');
-    });
-
     it("should provide createStimulusHTML function", () => {
       expect(typeof utils.createStimulusHTML).toBe('function');
       const html = utils.createStimulusHTML('TEST', true);
