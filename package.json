@@ -11,7 +11,7 @@
     "test:watch": "npm test -- --watch",
     "build": "npm run build -ws",
     "update-unpkg-links": "gulp updateUnpkgLinks",
-    "update-readme": "node ./update-readme.js",
+    "update-readme": "gulp updateReadme",
     "prepare": "husky install",
     "changeset": "changeset",
     "changeset:version": "changeset version && npm install && npm run update-unpkg-links && npm run update-readme",
@@ -50,8 +50,7 @@
     ]
   },
   "dependencies": {
-    "@jspsych/plugin-html-button-response": "^2.1.0",
-    "@jspsych/test-utils": "^1.2.0",
+    "@jspsych/new-timeline": "^0.1.3",
     "chokidar": "^3.6.0",
     "gulp": "^5.0.0",
     "gulp-replace": "^1.1.4",
