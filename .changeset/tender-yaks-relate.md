@@ -1,5 +1,5 @@
 ---
-"go-nogo-timeline": minor
+"@jspsych-timelines/go-nogo": minor
 ---
 
-Initial release of the Go/No-go task
+initial release of go-nogo task timeline
