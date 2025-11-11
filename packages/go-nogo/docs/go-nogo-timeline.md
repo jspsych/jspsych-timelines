@@ -16,15 +16,6 @@ A jsPsych implementation of the Go/No-Go task for measuring response inhibition 
 
 The Go/No-Go task measures response inhibition by requiring participants to respond quickly to "go" stimuli while withholding responses to "no-go" stimuli.
 
-### Features
-
-- Interactive practice trials with automatic retry logic
-- Support for single stimuli or arrays of stimuli (cycled in sequence)
-- Multi-block structure with break pages
-- Comprehensive data collection and automatic performance calculation
-- Configurable timing, stimulus, and text parameters
-- Built-in debrief screen with accuracy and reaction time summaries
-
 ## Installation
 
 ### NPM
@@ -163,8 +154,8 @@ const nogoHtml = createStimulusHTML('STOP', false);
 | `task` | string | Always `'go-nogo'` |
 | `phase` | string | `'instructions'`, `'practice'`, `'main-trial'`, `'debrief'`, etc. |
 | `is_go_trial` | boolean | `true` for GO trials, `false` for NO-GO trials |
-| `response` | number \| null | Button pressed (0) or no response (null) |
-| `rt` | number \| null | Reaction time in milliseconds |
+| `response` | number \| `null` | Button pressed (0) or no response (`null`) |
+| `rt` | number \| `null` | Reaction time in milliseconds |
 | `correct` | boolean | Whether response was correct |
 | `block_number` | number | Block number (1-indexed) |
 | `page` | string | `'go'`, `'nogo'`, `'isi'`, etc. |

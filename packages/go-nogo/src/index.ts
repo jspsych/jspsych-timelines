@@ -607,12 +607,14 @@ export const timelineUnits = {
   createPracticeCompletion,
   createGoNoGo,
   createISIFixation,
-  createTimelineVariables,
   createBlockBreak,
-  createStimulusHTML,
 };
 
+/**
+ * Namespaced access to utility functions for advanced usage and testing.
+ */
 export const utils = {
   createStimulusHTML,
   trial_text,
+  createTimelineVariables,
 };
