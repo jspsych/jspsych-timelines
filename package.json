@@ -54,7 +54,10 @@
     "chokidar": "^3.6.0",
     "gulp": "^5.0.0",
     "gulp-replace": "^1.1.4",
-    "jspsych": "^8.0.2",
+    "jspsych": "^8.2.1",
     "run-func": "^3.0.0"
+  },
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "*"
   }
 }
