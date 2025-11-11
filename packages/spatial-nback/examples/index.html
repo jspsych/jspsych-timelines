@@ -14,7 +14,7 @@
 <body></body>
 <script>
   const jsPsych = initJsPsych({
-      on_finish: function () {
+    on_finish: function () {
       jsPsych.data.displayData();
     }
   });
@@ -24,8 +24,10 @@
   const confirm = {
     type: jsPsychHtmlButtonResponse,
     stimulus: '<p>Press CONTINUE to start the main task.</p>',
-    choices: ['CONTINUE'],
+    choices: ['<p>CONTINUE</p>'],
+    css_classes: ['jspsych-spatial-nback-container']
   };
+  
   // Create a custom timeline
   const spatial1Back = jsPsychTimelineSpatialNback.createTimeline({
     rows: 3,
@@ -55,7 +57,7 @@
   //     trials_per_level: 20
   // });
 
-  jsPsych.run([instructions, practice, spatial1Back]);
+  jsPsych.run([instructions, practice, confirm, spatial1Back]);
 </script>
 
 </html>
