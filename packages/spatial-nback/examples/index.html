@@ -19,8 +19,8 @@
     }
   });
 
-  const instructions = jsPsychTimelineSpatialNback.createInstructions();
-  const practice = jsPsychTimelineSpatialNback.createPracticeTimeline();
+  const instructions = jsPsychTimelineSpatialNback.timelineUnits.createInstructions();
+  const practice = jsPsychTimelineSpatialNback.timelineUnits.createPracticeTimeline();
   const confirm = {
     type: jsPsychHtmlButtonResponse,
     stimulus: '<p>Press CONTINUE to start the main task.</p>',
@@ -38,8 +38,8 @@
     feedback_duration: 0,
     show_feedback_text: false,
     show_feedback_border: false,
-    prompt: "", //overrides text.ts
-    buttons: ["O", "X"],                                                                         //overrides text.ts
+    prompt: "", // overrides text.ts defaults
+    buttons: ["O", "X"], // overrides text.ts defaults
     stimulus_color: "#2196F3",
     correct_color: "#4CAF50",
     incorrect_color: "#F44336",
@@ -47,10 +47,10 @@
   });
 
   // Or use a preset
-  // const timeline = presetConfigurations.medium();
+  // const timeline = jsPsychTimelineSpatialNback.presetConfigurations.medium();
 
   // Or create a multi-level experiment
-  // const timeline = createMultiLevelNBackTimeline({
+  // const timeline = jsPsychTimelineSpatialNback.createMultiLevelNBackTimeline({
   //     n_backs: [1, 2, 3],
   //     trials_per_level: 20
   // });

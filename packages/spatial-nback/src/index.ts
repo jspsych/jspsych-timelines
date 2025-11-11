@@ -1,4 +1,3 @@
-import { initJsPsych, JsPsych } from "jspsych"
 import jsPsychPluginSpatialNback from "@jspsych-contrib/plugin-spatial-nback";
 import jsPsychInstructions from "@jspsych/plugin-instructions";
 import { trial_text, instruction_pages } from "./text";
@@ -16,7 +15,8 @@ function createInstructions(instruction_pages_data = instruction_pages, texts = 
     data: {
       task: 'spatial-nback',
       phase: 'instructions'
-    }
+    },
+    css_classes: ["jspsych-spatial-nback-container"]
   };
 }
 
@@ -169,7 +169,8 @@ export function createTimeline({
                 total_trials: total_trials,
                 task: 'spatial-nback',
                 phase: 'trial'
-            }
+            },
+            css_classes: ["jspsych-spatial-nback-container"]
         });
     }
 
@@ -266,20 +267,13 @@ export const presetConfigurations = {
     })
 };
 
-// Export individual components for custom use
-export { createInstructions, generateNBackSequence };
-
-// Export default timeline creator
-export default createTimeline;
-
 export const timelineUnits = {
     createPracticeTimeline,
-    createTimeline,
     createMultiLevelNBackTimeline,
+    createInstructions
 };
 
 export const utils = {
     presetConfigurations,
     generateNBackSequence,
-    createInstructions
 }

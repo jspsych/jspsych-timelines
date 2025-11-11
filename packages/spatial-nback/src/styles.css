@@ -1,6 +1,6 @@
 /* GENERAL STYLES */
 
-h1, h2, h3 {
+.jspsych-spatial-nback-container h1, .jspsych-spatial-nback-container h2, .jspsych-spatial-nback-container h3 {
     line-height: 1.6;
     margin: 3vmin;
     word-wrap: break-word;
@@ -10,7 +10,7 @@ h1, h2, h3 {
     box-sizing: border-box;
 }
 
-p {
+.jspsych-spatial-nback-container p {
     margin: 5vmin 1vmin;
     font-size: clamp(15px, 7vmin, 40px);
     line-height: 1.6;    
@@ -23,7 +23,7 @@ p {
 }
 
 /* Styles for any normal HTML button */
-.continue-button {
+.jspsych-spatial-nback-container .continue-button {
     padding: clamp(15px, 6vmin, 35px) clamp(15px, 8vmin, 40px);
     font-size: clamp(15px, 6vmin, 35px);
     border-radius: 1vmin;
@@ -40,7 +40,7 @@ p {
 
 /* INSTRUCTIONS TRIAL STYLES */
 
-.timeline-instructions {
+.jspsych-spatial-nback-container .timeline-instructions {
     max-width: 90vw; /* Limit width for better readability */
     margin: 0 auto; /* Center the container */
     padding: 2vmin; /* Add some padding */
@@ -49,7 +49,7 @@ p {
 }
 
 /* Mobile-friendly instruction navigation buttons */
-.jspsych-instructions-nav {
+.jspsych-spatial-nback-container .jspsych-instructions-nav {
     display: flex;
     gap: 25vw;
     justify-content: center;
@@ -60,7 +60,7 @@ p {
 }
 
 /* Instruction navigation button styles */
-.jspsych-instructions-nav .jspsych-btn {
+.jspsych-spatial-nback-container .jspsych-instructions-nav .jspsych-btn {
     width: 20vmin;
     height: 20vmin;
     border: 3px solid #ccc;
@@ -76,17 +76,17 @@ p {
     user-select: none !important;
 }
 
-.jspsych-instructions-nav .jspsych-btn:active {
+.jspsych-spatial-nback-container .jspsych-instructions-nav .jspsych-btn:active {
     background-color: #f0f0f0;
     border-color: #999;
 }
 
-.jspsych-instructions-nav .jspsych-btn:disabled {
+.jspsych-spatial-nback-container .jspsych-instructions-nav .jspsych-btn:disabled {
     visibility: hidden;  /* Keeps the space but hides the button */
 }
 
 /* Smaller grid for instructions */
-.nback-grid-instructions > div > div {
+.jspsych-spatial-nback-container .nback-grid-instructions > div > div {
     width: 10vmin;
     height: 10vmin;
     min-width: 50px;
@@ -95,12 +95,12 @@ p {
 
 /* EXPERIMENT TRIAL STYLES */
 
-#nback-container {
+.jspsych-spatial-nback-container #nback-container {
     max-width: 92vw;
 }
 
 /* Task instructions in trial container, text on top. Usually there is none. */
-#nback-instructions {
+.jspsych-spatial-nback-container #nback-instructions {
     p {
         font-size: clamp(15px, 4.5vmin, 30px);
         margin: 0vmin; /* smaller than default p */
@@ -108,24 +108,24 @@ p {
 }
 
 /* Grid cells responsive sizing */
-#nback-grid > div > div {
+.jspsych-spatial-nback-container #nback-grid > div > div {
     min-width: min(12vh, 100px);
     min-height: min(12vh, 100px);
 }
 
 /* Feedback and buttons section styling */
-#nback-feedback-section {
+.jspsych-spatial-nback-container #nback-feedback-section {
     gap: 2vh !important;
     margin-top: 0px !important;
 }
 
 /* Buttons container with dynamic button count */
-#timeline-btn-container {
+.jspsych-spatial-nback-container #timeline-btn-container {
     --button-count: 3; /* Default fallback, will be overridden by JavaScript */
 }
 
 /* N-back response button styling */
-.nback-response-btn {
+.jspsych-spatial-nback-container .nback-response-btn {
     padding: clamp(10px, 3vh, 50px) clamp(20px, 7vw, 60px);
     font-size: clamp(20px, 7vmin, 60px);
     min-height: clamp(60px, 15vmin, 100px);
@@ -141,20 +141,20 @@ p {
 }
 
 /* Color specific buttons if you have multiple */
-#nback-response-btn-0 {
+.jspsych-spatial-nback-container #nback-response-btn-0 {
     background-color: rgb(77, 77, 77) !important;
 }
 
-.nback-response-btn:hover {
+.jspsych-spatial-nback-container .nback-response-btn:hover {
     background-color: rgb(97, 97, 97);
 }
 
-.nback-response-btn:active {
+.jspsych-spatial-nback-container .nback-response-btn:active {
     background-color: rgb(57, 57, 57);
     transform: translateY(1px);
 }
 
-.nback-response-btn:disabled {
+.jspsych-spatial-nback-container .nback-response-btn:disabled {
 
     opacity: 0.75;
     cursor: not-allowed;
@@ -171,12 +171,12 @@ p {
 /* Specific styles for tablets/iPads */
 @media (min-width: 481px) and (max-width: 1024px) {
     /* Smaller font size for instructions */
-    #nback-instructions p {
+    .jspsych-spatial-nback-container #nback-instructions p {
         font-size: clamp(15px, 2.8vmin, 50px);
     }
     
     /* Fixing instruction navigation button position */
-    .jspsych-instructions-nav {
+    .jspsych-spatial-nback-container .jspsych-instructions-nav {
         position: fixed;
         bottom: 5vmin;
         left: 50%;
@@ -184,12 +184,12 @@ p {
     }
     
     /* Add padding to prevent content from going under fixed buttons */
-    .timeline-instructions {
+    .jspsych-spatial-nback-container .timeline-instructions {
         padding-bottom: 45vmin; /* 30vmin for button position + 5vmin safety */
     }
 
     /* Adjusting grid cell size for tablets (bigger)*/
-    #nback-grid > div > div {
+    .jspsych-spatial-nback-container #nback-grid > div > div {
         width: 15vh !important;
         height: 15vh !important;
     }
@@ -197,26 +197,26 @@ p {
 
 /* Landscape mode adjustments */
 @media (orientation: landscape) {
-    .jspsych-instructions-nav {
+    .jspsych-spatial-nback-container .jspsych-instructions-nav {
         bottom: 3vh;
         gap: 30vw;
     }
 
-    #nback-instructions p {
+    .jspsych-spatial-nback-container #nback-instructions p {
         font-size: clamp(10px, 2.5vh, 25px);
     }
     
-    #nback-container {
+    .jspsych-spatial-nback-container #nback-container {
         padding: 0px !important;
         gap: 1.5vh !important;
     }
 
-    #nback-feedback-section {
+    .jspsych-spatial-nback-container #nback-feedback-section {
         margin: 0px;
         gap: 0px;
     }
 
-    .nback-response-btn {
+    .jspsych-spatial-nback-container .nback-response-btn {
         font-size: clamp(15px, 3vmin, 40px);
         padding: clamp(3px, 3vh, 30px) clamp(10px, 7vw, 60px);
         margin: 0px calc(6vw / var(--button-count, 2)) !important;
@@ -226,12 +226,12 @@ p {
 
 /* Specific styles for desktop/laptop (larger screens) */
 @media (min-width: 1025px) {
-    #nback-grid > div > div {
+    .jspsych-spatial-nback-container#nback-grid > div > div {
         width: 20vh !important;
         height: 20vh !important;
     }
 
-    .nback-response-btn {
+    .jspsych-spatial-nback-container .nback-response-btn {
         margin: 0 calc(5vw / var(--button-count, 2)) !important; /* Center the button */
     }
 }
