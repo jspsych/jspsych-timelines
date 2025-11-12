@@ -1,5 +1,11 @@
 # @jspsych-timelines/go-nogo
 
+## 0.1.2
+
+### Patch Changes
+
+- cc383a3: finally rewires export to proper file name
+
 ## 0.1.1
 
 ### Patch Changes
