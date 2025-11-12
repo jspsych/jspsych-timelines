@@ -31,7 +31,11 @@
     "keywords": [
         "jsPsych"
     ],
-    "authors": [
+    "author": {
+        "name": "URSI 2025 Team",
+        "url": "https://example.com"
+    },
+    "contributors": [
         {
             "name": "Caroline Griem",
             "url": "https://github.com/caroline-griem"
