@@ -11,8 +11,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/jspsych/jspsych-timelines.git",
-        "directory": ""
+        "url": "git+https://github.com/jspsych/jspsych-timelines.git"
     },
     "keywords": [
         "jsPsych"
@@ -23,9 +22,9 @@
     },
     "license": "MIT",
     "bugs": {
-        "url": "https://github.com/jspsych/jspsych-timelines/packages/spatial-nback#readme"
+        "url": "https://github.com/jspsych/jspsych-timelines/issues"
     },
-    "homepage": "/spatial-nback/README.md",
+    "homepage": "https://github.com/jspsych/jspsych-timelines/packages/spatial-nback#readme",
     "devDependencies": {
         "@jspsych/config": "^3.2.2",
         "jspsych": "^8.2.1",
