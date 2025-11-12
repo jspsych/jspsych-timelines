@@ -3,12 +3,12 @@
     "version": "0.1.0",
     "description": "A complete Go/No-Go task implementation for jsPsych measuring response inhibition and sustained attention. Includes interactive practice, configurable parameters, and comprehensive data collection.",
     "type": "module",
-    "main": "dist/index.mjs",
+    "main": "dist/index.js",
     "types": "dist/index.d.ts",
-    "unpkg": "dist/index.browser.min.js",
+    "unpkg": "dist/index.global.min.js",
     "exports": {
         ".": {
-            "import": "./dist/index.mjs",
+            "import": "./dist/index.js",
             "require": "./dist/index.cjs"
         },
         "./styles.css": "./dist/css/styles.css"
@@ -18,7 +18,7 @@
         "dist"
     ],
     "scripts": {
-        "build": "tsup src/index.ts --format esm,iife --sourcemap --dts --treeshake --clean --global-name jsPsychTimelineGoNoGo && node -e \"const fs = require('fs'); const path = require('path'); function copyDir(src, dest) { if (!fs.existsSync(dest)) fs.mkdirSync(dest, {recursive: true}); fs.readdirSync(src).forEach(file => { const srcFile = path.join(src, file); const destFile = path.join(dest, file); if (fs.lstatSync(srcFile).isDirectory()) copyDir(srcFile, destFile); else fs.copyFileSync(srcFile, destFile); }); } copyDir('src/css', 'dist/css');\"",
+        "build": "tsup src/index.ts --format esm,iife,cjs --sourcemap --dts --treeshake --clean --global-name jsPsychTimelineGoNoGo && node -e \"const fs = require('fs'); const path = require('path'); function copyDir(src, dest) { if (!fs.existsSync(dest)) fs.mkdirSync(dest, {recursive: true}); fs.readdirSync(src).forEach(file => { const srcFile = path.join(src, file); const destFile = path.join(dest, file); if (fs.lstatSync(srcFile).isDirectory()) copyDir(srcFile, destFile); else fs.copyFileSync(srcFile, destFile); }); } copyDir('src/css', 'dist/css');\"",
         "test": "jest",
         "test:watch": "jest --watch",
         "test:coverage": "jest --coverage"
