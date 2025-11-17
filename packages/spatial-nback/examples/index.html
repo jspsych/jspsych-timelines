@@ -6,9 +6,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <script src="https://unpkg.com/jspsych"></script>
   <script src="https://unpkg.com/@jspsych/plugin-html-button-response@2.1.0"></script>
-  <script src="../dist/index.global.js"></script>
   <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css">
-  <link rel="stylesheet" href="../src/styles.css">
+
+  <script src="../dist/index.global.js"></script>
+
+  <!-- OPTIONAL: Spatial N-Back timeline CSS for mobile-friendly styling -->
+  <link rel="stylesheet" href="../src/css/styles.css">
+
+  <!-- Can also load the published timeline package and CSS here instead of locally, e.g. -->
+  <!-- <script src="https://unpkg.com/@jspsych-timelines/spatial-nback"></script> -->
+  <!-- <link rel="stylesheet" href="https://unpkg.com/@jspsych-timelines/spatial-nback/dist/css/styles.css"> -->
 </head>
 
 <body></body>
@@ -21,6 +28,8 @@
 
   const instructions = jsPsychTimelineSpatialNback.timelineUnits.createInstructions();
   const practice = jsPsychTimelineSpatialNback.timelineUnits.createPracticeTimeline();
+
+  // Confirmation screen before main task: default timeline does not include this.
   const confirm = {
     type: jsPsychHtmlButtonResponse,
     stimulus: '<p>Press CONTINUE to start the main task.</p>',

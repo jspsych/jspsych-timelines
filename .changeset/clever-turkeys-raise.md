@@ -1,5 +1,5 @@
 ---
-"@jspsych-timelines/spatial-nback": major
+"@jspsych-timelines/spatial-nback": minor
 ---
 
 Spatial-nback timeline with full support for all devices.
