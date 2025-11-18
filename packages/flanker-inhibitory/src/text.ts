@@ -40,32 +40,6 @@ export const trial_text = {
     incorrect_feedback: "Incorrect",
 };
 
-// TTS (Text-to-Speech) configuration
-export const tts_config = {
-    // Voice settings
-    voice_name: '', // Empty string uses default voice, or specify like 'Google US English'
-    rate: 1.0, // Speech rate (0.1 to 10)
-    pitch: 1.0, // Speech pitch (0 to 2)
-    volume: 1.0, // Speech volume (0 to 1)
-    
-    // Language and locale
-    lang: 'en-US', // Language code for speech synthesis
-    
-    // What text to speak aloud (can be disabled per element)
-    speak_instructions: true, // Speak instruction page content
-    speak_prompts: true, // Speak trial prompts
-    speak_feedback: true, // Speak correct/incorrect feedback
-    speak_completion: true, // Speak task completion messages
-    
-    // Auto-play settings
-    auto_speak_on_load: true, // Automatically start speaking when page loads
-    speak_button_text: false, // Whether to also speak button labels
-    
-    // Timing
-    speech_delay: 500, // Delay before starting speech (ms)
-    allow_skip: true, // Allow users to skip/stop speech
-};
-
 /* 
  * This is an array of page objects that have configurable texts for the instruction pages
  * before the actual trials. Researchers can modify these instructions to change the

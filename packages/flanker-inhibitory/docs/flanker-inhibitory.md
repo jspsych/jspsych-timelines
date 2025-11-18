@@ -27,12 +27,6 @@ show_instructions | boolean | true | Whether to display instruction screens befo
 show_practice | boolean | true | Whether to include practice trials with feedback
 num_practice | number | 8 | Number of practice trials to present
 num_trials | number | 20 | Number of main task trials to present
-enable_tts | boolean | false | Enable text-to-speech functionality
-tts_method | string | 'google' | Preferred TTS method: 'google' or 'system'
-tts_rate | number | 0.8 | Speech rate (0.1 to 10, where 1.0 is normal speed)
-tts_pitch | number | 1.0 | Speech pitch (0 to 2, where 1.0 is normal pitch)
-tts_volume | number | 0.8 | Speech volume (0 to 1, where 1.0 is maximum volume)
-tts_lang | string | 'en-US' | Language code for speech synthesis
 
 ### Stimulus Configuration Examples
 
@@ -59,15 +53,6 @@ const customTypeConfig = {
   stimuli_amount: 7
 };
 
-// Enable TTS with custom voice settings
-const ttsConfig = {
-  enable_tts: true,
-  tts_method: 'google',
-  tts_rate: 0.8,
-  tts_pitch: 1.1,
-  tts_volume: 0.8,
-  tts_lang: 'en-US'
-};
 ```
 
 ### Timeline Structure
@@ -194,41 +179,4 @@ const config = {
 - Responsive sizing using vmin units
 - Optimized for various screen sizes
 - No keyboard input required
-
-### Text-to-Speech (TTS) Support
-
-The package includes comprehensive TTS functionality for accessibility:
-
-#### Features
-- **Configurable voice settings**: Rate, pitch, volume, and language
-- **Selective content**: Choose what content to speak (instructions, prompts, feedback)
-- **Speech controls**: Space bar to skip current speech
-- **Auto-play options**: Automatically start speaking when content loads
-- **Browser compatibility**: Uses Web Speech API (available in most modern browsers)
-
-#### TTS Configuration
-```js
-const config = {
-  enable_tts: true,
-  tts_method: 'google', // Preferred TTS method: 'google' or 'system'
-  tts_rate: 0.9,     // Slightly slower than normal
-  tts_pitch: 1.0,    // Normal pitch
-  tts_volume: 0.8,   // 80% volume
-  tts_lang: 'en-US'  // Language code
-};
-```
-
-#### Speech Controls
-- **Space bar**: Skip current speech
-- **Automatic cleanup**: Speech stops when task completes
-- **Error handling**: Graceful fallback if TTS not supported
-
-#### Browser Support
-TTS requires the Web Speech API, supported in:
-- Chrome/Chromium browsers
-- Safari (desktop and mobile)
-- Edge
-- Firefox (limited support)
-
-If TTS is not supported, the task continues normally without speech.
 

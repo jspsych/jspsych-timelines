@@ -4,230 +4,7 @@ import jsPsychInstructions from '@jspsych/plugin-instructions';
 import { trial_text, instruction_pages } from './text';
 import { layered_stimuli, fish_only, arrow_only, custom_stimulus } from './stimuli';
 
-// Global audio reference for stopping Google TTS
-let currentGoogleAudio: HTMLAudioElement | null = null;
-
-// Global speech cancellation token to prevent speech bleeding between pages
-let currentSpeechToken = 0;
-
-/**
- * Intelligent TTS with user preference support
- * Tries user's preferred method first, then the other method as fallback
- */
-async function speakText(text: string, options: { lang?: string, volume?: number, method?: 'google' | 'system' } = {}) {
-  // Stop any current speech first
-  stopAllSpeech();
-  
-  // Create a unique token for this speech request
-  const speechToken = ++currentSpeechToken;
-  
-  // Check if we were cancelled before starting
-  if (speechToken !== currentSpeechToken) return;
-  
-  const preferredMethod = options.method || 'google';
-  
-  // Try preferred method first
-  try {
-    if (preferredMethod === 'google') {
-      if (speechToken !== currentSpeechToken) return; // Check before starting
-      await speakWithGoogleTTS(text, options.lang || 'en', speechToken);
-      return;
-    } else {
-      if (speechToken !== currentSpeechToken) return; // Check before starting
-      await speakWithSystemTTS(text, options, speechToken);
-      return;
-    }
-  } catch (preferredSpeechError) {
-    // Preferred method failed, continue to try all methods
-  }
-  
-  // Try Google TTS regardless
-  if (speechToken !== currentSpeechToken) return;
-  
-  try {
-    await speakWithGoogleTTS(text, options.lang || 'en', speechToken);
-    return;
-  } catch (googleError) {
-    // Google failed, continue to system
-  }
-  
-  // Try system TTS as final fallback
-  if (speechToken !== currentSpeechToken) return;
-  
-  try {
-    await speakWithSystemTTS(text, options, speechToken);
-    return;
-  } catch (systemError) {
-    console.warn('🔊 TTS unavailable');
-  }
-}
-
-/**
- * Stop all speech including Google TTS audio - aggressively stops everything
- */
-function stopAllSpeech() {
-  // Increment token to cancel any pending speech
-  currentSpeechToken++;
-  
-  try {
-  // Stop system TTS aggressively
-    speechSynthesis.cancel();
-    speechSynthesis.pause();
-    speechSynthesis.resume();
-    speechSynthesis.cancel();
-  // Stop Google TTS audio aggressively
-    if (currentGoogleAudio) {
-      currentGoogleAudio.pause();
-      currentGoogleAudio.currentTime = 0; // Reset to beginning
-      currentGoogleAudio.src = ''; // Clear source to stop loading
-    }
-  } catch (e) {
-    // Ignore errors, just ensure we clear the reference
-  }
-  currentGoogleAudio = null;
-}
-
-/**
- * Simple system TTS function 
- * Browser will automatically select the best voice for the specified language
- */
-function speakWithSystemTTS(text: string, options: { rate?: number, volume?: number, pitch?: number, lang?: string } = {}, speechToken?: number) {
-  return new Promise<void>((resolve, reject) => {
-    if ('speechSynthesis' in window) {
-      // Check if cancelled before starting
-      if (speechToken && speechToken !== currentSpeechToken) {
-        resolve();
-        return;
-      }
-      
-      // Create and speak the utterance
-      const utterance = new SpeechSynthesisUtterance(text);
-      
-      // Apply options with defaults
-      utterance.rate = options.rate ?? 0.8;
-      utterance.volume = options.volume ?? 0.8;
-      utterance.pitch = options.pitch ?? 1.0;
-      
-      // Set language if provided (browser will pick best voice)
-      if (options.lang) {
-        utterance.lang = options.lang;
-      }
-      
-      // Add event listeners
-      utterance.onstart = () => {
-        // Check if cancelled after starting
-        if (speechToken && speechToken !== currentSpeechToken) {
-          speechSynthesis.cancel();
-          resolve();
-          return;
-        }
-        resolve();
-      };
-      utterance.onend = () => resolve();
-      utterance.onerror = (e) => {
-        if (e.error === 'not-allowed' || e.error === 'synthesis-failed') {
-          reject(new Error(e.error)); // Reject on critical errors
-        } else {
-          resolve(); // Don't fail on minor errors since this is a fallback
-        }
-      };
-      
-      // Final check before speaking
-      if (speechToken && speechToken !== currentSpeechToken) {
-        resolve();
-        return;
-      }
-      
-      speechSynthesis.speak(utterance);
-    } else {
-      reject(new Error('speechSynthesis not supported'));
-    }
-  });
-}
-
-/**
- * Defaultl TTS using Google Translate
- * This works by creating an audio element that plays Google's TTS service
- */
-function speakWithGoogleTTS(text: string, lang: string, speechToken?: number) {
-  return new Promise<void>((resolve, reject) => {
-    try {
-      // Check if cancelled before starting
-      if (speechToken && speechToken !== currentSpeechToken) {
-        resolve();
-        return;
-      }
-      
-      // Convert language code to simple 2-letter format for Google
-      const googleLang = lang ? lang.substring(0, 2).toLowerCase() : 'en';
-      // Create Google Translate TTS URL
-      const encodedText = encodeURIComponent(text);
-      const googleTTSUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=${googleLang}&client=tw-ob&q=${encodedText}`;
-      
-      // Create and play audio
-      const audio = new Audio(googleTTSUrl);
-      
-      // Store reference to current audio for stopping immediately
-      currentGoogleAudio = audio;
-      
-      audio.oncanplay = () => {
-        // Check if we were cancelled while loading or if this is no longer the current audio
-        if ((speechToken && speechToken !== currentSpeechToken) || currentGoogleAudio !== audio) {
-          audio.pause();
-          resolve();
-          return;
-        }
-        audio.play().then(resolve).catch(reject);
-      };
-      
-      audio.onended = () => {
-        // Only clear if this is still the current audio
-        if (currentGoogleAudio === audio) {
-          currentGoogleAudio = null;
-        }
-        resolve();
-      };
-      
-      audio.onerror = (e) => {
-        // Always try to pause and clear, even on error
-        audio.pause();
-        if (currentGoogleAudio === audio) {
-          currentGoogleAudio = null;
-        }
-        reject(new Error('Google TTS failed'));
-      };
-      
-      // Final check before loading
-      if (speechToken && speechToken !== currentSpeechToken) {
-        resolve();
-        return;
-      }
-      
-      // Load the audio
-      audio.load();
-      
-    } catch (error) {
-      reject(error);
-    }
-  });
-}
-
-/**
- * Creates instruction pages with configurable text and TTS support
- * Uses the jsPsych instructions plugin with simple HTML strings
- */
-// Helper function to extract text from HTML for TTS
-function extractTextFromHtml(htmlString: string): string {
-  // Use DOMParser for robust HTML to text extraction
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(htmlString, 'text/html');
-  return doc.body.textContent?.replace(/\s+/g, ' ').trim() || '';
-}
-
-function createInstructions(instruction_pages_data = instruction_pages, enable_tts = false, ttsOptions = {}) {
-  // Closure variable to store the handler for cleanup
-  let handleButtonClick: ((event: Event) => void) | null = null;
-
+function createInstructions(instruction_pages_data = instruction_pages) {
   return {
     type: jsPsychInstructions,
     pages: instruction_pages_data.map(page => `<div class="instructions-container"><p>${page}</p></div>`),
@@ -237,46 +14,7 @@ function createInstructions(instruction_pages_data = instruction_pages, enable_t
     key_backward: 'ArrowLeft',
     button_label_previous: trial_text.back_button,
     button_label_next: trial_text.next_button,
-    on_start: function() {
-      stopAllSpeech();
-    },
-    on_load: function() {
-      if (enable_tts) {
-        // Function to speak current page content
-        const speakCurrentPage = () => {
-          const instructionsContent = document.querySelector('.instructions-container');
-          if (instructionsContent) {
-            const pageText = extractTextFromHtml(instructionsContent.innerHTML);
-            if (pageText.trim()) {
-              speakText(pageText, ttsOptions);
-            }
-          }
-        };
-
-        // Use closure variable for handler
-        handleButtonClick = (event: Event) => {
-          const target = event.target as HTMLElement;
-          if (target && (target.id === 'jspsych-instructions-next' || target.id === 'jspsych-instructions-back')) {
-            stopAllSpeech();
-            // Remove delay - speak immediately after stopping
-            speakCurrentPage();
-          }
-        };
-
-        // Add single event listener to document
-        document.addEventListener('click', handleButtonClick);
-
-        // Speak initial page immediately
-        speakCurrentPage();
-      }
-    },
     on_finish: function(data: any) {
-      stopAllSpeech();
-      // Clean up event listener using closure variable
-      if (handleButtonClick) {
-        document.removeEventListener('click', handleButtonClick);
-        handleButtonClick = null;
-      }
       data.phase = 'instructions';
     }
   };
@@ -476,14 +214,6 @@ export interface FlankerConfig {
   show_practice?: boolean;
   num_practice?: number;
   num_trials?: number;
-  
-  // Simplified TTS Configuration
-  enable_tts?: boolean; // Enable text-to-speech functionality
-  tts_method?: 'google' | 'system'; // Preferred TTS method (default: 'google')
-  tts_rate?: number; // Speech rate (0.1 to 10, default: 0.8)
-  tts_pitch?: number; // Speech pitch (0 to 2, default: 1.0)
-  tts_volume?: number; // Speech volume (0 to 1, default: 0.8)
-  tts_lang?: string; // Language code for TTS
 }
 
 // ============================================================================
@@ -526,22 +256,7 @@ export function createTimeline(jsPsych: JsPsych, config: FlankerConfig = {}) {
     show_practice = true,
     num_practice = 8,
     num_trials = 20,
-    enable_tts = false,
-    tts_method = 'google',
-    tts_rate = 0.8,
-    tts_pitch = 1.0,
-    tts_volume = 0.8,
-    tts_lang = 'en-US',
   } = config;
-
-  // Create TTS options object
-  const ttsOptions = {
-    rate: tts_rate,
-    volume: tts_volume,
-    pitch: tts_pitch,
-    lang: tts_lang,
-    method: tts_method
-  };
 
   // Determine which stimuli to use based on priority:
   // 1. svg override parameter (highest priority)
@@ -562,7 +277,7 @@ export function createTimeline(jsPsych: JsPsych, config: FlankerConfig = {}) {
 
   // Instructions
   if (show_instructions) {
-    timeline.push(createInstructions(instruction_pages, enable_tts, ttsOptions));
+    timeline.push(createInstructions(instruction_pages));
   }
 
   // Practice
@@ -580,13 +295,7 @@ export function createTimeline(jsPsych: JsPsych, config: FlankerConfig = {}) {
       data: {
         task: 'practice-intro',
         phase: 'practice'
-      },
-      on_load: enable_tts ? function() {
-        const content = document.querySelector('.practice-instructions');
-        if (content) {
-          speakText(extractTextFromHtml(content.innerHTML), ttsOptions);
-        }
-      } : undefined
+      }
     });
 
     // Only add practice trials if num_practice > 0
@@ -638,12 +347,6 @@ export function createTimeline(jsPsych: JsPsych, config: FlankerConfig = {}) {
           direction: jsPsych.timelineVariable('direction'),
           congruent: jsPsych.timelineVariable('congruent')
         },
-        on_load: enable_tts ? function() {
-          const prompt = document.querySelector('.trial-prompt');
-          if (prompt) {
-            speakText(extractTextFromHtml(prompt.innerHTML), ttsOptions);
-          }
-        } : undefined,
         on_finish: function(data: any) {
           const correct_response = data.direction === 'left' ? 0 : 1;
           data.correct = data.response === correct_response;
@@ -663,13 +366,7 @@ export function createTimeline(jsPsych: JsPsych, config: FlankerConfig = {}) {
         data: { 
           task: 'feedback', 
           phase: 'practice' 
-        },
-        on_load: enable_tts ? function() {
-          const feedback = document.querySelector('.feedback');
-          if (feedback) {
-            speakText(extractTextFromHtml(feedback.innerHTML), ttsOptions);
-          }
-        } : undefined
+        }
       };
 
       // Practice timeline
@@ -696,13 +393,7 @@ export function createTimeline(jsPsych: JsPsych, config: FlankerConfig = {}) {
       data: { 
         task: 'practice-complete',
         phase: 'practice' 
-      },
-      on_load: enable_tts ? function() {
-        const content = document.querySelector('.practice-instructions');
-        if (content) {
-          speakText(extractTextFromHtml(content.innerHTML), ttsOptions);
-        }
-      } : undefined
+      }
     });
   }
 
@@ -719,13 +410,7 @@ export function createTimeline(jsPsych: JsPsych, config: FlankerConfig = {}) {
     data: { 
       task: 'main-intro',
       phase: 'main' 
-    },
-    on_load: enable_tts ? function() {
-      const content = document.querySelector('.ready-screen');
-      if (content) {
-        speakText(extractTextFromHtml(content.innerHTML), ttsOptions);
-      }
-    } : undefined
+    }
   });
 
   // Main trials - only add if num_trials > 0
@@ -776,12 +461,6 @@ export function createTimeline(jsPsych: JsPsych, config: FlankerConfig = {}) {
         direction: jsPsych.timelineVariable('direction'),
         congruent: jsPsych.timelineVariable('congruent')
       },
-      on_load: enable_tts ? function() {
-        const prompt = document.querySelector('.trial-prompt');
-        if (prompt) {
-          speakText(extractTextFromHtml(prompt.innerHTML), ttsOptions);
-        }
-      } : undefined,
       on_finish: function(data: any) {
         const correct_response = data.direction === 'left' ? 0 : 1;
         data.correct = data.response === correct_response;
@@ -819,15 +498,6 @@ export function createTimeline(jsPsych: JsPsych, config: FlankerConfig = {}) {
     data: { 
       task: 'complete',
       phase: 'completion' 
-    },
-    on_load: enable_tts ? function() {
-      const content = document.querySelector('.ready-screen');
-      if (content) {
-        speakText(extractTextFromHtml(content.innerHTML), ttsOptions);
-      }
-    } : undefined,
-    on_finish: function() {
-      stopAllSpeech();
     }
   });
 
@@ -851,8 +521,7 @@ export const utils = {
   calculatePerformance,
   createFlankerStim,
   createPracticeStim,
-  createInstructions,
-  speakText
+  createInstructions
 };
 
 // Export text and createInstructions for external use
