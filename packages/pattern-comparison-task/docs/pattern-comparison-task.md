@@ -21,7 +21,6 @@ Parameter | Type | Default Value | Description
 test_categories | array | Built-in categories | Custom pattern categories to use
 num_trials | number | 20 | Number of trials to generate
 prompt | string | "Are these two patterns the same?" | Instructions text displayed above patterns
-enable_tts | boolean | false | Enable text-to-speech for accessibility
 same_button_text | string | "Same" | Text for the same response button
 different_button_text | string | "Different" | Text for the different response button
 trial_timeout | number | 10000 | Maximum time allowed per trial (ms)
@@ -70,13 +69,9 @@ Utility functions available in the utils export.
 
 Generates trial objects based on configuration.
 
-### createInstructions(pages, enableTTS)
+### createInstructions(pages)
 
 Creates instruction timeline from page data.
-
-### speakText(text)
-
-Uses Web Speech API for text-to-speech.
 
 ### calculatePerformance(data)
 

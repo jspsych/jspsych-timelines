@@ -5,23 +5,6 @@ import { test_categories } from "./test-categories";
 // Mock jsPsych instance
 const mockJsPsych = {} as JsPsych;
 
-// Mock Web Speech API
-const mockSpeechSynthesis = {
-  cancel: jest.fn(),
-  speak: jest.fn(),
-};
-
-const mockSpeechSynthesisUtterance = jest.fn().mockImplementation((text) => ({
-  text,
-  rate: 0.8,
-  volume: 0.8,
-}));
-
-// Set up global mocks
-global.speechSynthesis = mockSpeechSynthesis as any;
-global.SpeechSynthesisUtterance = mockSpeechSynthesisUtterance as any;
-global.window = { speechSynthesis: mockSpeechSynthesis } as any;
-
 // Mock Math.random for predictable tests
 const mockMath = Object.create(global.Math);
 mockMath.random = jest.fn();
@@ -228,117 +211,49 @@ describe("Pattern Comparison Task", () => {
     });
   });
 
-  describe("utils.speakText", () => {
-    it("should cancel existing speech and speak new text", () => {
-      utils.speakText("Hello world");
-      
-      expect(mockSpeechSynthesis.cancel).toHaveBeenCalled();
-      expect(mockSpeechSynthesisUtterance).toHaveBeenCalledWith("Hello world");
-      expect(mockSpeechSynthesis.speak).toHaveBeenCalled();
-    });
-
-    it("should set utterance properties correctly", () => {
-      utils.speakText("Test text");
-      
-      const utteranceCall = mockSpeechSynthesisUtterance.mock.calls[0];
-      expect(utteranceCall[0]).toBe("Test text");
-    });
-
-    it("should not throw error when speechSynthesis is not available", () => {
-      const originalWindow = global.window;
-      global.window = {} as any;
-      
-      expect(() => utils.speakText("Test")).not.toThrow();
-      
-      global.window = originalWindow;
-    });
-  });
-
   describe("utils.createInstructions", () => {
-    it("should create instruction timeline with default pages", () => {
+    it("should create instruction configuration with default pages", () => {
       const instructions = utils.createInstructions();
       
-      expect(instructions.timeline).toBeInstanceOf(Array);
-      expect(instructions.timeline.length).toBe(instruction_pages.length);
+      expect(instructions.pages).toBeInstanceOf(Array);
+      expect(instructions.pages.length).toBe(instruction_pages.length);
+      expect(instructions.type).toBeDefined();
     });
 
-    it("should create instruction timeline with custom pages", () => {
+    it("should create instruction configuration with custom pages", () => {
       const customPages = [
-        {
-          header: "Custom Header",
-          header2: "Custom Subheader",
-          description: "Custom description",
-          task_explanation: "Custom task explanation",
-          performance_note: "Custom performance note",
-          start_prompt: "Click to continue",
-          buttons: ["Next"]
-        }
+        "<h2>Custom Header</h2><p>Custom description</p>"
       ];
       
       const instructions = utils.createInstructions(customPages);
       
-      expect(instructions.timeline).toHaveLength(1);
-      expect(instructions.timeline[0].stimulus).toContain("Custom Header");
-      expect(instructions.timeline[0].stimulus).toContain("Custom description");
-      expect(instructions.timeline[0].choices).toEqual(["Next"]);
-    });
-
-    it("should enable TTS when requested", () => {
-      const customPages = [
-        {
-          header: "Test Header",
-          header2: "Test Subheader",
-          description: "Test description",
-          task_explanation: "Test explanation",
-          performance_note: "Test note",
-          start_prompt: "Continue",
-          buttons: ["Continue"]
-        }
-      ];
-      
-      const instructions = utils.createInstructions(customPages, true);
-      const instructionPage = instructions.timeline[0];
-      
-      expect(instructionPage.on_start).toBeDefined();
-      expect(typeof instructionPage.on_start).toBe("function");
+      expect(instructions.pages).toHaveLength(1);
+      expect(instructions.pages[0]).toContain("Custom Header");
+      expect(instructions.pages[0]).toContain("Custom description");
     });
 
     it("should handle pages with strategy points", () => {
       const customPages = [
-        {
-          strategy_title: "Strategy",
-          strategy_intro: "Follow these steps:",
-          strategy_points: ["Step 1", "Step 2", "Step 3"],
-          start_prompt: "Ready to begin",
-          buttons: ["Got it"]
-        }
+        "<section><h3>Strategy</h3><ul><li>Step 1</li><li>Step 2</li><li>Step 3</li></ul></section>"
       ];
       
       const instructions = utils.createInstructions(customPages);
-      const page = instructions.timeline[0];
+      const page = instructions.pages[0];
       
-      expect(page.stimulus).toContain("Strategy");
-      expect(page.stimulus).toContain("Step 1");
-      expect(page.stimulus).toContain("Step 2");
-      expect(page.stimulus).toContain("Step 3");
+      expect(page).toContain("Strategy");
+      expect(page).toContain("Step 1");
+      expect(page).toContain("Step 2");
+      expect(page).toContain("Step 3");
     });
 
     it("should handle missing optional fields gracefully", () => {
       const minimalPages = [
-        {
-          header: "",
-          header2: "",
-          description: "",
-          task_explanation: "",
-          performance_note: "",
-          start_prompt: "",
-          buttons: ["Continue"]
-        }
+        ""
       ];
       
       const instructions = utils.createInstructions(minimalPages);
-      expect(instructions.timeline).toHaveLength(1);
-      expect(instructions.timeline[0].stimulus).toBeDefined();
+      expect(instructions.pages).toHaveLength(1);
+      expect(instructions.pages[0]).toBeDefined();
     });
   });
 
@@ -368,7 +283,6 @@ describe("Pattern Comparison Task", () => {
       expect(utils).toBeDefined();
       expect(typeof utils.generateTrials).toBe("function");
       expect(typeof utils.createInstructions).toBe("function");
-      expect(typeof utils.speakText).toBe("function");
       expect(typeof utils.calculatePerformance).toBe("function");
     });
   });

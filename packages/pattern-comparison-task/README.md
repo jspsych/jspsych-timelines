@@ -41,7 +41,6 @@ The following parameters can be specified in the **options** parameter.
 | test_categories | array | Built-in categories | Custom pattern categories |
 | num_trials | number | 20 | Number of trials to generate |
 | prompt | string | "Are these two patterns the same?" | Instructions displayed above patterns |
-| enable_tts | boolean | false | Enable text-to-speech for accessibility |
 | same_button_text | string | "Same" | Text for same response button |
 | different_button_text | string | "Different" | Text for different response button |
 | trial_timeout | number | 10000 | Maximum time per trial (ms) |
@@ -62,7 +61,6 @@ Object containing descriptions of timeline components:
 Utility functions for pattern comparison task:
 - generateTrials: Generate trial objects
 - createInstructions: Create instruction timeline
-- speakText: Text-to-speech function
 - calculatePerformance: Calculate accuracy and reaction time statistics
 
 ## Author / Citation

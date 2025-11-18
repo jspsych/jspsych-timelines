@@ -35,5 +35,9 @@
       "@jspsych/config": "^3.2.2",
       "tsup": "^6.7.0",
       "typescript": "^5.0.2"
+    },
+    "dependencies": {
+      "@jspsych/plugin-html-button-response": "^2.1.0",
+      "@jspsych/plugin-instructions": "^2.1.0"
     }
   }

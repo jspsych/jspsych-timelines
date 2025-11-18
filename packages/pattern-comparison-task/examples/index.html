@@ -25,19 +25,12 @@
             test_categories: undefined, // Uses default test_categories
             num_trials: 8,
             prompt: "Are these patterns the same?",
-            enable_tts: true,
             same_button_text: "Same",
             different_button_text: "Different",
             trial_timeout: 8000,
             inter_trial_interval: 500,
             show_instructions: true, // Set to true to show instruction pages
-            instruction_texts: undefined, // Uses default instruction_pages
-            // ===== TEXT-TO-SPEECH CONFIGURATION =====
-            tts_method: 'google', // Preferred TTS method: 'google', 'system'
-            tts_rate: 1.0, // Speech rate (0.1 to 10)
-            tts_pitch: 1.0, // Speech pitch (0 to 2)
-            tts_volume: 1.0, // Speech volume (0 to 1)
-            tts_lang: 'ar-SA' // Language code for TTS
+            instruction_texts: undefined // Uses default instruction_pages
         };
 
         // Create and run timeline

@@ -33,26 +33,6 @@ var jsPsychTimelinePatternComparisonTask = (function (exports) {
     isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
     mod
   ));
-  var __async = (__this, __arguments, generator) => {
-    return new Promise((resolve, reject) => {
-      var fulfilled = (value) => {
-        try {
-          step(generator.next(value));
-        } catch (e) {
-          reject(e);
-        }
-      };
-      var rejected = (value) => {
-        try {
-          step(generator.throw(value));
-        } catch (e) {
-          reject(e);
-        }
-      };
-      var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
-      step((generator = generator.apply(__this, __arguments)).next());
-    });
-  };
 
   // ../../node_modules/auto-bind/index.js
   var require_auto_bind = __commonJS({
@@ -3656,124 +3636,7 @@ var jsPsychTimelinePatternComparisonTask = (function (exports) {
   ];
 
   // src/index.ts
-  var currentGoogleAudio = null;
-  function speakText(_0) {
-    return __async(this, arguments, function* (text, options = {}) {
-      stopAllSpeech();
-      const preferredMethod = options.method || "google";
-      try {
-        if (preferredMethod === "google") {
-          yield speakWithGoogleTTS(text, options.lang || "en");
-          return;
-        } else {
-          yield speakWithSystemTTS(text, options);
-          return;
-        }
-      } catch (preferredSpeechError) {
-      }
-      stopAllSpeech();
-      yield new Promise((resolve) => setTimeout(resolve, 100));
-      try {
-        yield speakWithGoogleTTS(text, options.lang || "en");
-        return;
-      } catch (googleError) {
-      }
-      stopAllSpeech();
-      yield new Promise((resolve) => setTimeout(resolve, 100));
-      try {
-        yield speakWithSystemTTS(text, options);
-        return;
-      } catch (systemError) {
-        console.warn("\u{1F50A} TTS unavailable");
-      }
-    });
-  }
-  function stopAllSpeech() {
-    if ("speechSynthesis" in window) {
-      speechSynthesis.cancel();
-      speechSynthesis.pause();
-      speechSynthesis.resume();
-      speechSynthesis.cancel();
-    }
-    if (currentGoogleAudio) {
-      try {
-        currentGoogleAudio.pause();
-        currentGoogleAudio.currentTime = 0;
-        currentGoogleAudio.src = "";
-      } catch (e) {
-      }
-      currentGoogleAudio = null;
-    }
-  }
-  function speakWithSystemTTS(text, options = {}) {
-    return new Promise((resolve, reject) => {
-      var _a, _b, _c;
-      if ("speechSynthesis" in window) {
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.rate = (_a = options.rate) != null ? _a : 0.8;
-        utterance.volume = (_b = options.volume) != null ? _b : 0.8;
-        utterance.pitch = (_c = options.pitch) != null ? _c : 1;
-        if (options.lang) {
-          utterance.lang = options.lang;
-        }
-        utterance.onstart = () => resolve();
-        utterance.onend = () => resolve();
-        utterance.onerror = (e) => {
-          if (e.error === "not-allowed" || e.error === "synthesis-failed") {
-            reject(new Error(e.error));
-          } else {
-            resolve();
-          }
-        };
-        speechSynthesis.speak(utterance);
-      } else {
-        reject(new Error("speechSynthesis not supported"));
-      }
-    });
-  }
-  function speakWithGoogleTTS(text, lang) {
-    return new Promise((resolve, reject) => {
-      try {
-        const googleLang = lang ? lang.substring(0, 2).toLowerCase() : "en";
-        const encodedText = encodeURIComponent(text);
-        const googleTTSUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=${googleLang}&client=tw-ob&q=${encodedText}`;
-        const audio = new Audio(googleTTSUrl);
-        currentGoogleAudio = audio;
-        audio.oncanplay = () => {
-          if (currentGoogleAudio !== audio) {
-            audio.pause();
-            reject(new Error("Cancelled while loading"));
-            return;
-          }
-          audio.play().then(resolve).catch(reject);
-        };
-        audio.onended = () => {
-          if (currentGoogleAudio === audio) {
-            currentGoogleAudio = null;
-          }
-          resolve();
-        };
-        audio.onerror = (e) => {
-          audio.pause();
-          if (currentGoogleAudio === audio) {
-            currentGoogleAudio = null;
-          }
-          reject(new Error("Google TTS failed"));
-        };
-        audio.load();
-      } catch (error) {
-        reject(error);
-      }
-    });
-  }
-  function extractTextFromHtml(htmlString) {
-    var _a;
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(htmlString, "text/html");
-    return ((_a = doc.body.textContent) == null ? void 0 : _a.replace(/\s+/g, " ").trim()) || "";
-  }
-  function createInstructions(instruction_pages_data = instruction_pages, enable_tts = false, ttsOptions = {}) {
-    let handleButtonClick = null;
+  function createInstructions(instruction_pages_data = instruction_pages) {
     return {
       type: InstructionsPlugin,
       pages: instruction_pages_data.map((page) => `<div class="instructions-container"><p>${page}</p></div>`),
@@ -3783,37 +3646,7 @@ var jsPsychTimelinePatternComparisonTask = (function (exports) {
       key_backward: "ArrowLeft",
       button_label_previous: trial_text.back_button,
       button_label_next: trial_text.next_button,
-      on_start: function() {
-        stopAllSpeech();
-      },
-      on_load: function() {
-        if (enable_tts) {
-          const speakCurrentPage = () => {
-            const instructionsContent = document.querySelector(".instructions-container");
-            if (instructionsContent) {
-              const pageText = extractTextFromHtml(instructionsContent.innerHTML);
-              if (pageText.trim()) {
-                speakText(pageText, ttsOptions);
-              }
-            }
-          };
-          handleButtonClick = (event) => {
-            const target = event.target;
-            if (target && (target.id === "jspsych-instructions-next" || target.id === "jspsych-instructions-back")) {
-              stopAllSpeech();
-              setTimeout(speakCurrentPage, 100);
-            }
-          };
-          document.addEventListener("click", handleButtonClick);
-          setTimeout(speakCurrentPage, 100);
-        }
-      },
       on_finish: function(data) {
-        stopAllSpeech();
-        if (handleButtonClick) {
-          document.removeEventListener("click", handleButtonClick);
-          handleButtonClick = null;
-        }
         data.phase = "instructions";
       }
     };
@@ -3846,26 +3679,13 @@ var jsPsychTimelinePatternComparisonTask = (function (exports) {
   function createTimeline(jsPsych, config = {}) {
     const {
       prompt = trial_text.prompt,
-      enable_tts = false,
       same_button_text = trial_text.same_button,
       different_button_text = trial_text.different_button,
       trial_timeout = 1e4,
       inter_trial_interval = 500,
       show_instructions = false,
-      instruction_texts = instruction_pages,
-      tts_method = "google",
-      tts_rate = 1,
-      tts_pitch = 1,
-      tts_volume = 1,
-      tts_lang = "ar-SA"
+      instruction_texts = instruction_pages
     } = config;
-    const ttsOptions = {
-      method: tts_method,
-      rate: tts_rate,
-      pitch: tts_pitch,
-      volume: tts_volume,
-      lang: tts_lang
-    };
     const trials = generateTrials(config);
     const timeline = [];
     trials.forEach((trial, index) => {
@@ -3900,12 +3720,6 @@ var jsPsychTimelinePatternComparisonTask = (function (exports) {
         on_finish: function(data) {
           data.correct = data.response === data.correct_answer;
           data.reaction_time = data.rt;
-          stopAllSpeech();
-        },
-        on_start: function() {
-          if (enable_tts) {
-            speakText(prompt, ttsOptions);
-          }
         }
       });
       if (index < trials.length - 1) {
@@ -3934,7 +3748,7 @@ var jsPsychTimelinePatternComparisonTask = (function (exports) {
       timeline
     };
     if (show_instructions) {
-      const detailed_instructions = createInstructions(instruction_texts, enable_tts, ttsOptions);
+      const detailed_instructions = createInstructions(instruction_texts);
       const nested_timeline = {
         timeline: [detailed_instructions, task_timeline]
       };
@@ -3984,7 +3798,6 @@ var jsPsychTimelinePatternComparisonTask = (function (exports) {
   var utils = {
     generateTrials,
     createInstructions,
-    speakText,
     calculatePerformance
   };
   var src_default = { createTimeline, timelineUnits, utils };

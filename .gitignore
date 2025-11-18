@@ -133,10 +133,3 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
-
-
-# Ignore specific packages, 
-packages/speeded-matching/
-packages/flanker-inhibitory/
-packages/visual-reasoning/
-packages/spatial-nback/
