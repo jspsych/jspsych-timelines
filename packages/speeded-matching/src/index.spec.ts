@@ -5,26 +5,6 @@ import { test_items } from "./test-items";
 // Mock jsPsych instance
 const mockJsPsych = {} as JsPsych;
 
-// Mock Web Speech API
-const mockSpeechSynthesis = {
-  cancel: jest.fn(),
-  speak: jest.fn(),
-  getVoices: jest.fn().mockReturnValue([{ name: 'Test Voice' }]),
-  addEventListener: jest.fn()
-};
-
-const mockSpeechSynthesisUtterance = jest.fn().mockImplementation((text) => ({
-  text,
-  rate: 0.8,
-  volume: 0.8,
-  voice: null
-}));
-
-// Set up global mocks
-global.speechSynthesis = mockSpeechSynthesis as any;
-global.SpeechSynthesisUtterance = mockSpeechSynthesisUtterance as any;
-global.window = { speechSynthesis: mockSpeechSynthesis } as any;
-
 // Mock Math.random for predictable tests
 const mockMath = Object.create(global.Math);
 mockMath.random = jest.fn();
@@ -440,54 +420,6 @@ describe("Speeded Matching Task", () => {
     });
   });
 
-  describe("utils.speakText", () => {
-    beforeEach(() => {
-      // Clear all mocks before each test to avoid cross-test contamination
-      jest.clearAllMocks();
-    });
-
-    it("should cancel existing speech and speak new text", (done) => {
-      utils.speakText("Hello world");
-      
-      expect(mockSpeechSynthesis.cancel).toHaveBeenCalled();
-      
-      // Wait for setTimeout to execute
-      setTimeout(() => {
-        try {
-          expect(mockSpeechSynthesisUtterance).toHaveBeenCalledWith("Hello world");
-          expect(mockSpeechSynthesis.speak).toHaveBeenCalled();
-          done();
-        } catch (error) {
-          done(error);
-        }
-      }, 150);
-    });
-
-    it("should set utterance properties correctly", (done) => {
-      utils.speakText("Test text");
-      
-      setTimeout(() => {
-        try {
-          // Check that SpeechSynthesisUtterance was called with the correct text
-          expect(mockSpeechSynthesisUtterance).toHaveBeenCalledWith("Test text");
-          const utteranceCall = mockSpeechSynthesisUtterance.mock.calls[0];
-          expect(utteranceCall[0]).toBe("Test text");
-          done();
-        } catch (error) {
-          done(error);
-        }
-      }, 150);
-    });
-
-    it("should not throw error when speechSynthesis is not available", () => {
-      const originalWindow = global.window;
-      global.window = {} as any;
-      
-      expect(() => utils.speakText("Test")).not.toThrow();
-      
-      global.window = originalWindow;
-    });
-  });
 
   describe("utils.createInstructions", () => {
     it("should create instruction trial with default pages", () => {
@@ -601,7 +533,6 @@ describe("Speeded Matching Task", () => {
       expect(typeof utils.createInstructions).toBe("function");
       expect(typeof utils.createPracticeRound).toBe("function");
       expect(typeof utils.createReadyScreen).toBe("function");
-      expect(typeof utils.speakText).toBe("function");
       expect(typeof utils.createTrialSet).toBe("function");
       expect(typeof utils.getRandomTestItems).toBe("function");
       expect(typeof utils.calculatePerformance).toBe("function");
@@ -683,35 +614,4 @@ describe("Speeded Matching Task", () => {
     });
   });
 
-  describe("TTS Integration", () => {
-    it("should enable TTS when requested", () => {
-      const timeline = createTimeline(mockJsPsych, { 
-        enable_tts: true,
-        show_instructions: true,
-        num_trials: 1
-      });
-      
-      // Check that instruction trial has TTS enabled
-      const hasInstructionsWithTTS = timeline.timeline.some((item: any) => 
-        item.data?.task === 'instruction-pages' && (
-          typeof item.on_start === 'function' || typeof item.on_load === 'function'
-        )
-      );
-      expect(hasInstructionsWithTTS).toBe(true);
-    });
-
-    it("should disable TTS when requested", () => {
-      const timeline = createTimeline(mockJsPsych, { 
-        enable_tts: false,
-        show_instructions: true,
-        num_trials: 1
-      });
-      
-      // Instructions should still be created but without TTS
-      const hasInstructions = timeline.timeline.some((item: any) => 
-        item.data?.task === 'instruction-pages'
-      );
-      expect(hasInstructions).toBe(true);
-    });
-  });
 });

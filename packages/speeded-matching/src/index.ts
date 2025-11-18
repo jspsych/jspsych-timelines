@@ -1,4 +1,4 @@
-import { JsPsych, TrialType } from "jspsych"
+import { JsPsych } from "jspsych"
 import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response"
 import jsPsychInstructions from "@jspsych/plugin-instructions"
 import { test_items } from "./test-items"
@@ -11,8 +11,6 @@ interface SpeedMatchingConfig {
   num_trials?: number
   /** Number of choice options per trial (default 4) */
   num_choices?: number
-  /** Enable text-to-speech for instructions and prompts */
-  enable_tts?: boolean
   /** Maximum time allowed per trial (in ms) */
   trial_timeout?: number
   /** Inter-trial interval (in ms) */
@@ -68,48 +66,10 @@ function createTrialSet(items: string[], target_index: number = 0, num_choices: 
 }
 
 /**
- * Function to provide text-to-speech functionality
- * Researchers can modify speech settings like rate and volume
- */
-function speakText(text: string) {
-  console.log('TTS Support:', 'speechSynthesis' in window);
-  console.log('Voices available:', speechSynthesis.getVoices().length);
-  console.log('Text to speak:', text);
-
-  if ('speechSynthesis' in window) {
-    // Stop any ongoing speech
-    if ('speechSynthesis' in window) {
-      speechSynthesis.cancel();
-    }
-    
-    // Wait a brief moment for cancel to take effect
-    setTimeout(() => {
-      // Create and speak the utterance
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.rate = 0.8; // Slightly slower for clarity
-      utterance.volume = 0.8;
-      utterance.voice = speechSynthesis.getVoices()[0] || null; // Use first available voice
-      speechSynthesis.speak(utterance);
-    }, 100);
-  }
-}
-
-/**
- * Creates instruction pages with configurable text and TTS support
+ * Creates instruction pages with configurable text content
  * Uses the jsPsych instructions plugin with simple HTML strings
  */
-// Helper function to extract text from HTML for TTS
-function extractTextFromHtml(htmlString: string): string {
-  // Use DOMParser for robust HTML to text extraction
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(htmlString, 'text/html');
-  return doc.body.textContent?.replace(/\s+/g, ' ').trim() || '';
-}
-
-function createInstructions(instruction_pages_data = instruction_pages, enable_tts = false) {
-  // Closure variable to store the handler for cleanup
-  let handleButtonClick: ((event: Event) => void) | null = null;
-
+function createInstructions(instruction_pages_data = instruction_pages) {
   return {
     type: jsPsychInstructions,
     pages: instruction_pages_data.map(page => `<div class="instructions-container"><p>${page}</p></div>`),
@@ -119,54 +79,10 @@ function createInstructions(instruction_pages_data = instruction_pages, enable_t
     key_backward: 'ArrowLeft',
     button_label_previous: trial_text.back_button,
     button_label_next: trial_text.next_button,
-    on_start: function() {
-      speechSynthesis.cancel();
-    },
-    on_load: function() {
-      if (enable_tts) {
-        console.log('TTS enabled for instructions');
-        // Function to speak current page content
-        const speakCurrentPage = () => {
-          const instructionsContent = document.querySelector('.instructions-container');
-          if (instructionsContent) {
-            const pageText = extractTextFromHtml(instructionsContent.innerHTML);
-            if (pageText.trim()) {
-              speakText(pageText);
-            }
-          }
-        };
-
-        // Use closure variable for handler
-        handleButtonClick = (event: Event) => {
-          const target = event.target as HTMLElement;
-          if (target && (target.id === 'jspsych-instructions-next' || target.id === 'jspsych-instructions-back')) {
-            speechSynthesis.cancel();
-            setTimeout(speakCurrentPage, 200);
-          }
-        };
-
-        // Add single event listener to document
-        document.addEventListener('click', handleButtonClick);
-
-        // Speak initial page
-        setTimeout(speakCurrentPage, 300);
-      }
+    data: {
+      task: 'instruction-pages'
     },
     on_finish: function(data: any) {
-      speechSynthesis.cancel();
-      // Clean up event listener using closure variable
-      if (handleButtonClick) {
-        document.removeEventListener('click', handleButtonClick);
-        handleButtonClick = null;
-      }
-      if (enable_tts) {
-        speechSynthesis.cancel();
-      }
-      // Clean up navigation button listeners
-      if ((window as any).instructionsNavCleanup) {
-        (window as any).instructionsNavCleanup();
-        delete (window as any).instructionsNavCleanup;
-      }
       data.phase = 'instructions';
     }
   };
@@ -176,7 +92,7 @@ function createInstructions(instruction_pages_data = instruction_pages, enable_t
  * Creates practice rounds with voice instructions and visual demonstrations
  * This helps participants understand the task before the actual trials
  */
-function createPracticeRound(items: string[], enable_tts: boolean = false, num_choices: number = 4, practice_rounds: number = 1) {
+function createPracticeRound(items: string[], num_choices: number = 4, practice_rounds: number = 1) {
   const practice_timeline = [];
   
   // Practice instruction screen
@@ -220,18 +136,7 @@ function createPracticeRound(items: string[], enable_tts: boolean = false, num_c
       `,
       choices: [],
       trial_duration: 3000, // Show for 3 seconds
-      on_start: function() {
-        if (enable_tts) {
-          // Wait for voices to load if needed
-          if (speechSynthesis.getVoices().length === 0) {
-            speechSynthesis.addEventListener('voiceschanged', () => {
-              speakText(trial_text.practice_look_instruction);
-            }, { once: true });
-          } else {
-            speakText(trial_text.practice_look_instruction);
-          }
-        }
-      },
+      on_start: function() {},
       data: {
         task: 'practice-target-demo',
         practice_round: round + 1
@@ -262,18 +167,7 @@ function createPracticeRound(items: string[], enable_tts: boolean = false, num_c
       },
       // No trial duration - only ends when correct choice is clicked
       response_ends_trial: true,
-      on_start: function() {
-        if (enable_tts) {
-          // Wait for voices to load if needed
-          if (speechSynthesis.getVoices().length === 0) {
-            speechSynthesis.addEventListener('voiceschanged', () => {
-              speakText(trial_text.practice_tap_instruction);
-            }, { once: true });
-          } else {
-            speakText(trial_text.practice_tap_instruction);
-          }
-        }
-      },
+      on_start: function() {},
       on_load: function() {
         // Set CSS custom property for number of choices for dynamic sizing
         const btnGroup = document.querySelector('.jspsych-btn-group, #jspsych-html-button-response-btngroup') as HTMLElement;
@@ -373,7 +267,6 @@ function generateTrials(config: SpeedMatchingConfig) {
  */
 export function createTimeline(jsPsych: JsPsych, config: SpeedMatchingConfig = {}) {
   const {
-    enable_tts = true,
     trial_timeout,
     inter_trial_interval,
     show_instructions = true,
@@ -389,13 +282,13 @@ export function createTimeline(jsPsych: JsPsych, config: SpeedMatchingConfig = {
 
   // Add instructions if requested
   if (show_instructions) {
-    const instructions = createInstructions(instruction_texts, enable_tts);
+    const instructions = createInstructions(instruction_texts);
     timeline.push(instructions);
   }
 
   // Add practice round if requested
   if (show_practice) {
-    const practice_round = createPracticeRound(items, enable_tts, num_choices, practice_rounds);
+    const practice_round = createPracticeRound(items, num_choices, practice_rounds);
     practice_round.forEach(trial => timeline.push(trial));
     
     // Add ready screen after practice
@@ -450,9 +343,6 @@ export function createTimeline(jsPsych: JsPsych, config: SpeedMatchingConfig = {
         // Calculate accuracy and response time
         data.correct = data.response === data.correct_answer;
         data.reaction_time = data.rt;
-        
-        // Stop any ongoing speech when trial ends
-        speechSynthesis.cancel();
       }
     };
 
@@ -547,7 +437,7 @@ function calculatePerformance(data: any[]) {
 
 export const timelineUnits = {
   instructions: "Instructions for the speeded matching task",
-  practice: "Practice round with voice instructions and demonstrations", 
+  practice: "Practice round with demonstrations", 
   readyScreen: "Confirmation screen before starting the main task",
   trial: "Single speeded matching trial with target and choice options",
   interTrialInterval: "Fixation cross between trials",
@@ -559,7 +449,6 @@ export const utils = {
   createInstructions,
   createPracticeRound,
   createReadyScreen,
-  speakText,
   createTrialSet,
   getRandomTestItems,
   calculatePerformance

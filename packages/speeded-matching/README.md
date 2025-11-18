@@ -41,7 +41,6 @@ The following parameters can be specified in the **options** parameter.
 | test_items | array | Built-in animal SVGs | Custom SVG strings to use as stimuli |
 | num_trials | number | 20 | Number of trials to generate |
 | num_choices | number | 4 | Number of choice options per trial |
-| enable_tts | boolean | true | Enable text-to-speech for accessibility |
 | trial_timeout | number | 10000 | Maximum time per trial (ms) |
 | inter_trial_interval | number | 500 | Time between trials (ms) |
 | show_instructions | boolean | true | Show instruction pages before task |
@@ -53,7 +52,7 @@ The following parameters can be specified in the **options** parameter.
 
 Object containing descriptions of timeline components:
 - **instructions**: "Instructions for the speeded matching task"
-- **practice**: "Practice round with voice instructions and demonstrations"
+- **practice**: "Practice round with demonstrations"
 - **readyScreen**: "Confirmation screen before starting the main task"
 - **trial**: "Single speeded matching trial with target and choice options"
 - **interTrialInterval**: "Fixation cross between trials"
@@ -66,7 +65,6 @@ Utility functions for speeded matching task:
 - **createInstructions**: Create instruction timeline from page data
 - **createPracticeRound**: Create practice round with demonstrations
 - **createReadyScreen**: Create ready confirmation screen
-- **speakText**: Text-to-speech function using Web Speech API
 - **createTrialSet**: Create a single trial with target and distractors
 - **getRandomTestItems**: Get random selection of test items
 - **calculatePerformance**: Calculate accuracy and reaction time statistics
@@ -81,7 +79,6 @@ const jsPsych = initJsPsych();
 const config = {
   num_trials: 10,
   num_choices: 4,
-  enable_tts: true,
   show_instructions: true,
   show_practice: true,
   trial_timeout: 8000,

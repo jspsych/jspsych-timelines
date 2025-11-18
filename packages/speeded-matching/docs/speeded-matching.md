@@ -13,7 +13,6 @@ import { createTimeline } from "@jspsych-timelines/speeded-matching"
 
 const timeline = createTimeline(jsPsych, {
   num_trials: 10,
-  enable_tts: true,
   // ... other options
 })
 ```
@@ -23,7 +22,6 @@ Parameter | Type | Default Value | Description
 test_items | array | Built-in animal SVGs | Custom SVG strings to use as stimuli
 num_trials | number | 20 | Number of trials to generate
 num_choices | number | 4 | Number of choice options per trial
-enable_tts | boolean | true | Enable text-to-speech for accessibility
 trial_timeout | number | 10000 | Maximum time per trial (ms)
 inter_trial_interval | number | 500 | Time between trials (ms)
 show_instructions | boolean | true | Show instruction pages before task
@@ -70,21 +68,17 @@ Utility functions available in the utils export.
 
 Generates trial objects based on configuration parameters.
 
-### createInstructions(pages, enableTTS)
+### createInstructions(pages)
 
-Creates instruction timeline from page data with optional text-to-speech.
+Creates instruction timeline from page data.
 
-### createPracticeRound(items, enableTTS)
+### createPracticeRound(items)
 
-Creates practice round with demonstrations and voice instructions.
+Creates practice round with demonstrations and interactive examples.
 
 ### createReadyScreen()
 
 Creates ready confirmation screen after practice.
-
-### speakText(text)
-
-Uses Web Speech API for text-to-speech functionality.
 
 ### createTrialSet(items, targetIndex, numChoices)
 
