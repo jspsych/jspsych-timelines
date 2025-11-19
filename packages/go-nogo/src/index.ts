@@ -1,7 +1,7 @@
 import { JsPsych } from "jspsych";
 import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
 import jsPsychInstructions from "@jspsych/plugin-instructions";
-import { trial_text, square, circle } from "./text";
+import { trial_text, octagon, circle } from "./text";
 
 /**
  * Configuration options for the Go/No-Go timeline and helpers.
@@ -11,14 +11,18 @@ import { trial_text, square, circle } from "./text";
  * @property {boolean} [show_practice=false] Whether to include the interactive practice section.
  * @property {number}  [num_blocks=3] Number of experimental blocks.
  * @property {number}  [num_trials=50] Trials per block.
- * @property {number}  [trial_timeout=500] Stimulus/button trial duration in milliseconds.
+ * @property {number}  [trial_timeout=500] Total trial duration in milliseconds (time to respond).
+ * @property {number}  [stimulus_duration=null] Duration to display the stimulus in milliseconds. Set to null to show until response or trial_timeout.
  * @property {number}  [isi_timeout=500] Inter-stimulus interval (fixation) in milliseconds.
  * @property {number}  [probability=0.75] Probability of a Go trial in each block (0..1).
  * @property {boolean} [show_debrief=false] Whether to append the debrief summary at the end.
+ * @property {boolean} [show_button_during_fixation=true] Whether to show the GO button (disabled) during fixation trials.
+ * @property {string}  [stimulus_container_height="25vh"] Height for stimulus container (e.g., "25vh", "200px"). Prevents button movement between fixation and stimulus.
+ * @property {string}  [fixation_size="3em"] Font size for fixation cross (e.g., "3em", "48px", "5rem").
  *
  * Go/NoGo Stimulus configuration
- * @property {string}   [go_stimulus=square] Single Go stimulus (used when go_stimuli is not provided).
- * @property {string}   [nogo_stimulus=circle] Single No-Go stimulus (used when nogo_stimuli is not provided).
+ * @property {string}   [go_stimulus=circle] Single Go stimulus (used when go_stimuli is not provided).
+ * @property {string}   [nogo_stimulus=octagon] Single No-Go stimulus (used when nogo_stimuli is not provided).
  * @property {string[]} [go_stimuli] Optional list of Go stimuli to rotate through.
  * @property {string[]} [nogo_stimuli] Optional list of No-Go stimuli to rotate through.
  * @property {number}   [go_practice_timeout=10000] Duration of Go practice trial.
@@ -34,9 +38,13 @@ interface GoNoGoConfig {
   num_blocks?: number;
   num_trials?: number;
   trial_timeout?: number;
+  stimulus_duration?: number | null;
   isi_timeout?: number;
   probability?: number;
   show_debrief?: boolean;
+  show_button_during_fixation?: boolean;
+  stimulus_container_height?: string;
+  fixation_size?: string;
   //stimuli configuration
   go_stimulus?: string;
   nogo_stimulus?: string;
@@ -75,11 +83,13 @@ export function createInstructions(instructions: string[], texts?) {
  *
  * @param html The stimulus HTML or text (already formatted).
  * @param isGoTrial Whether this stimulus represents a Go (true) or No-Go (false) trial.
+ * @param containerHeight Optional height for the container to prevent layout shifts.
  * @returns HTML string for inclusion in a jsPsych stimulus field.
  */
-const createStimulusHTML = (html: string, isGoTrial: boolean): string => {
+const createStimulusHTML = (html: string, isGoTrial: boolean, containerHeight?: string): string => {
   const id = isGoTrial ? "go-stimulus" : "nogo-stimulus";
-  return `<div id="${id}-container" class="go-nogo-container timeline-trial" style="font-size: 3em;">${html}</div>`;
+  const heightStyle = containerHeight ? `height: ${containerHeight};` : '';
+  return `<div id="${id}-container" class="go-nogo-container timeline-trial" style="font-size: 3em; ${heightStyle} display: flex; align-items: center; justify-content: center;">${html}</div>`;
 };
 
 /**
@@ -286,14 +296,16 @@ const createPracticeCompletion = (texts = trial_text) => {
  * @param jsPsych Active jsPsych instance (for timeline variables and data).
  * @param button_text Label for the response button.
  * @param trial_timeout Trial duration in milliseconds.
+ * @param stimulus_duration Duration to display the stimulus in milliseconds (null means show until response/timeout).
  * @returns A jsPsych trial definition to be used within a procedure.
  */
-const createGoNoGo = (jsPsych: JsPsych, button_text: string, trial_timeout: number) => {
+const createGoNoGo = (jsPsych: JsPsych, button_text: string, trial_timeout: number, stimulus_duration?: number | null) => {
   return {
     type: jsPsychHtmlButtonResponse,
     stimulus: jsPsych.timelineVariable("stimulus"),
     choices: [button_text],
     trial_duration: trial_timeout,
+    stimulus_duration: stimulus_duration !== undefined ? stimulus_duration : null,
     response_ends_trial: true,
     data: {
       task: "go-nogo",
@@ -316,13 +328,28 @@ const createGoNoGo = (jsPsych: JsPsych, button_text: string, trial_timeout: numb
  * Creates an inter-stimulus interval (ISI) fixation screen.
  *
  * @param isi_timeout Duration (ms) to show the fixation.
+ * @param button_text Label for the button.
+ * @param show_button Whether to show the button (disabled) during fixation.
+ * @param stimulus_height Height of the stimulus to match (e.g., "25vh"). If provided, creates a container with this height.
+ * @param fixation_size Font size for the fixation cross (e.g., "3em").
  * @returns A non-responsive jsPsych trial showing a fixation cross.
  */
-const createISIFixation = (isi_timeout: number, button_text: string) => {
+const createISIFixation = (
+  isi_timeout: number,
+  button_text: string,
+  show_button: boolean = true,
+  stimulus_height?: string,
+  fixation_size: string = "3em"
+) => {
+  // If stimulus_height is provided, create a container with matching height to prevent button movement
+  const fixationHTML = stimulus_height
+    ? `<div class="go-nogo-container timeline-trial" style="font-size: ${fixation_size}; height: ${stimulus_height}; display: flex; align-items: center; justify-content: center;"><div class="fixation">+</div></div>`
+    : `<div class="fixation" style="font-size: ${fixation_size};">+</div>`;
+
   return {
     // Use button plugin so we can provide button_html
     type: jsPsychHtmlButtonResponse,
-    stimulus: '<div class="fixation" style="font-size: 3em;">+</div>',
+    stimulus: fixationHTML,
     choices: [button_text],
     trial_duration: isi_timeout,
     response_ends_trial: false,
@@ -331,10 +358,10 @@ const createISIFixation = (isi_timeout: number, button_text: string) => {
       phase: "main",
       page: "isi",
     },
-    // Hidden and disabled button to keep layout consistent with createGoNoGo but non-interactive
+    // Button is disabled during fixation; visibility controlled by show_button parameter
     button_html: (choice) =>
       `<button id="isi-btn" class="continue-btn timeline-html-btn jspsych-btn is-disabled"
-               style="visibility: hidden;" disabled>${choice}</button>`,
+               style="visibility: ${show_button ? 'visible' : 'hidden'}; opacity: 0.5;" disabled>${choice}</button>`,
   };
 };
 
@@ -348,6 +375,7 @@ const createISIFixation = (isi_timeout: number, button_text: string) => {
  * @param probability Probability of a Go trial (0..1).
  * @param actualGoStimuli List of Go stimuli used in rotation order.
  * @param actualNoGoStimuli List of No-Go stimuli used in rotation order.
+ * @param containerHeight Optional height for stimulus container.
  * @returns An array of timeline_variables entries consumed by createGoNoGo.
  */
 const createTimelineVariables = (
@@ -357,6 +385,7 @@ const createTimelineVariables = (
   probability: number,
   actualGoStimuli: string[],
   actualNoGoStimuli: string[],
+  containerHeight?: string,
 ) => {
   const trials: any[] = [];
 
@@ -393,7 +422,7 @@ const createTimelineVariables = (
     }
 
     trials.push({
-      stimulus: createStimulusHTML(stimulus, isGoTrial),
+      stimulus: createStimulusHTML(stimulus, isGoTrial, containerHeight),
       is_go_trial: isGoTrial,
       task: "go-nogo",
       phase: "main-trial",
@@ -490,12 +519,16 @@ export function createTimeline(
     num_blocks = 3,
     num_trials = 50,
     trial_timeout = 500,
+    stimulus_duration = null,
     isi_timeout = 500,
     probability = 0.75,
     show_debrief = false,
+    show_button_during_fixation = true,
+    stimulus_container_height = "25vh",
+    fixation_size = "3em",
     // stimuli
-    go_stimulus = square,
-    nogo_stimulus = circle,
+    go_stimulus = circle,
+    nogo_stimulus = octagon,
     go_stimuli,
     nogo_stimuli,
     go_practice_timeout = 10000,
@@ -527,8 +560,14 @@ export function createTimeline(
   const actualGoStimuli = go_stimuli?.length > 0 ? go_stimuli : [go_stimulus];
   const actualNoGoStimuli = nogo_stimuli?.length > 0 ? nogo_stimuli : [nogo_stimulus];
 
-  const goNoGoTrial = createGoNoGo(jsPsych, text_object.stimulusButton, trial_timeout);
-  const isi_timeoutTrial = createISIFixation(isi_timeout, text_object.stimulusButton);
+  const goNoGoTrial = createGoNoGo(jsPsych, text_object.stimulusButton, trial_timeout, stimulus_duration);
+  const isi_timeoutTrial = createISIFixation(
+    isi_timeout,
+    text_object.stimulusButton,
+    show_button_during_fixation,
+    stimulus_container_height,
+    fixation_size
+  );
 
   // Generate blocks
   const blocks = [];
@@ -540,6 +579,7 @@ export function createTimeline(
       probability,
       actualGoStimuli,
       actualNoGoStimuli,
+      stimulus_container_height,
     );
 
     // Add block trials
