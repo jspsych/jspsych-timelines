@@ -1,7 +1,7 @@
 import { JsPsych } from "jspsych";
 import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
 import jsPsychInstructions from "@jspsych/plugin-instructions";
-import { trial_text, octagon, circle } from "./text";
+import { trial_text, octagon, circle, square } from "./text";
 
 /**
  * Configuration options for the Go/No-Go timeline and helpers.
