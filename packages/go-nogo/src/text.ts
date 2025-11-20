@@ -2,6 +2,9 @@
 export const square = `
   <div role="img" aria-label="Go square"
     style="height:25vh;aspect-ratio:1;background:#000;margin:auto;"></div>`;
+export const octagon = `
+  <div role="img" aria-label="No-Go octagon"
+    style="height:25vh;aspect-ratio:1;background:#000;margin:auto;clip-path:polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);"></div>`;
 export const circle = `
   <div role="img" aria-label="No-Go circle"
     style="height:25vh;aspect-ratio:1;background:#000;border-radius:50%;margin:auto;"></div>`;
@@ -13,9 +16,9 @@ export const trial_text = {
   // Instruction pages
   instructions_pages: [
     "In this task, you will see symbols appear one at a time on the screen.",
-    "When you see a square, click the button as quickly as possible." + square,
-    "But if you see the circle, do nothing — don't press anything." + circle,
-    "Try to be fast, but also careful. Only press when it's a square.",
+    "When you see a circle, click the button as quickly as possible." + circle,
+    "But if you see the octagon, do nothing — don't press anything." + octagon,
+    "Try to be fast, but also careful. Only press when it's a circle.",
     "Continue when ready to start the practice.",
   ],
 
@@ -27,20 +30,20 @@ export const trial_text = {
   nextButton: '',
 
   // Page 1: GO Practice
-  goPageContent: 
+  goPageContent:
   `<b>GO Trials</b><br>
-  When you see the square, click the button as quickly as possible!<br>
+  When you see the circle, click the button as quickly as possible!<br>
   Try clicking the button below to practice:`,
-  goSuccess: 'Perfect! You clicked quickly for the square stimulus.',
-  goFailure: 'You failed to click in time for the square stimulus.',
+  goSuccess: 'Perfect! You clicked quickly for the circle stimulus.',
+  goFailure: 'You failed to click in time for the circle stimulus.',
 
-  // Page 2: NO-GO Practice  
+  // Page 2: NO-GO Practice
   noGoPageContent:
   `<b>NO-GO Trials</b><br>
-  When you see the circle, do NOT click the button!<br>
+  When you see the octagon, do NOT click the button!<br>
   Try waiting without clicking the button below:`,
-  noGoSuccess: 'Excellent! You correctly did NOT click for the circle.',
-  noGoFailure: 'Remember, you should NOT click for the circle!',
+  noGoSuccess: 'Excellent! You correctly did NOT click for the octagon.',
+  noGoFailure: 'Remember, you should NOT click for the octagon!',
 
   // Practice completion page
   practiceCompleteContent:
