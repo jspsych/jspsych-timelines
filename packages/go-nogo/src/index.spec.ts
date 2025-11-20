@@ -191,8 +191,8 @@ describe("Go-NoGo Timeline", () => {
       expect(html).toContain('display: flex');
     });
 
-    it("should create ISI fixation with custom parameters", () => {
-      const fixation = timelineUnits.createISIFixation(
+    it("should create fixation with custom parameters", () => {
+      const fixation = timelineUnits.createFixation(
         1000,
         'Click',
         true,
@@ -203,6 +203,51 @@ describe("Go-NoGo Timeline", () => {
       expect(fixation).toHaveProperty('type');
       expect(fixation).toHaveProperty('stimulus');
       expect(fixation.trial_duration).toBe(1000);
+    });
+
+    it("should create ISI blank screen with custom parameters", () => {
+      const isiBlank = timelineUnits.createISIBlank(
+        500,
+        'Click',
+        true,
+        '25vh'
+      );
+
+      expect(isiBlank).toHaveProperty('type');
+      expect(isiBlank).toHaveProperty('stimulus');
+      expect(isiBlank.trial_duration).toBe(500);
+      expect(isiBlank.data.page).toBe('isi-blank');
+    });
+
+    it("should use fixation_duration and isi_duration parameters", () => {
+      const timeline = createTimeline(jsPsych, {
+        fixation_duration: 750,
+        isi_duration: 250,
+        num_blocks: 1,
+        num_trials: 5
+      });
+
+      expect(timeline.timeline).toBeDefined();
+      expect(timeline.timeline.length).toBeGreaterThan(0);
+
+      // Timeline structure: first element is an array containing blocks
+      const blocksArray = timeline.timeline[0] as any[];
+      expect(Array.isArray(blocksArray)).toBe(true);
+
+      // The first block procedure should have 3 trials in sequence: fixation, stimulus, isi_blank
+      const blockProcedure = blocksArray[0];
+      expect(blockProcedure.timeline).toBeDefined();
+      expect(blockProcedure.timeline.length).toBe(3);
+
+      // Check fixation trial
+      const fixationTrial = blockProcedure.timeline[0];
+      expect(fixationTrial.trial_duration).toBe(750);
+      expect(fixationTrial.data.page).toBe('fixation');
+
+      // Check ISI blank trial
+      const isiBlankTrial = blockProcedure.timeline[2];
+      expect(isiBlankTrial.trial_duration).toBe(250);
+      expect(isiBlankTrial.data.page).toBe('isi-blank');
     });
 
     it("should create go-nogo trial with stimulus_duration", () => {

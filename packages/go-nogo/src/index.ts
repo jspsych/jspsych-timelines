@@ -13,7 +13,8 @@ import { trial_text, octagon, circle, square } from "./text";
  * @property {number}  [num_trials=50] Trials per block.
  * @property {number}  [trial_timeout=500] Total trial duration in milliseconds (time to respond).
  * @property {number}  [stimulus_duration=null] Duration to display the stimulus in milliseconds. Set to null to show until response or trial_timeout.
- * @property {number}  [isi_timeout=500] Inter-stimulus interval (fixation) in milliseconds.
+ * @property {number}  [fixation_duration=500] Duration to display the fixation cross in milliseconds.
+ * @property {number}  [isi_duration=0] Inter-stimulus interval (blank screen after stimulus) in milliseconds.
  * @property {number}  [probability=0.75] Probability of a Go trial in each block (0..1).
  * @property {boolean} [show_debrief=false] Whether to append the debrief summary at the end.
  * @property {boolean} [show_button_during_fixation=true] Whether to show the GO button (disabled) during fixation trials.
@@ -39,7 +40,8 @@ interface GoNoGoConfig {
   num_trials?: number;
   trial_timeout?: number;
   stimulus_duration?: number | null;
-  isi_timeout?: number;
+  fixation_duration?: number;
+  isi_duration?: number;
   probability?: number;
   show_debrief?: boolean;
   show_button_during_fixation?: boolean;
@@ -325,17 +327,54 @@ const createGoNoGo = (jsPsych: JsPsych, button_text: string, trial_timeout: numb
 };
 
 /**
- * Creates an inter-stimulus interval (ISI) fixation screen.
+ * Creates a blank ISI screen (inter-stimulus interval after the stimulus).
  *
- * @param isi_timeout Duration (ms) to show the fixation.
+ * @param isi_duration Duration (ms) to show the blank screen.
+ * @param button_text Label for the button.
+ * @param show_button Whether to show the button (disabled) during ISI.
+ * @param stimulus_height Height to match stimulus container (e.g., "25vh").
+ * @returns A non-responsive jsPsych trial showing a blank screen.
+ */
+const createISIBlank = (
+  isi_duration: number,
+  button_text: string,
+  show_button: boolean = true,
+  stimulus_height?: string,
+) => {
+  // Create a blank container with matching height to prevent button movement
+  const blankHTML = stimulus_height
+    ? `<div class="go-nogo-container timeline-trial" style="height: ${stimulus_height}; display: flex; align-items: center; justify-content: center;"></div>`
+    : `<div></div>`;
+
+  return {
+    type: jsPsychHtmlButtonResponse,
+    stimulus: blankHTML,
+    choices: [button_text],
+    trial_duration: isi_duration,
+    response_ends_trial: false,
+    data: {
+      task: "go-nogo",
+      phase: "main",
+      page: "isi-blank",
+    },
+    button_html: (choice) =>
+      `<button id="isi-blank-btn" class="continue-btn timeline-html-btn jspsych-btn is-disabled"
+               style="visibility: ${show_button ? 'visible' : 'hidden'}; opacity: 0.5;" disabled>${choice}</button>`,
+  };
+};
+
+/**
+ * Creates a fixation screen.
+ *
+ * @param fixation_duration Duration (ms) to show the fixation.
  * @param button_text Label for the button.
  * @param show_button Whether to show the button (disabled) during fixation.
  * @param stimulus_height Height of the stimulus to match (e.g., "25vh"). If provided, creates a container with this height.
  * @param fixation_size Font size for the fixation cross (e.g., "3em").
  * @returns A non-responsive jsPsych trial showing a fixation cross.
  */
-const createISIFixation = (
-  isi_timeout: number,
+const createFixation = (
+  fixation_duration: number,
   button_text: string,
   show_button: boolean = true,
   stimulus_height?: string,
@@ -351,16 +390,16 @@ const createISIFixation = (
     type: jsPsychHtmlButtonResponse,
     stimulus: fixationHTML,
     choices: [button_text],
-    trial_duration: isi_timeout,
+    trial_duration: fixation_duration,
     response_ends_trial: false,
     data: {
       task: "go-nogo",
       phase: "main",
-      page: "isi",
+      page: "fixation",
     },
     // Button is disabled during fixation; visibility controlled by show_button parameter
     button_html: (choice) =>
-      `<button id="isi-btn" class="continue-btn timeline-html-btn jspsych-btn is-disabled"
+      `<button id="fixation-btn" class="continue-btn timeline-html-btn jspsych-btn is-disabled"
                style="visibility: ${show_button ? 'visible' : 'hidden'}; opacity: 0.5;" disabled>${choice}</button>`,
   };
 };
@@ -520,7 +559,8 @@ export function createTimeline(
     num_trials = 50,
     trial_timeout = 500,
     stimulus_duration = null,
-    isi_timeout = 500,
+    fixation_duration = 500,
+    isi_duration = 0,
     probability = 0.75,
     show_debrief = false,
     show_button_during_fixation = true,
@@ -561,12 +601,18 @@ export function createTimeline(
   const actualNoGoStimuli = nogo_stimuli?.length > 0 ? nogo_stimuli : [nogo_stimulus];
 
   const goNoGoTrial = createGoNoGo(jsPsych, text_object.stimulusButton, trial_timeout, stimulus_duration);
-  const isi_timeoutTrial = createISIFixation(
-    isi_timeout,
+  const fixationTrial = createFixation(
+    fixation_duration,
     text_object.stimulusButton,
     show_button_during_fixation,
     stimulus_container_height,
     fixation_size
+  );
+  const isiBlankTrial = createISIBlank(
+    isi_duration,
+    text_object.stimulusButton,
+    show_button_during_fixation,
+    stimulus_container_height
   );
 
   // Generate blocks
@@ -582,9 +628,9 @@ export function createTimeline(
       stimulus_container_height,
     );
 
-    // Add block trials
+    // Add block trials: fixation → stimulus → ISI blank
     const blockProcedure = {
-      timeline: [goNoGoTrial, isi_timeoutTrial],
+      timeline: [fixationTrial, goNoGoTrial, isiBlankTrial],
       timeline_variables: blockTrials,
       randomize_order: true,
     };
@@ -646,7 +692,8 @@ export const timelineUnits = {
   createNoGoPractice,
   createPracticeCompletion,
   createGoNoGo,
-  createISIFixation,
+  createFixation,
+  createISIBlank,
   createBlockBreak,
 };
 
