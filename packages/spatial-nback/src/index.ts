@@ -1,3 +1,4 @@
+import { JsPsych } from "jspsych";
 import jsPsychPluginSpatialNback from "@jspsych-contrib/plugin-spatial-nback";
 import jsPsychInstructions from "@jspsych/plugin-instructions";
 import { trial_text, instruction_pages } from "./text";
@@ -77,47 +78,50 @@ function generateNBackSequence(total_trials: number, n_back: number, target_perc
     return { positions, is_target };
 }
 
-export function createTimeline({
-    rows = 3,
-    cols = 3,
-    n_back = 1,
-    total_trials = 20,
-    target_percentage = 40,
-    stimulus_duration = 750,
-    isi_duration = 500,
-    feedback_duration = 0,
-    show_feedback_text = false,
-    show_feedback_border = false,
-    cell_size = null,
-    prompt = null,
-    buttons = null,
-    stimulus_color = "#2196F3",
-    correct_color = "#4CAF50",
-    incorrect_color = "#F44336",
-    include_instructions = false,
-    instruction_texts = instruction_pages,
-    texts = trial_text
-}: {
-    rows?: number,
-    cols?: number,
-    n_back?: number,
-    total_trials?: number,
-    target_percentage?: number,
-    stimulus_duration?: number,
-    isi_duration?: number,
-    feedback_duration?: number,
-    show_feedback_text?: boolean,
-    show_feedback_border?: boolean,
-    cell_size?: number,
-    prompt?: string,
-    buttons?: string[],
-    stimulus_color?: string,
-    correct_color?: string,
-    incorrect_color?: string,
-    include_instructions?: boolean,
-    instruction_texts?: typeof instruction_pages,
-    texts?: typeof trial_text
-} = {}) {
+export function createTimeline(
+    jsPsych: JsPsych,
+    {
+        rows = 3,
+        cols = 3,
+        n_back = 1,
+        total_trials = 20,
+        target_percentage = 40,
+        stimulus_duration = 750,
+        isi_duration = 500,
+        feedback_duration = 0,
+        show_feedback_text = false,
+        show_feedback_border = false,
+        cell_size = null,
+        prompt = null,
+        buttons = null,
+        stimulus_color = "#2196F3",
+        correct_color = "#4CAF50",
+        incorrect_color = "#F44336",
+        include_instructions = false,
+        instruction_texts = instruction_pages,
+        texts = trial_text
+    }: {
+        rows?: number,
+        cols?: number,
+        n_back?: number,
+        total_trials?: number,
+        target_percentage?: number,
+        stimulus_duration?: number,
+        isi_duration?: number,
+        feedback_duration?: number,
+        show_feedback_text?: boolean,
+        show_feedback_border?: boolean,
+        cell_size?: number,
+        prompt?: string,
+        buttons?: string[],
+        stimulus_color?: string,
+        correct_color?: string,
+        incorrect_color?: string,
+        include_instructions?: boolean,
+        instruction_texts?: typeof instruction_pages,
+        texts?: typeof trial_text
+    } = {}
+) {
 
     // Use texts object if provided, otherwise fall back to defaults
     const effective_prompt = prompt ?? texts?.prompt ?? trial_text.prompt;
@@ -194,8 +198,8 @@ export function createTimeline({
 }
 
 // Create a practice timeline with fewer trials
-export function createPracticeTimeline(options: Parameters<typeof createTimeline>[0] = {}) {
-    return createTimeline({
+export function createPracticeTimeline(jsPsych: JsPsych, options: Parameters<typeof createTimeline>[1] = {}) {
+    return createTimeline(jsPsych, {
         ...options,
         total_trials: 5,
         target_percentage: 50,
@@ -207,19 +211,22 @@ export function createPracticeTimeline(options: Parameters<typeof createTimeline
 }
 
 // Create multiple n-back levels timeline
-export function createMultiLevelNBackTimeline({
-    n_backs = [1, 2],
-    trials_per_level = 20,
-    randomize_levels = false,
-    ...sharedOptions
-}: {
-    n_backs?: number[],
-    trials_per_level?: number,
-    randomize_levels?: boolean,
-} & Parameters<typeof createTimeline>[0] = {}) {
-    
+export function createMultiLevelNBackTimeline(
+    jsPsych: JsPsych,
+    {
+        n_backs = [1, 2],
+        trials_per_level = 20,
+        randomize_levels = false,
+        ...sharedOptions
+    }: {
+        n_backs?: number[],
+        trials_per_level?: number,
+        randomize_levels?: boolean,
+    } & Parameters<typeof createTimeline>[1] = {}
+) {
+
     const level_timelines = n_backs.map(level => {
-        return createTimeline({
+        return createTimeline(jsPsych, {
             ...sharedOptions,
             n_back: level,
             total_trials: trials_per_level,
@@ -235,21 +242,21 @@ export function createMultiLevelNBackTimeline({
 
 // Utility functions for common configurations
 export const presetConfigurations = {
-    easy: () => createTimeline({
+    easy: (jsPsych: JsPsych) => createTimeline(jsPsych, {
         n_back: 1,
         total_trials: 20,
         target_percentage: 30,
         show_feedback_text: true
     }),
-    
-    medium: () => createTimeline({
+
+    medium: (jsPsych: JsPsych) => createTimeline(jsPsych, {
         n_back: 2,
         total_trials: 30,
         target_percentage: 25,
         show_feedback_text: false
     }),
-    
-    hard: () => createTimeline({
+
+    hard: (jsPsych: JsPsych) => createTimeline(jsPsych, {
         n_back: 3,
         total_trials: 40,
         target_percentage: 20,
@@ -258,7 +265,7 @@ export const presetConfigurations = {
         cols: 4
     }),
 
-    research: () => createMultiLevelNBackTimeline({
+    research: (jsPsych: JsPsych) => createMultiLevelNBackTimeline(jsPsych, {
         n_backs: [1, 2, 3],
         trials_per_level: 50,
         target_percentage: 25,
