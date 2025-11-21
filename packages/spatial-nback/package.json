@@ -1,6 +1,6 @@
 {
     "name": "@jspsych-timelines/spatial-nback",
-    "version": "0.0.2",
+    "version": "0.1.0",
     "description": "A deployable spatial grid n-back timeline for jsPsych. Supports custom grid sizes, n-back levels, feedback, and more.",
     "type": "module",
     "main": "dist/index.js",
