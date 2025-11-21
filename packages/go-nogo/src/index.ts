@@ -129,7 +129,7 @@ const createGoPractice = (go_stimulus: string, texts = trial_text, timeout: numb
     `,
     choices: [texts.stimulusButton],
     trial_duration: timeout, // default 10 seconds
-    data: { task: "go-nogo", phase: "go-practice" },
+    data: { task: "go-nogo", phase: "practice", page: "go-practice" },
     button_html: (choice, choice_index) =>
       `<button id="go-nogo-btn" class="jspsych-btn timeline-html-btn">${choice}</button>`,
     on_finish: (data: any) => {
@@ -216,7 +216,7 @@ const createNoGoPractice = (nogo_stimulus: string, texts = trial_text, timeout: 
     `,
     choices: [texts.stimulusButton],
     trial_duration: timeout,
-    data: { task: "go-nogo", phase: "nogo-practice" },
+    data: { task: "go-nogo", phase: "practice", page: "nogo-practice" },
     button_html: (choice, choice_index) =>
       `<button id="go-nogo-btn" class="continue-btn jspsych-btn timeline-html-btn">${choice}</button>`,
     on_finish: (data: any) => {
@@ -315,7 +315,7 @@ const createGoNoGo = (jsPsych: JsPsych, button_text: string, trial_timeout: numb
     response_ends_trial: true,
     data: {
       task: "go-nogo",
-      phase: "main-trial",
+      phase: "main",
       is_go_trial: jsPsych.timelineVariable("is_go_trial"),
       block_number: jsPsych.timelineVariable("block_number"),
       page: jsPsych.timelineVariable("page"),
@@ -474,7 +474,7 @@ const createTimelineVariables = (
       stimulus: createStimulusHTML(stimulus, isGoTrial, containerHeight),
       is_go_trial: isGoTrial,
       task: "go-nogo",
-      phase: "main-trial",
+      phase: "main",
       page: isGoTrial ? "go" : "nogo",
       block_number: blockNumber,
     });
@@ -498,7 +498,7 @@ const createBlockBreak = (blockNum: number, num_blocks: number, duration: number
       type: jsPsychHtmlButtonResponse,
       stimulus: `<p>${text_object.blockBreakContent(blockNum, num_blocks)}</p>`,
       choices: [text_object.continueButton],
-      data: { task: "go-nogo", phase: "block-break" + blockNum, block_number: blockNum },
+      data: { task: "go-nogo", phase: "main", page: "block-break", block_number: blockNum },
       button_html: (choice) =>
         `<button id="block-break-btn" class="continue-btn jspsych-btn timeline-html-btn">${choice}</button>`,
       css_classes: ["jspsych-go-nogo-container"]
@@ -510,7 +510,7 @@ const createBlockBreak = (blockNum: number, num_blocks: number, duration: number
       stimulus: `<p>${text_object.blockBreakContent(blockNum, num_blocks)}</p><p id="timer-display"></p>`,
       choices: [],
       trial_duration: duration,
-      data: { task: "go-nogo", phase: "block-break" + blockNum, block_number: blockNum },
+      data: { task: "go-nogo", phase: "main", page: "block-break", block_number: blockNum },
       on_load: () => {
         const timerDisplay = document.getElementById('timer-display');
         let timeRemaining = duration;
@@ -547,7 +547,7 @@ const createBlockBreak = (blockNum: number, num_blocks: number, duration: number
 const createDebrief = (jsPsych: JsPsych, text_object = trial_text) => {
   // Calculate stats when trial starts, not when displayed
   const calculateStats = () => {
-    const allTrials = jsPsych.data.get().filter({ task: "go-nogo", phase: "main-trial" }).values();
+    const allTrials = jsPsych.data.get().filter({ task: "go-nogo", phase: "main" }).filter((trial: any) => trial.page === "go" || trial.page === "nogo").values();
 
     if (allTrials.length === 0) return { accuracy: 0, meanRT: 0 };
 
@@ -578,7 +578,7 @@ const createDebrief = (jsPsych: JsPsych, text_object = trial_text) => {
       return text_object.debriefContent(accuracy, meanRT);
     },
     choices: [text_object.finishButton],
-    data: { task: "go-nogo", phase: "debrief" },
+    data: { task: "go-nogo", phase: "main", page: "debrief" },
     button_html: (choice, choice_index) =>
       `<button id="debrief-btn" class="continue-btn jspsych-btn timeline-html-btn">${choice}</button>`,
     css_classes: ["jspsych-go-nogo-container"]
