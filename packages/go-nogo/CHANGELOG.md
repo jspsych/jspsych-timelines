@@ -1,5 +1,11 @@
 # @jspsych-timelines/go-nogo
 
+## 0.4.0
+
+### Minor Changes
+
+- 330ecd0: Add button_opacity_during_fixation parameter (default 1.0) to control button opacity during fixation and ISI screens, and add block_break_duration parameter to support timed breaks with countdown timer
+
 ## 0.3.2
 
 ### Patch Changes
