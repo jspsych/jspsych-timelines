@@ -280,7 +280,61 @@ export const timelineUnits = {
     createInstructions
 };
 
+/**
+ * Generate HTML for a spatial n-back grid
+ * @param rows Number of rows in the grid
+ * @param cols Number of columns in the grid
+ * @param cell_size Cell size in pixels (if null, uses 12vh)
+ * @param highlight_position Optional position to highlight {row, col}
+ * @param highlight_color Color for the highlighted cell (default: "#2196F3")
+ * @returns HTML string for the grid
+ */
+export function createGridHTML({
+    rows = 3,
+    cols = 3,
+    cell_size = null,
+    highlight_position = null,
+    highlight_color = "#2196F3"
+}: {
+    rows?: number,
+    cols?: number,
+    cell_size?: number | null,
+    highlight_position?: { row: number, col: number } | null,
+    highlight_color?: string
+} = {}): string {
+    const cell_size_style = cell_size !== null ? `${cell_size}px` : '12vh';
+
+    let html = `<div id="nback-grid" style="
+        border: 3px solid #000;
+        box-sizing: border-box;
+        display: inline-block;
+    ">`;
+
+    for (let row = 0; row < rows; row++) {
+        html += '<div style="display: flex;">';
+        for (let col = 0; col < cols; col++) {
+            const is_highlighted = highlight_position &&
+                highlight_position.row === row &&
+                highlight_position.col === col;
+            const bg_color = is_highlighted ? `background-color: ${highlight_color};` : '';
+
+            html += `<div id="cell-${row}-${col}" style="
+                width: ${cell_size_style};
+                height: ${cell_size_style};
+                border: 1px solid #ccc;
+                box-sizing: border-box;
+                ${bg_color}
+            "></div>`;
+        }
+        html += "</div>";
+    }
+    html += "</div>";
+
+    return html;
+}
+
 export const utils = {
     presetConfigurations,
     generateNBackSequence,
+    createGridHTML
 }
