@@ -357,6 +357,7 @@ const createISIBlank = (
       phase: "main",
       page: "isi-blank",
     },
+    css_classes: ["jspsych-go-nogo-container"],
     button_html: (choice) =>
       `<button id="isi-blank-btn" class="continue-btn timeline-html-btn jspsych-btn is-disabled"
                style="visibility: ${show_button ? 'visible' : 'hidden'}; opacity: 0.5;" disabled>${choice}</button>`,
@@ -397,6 +398,7 @@ const createFixation = (
       phase: "main",
       page: "fixation",
     },
+    css_classes: ["jspsych-go-nogo-container"],
     // Button is disabled during fixation; visibility controlled by show_button parameter
     button_html: (choice) =>
       `<button id="go-nogo-btn" class="continue-btn timeline-html-btn jspsych-btn"
