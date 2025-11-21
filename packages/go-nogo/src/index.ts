@@ -488,15 +488,16 @@ const createTimelineVariables = (
  * @param blockNum 1-based index of the block that just finished.
  * @param num_blocks Total number of blocks.
  * @param duration Duration in milliseconds. If null, shows a button. If a number, shows a countdown timer.
+ * @param text_object Text configuration object containing messages and labels.
  * @returns A jsPsychHtmlButtonResponse screen prompting to continue or showing a countdown.
  */
-const createBlockBreak = (blockNum: number, num_blocks: number, duration: number | null = null) => {
+const createBlockBreak = (blockNum: number, num_blocks: number, duration: number | null = null, text_object = trial_text) => {
   if (duration === null) {
     // Button mode
     return {
       type: jsPsychHtmlButtonResponse,
-      stimulus: `<p>${trial_text.blockBreakContent(blockNum, num_blocks)}</p>`,
-      choices: [trial_text.continueButton],
+      stimulus: `<p>${text_object.blockBreakContent(blockNum, num_blocks)}</p>`,
+      choices: [text_object.continueButton],
       data: { task: "go-nogo", phase: "block-break" + blockNum, block_number: blockNum },
       button_html: (choice) =>
         `<button id="block-break-btn" class="continue-btn jspsych-btn timeline-html-btn">${choice}</button>`,
@@ -506,7 +507,7 @@ const createBlockBreak = (blockNum: number, num_blocks: number, duration: number
     // Timer mode
     return {
       type: jsPsychHtmlButtonResponse,
-      stimulus: `<p>${trial_text.blockBreakContent(blockNum, num_blocks)}</p><p id="timer-display"></p>`,
+      stimulus: `<p>${text_object.blockBreakContent(blockNum, num_blocks)}</p><p id="timer-display"></p>`,
       choices: [],
       trial_duration: duration,
       data: { task: "go-nogo", phase: "block-break" + blockNum, block_number: blockNum },
@@ -517,7 +518,7 @@ const createBlockBreak = (blockNum: number, num_blocks: number, duration: number
         const updateTimer = () => {
           const seconds = Math.ceil(timeRemaining / 1000);
           if (timerDisplay) {
-            timerDisplay.textContent = `Next block begins in ${seconds} second${seconds !== 1 ? 's' : ''}...`;
+            timerDisplay.textContent = text_object.blockBreakTimerText(seconds);
           }
         };
 
@@ -688,7 +689,7 @@ export function createTimeline(
 
     // Add block break page between blocks (except after last block)
     if (blockNum < num_blocks) {
-      const blockBreakTrial = createBlockBreak(blockNum, num_blocks, block_break_duration);
+      const blockBreakTrial = createBlockBreak(blockNum, num_blocks, block_break_duration, text_object);
       blocks.push(blockBreakTrial);
     }
   }

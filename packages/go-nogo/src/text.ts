@@ -54,6 +54,7 @@ export const trial_text = {
   // Block instructions
   blockBreakContent: (blockNum: number, totalBlocks: number) => '<b>Block ' + blockNum + ' Complete!</b><br>You have completed block ' + blockNum + ' of ' + totalBlocks + '.<br>Take a short break if needed, then click below to continue.',
   continueButton: 'Continue',
+  blockBreakTimerText: (seconds: number) => `Next block begins in ${seconds} second${seconds !== 1 ? 's' : ''}...`,
 
   // Results/Debrief
   debriefContent: (accuracy: number, meanRT: number) => `
