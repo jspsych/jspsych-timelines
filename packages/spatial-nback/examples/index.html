@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Spatial N-Back Task</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <script src="https://unpkg.com/jspsych"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-html-button-response@2.1.0"></script>
+  <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css">
+
+  <script src="../dist/index.global.js"></script>
+
+  <!-- OPTIONAL: Spatial N-Back timeline CSS for mobile-friendly styling -->
+  <link rel="stylesheet" href="../src/css/styles.css">
+
+  <!-- Can also load the published timeline package and CSS here instead of locally, e.g. -->
+  <!-- <script src="https://unpkg.com/@jspsych-timelines/spatial-nback"></script> -->
+  <!-- <link rel="stylesheet" href="https://unpkg.com/@jspsych-timelines/spatial-nback/dist/css/styles.css"> -->
+</head>
+
+<body></body>
+<script>
+  const jsPsych = initJsPsych({
+    on_finish: function () {
+      jsPsych.data.displayData();
+    }
+  });
+
+  const instructions = jsPsychTimelineSpatialNback.timelineUnits.createInstructions();
+  const practice = jsPsychTimelineSpatialNback.timelineUnits.createPracticeTimeline();
+
+  // Confirmation screen before main task: default timeline does not include this.
+  const confirm = {
+    type: jsPsychHtmlButtonResponse,
+    stimulus: '<p>Press CONTINUE to start the main task.</p>',
+    choices: ['<p>CONTINUE</p>'],
+    css_classes: ['jspsych-spatial-nback-container']
+  };
+  
+  // Create a custom timeline
+  const spatial1Back = jsPsychTimelineSpatialNback.createTimeline({
+    rows: 3,
+    cols: 3,
+    n_back: 1,
+    total_trials: 10,
+    target_percentage: 50,
+    stimulus_duration: 750,
+    isi_duration: 500,
+    feedback_duration: 0,
+    show_feedback_text: false,
+    show_feedback_border: false,
+    prompt: "", // overrides text.ts defaults
+    buttons: ["O", "X"], // overrides text.ts defaults
+    stimulus_color: "#2196F3",
+    correct_color: "#4CAF50",
+    incorrect_color: "#F44336",
+    include_instructions: false,
+  });
+
+  // Or use a preset
+  // const timeline = jsPsychTimelineSpatialNback.presetConfigurations.medium();
+
+  // Or create a multi-level experiment
+  // const timeline = jsPsychTimelineSpatialNback.createMultiLevelNBackTimeline({
+  //     n_backs: [1, 2, 3],
+  //     trials_per_level: 20
+  // });
+
+  jsPsych.run([instructions, practice, confirm, spatial1Back]);
+</script>
+
+</html>
