@@ -317,7 +317,6 @@ const createGoNoGo = (jsPsych: JsPsych, button_text: string, trial_timeout: numb
     response_ends_trial: true,
     data: {
       task: "go-nogo",
-      phase: jsPsych.timelineVariable("phase"),
       is_go_trial: jsPsych.timelineVariable("is_go_trial"),
       block_number: jsPsych.timelineVariable("block_number"),
       page: jsPsych.timelineVariable("page"),
@@ -362,7 +361,6 @@ const createISIBlank = (
     response_ends_trial: false,
     data: {
       task: "go-nogo",
-      phase: "main",
       page: "isi-blank",
     },
     css_classes: ["jspsych-go-nogo-container"],
@@ -405,7 +403,6 @@ const createFixation = (
     response_ends_trial: false,
     data: {
       task: "go-nogo",
-      phase: "main",
       page: "fixation",
     },
     css_classes: ["jspsych-go-nogo-container"],
@@ -476,7 +473,6 @@ const createTimelineVariables = (
       stimulus: createStimulusHTML(stimulus, isGoTrial, containerHeight),
       is_go_trial: isGoTrial,
       task: "go-nogo",
-      phase: "main",
       page: isGoTrial ? "go" : "nogo",
       block_number: blockNumber,
     });
@@ -500,7 +496,7 @@ const createBlockBreak = (blockNum: number, num_blocks: number, duration: number
       type: jsPsychHtmlButtonResponse,
       stimulus: `<p>${text_object.blockBreakContent(blockNum, num_blocks)}</p>`,
       choices: [text_object.continueButton],
-      data: { task: "go-nogo", phase: "main", page: "block-break", block_number: blockNum },
+      data: { task: "go-nogo", page: "block-break", block_number: blockNum },
       button_html: (choice) =>
         `<button id="block-break-btn" class="continue-btn jspsych-btn timeline-html-btn">${choice}</button>`,
       css_classes: ["jspsych-go-nogo-container"]
@@ -512,7 +508,7 @@ const createBlockBreak = (blockNum: number, num_blocks: number, duration: number
       stimulus: `<p>${text_object.blockBreakContent(blockNum, num_blocks)}</p><p id="timer-display"></p>`,
       choices: [],
       trial_duration: duration,
-      data: { task: "go-nogo", phase: "main", page: "block-break", block_number: blockNum },
+      data: { task: "go-nogo", page: "block-break", block_number: blockNum },
       on_load: () => {
         const timerDisplay = document.getElementById('timer-display');
         let timeRemaining = duration;
@@ -680,16 +676,10 @@ export function createTimeline(
 
     const practiceProcedure = {
       timeline: [fixationTrial, goNoGoTrial, isiBlankTrial],
-      timeline_variables: practiceTrials.map(trial => ({ ...trial, phase: "practice" })),
+      timeline_variables: practiceTrials,
       randomize_order: true,
-      on_timeline_finish: () => {
-        // Update phase for fixation and ISI trials to "practice"
-        const practiceData = jsPsych.data.get().filter({ block_number: 0 });
-        practiceData.values().forEach((trial: any) => {
-          if (trial.page === "fixation" || trial.page === "isi-blank") {
-            trial.phase = "practice";
-          }
-        });
+      data: {
+        phase: "practice"
       }
     };
     timeline.push(practiceProcedure);
@@ -713,13 +703,19 @@ export function createTimeline(
       timeline: [fixationTrial, goNoGoTrial, isiBlankTrial],
       timeline_variables: blockTrials,
       randomize_order: true,
+      data: {
+        phase: "main"
+      }
     };
     blocks.push(blockProcedure);
 
     // Add block break page between blocks (except after last block)
     if (blockNum < num_blocks) {
       const blockBreakTrial = createBlockBreak(blockNum, num_blocks, block_break_duration, text_object);
-      blocks.push(blockBreakTrial);
+      blocks.push({
+        timeline: [blockBreakTrial],
+        data: { phase: "main" }
+      });
     }
   }
 
