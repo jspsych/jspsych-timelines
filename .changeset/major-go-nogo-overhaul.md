@@ -1,5 +1,5 @@
 ---
-"@jspsych-timelines/go-nogo": major
+"@jspsych-timelines/go-nogo": minor
 ---
 
 Major overhaul of instructions and practice system:
