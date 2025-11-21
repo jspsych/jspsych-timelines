@@ -1,5 +1,5 @@
 import { JsPsych, initJsPsych } from "jspsych";
-import { createTimeline, createPracticeTimeline, createMultiLevelNBackTimeline, presetConfigurations } from "./index";
+import { createTimeline, createPracticeTimeline, createMultiLevelNBackTimeline, presetConfigurations, createGridHTML } from "./index";
 
 /* Test suite for Spatial N-Back Timeline
   In-depth HTML testing is in the Spatial N-Back plugin. */
@@ -222,5 +222,40 @@ describe('timeline structure validation', () => {
       expect(trial.data).toHaveProperty('total_trials');
       expect(trial.data).toHaveProperty('task');
     });
+  });
+});
+
+describe('createGridHTML', () => {
+  it('should create grid with default parameters', () => {
+    const html = createGridHTML();
+    expect(html).toContain('id="nback-grid"');
+    expect(html).toContain('id="cell-0-0"');
+    expect(html).toContain('id="cell-2-2"');
+  });
+
+  it('should create grid with custom dimensions', () => {
+    const html = createGridHTML({ rows: 4, cols: 5 });
+    expect(html).toContain('id="cell-0-0"');
+    expect(html).toContain('id="cell-3-4"');
+    expect(html).not.toContain('id="cell-4-0"');
+  });
+
+  it('should use custom cell size', () => {
+    const html = createGridHTML({ cell_size: 100 });
+    expect(html).toContain('width: 100px');
+    expect(html).toContain('height: 100px');
+  });
+
+  it('should highlight specified position', () => {
+    const html = createGridHTML({
+      highlight_position: { row: 1, col: 1 },
+      highlight_color: "#FF0000"
+    });
+    expect(html).toContain('background-color: #FF0000');
+  });
+
+  it('should not highlight any position when highlight_position is null', () => {
+    const html = createGridHTML({ highlight_position: null });
+    expect(html).not.toContain('background-color');
   });
 });
