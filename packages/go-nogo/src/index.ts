@@ -277,7 +277,7 @@ const createNoGoPractice = (nogo_stimulus: string, texts = trial_text, timeout: 
 };
 
 /**
- * Create a small completion screen at the end of practice.
+ * Create a small completion screen at the end of interactive instructions.
  *
  * @param texts Text configuration to render labels.
  * @returns A jsPsych trial for the practice completion screen.
@@ -298,6 +298,24 @@ const createPracticeCompletion = (texts = trial_text) => {
   };
 
   return { timeline: [completionTrial] };
+};
+
+/**
+ * Create an end of practice block screen.
+ *
+ * @param texts Text configuration to render labels.
+ * @returns A jsPsych trial for the end of practice screen.
+ */
+const createEndOfPractice = (texts = trial_text) => {
+  return {
+    type: jsPsychHtmlButtonResponse,
+    stimulus: `<p>${texts.endOfPracticeContent}</p>`,
+    choices: [texts.endOfPracticeButton],
+    data: { task: "go-nogo", page: "end-of-practice" },
+    button_html: (choice) =>
+      `<button id="end-practice-btn" class="continue-btn jspsych-btn timeline-html-btn">${choice}</button>`,
+    css_classes: ["jspsych-go-nogo-container"]
+  };
 };
 
 /**
@@ -686,6 +704,13 @@ export function createTimeline(
       }
     };
     timeline.push(practiceProcedure);
+
+    // End of practice screen
+    const endOfPracticeTrial = createEndOfPractice(text_object);
+    timeline.push({
+      timeline: [endOfPracticeTrial],
+      data: { phase: "practice" }
+    });
   }
 
   // Generate main blocks
@@ -770,6 +795,7 @@ export const timelineUnits = {
   createGoPractice,
   createNoGoPractice,
   createPracticeCompletion,
+  createEndOfPractice,
   createGoNoGo,
   createFixation,
   createISIBlank,

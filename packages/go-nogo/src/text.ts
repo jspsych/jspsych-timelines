@@ -45,11 +45,15 @@ export const trial_text = {
   noGoSuccess: 'Excellent! You correctly did NOT click for the octagon.',
   noGoFailure: 'Remember, you should NOT click for the octagon!',
 
-  // Practice completion page
+  // Practice completion page (after interactive instructions)
   practiceCompleteContent:
   `<b>Practice Complete!</b><br>
   Great job! You have completed the practice session and are ready to begin the actual task.`,
   beginTaskButton: 'Begin Task',
+
+  // End of practice block page (after practice block)
+  endOfPracticeContent: `Okay, now let's begin the real task!`,
+  endOfPracticeButton: 'Continue',
 
   // Block instructions
   blockBreakContent: (blockNum: number, totalBlocks: number) => '<b>Block ' + blockNum + ' Complete!</b><br>You have completed block ' + blockNum + ' of ' + totalBlocks + '.<br>Take a short break if needed, then click below to continue.',
