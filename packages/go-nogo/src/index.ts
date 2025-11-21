@@ -578,7 +578,7 @@ const createDebrief = (jsPsych: JsPsych, text_object = trial_text) => {
       return text_object.debriefContent(accuracy, meanRT);
     },
     choices: [text_object.finishButton],
-    data: { task: "go-nogo", phase: "main", page: "debrief" },
+    data: { task: "go-nogo", phase: "debrief" },
     button_html: (choice, choice_index) =>
       `<button id="debrief-btn" class="continue-btn jspsych-btn timeline-html-btn">${choice}</button>`,
     css_classes: ["jspsych-go-nogo-container"]
