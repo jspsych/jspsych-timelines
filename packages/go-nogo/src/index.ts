@@ -10,13 +10,14 @@ import { trial_text, octagon, circle, square } from "./text";
  * @property {boolean} [show_instructions=false] Whether to include interactive instructions (go/no-go examples with feedback).
  * @property {boolean} [show_practice=false] Whether to include a practice block matching the main task format.
  * @property {number}  [num_practice_trials=10] Number of trials in the practice block.
+ * @property {number}  [practice_probability=0.75] Probability of a Go trial in the practice block (0..1).
  * @property {number}  [num_blocks=3] Number of experimental blocks.
  * @property {number}  [num_trials=50] Trials per block.
  * @property {number}  [trial_timeout=500] Total trial duration in milliseconds (time to respond).
  * @property {number}  [stimulus_duration=null] Duration to display the stimulus in milliseconds. Set to null to show until response or trial_timeout.
  * @property {number}  [fixation_duration=500] Duration to display the fixation cross in milliseconds.
  * @property {number}  [isi_duration=0] Inter-stimulus interval (blank screen after stimulus) in milliseconds.
- * @property {number}  [probability=0.75] Probability of a Go trial in each block (0..1).
+ * @property {number}  [probability=0.75] Probability of a Go trial in each main block (0..1).
  * @property {boolean} [show_debrief=false] Whether to append the debrief summary at the end.
  * @property {boolean} [show_button_during_fixation=true] Whether to show the GO button (disabled) during fixation trials.
  * @property {number}  [button_opacity_during_fixation=1.0] Opacity of the button during fixation and ISI (0.0 to 1.0).
@@ -40,6 +41,7 @@ interface GoNoGoConfig {
   show_instructions?: boolean;
   show_practice?: boolean;
   num_practice_trials?: number;
+  practice_probability?: number;
   num_blocks?: number;
   num_trials?: number;
   trial_timeout?: number;
@@ -601,6 +603,7 @@ export function createTimeline(
     show_instructions = false,
     show_practice = false,
     num_practice_trials = 10,
+    practice_probability = 0.75,
     num_blocks = 3,
     num_trials = 50,
     trial_timeout = 500,
@@ -668,7 +671,7 @@ export function createTimeline(
       jsPsych,
       0, // block 0 for practice
       num_practice_trials,
-      probability,
+      practice_probability,
       actualGoStimuli,
       actualNoGoStimuli,
       stimulus_container_height,
