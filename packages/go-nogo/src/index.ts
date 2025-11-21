@@ -399,7 +399,7 @@ const createFixation = (
     },
     // Button is disabled during fixation; visibility controlled by show_button parameter
     button_html: (choice) =>
-      `<button id="fixation-btn" class="continue-btn timeline-html-btn jspsych-btn is-disabled"
+      `<button id="go-nogo-btn" class="continue-btn timeline-html-btn jspsych-btn"
                style="visibility: ${show_button ? 'visible' : 'hidden'}; opacity: 0.5;" disabled>${choice}</button>`,
   };
 };
