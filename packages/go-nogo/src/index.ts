@@ -18,6 +18,7 @@ import { trial_text, octagon, circle, square } from "./text";
  * @property {number}  [probability=0.75] Probability of a Go trial in each block (0..1).
  * @property {boolean} [show_debrief=false] Whether to append the debrief summary at the end.
  * @property {boolean} [show_button_during_fixation=true] Whether to show the GO button (disabled) during fixation trials.
+ * @property {number}  [button_opacity_during_fixation=1.0] Opacity of the button during fixation and ISI (0.0 to 1.0).
  * @property {string}  [stimulus_container_height="25vh"] Height for stimulus container (e.g., "25vh", "200px"). Prevents button movement between fixation and stimulus.
  * @property {string}  [fixation_size="3em"] Font size for fixation cross (e.g., "3em", "48px", "5rem").
  *
@@ -45,6 +46,7 @@ interface GoNoGoConfig {
   probability?: number;
   show_debrief?: boolean;
   show_button_during_fixation?: boolean;
+  button_opacity_during_fixation?: number;
   stimulus_container_height?: string;
   fixation_size?: string;
   //stimuli configuration
@@ -333,6 +335,7 @@ const createGoNoGo = (jsPsych: JsPsych, button_text: string, trial_timeout: numb
  * @param button_text Label for the button.
  * @param show_button Whether to show the button (disabled) during ISI.
  * @param stimulus_height Height to match stimulus container (e.g., "25vh").
+ * @param button_opacity Opacity of the button (0.0 to 1.0).
  * @returns A non-responsive jsPsych trial showing a blank screen.
  */
 const createISIBlank = (
@@ -340,6 +343,7 @@ const createISIBlank = (
   button_text: string,
   show_button: boolean = true,
   stimulus_height?: string,
+  button_opacity: number = 1.0,
 ) => {
   // Create a blank container with matching height to prevent button movement
   const blankHTML = stimulus_height
@@ -360,7 +364,7 @@ const createISIBlank = (
     css_classes: ["jspsych-go-nogo-container"],
     button_html: (choice) =>
       `<button id="isi-blank-btn" class="continue-btn timeline-html-btn jspsych-btn is-disabled"
-               style="visibility: ${show_button ? 'visible' : 'hidden'}; opacity: 0.5;" disabled>${choice}</button>`,
+               style="visibility: ${show_button ? 'visible' : 'hidden'}; opacity: ${button_opacity};" disabled>${choice}</button>`,
   };
 };
 
@@ -372,6 +376,7 @@ const createISIBlank = (
  * @param show_button Whether to show the button (disabled) during fixation.
  * @param stimulus_height Height of the stimulus to match (e.g., "25vh"). If provided, creates a container with this height.
  * @param fixation_size Font size for the fixation cross (e.g., "3em").
+ * @param button_opacity Opacity of the button (0.0 to 1.0).
  * @returns A non-responsive jsPsych trial showing a fixation cross.
  */
 const createFixation = (
@@ -379,7 +384,8 @@ const createFixation = (
   button_text: string,
   show_button: boolean = true,
   stimulus_height?: string,
-  fixation_size: string = "3em"
+  fixation_size: string = "3em",
+  button_opacity: number = 1.0,
 ) => {
   // If stimulus_height is provided, create a container with matching height to prevent button movement
   const fixationHTML = stimulus_height
@@ -402,7 +408,7 @@ const createFixation = (
     // Button is disabled during fixation; visibility controlled by show_button parameter
     button_html: (choice) =>
       `<button id="go-nogo-btn" class="continue-btn timeline-html-btn jspsych-btn"
-               style="visibility: ${show_button ? 'visible' : 'hidden'}; opacity: 0.5;" disabled>${choice}</button>`,
+               style="visibility: ${show_button ? 'visible' : 'hidden'}; opacity: ${button_opacity};" disabled>${choice}</button>`,
   };
 };
 
@@ -566,6 +572,7 @@ export function createTimeline(
     probability = 0.75,
     show_debrief = false,
     show_button_during_fixation = true,
+    button_opacity_during_fixation = 1.0,
     stimulus_container_height = "25vh",
     fixation_size = "3em",
     // stimuli
@@ -608,13 +615,15 @@ export function createTimeline(
     text_object.stimulusButton,
     show_button_during_fixation,
     stimulus_container_height,
-    fixation_size
+    fixation_size,
+    button_opacity_during_fixation
   );
   const isiBlankTrial = createISIBlank(
     isi_duration,
     text_object.stimulusButton,
     show_button_during_fixation,
-    stimulus_container_height
+    stimulus_container_height,
+    button_opacity_during_fixation
   );
 
   // Generate blocks
