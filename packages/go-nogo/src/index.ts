@@ -19,6 +19,7 @@ import { trial_text, octagon, circle, square } from "./text";
  * @property {boolean} [show_debrief=false] Whether to append the debrief summary at the end.
  * @property {boolean} [show_button_during_fixation=true] Whether to show the GO button (disabled) during fixation trials.
  * @property {number}  [button_opacity_during_fixation=1.0] Opacity of the button during fixation and ISI (0.0 to 1.0).
+ * @property {number|null} [block_break_duration=null] Duration of block breaks in milliseconds. If null, shows a continue button. If a number, shows a countdown timer.
  * @property {string}  [stimulus_container_height="25vh"] Height for stimulus container (e.g., "25vh", "200px"). Prevents button movement between fixation and stimulus.
  * @property {string}  [fixation_size="3em"] Font size for fixation cross (e.g., "3em", "48px", "5rem").
  *
@@ -47,6 +48,7 @@ interface GoNoGoConfig {
   show_debrief?: boolean;
   show_button_during_fixation?: boolean;
   button_opacity_during_fixation?: number;
+  block_break_duration?: number | null;
   stimulus_container_height?: string;
   fixation_size?: string;
   //stimuli configuration
@@ -485,18 +487,54 @@ const createTimelineVariables = (
  *
  * @param blockNum 1-based index of the block that just finished.
  * @param num_blocks Total number of blocks.
- * @returns A jsPsychHtmlButtonResponse screen prompting to continue.
+ * @param duration Duration in milliseconds. If null, shows a button. If a number, shows a countdown timer.
+ * @returns A jsPsychHtmlButtonResponse screen prompting to continue or showing a countdown.
  */
-const createBlockBreak = (blockNum: number, num_blocks: number) => {
-  return {
-    type: jsPsychHtmlButtonResponse,
-    stimulus: `<p>${trial_text.blockBreakContent(blockNum, num_blocks)}</p>`,
-    choices: [trial_text.continueButton],
-    data: { task: "go-nogo", phase: "block-break" + blockNum, block_number: blockNum },
-    button_html: (choice) =>
-      `<button id="block-break-btn" class="continue-btn jspsych-btn timeline-html-btn">${choice}</button>`,
-    css_classes: ["jspsych-go-nogo-container"]
-  };
+const createBlockBreak = (blockNum: number, num_blocks: number, duration: number | null = null) => {
+  if (duration === null) {
+    // Button mode
+    return {
+      type: jsPsychHtmlButtonResponse,
+      stimulus: `<p>${trial_text.blockBreakContent(blockNum, num_blocks)}</p>`,
+      choices: [trial_text.continueButton],
+      data: { task: "go-nogo", phase: "block-break" + blockNum, block_number: blockNum },
+      button_html: (choice) =>
+        `<button id="block-break-btn" class="continue-btn jspsych-btn timeline-html-btn">${choice}</button>`,
+      css_classes: ["jspsych-go-nogo-container"]
+    };
+  } else {
+    // Timer mode
+    return {
+      type: jsPsychHtmlButtonResponse,
+      stimulus: `<p>${trial_text.blockBreakContent(blockNum, num_blocks)}</p><p id="timer-display"></p>`,
+      choices: [],
+      trial_duration: duration,
+      data: { task: "go-nogo", phase: "block-break" + blockNum, block_number: blockNum },
+      on_load: () => {
+        const timerDisplay = document.getElementById('timer-display');
+        let timeRemaining = duration;
+
+        const updateTimer = () => {
+          const seconds = Math.ceil(timeRemaining / 1000);
+          if (timerDisplay) {
+            timerDisplay.textContent = `Next block begins in ${seconds} second${seconds !== 1 ? 's' : ''}...`;
+          }
+        };
+
+        updateTimer();
+
+        const intervalId = setInterval(() => {
+          timeRemaining -= 100;
+          if (timeRemaining <= 0) {
+            clearInterval(intervalId);
+          } else {
+            updateTimer();
+          }
+        }, 100);
+      },
+      css_classes: ["jspsych-go-nogo-container"]
+    };
+  }
 };
 
 /**
@@ -573,6 +611,7 @@ export function createTimeline(
     show_debrief = false,
     show_button_during_fixation = true,
     button_opacity_during_fixation = 1.0,
+    block_break_duration = null,
     stimulus_container_height = "25vh",
     fixation_size = "3em",
     // stimuli
@@ -649,7 +688,7 @@ export function createTimeline(
 
     // Add block break page between blocks (except after last block)
     if (blockNum < num_blocks) {
-      const blockBreakTrial = createBlockBreak(blockNum, num_blocks);
+      const blockBreakTrial = createBlockBreak(blockNum, num_blocks, block_break_duration);
       blocks.push(blockBreakTrial);
     }
   }
