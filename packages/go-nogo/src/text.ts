@@ -47,8 +47,7 @@ export const trial_text = {
 
   // Practice completion page (after interactive instructions)
   practiceCompleteContent:
-  `<b>Practice Complete!</b><br>
-  Great job! You have completed the practice session and are ready to begin the actual task.`,
+  `We now start with a short practice round to get used to the task before the real task begins.`,
   beginTaskButton: 'Begin Task',
 
   // End of practice block page (after practice block)
