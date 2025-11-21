@@ -1,5 +1,5 @@
 ---
-"@jspsych-timelines/spatial-nback": major
+"@jspsych-timelines/spatial-nback": minor
 ---
 
 Add jsPsych parameter to timeline functions
