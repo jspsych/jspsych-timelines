@@ -317,7 +317,7 @@ const createGoNoGo = (jsPsych: JsPsych, button_text: string, trial_timeout: numb
     response_ends_trial: true,
     data: {
       task: "go-nogo",
-      phase: "main",
+      phase: jsPsych.timelineVariable("phase"),
       is_go_trial: jsPsych.timelineVariable("is_go_trial"),
       block_number: jsPsych.timelineVariable("block_number"),
       page: jsPsych.timelineVariable("page"),
@@ -678,11 +678,19 @@ export function createTimeline(
       stimulus_container_height,
     );
 
-    // Update phase to "practice" for these trials
     const practiceProcedure = {
       timeline: [fixationTrial, goNoGoTrial, isiBlankTrial],
       timeline_variables: practiceTrials.map(trial => ({ ...trial, phase: "practice" })),
       randomize_order: true,
+      on_timeline_finish: () => {
+        // Update phase for fixation and ISI trials to "practice"
+        const practiceData = jsPsych.data.get().filter({ block_number: 0 });
+        practiceData.values().forEach((trial: any) => {
+          if (trial.page === "fixation" || trial.page === "isi-blank") {
+            trial.phase = "practice";
+          }
+        });
+      }
     };
     timeline.push(practiceProcedure);
   }
