@@ -26,8 +26,8 @@
     }
   });
 
-  const instructions = jsPsychTimelineSpatialNback.timelineUnits.createInstructions();
-  const practice = jsPsychTimelineSpatialNback.timelineUnits.createPracticeTimeline();
+  // const instructions = jsPsychTimelineSpatialNback.timelineUnits.createInstructions();
+  // const practice = jsPsychTimelineSpatialNback.createPracticeTimeline(jsPsych);
 
   // Confirmation screen before main task: default timeline does not include this.
   const confirm = {
@@ -38,7 +38,7 @@
   };
   
   // Create a custom timeline
-  const spatial1Back = jsPsychTimelineSpatialNback.createTimeline({
+  const spatial1Back = jsPsychTimelineSpatialNback.createTimeline(jsPsych, {
     rows: 3,
     cols: 3,
     n_back: 1,
@@ -50,7 +50,7 @@
     show_feedback_text: false,
     show_feedback_border: false,
     prompt: "", // overrides text.ts defaults
-    buttons: ["O", "X"], // overrides text.ts defaults
+    buttons: ["MATCH"], // overrides text.ts defaults
     stimulus_color: "#2196F3",
     correct_color: "#4CAF50",
     incorrect_color: "#F44336",
@@ -58,15 +58,19 @@
   });
 
   // Or use a preset
-  // const timeline = jsPsychTimelineSpatialNback.presetConfigurations.medium();
+  // const timeline = jsPsychTimelineSpatialNback.presetConfigurations.medium(jsPsych);
 
   // Or create a multi-level experiment
-  // const timeline = jsPsychTimelineSpatialNback.createMultiLevelNBackTimeline({
+  // const timeline = jsPsychTimelineSpatialNback.createMultiLevelNBackTimeline(jsPsych, {
   //     n_backs: [1, 2, 3],
   //     trials_per_level: 20
   // });
 
-  jsPsych.run([instructions, practice, confirm, spatial1Back]);
+  jsPsych.run([
+    // instructions, 
+    // practice, 
+    confirm, 
+    spatial1Back]);
 </script>
 
 </html>

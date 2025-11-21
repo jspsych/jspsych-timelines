@@ -1,5 +1,5 @@
 {
-    "extends": "@jspsych/config/tsconfig.contrib.json",
+    "extends": "@jspsych/config/tsconfig.json",
     "compilerOptions": {
         "baseUrl": "."
     },
