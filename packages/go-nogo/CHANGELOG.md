@@ -1,5 +1,11 @@
 # @jspsych-timelines/go-nogo
 
+## 0.3.2
+
+### Patch Changes
+
+- ae939f2: Update fixation button to use the same ID and CSS classes as the main trial button for consistent styling
+
 ## 0.3.1
 
 ### Patch Changes
