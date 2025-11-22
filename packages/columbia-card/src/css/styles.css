@@ -53,6 +53,10 @@
   padding: 2vmin; /* Add some padding */
   box-sizing: border-box; /* Include padding in width calculations */
   overflow-x: hidden; /* Prevent horizontal overflow */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 /* bigger font */
@@ -91,8 +95,6 @@
   /* From: stroop-styles.css + columbia-card-styles.css */
   position: fixed;
   bottom: 2.5vh;
-  left: 50% !important;
-  transform: translateX(-50%);
   z-index: 1000;
   width: 95vw;
   max-width: none;
@@ -108,6 +110,7 @@
 /* Card grid mobile responsiveness */
 .jspsych-columbia-card-container .cct-grid {
   grid-template-columns: repeat(4, 8fr);
+  justify-items: center;
 }
 
 /* Card mobile styling */

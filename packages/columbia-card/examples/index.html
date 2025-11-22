@@ -10,13 +10,15 @@
     <!-- <script src="https://unpkg.com/@jspsych-timelines/columbia-card"></script> -->
 
     <!-- Optional CSS styling -->
-    <link rel="stylesheet" href="../src/styles.css" />
+    <link rel="stylesheet" href="../src/css/styles.css" />
     <!-- <link rel="stylesheet" href="https://unpkg.com/@jspsych-timelines/columbia-card/dist/styles.css"> -->
   </head>
 
   <body></body>
   <script>
-    const jsPsych = initJsPsych();
+    const jsPsych = initJsPsych({
+      on_finish: () => jsPsych.data.displayData("json"),
+    });
 
     // Example configuration with all available parameters (most commented out for reference)
     const { timeline } = jsPsychTimelineColumbiaCard.createTimeline(jsPsych, {
