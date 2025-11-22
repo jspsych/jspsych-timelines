@@ -1,5 +1,5 @@
 /* UNIFIED EXPERIMENTAL STYLES */
-/* Based on spatial-nback as primary inspiration with common timeline-* patterns */
+/* Based on spatial-nback as primary inspiration with common timeline patterns */
 
 /* ========================================
    GENERAL STYLES
@@ -8,7 +8,6 @@
 .jspsych-columbia-card-container h1,
 .jspsych-columbia-card-container h2,
 .jspsych-columbia-card-container h3 {
-  /* From: spatial-nback-styles.css */
   line-height: 1;
   margin: 0vmin;
   word-wrap: break-word;
@@ -18,7 +17,7 @@
   box-sizing: border-box;
 }
 
-/* h1 is used in Go-NOGO, single big letter */
+/* single big letter */
 .jspsych-columbia-card-container h1 {
   font-size: clamp(40px, 55vmin, 300px);
 }
@@ -47,12 +46,11 @@
 
 /* INSTRUCTIONS PHASE */
 .jspsych-columbia-card-container .timeline-instructions {
-  /* From: spatial-nback-styles.css exactly */
   max-width: 90vw; /* Limit width for better readability */
-  margin: 0 auto; /* Center the container */
-  padding: 2vmin; /* Add some padding */
+  margin: 0 auto; 
+  padding: 2vmin; 
   box-sizing: border-box; /* Include padding in width calculations */
-  overflow-x: hidden; /* Prevent horizontal overflow */
+  overflow-x: hidden; 
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -68,17 +66,15 @@
 /* Task instructions in trial container, text above experiment. Usually used in practice phases. */
 .jspsych-columbia-card-container #nback-instructions p,
 .jspsych-columbia-card-container p.task-prompt {
-  /* for nback and columbia-card */
   font-size: clamp(15px, 4.5vmin, 30px);
   margin: 0vmin; /* smaller than default p */
 }
 
 /* Main trial container - stimulus display area - works across tasks */
 .jspsych-columbia-card-container .timeline-trial {
-  /* From: stroop-styles.css + columbia-card-styles.css */
   width: 100vw;
   display: flex;
-  flex-direction: row; /* reconsider columning dis later */
+  flex-direction: row;
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
@@ -109,7 +105,6 @@
 
 /* Card grid mobile responsiveness */
 .jspsych-columbia-card-container .cct-grid {
-  grid-template-columns: repeat(4, 8fr);
   justify-items: center;
 }
 
@@ -133,7 +128,6 @@
 /* Fixed button container at bottom of screen */
 .jspsych-columbia-card-container .jspsych-btn-group-grid,
 .jspsych-columbia-card-container .timeline-btn-container {
-  /* From: stroop-styles.css + columbia-card-styles.css */
   position: fixed;
   bottom: 2.5vh;
   left: 50% !important;
@@ -141,7 +135,7 @@
   z-index: 1000;
   width: 95vw;
   max-width: none;
-  height: 20vh; /* Take up 20% of screen height */
+  height: 20vh; 
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -156,7 +150,6 @@
 
 /* Primary button styling */
 .jspsych-columbia-card-container .jspsych-btn {
-  /* From: spatial-nback-styles.css exactly */
   font-size: clamp(20px, 4vmin, 60px);
   flex: 1 30vw;
   padding: clamp(15px, 6vmin, 35px) clamp(15px, 4vmin, 40px);
@@ -166,7 +159,8 @@
   font-weight: 600;
   transition: background-color 0.2s ease;
   margin: 1vmin;
-  place-content: center; /* Center text vertically (and horizontally) */
+  place-content: center;
+
   /* Disable double-click zoom */
   touch-action: manipulation;
   user-select: none;
@@ -180,21 +174,18 @@
 }
 
 .jspsych-columbia-card-container .jspsych-btn:hover {
-  /* From: columbia-card-styles.css */
   background-color: rgb(97, 97, 97);
   transform: translateY(-2px);
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
 }
 
 .jspsych-columbia-card-container .jspsych-btn:active {
-  /* From: columbia-card-styles.css */
   background-color: rgb(57, 57, 57);
   transform: translateY(1px);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .jspsych-columbia-card-container .jspsych-btn:disabled {
-  /* From: columbia-card-styles.css */
   opacity: 0.5;
   cursor: not-allowed;
   transform: none;
@@ -202,7 +193,6 @@
 
 /* Continue button variant */
 .jspsych-columbia-card-container .continue-button {
-  /* From: spatial-nback-styles.css */
   padding: clamp(15px, 6vmin, 35px) clamp(15px, 8vmin, 40px);
   font-size: clamp(15px, 6vmin, 35px);
   border-radius: 1vmin;
@@ -221,7 +211,6 @@
 
 /* Mobile-friendly instruction navigation buttons */
 .jspsych-columbia-card-container .jspsych-instructions-nav {
-  /* From: spatial-nback-styles.css exactly */
   display: flex;
   gap: 25vw;
   justify-content: center;
@@ -234,7 +223,6 @@
 
 /* Instruction navigation button styles */
 .jspsych-columbia-card-container .jspsych-instructions-nav .jspsych-btn {
-  /* From: spatial-nback-styles.css exactly */
   height: 25vmin;
   border: 3px solid #000000;
   border-radius: 50%;
@@ -250,6 +238,7 @@
   touch-action: manipulation !important;
   user-select: none !important;
 }
+
 /* For the left button on first page, keep space but hide button */
 .jspsych-columbia-card-container .jspsych-instructions-nav .jspsych-btn:disabled {
   visibility: hidden;
@@ -305,14 +294,13 @@
     font-size: clamp(15px, 4vmin, 60px);
   }
 
-  /* go-nogo, make text smaller sideways */
+  /* make text smaller sideways */
   @media (max-width: 940px) {
     .jspsych-columbia-card-container h1 {
       font-size: revert;
     }
   }
 
-  /* spatial nback */
   /* pushes whole experiment up to not go under buttons */
   .jspsych-columbia-card-container #nback-feedback-section {
     margin-bottom: 10vh;
@@ -322,8 +310,8 @@
     margin: 0; /* pushes grid up */
   }
 
+  /* reduce padding and font size on small screens */
   .jspsych-columbia-card-container .jspsych-btn {
-    /* reduce padding and font size on small screens */
     padding: clamp(5px, 3.5vmin, 35px) clamp(15px, 4vmin, 40px);
   }
 
