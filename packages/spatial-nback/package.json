@@ -1,0 +1,42 @@
+{
+    "name": "@jspsych-timelines/spatial-nback",
+    "version": "0.3.0",
+    "description": "A deployable spatial grid n-back timeline for jsPsych. Supports custom grid sizes, n-back levels, feedback, and more.",
+    "type": "module",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "unpkg": "dist/index.global.js",
+    "scripts": {
+        "build": "tsup src/index.ts --format esm,iife,cjs --sourcemap --dts --treeshake --clean --global-name jsPsychTimelineSpatialNback && node -e \"const fs = require('fs'); const path = require('path'); function copyDir(src, dest) { if (!fs.existsSync(dest)) fs.mkdirSync(dest, {recursive: true}); fs.readdirSync(src).forEach(file => { const srcFile = path.join(src, file); const destFile = path.join(dest, file); if (fs.lstatSync(srcFile).isDirectory()) copyDir(srcFile, destFile); else fs.copyFileSync(srcFile, destFile); }); } copyDir('src/css', 'dist/css');\"",
+        "test": "jest",
+        "test:watch": "jest --watch",
+        "test:coverage": "jest --coverage"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/jspsych/jspsych-timelines.git"
+    },
+    "keywords": [
+        "jsPsych"
+    ],
+    "author": {
+        "name": "A. Hunter Farhat",
+        "url": "https://github.com/farhat60"
+    },
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/jspsych/jspsych-timelines/issues"
+    },
+    "homepage": "https://github.com/jspsych/jspsych-timelines/packages/spatial-nback#readme",
+    "devDependencies": {
+        "@jspsych/config": "^3.2.2",
+        "jspsych": "^8.2.1",
+        "tsup": "^6.7.0",
+        "typescript": "^5.0.2"
+    },
+    "dependencies": {
+        "@jspsych-contrib/plugin-spatial-nback": "^1.1.0",
+        "@jspsych/plugin-instructions": "^2.1.0",
+        "jsPsych": "npm:jspsych@^8.2.1"
+    }
+}

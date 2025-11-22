@@ -9,12 +9,13 @@ If instead of an experiment timeline, you wish to share a [plugin](https://www.j
 The jsPsych timelines that have been contributed by community members can be found in the `/packages` directory. Here is a list overview of them:
 
 ### Timelines
-
 Timeline | Contributor | Description
 ----------- | ----------- | -----------
 [arrow-flanker](https://github.com/jspsych/jspsych-timelines/blob/main/packages/arrow-flanker/README.md) | [Josh de Leeuw](https://github.com/jodeleeuw) | Arrow flanker task for jsPsych 
 [false-memory](https://github.com/jspsych/jspsych-timelines/blob/main/packages/false-memory/README.md) | [Cherrie Chang](https://github.com/cherriechang) | False memory task for jsPsych 
+[go-nogo](https://github.com/jspsych/jspsych-timelines/blob/main/packages/go-nogo/README.md) | [URSI 2025 Team](https://example.com) | A complete Go/No-Go task implementation for jsPsych measuring response inhibition and sustained attention. Includes interactive practice, configurable parameters, and comprehensive data collection. 
 [spatial-cueing](https://github.com/jspsych/jspsych-timelines/blob/main/packages/spatial-cueing/README.md) | [Cherrie Chang](https://github.com/cherriechang) | A shareable timeline of the Posner spatial cueing task. 
+[spatial-nback](https://github.com/jspsych/jspsych-timelines/blob/main/packages/spatial-nback/README.md) | [A. Hunter Farhat](https://github.com/farhat60) | A deployable spatial grid n-back timeline for jsPsych. Supports custom grid sizes, n-back levels, feedback, and more. 
 
 ## Using timelines from this repository
 
@@ -24,23 +25,35 @@ The modules in this repository can be loaded via a CDN or via NPM. The CDN is th
 <script src="https://unpkg.com/@jspsych-timelines/arrow-flanker"></script>
 ```
 
-This will load the timeline into the global namespace as `jsPsychTimelineArrowFlanker`. You can then use the timeline in your experiment like this:
-
-```js
-const jsPsych = initJsPsych();
-const timeline = jsPsychTimelineArrowFlanker.createTimeline(jsPsych, { options });
-jsPsych.run([timeline]);
+> ⚠️ You will also need to import the jsPsych library and css CDNs, in addition to the timeline CDN:
+```html
+<head>
+  <script src="https://unpkg.com/jspsych"></script>
+  <script src="https://unpkg.com/@jspsych-timelines/arrow-flanker"></script>
+  <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css">
+</head>
 ```
 
-In the above example, `timeline` is a jsPsych timeline object that can be added to other timelines or used as the main timeline. The `options` parameter is an object that contains options for the timeline. The options are described in the documentation for each timeline.
+This will load the timeline into the global namespace as `jsPsychTimelineArrowFlankerTask`. You can then use the timeline in your experiment like this:
+
+```html
+<script>
+  const jsPsych = initJsPsych();
+  const options = { fixation_duration: 400 };
+  const timeline = jsPsychTimelineArrowFlankerTask.createTimeline(jsPsych, options);
+  jsPsych.run([timeline]);
+</script>
+```
+
+In the above example, `timeline` is a jsPsych timeline object that can be added to other timelines or used as the main timeline. The `options` parameter is an object that contains jsPsych timeline properties (in this case, `fixation_duration: 400`) to configure jsPsych properties present in the imported timeline. The configurable options are described in the documentation for each timeline.
 
 ## Structure
 
-Each timeline module exports a `createTimeline()` method. This method returns an object with a `timeline` property that can be inserted into a jsPsych timeline.
+Notice that each timeline module exports a `createTimeline()` method. This method returns an object with a `timeline` property that can be inserted into a jsPsych timeline and can be run without the optional `options` parameter to keep default timeline property settings.
 
 ```js
-const timeline = jsPsychTimelineModule.createTimeline(jsPsych, { options })
-jsPsych.run([timeline])
+const timeline = jsPsychTimelineModule.createTimeline(jsPsych, { options });
+jsPsych.run([timeline]);
 ```
 
 Timeline modules may also export a `timelineUnits` objects and a `utils` object. 
