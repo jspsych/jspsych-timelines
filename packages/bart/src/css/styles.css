@@ -1,21 +1,4 @@
-html,
-body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  overflow-x: hidden;
-  font-family: sans-serif;
-  line-height: 1.5;
-  background-color: #ffffff; /* Force a consistent white background */
-}
-
-body {
-  font-size: 1.2rem;
-  background-color: #f8f9fa;
-  color: #212529;
-}
-
-.jspsych-content-wrapper {
+.jspsych-content-wrapper:has(.bart-container) {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -26,7 +9,7 @@ body {
   box-sizing: border-box;
 }
 
-.jspsych-content {
+.bart-container {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -39,31 +22,25 @@ body {
   box-sizing: border-box;
 }
 
-button {
+.bart-container button {
   font-size: 1em;
   padding: 0.75em 1.5em;
-  border-radius: 8px;
-  border: none;
-  background-color: #007bff;
-  color: white;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+
+  /* Disable double-click zoom */
+  touch-action: manipulation !important;
+  user-select: none !important;
 }
 
-button:hover {
-  background-color: #0056b3;
-}
-
-.bart-container {
+.bart-container .balloon-container {
   display: flex;
   justify-content: center;
   align-items: flex-end;
   width: 100%;
   flex-shrink: 0;
-  /*color: #ffffff; /* Match the rest of the page */
 }
 
-.balloon-area img {
+.bart-container .balloon-area img {
   max-width: 100%;
   max-height: 45vh;
   object-fit: contain;
@@ -77,14 +54,14 @@ button:hover {
   pointer-events: none;
 }
 
-.earnings-text {
+.bart-container .earnings-text {
   margin-bottom: 10px;
   font-size: 1.1em;
   text-align: center;
   flex-shrink: 0;
 }
 
-pre {
+.bart-container pre {
   white-space: pre-wrap;
   word-break: break-word;
   overflow-x: auto;
@@ -92,7 +69,7 @@ pre {
   box-sizing: border-box;
 }
 
-.vertical-center {
+.bart-container .vertical-center {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -106,16 +83,16 @@ pre {
     padding: 0;
   }
 
-  .jspsych-content-wrapper {
+  .bart-container .jspsych-content-wrapper {
     padding: 1rem;
   }
 
-  button {
+  .bart-container button {
     font-size: 1.2rem;
     padding: 1rem 2rem;
   }
 
-  .earnings-text {
+  .bart-container .earnings-text {
     font-size: 1.3rem;
   }
 }

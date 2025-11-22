@@ -24,6 +24,7 @@ function createInstructions(instruction_pages_data = instruction_pages) {
       task: "bart",
       phase: "instructions",
     },
+    css_classes: ["bart-container"]
   };
 }
 
@@ -68,7 +69,6 @@ function showStartInstructions(
 
   const instructions = {
     type: HtmlButtonResponsePlugin,
-
     stimulus: () => {
       return stimulus;
     },
@@ -79,6 +79,7 @@ function showStartInstructions(
       task: "bart",
       phase: "instructions",
     },
+    css_classes: ["bart-container"]
   };
   return instructions;
 }
@@ -94,7 +95,6 @@ function showBlockBreak(
 
   const instructions = {
     type: HtmlButtonResponsePlugin,
-
     stimulus: () => {
       // Calculate earnings dynamically when stimulus is displayed
       const data = jsPsych.data.get().filter({ task: "bart" });
@@ -116,6 +116,7 @@ function showBlockBreak(
       task: "bart",
       phase: "block-break",
     },
+    css_classes: ["bart-container"]
   };
   return instructions;
 }
@@ -135,7 +136,6 @@ function showEndResults(jsPsych: JsPsych, currencyFormatter?: CurrencyFormatter)
 
   const instructions = {
     type: HtmlButtonResponsePlugin,
-
     stimulus: () => {
       return stimulus;
     },
@@ -146,6 +146,7 @@ function showEndResults(jsPsych: JsPsych, currencyFormatter?: CurrencyFormatter)
       task: "bart",
       phase: "end-results",
     },
+    css_classes: ["bart-container"]
   };
   return instructions;
 }
@@ -182,7 +183,7 @@ function createTrialTimeline(
           const style = getBalloonStyle(pump_count);
           return `
              <div class="trial-container">
-               <div class="bart-container">
+               <div class="balloon-container">
                  <div class="balloon-area">
                    <img src="images/transparent_balloon.png" style="${style}" />
                  </div>
@@ -227,6 +228,7 @@ function createTrialTimeline(
             timed_out = true;
           }
         },
+        css_classes: ["bart-container"]
       },
     ],
     loop_function: () => !balloon_popped && !cashed_out,
@@ -239,17 +241,16 @@ function createTrialTimeline(
       if (balloon_popped) {
         return `
 <div class="trial-container">
-                <div class="bart-container">
-               <div class="balloon-area">
-                 <img src="images/transparent_popped_balloon.png" style="${style}" />
-               </div>
-             </div>
-               <div class="task-instructions">
-                 <p><strong>POP!</strong> ${trial_text.balloon_popped_message}</p>
-                 <p>${trial_text.total_earnings_message} <strong>${formatter.formatBaseUnit(jsPsych.data.get().filter({ task: "bart", exploded: false, cashed_out: true }).select("pump_count").sum())}</strong></p>
-               </div>
-             </div>
-           `;
+  <div class="balloon-container">
+  <div class="balloon-area">
+    <img src="images/transparent_popped_balloon.png" style="${style}" />
+  </div>
+</div>
+  <div class="task-instructions">
+    <p><strong>POP!</strong> ${trial_text.balloon_popped_message}</p>
+    <p>${trial_text.total_earnings_message} <strong>${formatter.formatBaseUnit(jsPsych.data.get().filter({ task: "bart", exploded: false, cashed_out: true }).select("pump_count").sum())}</strong></p>
+  </div>
+</div>`;
       } else {
         const total_points =
           pump_count +
@@ -288,6 +289,7 @@ function createTrialTimeline(
       data.timed_out = timed_out;
       data.explosion_point = explosion_point;
     },
+    css_classes: ["bart-container"]
   };
 
   const singleTrial = {
