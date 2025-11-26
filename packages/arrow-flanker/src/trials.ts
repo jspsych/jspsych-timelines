@@ -74,11 +74,10 @@ export function createFlankerTrial(
     container_height
   } = options;
 
-  return {
+  const trialDef: any = {
     type: jsPsychFlanker,
     target_direction: () => jsPsych.timelineVariable('direction'),
     congruency: () => jsPsych.timelineVariable('congruency'),
-    soa: () => jsPsych.timelineVariable('soa') || 0,
     response_timeout,
     stimulus_duration: stimulus_duration !== undefined ? stimulus_duration : null,
     response_mode,
@@ -101,6 +100,18 @@ export function createFlankerTrial(
       ...data_labels
     }
   };
+
+  // Only add soa if it exists in timeline variables (will be undefined otherwise)
+  // Use a function that checks if the variable exists
+  trialDef.soa = () => {
+    try {
+      return jsPsych.timelineVariable('soa');
+    } catch (e) {
+      return 0; // Default to 0 if soa not in timeline variables
+    }
+  };
+
+  return trialDef;
 }
 
 /**
