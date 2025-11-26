@@ -26,8 +26,11 @@
   },
   "homepage": "https://github.com/jspsych/jspsych-timelines/packages/arrow-flanker#readme",
   "peerDependencies": {
-    "@jspsych-contrib/plugin-flanker": "^1.0.0",
     "jspsych": "^8.0.1"
+  },
+  "dependencies": {
+    "@jspsych-contrib/plugin-flanker": "^1.0.0",
+    "@jspsych/plugin-html-keyboard-response": "^2.0.0"
   },
   "devDependencies": {
     "tsup": "^8.0.1",

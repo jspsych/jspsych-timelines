@@ -8,8 +8,7 @@ This release represents a comprehensive refactor of the arrow-flanker timeline t
 
 ### Breaking Changes
 
-- Now requires `@jspsych-contrib/plugin-flanker@^1.0.0` as a peer dependency
-- Timeline implementation completely refactored to use the plugin-flanker instead of custom trial logic
+- Timeline implementation completely refactored to use the `@jspsych-contrib/plugin-flanker` package instead of custom trial logic
 - Internal architecture changes may affect advanced users who were directly importing internal utilities
 
 ### New Features
@@ -26,11 +25,8 @@ This release represents a comprehensive refactor of the arrow-flanker timeline t
 
 ### Migration Guide
 
-For most users, this update should be backward compatible. However, if you were:
+For most users, this update should be backward compatible. The plugin dependency is automatically installed, so no additional installation steps are required.
+
+However, if you were:
 - Importing internal utilities: These are no longer exported. Use the public API via `utils.*`
 - Relying on specific trial implementation details: The underlying plugin has changed, though the timeline API remains the same
-
-Install the peer dependency:
-```bash
-npm install @jspsych-contrib/plugin-flanker
-```
