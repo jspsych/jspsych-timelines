@@ -1,5 +1,16 @@
 # @jspsych-timelines/arrow-flanker
 
+## 0.3.0
+
+### Minor Changes
+
+- Refactored to use @jspsych-contrib/plugin-flanker for stimulus presentation
+- Plugin now handles RAF-based SOA timing, response collection, and stimulus rendering
+- Timeline package focuses on experiment orchestration (trial order, blocks, congruency ratios)
+- Added peer dependency on @jspsych-contrib/plugin-flanker ^1.0.0
+- Removed internal stimulus generation code (now handled by plugin)
+- Improved timing precision with requestAnimationFrame implementation
+
 ## 0.2.0
 
 ### Minor Changes
