@@ -35,6 +35,10 @@ export const trial_text = {
   continue_button: "Continue",
   start_button: "Start",
   finish_button: "Finish",
+  current_value_label: "Balloon value",
+  total_points_label: "Total Points",
+  point_display_format: (points: number) => `${points} points`,
+  total_points_format: (points: number) => `${points}`,
 
   // Trial feedback messages
   balloon_popped_message: "The balloon exploded. You earned nothing this round.",

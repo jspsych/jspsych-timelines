@@ -94,6 +94,7 @@ function createEndResults(jsPsych: JsPsych, text: typeof trial_text) {
 function createTrialBlock(
   maxPumps: number,
   minPumps: number,
+  pointsPerPump: number,
   totalTrials: number,
   text: typeof trial_text = trial_text,
 ) {
@@ -107,9 +108,14 @@ function createTrialBlock(
     const trial = {
       type: BartPlugin,
       pop_threshold: generatePopThreshold(),
+      points_per_pump: pointsPerPump,
       starting_total_points: () => totalPoints,
       pump_button_label: text.pump_button,
       collect_button_label: text.collect_button,
+      current_value_label: text.current_value_label,
+      total_points_label: text.total_points_label,
+      point_display_format: text.point_display_format,
+      total_points_format: text.total_points_format,
       on_finish: (data: any) => {
         totalPoints = data.total_points;
       },
@@ -129,6 +135,7 @@ export function createTimeline(
   {
     max_pumps = 20,
     min_pumps = 1,
+    points_per_pump = 1,
     num_blocks = 3, 
     trials_per_block = 10,
     show_instructions = true, 
@@ -137,6 +144,7 @@ export function createTimeline(
   }: {
     max_pumps?: number;
     min_pumps?: number;
+    points_per_pump?: number;
     num_blocks?: number; 
     trials_per_block?: number; 
     trial_timeout?: number; 
@@ -160,6 +168,7 @@ export function createTimeline(
     const trial = createTrialBlock(
       max_pumps,
       min_pumps,
+      points_per_pump,
       trials_per_block,
       text_object,
     );

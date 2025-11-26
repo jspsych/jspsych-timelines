@@ -33,7 +33,7 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
-    "@jspsych-contrib/plugin-bart": "^1.0.0",
+    "@jspsych-contrib/plugin-bart": "^1.1.0",
     "@jspsych/plugin-fullscreen": "^2.1.0",
     "@jspsych/plugin-html-button-response": "^2.1.0",
     "@jspsych/plugin-html-keyboard-response": "^2.1.0",

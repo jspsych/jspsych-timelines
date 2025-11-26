@@ -75,6 +75,7 @@ Only contains `trial_text`, the default strings used in the timeline.
 | ------------------------ | -------------- | ---------------------- | ----------------------------------------------------------- |
 | `max_pumps`   | number | `20` | Maximum number of pumps before guaranteed explosion |
 | `min_pumps`   | number | `1` | Minimum number of pumps before explosion is possible |
+| `points_per_pump` | number | `1` | Points given per successful pump |
 | `num_blocks`  | number | `3` | Number of blocks in the experiment |
 | `trials_per_block` | number | `10` | Number of trials per block |
 

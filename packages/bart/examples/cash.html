@@ -21,12 +21,26 @@
       on_finish: () => jsPsych.data.displayData("json"),
     });
     
-    // simple default timeline
+    // simple timeline using US dollar cash rewards
     const task = jsPsychTimelineBart.createTimeline(jsPsych, {
       max_pumps: 20,
       min_pumps: 1,
       num_blocks: 1, // number of blocks in the experiment
       trials_per_block: 3, // number of trials per block
+      points_per_pump: 25, // each pump is worth 25 cents
+      text_object: {
+        pump_button: "Pump Balloon",
+        collect_button: "Collect Cash",
+        current_value_label: "Current Cash",
+        total_points_label: "Total Cash",
+        point_display_format: (points) => `$${(points / 100).toFixed(2)}`,
+        total_points_format: (points) => `$${(points / 100).toFixed(2)}`,
+        end_result_message: (points) => `
+<div class="instructions-container">
+  <p>You earned a total of <strong>$${(points / 100).toFixed(2)}</strong>!</p>
+  <p>Thanks for participating!</p>
+</div>`
+      }
     });
 
     jsPsych.run(task);
