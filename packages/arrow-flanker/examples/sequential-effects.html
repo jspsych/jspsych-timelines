@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Arrow Flanker Task - Sequential Effects Example</title>
+  <script src="https://unpkg.com/jspsych@8"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@2"></script>
+  <script src="../dist/index.global.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css">
+  <style>
+    .flanker-item {
+      display: inline-block;
+    }
+    .flanker-stim {
+      font-size: 1.2em;
+    }
+  </style>
+</head>
+
+<body></body>
+<script>
+  const jsPsych = initJsPsych({
+    on_finish: function() {
+      // Analyze Congruency Sequence Effect (Gratton effect)
+      const data = jsPsych.data.get().filter({
+        task: 'flanker',
+        phase: 'response'
+      }).filter(trial => trial.previous_congruency !== undefined);
+
+      // Filter into the four transition types
+      const cC = data.filter({previous_congruency: 'congruent', congruency: 'congruent'});
+      const cI = data.filter({previous_congruency: 'congruent', congruency: 'incongruent'});
+      const iC = data.filter({previous_congruency: 'incongruent', congruency: 'congruent'});
+      const iI = data.filter({previous_congruency: 'incongruent', congruency: 'incongruent'});
+
+      console.log('Congruency Sequence Effect (CSE) Analysis:');
+      console.log('\nAfter Congruent Trial (n-1):');
+      console.log(`  cC (congruent): ${cC.select('rt').mean().toFixed(0)}ms (n=${cC.count()})`);
+      console.log(`  cI (incongruent): ${cI.select('rt').mean().toFixed(0)}ms (n=${cI.count()})`);
+      console.log(`  Flanker Effect after C: ${(cI.select('rt').mean() - cC.select('rt').mean()).toFixed(0)}ms`);
+
+      console.log('\nAfter Incongruent Trial (n-1):');
+      console.log(`  iC (congruent): ${iC.select('rt').mean().toFixed(0)}ms (n=${iC.count()})`);
+      console.log(`  iI (incongruent): ${iI.select('rt').mean().toFixed(0)}ms (n=${iI.count()})`);
+      console.log(`  Flanker Effect after I: ${(iI.select('rt').mean() - iC.select('rt').mean()).toFixed(0)}ms`);
+
+      const cseEffect = (cI.select('rt').mean() - cC.select('rt').mean()) -
+                        (iI.select('rt').mean() - iC.select('rt').mean());
+      console.log(`\nCSE (Gratton Effect): ${cseEffect.toFixed(0)}ms`);
+      console.log('(Positive value = smaller flanker effect after incongruent trials)');
+
+      jsPsych.data.displayData();
+    }
+  });
+
+  const instructions = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: `
+      <div style="max-width: 600px; margin: auto;">
+        <h2>Arrow Flanker Task - Sequential Effects</h2>
+        <p>This experiment examines <strong>trial-to-trial adaptations</strong> in cognitive control.</p>
+        <p>Research Question: Does experiencing conflict on one trial change how you
+        process the next trial?</p>
+        <p><strong>The Gratton Effect (Congruency Sequence Effect):</strong></p>
+        <ul style="text-align: left;">
+          <li>After <em>easy trials</em>: People relax control → large flanker effect on next trial</li>
+          <li>After <em>difficult trials</em>: People increase control → small flanker effect on next trial</li>
+        </ul>
+        <p>Your task: respond to the <strong>middle arrow's direction</strong> using arrow keys.</p>
+        <p>Be as fast and accurate as possible throughout!</p>
+        <p><em>Press any key to begin.</em></p>
+      </div>
+    `
+  }
+
+  // Flanker task with sequential effects tracking
+  const flankerTask = jsPsychTimelineArrowFlankerTask.createTimeline(jsPsych, {
+    fixation_duration: 500,
+    num_trials: 64,  // More trials for stable sequential effects
+    num_blocks: 1,
+
+    // Enable sequential effects tracking
+    track_sequence_effects: true,
+
+    // Balanced design
+    congruency_ratio: {
+      congruent: 1,
+      incongruent: 1
+    },
+
+    response_timeout: 1500,
+
+    data_labels: {
+      experiment: 'sequential-effects',
+      paradigm: 'gratton-effect'
+    }
+  });
+
+  const debrief = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: `
+      <div style="max-width: 600px; margin: auto;">
+        <h2>Experiment Complete!</h2>
+        <p>Check the browser console to see the Congruency Sequence Effect analysis.</p>
+        <p>The data is broken down into four transition types:</p>
+        <ul style="text-align: left;">
+          <li><strong>cC:</strong> Congruent trial after congruent trial</li>
+          <li><strong>cI:</strong> Incongruent trial after congruent trial</li>
+          <li><strong>iC:</strong> Congruent trial after incongruent trial</li>
+          <li><strong>iI:</strong> Incongruent trial after incongruent trial</li>
+        </ul>
+        <p>The <strong>CSE (Gratton Effect)</strong> is calculated as:</p>
+        <p style="font-family: monospace; background: #f0f0f0; padding: 10px;">
+          (cI - cC) - (iI - iC)
+        </p>
+        <p>A positive value indicates adaptive control!</p>
+        <p><em>Press any key to see your data.</em></p>
+      </div>
+    `
+  };
+
+  jsPsych.run([instructions, flankerTask, debrief])
+</script>
+
+</html>

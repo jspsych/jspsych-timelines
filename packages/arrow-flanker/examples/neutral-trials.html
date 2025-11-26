@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Arrow Flanker Task - Neutral Trials Example</title>
+  <script src="https://unpkg.com/jspsych@8"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@2"></script>
+  <script src="../dist/index.global.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css">
+  <style>
+    .flanker-item {
+      display: inline-block;
+    }
+    .flanker-stim {
+      font-size: 1.2em;
+    }
+  </style>
+</head>
+
+<body></body>
+<script>
+  const jsPsych = initJsPsych({
+    on_finish: function() {
+      const data = jsPsych.data.get().filter({task: 'flanker', phase: 'response'});
+
+      const congruent = data.filter({congruency: 'congruent'});
+      const incongruent = data.filter({congruency: 'incongruent'});
+      const neutral = data.filter({congruency: 'neutral'});
+
+      console.log('Results by Trial Type:');
+      console.log(`Congruent RT: ${congruent.select('rt').mean().toFixed(0)}ms (n=${congruent.count()})`);
+      console.log(`Neutral RT: ${neutral.select('rt').mean().toFixed(0)}ms (n=${neutral.count()})`);
+      console.log(`Incongruent RT: ${incongruent.select('rt').mean().toFixed(0)}ms (n=${incongruent.count()})`);
+      console.log(`\nFacilitation (Neutral - Congruent): ${(neutral.select('rt').mean() - congruent.select('rt').mean()).toFixed(0)}ms`);
+      console.log(`Interference (Incongruent - Neutral): ${(incongruent.select('rt').mean() - neutral.select('rt').mean()).toFixed(0)}ms`);
+
+      jsPsych.data.displayData();
+    }
+  });
+
+  const instructions = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: `
+      <div style="max-width: 600px; margin: auto;">
+        <h2>Arrow Flanker Task - With Neutral Trials</h2>
+        <p>In this version, you'll see three types of trials:</p>
+        <ul style="text-align: left;">
+          <li><strong>Congruent:</strong> All arrows point the same direction (→→→→→)</li>
+          <li><strong>Incongruent:</strong> Middle arrow differs from flankers (→→←→→)</li>
+          <li><strong>Neutral:</strong> Flankers are non-directional dashes (−−→−−)</li>
+        </ul>
+        <p>Always respond to the <strong>middle arrow's direction</strong> using arrow keys.</p>
+        <p>Neutral trials help separate:</p>
+        <ul style="text-align: left;">
+          <li><strong>Facilitation:</strong> Speed-up from congruent flankers</li>
+          <li><strong>Interference:</strong> Slow-down from incongruent flankers</li>
+        </ul>
+        <p><em>Press any key to begin.</em></p>
+      </div>
+    `
+  }
+
+  // Flanker task with neutral trials
+  const flankerTask = jsPsychTimelineArrowFlankerTask.createTimeline(jsPsych, {
+    fixation_duration: 500,
+    num_trials: 36,  // Divisible by 3 trial types
+    num_blocks: 1,
+
+    // Include neutral trials
+    include_neutral: true,
+    congruency_ratio: {
+      congruent: 1,
+      incongruent: 1,
+      neutral: 1  // Equal proportions
+    },
+
+    response_timeout: 1500
+  });
+
+  const debrief = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: `
+      <div style="max-width: 600px; margin: auto;">
+        <h2>Experiment Complete!</h2>
+        <p>Check the browser console to see your results.</p>
+        <p>You should see:</p>
+        <ul style="text-align: left;">
+          <li><strong>Fastest:</strong> Congruent trials (helpful flankers)</li>
+          <li><strong>Middle:</strong> Neutral trials (no help or hindrance)</li>
+          <li><strong>Slowest:</strong> Incongruent trials (conflicting flankers)</li>
+        </ul>
+        <p><em>Press any key to see your data.</em></p>
+      </div>
+    `
+  };
+
+  jsPsych.run([instructions, flankerTask, debrief])
+</script>
+
+</html>

@@ -1,6 +1,6 @@
 {
   "name": "@jspsych-timelines/arrow-flanker",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Arrow flanker task for jsPsych",
   "type": "module",
   "main": "dist/index.mjs",
@@ -29,6 +29,7 @@
     "jspsych": "^8.0.1"
   },
   "dependencies": {
+    "@jspsych-contrib/plugin-flanker": "^1.0.0",
     "@jspsych/plugin-html-keyboard-response": "^2.0.0"
   },
   "devDependencies": {

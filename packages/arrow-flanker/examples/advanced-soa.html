@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Arrow Flanker Task - SOA Manipulation Example</title>
+  <script src="https://unpkg.com/jspsych@8"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@2"></script>
+  <script src="../dist/index.global.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css">
+  <style>
+    .flanker-item {
+      display: inline-block;
+    }
+    .flanker-stim {
+      font-size: 1.2em;
+    }
+  </style>
+</head>
+
+<body></body>
+<script>
+  const jsPsych = initJsPsych({
+    on_finish: function() {
+      // Calculate flanker effect by SOA condition
+      const data = jsPsych.data.get().filter({task: 'flanker', phase: 'response'});
+
+      console.log('Data by SOA and Congruency:');
+      const soas = [-200, -100, 0, 100, 200];
+      soas.forEach(soa => {
+        const soaData = data.filter({soa: soa});
+        const congruent = soaData.filter({congruency: 'congruent'});
+        const incongruent = soaData.filter({congruency: 'incongruent'});
+
+        console.log(`SOA ${soa}ms:`);
+        console.log(`  Congruent RT: ${congruent.select('rt').mean().toFixed(0)}ms`);
+        console.log(`  Incongruent RT: ${incongruent.select('rt').mean().toFixed(0)}ms`);
+        console.log(`  Flanker Effect: ${(incongruent.select('rt').mean() - congruent.select('rt').mean()).toFixed(0)}ms`);
+      });
+
+      jsPsych.data.displayData();
+    }
+  });
+
+  const instructions = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: `
+      <div style="max-width: 600px; margin: auto;">
+        <h2>Arrow Flanker Task - SOA Manipulation</h2>
+        <p>This is an advanced version of the flanker task that manipulates the
+        <strong>Stimulus Onset Asynchrony (SOA)</strong> - the timing between when
+        the flanking arrows and target arrow appear.</p>
+        <p>You'll experience trials where:</p>
+        <ul style="text-align: left;">
+          <li>Flankers appear before the target (negative SOA)</li>
+          <li>Everything appears together (zero SOA)</li>
+          <li>Target appears before flankers (positive SOA)</li>
+        </ul>
+        <p>Your task remains the same: respond to the <strong>middle arrow's direction</strong>.</p>
+        <p>Use <strong>arrow keys</strong> to respond as quickly and accurately as possible.</p>
+        <p><em>Press any key to begin.</em></p>
+      </div>
+    `
+  }
+
+  // Advanced flanker task with SOA manipulation
+  const flankerTask = jsPsychTimelineArrowFlankerTask.createTimeline(jsPsych, {
+    // Temporal parameters - testing SOA effects
+    soa: [-200, -100, 0, 100, 200],  // 5 SOA conditions
+    stimulus_duration: 100,           // Brief exposure
+    fixation_duration: 500,
+    iti_duration: 200,
+    response_timeout: 1500,
+
+    // Design parameters
+    num_trials: 40,  // 40 trials per block (divisible by SOA × congruency)
+    num_blocks: 1,
+
+    // Track sequential effects
+    track_sequence_effects: true,
+
+    // Data labeling
+    data_labels: {
+      experiment: 'soa-manipulation',
+      version: '1.0'
+    }
+  });
+
+  jsPsych.run([instructions, flankerTask])
+</script>
+
+</html>
