@@ -98,10 +98,17 @@ export function createFlankerTrial(
       phase: 'response',
       block_number: () => jsPsych.timelineVariable('block_number'),
       trial_number: () => jsPsych.timelineVariable('trial_number'),
-      previous_congruency: () => jsPsych.timelineVariable('previous_congruency'),
-      previous_direction: () => jsPsych.timelineVariable('previous_direction'),
       ...(has_soa ? { soa: () => jsPsych.timelineVariable('soa') } : {}),
       ...data_labels
+    },
+    on_finish: (data: any) => {
+      // Record sequential effects by looking at previous trial data
+      const previousTrials = jsPsych.data.get().filter({ task: 'flanker', phase: 'response' });
+      if (previousTrials.count() > 0) {
+        const lastTrial = previousTrials.last(1).values()[0];
+        data.previous_congruency = lastTrial.congruency;
+        data.previous_correct = lastTrial.correct;
+      }
     }
   };
 }

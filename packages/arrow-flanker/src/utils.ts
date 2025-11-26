@@ -94,14 +94,9 @@ export function generateTrialVariables(
     shuffledTrials = assignSOAValues(jsPsych, shuffledTrials, soa_config);
   }
 
-  // Add trial numbers and sequential effects tracking
+  // Add trial numbers
   shuffledTrials.forEach((trial, index) => {
     trial.trial_number = index + 1;
-
-    if (track_sequence_effects && index > 0) {
-      trial.previous_congruency = shuffledTrials[index - 1].congruency;
-      trial.previous_direction = shuffledTrials[index - 1].direction;
-    }
   });
 
   return shuffledTrials;
