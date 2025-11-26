@@ -144,19 +144,17 @@ export function createTimeline(
 }
 
 /**
- * Exported utilities for advanced usage
+ * Exported utilities for advanced customization
+ *
+ * Most users won't need these - they're for building custom timelines
+ * using the individual trial components.
  */
 export const utils = {
-  // Trial components
   createFixationTrial,
   createFlankerTrial,
   createITITrial,
-  createBlockBreak,
-  // Utility functions
-  generateTrialVariables,
-  mergeConfig
+  createBlockBreak
 };
 
-// Re-export types and constants for convenience
-export * from './types';
-export * from './constants';
+// Re-export types for TypeScript users
+export type { ArrowFlankerConfig } from './types';
