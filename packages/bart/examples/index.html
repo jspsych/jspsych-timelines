@@ -20,64 +20,20 @@
     const jsPsych = initJsPsych({
       on_finish: () => jsPsych.data.displayData("json"),
     });
-
-    // Get instructions trial
-    //const instructions = timelineUnits.showStartInstructions();
-
+    
     // Example with USD currency (default)
     const task = jsPsychTimelineBart.createTimeline(jsPsych, {
       max_pumps: 20,
       min_pumps: 1,
-      currency_unit_per_pump: 1, //eg 1 cent per pump
-      currency_config: jsPsychTimelineBart.CURRENCY_PRESETS.USD, // USD currency
-      num_blocks: 3, // number of blocks in the experiment
-      trials_per_block: 10, // number of trials per block
+      num_blocks: 1, // number of blocks in the experiment
+      trials_per_block: 3, // number of trials per block
       trial_timeout: 15000, // 15 seconds timeout per trial (default)
       enable_timeout: true, // enable auto timeout (default)
+      text_object: {
+        pump_button: "Inflate Balloon 🎈",
+      }
     });
 
-    // Example with EUR currency
-    /*
-   const task = jsPsychTimelineBart.createTimeline(jsPsych, {
-    max_pumps: 20,
-    min_pumps: 1,
-    currency_unit_per_pump: 1, //eg 1 cent per pump
-    currency_config: jsPsychTimelineBart.CURRENCY_PRESETS.EUR, // Euro currency
-    num_blocks: 3,
-    trials_per_block: 10,
-    trial_timeout: 15000,
-    enable_timeout: true,
-   });
-   */
-
-    // Example with JPY currency (no decimals)
-    /*
-   const task = jsPsychTimelineBart.createTimeline(jsPsych, {
-    max_pumps: 20,
-    min_pumps: 1,
-    currency_unit_per_pump: 1, //eg 1 yen per pump
-    currency_config: jsPsychTimelineBart.CURRENCY_PRESETS.JPY, // Japanese Yen
-    num_blocks: 3,
-    trials_per_block: 10,
-    trial_timeout: 15000,
-    enable_timeout: true,
-   });
-   */
-
-    // Create currency formatter for consistent formatting across all screens
-    const currencyFormatter = new jsPsychTimelineBart.CurrencyFormatter(
-      jsPsychTimelineBart.CURRENCY_PRESETS.USD,
-    );
-
-    const instructions = jsPsychTimelineBart.timelineUnits.showStartInstructions(
-      currencyFormatter,
-      1,
-    );
-
-    const end = jsPsychTimelineBart.timelineUnits.showEndResults(jsPsych, currencyFormatter);
-
-    const timeline = [instructions, task, end];
-
-    jsPsych.run(timeline);
+    jsPsych.run(task);
   </script>
 </html>
