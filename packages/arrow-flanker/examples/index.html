@@ -2,25 +2,51 @@
 <html>
 
 <head>
-  <script src="https://unpkg.com/jspsych"></script>
-  <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response"></script>
+  <title>Arrow Flanker Task - Basic Example</title>
+  <script src="https://unpkg.com/jspsych@8"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@2"></script>
   <script src="../dist/index.global.js"></script>
-  <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css">
+  <link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css">
+  <style>
+    .flanker-item {
+      display: inline-block;
+    }
+    .flanker-stim {
+      font-size: 1.2em;
+    }
+  </style>
 </head>
 
 <body></body>
 <script>
-  const jsPsych = initJsPsych();
+  const jsPsych = initJsPsych({
+    on_finish: function() {
+      jsPsych.data.displayData();
+    }
+  });
 
   const instructions = {
     type: jsPsychHtmlKeyboardResponse,
     stimulus: `
-                <p>Use the arrow keys to respond to the direction of the middle arrow.</p>
-                <p>Press any key to begin.</p>
-            `
+      <div style="max-width: 600px; margin: auto;">
+        <h2>Arrow Flanker Task</h2>
+        <p>In this task, you will see a row of arrows on the screen.</p>
+        <p>Your job is to respond to the <strong>direction of the middle arrow</strong>
+        and ignore the surrounding arrows.</p>
+        <p>Press the <strong>left arrow key</strong> if the middle arrow points left (←).</p>
+        <p>Press the <strong>right arrow key</strong> if the middle arrow points right (→).</p>
+        <p>Try to respond as <strong>quickly and accurately</strong> as possible.</p>
+        <p><em>Press any key to begin.</em></p>
+      </div>
+    `
   }
 
-  const flankerTask = jsPsychTimelineArrowFlankerTask.createTimeline(jsPsych, { fixation_duration: 400 });
+  // Basic flanker task with default settings
+  const flankerTask = jsPsychTimelineArrowFlankerTask.createTimeline(jsPsych, {
+    fixation_duration: 500,
+    num_trials: 24,
+    num_blocks: 2
+  });
 
   jsPsych.run([instructions, flankerTask])
 </script>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Arrow Flanker Task - Congruency Ratio Example</title>
+  <script src="https://unpkg.com/jspsych@8"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@2"></script>
+  <script src="../dist/index.global.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css">
+  <style>
+    .flanker-item {
+      display: inline-block;
+    }
+    .flanker-stim {
+      font-size: 1.2em;
+    }
+  </style>
+</head>
+
+<body></body>
+<script>
+  const jsPsych = initJsPsych({
+    on_finish: function() {
+      // Show results by block
+      const data = jsPsych.data.get().filter({task: 'flanker', phase: 'response'});
+
+      console.log('Results by Block:');
+      for (let block = 1; block <= 2; block++) {
+        const blockData = data.filter({block_number: block});
+        const congruent = blockData.filter({congruency: 'congruent'});
+        const incongruent = blockData.filter({congruency: 'incongruent'});
+
+        const blockType = block === 1 ? 'High-Conflict (75% incongruent)' : 'Low-Conflict (75% congruent)';
+        console.log(`\nBlock ${block} - ${blockType}:`);
+        console.log(`  Congruent RT: ${congruent.select('rt').mean().toFixed(0)}ms (n=${congruent.count()})`);
+        console.log(`  Incongruent RT: ${incongruent.select('rt').mean().toFixed(0)}ms (n=${incongruent.count()})`);
+        console.log(`  Flanker Effect: ${(incongruent.select('rt').mean() - congruent.select('rt').mean()).toFixed(0)}ms`);
+      }
+
+      jsPsych.data.displayData();
+    }
+  });
+
+  const instructions = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: `
+      <div style="max-width: 600px; margin: auto;">
+        <h2>Arrow Flanker Task - Congruency Ratio Manipulation</h2>
+        <p>This experiment examines how <strong>conflict expectation</strong> affects performance.</p>
+        <p>You'll complete two blocks:</p>
+        <ul style="text-align: left;">
+          <li><strong>Block 1 (High-Conflict):</strong> Most trials will be difficult (incongruent)</li>
+          <li><strong>Block 2 (Low-Conflict):</strong> Most trials will be easy (congruent)</li>
+        </ul>
+        <p>Your task: respond to the <strong>middle arrow's direction</strong> using arrow keys.</p>
+        <p>Research shows the flanker effect is often <em>smaller</em> in high-conflict blocks
+        due to sustained cognitive control!</p>
+        <p><em>Press any key to begin.</em></p>
+      </div>
+    `
+  }
+
+  // Block 1: High-conflict environment (75% incongruent)
+  const highConflictBlock = jsPsychTimelineArrowFlankerTask.createTimeline(jsPsych, {
+    fixation_duration: 500,
+    num_trials: 48,
+    num_blocks: 1,
+
+    // Mostly incongruent trials
+    congruency_ratio: {
+      congruent: 25,
+      incongruent: 75
+    },
+
+    track_sequence_effects: true,
+
+    data_labels: {
+      block_type: 'high-conflict'
+    }
+  });
+
+  const blockBreak = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: `
+      <div style="max-width: 600px; margin: auto;">
+        <h3>Block 1 Complete!</h3>
+        <p>Take a short break.</p>
+        <p>Next, you'll complete a block where <strong>most trials are easier</strong>.</p>
+        <p>Continue to respond as quickly and accurately as possible.</p>
+        <p><em>Press any key to continue to Block 2.</em></p>
+      </div>
+    `
+  };
+
+  // Block 2: Low-conflict environment (75% congruent)
+  const lowConflictBlock = jsPsychTimelineArrowFlankerTask.createTimeline(jsPsych, {
+    fixation_duration: 500,
+    num_trials: 48,
+    num_blocks: 1,
+
+    // Mostly congruent trials
+    congruency_ratio: {
+      congruent: 75,
+      incongruent: 25
+    },
+
+    track_sequence_effects: true,
+
+    data_labels: {
+      block_type: 'low-conflict'
+    }
+  });
+
+  const debrief = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: `
+      <div style="max-width: 600px; margin: auto;">
+        <h2>Experiment Complete!</h2>
+        <p>Thank you for participating.</p>
+        <p>Check the browser console to see your results by block.</p>
+        <p>Notice how the flanker effect (RT difference between incongruent and congruent trials)
+        may differ between high-conflict and low-conflict blocks.</p>
+        <p><em>Press any key to see your data.</em></p>
+      </div>
+    `
+  };
+
+  jsPsych.run([instructions, highConflictBlock, blockBreak, lowConflictBlock, debrief])
+</script>
+
+</html>
