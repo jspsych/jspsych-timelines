@@ -94,9 +94,7 @@ function createEndResults(jsPsych: JsPsych, text: typeof trial_text) {
 function createTrialBlock(
   maxPumps: number,
   minPumps: number,
-  trialsPerBlock: number,
-  trialTimeout?: number,
-  enableTimeout?: boolean,
+  totalTrials: number,
   text: typeof trial_text = trial_text,
 ) {
   const generatePopThreshold = () => {
@@ -105,7 +103,7 @@ function createTrialBlock(
 
   let totalPoints = 0;
   const trials = [];
-  for (let i = 0; i < trialsPerBlock; i++) {
+  for (let i = 0; i < totalTrials; i++) {
     const trial = {
       type: BartPlugin,
       pop_threshold: generatePopThreshold(),
@@ -132,9 +130,7 @@ export function createTimeline(
     max_pumps = 20,
     min_pumps = 1,
     num_blocks = 3, 
-    trials_per_block = 10, 
-    trial_timeout = 15000,
-    enable_timeout = true, 
+    trials_per_block = 10,
     show_instructions = true, 
     show_end_results = true,
     text_object = trial_text,
@@ -165,8 +161,6 @@ export function createTimeline(
       max_pumps,
       min_pumps,
       trials_per_block,
-      trial_timeout,
-      enable_timeout,
       text_object,
     );
     trials.push(trial);
@@ -188,6 +182,7 @@ export function createTimeline(
   };
   return bart_timeline;
 }
+
 export const timelineUnits = {
   createInterBlockBreak,
   createEndResults,
@@ -195,4 +190,6 @@ export const timelineUnits = {
   createTrialBlock,
 };
 
-export const utils = {};
+export const utils = {
+  trial_text,
+};
