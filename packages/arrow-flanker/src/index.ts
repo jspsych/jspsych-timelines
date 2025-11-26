@@ -144,18 +144,19 @@ export function createTimeline(
 }
 
 /**
- * Exported trial components for advanced customization
+ * Exported utilities for advanced usage
  */
-export const timelineUnits = {
+export const utils = {
+  // Trial components
   createFixationTrial,
   createFlankerTrial,
   createITITrial,
-  createBlockBreak
+  createBlockBreak,
+  // Utility functions
+  generateTrialVariables,
+  mergeConfig
 };
 
-/**
- * Exported utilities for advanced usage
- */
-export { generateTrialVariables, mergeConfig } from './utils';
+// Re-export types and constants for convenience
 export * from './types';
 export * from './constants';
