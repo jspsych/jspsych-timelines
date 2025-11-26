@@ -12,6 +12,8 @@ The jsPsych timelines that have been contributed by community members can be fou
 Timeline | Contributor | Description
 ----------- | ----------- | -----------
 [arrow-flanker](https://github.com/jspsych/jspsych-timelines/blob/main/packages/arrow-flanker/README.md) | [Josh de Leeuw](https://github.com/jodeleeuw) | Arrow flanker task for jsPsych 
+[bart](https://github.com/jspsych/jspsych-timelines/blob/main/packages/bart/README.md) | [Caroline Griem](https://github.com/caroline-griem) | Balloon Analog Risk Task for jsPsych 
+[columbia-card](https://github.com/jspsych/jspsych-timelines/blob/main/packages/columbia-card/README.md) | [A. Hunter Farhat](https://github.com/farhat60) | The Columbia Card Task measures risk preferences through choices in a card game. 
 [false-memory](https://github.com/jspsych/jspsych-timelines/blob/main/packages/false-memory/README.md) | [Cherrie Chang](https://github.com/cherriechang) | False memory task for jsPsych 
 [go-nogo](https://github.com/jspsych/jspsych-timelines/blob/main/packages/go-nogo/README.md) | [URSI 2025 Team](https://example.com) | A complete Go/No-Go task implementation for jsPsych measuring response inhibition and sustained attention. Includes interactive practice, configurable parameters, and comprehensive data collection. 
 [spatial-cueing](https://github.com/jspsych/jspsych-timelines/blob/main/packages/spatial-cueing/README.md) | [Cherrie Chang](https://github.com/cherriechang) | A shareable timeline of the Posner spatial cueing task. 
