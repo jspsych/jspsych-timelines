@@ -9,6 +9,7 @@ import jsPsychFlanker from '@jspsych-contrib/plugin-flanker';
 import jsPsychHtmlKeyboardResponse from '@jspsych/plugin-html-keyboard-response';
 import { createFixation as createFixationStimulus, createBlank } from './stimuli';
 import { ResponseKeys } from './types';
+import type { TrialText } from './text';
 
 /**
  * Create a fixation trial
@@ -151,12 +152,11 @@ export function createBlockBreak(options: {
   block_number: number;
   total_blocks: number;
   duration?: number | null;
+  text: TrialText;
 }) {
-  const { block_number, total_blocks, duration = null } = options;
+  const { block_number, total_blocks, duration = null, text } = options;
 
-  const message = `Block ${block_number} of ${total_blocks} complete. ${
-    duration === null ? 'Press any key to continue.' : 'Take a short break...'
-  }`;
+  const message = text.block_break(block_number, total_blocks, duration);
 
   return {
     type: jsPsychHtmlKeyboardResponse,

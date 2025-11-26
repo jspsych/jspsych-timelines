@@ -4,6 +4,8 @@
  * Comprehensive parameter interface based on Eriksen Flanker Task methodology
  */
 
+import type { TrialText } from './text';
+
 /**
  * Trial congruency status
  */
@@ -147,6 +149,10 @@ export interface ArrowFlankerConfig {
     condition?: string;
     [key: string]: any;
   };
+
+  // === Text Configuration ===
+  /** Custom text object for internationalization and customization */
+  text_object?: Partial<TrialText>;
 
   // === Backward Compatibility ===
   /** Legacy parameter: total number of trials (use num_trials instead) */

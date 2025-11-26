@@ -22,6 +22,7 @@ import {
   createITITrial,
   createBlockBreak
 } from './trials';
+import { trial_text } from './text';
 
 /**
  * Create a complete Arrow Flanker Task timeline
@@ -62,6 +63,9 @@ export function createTimeline(
 
   // Setup response keys
   const response_keys = config.response_keys || DEFAULT_RESPONSE_KEYS;
+
+  // Merge text configuration
+  const text = { ...trial_text, ...config.text_object };
 
   // Create main timeline
   const timeline: any[] = [];
@@ -132,7 +136,8 @@ export function createTimeline(
         createBlockBreak({
           block_number: block,
           total_blocks: fullConfig.num_blocks,
-          duration: fullConfig.block_break_duration
+          duration: fullConfig.block_break_duration,
+          text
         })
       );
     }
