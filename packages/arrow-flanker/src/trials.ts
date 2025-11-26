@@ -51,6 +51,7 @@ export function createFlankerTrial(
     response_mode?: 'keyboard' | 'buttons';
     button_label_left?: string;
     button_label_right?: string;
+    has_soa?: boolean; // Whether timeline variables include SOA
     data_labels?: any;
     num_flankers?: 4 | 6;
     flanker_arrangement?: 'horizontal' | 'vertical';
@@ -66,6 +67,7 @@ export function createFlankerTrial(
     response_mode = 'keyboard',
     button_label_left,
     button_label_right,
+    has_soa = false,
     data_labels = {},
     num_flankers,
     flanker_arrangement,
@@ -74,10 +76,11 @@ export function createFlankerTrial(
     container_height
   } = options;
 
-  const trialDef: any = {
+  return {
     type: jsPsychFlanker,
     target_direction: () => jsPsych.timelineVariable('direction'),
     congruency: () => jsPsych.timelineVariable('congruency'),
+    soa: has_soa ? () => jsPsych.timelineVariable('soa') : 0,
     response_timeout,
     stimulus_duration: stimulus_duration !== undefined ? stimulus_duration : null,
     response_mode,
@@ -97,21 +100,10 @@ export function createFlankerTrial(
       trial_number: () => jsPsych.timelineVariable('trial_number'),
       previous_congruency: () => jsPsych.timelineVariable('previous_congruency'),
       previous_direction: () => jsPsych.timelineVariable('previous_direction'),
+      ...(has_soa ? { soa: () => jsPsych.timelineVariable('soa') } : {}),
       ...data_labels
     }
   };
-
-  // Only add soa if it exists in timeline variables (will be undefined otherwise)
-  // Use a function that checks if the variable exists
-  trialDef.soa = () => {
-    try {
-      return jsPsych.timelineVariable('soa');
-    } catch (e) {
-      return 0; // Default to 0 if soa not in timeline variables
-    }
-  };
-
-  return trialDef;
 }
 
 /**

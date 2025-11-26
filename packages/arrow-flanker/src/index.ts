@@ -98,6 +98,7 @@ export function createTimeline(
         response_timeout: fullConfig.response_timeout,
         stimulus_duration: fullConfig.stimulus_duration,
         response_mode: fullConfig.response_mode === 'keyboard' ? 'keyboard' : 'buttons',
+        has_soa: config.soa !== undefined,
         data_labels: config.data_labels,
         num_flankers: fullConfig.num_flankers,
         flanker_arrangement: fullConfig.flanker_arrangement,
