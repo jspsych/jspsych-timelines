@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Corsi Block Task - Common Configuration</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <script src="https://unpkg.com/jspsych@8"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@2"></script>
+  <script src="../dist/index.global.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css">
+  <style>
+    body {
+      touch-action: manipulation;
+      background-color: #f0f0f0;
+    }
+  </style>
+</head>
+
+<body></body>
+<script>
+  const jsPsych = initJsPsych({
+    on_finish: function() {
+      const span = jsPsych.data.get().values()[0].corsi_span;
+      const inputTrials = jsPsych.data.get().filter({ task: 'corsi-block', phase: 'input' });
+
+      let summary = `<div style="max-width: 600px; margin: auto; padding: 20px; background: white; border-radius: 10px;">`;
+      summary += `<h2>Task Complete</h2>`;
+      summary += `<h3 style="color: #0066cc;">Your Corsi Span: ${span}</h3>`;
+      summary += `<p><strong>Total trials completed:</strong> ${inputTrials.count()}</p>`;
+      summary += `<p><strong>Correct trials:</strong> ${inputTrials.filter({ correct: true }).count()}</p>`;
+      summary += `<p>This used commonly reported parameters from the literature.</p>`;
+      summary += `<button onclick="jsPsych.data.displayData('json')">Show Raw Data</button>`;
+      summary += `</div>`;
+
+      document.body.innerHTML = summary;
+    }
+  });
+
+  const instructions = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: `
+      <div style="max-width: 600px; margin: auto; padding: 20px; background: white; border-radius: 10px;">
+        <h2>Corsi Block Tapping Task</h2>
+        <h3>Common Configuration</h3>
+        <p>This task assesses visuospatial working memory capacity.</p>
+
+        <h4>Instructions:</h4>
+        <ol>
+          <li>Watch carefully as blocks light up in sequence</li>
+          <li>After the sequence ends, tap the blocks in the same order</li>
+          <li>Sequences will gradually increase in length</li>
+          <li>The task ends when you fail both trials at a given length</li>
+        </ol>
+
+        <h4>Task Parameters:</h4>
+        <ul>
+          <li>Stimulus duration: 1000ms</li>
+          <li>Inter-stimulus interval: 1000ms</li>
+          <li>Post-sequence delay: 500ms</li>
+          <li>Starting length: 2 blocks</li>
+          <li>2 trials per length</li>
+          <li>No response time limit</li>
+        </ul>
+
+        <p><em>Press any key when you are ready to begin.</em></p>
+      </div>
+    `
+  };
+
+  // Corsi Block task with commonly used parameters
+  const corsiTask = jsPsychTimelineCorsiBlock.createTimeline(jsPsych, {
+    // Temporal parameters
+    stimulus_duration: 1000,              // 1000ms per block
+    inter_stimulus_interval: 1000,        // 1000ms between blocks
+    post_sequence_delay: 500,             // 500ms before response
+    inter_trial_delay: 1500,              // 1500ms between trials
+    response_timeout: null,               // No time limit
+
+    // Visual parameters (high contrast)
+    block_colors: {
+      inactive: '#0066cc',                // Blue
+      active: '#ffcc00',                  // Yellow
+      correct: '#00ff00',                 // Green
+      incorrect: '#ff0000'                // Red
+    },
+    background_color: '#000000',          // Black
+    display_width: '400px',
+    display_height: '400px',
+
+    // Algorithm parameters
+    starting_length: 2,
+    trials_per_length: 2,
+    max_length: 9,
+    stop_rule: 'both-trials',             // Fail both trials to stop
+    sequence_generation: 'fixed',         // Fixed sequences
+    allow_repeats: false                  // No immediate repeats
+  });
+
+  jsPsych.run([instructions, corsiTask]);
+</script>
+
+</html>

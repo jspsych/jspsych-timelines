@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Corsi Block Task - Load from unpkg</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <script src="https://unpkg.com/jspsych@8"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@2"></script>
+  <!-- Load from unpkg CDN instead of local build -->
+  <script src="https://unpkg.com/@jspsych-timelines/corsi-block@latest"></script>
+  <link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css">
+  <style>
+    body {
+      touch-action: manipulation;
+    }
+  </style>
+</head>
+
+<body></body>
+<script>
+  const jsPsych = initJsPsych({
+    on_finish: function() {
+      jsPsych.data.displayData('json');
+    }
+  });
+
+  const instructions = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: `
+      <div style="max-width: 600px; margin: auto;">
+        <h2>Corsi Block Task</h2>
+        <h3>Loaded from unpkg CDN</h3>
+        <p>This example shows how to load the Corsi Block timeline directly from unpkg.</p>
+        <p>No build step or local files required - just include the script tag!</p>
+        <code style="display: block; background: #f0f0f0; padding: 10px; margin: 10px 0; border-radius: 5px;">
+          &lt;script src="https://unpkg.com/@jspsych-timelines/corsi-block@latest"&gt;&lt;/script&gt;
+        </code>
+        <p><em>Press any key to begin a quick demo.</em></p>
+      </div>
+    `
+  };
+
+  // Quick demo with shorter sequences
+  const corsiTask = jsPsychTimelineCorsiBlock.createTimeline(jsPsych, {
+    starting_length: 2,
+    trials_per_length: 2,
+    max_length: 5  // Shorter for quick demo
+  });
+
+  jsPsych.run([instructions, corsiTask]);
+</script>
+
+</html>

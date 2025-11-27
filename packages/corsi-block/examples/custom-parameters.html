@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Corsi Block Task - Custom Parameters</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <script src="https://unpkg.com/jspsych@8"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@2"></script>
+  <script src="../dist/index.global.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css">
+  <style>
+    body {
+      touch-action: manipulation;
+      background-color: #1a1a1a;
+      color: white;
+    }
+  </style>
+</head>
+
+<body></body>
+<script>
+  const jsPsych = initJsPsych({
+    on_finish: function() {
+      jsPsych.data.displayData('json');
+    }
+  });
+
+  const instructions = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: `
+      <div style="max-width: 600px; margin: auto;">
+        <h2>Corsi Block Task - Fast Research Variant</h2>
+        <p>This example demonstrates a faster-paced version suitable for research settings:</p>
+        <ul>
+          <li><strong>Faster presentation:</strong> 500ms per block (vs. 1000ms standard)</li>
+          <li><strong>Shorter delays:</strong> Minimal wait times between events</li>
+          <li><strong>Response timeout:</strong> 30 seconds to prevent long delays</li>
+          <li><strong>Starting at length 3:</strong> Skip easier trials</li>
+          <li><strong>3 trials per length:</strong> More data points</li>
+          <li><strong>Custom colors:</strong> Grey/red theme on dark background</li>
+        </ul>
+        <p><em>Press any key to begin the fast-paced version.</em></p>
+      </div>
+    `
+  };
+
+  // Custom fast-paced research variant
+  const corsiTask = jsPsychTimelineCorsiBlock.createTimeline(jsPsych, {
+    // Fast temporal parameters
+    stimulus_duration: 500,               // Faster: 500ms per block
+    inter_stimulus_interval: 500,         // Faster: 500ms between blocks
+    post_sequence_delay: 250,             // Quick: 250ms before response
+    inter_trial_delay: 1000,              // Shorter: 1000ms between trials
+    response_timeout: 30000,              // 30 second timeout
+    click_feedback_duration: 150,         // Quick feedback
+
+    // Custom visual theme
+    block_colors: {
+      inactive: '#555555',                // Grey
+      active: '#ff3333',                  // Bright red
+      correct: '#00ff00',                 // Green
+      incorrect: '#ff0000'                // Red
+    },
+    background_color: '#1a1a1a',          // Dark grey
+    display_width: '500px',               // Larger display
+    display_height: '500px',
+    block_size: 14,                       // Slightly larger blocks
+
+    // Modified algorithm
+    starting_length: 3,                   // Start at 3 (skip easy trials)
+    trials_per_length: 3,                 // 3 trials for more data
+    max_length: 8,                        // Stop at 8
+    stop_rule: 'both-trials',
+    sequence_generation: 'random',        // Random sequences
+    allow_repeats: false
+  });
+
+  jsPsych.run([instructions, corsiTask]);
+</script>
+
+</html>
