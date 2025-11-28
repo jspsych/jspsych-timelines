@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Serial Reaction Time Task - Dual Task</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <script src="https://unpkg.com/jspsych@8"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@2"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-html-button-response@2"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-survey-text@2"></script>
+  <script src="../dist/index.global.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css">
+  <style>
+    body {
+      touch-action: manipulation;
+    }
+  </style>
+</head>
+
+<body></body>
+<script>
+  const jsPsych = initJsPsych({
+    on_finish: function () {
+      jsPsych.data.displayData('json');
+    }
+  });
+
+  // Dual-task variant (Nissen & Bullemer Experiment 2)
+  // Tests attentional requirements of sequence learning
+  // - Primary task: Standard SRT
+  // - Secondary task: Count high-pitched tones
+  // - Typically 20-40 tones per block, randomly distributed
+  // - Dual-task conditions typically impair learning expression
+  // - Complex (ambiguous) sequences especially disrupted
+  const srtTask = jsPsychTimelineSRT.createTimeline(jsPsych, {
+    sequence: {
+      structure: 'deterministic',
+      sequence: jsPsychTimelineSRT.STANDARD_SEQUENCES.NISSEN_BULLEMER
+    },
+    timing: {
+      rsi: 500,  // Original N&B value
+      show_response_feedback: true,
+      feedback_duration: 200
+    },
+    blocks: {
+      num_training_blocks: 6,
+      trials_per_block: 100,
+      num_random_blocks: 1,
+      random_block_placement: 'end'
+    },
+    dual_task: {
+      enabled: true,
+      tone_frequencies: [800, 1200],  // Low and high tones
+      tone_duration: 500,
+      tones_per_block: 30
+    },
+    learning_condition: 'implicit'
+  });
+
+  jsPsych.run([srtTask]);
+</script>
+
+</html>

@@ -1,0 +1,46 @@
+{
+  "name": "@jspsych-timelines/serial-reaction-time",
+  "version": "0.1.0",
+  "description": "Serial Reaction Time task for jsPsych",
+  "type": "module",
+  "main": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "unpkg": "dist/index.global.js",
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,iife --sourcemap --dts --treeshake --clean --global-name jsPsychTimelineSRT",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jspsych/jspsych-timelines.git"
+  },
+  "keywords": [
+    "jsPsych",
+    "serial-reaction-time",
+    "implicit-learning",
+    "procedural-memory",
+    "sequence-learning",
+    "SRT"
+  ],
+  "author": {
+    "name": "Josh de Leeuw",
+    "url": "https://github.com/jodeleeuw"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jspsych/jspsych-timelines/issues"
+  },
+  "homepage": "https://github.com/jspsych/jspsych-timelines/packages/serial-reaction-time#readme",
+  "peerDependencies": {
+    "jspsych": "^8.0.1"
+  },
+  "dependencies": {
+    "@jspsych/plugin-html-keyboard-response": "^2.0.0",
+    "@jspsych/plugin-html-button-response": "^2.0.0",
+    "@jspsych/plugin-survey-text": "^2.0.0"
+  },
+  "devDependencies": {
+    "tsup": "^8.0.1",
+    "typescript": "^5.5.4"
+  }
+}

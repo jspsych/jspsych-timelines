@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Serial Reaction Time Task - Purely Implicit Learning</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <script src="https://unpkg.com/jspsych@8"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@2"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-html-button-response@2"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-survey-text@2"></script>
+  <script src="../dist/index.global.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css">
+  <style>
+    body {
+      touch-action: manipulation;
+    }
+  </style>
+</head>
+
+<body></body>
+<script>
+  const jsPsych = initJsPsych({
+    on_finish: function () {
+      jsPsych.data.displayData('json');
+    }
+  });
+
+  // Purely implicit learning configuration
+  // Based on Destrebecqz & Cleeremans (2001)
+  // - RSI = 0ms prevents anticipatory processes and inhibits explicit awareness
+  // - Knowledge is unavailable to conscious control
+  // - Process Dissociation: inclusion = exclusion performance
+  const srtTask = jsPsychTimelineSRT.createTimeline(jsPsych, {
+    sequence: {
+      structure: 'SOC',
+      sequence: jsPsychTimelineSRT.STANDARD_SEQUENCES.REED_JOHNSON_SOC
+    },
+    timing: {
+      rsi: jsPsychTimelineSRT.RSI_VALUES.IMPLICIT_0MS,  // 0ms for purely implicit
+      show_response_feedback: false
+    },
+    blocks: {
+      num_training_blocks: 10,
+      trials_per_block: 120,
+      num_random_blocks: 2,
+      random_block_placement: 'end'
+    },
+    learning_condition: 'implicit',
+    awareness: {
+      enabled: true,
+      assessment_types: ['free-recall']
+    }
+  });
+
+  jsPsych.run([srtTask]);
+</script>
+
+</html>

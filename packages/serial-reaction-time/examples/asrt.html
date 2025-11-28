@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Alternating Serial Reaction Time (ASRT) Task</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <script src="https://unpkg.com/jspsych@8"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@2"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-html-button-response@2"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-survey-text@2"></script>
+  <script src="../dist/index.global.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css">
+  <style>
+    body {
+      touch-action: manipulation;
+    }
+  </style>
+</head>
+
+<body></body>
+<script>
+  const jsPsych = initJsPsych({
+    on_finish: function () {
+      jsPsych.data.displayData('json');
+    }
+  });
+
+  // Alternating Serial Reaction Time (ASRT) Task
+  // Howard & Howard (1997)
+  // - Pattern and random elements alternate (e.g., 1r2r3r4r)
+  // - Creates second-order probabilistic structure
+  // - High-frequency triplets occur ~62.5% of the time
+  // - Low-frequency triplets occur ~37.5% of the time
+  // - Enables extended training without awareness development
+  // - Learning measured by RT difference: low-freq - high-freq triplets
+  const srtTask = jsPsychTimelineSRT.createTimeline(jsPsych, {
+    sequence: {
+      structure: 'ASRT',
+      asrt_pattern: jsPsychTimelineSRT.STANDARD_SEQUENCES.ASRT_PATTERN
+    },
+    timing: {
+      rsi: 120,  // Shorter RSI for ASRT
+      show_response_feedback: false
+    },
+    blocks: {
+      num_training_blocks: 10,
+      trials_per_block: 85,  // 85 trials = ~21 pattern repetitions
+      num_random_blocks: 0   // No random blocks in ASRT
+    },
+    metrics: {
+      calculate_triplet_frequencies: true
+    },
+    show_progress: true
+  });
+
+  jsPsych.run([srtTask]);
+</script>
+
+</html>

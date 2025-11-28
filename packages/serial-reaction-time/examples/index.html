@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Serial Reaction Time Task - Basic Example</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <script src="https://unpkg.com/jspsych@8"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@2"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-html-button-response@2"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-survey-text@2"></script>
+  <script src="../dist/index.global.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css">
+  <style>
+    body {
+      touch-action: manipulation;
+    }
+  </style>
+</head>
+
+<body></body>
+<script>
+  const jsPsych = initJsPsych({
+    on_finish: function () {
+      jsPsych.data.displayData('json');
+    }
+  });
+
+  // Basic Nissen & Bullemer (1987) replication
+  // Standard parameters with default settings
+  const srtTask = jsPsychTimelineSRT.createTimeline(jsPsych, {
+    blocks: {
+      num_training_blocks: 4,
+      trials_per_block: 100,
+      num_random_blocks: 1,
+      random_block_placement: 'end'
+    }
+  });
+
+  jsPsych.run([srtTask]);
+</script>
+
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Serial Reaction Time Task - Common Configuration</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <script src="https://unpkg.com/jspsych@8"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@2"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-html-button-response@2"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-survey-text@2"></script>
+  <script src="../dist/index.global.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css">
+  <style>
+    body {
+      touch-action: manipulation;
+    }
+  </style>
+</head>
+
+<body></body>
+<script>
+  const jsPsych = initJsPsych({
+    on_finish: function () {
+      jsPsych.data.displayData('json');
+    }
+  });
+
+  // Commonly reported configuration from literature
+  // - SOC sequence structure
+  // - RSI = 250ms (optimal for implicit learning)
+  // - 8 training blocks + 2 random probe blocks
+  // - Sandwich design (random-sequential-random)
+  const srtTask = jsPsychTimelineSRT.createTimeline(jsPsych, {
+    sequence: {
+      structure: 'SOC',
+      sequence: jsPsychTimelineSRT.STANDARD_SEQUENCES.REED_JOHNSON_SOC,
+      length: 12
+    },
+    timing: {
+      rsi: 250,
+      show_response_feedback: false
+    },
+    blocks: {
+      num_training_blocks: 8,
+      trials_per_block: 120,
+      num_random_blocks: 2,
+      random_block_placement: 'sandwich'
+    },
+    learning_condition: 'implicit'
+  });
+
+  jsPsych.run([srtTask]);
+</script>
+
+</html>
