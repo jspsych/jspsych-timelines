@@ -3,11 +3,11 @@
     "version": "0.0.1",
     "description": "Implementation of the Hearts and Flowers task, which tests executive function.",
     "type": "module",
-    "main": "dist/index.mjs",
+    "main": "dist/index.js",
     "types": "dist/index.d.ts",
-    "unpkg": "dist/index.browser.min.js",
+    "unpkg": "dist/index.global.js",
     "scripts": {
-        "build": "tsup src/index.ts --format esm,iife --sourcemap --dts --treeshake --clean --global-name jsPsychTimelineHeartsAndFlowers --inject-style"
+        "build": "tsup src/index.ts --format esm,iife,cjs --sourcemap --dts --treeshake --clean --global-name jsPsychTimelineHeartsAndFlowers --inject-style"
     },
     "repository": {
         "type": "git",

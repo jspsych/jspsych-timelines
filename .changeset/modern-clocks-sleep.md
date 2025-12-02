@@ -1,5 +1,5 @@
 ---
-"@jspsych-timelines/hearts-and-flowers": major
+"@jspsych-timelines/hearts-and-flowers": minor
 ---
 
 Added hearts and flowers experiment timeline.

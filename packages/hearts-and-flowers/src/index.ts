@@ -147,6 +147,7 @@ function createTrial(jsPsych: JsPsych, stimulusInfo: StimulusInfo, instruction: 
         data.correct_response,
       );
     },
+    css_classes: ["jspsych-hearts-and-flowers-trial"],
   };
 }
 
@@ -425,6 +426,7 @@ export function createTimeline(jsPsych: JsPsych, options: Partial<CreateTimeline
     heartsAndFlowersTimeline.push(createDemoSubTimeline(jsPsych, "same", stimulusInfo));
     heartsAndFlowersTimeline.push(createDemoSubTimeline(jsPsych, "opposite", stimulusInfo));
   }
+
   heartsAndFlowersTimeline.push({
     type: jsPsychHtmlButtonResponse,
     stimulus: options.start_instruction_text,
@@ -440,12 +442,14 @@ export function createTimeline(jsPsych: JsPsych, options: Partial<CreateTimeline
       stimulus_info: stimulusInfo,
     }),
   );
-  heartsAndFlowersTimeline.push({
-    type: jsPsychHtmlKeyboardResponse,
-    stimulus: options.end_instruction_text,
-    choices: "NO_KEYS",
-    trial_duration: options.end_instruction_duration,
-  });
+  if (options.end_instruction) {
+    heartsAndFlowersTimeline.push({
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: options.end_instruction_text,
+      choices: "NO_KEYS",
+      trial_duration: options.end_instruction_duration,
+    });
+  }
 
   return { timeline: heartsAndFlowersTimeline };
 }
