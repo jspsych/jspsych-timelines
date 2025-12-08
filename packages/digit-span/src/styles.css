@@ -1,0 +1,509 @@
+/* GENERAL STYLES */
+
+h1, h2, h3 {
+    line-height: 1.6;
+    margin: 3vmin;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+p {
+    margin: 5vmin 1vmin;
+    font-size: clamp(15px, 8vmin, 40px);
+    line-height: 1.6;    
+    /* Prevent horizontal overflow */
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+/* Styles for any normal HTML button */
+.continue-button {
+    padding: clamp(15px, 6vmin, 35px) clamp(15px, 8vmin, 40px);
+    font-size: clamp(15px, 6vmin, 35px);
+    border-radius: 1vmin;
+    cursor: pointer;
+    margin: 2vmin;
+    margin-top: 10vh;
+    transition: background-color 0.3s;
+    min-height: 48px;
+    
+    /* Disable double-click zoom */
+    touch-action: manipulation !important;
+    user-select: none !important;
+}
+
+/* INSTRUCTIONS TRIAL STYLES */
+
+.instructions-container {
+    max-width: 90vw; /* Limit width for better readability */
+    margin: 0 auto; /* Center the container */
+    padding: 2vmin; /* Add some padding */
+    box-sizing: border-box; /* Include padding in width calculations */
+    overflow-x: hidden; /* Prevent horizontal overflow */
+}
+
+/* Mobile-friendly instruction navigation buttons */
+.jspsych-instructions-nav {
+    display: flex;
+    gap: 25vw;
+    justify-content: center;
+    margin-top: auto;
+    padding: clamp(20px, 5vmin, 40px) !important;
+    min-height: clamp(20px, 50vmin, 250px);
+    align-items: flex-end;
+}
+
+/* Instruction navigation button styles */
+.jspsych-instructions-nav .jspsych-btn {
+    width: 20vmin;
+    height: 20vmin;
+    border: 3px solid #ccc;
+    border-radius: 50%;
+    font-size: clamp(15px, 7vmin, 35px);
+    cursor: pointer;
+    min-height: 100px;
+    min-width: 100px;
+    font-weight: 600;
+
+    /* Disable double-click zoom */
+    touch-action: manipulation !important;
+    user-select: none !important;
+}
+
+.jspsych-instructions-nav .jspsych-btn:active {
+    background-color: #f0f0f0;
+    border-color: #999;
+}
+
+.jspsych-instructions-nav .jspsych-btn:disabled {
+    visibility: hidden;  /* Keeps the space but hides the button */
+}
+
+/* DIGIT SPAN SPECIFIC STYLES */
+
+/* Digit presentation styles */
+.digit-display {
+    font-size: 72px;
+    text-align: center;
+    font-weight: bold;
+    color: #333;
+    min-height: 20vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Recall trial container */
+.recall-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    font-family: Arial, sans-serif;
+    padding: 2vmin;
+    text-align: center;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+
+/* Response display area */
+.response-display {
+    font-size: 24px;
+    margin: 20px;
+    min-height: 40px;
+    border: 2px solid #ccc;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    min-width: 300px;
+}
+
+
+/* Number grid layout */
+.number-grid {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin-top: 20px;
+}
+
+.number-row {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 15px;
+    justify-content: center;
+}
+
+/* Number input buttons */
+.number-button {
+    margin: 0;
+    padding: 15px;
+    font-size: 22px;
+    border: 2px solid #bdc3c7;
+    border-radius: 12px;
+    background-color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 60px;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    
+    /* Disable double-click zoom */
+    touch-action: manipulation !important;
+    user-select: none !important;
+}
+
+.number-button:hover {
+    border-color: #3498db;
+    background-color: #ecf0f1;
+}
+
+.number-button:active {
+    background-color: #bdc3c7;
+}
+
+/* Special buttons (Clear, Submit) */
+.clear-button {
+    background-color: #ffa500 !important;
+    color: white;
+}
+
+.submit-button {
+    background-color: #4CAF50 !important;
+    color: white;
+}
+
+/* Results display */
+.results-container {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 2vmin;
+}
+
+/* Feedback styles */
+.feedback-container {
+    text-align: center;
+    padding: 2vmin;
+}
+
+.feedback-correct {
+    color: #4CAF50;
+    font-weight: bold;
+}
+
+.feedback-incorrect {
+    color: #f44336;
+    font-weight: bold;
+}
+
+/* Styles for tablets */
+@media (max-width: 768px) and (min-width: 481px) {
+    .jspsych-instructions-nav {
+        position: fixed;
+        bottom: 30vmin;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    
+    /* Add padding to prevent content from going under fixed buttons */
+    .instructions-container {
+        padding-bottom: 45vmin; /* 30vmin for button position + 5vmin safety */
+    }
+
+    .digit-display {
+        font-size: clamp(48px, 15vw, 80px);
+    }
+
+    .number-button {
+        width: 20vw;
+        height: 20vw;
+        min-width: 20vw;
+        min-height: 20vw;
+        font-size: clamp(18px, 5vw, 28px);
+        padding: 8px;
+    }
+    
+    .number-grid {
+        gap: 2vw;
+        margin-top: 4vh;
+    }
+    
+    .number-row {
+        gap: 2vw;
+    }
+    
+    .action-buttons {
+        margin-top: 3vh;
+    }
+    
+    .action-buttons .number-button {
+        width: 30vw;
+        height: 10vh;
+        min-width: 30vw;
+        min-height: 10vh;
+        font-size: clamp(16px, 4vw, 22px);
+    }
+}
+
+/* Mobile override - Force large buttons on ALL mobile devices */
+@media screen and (max-width: 480px) {
+    .instructions-container {
+        padding-bottom: 40vmin;
+    }
+    
+    .digit-display {
+        font-size: clamp(40px, 12vw, 70px);
+    }
+
+    .response-display {
+        min-width: 90vw !important;
+        font-size: clamp(16px, 4vw, 22px) !important;
+        margin: 2px 0 3px 0 !important;
+        min-height: 4vh !important;
+        padding: 3px !important;
+    }
+
+    /* Ultra-specific selectors to override everything - BIGGER BUTTONS */
+    html body .recall-container .number-grid .number-row .number-button,
+    html body .recall-container .number-button,
+    html body .number-button,
+    .recall-container .number-grid .number-row .number-button,
+    .number-button {
+        width: 28vw !important;
+        height: 28vw !important;
+        min-width: 28vw !important;
+        min-height: 28vw !important;
+        max-width: 28vw !important;
+        max-height: 28vw !important;
+        background-color: #4CAF50 !important;
+        color: white !important;
+        font-size: clamp(32px, 12vw, 50px) !important;
+        padding: 0 !important;
+        border-radius: 12px !important;
+        font-weight: bold !important;
+        border: 2px solid #2E7D32 !important;
+        margin: 0 !important;
+        box-sizing: border-box !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        touch-action: manipulation !important;
+        user-select: none !important;
+    }
+    
+    .number-grid {
+        gap: 1vw !important;
+        margin-top: 1vh !important;
+        width: 96vw !important;
+        padding: 0 2vw !important;
+        box-sizing: border-box !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+    }
+    
+    .number-row {
+        gap: 1vw !important;
+        justify-content: center !important;
+        width: 100% !important;
+        display: flex !important;
+    }
+    
+    .action-buttons {
+        gap: 2vw !important;
+        margin-top: 2vh !important;
+        width: 100% !important;
+        justify-content: center !important;
+        display: flex !important;
+    }
+    
+    .recall-container .number-grid .action-buttons .number-button,
+    .action-buttons .number-button {
+        width: 45vw !important;
+        height: 12vh !important;
+        min-width: 45vw !important;
+        min-height: 12vh !important;
+        max-width: 45vw !important;
+        max-height: 12vh !important;
+        background-color: #FF9800 !important;
+        color: white !important;
+        font-size: clamp(22px, 6vw, 30px) !important;
+        border: 2px solid #F57C00 !important;
+        border-radius: 10px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+    }
+    
+    .recall-container {
+        padding: 0.5vh 0 !important;
+        height: 100vh !important;
+        overflow: hidden !important;
+        justify-content: flex-start !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+    }
+    
+    .recall-container h3 {
+        margin: 0.5vh 0 !important;
+        font-size: clamp(16px, 4vw, 20px) !important;
+    }
+    
+    .recall-container p {
+        margin: 0.3vh 0 0.5vh 0 !important;
+        font-size: clamp(12px, 3vw, 16px) !important;
+    }
+}
+
+
+/* Landscape mode adjustments */
+@media (orientation: landscape) {
+    .jspsych-instructions-nav {
+        bottom: 3vh;
+        gap: 30vw;
+    }
+    
+    .digit-display {
+        font-size: clamp(50px, 8vh, 72px);
+    }
+
+    .number-button {
+        min-width: 15vh;
+        min-height: 15vh;
+        font-size: clamp(16px, 4vh, 24px);
+    }
+    
+    .number-grid {
+        gap: 8px;
+        height: 80vh;
+        margin-top: 2vh;
+    }
+    
+    .number-row {
+        gap: 8px;
+        flex: 1;
+        align-items: center;
+    }
+    
+    .action-buttons {
+        margin-top: 2vh;
+        flex: 0 0 auto;
+    }
+    
+    .action-buttons .number-button {
+        min-width: 25vh;
+        min-height: 8vh;
+    }
+}
+
+/* MOBILE OVERRIDE - Force large buttons to take up most of screen */
+@media screen and (max-width: 480px) {
+    .mobile-number-grid {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 1.5vw !important;
+        width: 98vw !important;
+        margin: 1vh auto !important;
+    }
+    
+    .mobile-number-row {
+        display: flex !important;
+        gap: 1.5vw !important;
+        justify-content: center !important;
+    }
+    
+    .mobile-number-button {
+        width: 31vw !important;
+        height: 31vw !important;
+        min-width: 31vw !important;
+        min-height: 31vw !important;
+        max-width: 31vw !important;
+        max-height: 31vw !important;
+        background-color: #4CAF50 !important;
+        color: white !important;
+        font-size: 9vw !important;
+        font-weight: bold !important;
+        border: 2px solid #2E7D32 !important;
+        border-radius: 12px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+        cursor: pointer !important;
+        touch-action: manipulation !important;
+        user-select: none !important;
+    }
+    
+    .mobile-action-button {
+        width: 45vw !important;
+        height: 12vh !important;
+        min-width: 45vw !important;
+        min-height: 12vh !important;
+        max-width: 45vw !important;
+        max-height: 12vh !important;
+        background-color: #FF9800 !important;
+        color: white !important;
+        font-size: 5vw !important;
+        font-weight: bold !important;
+        border: 2px solid #F57C00 !important;
+        border-radius: 10px !important;
+        margin: 0 1vw !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+        cursor: pointer !important;
+        touch-action: manipulation !important;
+        user-select: none !important;
+    }
+    
+    /* Override any conflicting styles */
+    button.mobile-number-button,
+    button.mobile-action-button {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    
+    .recall-container {
+        padding: 0.5vh 0 !important;
+        justify-content: flex-start !important;
+        height: 100vh !important;
+        overflow: hidden !important;
+    }
+    
+    .recall-container h3 {
+        margin: 0.5vh 0 !important;
+        font-size: clamp(16px, 4vw, 20px) !important;
+    }
+    
+    .recall-container p {
+        margin: 0.3vh 0 0.5vh 0 !important;
+        font-size: clamp(12px, 3vw, 16px) !important;
+    }
+    
+    .response-display {
+        min-width: 90vw !important;
+        font-size: clamp(16px, 4vw, 22px) !important;
+        margin: 2px 0 3px 0 !important;
+        min-height: 4vh !important;
+        padding: 3px !important;
+    }
+}
