@@ -26,44 +26,47 @@ function getPackageInfo(packageDir) {
     author: packageJson.author.name,
     authorUrl: packageJson.author.url,
   };
-};
+}
 
-function updateRootReadme() {
-    const packageInfos = fs
-        .readdirSync(packagesDir)
-        .map((dir) => path.join(packagesDir, dir))
-        .filter((dir) => fs.lstatSync(dir).isDirectory())
-        .map(getPackageInfo)
-        .filter((info) => info !== null);
+async function updateReadme() {
+  const packageInfos = fs
+    .readdirSync(packagesDir)
+    .map((dir) => path.join(packagesDir, dir))
+    .filter((dir) => fs.lstatSync(dir).isDirectory())
+    .map(getPackageInfo)
+    .filter((info) => info !== null);
 
-    const timelineListHead = `
-### Timelines\n
-Timeline | Contributor | Description
------------ | ----------- | -----------\n`;
+  const timelineListHead = `### Timelines\nTimeline | Contributor | Description\n----------- | ----------- | -----------\n`;
 
-    const guidelinesHead = "## Using timelines from this repository\n\n";
+  const guidelinesHead = "## Using timelines from this repository";
 
-    let timelineList = "";
+  let timelineList = "";
 
-    packageInfos.map((info) => {
-        const authorRender = info.authorUrl ? `[${info.author}](${info.authorUrl})` : info.author;
-        const packageName = info.name.replace(/^\@jspsych-timelines\//g, "");
-        const packageReadmeLink = `https://github.com/jspsych/jspsych-timelines/blob/main/packages/${packageName}/README.md`;
-        timelineList = timelineList.concat(
-            `[${packageName}](${packageReadmeLink}) | ${authorRender} | ${info.description ? info.description : "foo"} \n`
-        );
-    });
+  packageInfos.map((info) => {
+    const packageName = info.name.replace(/^\@jspsych-timelines\//g, "");
+    const packageReadmeLink = `https://github.com/jspsych/jspsych-timelines/blob/main/packages/${packageName}/README.md`;
+    const authorRender = info.authorUrl ? `[${info.author}](${info.authorUrl})` : info.author;
+    timelineList = timelineList.concat(
+      `[${packageName}](${packageReadmeLink}) | ${authorRender} | ${
+        info.description ? info.description : `_Description for ${packageName}._`
+      } \n`
+    );
+  });
 
-    const timelineTable = [timelineListHead, timelineList, guidelinesHead];
+  const timelineTable = [timelineListHead, timelineList, "\n", guidelinesHead];
 
-    function generateTimelineTable() {
-        return src(`${__dirname}/README.md`)
-        .pipe(replace(/### Timelines[\s\S]*?## Using timelines from this repository/g, timelineTable.join("")))
-        .pipe(dest(__dirname));
-    };
+  function generateTimelineTable() {
+    return src(`${__dirname}/README.md`)
+      .pipe(
+        replace(
+          /### Timelines[\s\S]*?## Using timelines from this repository/g,
+          timelineTable.join("")
+        )
+      )
+      .pipe(dest(__dirname));
+  }
 
-    series(generateTimelineTable)();
+  series(generateTimelineTable)();
+}
 
-};
-
-export { updateRootReadme };
+export default updateReadme;

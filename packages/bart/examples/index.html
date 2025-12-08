@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+  <head>
+    <title>jsPsychTimelineBart Example</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <script src="https://unpkg.com/jspsych"></script>
+    <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css" />
+
+    <script src="../dist/index.global.js"></script>
+    <link rel="stylesheet" href="../src/css/styles.css" />
+
+    <!-- Load the published timeline package here, e.g. -->
+    <!-- <script src="https://unpkg.com/@jspsych-timelines/bart"></script> -->
+    <!-- <link rel="stylesheet" href="https://unpkg.com/@jspsych-timelines/bart/dist/css/styles.css" /> -->
+  </head>
+
+  <body></body>
+  <script>
+    const jsPsych = initJsPsych({
+      on_finish: () => jsPsych.data.displayData("json"),
+    });
+    
+    // simple default timeline
+    const task = jsPsychTimelineBart.createTimeline(jsPsych, {
+      max_pumps: 20,
+      min_pumps: 1,
+      num_blocks: 1, // number of blocks in the experiment
+      trials_per_block: 3, // number of trials per block
+    });
+
+    jsPsych.run(task);
+  </script>
+</html>
