@@ -70,10 +70,10 @@ function generateStimulus(
       : ""
     }
     <div class="jspsych-hearts-and-flowers-stimulus-grid">
-      <div class="jspsych-hearts-and-flowers-stimulus-grid-item">${
+      <div class="jspsych-hearts-and-flowers-left-stimulus">${
         stimulusSide === "left" ? stimulusInfo[targetSide].stimulus_src : blankIconSvg
       }</div>
-      <div class="jspsych-hearts-and-flowers-stimulus-grid-item">${
+      <div class="jspsych-hearts-and-flowers-right-stimulus">${
         stimulusSide === "right" ? stimulusInfo[targetSide].stimulus_src : blankIconSvg
       }</div>
     </div>`;
@@ -140,6 +140,36 @@ function createTrial(jsPsych: JsPsych, stimulusInfo: StimulusInfo, instruction: 
         const targetSide = jsPsych.evaluateTimelineVariable("target_side");
         return getCorrectResponse(targetSide, stimulusSide);
       },
+    },
+    on_load: () => {
+      // restructure default html-button-reponse layout to have grid align
+      const parent = document.querySelector(".jspsych-hearts-and-flowers-trial");
+      
+      if (instruction) {
+        const instructionDiv = document.querySelector(".jspsych-hearts-and-flowers-instruction");
+        instructionDiv.parentElement!.removeChild(instructionDiv);
+        parent.prepend(instructionDiv);
+      }
+
+      const stimulusGrid = document.querySelector(".jspsych-hearts-and-flowers-stimulus-grid");
+      const leftStimulus = stimulusGrid.children[0];
+      const rightStimulus = stimulusGrid.children[1];
+      
+      parent.appendChild(leftStimulus);
+      parent.appendChild(rightStimulus);
+      parent.removeChild(document.querySelector("#jspsych-html-button-response-stimulus"));
+
+      const buttons = document.querySelector("#jspsych-html-button-response-btngroup").children;
+    
+      const leftButton = buttons[0];
+      const rightButton = buttons[1];
+
+      leftButton.classList.add("jspsych-hearts-and-flowers-left-button");
+      rightButton.classList.add("jspsych-hearts-and-flowers-right-button");
+      
+      parent.appendChild(leftButton);
+      parent.appendChild(rightButton);
+      parent.removeChild(document.querySelector("#jspsych-html-button-response-btngroup"));
     },
     on_finish: (data) => {
       data.correct = jsPsych.pluginAPI.compareKeys(
@@ -567,4 +597,7 @@ export const timelineUnits = {
 export const utils = {
   generateStimulus,
   getCorrectResponse,
+  blankIconSvg,
+  flowerIconSvg,
+  heartIconSvg,
 };

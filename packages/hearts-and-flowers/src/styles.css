@@ -1,16 +1,42 @@
 .jspsych-hearts-and-flowers-trial .jspsych-btn-group-grid {
-  gap: 240px;
+  margin: 0 !important;
 }
 
-.jspsych-hearts-and-flowers-stimulus-grid {
+.jspsych-hearts-and-flowers-trial .jspsych-btn {
+  margin: 0 !important;
+}
+
+.jspsych-hearts-and-flowers-trial {
   display: grid;
+  grid-template-rows: repeat(3, auto);
   grid-template-columns: repeat(2, 1fr);
+  grid-template-areas: 
+    "haf-instructions haf-instructions"
+    "haf-left-stim haf-right-stim"
+    "haf-left-btn haf-right-btn";
+  justify-items: center;
+  gap: 2em 4em;
 }
 
-.jspsych-hearts-and-flowers-stimulus {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.jspsych-hearts-and-flowers-instruction {
+  grid-area: haf-instructions;
+  text-align: center;
+}
+
+.jspsych-hearts-and-flowers-left-stimulus {
+  grid-area: haf-left-stim;
+}
+
+.jspsych-hearts-and-flowers-right-stimulus {
+  grid-area: haf-right-stim;
+}
+
+.jspsych-hearts-and-flowers-left-button {
+  grid-area: haf-left-btn;
+}
+
+.jspsych-hearts-and-flowers-right-button {
+  grid-area: haf-right-btn;
 }
 
 .jspsych-hearts-and-flowers-fixation {
