@@ -1,0 +1,137 @@
+/* BCST Card Sorting Task Styles */
+
+/* Card container */
+.bcst-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+  padding: 20px;
+}
+
+/* Reference cards row */
+.bcst-reference-cards {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+/* Individual card */
+.bcst-card {
+  width: 80px;
+  height: 110px;
+  border: 2px solid #333;
+  border-radius: 8px;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+
+.bcst-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.bcst-card.reference {
+  cursor: pointer;
+}
+
+.bcst-card.stimulus {
+  width: 100px;
+  height: 140px;
+  cursor: default;
+}
+
+/* Shapes */
+.bcst-shape {
+  width: 20px;
+  height: 20px;
+}
+
+.bcst-shape.triangle {
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 18px solid currentColor;
+}
+
+.bcst-shape.star {
+  position: relative;
+  width: 20px;
+  height: 20px;
+}
+
+.bcst-shape.star::before {
+  content: "\2605";
+  font-size: 24px;
+  line-height: 20px;
+  color: currentColor;
+}
+
+.bcst-shape.cross {
+  position: relative;
+  width: 20px;
+  height: 20px;
+}
+
+.bcst-shape.cross::before {
+  content: "\2716";
+  font-size: 20px;
+  line-height: 20px;
+  color: currentColor;
+}
+
+.bcst-shape.circle {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background-color: currentColor;
+}
+
+/* Shape colors */
+.bcst-red { color: #e53935; }
+.bcst-green { color: #43a047; }
+.bcst-yellow { color: #fdd835; }
+.bcst-blue { color: #1e88e5; }
+
+/* Stimulus card area */
+.bcst-stimulus-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+/* Prompt text */
+.bcst-prompt {
+  font-size: 16px;
+  color: #666;
+  margin: 0;
+}
+
+/* Feedback styles */
+.feedback {
+  font-size: 24px;
+  font-weight: bold;
+  padding: 10px 20px;
+}
+
+.feedback.correct {
+  color: #43a047;
+}
+
+.feedback.incorrect {
+  color: #e53935;
+}
+
+/* Selected card highlight */
+.bcst-card.selected {
+  box-shadow: 0 0 0 4px #1e88e5;
+}
