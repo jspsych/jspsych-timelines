@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Test</title>
+  <script src="https://unpkg.com/jspsych@8"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@2"></script>
+  <script src="../dist/index.global.js"></script>
+</head>
+<body></body>
+<script>
+  console.log('jsPsych loaded:', typeof initJsPsych);
+  console.log('HtmlKeyboardResponse loaded:', typeof jsPsychHtmlKeyboardResponse);
+  console.log('CorsiBlock loaded:', typeof jsPsychTimelineCorsiBlock);
+
+  const jsPsych = initJsPsych();
+
+  const test = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: 'Test'
+  };
+
+  console.log('Test trial:', test);
+
+  jsPsych.run([test]);
+</script>
+</html>

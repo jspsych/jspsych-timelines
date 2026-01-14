@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Corsi Block Task - Basic Example</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <script src="https://unpkg.com/jspsych@8"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@2"></script>
+  <script src="../dist/index.global.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css">
+  <style>
+    body {
+      touch-action: manipulation;
+    }
+  </style>
+</head>
+
+<body></body>
+<script>
+  const jsPsych = initJsPsych({
+    on_finish: function() {
+      jsPsych.data.displayData('json');
+    }
+  });
+
+  const instructions = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: `
+      <div style="max-width: 600px; margin: auto;">
+        <h2>Corsi Block Task</h2>
+        <p>In this task, you will see a display with several blocks.</p>
+        <p>The blocks will light up one at a time in a sequence.</p>
+        <p><strong>Your job is to remember the sequence and then tap the blocks in the same order.</strong></p>
+        <p>The sequences will start short and get longer as you succeed.</p>
+        <p>The task ends when you can no longer remember the sequence.</p>
+        <p><em>Press any key to begin.</em></p>
+      </div>
+    `
+  };
+
+  // Basic Corsi Block task with default settings
+  const corsiTask = jsPsychTimelineCorsiBlock.createTimeline(jsPsych, {
+    starting_length: 2,
+    trials_per_length: 2,
+    max_length: 9
+  });
+
+  jsPsych.run([instructions, corsiTask]);
+</script>
+
+</html>

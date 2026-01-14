@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Flanker Task Example</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <script src="https://unpkg.com/jspsych"></script>
+    <script src="../dist/index.browser.js"></script>
+    <!-- Once published: <script src="https://unpkg.com/@jspsych-timelines/flanker"></script> -->
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/jspsych/css/jspsych.css" />
+  </head>
+
+  <body></body>
+  <script>
+    const jsPsych = initJsPsych({
+      on_finish: () => {
+        // Display data
+        jsPsych.data.displayData();
+
+        // Calculate and display scores
+        const scores = jsPsychTimelineFlanker.utils.scoring.getSummary(jsPsych.data.get());
+        console.log("Flanker Task Results:", scores);
+      },
+    });
+
+    // Create the flanker task with default settings
+    // For a shorter demo, reduce trial counts:
+    const task = jsPsychTimelineFlanker.createTimeline(jsPsych, {
+      numPracticeTrials: 6,
+      numTestTrials: 12,
+    });
+
+    jsPsych.run([task]);
+  </script>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Corsi Block Task - Custom Block Layout</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <script src="https://unpkg.com/jspsych@8"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@2"></script>
+  <script src="../dist/index.global.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css">
+  <style>
+    body {
+      touch-action: manipulation;
+    }
+  </style>
+</head>
+
+<body></body>
+<script>
+  const jsPsych = initJsPsych({
+    on_finish: function() {
+      jsPsych.data.displayData('json');
+    }
+  });
+
+  const instructions = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: `
+      <div style="max-width: 600px; margin: auto;">
+        <h2>Corsi Block Task - Custom Layout</h2>
+        <p>This example demonstrates using a custom block arrangement instead of the standard 9-block layout.</p>
+        <p>You can define any number of blocks in any positions (as percentages of display area).</p>
+        <p>This example uses a simple 5-block cross pattern:</p>
+        <pre style="background: #f0f0f0; padding: 10px; border-radius: 5px;">
+    □
+  □ □ □
+    □
+        </pre>
+        <p><em>Press any key to begin.</em></p>
+      </div>
+    `
+  };
+
+  // Custom 5-block cross pattern
+  const customBlocks = [
+    { x: 50, y: 20 },  // Top
+    { x: 20, y: 50 },  // Left
+    { x: 50, y: 50 },  // Center
+    { x: 80, y: 50 },  // Right
+    { x: 50, y: 80 }   // Bottom
+  ];
+
+  const corsiTask = jsPsychTimelineCorsiBlock.createTimeline(jsPsych, {
+    blocks: customBlocks,
+    starting_length: 2,
+    trials_per_length: 2,
+    max_length: 5,  // Only 5 blocks total
+    block_size: 18,  // Larger blocks for fewer total blocks
+    display_width: '450px',
+    display_height: '450px'
+  });
+
+  jsPsych.run([instructions, corsiTask]);
+</script>
+
+</html>
