@@ -1,619 +1,266 @@
-// import { JsPsych, initJsPsych } from "jspsych";
-// import { createTimeline, utils, timelineUnits } from ".";
-// import { trial_text } from "./text";
-// import { CURRENCY_PRESETS, CurrencyFormatter } from "./currency";
-
-// describe("createTimeline", () => {
-//   it("should return a timeline", () => {
-//     const jsPsych = initJsPsych();
-
-//     const timeline = createTimeline(jsPsych);
-//     expect(timeline).toBeDefined();
-//   });
-// });
-
-// import HtmlButtonResponsePlugin from "@jspsych/plugin-html-button-response";
-
-// // Mock jsPsych
-// const mockJsPsychData = {
-//   get: jest.fn(),
-//   filter: jest.fn(),
-//   select: jest.fn(),
-//   sum: jest.fn(),
-// };
-
-// const mockJsPsych = {
-//   data: mockJsPsychData,
-// } as unknown as JsPsych;
-
-// // Mock DOM elements
-// const mockElement = {
-//   remove: jest.fn(),
-//   appendChild: jest.fn(),
-//   innerHTML: "",
-//   className: "",
-// };
-
-// const mockDocument = {
-//   querySelector: jest.fn(),
-//   createElement: jest.fn(),
-// };
-
-// // Setup global mocks
-// beforeEach(() => {
-//   // Reset all mocks
-//   jest.clearAllMocks();
-
-//   // Mock window object
-//   Object.defineProperty(window, "innerHeight", {
-//     writable: true,
-//     configurable: true,
-//     value: 800,
-//   });
-
-//   // Mock document
-//   (global as any).document = mockDocument;
-//   mockDocument.querySelector.mockReturnValue(mockElement);
-//   mockDocument.createElement.mockReturnValue(mockElement);
-
-//   // Setup mock data chain
-//   mockJsPsychData.get.mockReturnValue(mockJsPsychData);
-//   mockJsPsychData.filter.mockReturnValue(mockJsPsychData);
-//   mockJsPsychData.select.mockReturnValue(mockJsPsychData);
-//   mockJsPsychData.sum.mockReturnValue(0);
-// });
-
-// afterEach(() => {
-//   jest.restoreAllMocks();
-// });
-
-// describe("BART Timeline Creation", () => {
-//   it("should create timeline with default parameters", () => {
-//     const timeline = createTimeline(mockJsPsych);
-
-//     expect(timeline).toHaveProperty("timeline");
-//     expect(Array.isArray(timeline.timeline)).toBe(true);
-//     // Default: 3 blocks + 2 break screens = 5 timeline items
-//     expect(timeline.timeline).toHaveLength(5);
-//   });
-
-//   it("should create timeline with custom parameters", () => {
-//     const customParams = {
-//       max_pumps: 15,
-//       min_pumps: 3,
-//       currency_unit_per_pump: 2,
-//       num_blocks: 2,
-//       trials_per_block: 5,
-//       currency_config: CURRENCY_PRESETS.USD,
-//     };
-
-//     const timeline = createTimeline(mockJsPsych, customParams);
-
-//     // 2 blocks + 1 break screen = 3 timeline items
-//     expect(timeline.timeline).toHaveLength(3);
-//   });
-
-//   it("should handle empty parameters object", () => {
-//     const timeline = createTimeline(mockJsPsych, {});
-
-//     // Default: 3 blocks + 2 break screens = 5 timeline items
-//     expect(timeline.timeline).toHaveLength(5);
-//   });
-// });
-
-// describe("Start Instructions", () => {
-//   it("should generate correct start instructions stimulus", () => {
-//     const instructions = timelineUnits.showStartInstructions();
-
-//     expect(instructions.type).toBe(HtmlButtonResponsePlugin);
-//     expect(instructions.choices).toEqual(["Start"]);
-
-//     // Test stimulus function
-//     const stimulus = instructions.stimulus();
-//     expect(typeof stimulus).toBe("string");
-//     expect(stimulus).toMatch(/\$\d+\.\d{2}/); // currency formatting
-//     expect(stimulus).toContain("Pump");
-//     expect(stimulus).toContain("Collect");
-//   });
-// });
-
-// describe("End Results", () => {
-//   it("should generate end results with zero earnings", () => {
-//     mockJsPsychData.sum.mockReturnValue(0);
-
-//     const results = timelineUnits.showEndResults(mockJsPsych);
-
-//     expect(results.type).toBe(HtmlButtonResponsePlugin);
-//     expect(results.choices).toEqual(["Finish"]);
-
-//     const stimulus = results.stimulus();
-//     expect(stimulus).toMatch(/\$\d+\.\d{2}/); // currency formatting
-//     expect(stimulus).toContain("Thanks for participating!");
-//   });
-
-//   it("should generate end results with earnings", () => {
-//     mockJsPsychData.sum.mockReturnValue(50); // 50 pump counts
-
-//     const results = timelineUnits.showEndResults(mockJsPsych);
-//     const stimulus = results.stimulus();
-
-//     expect(stimulus).toContain("$0.50"); // 50 * 0.01
-//   });
-
-//   it("should filter data correctly", () => {
-//     timelineUnits.showEndResults(mockJsPsych);
-
-//     expect(mockJsPsychData.get).toHaveBeenCalled();
-//     expect(mockJsPsychData.filter).toHaveBeenCalledWith({ task: "bart" });
-//     expect(mockJsPsychData.filter).toHaveBeenCalledWith({
-//       exploded: false,
-//       cashed_out: true,
-//     });
-//     expect(mockJsPsychData.select).toHaveBeenCalledWith("pump_count");
-//   });
-// });
-
-// describe("Balloon Styling", () => {
-//   // Since getBalloonStyle is not exported, we'll test it indirectly through timeline creation
-//   it("should create timeline with proper structure for balloon display", () => {
-//     const timeline = createTimeline(mockJsPsych);
-//     const block = timeline.timeline[0]; // First block
-//     const trial = block.timeline[0]; // First trial in block
-
-//     expect(trial).toHaveProperty("timeline");
-//     expect(trial).toHaveProperty("on_timeline_start");
-//     expect(typeof trial.on_timeline_start).toBe("function");
-//   });
-// });
-
-// describe("Trial Timeline Structure", () => {
-//   it("should create trial with pump loop and outcome", () => {
-//     const timeline = createTimeline(mockJsPsych);
-//     const block = timeline.timeline[0]; // First block
-//     const trial = block.timeline[0]; // First trial in block
-
-//     expect(trial.timeline).toHaveLength(2); // pump_loop and outcome
-
-//     const pumpLoop = trial.timeline[0];
-//     const outcome = trial.timeline[1];
-
-//     expect(pumpLoop).toHaveProperty("timeline");
-//     expect(pumpLoop).toHaveProperty("loop_function");
-//     expect(outcome).toHaveProperty("type");
-//     if ("type" in outcome) {
-//       expect(outcome.type).toBe(HtmlButtonResponsePlugin);
-//     }
-//   });
-
-//   it("should initialize trial variables on timeline start", () => {
-//     const timeline = createTimeline(mockJsPsych);
-//     const block = timeline.timeline[0]; // First block
-//     const trial = block.timeline[0]; // First trial in block
-
-//     // Test that on_timeline_start is a function
-//     expect(typeof trial.on_timeline_start).toBe("function");
-
-//     // Execute the function (it should not throw)
-//     expect(() => trial.on_timeline_start()).not.toThrow();
-//   });
-// });
-
-// describe("Button Configuration", () => {
-//   it("should configure pump and collect buttons correctly", () => {
-//     const timeline = createTimeline(mockJsPsych);
-//     const block = timeline.timeline[0]; // First block
-//     const trial = block.timeline[0]; // First trial in block
-//     let pumpTrial: any;
-//     if ("timeline" in trial.timeline[0]) {
-//       pumpTrial = (trial.timeline[0] as { timeline: any[] }).timeline[0];
-//     } else {
-//       throw new Error("Expected trial.timeline[0] to have a timeline property");
-//     }
-
-//     expect(pumpTrial.choices).toEqual([trial_text.pump_button, trial_text.collect_button]);
-//     expect(typeof pumpTrial.button_html).toBe("function");
-
-//     // Test button HTML generation
-//     const pumpButton = pumpTrial.button_html(trial_text.pump_button, 0);
-//     const collectButton = pumpTrial.button_html(trial_text.collect_button, 1);
-
-//     expect(pumpButton).toContain("continue-button");
-//     expect(collectButton).toContain("continue-button");
-//   });
-// });
-
-// describe("Data Recording", () => {
-//   it("should record trial data on finish", () => {
-//     const timeline = createTimeline(mockJsPsych);
-//     const block = timeline.timeline[0]; // First block
-//     const trial = block.timeline[0]; // First trial in block
-//     const outcome = trial.timeline[1];
-
-//     // Check that data object has task property
-//     expect(outcome.data).toHaveProperty("task", "bart");
-
-//     if ("on_finish" in outcome && typeof outcome.on_finish === "function") {
-//       expect(typeof outcome.on_finish).toBe("function");
-
-//       // Test that on_finish adds trial-specific properties
-//       const mockData = {};
-//       outcome.on_finish(mockData);
-
-//       expect(mockData).toHaveProperty("pump_count");
-//       expect(mockData).toHaveProperty("exploded");
-//       expect(mockData).toHaveProperty("cashed_out");
-//       expect(mockData).toHaveProperty("timed_out");
-//       expect(mockData).toHaveProperty("explosion_point");
-//     } else {
-//       throw new Error("Expected outcome to have an on_finish function");
-//     }
-//   });
-// });
-
-// describe("Stimulus Generation", () => {
-//   it("should generate stimulus with balloon image", () => {
-//     const timeline = createTimeline(mockJsPsych);
-//     const block = timeline.timeline[0]; // First block
-//     const trial = block.timeline[0]; // First trial in block
-//     let pumpTrial: any;
-//     if ("timeline" in trial.timeline[0]) {
-//       pumpTrial = (trial.timeline[0] as { timeline: any[] }).timeline[0];
-//     } else {
-//       throw new Error("Expected trial.timeline[0] to have a timeline property");
-//     }
-
-//     expect(typeof pumpTrial.stimulus).toBe("function");
-
-//     const stimulus = pumpTrial.stimulus();
-//     expect(stimulus).toContain("transparent_balloon.png");
-//     expect(stimulus).toContain("bart-container");
-//     expect(stimulus).toContain("balloon-area");
-//   });
-
-//   it("should generate outcome stimulus for explosion", () => {
-//     const timeline = createTimeline(mockJsPsych);
-//     const block = timeline.timeline[0]; // First block
-//     const trial = block.timeline[0]; // First trial in block
-//     const outcome = trial.timeline[1];
-
-//     if ("stimulus" in outcome && typeof outcome.stimulus === "function") {
-//       expect(typeof outcome.stimulus).toBe("function");
-
-//       // The stimulus function would need access to trial state
-//       // This is a structural test to ensure the function exists
-//       expect(() => outcome.stimulus()).not.toThrow();
-//     } else {
-//       throw new Error("Expected outcome to have a stimulus function");
-//     }
-//   });
-// });
-
-// describe("Currency Formatting", () => {
-//   it("should format currency correctly in instructions with USD", () => {
-//     const formatter = new CurrencyFormatter(CURRENCY_PRESETS.USD);
-//     const instructions = timelineUnits.showStartInstructions(formatter, 1);
-//     const stimulus = instructions.stimulus();
-
-//     // Should contain properly formatted USD currency
-//     expect(stimulus).toMatch(/\$\d+\.\d{2}/);
-//   });
-
-//   it("should format currency correctly in end results with USD", () => {
-//     mockJsPsychData.sum.mockReturnValue(123); // 123 pump counts
-
-//     const formatter = new CurrencyFormatter(CURRENCY_PRESETS.USD);
-//     const results = timelineUnits.showEndResults(mockJsPsych, formatter);
-//     const stimulus = results.stimulus();
-
-//     expect(stimulus).toMatch(/\$\d+\.\d{2}/); // currency formatting
-//   });
-
-//   it("should format currency correctly with EUR", () => {
-//     const formatter = new CurrencyFormatter(CURRENCY_PRESETS.EUR);
-//     const instructions = timelineUnits.showStartInstructions(formatter, 1);
-//     const stimulus = instructions.stimulus();
-
-//     // Should contain properly formatted EUR currency
-//     expect(stimulus).toMatch(/€\d+,\d{2}|\d+,\d{2}\s*€/);
-//   });
-
-//   it("should format currency correctly with JPY (no decimals)", () => {
-//     const formatter = new CurrencyFormatter(CURRENCY_PRESETS.JPY);
-//     const instructions = timelineUnits.showStartInstructions(formatter, 1);
-//     const stimulus = instructions.stimulus();
-
-//     // Should contain properly formatted JPY currency (no decimals)
-//     // JPY uses ￥ symbol, not ¥
-//     expect(stimulus).toMatch(/￥\d+|\d+\s*￥/);
-//     expect(stimulus).not.toMatch(/\d+\.\d{2}/);
-//   });
-
-//   it("should create timeline with custom currency config", () => {
-//     const timeline = createTimeline(mockJsPsych, {
-//       currency_config: CURRENCY_PRESETS.GBP,
-//       currency_unit_per_pump: 1,
-//       num_blocks: 1,
-//       trials_per_block: 1,
-//     });
-
-//     expect(timeline).toHaveProperty("timeline");
-//     expect(timeline.timeline).toHaveLength(1); // 1 block, no breaks
-//   });
-// });
-
-// describe("Error Handling", () => {
-//   it("should handle missing DOM elements gracefully", () => {
-//     mockDocument.querySelector.mockReturnValue(null);
-
-//     const timeline = createTimeline(mockJsPsych);
-//     const block = timeline.timeline[0]; // First block
-//     const trial = block.timeline[0]; // First trial in block
-//     let pumpTrial: any;
-//     if ("timeline" in trial.timeline[0]) {
-//       pumpTrial = (trial.timeline[0] as { timeline: any[] }).timeline[0];
-//     } else {
-//       throw new Error("Expected trial.timeline[0] to have a timeline property");
-//     }
-
-//     // Should not throw when DOM elements are missing
-//     expect(() => pumpTrial.on_load()).not.toThrow();
-//   });
-
-//   it("should handle empty data gracefully", () => {
-//     mockJsPsychData.get.mockReturnValue({
-//       filter: jest.fn().mockReturnValue({
-//         filter: jest.fn().mockReturnValue({
-//           select: jest.fn().mockReturnValue({
-//             sum: jest.fn().mockReturnValue(0),
-//           }),
-//         }),
-//       }),
-//     });
-
-//     expect(() => timelineUnits.showEndResults(mockJsPsych)).not.toThrow();
-//   });
-// });
-
-// describe("Parameter Validation", () => {
-//   it("should handle extreme parameter values", () => {
-//     const extremeParams = {
-//       max_pumps: 1000,
-//       min_pumps: 0,
-//       currency_unit_per_pump: 0.001,
-//       num_blocks: 5,
-//       trials_per_block: 20,
-//     };
-
-//     expect(() => createTimeline(mockJsPsych, extremeParams)).not.toThrow();
-
-//     const timeline = createTimeline(mockJsPsych, extremeParams);
-//     // 5 blocks + 4 break screens = 9 timeline items
-//     expect(timeline.timeline).toHaveLength(9);
-//   });
-
-//   it("should handle negative values gracefully", () => {
-//     const negativeParams = {
-//       max_pumps: -5,
-//       min_pumps: -10,
-//       currency_unit_per_pump: -1,
-//       num_blocks: 1,
-//       trials_per_block: 1,
-//     };
-
-//     expect(() => createTimeline(mockJsPsych, negativeParams)).not.toThrow();
-//   });
-// });
-
-// describe("Loop Function Logic", () => {
-//   it("should continue loop when balloon not popped and not cashed out", () => {
-//     const timeline = createTimeline(mockJsPsych);
-//     const block = timeline.timeline[0]; // First block
-//     const trial = block.timeline[0]; // First trial in block
-//     const pumpLoop = trial.timeline[0];
-
-//     if ("loop_function" in pumpLoop) {
-//       expect(typeof pumpLoop.loop_function).toBe("function");
-//     } else {
-//       throw new Error("Expected pumpLoop to have a loop_function property");
-//     }
-
-//     // The loop function uses closure variables, so we test its existence
-//     // In a real test environment, you'd need to access the closure state
-//     expect(pumpLoop.loop_function).toBeDefined();
-//   });
-// });
-
-// describe("Response Handling", () => {
-//   it("should handle pump response correctly", () => {
-//     const timeline = createTimeline(mockJsPsych);
-//     const block = timeline.timeline[0]; // First block
-//     const trial = block.timeline[0]; // First trial in block
-//     let pumpTrial: any;
-//     if ("timeline" in trial.timeline[0]) {
-//       pumpTrial = (trial.timeline[0] as { timeline: any[] }).timeline[0];
-//     } else {
-//       throw new Error("Expected trial.timeline[0] to have a timeline property");
-//     }
-
-//     expect(typeof pumpTrial.on_finish).toBe("function");
-
-//     // Test pump response (response = 0)
-//     const mockData = { response: 0 };
-//     expect(() => pumpTrial.on_finish(mockData)).not.toThrow();
-//   });
-
-//   it("should handle collect response correctly", () => {
-//     const timeline = createTimeline(mockJsPsych);
-//     const block = timeline.timeline[0]; // First block
-//     const trial = block.timeline[0]; // First trial in block
-//     let pumpTrial: any;
-//     if ("timeline" in trial.timeline[0]) {
-//       pumpTrial = (trial.timeline[0] as { timeline: any[] }).timeline[0];
-//     } else {
-//       throw new Error("Expected trial.timeline[0] to have a timeline property");
-//     }
-
-//     // Test collect response (response = 1)
-//     const mockData = { response: 1 };
-//     expect(() => pumpTrial.on_finish(mockData)).not.toThrow();
-//   });
-// });
-
-// describe("Integration Tests", () => {
-//   it("should create complete functional timeline", () => {
-//     const timeline = createTimeline(mockJsPsych, {
-//       max_pumps: 10,
-//       min_pumps: 5,
-//       currency_unit_per_pump: 1,
-//       num_blocks: 2,
-//       trials_per_block: 3,
-//     });
-
-//     // Verify complete structure - should have 2 blocks + 1 break = 3 items
-//     expect(timeline.timeline).toHaveLength(3);
-//     expect(timeline).toMatchObject({
-//       timeline: expect.arrayContaining([
-//         expect.objectContaining({
-//           repetitions: 3,
-//           timeline: expect.arrayContaining([
-//             expect.objectContaining({
-//               timeline: expect.arrayContaining([
-//                 expect.objectContaining({
-//                   timeline: expect.any(Array),
-//                   loop_function: expect.any(Function),
-//                 }),
-//                 expect.objectContaining({
-//                   type: HtmlButtonResponsePlugin,
-//                   stimulus: expect.any(Function),
-//                   choices: ["Continue"],
-//                   on_finish: expect.any(Function),
-//                 }),
-//               ]),
-//               on_timeline_start: expect.any(Function),
-//             }),
-//           ]),
-//         }),
-//       ]),
-//     });
-//   });
-
-//   it("should maintain trial state through timeline execution", () => {
-//     const timeline = createTimeline(mockJsPsych);
-//     const block = timeline.timeline[0]; // First block
-//     const trial = block.timeline[0]; // First trial in block
-
-//     // Initialize trial
-//     trial.on_timeline_start();
-
-//     // Test that functions exist and are callable
-//     const pumpLoop = trial.timeline[0];
-//     const outcome = trial.timeline[1];
-
-//     if ("loop_function" in pumpLoop) {
-//       expect(pumpLoop.loop_function).toBeDefined();
-//     } else {
-//       throw new Error("Expected pumpLoop to have a loop_function property");
-//     }
-//     if ("stimulus" in outcome) {
-//       expect(outcome.stimulus).toBeDefined();
-//     } else {
-//       throw new Error("Expected outcome to have a stimulus property");
-//     }
-//     if ("on_finish" in outcome) {
-//       expect(outcome.on_finish).toBeDefined();
-//     } else {
-//       throw new Error("Expected outcome to have an on_finish property");
-//     }
-
-//     // Test execution doesn't throw
-//     expect(() => outcome.stimulus()).not.toThrow();
-//     expect(() => outcome.on_finish({})).not.toThrow();
-//   });
-// });
-
-// describe("Math.random Behavior", () => {
-//   it("should generate explosion points within range", () => {
-//     const originalRandom = Math.random;
-
-//     // Mock Math.random to return predictable values
-//     Math.random = jest
-//       .fn()
-//       .mockReturnValueOnce(0) // Should give min_pumps
-//       .mockReturnValueOnce(0.5) // Should give middle value
-//       .mockReturnValueOnce(0.99); // Should give close to max_pumps
-
-//     const timeline = createTimeline(mockJsPsych, {
-//       max_pumps: 10,
-//       min_pumps: 5,
-//       num_blocks: 1,
-//       trials_per_block: 3,
-//     });
-
-//     // Execute timeline start multiple times to test explosion point generation
-//     const block = timeline.timeline[0]; // First block
-//     const trial = block.timeline[0]; // First trial in block
-
-//     expect(() => {
-//       trial.on_timeline_start();
-//       trial.on_timeline_start();
-//       trial.on_timeline_start();
-//     }).not.toThrow();
-
-//     expect(Math.random).toHaveBeenCalledTimes(3);
-
-//     // Restore original Math.random
-//     Math.random = originalRandom;
-//   });
-// });
-
-// describe("Timeout Functionality", () => {
-//   it("should create timeline with default timeout enabled (15 seconds)", () => {
-//     const timeline = createTimeline(mockJsPsych);
-//     const block = timeline.timeline[0]; // First block
-//     const trial = block.timeline[0]; // First trial in block
-//     const pumpLoop = trial.timeline[0];
-//     const pumpTrial = pumpLoop.timeline[0];
-
-//     expect(pumpTrial.trial_duration).toBe(15000); // 15 seconds default
-//   });
-
-//   it("should create timeline with custom timeout", () => {
-//     const timeline = createTimeline(mockJsPsych, {
-//       trial_timeout: 30000, // 30 seconds
-//       enable_timeout: true,
-//     });
-//     const block = timeline.timeline[0]; // First block
-//     const trial = block.timeline[0]; // First trial in block
-//     const pumpLoop = trial.timeline[0];
-//     const pumpTrial = pumpLoop.timeline[0];
-
-//     expect(pumpTrial.trial_duration).toBe(30000);
-//   });
-
-//   it("should disable timeout when enable_timeout is false", () => {
-//     const timeline = createTimeline(mockJsPsych, {
-//       enable_timeout: false,
-//     });
-//     const block = timeline.timeline[0]; // First block
-//     const trial = block.timeline[0]; // First trial in block
-//     const pumpLoop = trial.timeline[0];
-//     const pumpTrial = pumpLoop.timeline[0];
-
-//     expect(pumpTrial.trial_duration).toBe(null);
-//   });
-
-//   it("should handle timeout response correctly", () => {
-//     const timeline = createTimeline(mockJsPsych, {
-//       trial_timeout: 1000,
-//       enable_timeout: true,
-//     });
-//     const block = timeline.timeline[0]; // First block
-//     const trial = block.timeline[0]; // First trial in block
-//     const pumpLoop = trial.timeline[0];
-//     const pumpTrial = pumpLoop.timeline[0];
-
-//     // Simulate timeout (response = null)
-//     const mockData = { response: null };
-//     expect(() => pumpTrial.on_finish(mockData)).not.toThrow();
-//   });
-// });
+import { JsPsych, initJsPsych } from "jspsych";
+import { createTimeline, timelineUnits, utils } from ".";
+
+describe("BART Task", () => {
+  let jsPsych: JsPsych;
+
+  beforeEach(() => {
+    jsPsych = initJsPsych();
+  });
+
+  describe("createTimeline", () => {
+    it("should create timeline with default config", () => {
+      const timeline = createTimeline(jsPsych);
+
+      expect(timeline).toHaveProperty("timeline");
+      expect(Array.isArray(timeline.timeline)).toBe(true);
+      expect(timeline.timeline.length).toBeGreaterThan(0);
+    });
+
+    it("should create timeline without instructions when show_instructions is false", () => {
+      const withInstructions = createTimeline(jsPsych, { show_instructions: true });
+      const withoutInstructions = createTimeline(jsPsych, { show_instructions: false });
+
+      expect(withoutInstructions.timeline.length).toBeLessThan(withInstructions.timeline.length);
+    });
+
+    it("should create correct number of blocks with inter-block breaks", () => {
+      const timeline = createTimeline(jsPsych, {
+        num_blocks: 3,
+        trials_per_block: 5,
+        show_instructions: false,
+        show_end_results: false,
+      });
+
+      // Structure: [block1_trials[], break, block2_trials[], break, block3_trials[]]
+      // 3 blocks + 2 breaks = 5 items
+      expect(timeline.timeline.length).toBe(5);
+
+      // Verify blocks are arrays of trials
+      const block1 = timeline.timeline[0] as any[];
+      const block2 = timeline.timeline[2] as any[];
+      const block3 = timeline.timeline[4] as any[];
+
+      expect(Array.isArray(block1)).toBe(true);
+      expect(Array.isArray(block2)).toBe(true);
+      expect(Array.isArray(block3)).toBe(true);
+
+      // Verify breaks are between blocks
+      const break1 = timeline.timeline[1] as any;
+      const break2 = timeline.timeline[3] as any;
+      expect(break1.data.phase).toBe("block-break");
+      expect(break2.data.phase).toBe("block-break");
+    });
+
+    it("should create correct number of trials per block", () => {
+      const timeline = createTimeline(jsPsych, {
+        num_blocks: 2,
+        trials_per_block: 7,
+        show_instructions: false,
+        show_end_results: false,
+      });
+
+      const block1 = timeline.timeline[0] as any[];
+      const block2 = timeline.timeline[2] as any[];
+
+      expect(block1.length).toBe(7);
+      expect(block2.length).toBe(7);
+
+      // Verify each trial has correct phase
+      block1.forEach((trial) => {
+        expect(trial.data.phase).toBe("trial");
+      });
+    });
+
+    it("should apply points_per_pump to all trials", () => {
+      const timeline = createTimeline(jsPsych, {
+        points_per_pump: 5,
+        num_blocks: 1,
+        trials_per_block: 3,
+        show_instructions: false,
+        show_end_results: false,
+      });
+
+      const block = timeline.timeline[0] as any[];
+      block.forEach((trial) => {
+        expect(trial.points_per_pump).toBe(5);
+      });
+    });
+
+    it("should set pop_threshold within min_pumps and max_pumps range", () => {
+      const timeline = createTimeline(jsPsych, {
+        min_pumps: 5,
+        max_pumps: 10,
+        num_blocks: 1,
+        trials_per_block: 20,
+        show_instructions: false,
+        show_end_results: false,
+      });
+
+      const block = timeline.timeline[0] as any[];
+      block.forEach((trial) => {
+        expect(trial.pop_threshold).toBeGreaterThanOrEqual(5);
+        expect(trial.pop_threshold).toBeLessThanOrEqual(10);
+      });
+    });
+
+    it("should include end results screen when show_end_results is true", () => {
+      const timeline = createTimeline(jsPsych, {
+        num_blocks: 1,
+        trials_per_block: 3,
+        show_instructions: false,
+        show_end_results: true,
+      });
+
+      // Structure: [block_trials[], end_results]
+      const lastItem = timeline.timeline[timeline.timeline.length - 1] as any;
+      expect(lastItem.data.phase).toBe("end-results");
+      expect(typeof lastItem.stimulus).toBe("function");
+    });
+
+    it("should exclude end results screen when show_end_results is false", () => {
+      const timeline = createTimeline(jsPsych, {
+        num_blocks: 1,
+        trials_per_block: 3,
+        show_instructions: false,
+        show_end_results: false,
+      });
+
+      // Only the block should be present
+      expect(timeline.timeline.length).toBe(1);
+      expect(Array.isArray(timeline.timeline[0])).toBe(true);
+    });
+
+    it("should apply custom button labels to trials", () => {
+      const timeline = createTimeline(jsPsych, {
+        text: {
+          pump_button: "Inflar",
+          collect_button: "Recoger",
+        },
+        num_blocks: 1,
+        trials_per_block: 2,
+        show_instructions: false,
+        show_end_results: false,
+      });
+
+      const block = timeline.timeline[0] as any[];
+      block.forEach((trial) => {
+        expect(trial.pump_button_label).toBe("Inflar");
+        expect(trial.collect_button_label).toBe("Recoger");
+      });
+    });
+  });
+
+  describe("timelineUnits", () => {
+    it("should create interactive instructions", () => {
+      const instructions = timelineUnits.createInteractiveInstructions(jsPsych);
+
+      expect(instructions).toHaveProperty("timeline");
+      expect(Array.isArray(instructions.timeline)).toBe(true);
+      expect(instructions.timeline.length).toBeGreaterThan(0);
+    });
+
+    it("should create trial block", () => {
+      // createTrialBlock(maxPumps, minPumps, pointsPerPump, totalTrials, texts) returns array of trials
+      const trials = timelineUnits.createTrialBlock(10, 3, 1, 3, utils.text);
+
+      expect(Array.isArray(trials)).toBe(true);
+      expect(trials.length).toBe(3);
+      trials.forEach((trial) => {
+        expect(trial).toHaveProperty("type");
+        expect(trial.data.task).toBe("bart");
+        expect(trial.data.phase).toBe("trial");
+      });
+    });
+
+    it("should create inter-block break", () => {
+      const breakTrial = timelineUnits.createInterBlockBreak(1, 3);
+
+      expect(breakTrial).toHaveProperty("type");
+      expect(breakTrial).toHaveProperty("stimulus");
+      expect(breakTrial).toHaveProperty("choices");
+    });
+
+    it("should create end results screen", () => {
+      const results = timelineUnits.createEndResults(jsPsych, utils.text);
+
+      expect(results).toHaveProperty("type");
+      expect(results).toHaveProperty("stimulus");
+      expect(typeof results.stimulus).toBe("function");
+    });
+  });
+
+  describe("utils.scoring", () => {
+    it("should return empty scores for no data", () => {
+      const scores = utils.scoring.calculateScores(jsPsych.data.get());
+
+      expect(scores.totalTrials).toBe(0);
+      expect(scores.totalPoints).toBe(0);
+      expect(scores.poppedTrials).toBe(0);
+      expect(scores.collectedTrials).toBe(0);
+    });
+
+    it("should calculate scores correctly with trial data", () => {
+      const dataCollection = jsPsych.data.get();
+      dataCollection.push({
+        task: "bart",
+        phase: "trial",
+        points_earned: 5,
+        pumps: 5,
+        popped: false,
+      });
+      dataCollection.push({
+        task: "bart",
+        phase: "trial",
+        points_earned: 0,
+        pumps: 8,
+        popped: true,
+      });
+      dataCollection.push({
+        task: "bart",
+        phase: "trial",
+        points_earned: 3,
+        pumps: 3,
+        popped: false,
+      });
+
+      const scores = utils.scoring.calculateScores(dataCollection);
+
+      expect(scores.totalTrials).toBe(3);
+      expect(scores.totalPoints).toBe(8); // 5 + 0 + 3
+      expect(scores.poppedTrials).toBe(1);
+      expect(scores.collectedTrials).toBe(2);
+    });
+
+    it("should include task info in getSummary", () => {
+      const summary = utils.scoring.getSummary(jsPsych.data.get());
+
+      expect(summary).toHaveProperty("taskName", "bart");
+      expect(summary).toHaveProperty("version");
+    });
+  });
+
+  describe("utils.constants", () => {
+    it("should export task constants", () => {
+      expect(utils.constants.TASK_NAME).toBe("bart");
+      expect(utils.constants.VERSION).toBeDefined();
+    });
+  });
+
+  describe("utils.text", () => {
+    it("should export default text configuration", () => {
+      expect(utils.text).toBeDefined();
+      expect(utils.text.pump_button).toBeDefined();
+      expect(utils.text.collect_button).toBeDefined();
+      expect(utils.text.continue_button).toBeDefined();
+    });
+
+    it("should have instruction text strings", () => {
+      expect(utils.text.instruction_intro).toBeDefined();
+      expect(utils.text.instruction_pump).toBeDefined();
+      expect(utils.text.instruction_collect).toBeDefined();
+      expect(utils.text.instruction_try_pump).toBeDefined();
+      expect(utils.text.instruction_pump_success).toBeDefined();
+    });
+  });
+});
