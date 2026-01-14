@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trail Making Test</title>
+    <script src="https://unpkg.com/jspsych@8"></script>
+    <script src="../dist/index.browser.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css" />
+  </head>
+  <body></body>
+  <script>
+    const jsPsych = initJsPsych({
+      on_finish: function () {
+        // Calculate and display scores
+        const scores = jsPsychTimelineTrailMaking.utils.scoring.getSummary(
+          jsPsych.data.get()
+        );
+        console.log("Trail Making Results:", scores);
+
+        // Display summary
+        jsPsych.data.displayData();
+      },
+    });
+
+    const timeline = jsPsychTimelineTrailMaking.createTimeline(jsPsych, {
+      showInstructions: true,
+      showPractice: true,
+      practiceTargets: 5,
+      numTargetsPartA: 8,  // Reduced for demo
+      numTargetsPartB: 8,  // Reduced for demo
+      seedPartA: 12345,    // Fixed seed for reproducibility
+      seedPartB: 54321,
+    });
+
+    jsPsych.run([timeline]);
+  </script>
+</html>
