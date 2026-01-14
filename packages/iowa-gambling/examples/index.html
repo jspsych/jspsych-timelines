@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Iowa Gambling Task</title>
+    <script src="https://unpkg.com/jspsych@8"></script>
+    <script src="../dist/index.browser.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css" />
+  </head>
+  <body></body>
+  <script>
+    const jsPsych = initJsPsych({
+      on_finish: function () {
+        // Calculate and display scores
+        const scores = jsPsychTimelineIowaGambling.utils.scoring.getSummary(
+          jsPsych.data.get()
+        );
+        console.log("Iowa Gambling Task Results:", scores);
+
+        // Display summary
+        jsPsych.data.displayData();
+      },
+    });
+
+    const timeline = jsPsychTimelineIowaGambling.createTimeline(jsPsych, {
+      showInstructions: true,
+      numTrials: 100,
+      startingLoan: 2000,
+    });
+
+    jsPsych.run([timeline]);
+  </script>
+</html>
