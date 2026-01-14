@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Digit Span Task Example</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <script src="https://unpkg.com/jspsych"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-html-button-response"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response"></script>
+    <script src="../dist/index.browser.js"></script>
+    <!-- Once published: <script src="https://unpkg.com/@jspsych-timelines/digit-span"></script> -->
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/jspsych/css/jspsych.css" />
+  </head>
+
+  <body></body>
+  <script>
+    const jsPsych = initJsPsych({
+      on_finish: () => {
+        // Display data
+        jsPsych.data.displayData();
+
+        // Calculate and display scores
+        const scores = jsPsychTimelineDigitSpan.utils.scoring.getSummary(jsPsych.data.get());
+        console.log("Digit Span Task Results:", scores);
+      },
+    });
+
+    // Create the digit span task
+    // For a shorter demo, reduce trial counts:
+    const task = jsPsychTimelineDigitSpan.createTimeline(jsPsych, {
+      mode: "forward", // Use "both" for forward and backward
+      numPracticeTrials: 1,
+      numTestTrials: 4,
+    });
+
+    jsPsych.run([task]);
+  </script>
+</html>

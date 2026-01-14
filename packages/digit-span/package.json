@@ -1,0 +1,43 @@
+{
+  "name": "@jspsych-timelines/digit-span",
+  "version": "0.0.1",
+  "description": "Digit Span Task for measuring working memory capacity",
+  "type": "module",
+  "main": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "unpkg": "dist/index.browser.js",
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,iife,cjs --sourcemap --dts --treeshake --clean --global-name jsPsychTimelineDigitSpan --inject-style && node -e \"require('fs').renameSync('dist/index.global.js','dist/index.browser.js')\" && node -e \"require('fs').renameSync('dist/index.global.js.map','dist/index.browser.js.map')\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jspsych/jspsych-timelines.git",
+    "directory": "packages"
+  },
+  "keywords": [
+    "jsPsych",
+    "digit-span",
+    "working-memory",
+    "cognitive-assessment"
+  ],
+  "author": {
+    "name": "jsPsych",
+    "url": ""
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jspsych/jspsych-timelines/issues"
+  },
+  "homepage": "https://github.com/jspsych/jspsych-timelines/packages/digit-span/README.md",
+  "devDependencies": {
+    "jspsych": "^8.0.0",
+    "@jspsych/config": "^3.2.2",
+    "tsup": "^6.7.0",
+    "typescript": "^5.0.2"
+  },
+  "peerDependencies": {
+    "jspsych": ">=8.0.0",
+    "@jspsych/plugin-html-button-response": ">=2.0.0",
+    "@jspsych/plugin-html-keyboard-response": ">=2.0.0"
+  }
+}
