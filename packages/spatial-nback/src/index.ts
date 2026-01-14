@@ -1,7 +1,11 @@
-import { JsPsych } from "jspsych";
+import { JsPsych, DataCollection } from "jspsych";
 import jsPsychPluginSpatialNback from "@jspsych-contrib/plugin-spatial-nback";
 import jsPsychInstructions from "@jspsych/plugin-instructions";
 import { trial_text, instruction_pages } from "./text";
+
+// Constants
+const TASK_NAME = "spatial-nback";
+const VERSION = "0.3.0";
 
 function createInstructions(instruction_pages_data = instruction_pages, texts = trial_text) {
   return {
@@ -14,7 +18,8 @@ function createInstructions(instruction_pages_data = instruction_pages, texts = 
     button_label_previous: texts?.back_button ?? trial_text.back_button,
     button_label_next: texts?.next_button ?? trial_text.next_button,
     data: {
-      task: 'spatial-nback',
+      task: TASK_NAME,
+      task_version: VERSION,
       phase: 'instructions'
     },
     css_classes: ["jspsych-spatial-nback-container"]
@@ -168,11 +173,12 @@ export function createTimeline(
                 }
             },
             data: {
+                task: TASK_NAME,
+                task_version: VERSION,
+                phase: 'trial',
                 trial_number: i + 1,
                 n_back: n_back,
                 total_trials: total_trials,
-                task: 'spatial-nback',
-                phase: 'trial'
             },
             css_classes: ["jspsych-spatial-nback-container"]
         });
@@ -333,8 +339,172 @@ export function createGridHTML({
     return html;
 }
 
+// Scoring functions
+const scoring = {
+    /**
+     * Calculate performance scores from spatial n-back data
+     */
+    calculateScores(data: DataCollection) {
+        const trials = data.filter({ task: TASK_NAME, phase: 'trial' }).values();
+
+        if (trials.length === 0) {
+            return {
+                totalTrials: 0,
+                correctTrials: 0,
+                accuracy: 0,
+                targetTrials: 0,
+                targetHits: 0,
+                targetHitRate: 0,
+                nonTargetTrials: 0,
+                correctRejections: 0,
+                correctRejectionRate: 0,
+                falseAlarms: 0,
+                falseAlarmRate: 0,
+                misses: 0,
+                missRate: 0,
+                meanRT: null as number | null,
+                meanTargetRT: null as number | null,
+                dPrime: null as number | null,
+            };
+        }
+
+        const correctTrials = trials.filter((t: any) => t.correct === true);
+        const targetTrials = trials.filter((t: any) => t.is_target === true);
+        const nonTargetTrials = trials.filter((t: any) => t.is_target === false);
+
+        // Hits: correctly identified targets
+        const hits = targetTrials.filter((t: any) => t.correct === true);
+        // Misses: targets that were not identified
+        const misses = targetTrials.filter((t: any) => t.correct === false);
+        // Correct rejections: correctly rejected non-targets
+        const correctRejections = nonTargetTrials.filter((t: any) => t.correct === true);
+        // False alarms: non-targets incorrectly identified as targets
+        const falseAlarms = nonTargetTrials.filter((t: any) => t.correct === false);
+
+        // RT calculations (correct trials only, excluding nulls)
+        const validRTs = correctTrials
+            .map((t: any) => t.rt)
+            .filter((rt: any) => rt !== null && rt > 0);
+        const meanRT = validRTs.length > 0
+            ? validRTs.reduce((a: number, b: number) => a + b, 0) / validRTs.length
+            : null;
+
+        // RT for target hits only
+        const targetRTs = hits
+            .map((t: any) => t.rt)
+            .filter((rt: any) => rt !== null && rt > 0);
+        const meanTargetRT = targetRTs.length > 0
+            ? targetRTs.reduce((a: number, b: number) => a + b, 0) / targetRTs.length
+            : null;
+
+        // Calculate d-prime (signal detection measure)
+        const hitRate = targetTrials.length > 0 ? hits.length / targetTrials.length : 0;
+        const falseAlarmRate = nonTargetTrials.length > 0 ? falseAlarms.length / nonTargetTrials.length : 0;
+
+        // Apply corrections for extreme values (0 or 1) to allow z-score calculation
+        const adjustedHitRate = Math.max(0.01, Math.min(0.99, hitRate));
+        const adjustedFARate = Math.max(0.01, Math.min(0.99, falseAlarmRate));
+
+        // Z-score approximation using inverse normal
+        const zHit = inverseNormalCDF(adjustedHitRate);
+        const zFA = inverseNormalCDF(adjustedFARate);
+        const dPrime = zHit - zFA;
+
+        return {
+            totalTrials: trials.length,
+            correctTrials: correctTrials.length,
+            accuracy: trials.length > 0 ? correctTrials.length / trials.length : 0,
+            targetTrials: targetTrials.length,
+            targetHits: hits.length,
+            targetHitRate: hitRate,
+            nonTargetTrials: nonTargetTrials.length,
+            correctRejections: correctRejections.length,
+            correctRejectionRate: nonTargetTrials.length > 0 ? correctRejections.length / nonTargetTrials.length : 0,
+            falseAlarms: falseAlarms.length,
+            falseAlarmRate: falseAlarmRate,
+            misses: misses.length,
+            missRate: targetTrials.length > 0 ? misses.length / targetTrials.length : 0,
+            meanRT,
+            meanTargetRT,
+            dPrime,
+        };
+    },
+
+    /**
+     * Get summary with task metadata
+     */
+    getSummary(data: DataCollection) {
+        const scores = this.calculateScores(data);
+        return {
+            taskName: TASK_NAME,
+            version: VERSION,
+            ...scores,
+        };
+    },
+};
+
+// Approximate inverse normal CDF (Abramowitz and Stegun approximation)
+function inverseNormalCDF(p: number): number {
+    if (p <= 0) return -Infinity;
+    if (p >= 1) return Infinity;
+
+    const a1 = -3.969683028665376e1;
+    const a2 = 2.209460984245205e2;
+    const a3 = -2.759285104469687e2;
+    const a4 = 1.383577518672690e2;
+    const a5 = -3.066479806614716e1;
+    const a6 = 2.506628277459239e0;
+
+    const b1 = -5.447609879822406e1;
+    const b2 = 1.615858368580409e2;
+    const b3 = -1.556989798598866e2;
+    const b4 = 6.680131188771972e1;
+    const b5 = -1.328068155288572e1;
+
+    const c1 = -7.784894002430293e-3;
+    const c2 = -3.223964580411365e-1;
+    const c3 = -2.400758277161838e0;
+    const c4 = -2.549732539343734e0;
+    const c5 = 4.374664141464968e0;
+    const c6 = 2.938163982698783e0;
+
+    const d1 = 7.784695709041462e-3;
+    const d2 = 3.224671290700398e-1;
+    const d3 = 2.445134137142996e0;
+    const d4 = 3.754408661907416e0;
+
+    const pLow = 0.02425;
+    const pHigh = 1 - pLow;
+
+    let q: number, r: number;
+
+    if (p < pLow) {
+        q = Math.sqrt(-2 * Math.log(p));
+        return (((((c1 * q + c2) * q + c3) * q + c4) * q + c5) * q + c6) /
+            ((((d1 * q + d2) * q + d3) * q + d4) * q + 1);
+    } else if (p <= pHigh) {
+        q = p - 0.5;
+        r = q * q;
+        return (((((a1 * r + a2) * r + a3) * r + a4) * r + a5) * r + a6) * q /
+            (((((b1 * r + b2) * r + b3) * r + b4) * r + b5) * r + 1);
+    } else {
+        q = Math.sqrt(-2 * Math.log(1 - p));
+        return -(((((c1 * q + c2) * q + c3) * q + c4) * q + c5) * q + c6) /
+            ((((d1 * q + d2) * q + d3) * q + d4) * q + 1);
+    }
+}
+
+// Constants export
+const constants = {
+    TASK_NAME,
+    VERSION,
+};
+
 export const utils = {
+    scoring,
+    constants,
+    text: trial_text,
     presetConfigurations,
     generateNBackSequence,
-    createGridHTML
+    createGridHTML,
 }
