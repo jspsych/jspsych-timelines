@@ -70,4 +70,8 @@ export const trial_text = {
   overallAccuracy: 'Overall Accuracy:',
   averageResponseTime: 'Average Response Time (GO trials):',
   finishButton: 'Finish',
-}
+};
+
+// Aliases for consistency with other packages
+export const defaultText = trial_text;
+export type TextConfig = typeof trial_text;
