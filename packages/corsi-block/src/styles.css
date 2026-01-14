@@ -1,0 +1,38 @@
+/* Corsi Block Task Styles - Minimal, themeable */
+
+/* Feedback state modifiers */
+.feedback.correct {
+  color: green;
+}
+
+.feedback.incorrect {
+  color: red;
+}
+
+/* Mobile/touch device optimizations */
+@media (pointer: coarse) {
+  #jspsych-html-button-response-btngroup {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 16px;
+    background: inherit;
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+  }
+
+  #jspsych-html-button-response-btngroup .jspsych-btn {
+    min-height: 60px;
+    min-width: 120px;
+    font-size: 18px;
+    flex: 1;
+    max-width: 200px;
+  }
+
+  /* Add padding to content so it doesn't get hidden behind fixed buttons */
+  .jspsych-content {
+    padding-bottom: 100px;
+  }
+}

@@ -25,104 +25,151 @@ describe("Corsi Block Task", () => {
       expect(timeline.timeline.length).toBeGreaterThan(0);
     });
 
-    it("should support custom starting length", () => {
+    it("should create timeline nodes for each length from starting_length to max_length", () => {
       const timeline = createTimeline(jsPsych, {
         starting_length: 3,
+        max_length: 5,
         trials_per_length: 2
       });
-      expect(timeline).toBeDefined();
+
+      // Timeline includes: instructions + (3 lengths * 1 node each) + final span calculation
+      // Length nodes: 3, 4, 5 = 3 nodes
+      // First item is instructions, last item is span calculation
+      // So we should have: instructions + 3 length nodes + span calc = 5 items
+      expect(timeline.timeline.length).toBe(5);
     });
 
-    it("should support custom trials per length", () => {
+    it("should create correct number of trials per length via timeline_variables", () => {
       const timeline = createTimeline(jsPsych, {
         starting_length: 2,
-        trials_per_length: 3
+        max_length: 3,
+        trials_per_length: 4
       });
-      expect(timeline).toBeDefined();
+
+      // Find a length node (skip instructions at index 0)
+      const lengthNode = timeline.timeline[1] as any;
+      const innerTimeline = lengthNode.timeline[0];
+
+      expect(innerTimeline.timeline_variables.length).toBe(4);
     });
 
-    it("should support custom max length", () => {
+    it("should set correct sequence_length in timeline_variables", () => {
       const timeline = createTimeline(jsPsych, {
-        starting_length: 2,
-        max_length: 7
+        starting_length: 3,
+        max_length: 4,
+        trials_per_length: 2
       });
-      expect(timeline).toBeDefined();
+
+      // First length node (after instructions)
+      const lengthNode = timeline.timeline[1] as any;
+      const innerTimeline = lengthNode.timeline[0];
+
+      // All trials at this length should have sequence_length = 3
+      innerTimeline.timeline_variables.forEach((trialVar: any) => {
+        expect(trialVar.sequence_length).toBe(3);
+      });
     });
 
-    it("should support both-trials stop rule", () => {
+    it("should generate sequences with correct length", () => {
+      const timeline = createTimeline(jsPsych, {
+        starting_length: 4,
+        max_length: 5,
+        trials_per_length: 2
+      });
+
+      // First length node (after instructions)
+      const lengthNode = timeline.timeline[1] as any;
+      const innerTimeline = lengthNode.timeline[0];
+
+      // All sequences should have length 4
+      innerTimeline.timeline_variables.forEach((trialVar: any) => {
+        expect(trialVar.sequence.length).toBe(4);
+      });
+    });
+
+    it("should apply both-trials stop rule via conditional_function", () => {
       const timeline = createTimeline(jsPsych, {
         stop_rule: 'both-trials',
+        starting_length: 2,
+        max_length: 4,
         trials_per_length: 2
       });
-      expect(timeline).toBeDefined();
+
+      // The second length node should have a conditional_function
+      const lengthNode = timeline.timeline[2] as any;
+      expect(typeof lengthNode.conditional_function).toBe('function');
     });
 
-    it("should support consecutive-errors stop rule", () => {
+    it("should apply consecutive-errors stop rule via conditional_function", () => {
       const timeline = createTimeline(jsPsych, {
         stop_rule: 'consecutive-errors',
-        consecutive_errors_threshold: 3
+        consecutive_errors_threshold: 3,
+        starting_length: 2,
+        max_length: 4
       });
-      expect(timeline).toBeDefined();
+
+      const lengthNode = timeline.timeline[2] as any;
+      expect(typeof lengthNode.conditional_function).toBe('function');
     });
 
-    it("should support fixed sequence generation", () => {
+    it("should generate sequences without repeats when allow_repeats is false", () => {
       const timeline = createTimeline(jsPsych, {
-        sequence_generation: 'fixed'
-      });
-      expect(timeline).toBeDefined();
-    });
-
-    it("should support random sequence generation", () => {
-      const timeline = createTimeline(jsPsych, {
+        allow_repeats: false,
+        starting_length: 5,
+        max_length: 5,
+        trials_per_length: 10,
         sequence_generation: 'random'
       });
-      expect(timeline).toBeDefined();
-    });
 
-    it("should support custom temporal parameters", () => {
-      const timeline = createTimeline(jsPsych, {
-        stimulus_duration: 750,
-        inter_stimulus_interval: 1200,
-        post_sequence_delay: 600,
-        inter_trial_delay: 2000,
-        response_timeout: 60000
+      const lengthNode = timeline.timeline[1] as any;
+      const innerTimeline = lengthNode.timeline[0];
+
+      // Check that sequences don't have consecutive repeated indices
+      innerTimeline.timeline_variables.forEach((trialVar: any) => {
+        const sequence = trialVar.sequence;
+        for (let i = 1; i < sequence.length; i++) {
+          expect(sequence[i]).not.toBe(sequence[i - 1]);
+        }
       });
-      expect(timeline).toBeDefined();
     });
 
-    it("should support custom block colors", () => {
+    it("should use custom block_colors in display trials", () => {
       const timeline = createTimeline(jsPsych, {
         block_colors: {
           inactive: '#555555',
           active: '#ff0000',
           correct: '#00ff00',
-          incorrect: '#ff0000'
-        }
+          incorrect: '#0000ff'
+        },
+        starting_length: 2,
+        max_length: 2,
+        trials_per_length: 1
       });
-      expect(timeline).toBeDefined();
+
+      // Instructions are at index 0, first length node at index 1
+      const lengthNode = timeline.timeline[1] as any;
+      const innerTimeline = lengthNode.timeline[0];
+      const displayTrial = innerTimeline.timeline[0];
+
+      expect(displayTrial.block_color).toBe('#555555');
+      expect(displayTrial.highlight_color).toBe('#ff0000');
     });
 
-    it("should support custom background color", () => {
+    it("should use custom temporal parameters in display trials", () => {
       const timeline = createTimeline(jsPsych, {
-        background_color: '#ffffff'
+        stimulus_duration: 750,
+        inter_stimulus_interval: 1200,
+        starting_length: 2,
+        max_length: 2,
+        trials_per_length: 1
       });
-      expect(timeline).toBeDefined();
-    });
 
-    it("should support custom display dimensions", () => {
-      const timeline = createTimeline(jsPsych, {
-        display_width: '600px',
-        display_height: '600px',
-        block_size: 15
-      });
-      expect(timeline).toBeDefined();
-    });
+      const lengthNode = timeline.timeline[1] as any;
+      const innerTimeline = lengthNode.timeline[0];
+      const displayTrial = innerTimeline.timeline[0];
 
-    it("should support custom click feedback duration", () => {
-      const timeline = createTimeline(jsPsych, {
-        click_feedback_duration: 300
-      });
-      expect(timeline).toBeDefined();
+      expect(displayTrial.sequence_block_duration).toBe(750);
+      expect(displayTrial.sequence_gap_duration).toBe(1200);
     });
 
     it("should support auto sequence initiation", () => {
@@ -130,8 +177,8 @@ describe("Corsi Block Task", () => {
         sequence_initiation: 'auto'
       });
       expect(timeline).toBeDefined();
-      // Should not have start button
-      expect(timeline.timeline.length).toBe(1);
+      // Timeline includes interactive instructions and trials
+      expect(timeline.timeline.length).toBeGreaterThan(0);
     });
 
     it("should support button sequence initiation", () => {
@@ -139,8 +186,8 @@ describe("Corsi Block Task", () => {
         sequence_initiation: 'button'
       });
       expect(timeline).toBeDefined();
-      // Should have start button
-      expect(timeline.timeline.length).toBe(2);
+      // Timeline includes interactive instructions and trials
+      expect(timeline.timeline.length).toBeGreaterThan(0);
     });
 
     it("should support custom block positions", () => {

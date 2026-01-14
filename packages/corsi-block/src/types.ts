@@ -127,8 +127,8 @@ export interface CorsiBlockConfig {
   blocks?: BlockPosition[];
 
   // === Text Configuration ===
-  /** Custom text object for internationalization */
-  text_object?: Partial<TrialText>;
+  /** Custom text for internationalization */
+  text?: Partial<TrialText>;
 
   // === Data Parameters ===
   /** Custom data labels added to all trials */

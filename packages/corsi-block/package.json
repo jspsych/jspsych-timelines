@@ -5,9 +5,9 @@
   "type": "module",
   "main": "dist/index.mjs",
   "types": "dist/index.d.ts",
-  "unpkg": "dist/index.global.js",
+  "unpkg": "dist/index.browser.js",
   "scripts": {
-    "build": "tsup src/index.ts --format esm,iife --sourcemap --dts --treeshake --clean --global-name jsPsychTimelineCorsiBlock",
+    "build": "tsup src/index.ts --format esm,iife,cjs --sourcemap --dts --treeshake --clean --global-name jsPsychTimelineCorsiBlock --inject-style && node -e \"require('fs').renameSync('dist/index.global.js','dist/index.browser.js')\" && node -e \"require('fs').renameSync('dist/index.global.js.map','dist/index.browser.js.map')\"",
     "test": "jest"
   },
   "repository": {

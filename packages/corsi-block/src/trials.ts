@@ -112,9 +112,9 @@ export function createInputTrial(jsPsych: JsPsych, options: {
 export function createStartTrial(text: TrialText) {
   return {
     type: jsPsychHtmlKeyboardResponse,
-    stimulus: `<div style="font-size: 20px; text-align: center;">
+    stimulus: `<div class="instructions" >
       <p>${text.display_prompt}</p>
-      <p style="font-size: 16px; margin-top: 20px;">Press any key when ready</p>
+      <p>Press any key when ready</p>
     </div>`,
     choices: 'ALL_KEYS',
     data: {
@@ -133,9 +133,9 @@ export function createLevelBreak(options: {
 }) {
   return {
     type: jsPsychHtmlKeyboardResponse,
-    stimulus: `<div style="font-size: 20px; text-align: center;">
+    stimulus: `<div class="block-break" >
       <p>${options.text || `Level ${options.current_length - 1} complete`}</p>
-      <p style="font-size: 16px; margin-top: 20px;">Press any key to continue</p>
+      <p>Press any key to continue</p>
     </div>`,
     choices: 'ALL_KEYS',
     data: {

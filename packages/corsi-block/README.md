@@ -107,7 +107,7 @@ const timeline = createTimeline(jsPsych, {
 | `blocks` | BlockPosition[] | Default 9-block layout | Custom block positions |
 | `input_modality` | 'touchscreen' \| 'mouse' | 'touchscreen' | Input method (cosmetic) |
 | `sequence_initiation` | 'auto' \| 'button' | 'auto' | Start automatically or with button |
-| `text_object` | Partial<TrialText> | English defaults | Custom text for internationalization |
+| `text` | Partial<TextConfig> | English defaults | Custom text for internationalization |
 | `data_labels` | object | {} | Custom data labels for all trials |
 
 ## Data
@@ -126,6 +126,24 @@ The timeline records the following data for each trial:
 At the end of the task, the calculated span is added to the data:
 
 - `corsi_span`: The highest sequence length successfully completed
+
+## Scoring
+
+```javascript
+import { utils } from '@jspsych-timelines/corsi-block';
+
+const scores = utils.scoring.getSummary(jsPsych.data.get());
+console.log(scores);
+// {
+//   span: 5,              // Corsi span achieved
+//   totalTrials: 8,       // Total input trials
+//   correctTrials: 6,     // Correct trials
+//   accuracy: 0.75,       // Proportion correct
+//   maxLengthAttempted: 6,
+//   taskName: 'corsi-block',
+//   version: '0.1.0'
+// }
+```
 
 ## Accessing Results
 
