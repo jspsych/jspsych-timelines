@@ -44,40 +44,41 @@ export const defaultText: TextConfig = {
   right_button: "RIGHT",
 
   instruction_intro: `
-    <div style="max-width: 600px; margin: 0 auto; text-align: left;">
+    <div class="instructions">
       <h2>Antisaccade Task</h2>
-      <p>In this task, you will see a fixation cross (+) in the center of the screen.</p>
-      <p>Then, a cue will appear on either the <strong>LEFT</strong> or <strong>RIGHT</strong> side.</p>
-      <p>Your job is to respond based on where the cue appears.</p>
-      <p>Sometimes you will respond to the <strong>SAME</strong> side as the cue.</p>
-      <p>Other times you will respond to the <strong>OPPOSITE</strong> side from the cue.</p>
+      <p>A dot will flash on the <strong>LEFT</strong> or <strong>RIGHT</strong> side of the screen.</p>
+      <p>Your job is to press a button based on where the dot appears.</p>
       <p>Pay attention to the instructions before each block.</p>
     </div>
   `,
 
   instruction_prosaccade: `
-    <div style="max-width: 600px; margin: 0 auto;">
+    <div class="instructions">
       <h3>Same Side Block</h3>
-      <p>Press the button on the <strong>SAME SIDE</strong> as the cue.</p>
-      <p>If you see the cue on the left, press <strong>LEFT</strong>.</p>
-      <p>If you see the cue on the right, press <strong>RIGHT</strong>.</p>
+      <p>Press the button on the <strong>SAME SIDE</strong> as the dot.</p>
+      <ul>
+        <li>Dot on left → Press <strong>LEFT</strong></li>
+        <li>Dot on right → Press <strong>RIGHT</strong></li>
+      </ul>
     </div>
   `,
 
   instruction_antisaccade: `
-    <div style="max-width: 600px; margin: 0 auto;">
+    <div class="instructions">
       <h3>Opposite Side Block</h3>
-      <p>Press the button on the <strong>OPPOSITE SIDE</strong> from the cue.</p>
-      <p>If you see the cue on the left, press <strong>RIGHT</strong>.</p>
-      <p>If you see the cue on the right, press <strong>LEFT</strong>.</p>
-      <p>You must inhibit your natural tendency to respond to the same side!</p>
+      <p>Press the button on the <strong>OPPOSITE SIDE</strong> from the dot.</p>
+      <ul>
+        <li>Dot on left → Press <strong>RIGHT</strong></li>
+        <li>Dot on right → Press <strong>LEFT</strong></li>
+      </ul>
+      <p>Resist the urge to respond toward the dot!</p>
     </div>
   `,
 
   instruction_practice: `
-    <div style="max-width: 600px; margin: 0 auto;">
+    <div class="instructions">
       <h3>Practice</h3>
-      <p>Let's try a few practice trials. You will receive feedback.</p>
+      <p>Try a few practice trials first. You'll see feedback after each response.</p>
     </div>
   `,
 
@@ -94,17 +95,14 @@ export const defaultText: TextConfig = {
     prosaccadeRT: number | null,
     antisaccadeErrors: number
   ) => `
-    <div style="max-width: 600px; margin: 0 auto; text-align: left;">
+    <div class="instructions">
       <h3>Your Results</h3>
-      <p><strong>Opposite side (antisaccade):</strong> ${antisaccadeAccuracy.toFixed(1)}% accuracy${
-        antisaccadeRT !== null ? `, ${antisaccadeRT.toFixed(0)}ms avg RT` : ""
+      <p><strong>Opposite side:</strong> ${antisaccadeAccuracy.toFixed(1)}% correct${
+        antisaccadeRT !== null ? ` (${antisaccadeRT.toFixed(0)}ms avg)` : ""
       }</p>
-      <p><strong>Same side (prosaccade):</strong> ${prosaccadeAccuracy.toFixed(1)}% accuracy${
-        prosaccadeRT !== null ? `, ${prosaccadeRT.toFixed(0)}ms avg RT` : ""
+      <p><strong>Same side:</strong> ${prosaccadeAccuracy.toFixed(1)}% correct${
+        prosaccadeRT !== null ? ` (${prosaccadeRT.toFixed(0)}ms avg)` : ""
       }</p>
-      <hr>
-      <p><strong>Antisaccade errors:</strong> ${antisaccadeErrors} (responses to wrong side)</p>
-      <p><em>Lower errors indicate better inhibitory control.</em></p>
     </div>
   `,
 };

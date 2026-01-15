@@ -1,5 +1,18 @@
 /* Antisaccade Task Styles - Minimal, themeable */
 
+/* Instructions container */
+.instructions {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0 20px;
+  text-align: left;
+}
+
+.instructions h2,
+.instructions h3 {
+  text-align: center;
+}
+
 /* Feedback state modifiers */
 .feedback.correct {
   color: green;
