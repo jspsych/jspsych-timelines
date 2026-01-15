@@ -173,6 +173,14 @@ function createButtonHtml(choice: string): string {
   return `<button class="jspsych-btn">${choice}</button>`;
 }
 
+/**
+ * Creates disabled button HTML for non-response trials.
+ * Buttons are visible but non-interactive to prevent layout shifts.
+ */
+function createDisabledButtonHtml(choice: string): string {
+  return `<button class="jspsych-btn" disabled>${choice}</button>`;
+}
+
 // -- TIMELINE UNITS --
 
 /**
@@ -331,12 +339,15 @@ function createInstructionTrials(config: ResolvedConfig) {
 
 /**
  * Creates a fixation trial.
+ * Shows disabled buttons to prevent layout shifts.
  */
 function createFixationTrial(config: ResolvedConfig) {
   return {
-    type: jsPsychHtmlKeyboardResponse,
+    type: jsPsychHtmlButtonResponse,
     stimulus: `<div class="fixation">${config.text.fixation}</div>`,
-    choices: "NO_KEYS",
+    choices: [config.text.left_button, config.text.right_button],
+    button_html: createDisabledButtonHtml,
+    response_ends_trial: false,
     trial_duration: config.fixationDuration,
     data: {
       task: TASK_NAME,
@@ -388,10 +399,11 @@ function createStimulusTrial(
 
 /**
  * Creates a feedback trial.
+ * Shows disabled buttons to prevent layout shifts.
  */
 function createFeedbackTrial(jsPsych: JsPsych, config: ResolvedConfig) {
   return {
-    type: jsPsychHtmlKeyboardResponse,
+    type: jsPsychHtmlButtonResponse,
     stimulus: () => {
       const lastTrial = jsPsych.data.get().last(1).values()[0];
       let feedbackText: string;
@@ -410,7 +422,9 @@ function createFeedbackTrial(jsPsych: JsPsych, config: ResolvedConfig) {
 
       return `<div class="${feedbackClass}">${feedbackText}</div>`;
     },
-    choices: "NO_KEYS",
+    choices: [config.text.left_button, config.text.right_button],
+    button_html: createDisabledButtonHtml,
+    response_ends_trial: false,
     trial_duration: config.feedbackDuration,
     data: {
       task: TASK_NAME,
@@ -421,12 +435,15 @@ function createFeedbackTrial(jsPsych: JsPsych, config: ResolvedConfig) {
 
 /**
  * Creates an ITI (inter-trial interval) trial.
+ * Shows disabled buttons to prevent layout shifts.
  */
 function createItiTrial(config: ResolvedConfig) {
   return {
-    type: jsPsychHtmlKeyboardResponse,
+    type: jsPsychHtmlButtonResponse,
     stimulus: "",
-    choices: "NO_KEYS",
+    choices: [config.text.left_button, config.text.right_button],
+    button_html: createDisabledButtonHtml,
+    response_ends_trial: false,
     trial_duration: config.interTrialInterval,
     data: {
       task: TASK_NAME,
