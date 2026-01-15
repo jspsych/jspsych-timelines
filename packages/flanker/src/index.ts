@@ -86,7 +86,7 @@ const VERSION = "0.0.1";
 
 const LEFT_ARROW_SVG = `<svg xmlns="http://www.w3.org/2000/svg" height="48" width="48" viewBox="0 0 48 48"><path fill="black" d="M24 40 8 24 24 8l2.1 2.1-12.4 12.4H40v3H13.7l12.4 12.4Z"/></svg>`;
 const RIGHT_ARROW_SVG = `<svg xmlns="http://www.w3.org/2000/svg" height="48" width="48" viewBox="0 0 48 48"><path fill="black" d="m24 40-2.1-2.15L34.25 25.5H8v-3h26.25L21.9 10.15 24 8l16 16Z"/></svg>`;
-const NEUTRAL_STIMULUS = `<span style="display: inline-block; width: 48px; height: 48px; line-height: 48px; font-size: 36px; color: black;">—</span>`;
+const NEUTRAL_STIMULUS = `<svg xmlns="http://www.w3.org/2000/svg" height="48" width="48" viewBox="0 0 48 48"><rect fill="black" x="8" y="22.5" width="32" height="3"/></svg>`;
 
 // Button indices: 0 = left, 1 = right
 const LEFT_BUTTON_INDEX = 0;
