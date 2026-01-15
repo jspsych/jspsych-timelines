@@ -141,14 +141,6 @@ function generateDecksHtml(
   totalScore: number,
   trialNumber: number
 ): string {
-  const deckButtons = DECK_NAMES.map(
-    (name, index) => `
-    <div class="igt-deck" data-deck="${name}">
-      <span class="igt-deck-label">${config.text.deck_labels[index]}</span>
-    </div>
-  `
-  ).join("");
-
   const scoreClass = totalScore >= 0 ? "positive" : "negative";
   const loanDisplay = config.showLoan
     ? `<div class="igt-score-item">
@@ -161,9 +153,6 @@ function generateDecksHtml(
     <div class="igt-container">
       <div class="igt-trial-counter">
         ${config.text.trial_label(trialNumber, config.numTrials)}
-      </div>
-      <div class="igt-decks">
-        ${deckButtons}
       </div>
       <p class="igt-prompt">${config.text.select_deck_prompt}</p>
       <div class="igt-score-display">
@@ -220,7 +209,7 @@ function createInstructionTrials(config: ResolvedConfig) {
     button_label_previous: "Back",
     data: {
       task: TASK_NAME,
-      trial_type: "instruction",
+      trial_part: "instruction",
     },
   };
 }
@@ -261,7 +250,7 @@ function createTrialBlock(jsPsych: JsPsych, config: ResolvedConfig) {
       task_version: VERSION,
       trial_number: state.trialNumber + 1,
       block: Math.floor(state.trialNumber / 20) + 1,
-      trial_type: "selection",
+      trial_part: "selection",
     }),
     on_finish: (data: any) => {
       const deckIndex = data.response;
@@ -306,7 +295,7 @@ function createTrialBlock(jsPsych: JsPsych, config: ResolvedConfig) {
     },
     data: {
       task: TASK_NAME,
-      trial_type: "feedback",
+      trial_part: "feedback",
     },
   });
 
@@ -318,7 +307,7 @@ function createTrialBlock(jsPsych: JsPsych, config: ResolvedConfig) {
     trial_duration: config.interTrialInterval,
     data: {
       task: TASK_NAME,
-      trial_type: "iti",
+      trial_part: "iti",
     },
     on_finish: () => {
       state.trialNumber++;
@@ -340,7 +329,7 @@ function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
   return {
     type: jsPsychHtmlButtonResponse,
     stimulus: () => {
-      const data = jsPsych.data.get().filter({ task: TASK_NAME, trial_type: "selection" });
+      const data = jsPsych.data.get().filter({ task: TASK_NAME, trial_part: "selection" });
       const lastTrial = data.last(1).values()[0];
       const finalScore = lastTrial ? lastTrial.total_score : config.startingLoan;
 
@@ -356,7 +345,7 @@ function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
     choices: [config.text.continue_button],
     data: {
       task: TASK_NAME,
-      trial_type: "completion",
+      trial_part: "completion",
     },
   };
 }
@@ -368,7 +357,7 @@ function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
  */
 function calculateScores(data: DataCollection, startingLoan: number = 2000): ScoringResult {
   const trials = data
-    .filter({ task: TASK_NAME, trial_type: "selection" })
+    .filter({ task: TASK_NAME, trial_part: "selection" })
     .values() as TrialData[];
 
   if (trials.length === 0) {

@@ -216,7 +216,7 @@ function createInstructionTrials(config: ResolvedConfig) {
     button_label_previous: "Back",
     data: {
       task: TASK_NAME,
-      trial_type: "instruction",
+      trial_part: "instruction",
     },
   };
 }
@@ -242,7 +242,7 @@ function createMathTrial(
     trial_duration: config.mathTimeout,
     data: {
       task: TASK_NAME,
-      trial_type: "math",
+      trial_part: "math",
     },
     on_finish: (data: any) => {
       const response = data.response === null ? null : data.response === 0;
@@ -290,7 +290,7 @@ function createMathFeedbackTrial(
     trial_duration: config.mathFeedbackDuration,
     data: {
       task: TASK_NAME,
-      trial_type: "math_feedback",
+      trial_part: "math_feedback",
     },
   };
 }
@@ -310,7 +310,7 @@ function createLetterTrial(config: ResolvedConfig, letter: string) {
     trial_duration: config.letterDuration,
     data: {
       task: TASK_NAME,
-      trial_type: "letter",
+      trial_part: "letter",
       letter: letter,
     },
   };
@@ -327,7 +327,7 @@ function createIsiTrial(config: ResolvedConfig) {
     trial_duration: config.isi,
     data: {
       task: TASK_NAME,
-      trial_type: "isi",
+      trial_part: "isi",
     },
   };
 }
@@ -355,7 +355,7 @@ function createRecallTrial(
     data: {
       task: TASK_NAME,
       task_version: VERSION,
-      trial_type: "recall",
+      trial_part: "recall",
       trial_number: trialNumber,
       set_size: targetLetters.length,
       target_letters: targetLetters,
@@ -443,7 +443,7 @@ function createRecallFeedbackTrial(jsPsych: JsPsych, config: ResolvedConfig) {
   return {
     type: jsPsychHtmlKeyboardResponse,
     stimulus: () => {
-      const lastTrial = jsPsych.data.get().filter({ trial_type: "recall" }).last(1).values()[0];
+      const lastTrial = jsPsych.data.get().filter({ trial_part: "recall" }).last(1).values()[0];
       const lettersCorrect = lastTrial?.letters_correct || 0;
       const totalLetters = lastTrial?.set_size || 0;
       const mathCorrect = lastTrial?.math_correct || 0;
@@ -464,7 +464,7 @@ function createRecallFeedbackTrial(jsPsych: JsPsych, config: ResolvedConfig) {
     trial_duration: config.recallFeedbackDuration,
     data: {
       task: TASK_NAME,
-      trial_type: "recall_feedback",
+      trial_part: "recall_feedback",
     },
   };
 }
@@ -497,7 +497,7 @@ function createOspanTrial(
     trial_duration: 1500,
     data: {
       task: TASK_NAME,
-      trial_type: "announcement",
+      trial_part: "announcement",
     },
   });
 
@@ -577,7 +577,7 @@ function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
     choices: [config.text.continue_button],
     data: {
       task: TASK_NAME,
-      trial_type: "completion",
+      trial_part: "completion",
     },
   };
 }
@@ -589,7 +589,7 @@ function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
  */
 function calculateScores(data: DataCollection): ScoringResult {
   const trials = data
-    .filter({ task: TASK_NAME, trial_type: "recall" })
+    .filter({ task: TASK_NAME, trial_part: "recall" })
     .values() as TrialData[];
 
   if (trials.length === 0) {

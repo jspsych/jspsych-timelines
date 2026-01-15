@@ -176,7 +176,7 @@ function createInstructionTrials(
     choices: [buttonLabel],
     data: {
       task: TASK_NAME,
-      trial_type: "instruction",
+      trial_part: "instruction",
     },
   });
 
@@ -203,7 +203,7 @@ function createStudyTrial(
     data: {
       task: TASK_NAME,
       task_version: VERSION,
-      trial_type: "study",
+      trial_part: "study",
       phase: "study",
       round: round,
       trial_index: trialIndex,
@@ -220,7 +220,7 @@ function createStudyTrial(
     trial_duration: config.isi,
     data: {
       task: TASK_NAME,
-      trial_type: "isi",
+      trial_part: "isi",
     },
   });
 
@@ -250,7 +250,7 @@ function createTestTrial(
     data: {
       task: TASK_NAME,
       task_version: VERSION,
-      trial_type: "response",
+      trial_part: "response",
       phase: "test",
       round: round,
       trial_index: trialIndex,
@@ -282,7 +282,7 @@ function createTestTrial(
       trial_duration: config.feedbackDuration,
       data: {
         task: TASK_NAME,
-        trial_type: "feedback",
+        trial_part: "feedback",
       },
     });
   }
@@ -299,7 +299,7 @@ function createRoundSummary(jsPsych: JsPsych, config: ResolvedConfig, round: num
     stimulus: () => {
       const roundTrials = jsPsych.data
         .get()
-        .filter({ task: TASK_NAME, phase: "test", round: round, trial_type: "response" })
+        .filter({ task: TASK_NAME, phase: "test", round: round, trial_part: "response" })
         .values();
 
       const correct = roundTrials.filter((t: any) => t.correct).length;
@@ -310,7 +310,7 @@ function createRoundSummary(jsPsych: JsPsych, config: ResolvedConfig, round: num
     choices: [config.text.continue_button],
     data: {
       task: TASK_NAME,
-      trial_type: "round_summary",
+      trial_part: "round_summary",
       round: round,
     },
   };
@@ -378,7 +378,7 @@ function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
     data: {
       task: TASK_NAME,
       task_version: VERSION,
-      trial_type: "completion",
+      trial_part: "completion",
     },
   };
 }
@@ -390,7 +390,7 @@ function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
  */
 function calculateScores(data: DataCollection): ScoringResult {
   const testTrials = data
-    .filter({ task: TASK_NAME, phase: "test", trial_type: "response" })
+    .filter({ task: TASK_NAME, phase: "test", trial_part: "response" })
     .values() as TrialData[];
 
   if (testTrials.length === 0) {
@@ -539,7 +539,7 @@ export function createTimeline(
           conditional_function: () => {
             const roundTrials = jsPsych.data
               .get()
-              .filter({ task: TASK_NAME, phase: "test", round: round, trial_type: "response" })
+              .filter({ task: TASK_NAME, phase: "test", round: round, trial_part: "response" })
               .values();
             const allCorrect = roundTrials.every((t: any) => t.correct);
             return !allCorrect; // Continue if not all correct

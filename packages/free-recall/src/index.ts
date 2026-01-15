@@ -27,7 +27,7 @@ export interface FreeRecallOptions {
 export interface TrialData {
   task: string;
   task_version: string;
-  trial_type: string;
+  trial_part: string;
   word?: string;
   word_index?: number;
   response?: string;
@@ -162,7 +162,7 @@ function createInstructionTrials(
     choices: [buttonLabel],
     data: {
       task: TASK_NAME,
-      trial_type: "instruction",
+      trial_part: "instruction",
     },
   };
 }
@@ -191,7 +191,7 @@ function createStudyTrial(
     data: {
       task: TASK_NAME,
       task_version: VERSION,
-      trial_type: "study",
+      trial_part: "study",
       word: word,
       word_index: wordIndex,
     },
@@ -205,7 +205,7 @@ function createStudyTrial(
     trial_duration: config.isi,
     data: {
       task: TASK_NAME,
-      trial_type: "isi",
+      trial_part: "isi",
     },
   });
 
@@ -243,7 +243,7 @@ function createRecallPhase(jsPsych: JsPsych, config: ResolvedConfig, words: stri
     trial_duration: config.recallDelay,
     data: {
       task: TASK_NAME,
-      trial_type: "recall_delay",
+      trial_part: "recall_delay",
     },
   });
 
@@ -264,7 +264,7 @@ function createRecallPhase(jsPsych: JsPsych, config: ResolvedConfig, words: stri
         data: {
           task: TASK_NAME,
           task_version: VERSION,
-          trial_type: "recall",
+          trial_part: "recall",
         },
         on_finish: (data: any) => {
           recallIndex++;
@@ -308,7 +308,7 @@ function createRecallPhase(jsPsych: JsPsych, config: ResolvedConfig, words: stri
     choices: [config.text.done_button],
     data: {
       task: TASK_NAME,
-      trial_type: "recall_end",
+      trial_part: "recall_end",
     },
     // This trial is shown when the loop exits (empty response)
   });
@@ -341,7 +341,7 @@ function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
     data: {
       task: TASK_NAME,
       task_version: VERSION,
-      trial_type: "completion",
+      trial_part: "completion",
     },
   };
 }
@@ -353,13 +353,13 @@ function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
  */
 function calculateScores(data: DataCollection, wordList?: string[]): ScoringResult {
   const recallTrials = data
-    .filter({ task: TASK_NAME, trial_type: "recall" })
+    .filter({ task: TASK_NAME, trial_part: "recall" })
     .values() as TrialData[];
 
   // Get word list from study trials if not provided
   if (!wordList) {
     const studyTrials = data
-      .filter({ task: TASK_NAME, trial_type: "study" })
+      .filter({ task: TASK_NAME, trial_part: "study" })
       .values() as TrialData[];
     wordList = studyTrials.map((t) => t.word || "");
   }

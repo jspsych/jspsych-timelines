@@ -259,7 +259,7 @@ function createInstructionTrials(
     choices: [buttonLabel],
     data: {
       task: TASK_NAME,
-      trial_type: "instruction",
+      trial_part: "instruction",
     },
   });
 
@@ -292,7 +292,7 @@ function createGlobalLocalTrial(
     trial_duration: config.fixationDuration,
     data: {
       task: TASK_NAME,
-      trial_type: "fixation",
+      trial_part: "fixation",
     },
   });
 
@@ -321,7 +321,7 @@ function createGlobalLocalTrial(
     data: {
       task: TASK_NAME,
       task_version: VERSION,
-      trial_type: "response",
+      trial_part: "response",
       phase: phase,
       block: block,
       trial_index: trialIndex,
@@ -369,7 +369,7 @@ function createGlobalLocalTrial(
       trial_duration: config.feedbackDuration,
       data: {
         task: TASK_NAME,
-        trial_type: "feedback",
+        trial_part: "feedback",
       },
     });
   }
@@ -436,7 +436,7 @@ function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
     data: {
       task: TASK_NAME,
       task_version: VERSION,
-      trial_type: "completion",
+      trial_part: "completion",
     },
   };
 }
@@ -448,7 +448,7 @@ function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
  */
 function calculateScores(data: DataCollection): ScoringResult {
   const testTrials = data
-    .filter({ task: TASK_NAME, phase: "test", trial_type: "response" })
+    .filter({ task: TASK_NAME, phase: "test", trial_part: "response" })
     .values() as TrialData[];
 
   if (testTrials.length === 0) {

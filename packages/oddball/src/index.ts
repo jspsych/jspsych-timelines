@@ -37,7 +37,7 @@ export interface OddballOptions {
 export interface TrialData {
   task: string;
   task_version: string;
-  trial_type: string;
+  trial_part: string;
   trial_index: number;
   stimulus_type: "standard" | "target";
   responded: boolean;
@@ -295,7 +295,7 @@ function createInstructionTrials(
     choices: [buttonLabel],
     data: {
       task: TASK_NAME,
-      trial_type: "instruction",
+      trial_part: "instruction",
     },
   };
 }
@@ -322,7 +322,7 @@ function createOddballTrial(
     trial_duration: config.isi,
     data: {
       task: TASK_NAME,
-      trial_type: "fixation",
+      trial_part: "fixation",
     },
   });
 
@@ -340,7 +340,7 @@ function createOddballTrial(
     data: {
       task: TASK_NAME,
       task_version: VERSION,
-      trial_type: isPractice ? "practice" : "response",
+      trial_part: isPractice ? "practice" : "response",
       trial_index: trialIndex,
       stimulus_type: stimulusType,
     },
@@ -380,7 +380,7 @@ function createOddballTrial(
       trial_duration: config.feedbackDuration,
       data: {
         task: TASK_NAME,
-        trial_type: "feedback",
+        trial_part: "feedback",
       },
     });
   }
@@ -434,7 +434,7 @@ function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
     data: {
       task: TASK_NAME,
       task_version: VERSION,
-      trial_type: "completion",
+      trial_part: "completion",
     },
   };
 }
@@ -446,7 +446,7 @@ function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
  */
 function calculateScores(data: DataCollection): ScoringResult {
   const responseTrials = data
-    .filter({ task: TASK_NAME, trial_type: "response" })
+    .filter({ task: TASK_NAME, trial_part: "response" })
     .values() as TrialData[];
 
   if (responseTrials.length === 0) {

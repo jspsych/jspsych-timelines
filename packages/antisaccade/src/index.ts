@@ -41,7 +41,7 @@ export interface AntisaccadeOptions {
 export interface TrialData {
   task: string;
   task_version: string;
-  trial_type: string;
+  trial_part: string;
   trial_index: number;
   block_type: "prosaccade" | "antisaccade";
   cue_side: "left" | "right";
@@ -224,7 +224,7 @@ function createInstructionTrials(
     choices: [buttonLabel],
     data: {
       task: TASK_NAME,
-      trial_type: "instruction",
+      trial_part: "instruction",
     },
   };
 }
@@ -252,7 +252,7 @@ function createAntisaccadeTrial(
     trial_duration: config.fixationDuration,
     data: {
       task: TASK_NAME,
-      trial_type: "fixation",
+      trial_part: "fixation",
     },
   });
 
@@ -267,7 +267,7 @@ function createAntisaccadeTrial(
       trial_duration: config.gapDuration,
       data: {
         task: TASK_NAME,
-        trial_type: "gap",
+        trial_part: "gap",
       },
     });
   }
@@ -283,7 +283,7 @@ function createAntisaccadeTrial(
     trial_duration: config.cueDuration,
     data: {
       task: TASK_NAME,
-      trial_type: "cue",
+      trial_part: "cue",
     },
   });
 
@@ -300,7 +300,7 @@ function createAntisaccadeTrial(
     data: {
       task: TASK_NAME,
       task_version: VERSION,
-      trial_type: isPractice ? "practice" : "response",
+      trial_part: isPractice ? "practice" : "response",
       trial_index: trialIndex,
       block_type: blockType,
       cue_side: cueSide,
@@ -342,7 +342,7 @@ function createAntisaccadeTrial(
       trial_duration: config.feedbackDuration,
       data: {
         task: TASK_NAME,
-        trial_type: "feedback",
+        trial_part: "feedback",
       },
     });
   }
@@ -357,7 +357,7 @@ function createAntisaccadeTrial(
     trial_duration: config.iti,
     data: {
       task: TASK_NAME,
-      trial_type: "iti",
+      trial_part: "iti",
     },
   });
 
@@ -419,7 +419,7 @@ function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
     data: {
       task: TASK_NAME,
       task_version: VERSION,
-      trial_type: "completion",
+      trial_part: "completion",
     },
   };
 }
@@ -431,7 +431,7 @@ function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
  */
 function calculateScores(data: DataCollection): ScoringResult {
   const responseTrials = data
-    .filter({ task: TASK_NAME, trial_type: "response" })
+    .filter({ task: TASK_NAME, trial_part: "response" })
     .values() as TrialData[];
 
   if (responseTrials.length === 0) {

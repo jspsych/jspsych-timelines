@@ -204,7 +204,7 @@ function createInstructionTrials(
     choices: [buttonLabel],
     data: {
       task: TASK_NAME,
-      trial_type: "instruction",
+      trial_part: "instruction",
     },
   });
 
@@ -238,7 +238,7 @@ function createArithmeticTrial(
     data: {
       task: TASK_NAME,
       task_version: VERSION,
-      trial_type: "response",
+      trial_part: "response",
       phase: phase,
       block: block,
       trial_index: trialIndex,
@@ -299,7 +299,7 @@ function createArithmeticTrial(
       trial_duration: config.feedbackDuration,
       data: {
         task: TASK_NAME,
-        trial_type: "feedback",
+        trial_part: "feedback",
       },
     });
   }
@@ -366,7 +366,7 @@ function createBlockSummary(jsPsych: JsPsych, config: ResolvedConfig, blockType:
     stimulus: () => {
       const blockTrials = jsPsych.data
         .get()
-        .filter({ task: TASK_NAME, phase: "test", block: blockType, trial_type: "response" })
+        .filter({ task: TASK_NAME, phase: "test", block: blockType, trial_part: "response" })
         .values();
 
       const totalTime = blockTrials.reduce((sum: number, t: any) => sum + t.rt, 0);
@@ -376,7 +376,7 @@ function createBlockSummary(jsPsych: JsPsych, config: ResolvedConfig, blockType:
     choices: [config.text.continue_button],
     data: {
       task: TASK_NAME,
-      trial_type: "block_summary",
+      trial_part: "block_summary",
       block: blockType,
     },
   };
@@ -407,7 +407,7 @@ function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
     data: {
       task: TASK_NAME,
       task_version: VERSION,
-      trial_type: "completion",
+      trial_part: "completion",
     },
   };
 }
@@ -420,7 +420,7 @@ function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
 function calculateScores(data: DataCollection): ScoringResult {
   const getBlockData = (block: "add" | "subtract" | "alternate"): BlockData => {
     const trials = data
-      .filter({ task: TASK_NAME, phase: "test", block: block, trial_type: "response" })
+      .filter({ task: TASK_NAME, phase: "test", block: block, trial_part: "response" })
       .values() as TrialData[];
 
     const totalTime = trials.reduce((sum, t) => sum + t.rt, 0);
@@ -445,7 +445,7 @@ function calculateScores(data: DataCollection): ScoringResult {
   const switchCost = alternateData.total_time - avgSingleTaskTime;
 
   const allTrials = data
-    .filter({ task: TASK_NAME, phase: "test", trial_type: "response" })
+    .filter({ task: TASK_NAME, phase: "test", trial_part: "response" })
     .values() as TrialData[];
   const overallAccuracy = allTrials.length > 0
     ? (allTrials.filter((t) => t.correct).length / allTrials.length) * 100

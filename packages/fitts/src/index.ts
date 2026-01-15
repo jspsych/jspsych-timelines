@@ -39,7 +39,7 @@ export interface FittsOptions {
 export interface TrialData {
   task: string;
   task_version: string;
-  trial_type: string;
+  trial_part: string;
   condition_index: number;
   target_width: number;
   target_distance: number;
@@ -215,7 +215,7 @@ function createInstructionTrials(
     choices: [buttonLabel],
     data: {
       task: TASK_NAME,
-      trial_type: "instruction",
+      trial_part: "instruction",
     },
   };
 }
@@ -241,7 +241,7 @@ function createFittsTrial(
     data: {
       task: TASK_NAME,
       task_version: VERSION,
-      trial_type: isPractice ? "practice" : "response",
+      trial_part: isPractice ? "practice" : "response",
       condition_index: conditionIndex,
       target_width: condition.width,
       target_distance: condition.distance,
@@ -367,7 +367,7 @@ function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
     data: {
       task: TASK_NAME,
       task_version: VERSION,
-      trial_type: "completion",
+      trial_part: "completion",
     },
   };
 }
@@ -379,7 +379,7 @@ function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
  */
 function calculateScores(data: DataCollection): ScoringResult {
   const responseTrials = data
-    .filter({ task: TASK_NAME, trial_type: "response" })
+    .filter({ task: TASK_NAME, trial_part: "response" })
     .values() as TrialData[];
 
   if (responseTrials.length === 0) {

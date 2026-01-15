@@ -8,12 +8,8 @@ import { defaultText, TextConfig } from "./text";
 export interface ChoiceRTOptions {
   /** Show built-in instruction screens (default: true) */
   showInstructions?: boolean;
-  /** Include simple RT block (default: true) */
-  includeSimpleRT?: boolean;
-  /** Include choice RT block (default: true) */
-  includeChoiceRT?: boolean;
-  /** Number of trials per block (default: 20) */
-  trialsPerBlock?: number;
+  /** Number of trials (default: 20) */
+  numTrials?: number;
   /** Minimum foreperiod (warning to stimulus) in ms (default: 500) */
   foreperiodMin?: number;
   /** Maximum foreperiod in ms (default: 1500) */
@@ -30,12 +26,12 @@ export interface ChoiceRTOptions {
   numPracticeTrials?: number;
   /** Feedback duration during practice in ms (default: 1000) */
   feedbackDuration?: number;
-  /** Stimulus color (default: "#4A90D9" - blue) */
-  stimulusColor?: string;
+  /** Stimulus color 1 - mapped to button 1 (default: "#4A90D9" - blue) */
+  stimulusColor1?: string;
+  /** Stimulus color 2 - mapped to button 2 (default: "#E8913A" - orange) */
+  stimulusColor2?: string;
   /** Stimulus size in pixels (default: 60) */
   stimulusSize?: number;
-  /** Stimulus offset from center for choice RT in pixels (default: 150) */
-  stimulusOffset?: number;
   /** Custom text strings for translation */
   text?: Partial<TextConfig>;
 }
@@ -43,48 +39,39 @@ export interface ChoiceRTOptions {
 export interface TrialData {
   task: string;
   task_version: string;
-  trial_type: string;
-  block_type: "simple" | "choice";
+  trial_part: string;
   trial_index: number;
   foreperiod: number;
-  stimulus_side?: "left" | "right" | "center";
-  response?: "left" | "right" | "center" | null;
+  stimulus: 1 | 2;
+  response: 1 | 2 | null;
   correct: boolean;
   anticipated: boolean;
   rt: number | null;
 }
 
 export interface ScoringResult {
-  /** Average RT for valid simple RT trials */
-  simpleRT: number | null;
-  /** Average RT for correct choice RT trials */
-  choiceRT: number | null;
-  /** RT difference (choice - simple) */
-  choiceCost: number | null;
-  /** Simple RT accuracy (non-anticipated, non-timeout) */
-  simpleAccuracy: number;
-  /** Choice RT accuracy */
-  choiceAccuracy: number;
-  /** Total simple RT trials */
-  simpleTrials: number;
-  /** Total choice RT trials */
-  choiceTrials: number;
-  /** Number of anticipated responses in simple RT */
+  /** Average RT for correct trials */
+  meanRT: number | null;
+  /** Standard deviation of RT for correct trials */
+  rtStd: number | null;
+  /** Accuracy (percentage of correct, non-anticipated responses) */
+  accuracy: number;
+  /** Total number of trials */
+  totalTrials: number;
+  /** Number of correct trials */
+  correctTrials: number;
+  /** Number of incorrect trials */
+  incorrectTrials: number;
+  /** Number of anticipated responses */
   anticipatedResponses: number;
   /** Number of timeout responses */
   timeoutResponses: number;
-  /** Standard deviation of simple RT */
-  simpleRTStd: number | null;
-  /** Standard deviation of choice RT */
-  choiceRTStd: number | null;
 }
 
 // Internal config type with text resolved
 interface ResolvedConfig {
   showInstructions: boolean;
-  includeSimpleRT: boolean;
-  includeChoiceRT: boolean;
-  trialsPerBlock: number;
+  numTrials: number;
   foreperiodMin: number;
   foreperiodMax: number;
   responseTimeout: number;
@@ -93,9 +80,9 @@ interface ResolvedConfig {
   showPractice: boolean;
   numPracticeTrials: number;
   feedbackDuration: number;
-  stimulusColor: string;
+  stimulusColor1: string;
+  stimulusColor2: string;
   stimulusSize: number;
-  stimulusOffset: number;
   text: TextConfig;
 }
 
@@ -106,9 +93,7 @@ const VERSION = "0.0.1";
 
 const DEFAULT_OPTIONS = {
   showInstructions: true,
-  includeSimpleRT: true,
-  includeChoiceRT: true,
-  trialsPerBlock: 20,
+  numTrials: 20,
   foreperiodMin: 500,
   foreperiodMax: 1500,
   responseTimeout: 1500,
@@ -117,9 +102,9 @@ const DEFAULT_OPTIONS = {
   showPractice: true,
   numPracticeTrials: 5,
   feedbackDuration: 1000,
-  stimulusColor: "#4A90D9",
+  stimulusColor1: "#4A90D9",
+  stimulusColor2: "#E8913A",
   stimulusSize: 60,
-  stimulusOffset: 150,
 };
 
 // -- UTILITY FUNCTIONS --
@@ -142,11 +127,11 @@ function generateForeperiod(min: number, max: number): number {
 /**
  * Generates balanced trial sequence for choice RT.
  */
-function generateChoiceSequence(numTrials: number): Array<"left" | "right"> {
+function generateStimulusSequence(numTrials: number): Array<1 | 2> {
   const half = Math.floor(numTrials / 2);
-  const sequence: Array<"left" | "right"> = [
-    ...Array(half).fill("left"),
-    ...Array(numTrials - half).fill("right"),
+  const sequence: Array<1 | 2> = [
+    ...Array(half).fill(1),
+    ...Array(numTrials - half).fill(2),
   ];
   // Shuffle
   for (let i = sequence.length - 1; i > 0; i--) {
@@ -159,19 +144,7 @@ function generateChoiceSequence(numTrials: number): Array<"left" | "right"> {
 /**
  * Creates HTML for the stimulus circle.
  */
-function createStimulusHTML(
-  color: string,
-  size: number,
-  side: "left" | "right" | "center",
-  offset: number
-): string {
-  let position = "margin: 0 auto;";
-  if (side === "left") {
-    position = `margin-right: ${offset * 2}px;`;
-  } else if (side === "right") {
-    position = `margin-left: ${offset * 2}px;`;
-  }
-
+function createStimulusHTML(color: string, size: number): string {
   return `
     <div class="trial-content">
       <div style="
@@ -179,7 +152,6 @@ function createStimulusHTML(
         height: ${size}px;
         border-radius: 50%;
         background-color: ${color};
-        ${position}
       "></div>
     </div>
   `;
@@ -210,7 +182,7 @@ function calculateStd(values: number[]): number | null {
  */
 function createInstructionTrials(
   config: ResolvedConfig,
-  part: "intro" | "simple" | "choice" | "practice"
+  part: "intro" | "task" | "practice"
 ) {
   let stimulus: string;
   let buttonLabel: string;
@@ -220,12 +192,8 @@ function createInstructionTrials(
       stimulus = config.text.instruction_intro;
       buttonLabel = config.text.continue_button;
       break;
-    case "simple":
-      stimulus = config.text.instruction_simple;
-      buttonLabel = config.text.start_button;
-      break;
-    case "choice":
-      stimulus = config.text.instruction_choice;
+    case "task":
+      stimulus = config.text.instruction_task;
       buttonLabel = config.text.start_button;
       break;
     case "practice":
@@ -243,137 +211,9 @@ function createInstructionTrials(
     choices: [buttonLabel],
     data: {
       task: TASK_NAME,
-      trial_type: "instruction",
+      trial_part: "instruction",
     },
   };
-}
-
-/**
- * Creates a simple RT trial.
- */
-function createSimpleRTTrial(
-  jsPsych: JsPsych,
-  config: ResolvedConfig,
-  trialIndex: number,
-  isPractice: boolean
-) {
-  const foreperiod = generateForeperiod(config.foreperiodMin, config.foreperiodMax);
-  const timeline: any[] = [];
-
-  // Fixation / foreperiod
-  timeline.push({
-    type: jsPsychHtmlButtonResponse,
-    stimulus: createFixationHTML(),
-    choices: [config.text.respond_button],
-    trial_duration: foreperiod,
-    response_ends_trial: true,
-    data: {
-      task: TASK_NAME,
-      trial_type: "foreperiod",
-      foreperiod: foreperiod,
-    },
-    on_finish: (data: any) => {
-      // If they responded during foreperiod, it's anticipated
-      if (data.response !== null) {
-        jsPsych.data.get().addToLast({
-          anticipated: true,
-        });
-      }
-    },
-  });
-
-  // Check if anticipated and skip stimulus if so
-  const stimulusTrial = {
-    timeline: [
-      {
-        type: jsPsychHtmlButtonResponse,
-        stimulus: createStimulusHTML(
-          config.stimulusColor,
-          config.stimulusSize,
-          "center",
-          config.stimulusOffset
-        ),
-        choices: [config.text.respond_button],
-        trial_duration: config.responseTimeout,
-        response_ends_trial: true,
-        data: {
-          task: TASK_NAME,
-          task_version: VERSION,
-          trial_type: isPractice ? "practice" : "response",
-          block_type: "simple",
-          trial_index: trialIndex,
-          foreperiod: foreperiod,
-          stimulus_side: "center",
-        },
-        on_finish: (data: any) => {
-          const responded = data.response !== null;
-          const anticipated = data.rt !== null && data.rt < config.minValidRT;
-          const correct = responded && !anticipated;
-
-          jsPsych.data.get().addToLast({
-            response: responded ? "center" : null,
-            correct: correct,
-            anticipated: anticipated,
-          });
-        },
-      },
-    ],
-    conditional_function: () => {
-      // Only show stimulus if they didn't anticipate during foreperiod
-      const lastTrial = jsPsych.data.getLastTrialData().values()[0];
-      return !lastTrial.anticipated;
-    },
-  };
-  timeline.push(stimulusTrial);
-
-  // Feedback (practice only)
-  if (isPractice) {
-    timeline.push({
-      type: jsPsychHtmlButtonResponse,
-      stimulus: () => {
-        const trials = jsPsych.data.get().last(2).values();
-        const foreperiodTrial = trials.find((t: any) => t.trial_type === "foreperiod");
-        const responseTrial = trials.find(
-          (t: any) => t.trial_type === "practice" || t.trial_type === "response"
-        );
-
-        if (foreperiodTrial?.anticipated) {
-          return `<div class="trial-content"><p class="feedback incorrect">${config.text.feedback_anticipated}</p></div>`;
-        }
-        if (!responseTrial || responseTrial.response === null) {
-          return `<div class="trial-content"><p class="feedback timeout">${config.text.feedback_timeout}</p></div>`;
-        }
-        if (responseTrial.anticipated) {
-          return `<div class="trial-content"><p class="feedback incorrect">${config.text.feedback_anticipated}</p></div>`;
-        }
-        return `<div class="trial-content"><p class="feedback correct">${config.text.feedback_correct}</p></div>`;
-      },
-      choices: [config.text.respond_button],
-      button_html: createDisabledButtonHtml,
-      response_ends_trial: false,
-      trial_duration: config.feedbackDuration,
-      data: {
-        task: TASK_NAME,
-        trial_type: "feedback",
-      },
-    });
-  }
-
-  // ITI
-  timeline.push({
-    type: jsPsychHtmlButtonResponse,
-    stimulus: `<div class="trial-content"></div>`,
-    choices: [config.text.respond_button],
-    button_html: createDisabledButtonHtml,
-    response_ends_trial: false,
-    trial_duration: config.iti,
-    data: {
-      task: TASK_NAME,
-      trial_type: "iti",
-    },
-  });
-
-  return { timeline };
 }
 
 /**
@@ -382,24 +222,25 @@ function createSimpleRTTrial(
 function createChoiceRTTrial(
   jsPsych: JsPsych,
   config: ResolvedConfig,
-  stimulusSide: "left" | "right",
+  stimulusType: 1 | 2,
   trialIndex: number,
   isPractice: boolean
 ) {
   const foreperiod = generateForeperiod(config.foreperiodMin, config.foreperiodMax);
+  const stimulusColor = stimulusType === 1 ? config.stimulusColor1 : config.stimulusColor2;
   const timeline: any[] = [];
 
-  // Fixation / foreperiod
+  // Fixation / foreperiod - buttons are disabled
   timeline.push({
     type: jsPsychHtmlButtonResponse,
     stimulus: createFixationHTML(),
-    choices: [config.text.left_button, config.text.right_button],
+    choices: [config.text.button_1, config.text.button_2],
     button_html: createDisabledButtonHtml,
     response_ends_trial: false,
     trial_duration: foreperiod,
     data: {
       task: TASK_NAME,
-      trial_type: "foreperiod",
+      trial_part: "foreperiod",
       foreperiod: foreperiod,
     },
   });
@@ -407,36 +248,30 @@ function createChoiceRTTrial(
   // Stimulus with choice
   timeline.push({
     type: jsPsychHtmlButtonResponse,
-    stimulus: createStimulusHTML(
-      config.stimulusColor,
-      config.stimulusSize,
-      stimulusSide,
-      config.stimulusOffset
-    ),
-    choices: [config.text.left_button, config.text.right_button],
+    stimulus: createStimulusHTML(stimulusColor, config.stimulusSize),
+    choices: [config.text.button_1, config.text.button_2],
     trial_duration: config.responseTimeout,
     response_ends_trial: true,
     button_html: (choice: string) => {
-      return `<button class="jspsych-btn" style="margin: 0 50px;">${choice}</button>`;
+      return `<button class="jspsych-btn" style="margin: 0 20px;">${choice}</button>`;
     },
     data: {
       task: TASK_NAME,
       task_version: VERSION,
-      trial_type: isPractice ? "practice" : "response",
-      block_type: "choice",
+      trial_part: isPractice ? "practice" : "response",
       trial_index: trialIndex,
       foreperiod: foreperiod,
-      stimulus_side: stimulusSide,
+      stimulus: stimulusType,
     },
     on_finish: (data: any) => {
-      let response: "left" | "right" | null = null;
+      let response: 1 | 2 | null = null;
       if (data.response === 0) {
-        response = "left";
+        response = 1;
       } else if (data.response === 1) {
-        response = "right";
+        response = 2;
       }
 
-      const correct = response === stimulusSide;
+      const correct = response === stimulusType;
       const anticipated = data.rt !== null && data.rt < config.minValidRT;
 
       jsPsych.data.get().addToLast({
@@ -463,13 +298,13 @@ function createChoiceRTTrial(
           ? `<div class="trial-content"><p class="feedback correct">${config.text.feedback_correct}</p></div>`
           : `<div class="trial-content"><p class="feedback incorrect">${config.text.feedback_incorrect}</p></div>`;
       },
-      choices: [config.text.left_button, config.text.right_button],
+      choices: [config.text.button_1, config.text.button_2],
       button_html: createDisabledButtonHtml,
       response_ends_trial: false,
       trial_duration: config.feedbackDuration,
       data: {
         task: TASK_NAME,
-        trial_type: "feedback",
+        trial_part: "feedback",
       },
     });
   }
@@ -478,13 +313,13 @@ function createChoiceRTTrial(
   timeline.push({
     type: jsPsychHtmlButtonResponse,
     stimulus: `<div class="trial-content"></div>`,
-    choices: [config.text.left_button, config.text.right_button],
+    choices: [config.text.button_1, config.text.button_2],
     button_html: createDisabledButtonHtml,
     response_ends_trial: false,
     trial_duration: config.iti,
     data: {
       task: TASK_NAME,
-      trial_type: "iti",
+      trial_part: "iti",
     },
   });
 
@@ -492,37 +327,19 @@ function createChoiceRTTrial(
 }
 
 /**
- * Creates a block of simple RT trials.
- */
-function createSimpleRTBlock(
-  jsPsych: JsPsych,
-  config: ResolvedConfig,
-  numTrials: number,
-  isPractice: boolean
-) {
-  const timeline: any[] = [];
-
-  for (let i = 0; i < numTrials; i++) {
-    timeline.push(createSimpleRTTrial(jsPsych, config, i + 1, isPractice));
-  }
-
-  return { timeline };
-}
-
-/**
  * Creates a block of choice RT trials.
  */
-function createChoiceRTBlock(
+function createTrialBlock(
   jsPsych: JsPsych,
   config: ResolvedConfig,
   numTrials: number,
   isPractice: boolean
 ) {
-  const sequence = generateChoiceSequence(numTrials);
+  const sequence = generateStimulusSequence(numTrials);
   const timeline: any[] = [];
 
-  sequence.forEach((side, index) => {
-    timeline.push(createChoiceRTTrial(jsPsych, config, side, index + 1, isPractice));
+  sequence.forEach((stimulusType, index) => {
+    timeline.push(createChoiceRTTrial(jsPsych, config, stimulusType, index + 1, isPractice));
   });
 
   return { timeline };
@@ -540,12 +357,7 @@ function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
 
       let html = `<div style="max-width: 600px; margin: 0 auto;">`;
       html += `<h2>${config.text.task_complete}</h2>`;
-      html += config.text.result_summary(
-        scores.simpleRT,
-        scores.choiceRT,
-        scores.simpleAccuracy,
-        scores.choiceAccuracy
-      );
+      html += config.text.result_summary(scores.meanRT, scores.accuracy);
       html += `</div>`;
       return html;
     },
@@ -553,7 +365,7 @@ function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
     data: {
       task: TASK_NAME,
       task_version: VERSION,
-      trial_type: "completion",
+      trial_part: "completion",
     },
   };
 }
@@ -565,81 +377,56 @@ function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
  */
 function calculateScores(data: DataCollection): ScoringResult {
   const responseTrials = data
-    .filter({ task: TASK_NAME, trial_type: "response" })
+    .filter({ task: TASK_NAME, trial_part: "response" })
     .values() as TrialData[];
 
   if (responseTrials.length === 0) {
     return {
-      simpleRT: null,
-      choiceRT: null,
-      choiceCost: null,
-      simpleAccuracy: 0,
-      choiceAccuracy: 0,
-      simpleTrials: 0,
-      choiceTrials: 0,
+      meanRT: null,
+      rtStd: null,
+      accuracy: 0,
+      totalTrials: 0,
+      correctTrials: 0,
+      incorrectTrials: 0,
       anticipatedResponses: 0,
       timeoutResponses: 0,
-      simpleRTStd: null,
-      choiceRTStd: null,
     };
   }
 
-  // Separate by block type
-  const simpleTrials = responseTrials.filter((t) => t.block_type === "simple");
-  const choiceTrials = responseTrials.filter((t) => t.block_type === "choice");
-
-  // Simple RT: valid = responded, not anticipated
-  const validSimpleTrials = simpleTrials.filter(
-    (t) => t.rt !== null && !t.anticipated
-  );
-  const simpleRTs = validSimpleTrials.map((t) => t.rt as number);
-  const simpleRT =
-    simpleRTs.length > 0
-      ? simpleRTs.reduce((a, b) => a + b, 0) / simpleRTs.length
-      : null;
-  const simpleRTStd = calculateStd(simpleRTs);
-
-  // Choice RT: correct responses
-  const correctChoiceTrials = choiceTrials.filter(
+  // Correct trials: correct and not anticipated
+  const correctTrials = responseTrials.filter(
     (t) => t.correct && t.rt !== null && !t.anticipated
   );
-  const choiceRTs = correctChoiceTrials.map((t) => t.rt as number);
-  const choiceRT =
-    choiceRTs.length > 0
-      ? choiceRTs.reduce((a, b) => a + b, 0) / choiceRTs.length
+  const correctRTs = correctTrials.map((t) => t.rt as number);
+
+  const meanRT =
+    correctRTs.length > 0
+      ? correctRTs.reduce((a, b) => a + b, 0) / correctRTs.length
       : null;
-  const choiceRTStd = calculateStd(choiceRTs);
+  const rtStd = calculateStd(correctRTs);
 
-  // Accuracy
-  const simpleAccuracy =
-    simpleTrials.length > 0
-      ? (validSimpleTrials.length / simpleTrials.length) * 100
-      : 0;
-  const choiceAccuracy =
-    choiceTrials.length > 0
-      ? (correctChoiceTrials.length / choiceTrials.length) * 100
+  // Accuracy: percentage of correct responses
+  const accuracy =
+    responseTrials.length > 0
+      ? (correctTrials.length / responseTrials.length) * 100
       : 0;
 
-  // Anticipated and timeout
+  // Incorrect, anticipated, and timeout counts
+  const incorrectTrials = responseTrials.filter(
+    (t) => !t.correct && t.rt !== null && !t.anticipated
+  ).length;
   const anticipatedResponses = responseTrials.filter((t) => t.anticipated).length;
   const timeoutResponses = responseTrials.filter((t) => t.rt === null).length;
 
-  // Choice cost
-  const choiceCost =
-    simpleRT !== null && choiceRT !== null ? choiceRT - simpleRT : null;
-
   return {
-    simpleRT,
-    choiceRT,
-    choiceCost,
-    simpleAccuracy,
-    choiceAccuracy,
-    simpleTrials: simpleTrials.length,
-    choiceTrials: choiceTrials.length,
+    meanRT,
+    rtStd,
+    accuracy,
+    totalTrials: responseTrials.length,
+    correctTrials: correctTrials.length,
+    incorrectTrials,
     anticipatedResponses,
     timeoutResponses,
-    simpleRTStd,
-    choiceRTStd,
   };
 }
 
@@ -670,8 +457,8 @@ function getSummary(
  * ```typescript
  * const jsPsych = initJsPsych();
  * const choiceRTTimeline = createTimeline(jsPsych, {
+ *   numTrials: 20,
  *   showInstructions: true,
- *   trialsPerBlock: 20,
  * });
  * jsPsych.run([choiceRTTimeline]);
  * ```
@@ -696,45 +483,19 @@ export function createTimeline(
     timeline.push(createInstructionTrials(config, "intro"));
   }
 
-  // Simple RT block
-  if (config.includeSimpleRT) {
+  // Practice
+  if (config.showPractice) {
     if (config.showInstructions) {
-      timeline.push(createInstructionTrials(config, "simple"));
+      timeline.push(createInstructionTrials(config, "practice"));
     }
-
-    if (config.showPractice) {
-      if (config.showInstructions) {
-        timeline.push(createInstructionTrials(config, "practice"));
-      }
-      timeline.push(
-        createSimpleRTBlock(jsPsych, config, config.numPracticeTrials, true)
-      );
-    }
-
-    timeline.push(
-      createSimpleRTBlock(jsPsych, config, config.trialsPerBlock, false)
-    );
+    timeline.push(createTrialBlock(jsPsych, config, config.numPracticeTrials, true));
   }
 
-  // Choice RT block
-  if (config.includeChoiceRT) {
-    if (config.showInstructions) {
-      timeline.push(createInstructionTrials(config, "choice"));
-    }
-
-    if (config.showPractice) {
-      if (config.showInstructions) {
-        timeline.push(createInstructionTrials(config, "practice"));
-      }
-      timeline.push(
-        createChoiceRTBlock(jsPsych, config, config.numPracticeTrials, true)
-      );
-    }
-
-    timeline.push(
-      createChoiceRTBlock(jsPsych, config, config.trialsPerBlock, false)
-    );
+  // Main task
+  if (config.showInstructions) {
+    timeline.push(createInstructionTrials(config, "task"));
   }
+  timeline.push(createTrialBlock(jsPsych, config, config.numTrials, false));
 
   // Completion screen
   timeline.push(createCompletionTrial(jsPsych, config));
@@ -747,13 +508,11 @@ export function createTimeline(
  */
 export const timelineUnits = {
   createInstructionTrials,
-  createSimpleRTTrial,
   createChoiceRTTrial,
-  createSimpleRTBlock,
-  createChoiceRTBlock,
+  createTrialBlock,
   createCompletionTrial,
   generateForeperiod,
-  generateChoiceSequence,
+  generateStimulusSequence,
   createStimulusHTML,
   createFixationHTML,
 };

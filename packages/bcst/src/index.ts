@@ -207,7 +207,7 @@ function createInstructionTrials(config: ResolvedConfig) {
     button_label_previous: "Back",
     data: {
       task: TASK_NAME,
-      trial_type: "instruction",
+      trial_part: "instruction",
     },
   };
 }
@@ -231,130 +231,13 @@ function createFeedbackTrial(jsPsych: JsPsych, config: ResolvedConfig) {
     trial_duration: config.feedbackDuration,
     data: {
       task: TASK_NAME,
-      trial_type: "feedback",
+      trial_part: "feedback",
     },
   };
 }
 
 /**
- * Creates a card sorting trial.
- */
-function createSortingTrial(
-  jsPsych: JsPsych,
-  config: ResolvedConfig,
-  state: {
-    currentRuleIndex: number;
-    previousRule: Rule | null;
-    consecutiveCorrect: number;
-    categoriesCompleted: number;
-    trialNumber: number;
-  },
-  stimulus: Card
-) {
-  const rules: Rule[] = ["color", "shape", "number"];
-  const currentRule = rules[state.currentRuleIndex];
-
-  return {
-    type: jsPsychHtmlButtonResponse,
-    stimulus: `
-      <div class="bcst-container">
-        ${generateReferenceCardsHtml()}
-        <div class="bcst-stimulus-area">
-          ${generateCardHtml(stimulus, true)}
-          <p class="bcst-prompt">${config.text.sort_prompt}</p>
-        </div>
-      </div>
-    `,
-    choices: ["", "", "", ""],
-    button_html: (choice: string, index: number) =>
-      `<button class="jspsych-btn" style="padding: 0; border: none; background: none;">${generateCardHtml(REFERENCE_CARDS[index])}</button>`,
-    data: {
-      task: TASK_NAME,
-      task_version: VERSION,
-      trial_number: state.trialNumber,
-      stimulus_color: stimulus.color,
-      stimulus_shape: stimulus.shape,
-      stimulus_number: stimulus.number,
-      current_rule: currentRule,
-      previous_rule: state.previousRule,
-      trial_type: "sorting",
-    },
-    on_finish: (data: any) => {
-      const response = data.response;
-
-      // Check if correct on current rule
-      data.correct = matchesDimension(stimulus, response, currentRule);
-
-      // Check if perseverative (matches previous rule but not current)
-      if (state.previousRule !== null) {
-        const matchesPrevious = matchesDimension(stimulus, response, state.previousRule);
-        data.is_perseverative = matchesPrevious && !data.correct;
-      } else {
-        data.is_perseverative = false;
-      }
-
-      // Update state
-      if (data.correct) {
-        state.consecutiveCorrect++;
-        if (state.consecutiveCorrect >= config.runLength) {
-          // Rule change
-          state.previousRule = currentRule;
-          state.currentRuleIndex = (state.currentRuleIndex + 1) % rules.length;
-          state.consecutiveCorrect = 0;
-          state.categoriesCompleted++;
-        }
-      } else {
-        state.consecutiveCorrect = 0;
-      }
-
-      data.consecutive_correct = state.consecutiveCorrect;
-      data.categories_completed = state.categoriesCompleted;
-    },
-  };
-}
-
-/**
- * Creates the main trial loop with dynamic timeline.
- */
-function createTrialLoop(jsPsych: JsPsych, config: ResolvedConfig) {
-  const deck = generateStimulusDeck(config);
-  const state = {
-    currentRuleIndex: 0,
-    previousRule: null as Rule | null,
-    consecutiveCorrect: 0,
-    categoriesCompleted: 0,
-    trialNumber: 0,
-  };
-
-  const timeline: any[] = [];
-
-  for (const stimulus of deck) {
-    state.trialNumber++;
-    const trialState = { ...state };
-
-    const sortingTrial = createSortingTrial(jsPsych, config, state, stimulus);
-    timeline.push(sortingTrial);
-
-    if (config.showFeedback) {
-      timeline.push(createFeedbackTrial(jsPsych, config));
-    }
-  }
-
-  return {
-    timeline,
-    conditional_function: () => {
-      // Check if we've completed enough categories
-      const data = jsPsych.data.get().filter({ task: TASK_NAME, trial_type: "sorting" });
-      if (data.count() === 0) return true;
-
-      const lastTrial = data.last(1).values()[0];
-      return lastTrial.categories_completed < config.numCategories;
-    },
-  };
-}
-
-/**
- * Creates a simpler implementation using loop_function for stopping.
+ * Creates the main trial block using loop_function for stopping.
  */
 function createTrialBlock(jsPsych: JsPsych, config: ResolvedConfig) {
   const deck = generateStimulusDeck(config);
@@ -379,7 +262,6 @@ function createTrialBlock(jsPsych: JsPsych, config: ResolvedConfig) {
       const stimulus = deck[state.cardIndex];
       return `
         <div class="bcst-container">
-          ${generateReferenceCardsHtml()}
           <div class="bcst-stimulus-area">
             ${generateCardHtml(stimulus, true)}
             <p class="bcst-prompt">${config.text.sort_prompt}</p>
@@ -402,7 +284,7 @@ function createTrialBlock(jsPsych: JsPsych, config: ResolvedConfig) {
         stimulus_number: stimulus.number,
         current_rule: currentRule,
         previous_rule: state.previousRule,
-        trial_type: "sorting",
+        trial_part: "sorting",
       };
     },
     on_finish: (data: any) => {
@@ -475,7 +357,7 @@ function createCompletionTrial(config: ResolvedConfig) {
     choices: [config.text.continue_button],
     data: {
       task: TASK_NAME,
-      trial_type: "completion",
+      trial_part: "completion",
     },
   };
 }
@@ -487,7 +369,7 @@ function createCompletionTrial(config: ResolvedConfig) {
  */
 function calculateScores(data: DataCollection): ScoringResult {
   const trials = data
-    .filter({ task: TASK_NAME, trial_type: "sorting" })
+    .filter({ task: TASK_NAME, trial_part: "sorting" })
     .values() as TrialData[];
 
   if (trials.length === 0) {

@@ -305,7 +305,7 @@ function createInstructionTrials(
       choices: [config.text.continue_button],
       data: {
         task: TASK_NAME,
-        trial_type: "instruction",
+        trial_part: "instruction",
       },
     });
   } else if (part === "task") {
@@ -315,7 +315,7 @@ function createInstructionTrials(
       choices: [config.text.continue_button],
       data: {
         task: TASK_NAME,
-        trial_type: "instruction",
+        trial_part: "instruction",
       },
     });
   } else if (part === "practice") {
@@ -325,7 +325,7 @@ function createInstructionTrials(
       choices: [config.text.start_button],
       data: {
         task: TASK_NAME,
-        trial_type: "instruction",
+        trial_part: "instruction",
       },
     });
   } else if (part === "test") {
@@ -335,7 +335,7 @@ function createInstructionTrials(
       choices: [config.text.start_button],
       data: {
         task: TASK_NAME,
-        trial_type: "instruction",
+        trial_part: "instruction",
       },
     });
   }
@@ -369,7 +369,7 @@ function createRotationTrial(
     choices: [config.text.continue_button],
     data: {
       task: TASK_NAME,
-      trial_type: "study",
+      trial_part: "study",
       phase: phase,
       trial_index: trialIndex,
     },
@@ -393,7 +393,7 @@ function createRotationTrial(
     data: {
       task: TASK_NAME,
       task_version: VERSION,
-      trial_type: "response",
+      trial_part: "response",
       phase: phase,
       trial_index: trialIndex,
       condition: trial.condition,
@@ -425,7 +425,7 @@ function createRotationTrial(
       trial_duration: config.feedbackDuration,
       data: {
         task: TASK_NAME,
-        trial_type: "feedback",
+        trial_part: "feedback",
       },
     });
   }
@@ -453,7 +453,7 @@ function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
     data: {
       task: TASK_NAME,
       task_version: VERSION,
-      trial_type: "completion",
+      trial_part: "completion",
     },
   };
 }
@@ -465,7 +465,7 @@ function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
  */
 function calculateScores(data: DataCollection): ScoringResult {
   const testTrials = data
-    .filter({ task: TASK_NAME, phase: "test", trial_type: "response" })
+    .filter({ task: TASK_NAME, phase: "test", trial_part: "response" })
     .values() as TrialData[];
 
   if (testTrials.length === 0) {
