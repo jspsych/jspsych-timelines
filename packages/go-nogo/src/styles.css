@@ -26,6 +26,12 @@
   color: orange;
 }
 
+/* Disabled buttons during non-response periods */
+.jspsych-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 /* Mobile/touch device optimizations */
 @media (pointer: coarse) {
   #jspsych-html-button-response-btngroup {

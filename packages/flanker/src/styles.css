@@ -1,5 +1,13 @@
 /* Flanker Task Styles - Minimal, themeable */
 
+/* Trial content container - fixed height prevents button movement */
+.trial-content {
+  min-height: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 /* Fixation cross */
 .fixation {
   font-size: 3em;

@@ -1,5 +1,13 @@
 /* Oddball Task Styles */
 
+/* Trial content container - fixed height prevents button movement */
+.trial-content {
+  min-height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 /* Instructions container */
 .instructions {
   max-width: 600px;
@@ -24,6 +32,12 @@
 
 .feedback.timeout {
   color: orange;
+}
+
+/* Disabled buttons during non-response periods */
+.jspsych-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 /* Mobile/touch device optimizations */

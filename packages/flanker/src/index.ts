@@ -132,12 +132,14 @@ function generateStimulusHtml(
   }
 
   return `
-    <div class="stimulus-container">
-      <span>${flankerHtml}</span>
-      <span>${flankerHtml}</span>
-      <span>${targetHtml}</span>
-      <span>${flankerHtml}</span>
-      <span>${flankerHtml}</span>
+    <div class="trial-content">
+      <div class="stimulus-container">
+        <span>${flankerHtml}</span>
+        <span>${flankerHtml}</span>
+        <span>${targetHtml}</span>
+        <span>${flankerHtml}</span>
+        <span>${flankerHtml}</span>
+      </div>
     </div>
   `;
 }
@@ -344,7 +346,7 @@ function createInstructionTrials(config: ResolvedConfig) {
 function createFixationTrial(config: ResolvedConfig) {
   return {
     type: jsPsychHtmlButtonResponse,
-    stimulus: `<div class="fixation">${config.text.fixation}</div>`,
+    stimulus: `<div class="trial-content"><div class="fixation">${config.text.fixation}</div></div>`,
     choices: [config.text.left_button, config.text.right_button],
     button_html: createDisabledButtonHtml,
     response_ends_trial: false,
@@ -420,7 +422,7 @@ function createFeedbackTrial(jsPsych: JsPsych, config: ResolvedConfig) {
         feedbackClass = "feedback incorrect";
       }
 
-      return `<div class="${feedbackClass}">${feedbackText}</div>`;
+      return `<div class="trial-content"><div class="${feedbackClass}">${feedbackText}</div></div>`;
     },
     choices: [config.text.left_button, config.text.right_button],
     button_html: createDisabledButtonHtml,
@@ -440,7 +442,7 @@ function createFeedbackTrial(jsPsych: JsPsych, config: ResolvedConfig) {
 function createItiTrial(config: ResolvedConfig) {
   return {
     type: jsPsychHtmlButtonResponse,
-    stimulus: "",
+    stimulus: `<div class="trial-content"></div>`,
     choices: [config.text.left_button, config.text.right_button],
     button_html: createDisabledButtonHtml,
     response_ends_trial: false,

@@ -1,7 +1,6 @@
 import "./styles.css";
 import { JsPsych, DataCollection } from "jspsych";
 import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
-import jsPsychHtmlKeyboardResponse from "@jspsych/plugin-html-keyboard-response";
 import { defaultText, TextConfig } from "./text";
 
 // -- TYPES --
@@ -154,16 +153,18 @@ function createCueHTML(
 ): string {
   const offsetPercent = side === "left" ? 25 : 75;
   return `
-    <div style="position: absolute; left: 0; right: 0; height: 100px; display: flex; align-items: center;">
-      <div style="
-        position: absolute;
-        left: ${offsetPercent}%;
-        transform: translateX(-50%);
-        width: ${size}px;
-        height: ${size}px;
-        border-radius: 50%;
-        background-color: ${color};
-      "></div>
+    <div class="trial-content" style="position: relative;">
+      <div style="position: absolute; left: 0; right: 0; height: 100%; display: flex; align-items: center;">
+        <div style="
+          position: absolute;
+          left: ${offsetPercent}%;
+          transform: translateX(-50%);
+          width: ${size}px;
+          height: ${size}px;
+          border-radius: 50%;
+          background-color: ${color};
+        "></div>
+      </div>
     </div>
   `;
 }
@@ -172,22 +173,15 @@ function createCueHTML(
  * Creates HTML for the fixation cross.
  */
 function createFixationHTML(): string {
-  return `<p style="font-size: 48px; margin: 0;">+</p>`;
+  return `<div class="trial-content"><p style="font-size: 48px; margin: 0;">+</p></div>`;
 }
 
 /**
- * Creates HTML for the response buttons.
+ * Creates disabled button HTML for non-response trials.
+ * Buttons are visible but non-interactive to prevent layout shifts.
  */
-function createResponseHTML(
-  leftLabel: string,
-  rightLabel: string
-): string {
-  return `
-    <div style="display: flex; justify-content: space-between; width: 400px; margin: 50px auto;">
-      <div style="flex: 1;"></div>
-      <div style="flex: 1;"></div>
-    </div>
-  `;
+function createDisabledButtonHtml(choice: string): string {
+  return `<button class="jspsych-btn" disabled>${choice}</button>`;
 }
 
 // -- TIMELINE UNITS --
@@ -250,9 +244,11 @@ function createAntisaccadeTrial(
 
   // Fixation
   timeline.push({
-    type: jsPsychHtmlKeyboardResponse,
+    type: jsPsychHtmlButtonResponse,
     stimulus: createFixationHTML(),
-    choices: "NO_KEYS",
+    choices: [config.text.left_button, config.text.right_button],
+    button_html: createDisabledButtonHtml,
+    response_ends_trial: false,
     trial_duration: config.fixationDuration,
     data: {
       task: TASK_NAME,
@@ -263,9 +259,11 @@ function createAntisaccadeTrial(
   // Gap (blank screen)
   if (config.gapDuration > 0) {
     timeline.push({
-      type: jsPsychHtmlKeyboardResponse,
-      stimulus: "",
-      choices: "NO_KEYS",
+      type: jsPsychHtmlButtonResponse,
+      stimulus: `<div class="trial-content"></div>`,
+      choices: [config.text.left_button, config.text.right_button],
+      button_html: createDisabledButtonHtml,
+      response_ends_trial: false,
       trial_duration: config.gapDuration,
       data: {
         task: TASK_NAME,
@@ -277,9 +275,11 @@ function createAntisaccadeTrial(
   // Cue
   const cueHTML = createCueHTML(cueSide, config.cueColor, config.cueSize, config.cueOffset);
   timeline.push({
-    type: jsPsychHtmlKeyboardResponse,
+    type: jsPsychHtmlButtonResponse,
     stimulus: cueHTML,
-    choices: "NO_KEYS",
+    choices: [config.text.left_button, config.text.right_button],
+    button_html: createDisabledButtonHtml,
+    response_ends_trial: false,
     trial_duration: config.cueDuration,
     data: {
       task: TASK_NAME,
@@ -293,7 +293,7 @@ function createAntisaccadeTrial(
 
   timeline.push({
     type: jsPsychHtmlButtonResponse,
-    stimulus: "",
+    stimulus: `<div class="trial-content"></div>`,
     choices: [config.text.left_button, config.text.right_button],
     trial_duration: config.responseTimeout,
     button_layout: "flex",
@@ -326,17 +326,19 @@ function createAntisaccadeTrial(
   // Feedback (practice only)
   if (isPractice) {
     timeline.push({
-      type: jsPsychHtmlKeyboardResponse,
+      type: jsPsychHtmlButtonResponse,
       stimulus: () => {
         const lastData = jsPsych.data.getLastTrialData().values()[0];
         if (lastData.response === null) {
-          return config.text.feedback_timeout;
+          return `<div class="trial-content"><p class="feedback timeout">${config.text.feedback_timeout}</p></div>`;
         }
         return lastData.correct
-          ? config.text.feedback_correct
-          : config.text.feedback_incorrect;
+          ? `<div class="trial-content"><p class="feedback correct">${config.text.feedback_correct}</p></div>`
+          : `<div class="trial-content"><p class="feedback incorrect">${config.text.feedback_incorrect}</p></div>`;
       },
-      choices: "NO_KEYS",
+      choices: [config.text.left_button, config.text.right_button],
+      button_html: createDisabledButtonHtml,
+      response_ends_trial: false,
       trial_duration: config.feedbackDuration,
       data: {
         task: TASK_NAME,
@@ -347,9 +349,11 @@ function createAntisaccadeTrial(
 
   // ITI
   timeline.push({
-    type: jsPsychHtmlKeyboardResponse,
-    stimulus: "",
-    choices: "NO_KEYS",
+    type: jsPsychHtmlButtonResponse,
+    stimulus: `<div class="trial-content"></div>`,
+    choices: [config.text.left_button, config.text.right_button],
+    button_html: createDisabledButtonHtml,
+    response_ends_trial: false,
     trial_duration: config.iti,
     data: {
       task: TASK_NAME,

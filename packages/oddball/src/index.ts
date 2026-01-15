@@ -1,7 +1,6 @@
 import "./styles.css";
 import { JsPsych, DataCollection } from "jspsych";
 import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
-import jsPsychHtmlKeyboardResponse from "@jspsych/plugin-html-keyboard-response";
 import { defaultText, TextConfig } from "./text";
 
 // -- TYPES --
@@ -141,17 +140,26 @@ function generateTrialSequence(
 }
 
 /**
+ * Creates disabled button HTML for non-response trials.
+ * Buttons are visible but non-interactive to prevent layout shifts.
+ */
+function createDisabledButtonHtml(choice: string): string {
+  return `<button class="jspsych-btn" disabled>${choice}</button>`;
+}
+
+/**
  * Creates CSS for the stimulus circle.
  */
 function createStimulusHTML(color: string, size: number): string {
   return `
-    <div style="
-      width: ${size}px;
-      height: ${size}px;
-      border-radius: 50%;
-      background-color: ${color};
-      margin: 50px auto;
-    "></div>
+    <div class="trial-content">
+      <div style="
+        width: ${size}px;
+        height: ${size}px;
+        border-radius: 50%;
+        background-color: ${color};
+      "></div>
+    </div>
   `;
 }
 
@@ -306,9 +314,11 @@ function createOddballTrial(
 
   // Fixation cross / ISI
   timeline.push({
-    type: jsPsychHtmlKeyboardResponse,
-    stimulus: `<p style="font-size: 48px;">+</p>`,
-    choices: "NO_KEYS",
+    type: jsPsychHtmlButtonResponse,
+    stimulus: `<div class="trial-content"><p style="font-size: 48px;">+</p></div>`,
+    choices: [config.text.respond_button],
+    button_html: createDisabledButtonHtml,
+    response_ends_trial: false,
     trial_duration: config.isi,
     data: {
       task: TASK_NAME,
@@ -348,23 +358,25 @@ function createOddballTrial(
   // Feedback (practice only)
   if (isPractice) {
     timeline.push({
-      type: jsPsychHtmlKeyboardResponse,
+      type: jsPsychHtmlButtonResponse,
       stimulus: () => {
         const lastData = jsPsych.data.getLastTrialData().values()[0];
         const responded = lastData.responded;
         const isTargetTrial = lastData.stimulus_type === "target";
 
         if (isTargetTrial && responded) {
-          return config.text.feedback_hit;
+          return `<div class="trial-content"><p class="feedback correct">${config.text.feedback_hit}</p></div>`;
         } else if (isTargetTrial && !responded) {
-          return config.text.feedback_miss;
+          return `<div class="trial-content"><p class="feedback incorrect">${config.text.feedback_miss}</p></div>`;
         } else if (!isTargetTrial && responded) {
-          return config.text.feedback_false_alarm;
+          return `<div class="trial-content"><p class="feedback incorrect">${config.text.feedback_false_alarm}</p></div>`;
         } else {
-          return config.text.feedback_correct_rejection;
+          return `<div class="trial-content"><p class="feedback correct">${config.text.feedback_correct_rejection}</p></div>`;
         }
       },
-      choices: "NO_KEYS",
+      choices: [config.text.respond_button],
+      button_html: createDisabledButtonHtml,
+      response_ends_trial: false,
       trial_duration: config.feedbackDuration,
       data: {
         task: TASK_NAME,

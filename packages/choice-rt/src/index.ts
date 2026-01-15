@@ -1,7 +1,6 @@
 import "./styles.css";
 import { JsPsych, DataCollection } from "jspsych";
 import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
-import jsPsychHtmlKeyboardResponse from "@jspsych/plugin-html-keyboard-response";
 import { defaultText, TextConfig } from "./text";
 
 // -- TYPES --
@@ -126,6 +125,14 @@ const DEFAULT_OPTIONS = {
 // -- UTILITY FUNCTIONS --
 
 /**
+ * Creates disabled button HTML for non-response trials.
+ * Buttons are visible but non-interactive to prevent layout shifts.
+ */
+function createDisabledButtonHtml(choice: string): string {
+  return `<button class="jspsych-btn" disabled>${choice}</button>`;
+}
+
+/**
  * Generates a random foreperiod within the specified range.
  */
 function generateForeperiod(min: number, max: number): number {
@@ -166,7 +173,7 @@ function createStimulusHTML(
   }
 
   return `
-    <div style="display: flex; justify-content: center; align-items: center; height: 150px;">
+    <div class="trial-content">
       <div style="
         width: ${size}px;
         height: ${size}px;
@@ -182,7 +189,7 @@ function createStimulusHTML(
  * Creates HTML for the fixation cross.
  */
 function createFixationHTML(): string {
-  return `<div style="height: 150px; display: flex; justify-content: center; align-items: center;"><p style="font-size: 48px; margin: 0;">+</p></div>`;
+  return `<div class="trial-content"><p style="font-size: 48px; margin: 0;">+</p></div>`;
 }
 
 /**
@@ -322,7 +329,7 @@ function createSimpleRTTrial(
   // Feedback (practice only)
   if (isPractice) {
     timeline.push({
-      type: jsPsychHtmlKeyboardResponse,
+      type: jsPsychHtmlButtonResponse,
       stimulus: () => {
         const trials = jsPsych.data.get().last(2).values();
         const foreperiodTrial = trials.find((t: any) => t.trial_type === "foreperiod");
@@ -331,17 +338,19 @@ function createSimpleRTTrial(
         );
 
         if (foreperiodTrial?.anticipated) {
-          return config.text.feedback_anticipated;
+          return `<div class="trial-content"><p class="feedback incorrect">${config.text.feedback_anticipated}</p></div>`;
         }
         if (!responseTrial || responseTrial.response === null) {
-          return config.text.feedback_timeout;
+          return `<div class="trial-content"><p class="feedback timeout">${config.text.feedback_timeout}</p></div>`;
         }
         if (responseTrial.anticipated) {
-          return config.text.feedback_anticipated;
+          return `<div class="trial-content"><p class="feedback incorrect">${config.text.feedback_anticipated}</p></div>`;
         }
-        return config.text.feedback_correct;
+        return `<div class="trial-content"><p class="feedback correct">${config.text.feedback_correct}</p></div>`;
       },
-      choices: "NO_KEYS",
+      choices: [config.text.respond_button],
+      button_html: createDisabledButtonHtml,
+      response_ends_trial: false,
       trial_duration: config.feedbackDuration,
       data: {
         task: TASK_NAME,
@@ -352,9 +361,11 @@ function createSimpleRTTrial(
 
   // ITI
   timeline.push({
-    type: jsPsychHtmlKeyboardResponse,
-    stimulus: "",
-    choices: "NO_KEYS",
+    type: jsPsychHtmlButtonResponse,
+    stimulus: `<div class="trial-content"></div>`,
+    choices: [config.text.respond_button],
+    button_html: createDisabledButtonHtml,
+    response_ends_trial: false,
     trial_duration: config.iti,
     data: {
       task: TASK_NAME,
@@ -380,9 +391,11 @@ function createChoiceRTTrial(
 
   // Fixation / foreperiod
   timeline.push({
-    type: jsPsychHtmlKeyboardResponse,
+    type: jsPsychHtmlButtonResponse,
     stimulus: createFixationHTML(),
-    choices: "NO_KEYS",
+    choices: [config.text.left_button, config.text.right_button],
+    button_html: createDisabledButtonHtml,
+    response_ends_trial: false,
     trial_duration: foreperiod,
     data: {
       task: TASK_NAME,
@@ -437,20 +450,22 @@ function createChoiceRTTrial(
   // Feedback (practice only)
   if (isPractice) {
     timeline.push({
-      type: jsPsychHtmlKeyboardResponse,
+      type: jsPsychHtmlButtonResponse,
       stimulus: () => {
         const lastData = jsPsych.data.getLastTrialData().values()[0];
         if (lastData.response === null) {
-          return config.text.feedback_timeout;
+          return `<div class="trial-content"><p class="feedback timeout">${config.text.feedback_timeout}</p></div>`;
         }
         if (lastData.anticipated) {
-          return config.text.feedback_anticipated;
+          return `<div class="trial-content"><p class="feedback incorrect">${config.text.feedback_anticipated}</p></div>`;
         }
         return lastData.correct
-          ? config.text.feedback_correct
-          : config.text.feedback_incorrect;
+          ? `<div class="trial-content"><p class="feedback correct">${config.text.feedback_correct}</p></div>`
+          : `<div class="trial-content"><p class="feedback incorrect">${config.text.feedback_incorrect}</p></div>`;
       },
-      choices: "NO_KEYS",
+      choices: [config.text.left_button, config.text.right_button],
+      button_html: createDisabledButtonHtml,
+      response_ends_trial: false,
       trial_duration: config.feedbackDuration,
       data: {
         task: TASK_NAME,
@@ -461,9 +476,11 @@ function createChoiceRTTrial(
 
   // ITI
   timeline.push({
-    type: jsPsychHtmlKeyboardResponse,
-    stimulus: "",
-    choices: "NO_KEYS",
+    type: jsPsychHtmlButtonResponse,
+    stimulus: `<div class="trial-content"></div>`,
+    choices: [config.text.left_button, config.text.right_button],
+    button_html: createDisabledButtonHtml,
+    response_ends_trial: false,
     trial_duration: config.iti,
     data: {
       task: TASK_NAME,

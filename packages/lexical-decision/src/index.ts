@@ -1,7 +1,6 @@
 import "./styles.css";
 import { JsPsych, DataCollection } from "jspsych";
 import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
-import jsPsychHtmlKeyboardResponse from "@jspsych/plugin-html-keyboard-response";
 import { defaultText, TextConfig } from "./text";
 
 // -- TYPES --
@@ -140,6 +139,14 @@ function shuffleArray<T>(arr: T[]): T[] {
     [result[i], result[j]] = [result[j], result[i]];
   }
   return result;
+}
+
+/**
+ * Creates disabled button HTML for non-response trials.
+ * Buttons are visible but non-interactive to prevent layout shifts.
+ */
+function createDisabledButtonHtml(choice: string): string {
+  return `<button class="jspsych-btn" disabled>${choice}</button>`;
 }
 
 /**
@@ -315,9 +322,11 @@ function createLexicalTrial(
 
   // Fixation cross
   timeline.push({
-    type: jsPsychHtmlKeyboardResponse,
-    stimulus: config.text.fixation,
-    choices: "NO_KEYS",
+    type: jsPsychHtmlButtonResponse,
+    stimulus: `<div class="trial-content">${config.text.fixation}</div>`,
+    choices: [config.text.word_button, config.text.nonword_button],
+    button_html: createDisabledButtonHtml,
+    response_ends_trial: false,
     trial_duration: config.fixationDuration,
     data: {
       task: TASK_NAME,
@@ -328,7 +337,7 @@ function createLexicalTrial(
   // Stimulus presentation with response
   timeline.push({
     type: jsPsychHtmlButtonResponse,
-    stimulus: `<p style="font-size: 48px; font-family: monospace; letter-spacing: 4px;">${trial.stimulus}</p>`,
+    stimulus: `<div class="trial-content"><p style="font-size: 48px; font-family: monospace; letter-spacing: 4px;">${trial.stimulus}</p></div>`,
     choices: [config.text.word_button, config.text.nonword_button],
     trial_duration: config.responseTimeout,
     data: {
@@ -367,13 +376,15 @@ function createLexicalTrial(
       stimulus: () => {
         const lastData = jsPsych.data.getLastTrialData().values()[0];
         if (lastData.timeout) {
-          return config.text.feedback_timeout;
+          return `<div class="trial-content"><p class="feedback timeout">${config.text.feedback_timeout}</p></div>`;
         }
         return lastData.correct
-          ? config.text.feedback_correct
-          : config.text.feedback_incorrect;
+          ? `<div class="trial-content"><p class="feedback correct">${config.text.feedback_correct}</p></div>`
+          : `<div class="trial-content"><p class="feedback incorrect">${config.text.feedback_incorrect}</p></div>`;
       },
-      choices: [],
+      choices: [config.text.word_button, config.text.nonword_button],
+      button_html: createDisabledButtonHtml,
+      response_ends_trial: false,
       trial_duration: config.feedbackDuration,
       data: {
         task: TASK_NAME,
