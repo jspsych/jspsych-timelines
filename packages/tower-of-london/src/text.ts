@@ -38,7 +38,6 @@ export const defaultText: TextConfig = {
       <h2>Tower of London Task</h2>
       <p>In this task, you will see colored balls arranged on pegs. Your goal is to
       rearrange the balls to match a target configuration shown on the screen.</p>
-      <p>This task measures planning ability and executive function.</p>
     </div>
   `,
 
@@ -82,10 +81,10 @@ export const defaultText: TextConfig = {
   practice_feedback_solved: (moves: number, optimal: number) => `
     <div style="max-width: 600px; margin: 0 auto;">
       <h3>Puzzle Solved!</h3>
-      <p>You completed the puzzle in <strong>${moves} moves</strong>.</p>
+      <p>You completed the puzzle in <strong>${moves} ${moves === 1 ? "move" : "moves"}</strong>.</p>
       ${moves === optimal
         ? "<p>That's the optimal solution!</p>"
-        : `<p>The optimal solution uses ${optimal} moves.</p>`
+        : `<p>The optimal solution uses ${optimal} ${optimal === 1 ? "move" : "moves"}.</p>`
       }
     </div>
   `,
