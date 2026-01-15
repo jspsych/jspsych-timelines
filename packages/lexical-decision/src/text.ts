@@ -43,7 +43,6 @@ export const defaultText: TextConfig = {
       <p>In this task, you will see strings of letters. Your job is to decide
       as quickly and accurately as possible whether each string is a real
       English word or not.</p>
-      <p>This task measures how quickly you can recognize words.</p>
     </div>
   `,
 

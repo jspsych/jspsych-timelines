@@ -8,7 +8,6 @@ export const defaultText = {
     `<div style="max-width: 600px; margin: 0 auto; text-align: left;">
       <h2>Memory and Math Task</h2>
       <p>In this task, you will solve math problems while remembering letters.</p>
-      <p>This measures how well you can do two things at once.</p>
     </div>`,
     `<div style="max-width: 600px; margin: 0 auto; text-align: left;">
       <h2>Math Problems</h2>

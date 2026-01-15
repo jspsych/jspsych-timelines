@@ -37,7 +37,6 @@ export const defaultText: TextConfig = {
       <p>In this task, you will track a moving target with your cursor. The target
       moves in a circle, and your goal is to keep your cursor on the target as
       much as possible.</p>
-      <p>This task measures motor coordination and tracking ability.</p>
     </div>
   `,
 

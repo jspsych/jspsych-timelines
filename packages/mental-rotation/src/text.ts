@@ -42,7 +42,6 @@ export const defaultText: TextConfig = {
       <h2>Mental Rotation Task</h2>
       <p>In this task, you will see patterns on a grid. Your job is to decide if
       two patterns are the same after a rotation, or if they are different.</p>
-      <p>This task measures your ability to mentally rotate objects in space.</p>
     </div>
   `,
 
