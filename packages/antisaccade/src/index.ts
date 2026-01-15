@@ -143,6 +143,7 @@ function generateTrialSequence(numTrials: number): Array<"left" | "right"> {
 
 /**
  * Creates HTML for the cue stimulus.
+ * Uses percentage-based positioning for mobile compatibility.
  */
 function createCueHTML(
   side: "left" | "right",
@@ -150,12 +151,14 @@ function createCueHTML(
   size: number,
   offset: number
 ): string {
-  const leftOffset = side === "left" ? -offset : offset;
+  // Use percentage offset for responsive positioning (offset becomes % of container width)
+  const offsetPercent = side === "left" ? 25 : 75;
   return `
-    <div style="position: relative; height: 100px; display: flex; align-items: center; justify-content: center;">
+    <div style="position: relative; height: 100px; width: 100%; display: flex; align-items: center; justify-content: center;">
       <div style="
         position: absolute;
-        left: calc(50% + ${leftOffset}px - ${size / 2}px);
+        left: ${offsetPercent}%;
+        transform: translateX(-50%);
         width: ${size}px;
         height: ${size}px;
         border-radius: 50%;
@@ -293,10 +296,7 @@ function createAntisaccadeTrial(
     stimulus: "",
     choices: [config.text.left_button, config.text.right_button],
     trial_duration: config.responseTimeout,
-    button_html: (choice: string, index: number) => {
-      const isLeft = index === 0;
-      return `<button class="jspsych-btn" style="margin: 0 100px;">${choice}</button>`;
-    },
+    button_layout: "flex",
     data: {
       task: TASK_NAME,
       task_version: VERSION,
