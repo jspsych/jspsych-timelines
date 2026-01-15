@@ -43,6 +43,6 @@
   },
   "dependencies": {
     "@jspsych/plugin-html-button-response": "^2.1.0",
-    "@jspsych-contrib/plugin-trail-making": "file:../../../jspsych-contrib/packages/plugin-trail-making"
+    "@jspsych-contrib/plugin-trail-making": "^0.1.0"
   }
 }

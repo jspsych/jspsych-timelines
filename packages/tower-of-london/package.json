@@ -43,6 +43,6 @@
   },
   "dependencies": {
     "@jspsych/plugin-html-button-response": "^2.1.0",
-    "@jspsych-contrib/plugin-tower-of-london": "file:../../../jspsych-contrib/packages/plugin-tower-of-london"
+    "@jspsych-contrib/plugin-tower-of-london": "^0.1.0"
   }
 }
