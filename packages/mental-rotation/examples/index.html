@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Mental Rotation Task</title>
+    <script src="https://unpkg.com/jspsych@8"></script>
+    <script src="../dist/index.browser.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css" />
+  </head>
+  <body></body>
+  <script>
+    const jsPsych = initJsPsych({
+      on_finish: function () {
+        const data = jsPsych.data.get();
+        const scores = jsPsychTimelineMentalRotation.utils.scoring.getSummary(data);
+        console.log("Mental Rotation scores:", scores);
+        jsPsych.data.displayData();
+      },
+    });
+
+    const timeline = jsPsychTimelineMentalRotation.createTimeline(jsPsych, {
+      showInstructions: true,
+      showPractice: true,
+    });
+
+    jsPsych.run([timeline]);
+  </script>
+</html>

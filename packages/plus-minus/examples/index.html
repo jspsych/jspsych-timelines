@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Plus-Minus Task</title>
+    <script src="https://unpkg.com/jspsych@8"></script>
+    <script src="../dist/index.browser.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css" />
+  </head>
+  <body></body>
+  <script>
+    const jsPsych = initJsPsych({
+      on_finish: function () {
+        const data = jsPsych.data.get();
+        const scores = jsPsychTimelinePlusMinus.utils.scoring.getSummary(data);
+        console.log("Plus-Minus scores:", scores);
+        jsPsych.data.displayData();
+      },
+    });
+
+    const timeline = jsPsychTimelinePlusMinus.createTimeline(jsPsych, {
+      showInstructions: true,
+      showPractice: true,
+      trialsPerBlock: 10, // Reduced for demo
+    });
+
+    jsPsych.run([timeline]);
+  </script>
+</html>
