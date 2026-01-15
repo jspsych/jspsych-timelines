@@ -144,7 +144,7 @@ function generateTrialSequence(numTrials: number): Array<"left" | "right"> {
 
 /**
  * Creates HTML for the cue stimulus.
- * Uses percentage-based positioning for mobile compatibility.
+ * Uses viewport-relative positioning for mobile compatibility.
  */
 function createCueHTML(
   side: "left" | "right",
@@ -152,13 +152,13 @@ function createCueHTML(
   size: number,
   offset: number
 ): string {
-  // Use percentage offset for responsive positioning (offset becomes % of container width)
-  const offsetPercent = side === "left" ? 25 : 75;
+  // Use viewport-relative positioning (25vw from center = 25% or 75% of viewport)
+  const offsetVw = side === "left" ? -25 : 25;
   return `
-    <div style="position: relative; height: 100px; width: 100%; display: flex; align-items: center; justify-content: center;">
+    <div style="position: relative; height: 100px; display: flex; align-items: center; justify-content: center;">
       <div style="
         position: absolute;
-        left: ${offsetPercent}%;
+        left: calc(50% + ${offsetVw}vw);
         transform: translateX(-50%);
         width: ${size}px;
         height: ${size}px;
