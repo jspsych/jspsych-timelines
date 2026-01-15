@@ -1,3 +1,4 @@
+import "./styles.css";
 import { JsPsych, DataCollection } from "jspsych";
 import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
 import jsPsychInstructions from "@jspsych/plugin-instructions";

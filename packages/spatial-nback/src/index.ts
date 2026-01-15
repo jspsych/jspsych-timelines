@@ -1,3 +1,4 @@
+import "./styles.css";
 import { JsPsych, DataCollection } from "jspsych";
 import jsPsychPluginSpatialNback from "@jspsych-contrib/plugin-spatial-nback";
 import jsPsychInstructions from "@jspsych/plugin-instructions";
