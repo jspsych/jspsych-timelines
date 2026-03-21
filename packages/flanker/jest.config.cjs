@@ -4,6 +4,6 @@ module.exports = {
   ...baseConfig,
   moduleNameMapper: {
     ...baseConfig.moduleNameMapper,
-    "\\.(css|less|scss|sass)$": "identity-obj-proxy",
+    "\\.css$": "<rootDir>/src/__mocks__/styleMock.js",
   },
 };
