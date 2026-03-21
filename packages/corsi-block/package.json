@@ -30,7 +30,7 @@
   },
   "homepage": "https://github.com/jspsych/jspsych-timelines/packages/corsi-block#readme",
   "peerDependencies": {
-    "jspsych": "^8.0.1"
+    "jspsych": ">=8.0.0"
   },
   "dependencies": {
     "@jspsych-contrib/plugin-corsi-blocks": "^2.0.0",

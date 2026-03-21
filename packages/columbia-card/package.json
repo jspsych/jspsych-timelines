@@ -29,6 +29,9 @@
     "url": "https://github.com/jspsych/jspsych-timelines/issues"
   },
   "homepage": "https://github.com/jspsych/jspsych-timelines/packages/columbia-card/README.md",
+  "peerDependencies": {
+    "jspsych": ">=8.0.0"
+  },
   "devDependencies": {
     "jspsych": "^8.0.0",
     "@jspsych/config": "^3.2.2",

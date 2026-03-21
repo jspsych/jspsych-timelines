@@ -50,6 +50,9 @@
         "url": "https://github.com/jspsych/jspsych-timelines/issues"
     },
     "homepage": "/@jspsych-timelines/go-nogo/README.md",
+    "peerDependencies": {
+        "jspsych": ">=8.0.0"
+    },
     "devDependencies": {
         "@jspsych/config": "^3.2.2",
         "@types/jest": "^29.5.0",

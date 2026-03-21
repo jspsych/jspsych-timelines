@@ -28,6 +28,9 @@
         "url": "https://github.com/jspsych/jspsych-timelines/issues"
     },
     "homepage": "https://github.com/jspsych/jspsych-timelines/packages/spatial-nback#readme",
+    "peerDependencies": {
+        "jspsych": ">=8.0.0"
+    },
     "devDependencies": {
         "@jspsych/config": "^3.2.2",
         "jspsych": "^8.2.1",

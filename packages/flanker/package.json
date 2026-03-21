@@ -30,6 +30,9 @@
         "url": "https://github.com/jspsych/jspsych-timelines/issues"
     },
     "homepage": "https://github.com/jspsych/jspsych-timelines/tree/main/packages/flanker#readme",
+    "peerDependencies": {
+        "jspsych": ">=8.0.0"
+    },
     "devDependencies": {
         "@jspsych/config": "^3.2.2",
         "jspsych": "^8.0.0",

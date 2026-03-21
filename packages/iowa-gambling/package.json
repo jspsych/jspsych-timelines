@@ -33,6 +33,9 @@
         "url": "https://github.com/jspsych/jspsych-timelines/issues"
     },
     "homepage": "https://github.com/jspsych/jspsych-timelines/tree/main/packages/iowa-gambling#readme",
+    "peerDependencies": {
+        "jspsych": ">=8.0.0"
+    },
     "devDependencies": {
         "@jspsych/config": "^3.2.2",
         "identity-obj-proxy": "^3.0.0",
