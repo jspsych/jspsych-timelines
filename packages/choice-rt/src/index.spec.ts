@@ -29,20 +29,6 @@ describe("Choice RT Timeline", () => {
       );
     });
 
-    it("should skip simple RT when includeSimpleRT is false", () => {
-      const jsPsych = initJsPsych();
-      const withSimple = createTimeline(jsPsych, { includeSimpleRT: true });
-      const withoutSimple = createTimeline(jsPsych, { includeSimpleRT: false });
-      expect(withoutSimple.timeline.length).toBeLessThan(withSimple.timeline.length);
-    });
-
-    it("should skip choice RT when includeChoiceRT is false", () => {
-      const jsPsych = initJsPsych();
-      const withChoice = createTimeline(jsPsych, { includeChoiceRT: true });
-      const withoutChoice = createTimeline(jsPsych, { includeChoiceRT: false });
-      expect(withoutChoice.timeline.length).toBeLessThan(withChoice.timeline.length);
-    });
-
     it("should skip practice when showPractice is false", () => {
       const jsPsych = initJsPsych();
       const withPractice = createTimeline(jsPsych, { showPractice: true });
@@ -60,7 +46,7 @@ describe("Choice RT Timeline", () => {
         createTimeline(jsPsych, { showInstructions: true }).timeline
       );
 
-      expect(displayElement.innerHTML).toContain("Reaction Time Task");
+      expect(displayElement.innerHTML).toContain("Choice Reaction Time");
     });
   });
 
@@ -69,28 +55,28 @@ describe("Choice RT Timeline", () => {
       const jsPsych = initJsPsych();
       const scores = utils.scoring.calculateScores(jsPsych.data.get());
 
-      expect(scores.simpleRT).toBeNull();
-      expect(scores.choiceRT).toBeNull();
-      expect(scores.choiceCost).toBeNull();
-      expect(scores.simpleAccuracy).toBe(0);
-      expect(scores.choiceAccuracy).toBe(0);
+      expect(scores.meanRT).toBeNull();
+      expect(scores.rtStd).toBeNull();
+      expect(scores.accuracy).toBe(0);
+      expect(scores.totalTrials).toBe(0);
+      expect(scores.correctTrials).toBe(0);
+      expect(scores.incorrectTrials).toBe(0);
+      expect(scores.anticipatedResponses).toBe(0);
+      expect(scores.timeoutResponses).toBe(0);
     });
 
     it("should have correct scoring structure", () => {
       const jsPsych = initJsPsych();
       const scores = utils.scoring.calculateScores(jsPsych.data.get());
 
-      expect(scores).toHaveProperty("simpleRT");
-      expect(scores).toHaveProperty("choiceRT");
-      expect(scores).toHaveProperty("choiceCost");
-      expect(scores).toHaveProperty("simpleAccuracy");
-      expect(scores).toHaveProperty("choiceAccuracy");
-      expect(scores).toHaveProperty("simpleTrials");
-      expect(scores).toHaveProperty("choiceTrials");
+      expect(scores).toHaveProperty("meanRT");
+      expect(scores).toHaveProperty("rtStd");
+      expect(scores).toHaveProperty("accuracy");
+      expect(scores).toHaveProperty("totalTrials");
+      expect(scores).toHaveProperty("correctTrials");
+      expect(scores).toHaveProperty("incorrectTrials");
       expect(scores).toHaveProperty("anticipatedResponses");
       expect(scores).toHaveProperty("timeoutResponses");
-      expect(scores).toHaveProperty("simpleRTStd");
-      expect(scores).toHaveProperty("choiceRTStd");
     });
   });
 
@@ -113,26 +99,24 @@ describe("Choice RT Timeline", () => {
 
     it("should have valid default options", () => {
       const defaults = utils.constants.DEFAULT_OPTIONS;
-      expect(defaults.trialsPerBlock).toBe(20);
+      expect(defaults.numTrials).toBe(20);
       expect(defaults.foreperiodMin).toBe(500);
       expect(defaults.foreperiodMax).toBe(1500);
       expect(defaults.responseTimeout).toBe(1500);
       expect(defaults.minValidRT).toBe(100);
-      expect(defaults.includeSimpleRT).toBe(true);
-      expect(defaults.includeChoiceRT).toBe(true);
+      expect(defaults.stimulusColor1).toBe("#4A90D9");
+      expect(defaults.stimulusColor2).toBe("#E8913A");
     });
   });
 
   describe("timelineUnits", () => {
     it("should export timeline unit functions", () => {
       expect(typeof timelineUnits.createInstructionTrials).toBe("function");
-      expect(typeof timelineUnits.createSimpleRTTrial).toBe("function");
       expect(typeof timelineUnits.createChoiceRTTrial).toBe("function");
-      expect(typeof timelineUnits.createSimpleRTBlock).toBe("function");
-      expect(typeof timelineUnits.createChoiceRTBlock).toBe("function");
+      expect(typeof timelineUnits.createTrialBlock).toBe("function");
       expect(typeof timelineUnits.createCompletionTrial).toBe("function");
       expect(typeof timelineUnits.generateForeperiod).toBe("function");
-      expect(typeof timelineUnits.generateChoiceSequence).toBe("function");
+      expect(typeof timelineUnits.generateStimulusSequence).toBe("function");
       expect(typeof timelineUnits.createStimulusHTML).toBe("function");
       expect(typeof timelineUnits.createFixationHTML).toBe("function");
     });
@@ -157,24 +141,24 @@ describe("Choice RT Timeline", () => {
     });
   });
 
-  describe("choice sequence generation", () => {
+  describe("stimulus sequence generation", () => {
     it("should generate correct number of trials", () => {
-      const sequence = timelineUnits.generateChoiceSequence(20);
+      const sequence = timelineUnits.generateStimulusSequence(20);
       expect(sequence.length).toBe(20);
     });
 
-    it("should have balanced left/right", () => {
-      const sequence = timelineUnits.generateChoiceSequence(20);
-      const leftCount = sequence.filter((s) => s === "left").length;
-      const rightCount = sequence.filter((s) => s === "right").length;
-      expect(leftCount).toBe(10);
-      expect(rightCount).toBe(10);
+    it("should have balanced stimulus types", () => {
+      const sequence = timelineUnits.generateStimulusSequence(20);
+      const count1 = sequence.filter((s) => s === 1).length;
+      const count2 = sequence.filter((s) => s === 2).length;
+      expect(count1).toBe(10);
+      expect(count2).toBe(10);
     });
 
     it("should shuffle the sequence", () => {
       const results: string[] = [];
       for (let i = 0; i < 10; i++) {
-        const sequence = timelineUnits.generateChoiceSequence(10);
+        const sequence = timelineUnits.generateStimulusSequence(10);
         results.push(sequence.join(","));
       }
       const unique = new Set(results);
@@ -184,24 +168,14 @@ describe("Choice RT Timeline", () => {
 
   describe("stimulus HTML generation", () => {
     it("should create stimulus with correct color", () => {
-      const html = timelineUnits.createStimulusHTML("#FF0000", 60, "center", 150);
+      const html = timelineUnits.createStimulusHTML("#FF0000", 60);
       expect(html).toContain("background-color: #FF0000");
     });
 
     it("should create stimulus with correct size", () => {
-      const html = timelineUnits.createStimulusHTML("#FF0000", 80, "center", 150);
+      const html = timelineUnits.createStimulusHTML("#FF0000", 80);
       expect(html).toContain("width: 80px");
       expect(html).toContain("height: 80px");
-    });
-
-    it("should position left stimulus correctly", () => {
-      const html = timelineUnits.createStimulusHTML("#FF0000", 60, "left", 150);
-      expect(html).toContain("margin-right");
-    });
-
-    it("should position right stimulus correctly", () => {
-      const html = timelineUnits.createStimulusHTML("#FF0000", 60, "right", 150);
-      expect(html).toContain("margin-left");
     });
   });
 
@@ -242,12 +216,11 @@ describe("Choice RT Timeline", () => {
   });
 
   describe("configuration options", () => {
-    it("should accept custom trials per block", () => {
+    it("should accept custom number of trials", () => {
       const jsPsych = initJsPsych();
       const timeline = createTimeline(jsPsych, {
-        trialsPerBlock: 10,
+        numTrials: 10,
       });
-
       expect(timeline.timeline).toBeDefined();
     });
 
@@ -257,7 +230,6 @@ describe("Choice RT Timeline", () => {
         foreperiodMin: 300,
         foreperiodMax: 800,
       });
-
       expect(timeline.timeline).toBeDefined();
     });
 
@@ -266,16 +238,15 @@ describe("Choice RT Timeline", () => {
       const timeline = createTimeline(jsPsych, {
         responseTimeout: 2000,
       });
-
       expect(timeline.timeline).toBeDefined();
     });
 
-    it("should accept custom stimulus color", () => {
+    it("should accept custom stimulus colors", () => {
       const jsPsych = initJsPsych();
       const timeline = createTimeline(jsPsych, {
-        stimulusColor: "#00FF00",
+        stimulusColor1: "#00FF00",
+        stimulusColor2: "#FF0000",
       });
-
       expect(timeline.timeline).toBeDefined();
     });
 
@@ -284,16 +255,6 @@ describe("Choice RT Timeline", () => {
       const timeline = createTimeline(jsPsych, {
         stimulusSize: 80,
       });
-
-      expect(timeline.timeline).toBeDefined();
-    });
-
-    it("should accept custom stimulus offset", () => {
-      const jsPsych = initJsPsych();
-      const timeline = createTimeline(jsPsych, {
-        stimulusOffset: 200,
-      });
-
       expect(timeline.timeline).toBeDefined();
     });
 
@@ -302,7 +263,6 @@ describe("Choice RT Timeline", () => {
       const timeline = createTimeline(jsPsych, {
         minValidRT: 150,
       });
-
       expect(timeline.timeline).toBeDefined();
     });
 
@@ -311,7 +271,6 @@ describe("Choice RT Timeline", () => {
       const timeline = createTimeline(jsPsych, {
         iti: 750,
       });
-
       expect(timeline.timeline).toBeDefined();
     });
   });
@@ -320,12 +279,10 @@ describe("Choice RT Timeline", () => {
     it("should have all required text fields", () => {
       expect(utils.text.continue_button).toBeDefined();
       expect(utils.text.start_button).toBeDefined();
-      expect(utils.text.respond_button).toBeDefined();
-      expect(utils.text.left_button).toBeDefined();
-      expect(utils.text.right_button).toBeDefined();
+      expect(utils.text.button_1).toBeDefined();
+      expect(utils.text.button_2).toBeDefined();
       expect(utils.text.instruction_intro).toBeDefined();
-      expect(utils.text.instruction_simple).toBeDefined();
-      expect(utils.text.instruction_choice).toBeDefined();
+      expect(utils.text.instruction_task).toBeDefined();
       expect(utils.text.instruction_practice).toBeDefined();
       expect(utils.text.feedback_correct).toBeDefined();
       expect(utils.text.feedback_incorrect).toBeDefined();
@@ -336,71 +293,36 @@ describe("Choice RT Timeline", () => {
     });
   });
 
-  describe("simple RT trial creation", () => {
-    it("should create simple RT trial", () => {
-      const jsPsych = initJsPsych();
-      const config = {
-        ...utils.constants.DEFAULT_OPTIONS,
-        text: utils.text,
-      };
-      const trial = timelineUnits.createSimpleRTTrial(jsPsych, config, 1, false);
-      expect(trial.timeline).toBeDefined();
-      expect(trial.timeline.length).toBeGreaterThan(0);
-    });
-  });
-
   describe("choice RT trial creation", () => {
-    it("should create choice RT trial with left stimulus", () => {
+    it("should create choice RT trial with stimulus type 1", () => {
       const jsPsych = initJsPsych();
       const config = {
         ...utils.constants.DEFAULT_OPTIONS,
         text: utils.text,
       };
-      const trial = timelineUnits.createChoiceRTTrial(
-        jsPsych,
-        config,
-        "left",
-        1,
-        false
-      );
+      const trial = timelineUnits.createChoiceRTTrial(jsPsych, config, 1, 1, false);
       expect(trial.timeline).toBeDefined();
     });
 
-    it("should create choice RT trial with right stimulus", () => {
+    it("should create choice RT trial with stimulus type 2", () => {
       const jsPsych = initJsPsych();
       const config = {
         ...utils.constants.DEFAULT_OPTIONS,
         text: utils.text,
       };
-      const trial = timelineUnits.createChoiceRTTrial(
-        jsPsych,
-        config,
-        "right",
-        1,
-        false
-      );
+      const trial = timelineUnits.createChoiceRTTrial(jsPsych, config, 2, 1, false);
       expect(trial.timeline).toBeDefined();
     });
   });
 
   describe("block creation", () => {
-    it("should create simple RT block with correct number of trials", () => {
+    it("should create trial block with correct number of trials", () => {
       const jsPsych = initJsPsych();
       const config = {
         ...utils.constants.DEFAULT_OPTIONS,
         text: utils.text,
       };
-      const block = timelineUnits.createSimpleRTBlock(jsPsych, config, 10, false);
-      expect(block.timeline.length).toBe(10);
-    });
-
-    it("should create choice RT block with correct number of trials", () => {
-      const jsPsych = initJsPsych();
-      const config = {
-        ...utils.constants.DEFAULT_OPTIONS,
-        text: utils.text,
-      };
-      const block = timelineUnits.createChoiceRTBlock(jsPsych, config, 10, false);
+      const block = timelineUnits.createTrialBlock(jsPsych, config, 10, false);
       expect(block.timeline.length).toBe(10);
     });
   });

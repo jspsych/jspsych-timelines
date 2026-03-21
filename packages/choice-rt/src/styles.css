@@ -1,11 +1,20 @@
 /* Choice RT Task Styles */
 
-/* Trial content container - fixed height prevents button movement */
+/* Trial content container - fixed dimensions prevent button movement */
 .trial-content {
   min-height: 100px;
+  width: 150px;
+  margin: 0 auto;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+/* Larger buttons for all layouts */
+.jspsych-btn {
+  min-height: 48px;
+  min-width: 100px;
+  font-size: 16px;
 }
 
 /* Instructions container */
