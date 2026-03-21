@@ -297,7 +297,7 @@ describe("Fitts Timeline", () => {
       expect(utils.text.orientation_message).toBeDefined();
       expect(utils.text.instruction_intro).toBeDefined();
       expect(utils.text.instruction_practice).toBeDefined();
-      expect(utils.text.instruction_main).toBeDefined();
+      expect(utils.text.instruction_task).toBeDefined();
       expect(utils.text.ready_prompt).toBeDefined();
       expect(utils.text.task_complete).toBeDefined();
       expect(typeof utils.text.result_summary).toBe("function");

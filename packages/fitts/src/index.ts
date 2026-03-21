@@ -209,7 +209,7 @@ function createInstructionTrials(
       buttonLabel = config.text.start_button;
       break;
     case "main":
-      stimulus = config.text.instruction_main;
+      stimulus = config.text.instruction_task;
       buttonLabel = config.text.start_button;
       break;
     default:

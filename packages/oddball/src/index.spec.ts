@@ -279,7 +279,7 @@ describe("Oddball Timeline", () => {
       expect(utils.text.respond_button).toBeDefined();
       expect(utils.text.instruction_intro).toBeDefined();
       expect(utils.text.instruction_practice).toBeDefined();
-      expect(utils.text.instruction_main).toBeDefined();
+      expect(utils.text.instruction_task).toBeDefined();
       expect(utils.text.feedback_hit).toBeDefined();
       expect(utils.text.feedback_false_alarm).toBeDefined();
       expect(utils.text.feedback_miss).toBeDefined();
