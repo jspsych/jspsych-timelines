@@ -38,7 +38,7 @@ export const defaultText: TextConfig = {
   start_button: "Start",
 
   instruction_intro: `
-    <div style="max-width: 600px; margin: 0 auto; text-align: left;">
+    <div class="instructions">
       <h2>Paired Associates Task</h2>
       <p>In this task, you will learn pairs of words.</p>
       <p>First, you will see word pairs one at a time. Try to remember which words go together.</p>
@@ -47,7 +47,7 @@ export const defaultText: TextConfig = {
   `,
 
   instruction_study: `
-    <div style="max-width: 600px; margin: 0 auto;">
+    <div class="instructions">
       <h3>Study Phase</h3>
       <p>You will now see word pairs. Try to remember which words are paired together.</p>
       <p>Pay attention - you will be tested on these pairs!</p>
@@ -55,7 +55,7 @@ export const defaultText: TextConfig = {
   `,
 
   instruction_test: `
-    <div style="max-width: 600px; margin: 0 auto;">
+    <div class="instructions">
       <h3>Test Phase</h3>
       <p>Now you will be tested on the word pairs.</p>
       <p>For each word shown, select the word that was paired with it.</p>
@@ -87,7 +87,7 @@ export const defaultText: TextConfig = {
   `,
 
   round_complete: (round: number, correct: number, total: number) => `
-    <div style="max-width: 600px; margin: 0 auto;">
+    <div class="instructions">
       <h3>Round ${round} Complete</h3>
       <p>You got <strong>${correct} out of ${total}</strong> correct.</p>
       ${correct === total
@@ -104,7 +104,7 @@ export const defaultText: TextConfig = {
     totalTrials: number,
     roundsToLearn: number | null
   ) => `
-    <div style="max-width: 600px; margin: 0 auto; text-align: left;">
+    <div class="instructions">
       <h3>Your Results</h3>
       <p>Final accuracy: <strong>${totalCorrect} / ${totalTrials}</strong> pairs correct</p>
       ${roundsToLearn !== null

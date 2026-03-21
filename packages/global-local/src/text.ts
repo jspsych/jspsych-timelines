@@ -45,7 +45,7 @@ export const defaultText: TextConfig = {
   start_button: "Start",
 
   instruction_intro: `
-    <div style="max-width: 600px; margin: 0 auto; text-align: left;">
+    <div class="instructions">
       <h2>Global-Local Task</h2>
       <p>In this task, you will see large letters made up of smaller letters.</p>
       <p>For example, a large <strong>H</strong> might be made of small <strong>S</strong> letters.</p>
@@ -54,7 +54,7 @@ export const defaultText: TextConfig = {
   `,
 
   instruction_global: `
-    <div style="max-width: 600px; margin: 0 auto;">
+    <div class="instructions">
       <h3>Global Block</h3>
       <p>Focus on the <strong>LARGE letter</strong> (the overall shape).</p>
       <p>Ignore the small letters that make up the shape.</p>
@@ -63,7 +63,7 @@ export const defaultText: TextConfig = {
   `,
 
   instruction_local: `
-    <div style="max-width: 600px; margin: 0 auto;">
+    <div class="instructions">
       <h3>Local Block</h3>
       <p>Focus on the <strong>SMALL letters</strong> that make up the shape.</p>
       <p>Ignore the overall large letter shape.</p>
@@ -72,7 +72,7 @@ export const defaultText: TextConfig = {
   `,
 
   instruction_mixed: `
-    <div style="max-width: 600px; margin: 0 auto;">
+    <div class="instructions">
       <h3>Mixed Block</h3>
       <p>In this block, you will switch between focusing on the <strong>large letter</strong> and the <strong>small letters</strong>.</p>
       <p>A cue will tell you which to focus on before each trial.</p>
@@ -80,7 +80,7 @@ export const defaultText: TextConfig = {
   `,
 
   instruction_practice: `
-    <div style="max-width: 600px; margin: 0 auto;">
+    <div class="instructions">
       <h3>Practice</h3>
       <p>Let's try a few practice trials. You will receive feedback.</p>
     </div>
@@ -103,7 +103,7 @@ export const defaultText: TextConfig = {
     congruentRT: number,
     incongruentRT: number
   ) => `
-    <div style="max-width: 600px; margin: 0 auto; text-align: left;">
+    <div class="instructions">
       <h3>Your Results</h3>
       <p><strong>Global trials:</strong> ${globalAcc.toFixed(1)}% accuracy, ${(globalRT / 1000).toFixed(2)}s avg RT</p>
       <p><strong>Local trials:</strong> ${localAcc.toFixed(1)}% accuracy, ${(localRT / 1000).toFixed(2)}s avg RT</p>

@@ -18,7 +18,7 @@ export const trial_text = {
     // -- COMPLETION --
     task_complete: "Task Complete",
     result_summary: (accuracy: number, dPrime: number | null, meanHitRT: number | null) => {
-        let html = `<div style="max-width: 600px; margin: 0 auto;">`;
+        let html = `<div class="instructions">`;
         html += `<p><strong>Accuracy:</strong> ${(accuracy * 100).toFixed(1)}%</p>`;
         if (dPrime !== null) {
             html += `<p><strong>d':</strong> ${dPrime.toFixed(2)}</p>`;

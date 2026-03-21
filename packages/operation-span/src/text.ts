@@ -5,30 +5,30 @@
 export const defaultText = {
   // -- INSTRUCTION PAGES --
   instruction_pages: [
-    `<div style="max-width: 600px; margin: 0 auto; text-align: left;">
+    `<div class="instructions">
       <h2>Memory and Math Task</h2>
       <p>In this task, you will solve math problems while remembering letters.</p>
     </div>`,
-    `<div style="max-width: 600px; margin: 0 auto; text-align: left;">
+    `<div class="instructions">
       <h2>Math Problems</h2>
       <p>You will see math equations like:</p>
       <p style="text-align: center; font-size: 24px;">(3 + 2) - 1 = 4</p>
       <p>Decide if the answer shown is <strong>TRUE</strong> or <strong>FALSE</strong>.</p>
       <p>Try to respond quickly and accurately!</p>
     </div>`,
-    `<div style="max-width: 600px; margin: 0 auto; text-align: left;">
+    `<div class="instructions">
       <h2>Remember Letters</h2>
       <p>After each math problem, a letter will appear briefly.</p>
       <p style="text-align: center; font-size: 48px; margin: 20px;">F</p>
       <p>Remember the letter! You'll need to recall it later.</p>
     </div>`,
-    `<div style="max-width: 600px; margin: 0 auto; text-align: left;">
+    `<div class="instructions">
       <h2>Recall Phase</h2>
       <p>After several math-letter pairs, you'll see a grid of letters.</p>
       <p>Click the letters <strong>in the order you saw them</strong>.</p>
       <p>If you forget a letter, use the <strong>Blank</strong> button.</p>
     </div>`,
-    `<div style="max-width: 600px; margin: 0 auto; text-align: left;">
+    `<div class="instructions">
       <h2>Ready?</h2>
       <p>Remember:</p>
       <ul>

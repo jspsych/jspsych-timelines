@@ -74,7 +74,7 @@ export const trial_text = {
   // -- COMPLETION --
   task_complete: 'Task Complete',
   result_summary: (goAccuracy: number, nogoAccuracy: number, commissionErrors: number) => {
-    let html = `<div style="max-width: 600px; margin: 0 auto;">`;
+    let html = `<div class="instructions">`;
     html += `<p><strong>Go Accuracy:</strong> ${(goAccuracy * 100).toFixed(1)}%</p>`;
     html += `<p><strong>No-Go Accuracy:</strong> ${(nogoAccuracy * 100).toFixed(1)}%</p>`;
     html += `<p><strong>Commission Errors:</strong> ${commissionErrors}</p>`;

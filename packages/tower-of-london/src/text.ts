@@ -34,7 +34,7 @@ export const defaultText: TextConfig = {
   start_button: "Start",
 
   instruction_intro: `
-    <div style="max-width: 600px; margin: 0 auto; text-align: left;">
+    <div class="instructions">
       <h2>Tower of London Task</h2>
       <p>In this task, you will see colored balls arranged on pegs. Your goal is to
       rearrange the balls to match a target configuration shown on the screen.</p>
@@ -42,7 +42,7 @@ export const defaultText: TextConfig = {
   `,
 
   instruction_task: `
-    <div style="max-width: 600px; margin: 0 auto; text-align: left;">
+    <div class="instructions">
       <h3>How to Play</h3>
       <ul>
         <li><strong>Click a peg</strong> with balls to select the top ball</li>
@@ -55,14 +55,14 @@ export const defaultText: TextConfig = {
   `,
 
   instruction_practice: `
-    <div style="max-width: 600px; margin: 0 auto;">
+    <div class="instructions">
       <h3>Practice Trial</h3>
       <p>Let's try a practice puzzle to get familiar with the task.</p>
     </div>
   `,
 
   instruction_test: `
-    <div style="max-width: 600px; margin: 0 auto;">
+    <div class="instructions">
       <h3>Main Task</h3>
       <p>Now you will complete a series of puzzles. Try to solve each one in as few
       moves as possible.</p>
@@ -73,13 +73,13 @@ export const defaultText: TextConfig = {
   trial_prompt: "<p>Move the balls to match the goal configuration.</p>",
 
   practice_complete: `
-    <div style="max-width: 600px; margin: 0 auto;">
+    <div class="instructions">
       <p>Practice complete! You're ready for the main task.</p>
     </div>
   `,
 
   practice_feedback_solved: (moves: number, optimal: number) => `
-    <div style="max-width: 600px; margin: 0 auto;">
+    <div class="instructions">
       <h3>Puzzle Solved!</h3>
       <p>You completed the puzzle in <strong>${moves} ${moves === 1 ? "move" : "moves"}</strong>.</p>
       ${moves === optimal
@@ -90,7 +90,7 @@ export const defaultText: TextConfig = {
   `,
 
   practice_feedback_not_solved: `
-    <div style="max-width: 600px; margin: 0 auto;">
+    <div class="instructions">
       <h3>Time's Up</h3>
       <p>Don't worry - this was just for practice. Let's continue.</p>
     </div>
@@ -99,7 +99,7 @@ export const defaultText: TextConfig = {
   task_complete: "Task Complete",
 
   result_summary: (solved: number, total: number, avgMoves: number) => `
-    <div style="max-width: 600px; margin: 0 auto;">
+    <div class="instructions">
       <p>You solved <strong>${solved} out of ${total}</strong> puzzles.</p>
       <p>Average moves per solved puzzle: <strong>${avgMoves.toFixed(1)}</strong></p>
     </div>

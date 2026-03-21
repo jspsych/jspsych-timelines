@@ -4,13 +4,13 @@
  */
 export const defaultText = {
   // -- INSTRUCTION PAGES --
-  instruction_intro: `<div style="max-width: 600px; margin: 0 auto; text-align: left;">
+  instruction_intro: `<div class="instructions">
     <h2>Flanker Task</h2>
     <p>In this task, you will see a row of five arrows on each trial.</p>
     <p>Your job is to identify the direction of the <strong>CENTER</strong> arrow and ignore the surrounding arrows.</p>
   </div>`,
 
-  instruction_response: (leftButton: string, rightButton: string, leftArrow: string, rightArrow: string) => `<div style="max-width: 600px; margin: 0 auto; text-align: left;">
+  instruction_response: (leftButton: string, rightButton: string, leftArrow: string, rightArrow: string) => `<div class="instructions">
     <h2>How to Respond</h2>
     <p>If the center arrow points <strong>LEFT</strong> ${leftArrow}, tap the <strong>${leftButton}</strong> button.</p>
     <p>If the center arrow points <strong>RIGHT</strong> ${rightArrow}, tap the <strong>${rightButton}</strong> button.</p>
@@ -24,7 +24,7 @@ export const defaultText = {
   instruction_success: "Correct!",
   instruction_failure: "That's not right. Try again!",
 
-  instruction_practice_intro: `<div style="max-width: 600px; margin: 0 auto; text-align: left;">
+  instruction_practice_intro: `<div class="instructions">
     <h2>Practice</h2>
     <p>Now you will do some practice trials.</p>
     <p>Try to respond as quickly and accurately as possible.</p>
@@ -50,7 +50,7 @@ export const defaultText = {
   // -- COMPLETION --
   task_complete: "Task Complete",
   result_summary: (accuracy: number, flankerEffectRT: number | null, meanRT: number | null) => {
-    let html = `<div style="max-width: 600px; margin: 0 auto;">`;
+    let html = `<div class="instructions">`;
     html += `<p><strong>Overall Accuracy:</strong> ${(accuracy * 100).toFixed(1)}%</p>`;
     if (flankerEffectRT !== null) {
       html += `<p><strong>Flanker Effect (RT):</strong> ${flankerEffectRT.toFixed(0)} ms</p>`;

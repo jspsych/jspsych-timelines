@@ -14,7 +14,7 @@ export interface TextConfig {
   /** Practice instruction */
   instruction_practice: string;
   /** Main task instruction */
-  instruction_main: string;
+  instruction_task: string;
   /** Feedback for correct response (hit) */
   feedback_hit: string;
   /** Feedback for incorrect response (false alarm) */
@@ -40,7 +40,7 @@ export const defaultText: TextConfig = {
   respond_button: "Respond",
 
   instruction_intro: `
-    <div style="max-width: 600px; margin: 0 auto; text-align: left;">
+    <div class="instructions">
       <h2>Oddball Task</h2>
       <p>In this task, you will see colored circles appear on the screen.</p>
       <p>Most circles will be one color (the <strong>standard</strong>).</p>
@@ -51,15 +51,15 @@ export const defaultText: TextConfig = {
   `,
 
   instruction_practice: `
-    <div style="max-width: 600px; margin: 0 auto;">
+    <div class="instructions">
       <h3>Practice</h3>
       <p>Let's try a few practice trials. You will receive feedback.</p>
       <p>Remember: Only respond to the <strong>target</strong> (different color).</p>
     </div>
   `,
 
-  instruction_main: `
-    <div style="max-width: 600px; margin: 0 auto;">
+  instruction_task: `
+    <div class="instructions">
       <h3>Main Task</h3>
       <p>Now you will complete the main task.</p>
       <p>Remember: Only respond to the <strong>target</strong> color.</p>
@@ -80,7 +80,7 @@ export const defaultText: TextConfig = {
     dPrime: number | null,
     averageRT: number | null
   ) => `
-    <div style="max-width: 600px; margin: 0 auto; text-align: left;">
+    <div class="instructions">
       <h3>Your Results</h3>
       <p><strong>Hit rate:</strong> ${(hitRate * 100).toFixed(1)}% (targets correctly detected)</p>
       <p><strong>False alarm rate:</strong> ${(falseAlarmRate * 100).toFixed(1)}% (standards incorrectly responded to)</p>

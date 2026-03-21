@@ -34,7 +34,7 @@ export const defaultText: TextConfig = {
   start_button: "Start",
 
   instruction_intro: `
-    <div style="max-width: 600px; margin: 0 auto; text-align: left;">
+    <div class="instructions">
       <h2>Plus-Minus Task</h2>
       <p>In this task, you will see numbers and perform simple arithmetic.</p>
       <p>You will complete three blocks:</p>
@@ -48,7 +48,7 @@ export const defaultText: TextConfig = {
   `,
 
   instruction_add: `
-    <div style="max-width: 600px; margin: 0 auto;">
+    <div class="instructions">
       <h3>Addition Block</h3>
       <p>For each number, <strong>add 3</strong> and type your answer.</p>
       <p>Work as quickly and accurately as possible.</p>
@@ -56,7 +56,7 @@ export const defaultText: TextConfig = {
   `,
 
   instruction_subtract: `
-    <div style="max-width: 600px; margin: 0 auto;">
+    <div class="instructions">
       <h3>Subtraction Block</h3>
       <p>For each number, <strong>subtract 3</strong> and type your answer.</p>
       <p>Work as quickly and accurately as possible.</p>
@@ -64,7 +64,7 @@ export const defaultText: TextConfig = {
   `,
 
   instruction_alternate: `
-    <div style="max-width: 600px; margin: 0 auto;">
+    <div class="instructions">
       <h3>Alternating Block</h3>
       <p>Now you will <strong>alternate</strong> between adding and subtracting 3.</p>
       <p>The first number: <strong>ADD 3</strong></p>
@@ -76,7 +76,7 @@ export const defaultText: TextConfig = {
   `,
 
   instruction_practice: `
-    <div style="max-width: 600px; margin: 0 auto;">
+    <div class="instructions">
       <h3>Practice</h3>
       <p>Let's try a few practice trials first.</p>
     </div>
@@ -87,7 +87,7 @@ export const defaultText: TextConfig = {
   feedback_incorrect: `<p style="font-size: 24px; color: red;"><strong>Incorrect</strong></p>`,
 
   block_complete: (blockName: string, time: number) => `
-    <div style="max-width: 600px; margin: 0 auto;">
+    <div class="instructions">
       <h3>${blockName} Complete</h3>
       <p>Time: <strong>${(time / 1000).toFixed(2)} seconds</strong></p>
     </div>
@@ -96,7 +96,7 @@ export const defaultText: TextConfig = {
   task_complete: "Task Complete",
 
   result_summary: (addTime: number, subTime: number, altTime: number, switchCost: number) => `
-    <div style="max-width: 600px; margin: 0 auto; text-align: left;">
+    <div class="instructions">
       <h3>Your Results</h3>
       <p>Addition block: <strong>${(addTime / 1000).toFixed(2)}s</strong></p>
       <p>Subtraction block: <strong>${(subTime / 1000).toFixed(2)}s</strong></p>

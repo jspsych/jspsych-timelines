@@ -14,7 +14,7 @@ export interface TextConfig {
   /** Practice instruction */
   instruction_practice: string;
   /** Main task instruction */
-  instruction_main: string;
+  instruction_task: string;
   /** Ready prompt before each trial */
   ready_prompt: string;
   /** Task complete header */
@@ -34,7 +34,7 @@ export const defaultText: TextConfig = {
   orientation_message: `<p style="font-size: 24px;">Please rotate your device to <strong>landscape</strong> mode to continue.</p>`,
 
   instruction_intro: `
-    <div style="max-width: 600px; margin: 0 auto; text-align: left;">
+    <div class="instructions">
       <h2>Tapping Task</h2>
       <p>In this task, you will tap on targets as quickly as possible.</p>
       <p>A target bar will appear on either the left or right side of the screen.</p>
@@ -45,14 +45,14 @@ export const defaultText: TextConfig = {
   `,
 
   instruction_practice: `
-    <div style="max-width: 600px; margin: 0 auto;">
+    <div class="instructions">
       <h3>Practice</h3>
       <p>Let's try a few practice trials to get used to the task.</p>
     </div>
   `,
 
-  instruction_main: `
-    <div style="max-width: 600px; margin: 0 auto;">
+  instruction_task: `
+    <div class="instructions">
       <h3>Main Task</h3>
       <p>Now you will complete the main task.</p>
       <p>Tap each target as quickly as you can.</p>
@@ -68,7 +68,7 @@ export const defaultText: TextConfig = {
     accuracy: number,
     throughput: number | null
   ) => `
-    <div style="max-width: 600px; margin: 0 auto; text-align: left;">
+    <div class="instructions">
       <h3>Your Results</h3>
       <p><strong>Average movement time:</strong> ${averageMT.toFixed(0)}ms</p>
       <p><strong>Accuracy:</strong> ${accuracy.toFixed(1)}%</p>
