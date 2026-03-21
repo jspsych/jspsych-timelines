@@ -2,7 +2,7 @@
 
 /* Trial content container - fixed height prevents button movement */
 .trial-content {
-  min-height: 100px;
+  min-height: 120px;
   display: flex;
   justify-content: center;
   align-items: center;
