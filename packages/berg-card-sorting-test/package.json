@@ -1,5 +1,5 @@
 {
-    "name": "@jspsych-timelines/bcst",
+    "name": "@jspsych-timelines/berg-card-sorting-test",
     "version": "0.0.1",
     "description": "Berg Card Sorting Test (Wisconsin Card Sort variant) for measuring cognitive flexibility and set-shifting.",
     "type": "module",
@@ -7,16 +7,17 @@
     "types": "dist/index.d.ts",
     "unpkg": "dist/index.browser.js",
     "scripts": {
-        "build": "tsup src/index.ts --format esm,iife,cjs --sourcemap --dts --treeshake --clean --global-name jsPsychTimelineBcst --inject-style && node -e \"require('fs').renameSync('dist/index.global.js','dist/index.browser.js')\" && node -e \"require('fs').renameSync('dist/index.global.js.map','dist/index.browser.js.map')\"",
+        "build": "tsup src/index.ts --format esm,iife,cjs --sourcemap --dts --treeshake --clean --global-name jsPsychTimelineBergCardSortingTest --inject-style && node -e \"require('fs').renameSync('dist/index.global.js','dist/index.browser.js')\" && node -e \"require('fs').renameSync('dist/index.global.js.map','dist/index.browser.js.map')\"",
         "test": "jest"
     },
     "repository": {
         "type": "git",
         "url": "git+https://github.com/jspsych/jspsych-timelines.git",
-        "directory": "packages/bcst"
+        "directory": "packages/berg-card-sorting-test"
     },
     "keywords": [
         "jsPsych",
+        "berg-card-sorting-test",
         "bcst",
         "wcst",
         "card sorting",
@@ -33,7 +34,7 @@
     "bugs": {
         "url": "https://github.com/jspsych/jspsych-timelines/issues"
     },
-    "homepage": "https://github.com/jspsych/jspsych-timelines/tree/main/packages/bcst#readme",
+    "homepage": "https://github.com/jspsych/jspsych-timelines/tree/main/packages/berg-card-sorting-test#readme",
     "peerDependencies": {
         "jspsych": ">=8.0.0"
     },

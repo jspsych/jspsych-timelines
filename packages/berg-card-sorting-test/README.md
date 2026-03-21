@@ -5,14 +5,14 @@ A jsPsych implementation of the Berg Card Sorting Test, a measure of cognitive f
 ## Installation
 
 ```bash
-npm install @jspsych-timelines/bcst
+npm install @jspsych-timelines/berg-card-sorting-test
 ```
 
 ## Quick Start
 
 ```javascript
 import { initJsPsych } from "jspsych";
-import { createTimeline, utils } from "@jspsych-timelines/bcst";
+import { createTimeline, utils } from "@jspsych-timelines/berg-card-sorting-test";
 
 const jsPsych = initJsPsych({
   on_finish: () => {
@@ -67,7 +67,7 @@ Rules cycle in fixed order: **Color → Shape → Number → Color → ...**
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `task` | string | `"bcst"` |
+| `task` | string | `"berg-card-sorting-test"` |
 | `task_version` | string | Package version |
 | `trial_number` | number | Trial number (1-indexed) |
 | `stimulus_color` | string | Stimulus card color |
@@ -85,7 +85,7 @@ Rules cycle in fixed order: **Color → Shape → Number → Color → ...**
 ## Scoring
 
 ```javascript
-import { utils } from "@jspsych-timelines/bcst";
+import { utils } from "@jspsych-timelines/berg-card-sorting-test";
 
 const scores = utils.scoring.getSummary(jsPsych.data.get());
 ```
@@ -129,7 +129,7 @@ const timeline = createTimeline(jsPsych, { text: spanishText });
 For custom experiments:
 
 ```javascript
-import { timelineUnits } from "@jspsych-timelines/bcst";
+import { timelineUnits } from "@jspsych-timelines/berg-card-sorting-test";
 
 // Available units:
 // - createInstructionTrials(config)

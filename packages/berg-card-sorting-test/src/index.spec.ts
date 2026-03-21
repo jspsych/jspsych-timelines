@@ -179,7 +179,7 @@ describe("Berg Card Sorting Test", () => {
     it("should calculate accuracy correctly", () => {
       const dataCollection = jsPsych.data.get();
       dataCollection.push({
-        task: "bcst",
+        task: "berg-card-sorting-test",
         phase: "test",
         part: "sorting",
         correct: true,
@@ -188,7 +188,7 @@ describe("Berg Card Sorting Test", () => {
         rt: 500,
       });
       dataCollection.push({
-        task: "bcst",
+        task: "berg-card-sorting-test",
         phase: "test",
         part: "sorting",
         correct: true,
@@ -197,7 +197,7 @@ describe("Berg Card Sorting Test", () => {
         rt: 600,
       });
       dataCollection.push({
-        task: "bcst",
+        task: "berg-card-sorting-test",
         phase: "test",
         part: "sorting",
         correct: false,
@@ -206,7 +206,7 @@ describe("Berg Card Sorting Test", () => {
         rt: 700,
       });
       dataCollection.push({
-        task: "bcst",
+        task: "berg-card-sorting-test",
         phase: "test",
         part: "sorting",
         correct: true,
@@ -226,7 +226,7 @@ describe("Berg Card Sorting Test", () => {
     it("should count perseverative errors correctly", () => {
       const dataCollection = jsPsych.data.get();
       dataCollection.push({
-        task: "bcst",
+        task: "berg-card-sorting-test",
         phase: "test",
         part: "sorting",
         correct: false,
@@ -235,7 +235,7 @@ describe("Berg Card Sorting Test", () => {
         rt: 500,
       });
       dataCollection.push({
-        task: "bcst",
+        task: "berg-card-sorting-test",
         phase: "test",
         part: "sorting",
         correct: false,
@@ -244,7 +244,7 @@ describe("Berg Card Sorting Test", () => {
         rt: 600,
       });
       dataCollection.push({
-        task: "bcst",
+        task: "berg-card-sorting-test",
         phase: "test",
         part: "sorting",
         correct: false,
@@ -263,7 +263,7 @@ describe("Berg Card Sorting Test", () => {
     it("should calculate mean RT for correct trials only", () => {
       const dataCollection = jsPsych.data.get();
       dataCollection.push({
-        task: "bcst",
+        task: "berg-card-sorting-test",
         phase: "test",
         part: "sorting",
         correct: true,
@@ -272,7 +272,7 @@ describe("Berg Card Sorting Test", () => {
         rt: 400,
       });
       dataCollection.push({
-        task: "bcst",
+        task: "berg-card-sorting-test",
         phase: "test",
         part: "sorting",
         correct: true,
@@ -281,7 +281,7 @@ describe("Berg Card Sorting Test", () => {
         rt: 600,
       });
       dataCollection.push({
-        task: "bcst",
+        task: "berg-card-sorting-test",
         phase: "test",
         part: "sorting",
         correct: false,
@@ -300,7 +300,7 @@ describe("Berg Card Sorting Test", () => {
       // Run of 4 correct = 2 conceptual level responses (trial 3 and 4)
       for (let i = 0; i < 4; i++) {
         dataCollection.push({
-          task: "bcst",
+          task: "berg-card-sorting-test",
           phase: "test",
         part: "sorting",
           correct: true,
@@ -311,7 +311,7 @@ describe("Berg Card Sorting Test", () => {
       }
       // Error breaks run
       dataCollection.push({
-        task: "bcst",
+        task: "berg-card-sorting-test",
         phase: "test",
         part: "sorting",
         correct: false,
@@ -322,7 +322,7 @@ describe("Berg Card Sorting Test", () => {
       // Another run of 3 = 1 conceptual level response
       for (let i = 0; i < 3; i++) {
         dataCollection.push({
-          task: "bcst",
+          task: "berg-card-sorting-test",
           phase: "test",
         part: "sorting",
           correct: true,
@@ -342,7 +342,7 @@ describe("Berg Card Sorting Test", () => {
       // Run of 5 correct
       for (let i = 0; i < 5; i++) {
         dataCollection.push({
-          task: "bcst",
+          task: "berg-card-sorting-test",
           phase: "test",
         part: "sorting",
           correct: true,
@@ -353,7 +353,7 @@ describe("Berg Card Sorting Test", () => {
       }
       // Error after 5 correct = failure to maintain set
       dataCollection.push({
-        task: "bcst",
+        task: "berg-card-sorting-test",
         phase: "test",
         part: "sorting",
         correct: false,
@@ -370,14 +370,14 @@ describe("Berg Card Sorting Test", () => {
     it("should include task info in getSummary", () => {
       const summary = utils.scoring.getSummary(jsPsych.data.get());
 
-      expect(summary.taskName).toBe("bcst");
+      expect(summary.taskName).toBe("berg-card-sorting-test");
       expect(summary.version).toBeDefined();
     });
   });
 
   describe("utils.constants", () => {
     it("should export task constants", () => {
-      expect(utils.constants.TASK_NAME).toBe("bcst");
+      expect(utils.constants.TASK_NAME).toBe("berg-card-sorting-test");
       expect(utils.constants.VERSION).toBeDefined();
     });
 

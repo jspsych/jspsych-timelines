@@ -41,7 +41,7 @@ Additional domain coverage, moderate complexity.
 | Task | PEBL Folder | Domain | Spec | Impl | Verify | PR |
 |------|-------------|--------|------|------|--------|-----|
 | N-Back (Spatial) | `nback` | Working Memory | ➖ | 🟢 | ⬜ | ⬜ |
-| BCST (Card Sort) | `bcst` | Executive Function | 🟢 | 🟢 | ⬜ | ⬜ |
+| BCST (Card Sort) | `berg-card-sorting-test` | Executive Function | 🟢 | 🟢 | ⬜ | ⬜ |
 | ANT | `ANT` | Attention | ➖ | ➖ | ➖ | ➖ |
 | Iowa Gambling | `iowa` | Decision Making | 🟢 | 🟢 | ⬜ | ⬜ |
 | Operation Span | `ospan` | Working Memory | 🟢 | 🟢 | ⬜ | ⬜ |
@@ -122,7 +122,7 @@ These must be built before their dependent timelines.
 | 2026-01-13 | Removed processing speed tasks from Phase 1 (Pattern Comparison and Letter-Digit not found in PEBL). Phase 1 now has 5 tasks. Processing speed tasks can be added in later phases if needed. |
 | 2026-01-13 | BART: Existing implementation updated for consistency. Added: scoring utilities (utils.scoring.getSummary with totalPoints, popRate, adjustedAvgPumps), task_version in data, renamed text_object to text parameter, TASK_NAME constant usage, TextConfig type export. Uses @jspsych-contrib/plugin-bart. |
 | 2026-01-14 | Spatial N-Back: Existing implementation updated for consistency. Added: utils.scoring (with d-prime, hit rate, false alarm rate, RT metrics), utils.constants (TASK_NAME, VERSION), utils.text export, task_version in data output. Uses @jspsych-contrib/plugin-spatial-nback. Note: This is spatial-only n-back; PEBL version includes dual n-back with audio/visual letters which could be a future extension. |
-| 2026-01-14 | BCST (Berg Card Sorting Test): New implementation complete. Features: CSS-rendered cards (no image files needed), configurable rule change threshold (runLength), perseverative response detection, comprehensive scoring (categories completed, perseverative errors, conceptual level responses, failure to maintain set), full text parameterization. Created new `bcst` package with 25 passing tests. |
+| 2026-01-14 | BCST (Berg Card Sorting Test): New implementation complete. Features: CSS-rendered cards (no image files needed), configurable rule change threshold (runLength), perseverative response detection, comprehensive scoring (categories completed, perseverative errors, conceptual level responses, failure to maintain set), full text parameterization. Created new `berg-card-sorting-test` package with 25 passing tests. |
 | 2026-01-14 | ANT skipped (similar to existing Flanker implementation). |
 | 2026-01-14 | Iowa Gambling Task: New implementation complete. Features: Classic Bechara et al. (1994) payoff schedules, 4 decks with 40-card penalty cycles, comprehensive scoring (deck preferences, advantageous/disadvantageous selections, block-by-block learning curve), customizable currency symbol. Created new `iowa-gambling` package with 24 passing tests. |
 | 2026-01-14 | Operation Span Task: New implementation complete. Features: Dual-task paradigm with math verification and letter memory, interactive recall grid, configurable set sizes, OSPAN score (partial credit) and absolute span score, math accuracy tracking. Created new `operation-span` package with 21 passing tests. |

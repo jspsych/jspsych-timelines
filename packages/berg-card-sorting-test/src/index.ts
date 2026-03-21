@@ -85,7 +85,7 @@ type Rule = "color" | "shape" | "number";
 
 // -- CONSTANTS --
 
-const TASK_NAME = "bcst";
+const TASK_NAME = "berg-card-sorting-test";
 const VERSION = "0.0.1";
 
 const COLORS: Card["color"][] = ["red", "green", "yellow", "blue"];
