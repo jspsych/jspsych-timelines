@@ -71,7 +71,8 @@ function createInteractiveInstructions(jsPsych: JsPsych, texts: TextConfig = tri
     data: {
       task: TASK_NAME,
       task_version: VERSION,
-      phase: "instructions-practice",
+      phase: "practice",
+      part: "instruction",
     },
   };
 
@@ -112,14 +113,15 @@ function createInteractiveInstructions(jsPsych: JsPsych, texts: TextConfig = tri
     data: {
       task: TASK_NAME,
       task_version: VERSION,
-      phase: "instructions-practice",
+      phase: "practice",
+      part: "instruction",
     },
   };
 
   const practiceFeedback = {
     type: HtmlButtonResponsePlugin,
     stimulus: () => {
-      const lastTrial = jsPsych.data.get().filter({ phase: "instructions-practice" }).last(1).values()[0];
+      const lastTrial = jsPsych.data.get().filter({ phase: "practice", part: "instruction" }).last(1).values()[0];
       if (lastTrial && lastTrial.popped) {
         return `<div class="feedback incorrect"><p>${texts.instruction_pump_popped}</p></div>`;
       }
@@ -198,7 +200,7 @@ function createEndResults(jsPsych: JsPsych, texts: TextConfig) {
     data: {
       task: TASK_NAME,
       task_version: VERSION,
-      phase: "end-results",
+      phase: "completion",
     },
   };
   return endResults;
@@ -238,7 +240,7 @@ function createTrialBlock(
       data: {
         task: TASK_NAME,
         task_version: VERSION,
-        phase: "trial",
+        phase: "test",
       },
     }
     trials.push(trial);
@@ -326,7 +328,7 @@ interface ScoringResult {
  */
 function calculateScores(data: DataCollection): ScoringResult {
   const trialData = data
-    .filter({ task: TASK_NAME, phase: "trial" })
+    .filter({ task: TASK_NAME, phase: "test" })
     .values() as any[];
 
   if (trialData.length === 0) {

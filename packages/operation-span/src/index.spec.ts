@@ -56,7 +56,7 @@ describe("Operation Span Task", () => {
     it("should include completion trial at end", () => {
       const timeline = createTimeline(jsPsych, { showInstructions: false });
       const lastItem = timeline.timeline[timeline.timeline.length - 1] as any;
-      expect(lastItem.data.trial_type).toBe("completion");
+      expect(lastItem.data.phase).toBe("completion");
     });
   });
 
@@ -118,7 +118,8 @@ describe("Operation Span Task", () => {
       const dataCollection = jsPsych.data.get();
       dataCollection.push({
         task: "operation-span",
-        trial_type: "recall",
+        phase: "test",
+        part: "recall",
         set_size: 3,
         letters_correct: 2,
         perfect_recall: false,
@@ -128,7 +129,8 @@ describe("Operation Span Task", () => {
       });
       dataCollection.push({
         task: "operation-span",
-        trial_type: "recall",
+        phase: "test",
+        part: "recall",
         set_size: 4,
         letters_correct: 4,
         perfect_recall: true,
@@ -146,7 +148,8 @@ describe("Operation Span Task", () => {
       const dataCollection = jsPsych.data.get();
       dataCollection.push({
         task: "operation-span",
-        trial_type: "recall",
+        phase: "test",
+        part: "recall",
         set_size: 3,
         letters_correct: 2,
         perfect_recall: false,
@@ -156,7 +159,8 @@ describe("Operation Span Task", () => {
       });
       dataCollection.push({
         task: "operation-span",
-        trial_type: "recall",
+        phase: "test",
+        part: "recall",
         set_size: 4,
         letters_correct: 4,
         perfect_recall: true,
@@ -166,7 +170,8 @@ describe("Operation Span Task", () => {
       });
       dataCollection.push({
         task: "operation-span",
-        trial_type: "recall",
+        phase: "test",
+        part: "recall",
         set_size: 5,
         letters_correct: 5,
         perfect_recall: true,
@@ -184,7 +189,8 @@ describe("Operation Span Task", () => {
       const dataCollection = jsPsych.data.get();
       dataCollection.push({
         task: "operation-span",
-        trial_type: "recall",
+        phase: "test",
+        part: "recall",
         set_size: 3,
         letters_correct: 3,
         perfect_recall: true,
@@ -194,7 +200,8 @@ describe("Operation Span Task", () => {
       });
       dataCollection.push({
         task: "operation-span",
-        trial_type: "recall",
+        phase: "test",
+        part: "recall",
         set_size: 4,
         letters_correct: 4,
         perfect_recall: true,
@@ -213,7 +220,8 @@ describe("Operation Span Task", () => {
       const dataCollection = jsPsych.data.get();
       dataCollection.push({
         task: "operation-span",
-        trial_type: "recall",
+        phase: "test",
+        part: "recall",
         set_size: 3,
         letters_correct: 3,
         perfect_recall: true,
@@ -223,7 +231,8 @@ describe("Operation Span Task", () => {
       });
       dataCollection.push({
         task: "operation-span",
-        trial_type: "recall",
+        phase: "test",
+        part: "recall",
         set_size: 4,
         letters_correct: 4,
         perfect_recall: true,

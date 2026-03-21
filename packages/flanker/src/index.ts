@@ -209,7 +209,7 @@ function createInteractiveInstructionTrial(
     button_html: createButtonHtml,
     data: {
       task: TASK_NAME,
-      trial_part: "instruction",
+      part: "instruction",
       correct_response: correctButtonIndex,
     },
     on_finish: (data: any) => {
@@ -236,7 +236,7 @@ function createInteractiveInstructionTrial(
     trial_duration: 1000,
     data: {
       task: TASK_NAME,
-      trial_part: "instruction_feedback",
+      part: "instruction_feedback",
     },
   };
 
@@ -253,7 +253,7 @@ function createInteractiveInstructionTrial(
     trial_duration: 1500,
     data: {
       task: TASK_NAME,
-      trial_part: "instruction_feedback",
+      part: "instruction_feedback",
     },
   };
 
@@ -275,7 +275,7 @@ function createInstructionTrials(config: ResolvedConfig) {
     choices: [config.text.continue_button],
     data: {
       task: TASK_NAME,
-      trial_part: "instruction",
+      part: "instruction",
     },
   });
 
@@ -291,7 +291,7 @@ function createInstructionTrials(config: ResolvedConfig) {
     choices: [config.text.continue_button],
     data: {
       task: TASK_NAME,
-      trial_part: "instruction",
+      part: "instruction",
     },
   });
 
@@ -332,7 +332,7 @@ function createInstructionTrials(config: ResolvedConfig) {
     choices: [config.text.continue_button],
     data: {
       task: TASK_NAME,
-      trial_part: "instruction",
+      part: "instruction",
     },
   });
 
@@ -353,7 +353,7 @@ function createFixationTrial(config: ResolvedConfig) {
     trial_duration: config.fixationDuration,
     data: {
       task: TASK_NAME,
-      trial_part: "fixation",
+      part: "fixation",
     },
   };
 }
@@ -391,7 +391,7 @@ function createStimulusTrial(
         const targetDirection = jsPsych.evaluateTimelineVariable("target_direction") as "left" | "right";
         return targetDirection === "left" ? LEFT_BUTTON_INDEX : RIGHT_BUTTON_INDEX;
       },
-      trial_part: "stimulus",
+      part: "stimulus",
     },
     on_finish: (data: any) => {
       data.correct = data.response === data.correct_response;
@@ -430,7 +430,7 @@ function createFeedbackTrial(jsPsych: JsPsych, config: ResolvedConfig) {
     trial_duration: config.feedbackDuration,
     data: {
       task: TASK_NAME,
-      trial_part: "feedback",
+      part: "feedback",
     },
   };
 }
@@ -449,7 +449,7 @@ function createItiTrial(config: ResolvedConfig) {
     trial_duration: config.interTrialInterval,
     data: {
       task: TASK_NAME,
-      trial_part: "iti",
+      part: "iti",
     },
   };
 }
@@ -464,7 +464,7 @@ function createTransitionTrial(message: string, buttonLabel: string) {
     choices: [buttonLabel],
     data: {
       task: TASK_NAME,
-      trial_part: "transition",
+      part: "transition",
     },
   };
 }
@@ -535,7 +535,7 @@ function createTestBlock(jsPsych: JsPsych, config: ResolvedConfig, blockNumber: 
  */
 function calculateScores(data: DataCollection): ScoringResult {
   const testTrials = data
-    .filter({ task: TASK_NAME, phase: "test", trial_part: "stimulus" })
+    .filter({ task: TASK_NAME, phase: "test", part: "stimulus" })
     .values() as TrialData[];
 
   if (testTrials.length === 0) {

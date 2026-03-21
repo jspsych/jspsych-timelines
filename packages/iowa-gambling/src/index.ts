@@ -209,7 +209,7 @@ function createInstructionTrials(config: ResolvedConfig) {
     button_label_previous: "Back",
     data: {
       task: TASK_NAME,
-      trial_part: "instruction",
+      phase: "instructions",
     },
   };
 }
@@ -250,7 +250,8 @@ function createTrialBlock(jsPsych: JsPsych, config: ResolvedConfig) {
       task_version: VERSION,
       trial_number: state.trialNumber + 1,
       block: Math.floor(state.trialNumber / 20) + 1,
-      trial_part: "selection",
+      phase: "test",
+      part: "selection",
     }),
     on_finish: (data: any) => {
       const deckIndex = data.response;
@@ -295,7 +296,8 @@ function createTrialBlock(jsPsych: JsPsych, config: ResolvedConfig) {
     },
     data: {
       task: TASK_NAME,
-      trial_part: "feedback",
+      phase: "test",
+      part: "feedback",
     },
   });
 
@@ -307,7 +309,8 @@ function createTrialBlock(jsPsych: JsPsych, config: ResolvedConfig) {
     trial_duration: config.interTrialInterval,
     data: {
       task: TASK_NAME,
-      trial_part: "iti",
+      phase: "test",
+      part: "iti",
     },
     on_finish: () => {
       state.trialNumber++;
@@ -329,7 +332,7 @@ function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
   return {
     type: jsPsychHtmlButtonResponse,
     stimulus: () => {
-      const data = jsPsych.data.get().filter({ task: TASK_NAME, trial_part: "selection" });
+      const data = jsPsych.data.get().filter({ task: TASK_NAME, phase: "test", part: "selection" });
       const lastTrial = data.last(1).values()[0];
       const finalScore = lastTrial ? lastTrial.total_score : config.startingLoan;
 
@@ -345,7 +348,7 @@ function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
     choices: [config.text.continue_button],
     data: {
       task: TASK_NAME,
-      trial_part: "completion",
+      phase: "completion",
     },
   };
 }
@@ -357,7 +360,7 @@ function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
  */
 function calculateScores(data: DataCollection, startingLoan: number = 2000): ScoringResult {
   const trials = data
-    .filter({ task: TASK_NAME, trial_part: "selection" })
+    .filter({ task: TASK_NAME, phase: "test", part: "selection" })
     .values() as TrialData[];
 
   if (trials.length === 0) {

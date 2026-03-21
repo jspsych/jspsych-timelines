@@ -97,7 +97,8 @@ function createInteractiveInstructions(jsPsych: JsPsych, config: any, text: Text
     data: {
       task: TASK_NAME,
       task_version: VERSION,
-      phase: 'instructions-practice',
+      phase: 'practice',
+      part: 'instruction',
     },
   };
 
@@ -133,14 +134,15 @@ function createInteractiveInstructions(jsPsych: JsPsych, config: any, text: Text
     data: {
       task: TASK_NAME,
       task_version: VERSION,
-      phase: 'instructions-practice',
+      phase: 'practice',
+      part: 'instruction',
     },
   };
 
   const practiceFeedback = {
     type: jsPsychHtmlButtonResponse,
     stimulus: () => {
-      const lastTrial = jsPsych.data.get().filter({ phase: 'instructions-practice' }).last(1).values()[0];
+      const lastTrial = jsPsych.data.get().filter({ phase: 'practice', part: 'instruction' }).last(1).values()[0];
       if (lastTrial && lastTrial.correct) {
         return `<div class="feedback correct"><p>${text.instruction_success}</p></div>`;
       }
@@ -158,7 +160,8 @@ function createInteractiveInstructions(jsPsych: JsPsych, config: any, text: Text
   const practiceLoop = {
     timeline: [practiceWatchPrompt, practiceDisplay, practiceTapPrompt, practiceInput, practiceFeedback],
     loop_function: () => {
-      const lastInputTrial = jsPsych.data.get().filter({ phase: 'instructions-practice', task: TASK_NAME }).last(1).values()[0];
+      const lastInputTrial = jsPsych.data.get().filter({ phase: 'practice',
+      part: 'instruction', task: TASK_NAME }).last(1).values()[0];
       // Continue looping if incorrect
       return lastInputTrial && !lastInputTrial.correct;
     },
@@ -291,7 +294,8 @@ export function createTimeline(
         const previousLength = length - 1;
         const previousTrials = jsPsych.data.get().filter({
           task: 'corsi-block',
-          phase: 'input',
+          phase: 'test',
+          part: 'response',
           sequence_length: previousLength
         });
 
@@ -321,7 +325,8 @@ export function createTimeline(
           // Count recent consecutive errors
           const recentTrials = jsPsych.data.get().filter({
             task: 'corsi-block',
-            phase: 'input'
+            phase: 'test',
+            part: 'response'
           }).last(fullConfig.consecutive_errors_threshold);
 
           if (recentTrials.count() >= fullConfig.consecutive_errors_threshold) {
@@ -378,7 +383,7 @@ interface ScoringResult {
  */
 function calculateScores(data: DataCollection): ScoringResult {
   const inputTrials = data
-    .filter({ task: TASK_NAME, phase: 'input' })
+    .filter({ task: TASK_NAME, phase: 'test', part: 'response' })
     .values() as any[];
 
   if (inputTrials.length === 0) {

@@ -372,7 +372,7 @@ function createInstructionTrials(config: ResolvedConfig, mode: "forward" | "back
       choices: [config.text.continue_button],
       data: {
         task: TASK_NAME,
-        trial_part: "instruction",
+        part: "instruction",
         mode: mode,
       },
     })),
@@ -390,7 +390,7 @@ function createReadyTrial(config: ResolvedConfig) {
     trial_duration: config.readyDuration,
     data: {
       task: TASK_NAME,
-      trial_part: "ready",
+      part: "ready",
     },
   };
 }
@@ -406,7 +406,7 @@ function createDigitPresentationTrials(digits: number[], config: ResolvedConfig)
     trial_duration: config.digitDuration,
     data: {
       task: TASK_NAME,
-      trial_part: "digit_presentation",
+      part: "digit_presentation",
       digit: digit,
     },
   }));
@@ -444,7 +444,7 @@ function createResponseTrial(
       span_length: spanLength,
       presented_digits: presentedDigitsStr,
       correct_response: correctResponse,
-      trial_part: "response",
+      part: "response",
     },
     on_load: () => {
       let currentResponse = "";
@@ -515,7 +515,7 @@ function createFeedbackTrial(jsPsych: JsPsych, config: ResolvedConfig) {
     trial_duration: config.feedbackDuration,
     data: {
       task: TASK_NAME,
-      trial_part: "feedback",
+      part: "feedback",
     },
   };
 }
@@ -531,7 +531,7 @@ function createItiTrial(config: ResolvedConfig) {
     trial_duration: config.interTrialInterval,
     data: {
       task: TASK_NAME,
-      trial_part: "iti",
+      part: "iti",
     },
   };
 }
@@ -546,7 +546,7 @@ function createTransitionTrial(message: string, buttonLabel: string) {
     choices: [buttonLabel],
     data: {
       task: TASK_NAME,
-      trial_part: "transition",
+      part: "transition",
     },
   };
 }
@@ -638,7 +638,7 @@ function createTestBlock(
         trial_duration: config.readyDuration,
         data: {
           task: TASK_NAME,
-          trial_part: "ready",
+          part: "ready",
         },
       },
       // Digit presentation - we need to use a nested timeline for this
@@ -651,7 +651,7 @@ function createTestBlock(
               const setupData = jsPsych.data.get().filter({ trial_number: trialNumber }).values()[0];
               const digitIndex = jsPsych.data
                 .get()
-                .filter({ task: TASK_NAME, trial_part: "digit_presentation", parent_trial: trialNumber })
+                .filter({ task: TASK_NAME, part: "digit_presentation", parent_trial: trialNumber })
                 .count();
               const digit = setupData.generated_digits[digitIndex];
               return `<div class="stimulus" >${digit}</div>`;
@@ -660,7 +660,7 @@ function createTestBlock(
             trial_duration: config.digitDuration,
             data: () => ({
               task: TASK_NAME,
-              trial_part: "digit_presentation",
+              part: "digit_presentation",
               parent_trial: trialNumber,
             }),
           },
@@ -669,7 +669,7 @@ function createTestBlock(
           const setupData = jsPsych.data.get().filter({ trial_number: trialNumber }).values()[0];
           const presentedCount = jsPsych.data
             .get()
-            .filter({ task: TASK_NAME, trial_part: "digit_presentation", parent_trial: trialNumber })
+            .filter({ task: TASK_NAME, part: "digit_presentation", parent_trial: trialNumber })
             .count();
           return presentedCount < setupData.generated_digits.length;
         },
@@ -696,7 +696,7 @@ function createTestBlock(
             span_length: currentSpan,
             presented_digits: formatDigitSequence(digits),
             correct_response: correctResponse,
-            trial_part: "response",
+            part: "response",
           };
         },
         on_load: () => {
@@ -771,7 +771,7 @@ function createTestBlock(
             trial_duration: config.feedbackDuration,
             data: {
               task: TASK_NAME,
-              trial_part: "feedback",
+              part: "feedback",
             },
           },
         ],
@@ -785,7 +785,7 @@ function createTestBlock(
         trial_duration: config.interTrialInterval,
         data: {
           task: TASK_NAME,
-          trial_part: "iti",
+          part: "iti",
         },
       },
     ],
@@ -804,7 +804,7 @@ function createTestBlock(
  */
 function calculateModeScores(data: DataCollection, mode: "forward" | "backward"): ScoringResult {
   const testTrials = data
-    .filter({ task: TASK_NAME, phase: "test", mode: mode, trial_part: "response" })
+    .filter({ task: TASK_NAME, phase: "test", mode: mode, part: "response" })
     .values() as TrialData[];
 
   if (testTrials.length === 0) {

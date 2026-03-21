@@ -224,14 +224,14 @@ function generateTrials(numTrials: number): TrialSpec[] {
  */
 function createInstructionTrials(
   config: ResolvedConfig,
-  part: "intro" | "global" | "local" | "practice"
+  section: "intro" | "global" | "local" | "practice"
 ) {
   const timeline: any[] = [];
 
   let stimulus: string;
   let buttonLabel: string;
 
-  switch (part) {
+  switch (section) {
     case "intro":
       stimulus = config.text.instruction_intro;
       buttonLabel = config.text.continue_button;
@@ -259,7 +259,7 @@ function createInstructionTrials(
     choices: [buttonLabel],
     data: {
       task: TASK_NAME,
-      trial_part: "instruction",
+      part: "instruction",
     },
   });
 
@@ -292,7 +292,7 @@ function createGlobalLocalTrial(
     trial_duration: config.fixationDuration,
     data: {
       task: TASK_NAME,
-      trial_part: "fixation",
+      part: "fixation",
     },
   });
 
@@ -321,7 +321,7 @@ function createGlobalLocalTrial(
     data: {
       task: TASK_NAME,
       task_version: VERSION,
-      trial_part: "response",
+      part: "response",
       phase: phase,
       block: block,
       trial_index: trialIndex,
@@ -369,7 +369,7 @@ function createGlobalLocalTrial(
       trial_duration: config.feedbackDuration,
       data: {
         task: TASK_NAME,
-        trial_part: "feedback",
+        part: "feedback",
       },
     });
   }
@@ -436,7 +436,7 @@ function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
     data: {
       task: TASK_NAME,
       task_version: VERSION,
-      trial_part: "completion",
+      part: "completion",
     },
   };
 }
@@ -448,7 +448,7 @@ function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
  */
 function calculateScores(data: DataCollection): ScoringResult {
   const testTrials = data
-    .filter({ task: TASK_NAME, phase: "test", trial_part: "response" })
+    .filter({ task: TASK_NAME, phase: "test", part: "response" })
     .values() as TrialData[];
 
   if (testTrials.length === 0) {

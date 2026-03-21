@@ -178,7 +178,7 @@ describe("Flanker Task", () => {
       const testBlock = timeline.timeline[0] as any;
       // With feedback: [fixation, stimulus, feedback, iti]
       expect(testBlock.timeline.length).toBe(4);
-      expect(testBlock.timeline[2].data.trial_type).toBe("feedback");
+      expect(testBlock.timeline[2].data.part).toBe("feedback");
     });
 
     it("should exclude feedback trial from test block when showTestFeedback is false", () => {
@@ -193,7 +193,7 @@ describe("Flanker Task", () => {
       const testBlock = timeline.timeline[0] as any;
       // Without feedback: [fixation, stimulus, iti]
       expect(testBlock.timeline.length).toBe(3);
-      const trialTypes = testBlock.timeline.map((t: any) => t.data.trial_type);
+      const trialTypes = testBlock.timeline.map((t: any) => t.data.part);
       expect(trialTypes).not.toContain("feedback");
     });
 
@@ -210,7 +210,7 @@ describe("Flanker Task", () => {
       const practiceBlock = timeline.timeline[0] as any;
       // With feedback: [fixation, stimulus, feedback, iti]
       expect(practiceBlock.timeline.length).toBe(4);
-      expect(practiceBlock.timeline[2].data.trial_type).toBe("feedback");
+      expect(practiceBlock.timeline[2].data.part).toBe("feedback");
     });
 
     it("should exclude feedback trial from practice block when showPracticeFeedback is false", () => {
@@ -225,7 +225,7 @@ describe("Flanker Task", () => {
       const practiceBlock = timeline.timeline[0] as any;
       // Without feedback: [fixation, stimulus, iti]
       expect(practiceBlock.timeline.length).toBe(3);
-      const trialTypes = practiceBlock.timeline.map((t: any) => t.data.trial_type);
+      const trialTypes = practiceBlock.timeline.map((t: any) => t.data.part);
       expect(trialTypes).not.toContain("feedback");
     });
 
@@ -311,7 +311,7 @@ describe("Flanker Task", () => {
       expect(fixation).toHaveProperty("type");
       expect(fixation).toHaveProperty("trial_duration");
       expect(fixation.trial_duration).toBe(500);
-      expect(fixation.data.trial_type).toBe("fixation");
+      expect(fixation.data.part).toBe("fixation");
     });
 
     it("should create stimulus trial", () => {
@@ -339,7 +339,7 @@ describe("Flanker Task", () => {
 
       expect(iti).toHaveProperty("type");
       expect(iti.trial_duration).toBe(1000);
-      expect(iti.data.trial_type).toBe("iti");
+      expect(iti.data.part).toBe("iti");
     });
 
     it("should create transition trial", () => {
@@ -431,7 +431,7 @@ describe("Flanker Task", () => {
       dataCollection.push({
         task: "flanker",
         phase: "test",
-        trial_type: "stimulus",
+        part: "stimulus",
         congruence: "congruent",
         correct: true,
         rt: 400,
@@ -439,7 +439,7 @@ describe("Flanker Task", () => {
       dataCollection.push({
         task: "flanker",
         phase: "test",
-        trial_type: "stimulus",
+        part: "stimulus",
         congruence: "congruent",
         correct: true,
         rt: 450,
@@ -447,7 +447,7 @@ describe("Flanker Task", () => {
       dataCollection.push({
         task: "flanker",
         phase: "test",
-        trial_type: "stimulus",
+        part: "stimulus",
         congruence: "incongruent",
         correct: true,
         rt: 550,
@@ -455,7 +455,7 @@ describe("Flanker Task", () => {
       dataCollection.push({
         task: "flanker",
         phase: "test",
-        trial_type: "stimulus",
+        part: "stimulus",
         congruence: "incongruent",
         correct: false,
         rt: 600,
@@ -479,7 +479,7 @@ describe("Flanker Task", () => {
       dataCollection.push({
         task: "flanker",
         phase: "test",
-        trial_type: "stimulus",
+        part: "stimulus",
         congruence: "neutral",
         correct: true,
         rt: 480,
@@ -496,7 +496,7 @@ describe("Flanker Task", () => {
       dataCollection.push({
         task: "flanker",
         phase: "test",
-        trial_type: "stimulus",
+        part: "stimulus",
         congruence: "congruent",
         correct: true,
         rt: 400,

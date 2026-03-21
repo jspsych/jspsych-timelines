@@ -258,48 +258,48 @@ function generateTrials(
  */
 function createInstructionTrials(
   config: ResolvedConfig,
-  part: "intro" | "task" | "practice" | "test"
+  section: "intro" | "task" | "practice" | "test"
 ) {
   const timeline: any[] = [];
 
-  if (part === "intro") {
+  if (section === "intro") {
     timeline.push({
       type: jsPsychHtmlButtonResponse,
       stimulus: config.text.instruction_intro,
       choices: [config.text.continue_button],
       data: {
         task: TASK_NAME,
-        trial_part: "instruction",
+        part: "instruction",
       },
     });
-  } else if (part === "task") {
+  } else if (section === "task") {
     timeline.push({
       type: jsPsychHtmlButtonResponse,
       stimulus: config.text.instruction_task,
       choices: [config.text.continue_button],
       data: {
         task: TASK_NAME,
-        trial_part: "instruction",
+        part: "instruction",
       },
     });
-  } else if (part === "practice") {
+  } else if (section === "practice") {
     timeline.push({
       type: jsPsychHtmlButtonResponse,
       stimulus: config.text.instruction_practice,
       choices: [config.text.start_button],
       data: {
         task: TASK_NAME,
-        trial_part: "instruction",
+        part: "instruction",
       },
     });
-  } else if (part === "test") {
+  } else if (section === "test") {
     timeline.push({
       type: jsPsychHtmlButtonResponse,
       stimulus: config.text.instruction_test,
       choices: [config.text.start_button],
       data: {
         task: TASK_NAME,
-        trial_part: "instruction",
+        part: "instruction",
       },
     });
   }
@@ -330,7 +330,7 @@ function createLexicalTrial(
     trial_duration: config.fixationDuration,
     data: {
       task: TASK_NAME,
-      trial_part: "fixation",
+      part: "fixation",
     },
   });
 
@@ -343,7 +343,7 @@ function createLexicalTrial(
     data: {
       task: TASK_NAME,
       task_version: VERSION,
-      trial_part: "response",
+      part: "response",
       phase: phase,
       trial_index: trialIndex,
       stimulus: trial.stimulus,
@@ -388,7 +388,7 @@ function createLexicalTrial(
       trial_duration: config.feedbackDuration,
       data: {
         task: TASK_NAME,
-        trial_part: "feedback",
+        part: "feedback",
       },
     });
   }
@@ -419,7 +419,7 @@ function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
     data: {
       task: TASK_NAME,
       task_version: VERSION,
-      trial_part: "completion",
+      part: "completion",
     },
   };
 }
@@ -431,7 +431,7 @@ function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
  */
 function calculateScores(data: DataCollection): ScoringResult {
   const testTrials = data
-    .filter({ task: TASK_NAME, phase: "test", trial_part: "response" })
+    .filter({ task: TASK_NAME, phase: "test", part: "response" })
     .values() as TrialData[];
 
   if (testTrials.length === 0) {

@@ -55,7 +55,7 @@ describe("Iowa Gambling Task", () => {
     it("should include completion trial at end", () => {
       const timeline = createTimeline(jsPsych, { showInstructions: false });
       const lastItem = timeline.timeline[timeline.timeline.length - 1] as any;
-      expect(lastItem.data.trial_part).toBe("completion");
+      expect(lastItem.data.phase).toBe("completion");
     });
 
     it("should create trial block with selection, feedback, and ITI trials", () => {
@@ -124,28 +124,28 @@ describe("Iowa Gambling Task", () => {
       const dataCollection = jsPsych.data.get();
       dataCollection.push({
         task: "iowa-gambling",
-        trial_part: "selection",
+        phase: "test", part: "selection",
         deck_selected: "A",
         total_score: 2100,
         rt: 500,
       });
       dataCollection.push({
         task: "iowa-gambling",
-        trial_part: "selection",
+        phase: "test", part: "selection",
         deck_selected: "A",
         total_score: 2200,
         rt: 600,
       });
       dataCollection.push({
         task: "iowa-gambling",
-        trial_part: "selection",
+        phase: "test", part: "selection",
         deck_selected: "C",
         total_score: 2250,
         rt: 550,
       });
       dataCollection.push({
         task: "iowa-gambling",
-        trial_part: "selection",
+        phase: "test", part: "selection",
         deck_selected: "D",
         total_score: 2300,
         rt: 480,
@@ -164,21 +164,21 @@ describe("Iowa Gambling Task", () => {
       // 3 disadvantageous (A, B)
       dataCollection.push({
         task: "iowa-gambling",
-        trial_part: "selection",
+        phase: "test", part: "selection",
         deck_selected: "A",
         total_score: 2100,
         rt: 500,
       });
       dataCollection.push({
         task: "iowa-gambling",
-        trial_part: "selection",
+        phase: "test", part: "selection",
         deck_selected: "B",
         total_score: 2200,
         rt: 500,
       });
       dataCollection.push({
         task: "iowa-gambling",
-        trial_part: "selection",
+        phase: "test", part: "selection",
         deck_selected: "A",
         total_score: 2300,
         rt: 500,
@@ -186,14 +186,14 @@ describe("Iowa Gambling Task", () => {
       // 2 advantageous (C, D)
       dataCollection.push({
         task: "iowa-gambling",
-        trial_part: "selection",
+        phase: "test", part: "selection",
         deck_selected: "C",
         total_score: 2350,
         rt: 500,
       });
       dataCollection.push({
         task: "iowa-gambling",
-        trial_part: "selection",
+        phase: "test", part: "selection",
         deck_selected: "D",
         total_score: 2400,
         rt: 500,
@@ -209,7 +209,7 @@ describe("Iowa Gambling Task", () => {
       const dataCollection = jsPsych.data.get();
       dataCollection.push({
         task: "iowa-gambling",
-        trial_part: "selection",
+        phase: "test", part: "selection",
         deck_selected: "C",
         total_score: 2500,
         rt: 500,
@@ -227,7 +227,7 @@ describe("Iowa Gambling Task", () => {
       for (let i = 0; i < 15; i++) {
         dataCollection.push({
           task: "iowa-gambling",
-          trial_part: "selection",
+          phase: "test", part: "selection",
           deck_selected: i % 2 === 0 ? "C" : "D",
           total_score: 2000 + i * 50,
           rt: 500,
@@ -236,7 +236,7 @@ describe("Iowa Gambling Task", () => {
       for (let i = 0; i < 5; i++) {
         dataCollection.push({
           task: "iowa-gambling",
-          trial_part: "selection",
+          phase: "test", part: "selection",
           deck_selected: "A",
           total_score: 2000 + i * 100,
           rt: 500,
@@ -253,14 +253,14 @@ describe("Iowa Gambling Task", () => {
       const dataCollection = jsPsych.data.get();
       dataCollection.push({
         task: "iowa-gambling",
-        trial_part: "selection",
+        phase: "test", part: "selection",
         deck_selected: "A",
         total_score: 2100,
         rt: 400,
       });
       dataCollection.push({
         task: "iowa-gambling",
-        trial_part: "selection",
+        phase: "test", part: "selection",
         deck_selected: "B",
         total_score: 2200,
         rt: 600,

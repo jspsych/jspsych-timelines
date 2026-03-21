@@ -224,7 +224,7 @@ function createInstructionTrials(config: ResolvedConfig, part: "intro" | "task" 
       choices: [config.text.continue_button],
       data: {
         task: TASK_NAME,
-        trial_part: "instruction",
+        phase: "instructions",
       },
     });
   } else if (part === "task") {
@@ -234,7 +234,7 @@ function createInstructionTrials(config: ResolvedConfig, part: "intro" | "task" 
       choices: [config.text.continue_button],
       data: {
         task: TASK_NAME,
-        trial_part: "instruction",
+        phase: "instructions",
       },
     });
   } else if (part === "practice") {
@@ -244,7 +244,8 @@ function createInstructionTrials(config: ResolvedConfig, part: "intro" | "task" 
       choices: [config.text.start_button],
       data: {
         task: TASK_NAME,
-        trial_part: "instruction",
+        phase: "practice",
+        part: "instruction",
       },
     });
   } else if (part === "test") {
@@ -254,7 +255,8 @@ function createInstructionTrials(config: ResolvedConfig, part: "intro" | "task" 
       choices: [config.text.start_button],
       data: {
         task: TASK_NAME,
-        trial_part: "instruction",
+        phase: "test",
+        part: "instruction",
       },
     });
   }
@@ -314,7 +316,8 @@ function createPracticeFeedback(jsPsych: JsPsych, config: ResolvedConfig) {
     choices: [config.text.continue_button],
     data: {
       task: TASK_NAME,
-      trial_part: "feedback",
+      phase: "practice",
+      part: "feedback",
     },
   };
 }
@@ -343,7 +346,7 @@ function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
     data: {
       task: TASK_NAME,
       task_version: VERSION,
-      trial_part: "completion",
+      phase: "completion",
     },
   };
 }

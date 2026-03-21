@@ -27,7 +27,8 @@ export interface FreeRecallOptions {
 export interface TrialData {
   task: string;
   task_version: string;
-  trial_part: string;
+  phase: string;
+  part?: string;
   word?: string;
   word_index?: number;
   /** For recall trial: array of recalled words with timing */
@@ -163,14 +164,27 @@ function createInstructionTrials(
       buttonLabel = config.text.continue_button;
   }
 
+  const data: Record<string, any> = { task: TASK_NAME };
+
+  switch (part) {
+    case "intro":
+      data.phase = "instructions";
+      break;
+    case "study":
+      data.phase = "study";
+      data.part = "instruction";
+      break;
+    case "recall":
+      data.phase = "test";
+      data.part = "instruction";
+      break;
+  }
+
   return {
     type: jsPsychHtmlButtonResponse,
     stimulus: stimulus,
     choices: [buttonLabel],
-    data: {
-      task: TASK_NAME,
-      trial_part: "instruction",
-    },
+    data,
   };
 }
 
@@ -198,7 +212,8 @@ function createStudyTrial(
     data: {
       task: TASK_NAME,
       task_version: VERSION,
-      trial_part: "study",
+      phase: "study",
+      part: "presentation",
       word: word,
       word_index: wordIndex,
     },
@@ -212,7 +227,8 @@ function createStudyTrial(
     trial_duration: config.isi,
     data: {
       task: TASK_NAME,
-      trial_part: "isi",
+      phase: "study",
+      part: "isi",
     },
   });
 
@@ -246,7 +262,8 @@ function createRecallPhase(jsPsych: JsPsych, config: ResolvedConfig, words: stri
     trial_duration: config.recallDelay,
     data: {
       task: TASK_NAME,
-      trial_part: "recall_delay",
+      phase: "test",
+      part: "delay",
     },
   });
 
@@ -262,7 +279,8 @@ function createRecallPhase(jsPsych: JsPsych, config: ResolvedConfig, words: stri
     data: {
       task: TASK_NAME,
       task_version: VERSION,
-      trial_part: "recall",
+      phase: "test",
+      part: "recall",
     },
   });
 
@@ -294,7 +312,7 @@ function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
     data: {
       task: TASK_NAME,
       task_version: VERSION,
-      trial_part: "completion",
+      phase: "completion",
     },
   };
 }
@@ -334,13 +352,13 @@ function processRecallResponses(
  */
 function calculateScores(data: DataCollection, wordList?: string[]): ScoringResult {
   const recallTrial = data
-    .filter({ task: TASK_NAME, trial_part: "recall" })
+    .filter({ task: TASK_NAME, phase: "test", part: "recall" })
     .values()[0] as TrialData | undefined;
 
   // Get word list from study trials if not provided
   if (!wordList) {
     const studyTrials = data
-      .filter({ task: TASK_NAME, trial_part: "study" })
+      .filter({ task: TASK_NAME, phase: "study", part: "presentation" })
       .values() as TrialData[];
     wordList = studyTrials.map((t) => t.word || "");
   }

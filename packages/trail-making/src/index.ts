@@ -137,7 +137,8 @@ function createInstructionTrials(config: ResolvedConfig, part: "intro" | "A" | "
       choices: [config.text.continue_button],
       data: {
         task: TASK_NAME,
-        trial_type: "instruction",
+        phase: "instructions",
+        part: "instruction",
       },
     });
   } else if (part === "A") {
@@ -147,7 +148,8 @@ function createInstructionTrials(config: ResolvedConfig, part: "intro" | "A" | "
       choices: [config.text.continue_button],
       data: {
         task: TASK_NAME,
-        trial_type: "instruction",
+        phase: "instructions",
+        part: "instruction",
       },
     });
   } else if (part === "B") {
@@ -157,7 +159,8 @@ function createInstructionTrials(config: ResolvedConfig, part: "intro" | "A" | "
       choices: [config.text.continue_button],
       data: {
         task: TASK_NAME,
-        trial_type: "instruction",
+        phase: "instructions",
+        part: "instruction",
       },
     });
   }
@@ -175,7 +178,8 @@ function createPracticeInstructions(config: ResolvedConfig) {
     choices: [config.text.continue_button],
     data: {
       task: TASK_NAME,
-      trial_type: "instruction",
+      phase: "instructions",
+      part: "instruction",
     },
   };
 }
@@ -190,7 +194,8 @@ function createSpeedReminder(config: ResolvedConfig) {
     choices: [config.text.start_button],
     data: {
       task: TASK_NAME,
-      trial_type: "instruction",
+      phase: "instructions",
+      part: "instruction",
     },
   };
 }
@@ -247,7 +252,8 @@ function createTransitionTrial(message: string, buttonLabel: string) {
     choices: [buttonLabel],
     data: {
       task: TASK_NAME,
-      trial_type: "transition",
+      phase: "instructions",
+      part: "transition",
     },
   };
 }
@@ -289,7 +295,7 @@ function createCompletionTrial(
     data: {
       task: TASK_NAME,
       task_version: VERSION,
-      trial_type: "completion",
+      phase: "completion",
     },
   };
 }

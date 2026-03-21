@@ -165,14 +165,14 @@ function createNumberPadHTML(stimulus: number, operation: "add" | "subtract", op
  */
 function createInstructionTrials(
   config: ResolvedConfig,
-  part: "intro" | "add" | "subtract" | "alternate" | "practice"
+  section: "intro" | "add" | "subtract" | "alternate" | "practice"
 ) {
   const timeline: any[] = [];
 
   let stimulus: string;
   let buttonLabel: string;
 
-  switch (part) {
+  switch (section) {
     case "intro":
       stimulus = config.text.instruction_intro;
       buttonLabel = config.text.continue_button;
@@ -204,7 +204,7 @@ function createInstructionTrials(
     choices: [buttonLabel],
     data: {
       task: TASK_NAME,
-      trial_part: "instruction",
+      part: "instruction",
     },
   });
 
@@ -238,7 +238,7 @@ function createArithmeticTrial(
     data: {
       task: TASK_NAME,
       task_version: VERSION,
-      trial_part: "response",
+      part: "response",
       phase: phase,
       block: block,
       trial_index: trialIndex,
@@ -299,7 +299,7 @@ function createArithmeticTrial(
       trial_duration: config.feedbackDuration,
       data: {
         task: TASK_NAME,
-        trial_part: "feedback",
+        part: "feedback",
       },
     });
   }
@@ -366,7 +366,7 @@ function createBlockSummary(jsPsych: JsPsych, config: ResolvedConfig, blockType:
     stimulus: () => {
       const blockTrials = jsPsych.data
         .get()
-        .filter({ task: TASK_NAME, phase: "test", block: blockType, trial_part: "response" })
+        .filter({ task: TASK_NAME, phase: "test", block: blockType, part: "response" })
         .values();
 
       const totalTime = blockTrials.reduce((sum: number, t: any) => sum + t.rt, 0);
@@ -376,7 +376,7 @@ function createBlockSummary(jsPsych: JsPsych, config: ResolvedConfig, blockType:
     choices: [config.text.continue_button],
     data: {
       task: TASK_NAME,
-      trial_part: "block_summary",
+      part: "block_summary",
       block: blockType,
     },
   };
@@ -407,7 +407,7 @@ function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
     data: {
       task: TASK_NAME,
       task_version: VERSION,
-      trial_part: "completion",
+      part: "completion",
     },
   };
 }
@@ -420,7 +420,7 @@ function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
 function calculateScores(data: DataCollection): ScoringResult {
   const getBlockData = (block: "add" | "subtract" | "alternate"): BlockData => {
     const trials = data
-      .filter({ task: TASK_NAME, phase: "test", block: block, trial_part: "response" })
+      .filter({ task: TASK_NAME, phase: "test", block: block, part: "response" })
       .values() as TrialData[];
 
     const totalTime = trials.reduce((sum, t) => sum + t.rt, 0);
@@ -445,7 +445,7 @@ function calculateScores(data: DataCollection): ScoringResult {
   const switchCost = alternateData.total_time - avgSingleTaskTime;
 
   const allTrials = data
-    .filter({ task: TASK_NAME, phase: "test", trial_part: "response" })
+    .filter({ task: TASK_NAME, phase: "test", part: "response" })
     .values() as TrialData[];
   const overallAccuracy = allTrials.length > 0
     ? (allTrials.filter((t) => t.correct).length / allTrials.length) * 100

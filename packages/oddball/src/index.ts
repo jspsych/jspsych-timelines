@@ -37,7 +37,8 @@ export interface OddballOptions {
 export interface TrialData {
   task: string;
   task_version: string;
-  trial_part: string;
+  phase: string;
+  part: string;
   trial_index: number;
   stimulus_type: "standard" | "target";
   responded: boolean;
@@ -289,14 +290,26 @@ function createInstructionTrials(
       buttonLabel = config.text.continue_button;
   }
 
+  const data: Record<string, any> = { task: TASK_NAME };
+  switch (part) {
+    case "intro":
+      data.phase = "instructions";
+      break;
+    case "practice":
+      data.phase = "practice";
+      data.part = "instruction";
+      break;
+    case "main":
+      data.phase = "test";
+      data.part = "instruction";
+      break;
+  }
+
   return {
     type: jsPsychHtmlButtonResponse,
     stimulus: stimulus,
     choices: [buttonLabel],
-    data: {
-      task: TASK_NAME,
-      trial_part: "instruction",
-    },
+    data,
   };
 }
 
@@ -322,7 +335,8 @@ function createOddballTrial(
     trial_duration: config.isi,
     data: {
       task: TASK_NAME,
-      trial_part: "fixation",
+      phase: isPractice ? "practice" : "test",
+      part: "fixation",
     },
   });
 
@@ -340,7 +354,8 @@ function createOddballTrial(
     data: {
       task: TASK_NAME,
       task_version: VERSION,
-      trial_part: isPractice ? "practice" : "response",
+      phase: isPractice ? "practice" : "test",
+      part: "response",
       trial_index: trialIndex,
       stimulus_type: stimulusType,
     },
@@ -380,7 +395,8 @@ function createOddballTrial(
       trial_duration: config.feedbackDuration,
       data: {
         task: TASK_NAME,
-        trial_part: "feedback",
+        phase: "practice",
+        part: "feedback",
       },
     });
   }
@@ -434,7 +450,7 @@ function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
     data: {
       task: TASK_NAME,
       task_version: VERSION,
-      trial_part: "completion",
+      phase: "completion",
     },
   };
 }
@@ -446,7 +462,7 @@ function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
  */
 function calculateScores(data: DataCollection): ScoringResult {
   const responseTrials = data
-    .filter({ task: TASK_NAME, trial_part: "response" })
+    .filter({ task: TASK_NAME, phase: "test", part: "response" })
     .values() as TrialData[];
 
   if (responseTrials.length === 0) {

@@ -176,7 +176,7 @@ export function createTimeline(
             data: {
                 task: TASK_NAME,
                 task_version: VERSION,
-                phase: 'trial',
+                phase: 'test',
                 trial_number: i + 1,
                 n_back: n_back,
                 total_trials: total_trials,
@@ -346,7 +346,7 @@ const scoring = {
      * Calculate performance scores from spatial n-back data
      */
     calculateScores(data: DataCollection) {
-        const trials = data.filter({ task: TASK_NAME, phase: 'trial' }).values();
+        const trials = data.filter({ task: TASK_NAME, phase: 'test' }).values();
 
         if (trials.length === 0) {
             return {

@@ -145,14 +145,14 @@ function generateOptions(
  */
 function createInstructionTrials(
   config: ResolvedConfig,
-  part: "intro" | "study" | "test"
+  section: "intro" | "study" | "test"
 ) {
   const timeline: any[] = [];
 
   let stimulus: string;
   let buttonLabel: string;
 
-  switch (part) {
+  switch (section) {
     case "intro":
       stimulus = config.text.instruction_intro;
       buttonLabel = config.text.continue_button;
@@ -176,7 +176,7 @@ function createInstructionTrials(
     choices: [buttonLabel],
     data: {
       task: TASK_NAME,
-      trial_part: "instruction",
+      part: "instruction",
     },
   });
 
@@ -203,7 +203,7 @@ function createStudyTrial(
     data: {
       task: TASK_NAME,
       task_version: VERSION,
-      trial_part: "study",
+      part: "study",
       phase: "study",
       round: round,
       trial_index: trialIndex,
@@ -220,7 +220,7 @@ function createStudyTrial(
     trial_duration: config.isi,
     data: {
       task: TASK_NAME,
-      trial_part: "isi",
+      part: "isi",
     },
   });
 
@@ -250,7 +250,7 @@ function createTestTrial(
     data: {
       task: TASK_NAME,
       task_version: VERSION,
-      trial_part: "response",
+      part: "response",
       phase: "test",
       round: round,
       trial_index: trialIndex,
@@ -282,7 +282,7 @@ function createTestTrial(
       trial_duration: config.feedbackDuration,
       data: {
         task: TASK_NAME,
-        trial_part: "feedback",
+        part: "feedback",
       },
     });
   }
@@ -299,7 +299,7 @@ function createRoundSummary(jsPsych: JsPsych, config: ResolvedConfig, round: num
     stimulus: () => {
       const roundTrials = jsPsych.data
         .get()
-        .filter({ task: TASK_NAME, phase: "test", round: round, trial_part: "response" })
+        .filter({ task: TASK_NAME, phase: "test", round: round, part: "response" })
         .values();
 
       const correct = roundTrials.filter((t: any) => t.correct).length;
@@ -310,7 +310,7 @@ function createRoundSummary(jsPsych: JsPsych, config: ResolvedConfig, round: num
     choices: [config.text.continue_button],
     data: {
       task: TASK_NAME,
-      trial_part: "round_summary",
+      part: "round_summary",
       round: round,
     },
   };
@@ -378,7 +378,7 @@ function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
     data: {
       task: TASK_NAME,
       task_version: VERSION,
-      trial_part: "completion",
+      part: "completion",
     },
   };
 }
@@ -390,7 +390,7 @@ function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
  */
 function calculateScores(data: DataCollection): ScoringResult {
   const testTrials = data
-    .filter({ task: TASK_NAME, phase: "test", trial_part: "response" })
+    .filter({ task: TASK_NAME, phase: "test", part: "response" })
     .values() as TrialData[];
 
   if (testTrials.length === 0) {
@@ -539,7 +539,7 @@ export function createTimeline(
           conditional_function: () => {
             const roundTrials = jsPsych.data
               .get()
-              .filter({ task: TASK_NAME, phase: "test", round: round, trial_part: "response" })
+              .filter({ task: TASK_NAME, phase: "test", round: round, part: "response" })
               .values();
             const allCorrect = roundTrials.every((t: any) => t.correct);
             return !allCorrect; // Continue if not all correct

@@ -48,7 +48,8 @@ export function createDisplayTrial(jsPsych: JsPsych, options: {
     prompt: options.prompt,
     data: {
       task: 'corsi-block',
-      phase: 'display',
+      phase: 'test',
+      part: 'display',
       sequence_length: () => jsPsych.timelineVariable('sequence_length'),
       trial_index: () => jsPsych.timelineVariable('trial_index'),
       ...options.data_labels
@@ -98,7 +99,8 @@ export function createInputTrial(jsPsych: JsPsych, options: {
     prompt: options.prompt,
     data: {
       task: 'corsi-block',
-      phase: 'input',
+      phase: 'test',
+      part: 'response',
       sequence_length: () => jsPsych.timelineVariable('sequence_length'),
       trial_index: () => jsPsych.timelineVariable('trial_index'),
       ...options.data_labels

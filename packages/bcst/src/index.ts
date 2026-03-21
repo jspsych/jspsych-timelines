@@ -207,7 +207,7 @@ function createInstructionTrials(config: ResolvedConfig) {
     button_label_previous: "Back",
     data: {
       task: TASK_NAME,
-      trial_part: "instruction",
+      phase: "instructions",
     },
   };
 }
@@ -231,7 +231,8 @@ function createFeedbackTrial(jsPsych: JsPsych, config: ResolvedConfig) {
     trial_duration: config.feedbackDuration,
     data: {
       task: TASK_NAME,
-      trial_part: "feedback",
+      phase: "test",
+      part: "feedback",
     },
   };
 }
@@ -284,7 +285,8 @@ function createTrialBlock(jsPsych: JsPsych, config: ResolvedConfig) {
         stimulus_number: stimulus.number,
         current_rule: currentRule,
         previous_rule: state.previousRule,
-        trial_part: "sorting",
+        phase: "test",
+        part: "sorting",
       };
     },
     on_finish: (data: any) => {
@@ -357,7 +359,7 @@ function createCompletionTrial(config: ResolvedConfig) {
     choices: [config.text.continue_button],
     data: {
       task: TASK_NAME,
-      trial_part: "completion",
+      phase: "completion",
     },
   };
 }
@@ -369,7 +371,7 @@ function createCompletionTrial(config: ResolvedConfig) {
  */
 function calculateScores(data: DataCollection): ScoringResult {
   const trials = data
-    .filter({ task: TASK_NAME, trial_part: "sorting" })
+    .filter({ task: TASK_NAME, phase: "test", part: "sorting" })
     .values() as TrialData[];
 
   if (trials.length === 0) {

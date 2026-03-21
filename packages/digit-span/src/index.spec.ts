@@ -55,7 +55,7 @@ describe("Digit Span Task", () => {
 
       // Look for the transition trial between modes
       const hasTransition = timeline.timeline.some((item: any) => {
-        if (item.type && item.data?.trial_type === "transition") {
+        if (item.type && item.data?.part === "transition") {
           return true;
         }
         return false;
@@ -120,7 +120,7 @@ describe("Digit Span Task", () => {
       expect(ready).toHaveProperty("type");
       expect(ready).toHaveProperty("trial_duration");
       expect(ready.trial_duration).toBe(800);
-      expect(ready.data.trial_type).toBe("ready");
+      expect(ready.data.part).toBe("ready");
     });
 
     it("should create digit presentation trials", () => {
@@ -182,7 +182,7 @@ describe("Digit Span Task", () => {
 
       expect(iti).toHaveProperty("type");
       expect(iti.trial_duration).toBe(1500);
-      expect(iti.data.trial_type).toBe("iti");
+      expect(iti.data.part).toBe("iti");
     });
 
     it("should create transition trial", () => {
@@ -281,7 +281,7 @@ describe("Digit Span Task", () => {
         task: "digit-span",
         phase: "test",
         mode: "forward",
-        trial_type: "response",
+        part: "response",
         span_length: 4,
         correct: true,
       });
@@ -289,7 +289,7 @@ describe("Digit Span Task", () => {
         task: "digit-span",
         phase: "test",
         mode: "forward",
-        trial_type: "response",
+        part: "response",
         span_length: 5,
         correct: true,
       });
@@ -297,7 +297,7 @@ describe("Digit Span Task", () => {
         task: "digit-span",
         phase: "test",
         mode: "forward",
-        trial_type: "response",
+        part: "response",
         span_length: 6,
         correct: false,
       });
@@ -316,7 +316,7 @@ describe("Digit Span Task", () => {
         task: "digit-span",
         phase: "test",
         mode: "backward",
-        trial_type: "response",
+        part: "response",
         span_length: 3,
         correct: true,
       });
@@ -324,7 +324,7 @@ describe("Digit Span Task", () => {
         task: "digit-span",
         phase: "test",
         mode: "backward",
-        trial_type: "response",
+        part: "response",
         span_length: 4,
         correct: true,
       });

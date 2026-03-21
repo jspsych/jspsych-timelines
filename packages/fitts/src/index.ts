@@ -38,7 +38,8 @@ export interface FittsOptions {
 export interface TrialData {
   task: string;
   task_version: string;
-  trial_part: string;
+  phase: string;
+  part?: string;
   condition_index: number;
   target_width: number;
   target_distance: number;
@@ -216,14 +217,27 @@ function createInstructionTrials(
       buttonLabel = config.text.continue_button;
   }
 
+  const data: Record<string, any> = { task: TASK_NAME };
+
+  switch (part) {
+    case "intro":
+      data.phase = "instructions";
+      break;
+    case "practice":
+      data.phase = "practice";
+      data.part = "instruction";
+      break;
+    case "main":
+      data.phase = "test";
+      data.part = "instruction";
+      break;
+  }
+
   return {
     type: jsPsychHtmlButtonResponse,
     stimulus: stimulus,
     choices: [buttonLabel],
-    data: {
-      task: TASK_NAME,
-      trial_part: "instruction",
-    },
+    data,
   };
 }
 
@@ -248,7 +262,8 @@ function createFittsTrial(
     data: {
       task: TASK_NAME,
       task_version: VERSION,
-      trial_part: isPractice ? "practice" : "response",
+      phase: isPractice ? "practice" : "test",
+      part: "response",
       condition_index: conditionIndex,
       target_width: condition.width,
       target_distance: condition.distance,
@@ -372,7 +387,7 @@ function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
     data: {
       task: TASK_NAME,
       task_version: VERSION,
-      trial_part: "completion",
+      phase: "completion",
     },
   };
 }
@@ -384,7 +399,7 @@ function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
  */
 function calculateScores(data: DataCollection): ScoringResult {
   const responseTrials = data
-    .filter({ task: TASK_NAME, trial_part: "response" })
+    .filter({ task: TASK_NAME, phase: "test", part: "response" })
     .values() as TrialData[];
 
   if (responseTrials.length === 0) {

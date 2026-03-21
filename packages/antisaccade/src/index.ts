@@ -41,7 +41,8 @@ export interface AntisaccadeOptions {
 export interface TrialData {
   task: string;
   task_version: string;
-  trial_part: string;
+  phase: string;
+  part: string;
   trial_index: number;
   block_type: "prosaccade" | "antisaccade";
   cue_side: "left" | "right";
@@ -218,14 +219,27 @@ function createInstructionTrials(
       buttonLabel = config.text.continue_button;
   }
 
+  const data: Record<string, any> = { task: TASK_NAME };
+  switch (part) {
+    case "intro":
+      data.phase = "instructions";
+      break;
+    case "practice":
+      data.phase = "practice";
+      data.part = "instruction";
+      break;
+    case "prosaccade":
+    case "antisaccade":
+      data.phase = "test";
+      data.part = "instruction";
+      break;
+  }
+
   return {
     type: jsPsychHtmlButtonResponse,
     stimulus: stimulus,
     choices: [buttonLabel],
-    data: {
-      task: TASK_NAME,
-      trial_part: "instruction",
-    },
+    data,
   };
 }
 
@@ -252,7 +266,8 @@ function createAntisaccadeTrial(
     trial_duration: config.fixationDuration,
     data: {
       task: TASK_NAME,
-      trial_part: "fixation",
+      phase: isPractice ? "practice" : "test",
+      part: "fixation",
     },
   });
 
@@ -267,7 +282,8 @@ function createAntisaccadeTrial(
       trial_duration: config.gapDuration,
       data: {
         task: TASK_NAME,
-        trial_part: "gap",
+        phase: isPractice ? "practice" : "test",
+        part: "gap",
       },
     });
   }
@@ -283,7 +299,8 @@ function createAntisaccadeTrial(
     trial_duration: config.cueDuration,
     data: {
       task: TASK_NAME,
-      trial_part: "cue",
+      phase: isPractice ? "practice" : "test",
+      part: "cue",
     },
   });
 
@@ -300,7 +317,8 @@ function createAntisaccadeTrial(
     data: {
       task: TASK_NAME,
       task_version: VERSION,
-      trial_part: isPractice ? "practice" : "response",
+      phase: isPractice ? "practice" : "test",
+      part: "response",
       trial_index: trialIndex,
       block_type: blockType,
       cue_side: cueSide,
@@ -342,7 +360,8 @@ function createAntisaccadeTrial(
       trial_duration: config.feedbackDuration,
       data: {
         task: TASK_NAME,
-        trial_part: "feedback",
+        phase: "practice",
+        part: "feedback",
       },
     });
   }
@@ -357,7 +376,8 @@ function createAntisaccadeTrial(
     trial_duration: config.iti,
     data: {
       task: TASK_NAME,
-      trial_part: "iti",
+      phase: isPractice ? "practice" : "test",
+      part: "iti",
     },
   });
 
@@ -419,7 +439,7 @@ function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
     data: {
       task: TASK_NAME,
       task_version: VERSION,
-      trial_part: "completion",
+      phase: "completion",
     },
   };
 }
@@ -431,7 +451,7 @@ function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
  */
 function calculateScores(data: DataCollection): ScoringResult {
   const responseTrials = data
-    .filter({ task: TASK_NAME, trial_part: "response" })
+    .filter({ task: TASK_NAME, phase: "test", part: "response" })
     .values() as TrialData[];
 
   if (responseTrials.length === 0) {

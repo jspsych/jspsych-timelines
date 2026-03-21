@@ -100,7 +100,7 @@ describe("Berg Card Sorting Test", () => {
     it("should include completion trial at end", () => {
       const timeline = createTimeline(jsPsych, { showInstructions: false });
       const lastItem = timeline.timeline[timeline.timeline.length - 1] as any;
-      expect(lastItem.data.trial_type).toBe("completion");
+      expect(lastItem.data.phase).toBe("completion");
     });
   });
 
@@ -180,7 +180,8 @@ describe("Berg Card Sorting Test", () => {
       const dataCollection = jsPsych.data.get();
       dataCollection.push({
         task: "bcst",
-        trial_type: "sorting",
+        phase: "test",
+        part: "sorting",
         correct: true,
         is_perseverative: false,
         categories_completed: 0,
@@ -188,7 +189,8 @@ describe("Berg Card Sorting Test", () => {
       });
       dataCollection.push({
         task: "bcst",
-        trial_type: "sorting",
+        phase: "test",
+        part: "sorting",
         correct: true,
         is_perseverative: false,
         categories_completed: 0,
@@ -196,7 +198,8 @@ describe("Berg Card Sorting Test", () => {
       });
       dataCollection.push({
         task: "bcst",
-        trial_type: "sorting",
+        phase: "test",
+        part: "sorting",
         correct: false,
         is_perseverative: false,
         categories_completed: 0,
@@ -204,7 +207,8 @@ describe("Berg Card Sorting Test", () => {
       });
       dataCollection.push({
         task: "bcst",
-        trial_type: "sorting",
+        phase: "test",
+        part: "sorting",
         correct: true,
         is_perseverative: false,
         categories_completed: 0,
@@ -223,7 +227,8 @@ describe("Berg Card Sorting Test", () => {
       const dataCollection = jsPsych.data.get();
       dataCollection.push({
         task: "bcst",
-        trial_type: "sorting",
+        phase: "test",
+        part: "sorting",
         correct: false,
         is_perseverative: true,
         categories_completed: 1,
@@ -231,7 +236,8 @@ describe("Berg Card Sorting Test", () => {
       });
       dataCollection.push({
         task: "bcst",
-        trial_type: "sorting",
+        phase: "test",
+        part: "sorting",
         correct: false,
         is_perseverative: true,
         categories_completed: 1,
@@ -239,7 +245,8 @@ describe("Berg Card Sorting Test", () => {
       });
       dataCollection.push({
         task: "bcst",
-        trial_type: "sorting",
+        phase: "test",
+        part: "sorting",
         correct: false,
         is_perseverative: false,
         categories_completed: 1,
@@ -257,7 +264,8 @@ describe("Berg Card Sorting Test", () => {
       const dataCollection = jsPsych.data.get();
       dataCollection.push({
         task: "bcst",
-        trial_type: "sorting",
+        phase: "test",
+        part: "sorting",
         correct: true,
         is_perseverative: false,
         categories_completed: 0,
@@ -265,7 +273,8 @@ describe("Berg Card Sorting Test", () => {
       });
       dataCollection.push({
         task: "bcst",
-        trial_type: "sorting",
+        phase: "test",
+        part: "sorting",
         correct: true,
         is_perseverative: false,
         categories_completed: 0,
@@ -273,7 +282,8 @@ describe("Berg Card Sorting Test", () => {
       });
       dataCollection.push({
         task: "bcst",
-        trial_type: "sorting",
+        phase: "test",
+        part: "sorting",
         correct: false,
         is_perseverative: false,
         categories_completed: 0,
@@ -291,7 +301,8 @@ describe("Berg Card Sorting Test", () => {
       for (let i = 0; i < 4; i++) {
         dataCollection.push({
           task: "bcst",
-          trial_type: "sorting",
+          phase: "test",
+        part: "sorting",
           correct: true,
           is_perseverative: false,
           categories_completed: 0,
@@ -301,7 +312,8 @@ describe("Berg Card Sorting Test", () => {
       // Error breaks run
       dataCollection.push({
         task: "bcst",
-        trial_type: "sorting",
+        phase: "test",
+        part: "sorting",
         correct: false,
         is_perseverative: false,
         categories_completed: 0,
@@ -311,7 +323,8 @@ describe("Berg Card Sorting Test", () => {
       for (let i = 0; i < 3; i++) {
         dataCollection.push({
           task: "bcst",
-          trial_type: "sorting",
+          phase: "test",
+        part: "sorting",
           correct: true,
           is_perseverative: false,
           categories_completed: 0,
@@ -330,7 +343,8 @@ describe("Berg Card Sorting Test", () => {
       for (let i = 0; i < 5; i++) {
         dataCollection.push({
           task: "bcst",
-          trial_type: "sorting",
+          phase: "test",
+        part: "sorting",
           correct: true,
           is_perseverative: false,
           categories_completed: 0,
@@ -340,7 +354,8 @@ describe("Berg Card Sorting Test", () => {
       // Error after 5 correct = failure to maintain set
       dataCollection.push({
         task: "bcst",
-        trial_type: "sorting",
+        phase: "test",
+        part: "sorting",
         correct: false,
         is_perseverative: false,
         categories_completed: 0,

@@ -33,8 +33,8 @@ describe("Go-NoGo Timeline", () => {
       // Verify block breaks are in correct positions
       const break1 = blocksArray[1];
       const break2 = blocksArray[3];
-      expect(break1.timeline[0].data.page).toBe('block-break');
-      expect(break2.timeline[0].data.page).toBe('block-break');
+      expect(break1.timeline[0].data.part).toBe('block-break');
+      expect(break2.timeline[0].data.part).toBe('block-break');
     });
 
     it("should create correct number of trials per block via timeline_variables", () => {
@@ -101,7 +101,7 @@ describe("Go-NoGo Timeline", () => {
       });
 
       const lastItem = timeline.timeline[timeline.timeline.length - 1] as any;
-      expect(lastItem.data.phase).toBe('debrief');
+      expect(lastItem.data.phase).toBe('completion');
       expect(typeof lastItem.stimulus).toBe('function');
     });
 
@@ -236,9 +236,9 @@ describe("Go-NoGo Timeline", () => {
     it("should calculate accuracy and RT correctly", () => {
       // Manually add data to the internal data store
       const dataCollection = jsPsych.data.get();
-      dataCollection.push({ task: 'go-nogo', phase: 'main', page: 'go', correct: true, is_go_trial: true, response: 0, rt: 400 });
-      dataCollection.push({ task: 'go-nogo', phase: 'main', page: 'go', correct: false, is_go_trial: true, response: null, rt: null });
-      dataCollection.push({ task: 'go-nogo', phase: 'main', page: 'nogo', correct: true, is_go_trial: false, response: null, rt: null });
+      dataCollection.push({ task: 'go-nogo', phase: 'test', part: 'go', correct: true, is_go_trial: true, response: 0, rt: 400 });
+      dataCollection.push({ task: 'go-nogo', phase: 'test', part: 'go', correct: false, is_go_trial: true, response: null, rt: null });
+      dataCollection.push({ task: 'go-nogo', phase: 'test', part: 'nogo', correct: true, is_go_trial: false, response: null, rt: null });
 
       const timeline = createTimeline(jsPsych, { show_debrief: true });
       const debriefTrial = timeline.timeline[timeline.timeline.length - 1] as any;
@@ -329,7 +329,7 @@ describe("Go-NoGo Timeline", () => {
 
       expect(fixation.trial_duration).toBe(1000);
       expect(fixation.choices).toEqual(['Press']);
-      expect(fixation.data.page).toBe('fixation');
+      expect(fixation.data.part).toBe('fixation');
       expect(fixation.response_ends_trial).toBe(false);
     });
 
@@ -337,7 +337,7 @@ describe("Go-NoGo Timeline", () => {
       const isiBlank = timelineUnits.createISIBlank(500, 'Click', true, '25vh');
 
       expect(isiBlank.trial_duration).toBe(500);
-      expect(isiBlank.data.page).toBe('isi-blank');
+      expect(isiBlank.data.part).toBe('isi-blank');
       expect(isiBlank.response_ends_trial).toBe(false);
     });
 

@@ -68,7 +68,7 @@ describe("BART Task", () => {
 
       // Verify each trial has correct phase
       block1.forEach((trial) => {
-        expect(trial.data.phase).toBe("trial");
+        expect(trial.data.phase).toBe("test");
       });
     });
 
@@ -114,7 +114,7 @@ describe("BART Task", () => {
 
       // Structure: [block_trials[], end_results]
       const lastItem = timeline.timeline[timeline.timeline.length - 1] as any;
-      expect(lastItem.data.phase).toBe("end-results");
+      expect(lastItem.data.phase).toBe("completion");
       expect(typeof lastItem.stimulus).toBe("function");
     });
 
@@ -169,7 +169,7 @@ describe("BART Task", () => {
       trials.forEach((trial) => {
         expect(trial).toHaveProperty("type");
         expect(trial.data.task).toBe("bart");
-        expect(trial.data.phase).toBe("trial");
+        expect(trial.data.phase).toBe("test");
       });
     });
 
@@ -204,21 +204,21 @@ describe("BART Task", () => {
       const dataCollection = jsPsych.data.get();
       dataCollection.push({
         task: "bart",
-        phase: "trial",
+        phase: "test",
         points_earned: 5,
         pumps: 5,
         popped: false,
       });
       dataCollection.push({
         task: "bart",
-        phase: "trial",
+        phase: "test",
         points_earned: 0,
         pumps: 8,
         popped: true,
       });
       dataCollection.push({
         task: "bart",
-        phase: "trial",
+        phase: "test",
         points_earned: 3,
         pumps: 3,
         popped: false,

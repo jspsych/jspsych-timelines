@@ -286,10 +286,10 @@ describe('utils.scoring', () => {
 
   it('should calculate accuracy correctly', () => {
     const dataCollection = jsPsych.data.get();
-    dataCollection.push({ task: 'spatial-nback', phase: 'trial', correct: true, is_target: true, rt: 400 });
-    dataCollection.push({ task: 'spatial-nback', phase: 'trial', correct: true, is_target: false, rt: 350 });
-    dataCollection.push({ task: 'spatial-nback', phase: 'trial', correct: false, is_target: true, rt: 500 });
-    dataCollection.push({ task: 'spatial-nback', phase: 'trial', correct: true, is_target: false, rt: 380 });
+    dataCollection.push({ task: 'spatial-nback', phase: 'test', correct: true, is_target: true, rt: 400 });
+    dataCollection.push({ task: 'spatial-nback', phase: 'test', correct: true, is_target: false, rt: 350 });
+    dataCollection.push({ task: 'spatial-nback', phase: 'test', correct: false, is_target: true, rt: 500 });
+    dataCollection.push({ task: 'spatial-nback', phase: 'test', correct: true, is_target: false, rt: 380 });
 
     const scores = utils.scoring.calculateScores(dataCollection);
 
@@ -301,11 +301,11 @@ describe('utils.scoring', () => {
   it('should calculate hit rate and false alarm rate', () => {
     const dataCollection = jsPsych.data.get();
     // 2 target trials: 1 hit, 1 miss
-    dataCollection.push({ task: 'spatial-nback', phase: 'trial', correct: true, is_target: true, rt: 400 });
-    dataCollection.push({ task: 'spatial-nback', phase: 'trial', correct: false, is_target: true, rt: null });
+    dataCollection.push({ task: 'spatial-nback', phase: 'test', correct: true, is_target: true, rt: 400 });
+    dataCollection.push({ task: 'spatial-nback', phase: 'test', correct: false, is_target: true, rt: null });
     // 2 non-target trials: 1 correct rejection, 1 false alarm
-    dataCollection.push({ task: 'spatial-nback', phase: 'trial', correct: true, is_target: false, rt: 350 });
-    dataCollection.push({ task: 'spatial-nback', phase: 'trial', correct: false, is_target: false, rt: 420 });
+    dataCollection.push({ task: 'spatial-nback', phase: 'test', correct: true, is_target: false, rt: 350 });
+    dataCollection.push({ task: 'spatial-nback', phase: 'test', correct: false, is_target: false, rt: 420 });
 
     const scores = utils.scoring.calculateScores(dataCollection);
 
@@ -320,9 +320,9 @@ describe('utils.scoring', () => {
 
   it('should calculate mean RT for correct trials only', () => {
     const dataCollection = jsPsych.data.get();
-    dataCollection.push({ task: 'spatial-nback', phase: 'trial', correct: true, is_target: true, rt: 400 });
-    dataCollection.push({ task: 'spatial-nback', phase: 'trial', correct: true, is_target: false, rt: 500 });
-    dataCollection.push({ task: 'spatial-nback', phase: 'trial', correct: false, is_target: true, rt: 1000 });
+    dataCollection.push({ task: 'spatial-nback', phase: 'test', correct: true, is_target: true, rt: 400 });
+    dataCollection.push({ task: 'spatial-nback', phase: 'test', correct: true, is_target: false, rt: 500 });
+    dataCollection.push({ task: 'spatial-nback', phase: 'test', correct: false, is_target: true, rt: 1000 });
 
     const scores = utils.scoring.calculateScores(dataCollection);
 
@@ -333,16 +333,16 @@ describe('utils.scoring', () => {
     const dataCollection = jsPsych.data.get();
     // High hit rate, low false alarm rate = high d'
     for (let i = 0; i < 8; i++) {
-      dataCollection.push({ task: 'spatial-nback', phase: 'trial', correct: true, is_target: true, rt: 400 });
+      dataCollection.push({ task: 'spatial-nback', phase: 'test', correct: true, is_target: true, rt: 400 });
     }
     for (let i = 0; i < 2; i++) {
-      dataCollection.push({ task: 'spatial-nback', phase: 'trial', correct: false, is_target: true, rt: null });
+      dataCollection.push({ task: 'spatial-nback', phase: 'test', correct: false, is_target: true, rt: null });
     }
     for (let i = 0; i < 9; i++) {
-      dataCollection.push({ task: 'spatial-nback', phase: 'trial', correct: true, is_target: false, rt: 350 });
+      dataCollection.push({ task: 'spatial-nback', phase: 'test', correct: true, is_target: false, rt: 350 });
     }
     for (let i = 0; i < 1; i++) {
-      dataCollection.push({ task: 'spatial-nback', phase: 'trial', correct: false, is_target: false, rt: 420 });
+      dataCollection.push({ task: 'spatial-nback', phase: 'test', correct: false, is_target: false, rt: 420 });
     }
 
     const scores = utils.scoring.calculateScores(dataCollection);
