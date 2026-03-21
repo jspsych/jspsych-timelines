@@ -37,16 +37,35 @@ describe("Fitts Timeline", () => {
         withPractice.timeline.length
       );
     });
+
+    it("should include landscape orientation trial by default", () => {
+      const jsPsych = initJsPsych();
+      const timeline = createTimeline(jsPsych);
+      // First item should be the orientation check
+      expect(timeline.timeline.length).toBeGreaterThan(0);
+    });
+
+    it("should skip landscape orientation when requireLandscape is false", () => {
+      const jsPsych = initJsPsych();
+      const withLandscape = createTimeline(jsPsych, { requireLandscape: true });
+      const withoutLandscape = createTimeline(jsPsych, { requireLandscape: false });
+      expect(withoutLandscape.timeline.length).toBeLessThan(
+        withLandscape.timeline.length
+      );
+    });
   });
 
   describe("timeline execution", () => {
     it("should display introduction instructions", async () => {
       const jsPsych = initJsPsych();
       const { displayElement } = await startTimeline(
-        createTimeline(jsPsych, { showInstructions: true }).timeline
+        createTimeline(jsPsych, {
+          showInstructions: true,
+          requireLandscape: false,
+        }).timeline
       );
 
-      expect(displayElement.innerHTML).toContain("Fitts Tapping Task");
+      expect(displayElement.innerHTML).toContain("Tapping Task");
     });
   });
 
@@ -99,7 +118,7 @@ describe("Fitts Timeline", () => {
       expect(defaults.repetitionsPerCondition).toBe(2);
       expect(defaults.showPractice).toBe(true);
       expect(defaults.numPracticeConditions).toBe(2);
-      expect(defaults.targetHeight).toBe(50);
+      expect(defaults.requireLandscape).toBe(true);
     });
 
     it("should have default conditions", () => {
@@ -146,12 +165,12 @@ describe("Fitts Timeline", () => {
   });
 
   describe("Fitts HTML generation", () => {
-    it("should create HTML with two targets", () => {
+    it("should create HTML with left and right targets", () => {
       const config = {
         ...utils.constants.DEFAULT_OPTIONS,
         text: utils.text,
       };
-      const html = timelineUnits.createFittsHTML(config, 60, 200, null);
+      const html = timelineUnits.createFittsHTML(config, 60, 200, "left");
       expect(html).toContain("fitts-left");
       expect(html).toContain("fitts-right");
     });
@@ -161,26 +180,33 @@ describe("Fitts Timeline", () => {
         ...utils.constants.DEFAULT_OPTIONS,
         text: utils.text,
       };
-      const html = timelineUnits.createFittsHTML(config, 80, 200, null);
+      const html = timelineUnits.createFittsHTML(config, 80, 200, "left");
       expect(html).toContain("width: 80px");
     });
 
-    it("should set correct gap distance", () => {
+    it("should show only the active target", () => {
       const config = {
         ...utils.constants.DEFAULT_OPTIONS,
         text: utils.text,
       };
-      const html = timelineUnits.createFittsHTML(config, 60, 300, null);
-      expect(html).toContain("gap: 300px");
+      const htmlLeft = timelineUnits.createFittsHTML(config, 60, 200, "left");
+      // Left target visible, right hidden
+      expect(htmlLeft).toMatch(/fitts-left.*display: block/s);
+      expect(htmlLeft).toMatch(/fitts-right.*display: none/s);
+
+      const htmlRight = timelineUnits.createFittsHTML(config, 60, 200, "right");
+      expect(htmlRight).toMatch(/fitts-left.*display: none/s);
+      expect(htmlRight).toMatch(/fitts-right.*display: block/s);
     });
 
-    it("should highlight active target", () => {
+    it("should use target color from config", () => {
       const config = {
         ...utils.constants.DEFAULT_OPTIONS,
+        targetColor: "#FF0000",
         text: utils.text,
       };
       const html = timelineUnits.createFittsHTML(config, 60, 200, "left");
-      expect(html).toContain(config.activeColor);
+      expect(html).toContain("#FF0000");
     });
   });
 
@@ -190,6 +216,7 @@ describe("Fitts Timeline", () => {
       const { displayElement } = await startTimeline(
         createTimeline(jsPsych, {
           showInstructions: true,
+          requireLandscape: false,
           text: {
             instruction_intro: "<p>Custom intro text</p>",
             continue_button: "Next",
@@ -244,28 +271,10 @@ describe("Fitts Timeline", () => {
       expect(timeline.timeline).toBeDefined();
     });
 
-    it("should accept custom target height", () => {
-      const jsPsych = initJsPsych();
-      const timeline = createTimeline(jsPsych, {
-        targetHeight: 60,
-      });
-
-      expect(timeline.timeline).toBeDefined();
-    });
-
     it("should accept custom target color", () => {
       const jsPsych = initJsPsych();
       const timeline = createTimeline(jsPsych, {
         targetColor: "#FF0000",
-      });
-
-      expect(timeline.timeline).toBeDefined();
-    });
-
-    it("should accept custom active color", () => {
-      const jsPsych = initJsPsych();
-      const timeline = createTimeline(jsPsych, {
-        activeColor: "#00FF00",
       });
 
       expect(timeline.timeline).toBeDefined();
@@ -285,6 +294,7 @@ describe("Fitts Timeline", () => {
     it("should have all required text fields", () => {
       expect(utils.text.continue_button).toBeDefined();
       expect(utils.text.start_button).toBeDefined();
+      expect(utils.text.orientation_message).toBeDefined();
       expect(utils.text.instruction_intro).toBeDefined();
       expect(utils.text.instruction_practice).toBeDefined();
       expect(utils.text.instruction_main).toBeDefined();

@@ -2,6 +2,7 @@ import "./styles.css";
 import { JsPsych, DataCollection } from "jspsych";
 import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
 import jsPsychHtmlKeyboardResponse from "@jspsych/plugin-html-keyboard-response";
+import jsPsychDeviceOrientation from "@jspsych-contrib/plugin-device-orientation";
 import { defaultText, TextConfig } from "./text";
 
 // -- TYPES --
@@ -16,6 +17,8 @@ export interface FittsCondition {
 export interface FittsOptions {
   /** Show built-in instruction screens (default: true) */
   showInstructions?: boolean;
+  /** Require landscape orientation on mobile devices (default: true) */
+  requireLandscape?: boolean;
   /** Conditions to test - array of {width, distance} (default: built-in set) */
   conditions?: FittsCondition[];
   /** Number of taps per condition (default: 10) */
@@ -26,12 +29,8 @@ export interface FittsOptions {
   showPractice?: boolean;
   /** Number of practice conditions (default: 2) */
   numPracticeConditions?: number;
-  /** Target height in pixels (default: 50) */
-  targetHeight?: number;
   /** Target color (default: "#4A90D9" - blue) */
   targetColor?: string;
-  /** Active target color (default: "#2ECC71" - green) */
-  activeColor?: string;
   /** Custom text strings for translation */
   text?: Partial<TextConfig>;
 }
@@ -75,14 +74,13 @@ export interface ScoringResult {
 // Internal config type with text resolved
 interface ResolvedConfig {
   showInstructions: boolean;
+  requireLandscape: boolean;
   conditions: FittsCondition[];
   tapsPerCondition: number;
   repetitionsPerCondition: number;
   showPractice: boolean;
   numPracticeConditions: number;
-  targetHeight: number;
   targetColor: string;
-  activeColor: string;
   text: TextConfig;
 }
 
@@ -103,14 +101,13 @@ const DEFAULT_CONDITIONS: FittsCondition[] = [
 
 const DEFAULT_OPTIONS = {
   showInstructions: true,
+  requireLandscape: true,
   conditions: DEFAULT_CONDITIONS,
   tapsPerCondition: 10,
   repetitionsPerCondition: 2,
   showPractice: true,
   numPracticeConditions: 2,
-  targetHeight: 50,
   targetColor: "#4A90D9",
-  activeColor: "#2ECC71",
 };
 
 // -- UTILITY FUNCTIONS --
@@ -136,45 +133,55 @@ function calculateID(distance: number, width: number): number {
 }
 
 /**
- * Creates HTML for the Fitts tapping display.
+ * Creates HTML for the Fitts tapping display with vertical bar targets.
+ * Only the active target is visible. The bars span the full height and
+ * are positioned so that the distance between their inner edges equals
+ * the specified distance.
  */
 function createFittsHTML(
   config: ResolvedConfig,
   width: number,
   distance: number,
-  activeTarget: "left" | "right" | null
+  activeTarget: "left" | "right"
 ): string {
-  const leftColor = activeTarget === "left" ? config.activeColor : config.targetColor;
-  const rightColor = activeTarget === "right" ? config.activeColor : config.targetColor;
+  // Total width needed: width + distance + width
+  // Center this by using calc() for positioning
+  const totalWidth = width * 2 + distance;
+
+  const leftDisplay = activeTarget === "left" ? "block" : "none";
+  const rightDisplay = activeTarget === "right" ? "block" : "none";
 
   return `
     <div class="fitts-container" style="
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: ${distance}px;
-      height: 200px;
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: ${totalWidth}px;
+      height: 100%;
       user-select: none;
       -webkit-user-select: none;
     ">
-      <button class="fitts-target fitts-left" data-target="left" style="
+      <div class="fitts-target fitts-left" data-target="left" style="
+        display: ${leftDisplay};
+        position: absolute;
+        left: 0;
+        top: 0;
         width: ${width}px;
-        height: ${config.targetHeight}px;
-        background-color: ${leftColor};
-        border: none;
-        border-radius: 4px;
+        height: 100%;
+        background-color: ${config.targetColor};
         cursor: pointer;
-        transition: background-color 0.1s;
-      "></button>
-      <button class="fitts-target fitts-right" data-target="right" style="
+      "></div>
+      <div class="fitts-target fitts-right" data-target="right" style="
+        display: ${rightDisplay};
+        position: absolute;
+        right: 0;
+        top: 0;
         width: ${width}px;
-        height: ${config.targetHeight}px;
-        background-color: ${rightColor};
-        border: none;
-        border-radius: 4px;
+        height: 100%;
+        background-color: ${config.targetColor};
         cursor: pointer;
-        transition: background-color 0.1s;
-      "></button>
+      "></div>
     </div>
   `;
 }
@@ -249,20 +256,17 @@ function createFittsTrial(
     },
     on_load: () => {
       const displayElement = jsPsych.getDisplayElement();
-      const targets = displayElement.querySelectorAll(".fitts-target");
+      const leftTarget = displayElement.querySelector(".fitts-left") as HTMLElement;
+      const rightTarget = displayElement.querySelector(".fitts-right") as HTMLElement;
       const movementTimes: number[] = [];
       let currentTarget: "left" | "right" = "left";
       let tapCount = 0;
-      let errorCount = 0;
       let lastTapTime = performance.now();
       const startTime = performance.now();
 
-      const updateTargetColors = () => {
-        targets.forEach((target) => {
-          const side = (target as HTMLElement).dataset.target as "left" | "right";
-          (target as HTMLElement).style.backgroundColor =
-            side === currentTarget ? config.activeColor : config.targetColor;
-        });
+      const updateTargetVisibility = () => {
+        leftTarget.style.display = currentTarget === "left" ? "block" : "none";
+        rightTarget.style.display = currentTarget === "right" ? "block" : "none";
       };
 
       const handleTap = (event: Event) => {
@@ -270,8 +274,9 @@ function createFittsTrial(
         const tappedSide = target.dataset.target as "left" | "right";
         const now = performance.now();
 
+        // Only the visible target can be tapped
         if (tappedSide === currentTarget) {
-          // Correct tap
+          // Record movement time
           const mt = now - lastTapTime;
           movementTimes.push(mt);
           lastTapTime = now;
@@ -279,7 +284,7 @@ function createFittsTrial(
 
           // Switch target
           currentTarget = currentTarget === "left" ? "right" : "left";
-          updateTargetColors();
+          updateTargetVisibility();
 
           if (tapCount >= config.tapsPerCondition) {
             // Trial complete
@@ -288,25 +293,25 @@ function createFittsTrial(
               taps_completed: tapCount,
               total_time: totalTime,
               movement_times: movementTimes,
-              errors: errorCount,
-              accuracy: (tapCount / (tapCount + errorCount)) * 100,
+              errors: 0, // No errors possible with single visible target
+              accuracy: 100,
             });
           }
-        } else {
-          // Error - tapped wrong target
-          errorCount++;
         }
       };
 
-      targets.forEach((target) => {
-        target.addEventListener("click", handleTap);
-        target.addEventListener("touchend", (e) => {
-          e.preventDefault();
-          handleTap(e);
-        });
+      leftTarget.addEventListener("click", handleTap);
+      leftTarget.addEventListener("touchend", (e) => {
+        e.preventDefault();
+        handleTap(e);
+      });
+      rightTarget.addEventListener("click", handleTap);
+      rightTarget.addEventListener("touchend", (e) => {
+        e.preventDefault();
+        handleTap(e);
       });
 
-      updateTargetColors();
+      updateTargetVisibility();
     },
   };
 }
@@ -532,6 +537,15 @@ export function createTimeline(
   };
 
   const timeline: any[] = [];
+
+  // Require landscape orientation on mobile
+  if (config.requireLandscape) {
+    timeline.push({
+      type: jsPsychDeviceOrientation,
+      orientation: "landscape",
+      message: config.text.orientation_message,
+    });
+  }
 
   // Introduction
   if (config.showInstructions) {

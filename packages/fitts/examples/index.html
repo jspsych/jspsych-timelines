@@ -19,9 +19,12 @@
       },
     });
 
+    // requireLandscape is true by default - mobile users will be prompted
+    // to rotate their device to landscape before the task begins
     const timeline = jsPsychTimelineFitts.createTimeline(jsPsych, {
       showInstructions: true,
       showPractice: true,
+      // requireLandscape: true, // enabled by default
     });
 
     jsPsych.run([timeline]);

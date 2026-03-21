@@ -7,6 +7,8 @@ export interface TextConfig {
   continue_button: string;
   /** Start button label */
   start_button: string;
+  /** Message shown when device needs to be rotated to landscape */
+  orientation_message: string;
   /** Introduction instruction */
   instruction_intro: string;
   /** Practice instruction */
@@ -29,13 +31,16 @@ export const defaultText: TextConfig = {
   continue_button: "Continue",
   start_button: "Start",
 
+  orientation_message: `<p style="font-size: 24px;">Please rotate your device to <strong>landscape</strong> mode to continue.</p>`,
+
   instruction_intro: `
     <div style="max-width: 600px; margin: 0 auto; text-align: left;">
-      <h2>Fitts Tapping Task</h2>
-      <p>In this task, you will tap on targets as quickly and accurately as possible.</p>
-      <p>Two targets will appear on the screen. Tap back and forth between them.</p>
+      <h2>Tapping Task</h2>
+      <p>In this task, you will tap on targets as quickly as possible.</p>
+      <p>A target bar will appear on either the left or right side of the screen.</p>
+      <p>Tap the bar, and a new one will appear on the opposite side.</p>
       <p>The targets will vary in size and distance apart.</p>
-      <p>Try to be both <strong>fast</strong> and <strong>accurate</strong>!</p>
+      <p>Try to tap as <strong>quickly</strong> as you can!</p>
     </div>
   `,
 
@@ -50,7 +55,7 @@ export const defaultText: TextConfig = {
     <div style="max-width: 600px; margin: 0 auto;">
       <h3>Main Task</h3>
       <p>Now you will complete the main task.</p>
-      <p>Tap between the targets as quickly and accurately as you can.</p>
+      <p>Tap each target as quickly as you can.</p>
     </div>
   `,
 
