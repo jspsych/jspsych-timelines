@@ -64,9 +64,17 @@ export const defaultText = {
     `Math: ${correct}/${total} correct`,
 
   // -- COMPLETION --
-  task_complete: "Task complete. Thank you!",
+  task_complete: "Task Complete",
   final_score: (ospanScore: number, mathAccuracy: number) =>
     `Your memory score: ${ospanScore}<br>Math accuracy: ${Math.round(mathAccuracy * 100)}%`,
+  result_summary: (ospanScore: number, mathAccuracy: number, meanMathRT: number | null) => `
+    <div class="instructions">
+      <h3>Your Results</h3>
+      <p><strong>Memory score (OSPAN):</strong> ${ospanScore}</p>
+      <p><strong>Math accuracy:</strong> ${(mathAccuracy * 100).toFixed(1)}%</p>
+      ${meanMathRT !== null ? `<p><strong>Average math RT:</strong> ${meanMathRT.toFixed(0)} ms</p>` : ""}
+    </div>
+  `,
 };
 
 // Export the type for use in other files

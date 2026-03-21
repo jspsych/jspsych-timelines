@@ -100,7 +100,15 @@ export const defaultText = {
     "Practice complete! Now you will begin the main backward task. Remember to enter digits in REVERSE order.",
   forward_complete:
     "Forward digit span complete! Next you will do the backward version.",
-  task_complete: "Task complete! Thank you.",
+  task_complete: "Task Complete",
+  result_summary: (forwardMaxSpan: number | null, backwardMaxSpan: number | null, totalCorrect: number) => `
+    <div class="instructions">
+      <h3>Your Results</h3>
+      ${forwardMaxSpan !== null ? `<p><strong>Forward span:</strong> ${forwardMaxSpan}</p>` : ""}
+      ${backwardMaxSpan !== null ? `<p><strong>Backward span:</strong> ${backwardMaxSpan}</p>` : ""}
+      <p><strong>Total correct:</strong> ${totalCorrect}</p>
+    </div>
+  `,
 };
 
 // Export the type for use in other files

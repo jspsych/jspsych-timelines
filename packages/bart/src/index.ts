@@ -1,3 +1,4 @@
+import "./styles.css";
 import { JsPsych, DataCollection } from "jspsych";
 import HtmlButtonResponsePlugin from "@jspsych/plugin-html-button-response";
 import BartPlugin from "@jspsych-contrib/plugin-bart";
@@ -191,10 +192,13 @@ function createEndResults(jsPsych: JsPsych, texts: TextConfig) {
   const endResults = {
     type: HtmlButtonResponsePlugin,
     stimulus: () => {
-      const data = jsPsych.data.get().filter({ task: TASK_NAME });
-      const totalPoints = data.select("points_earned").sum();
-
-      return `<div class="end-results" >${texts.end_result_message(totalPoints)}</div>`;
+      const data = jsPsych.data.get();
+      const scores = calculateScores(data);
+      let html = `<div style="max-width: 600px; margin: 0 auto;">`;
+      html += `<h2>${texts.task_complete}</h2>`;
+      html += texts.result_summary(scores.totalPoints, scores.popRate, scores.adjustedAvgPumps);
+      html += `</div>`;
+      return html;
     },
     choices: [texts.finish_button],
     data: {

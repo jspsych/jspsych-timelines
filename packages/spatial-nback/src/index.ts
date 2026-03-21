@@ -1,6 +1,7 @@
 import "./styles.css";
 import { JsPsych, DataCollection } from "jspsych";
 import jsPsychPluginSpatialNback from "@jspsych-contrib/plugin-spatial-nback";
+import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
 import jsPsychInstructions from "@jspsych/plugin-instructions";
 import { trial_text, instruction_pages } from "./text";
 
@@ -190,17 +191,22 @@ export function createTimeline(
         timeline: trials,
     };
 
+    // Completion screen
+    const completionTrial = createCompletionTrial(jsPsych, texts);
+
     // Return complete timeline with or without instructions
     if (include_instructions) {
         const instructions = createInstructions(instruction_texts, texts);
-        
+
         const nested_timeline = {
-            timeline: [instructions, task_timeline]
+            timeline: [instructions, task_timeline, completionTrial]
         };
         return nested_timeline;
 
     } else {
-        return task_timeline;
+        return {
+            timeline: [...trials, completionTrial],
+        };
     }
 }
 
@@ -284,7 +290,8 @@ export const presetConfigurations = {
 export const timelineUnits = {
     createPracticeTimeline,
     createMultiLevelNBackTimeline,
-    createInstructions
+    createInstructions,
+    createCompletionTrial,
 };
 
 /**
@@ -493,6 +500,31 @@ function inverseNormalCDF(p: number): number {
         return -(((((c1 * q + c2) * q + c3) * q + c4) * q + c5) * q + c6) /
             ((((d1 * q + d2) * q + d3) * q + d4) * q + 1);
     }
+}
+
+/**
+ * Creates a completion screen showing results.
+ */
+function createCompletionTrial(jsPsych: JsPsych, texts = trial_text) {
+  return {
+    type: jsPsychHtmlButtonResponse,
+    stimulus: () => {
+      const data = jsPsych.data.get();
+      const scores = scoring.calculateScores(data);
+
+      let html = `<div style="max-width: 600px; margin: 0 auto;">`;
+      html += `<h2>${texts.task_complete}</h2>`;
+      html += texts.result_summary(scores.accuracy, scores.dPrime, scores.meanTargetRT);
+      html += `</div>`;
+      return html;
+    },
+    choices: [texts.continue_button],
+    data: {
+      task: TASK_NAME,
+      task_version: VERSION,
+      phase: "completion",
+    },
+  };
 }
 
 // Constants export

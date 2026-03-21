@@ -39,7 +39,15 @@ export const defaultText = {
   sort_prompt: "Tap on a pile to sort this card",
 
   // -- COMPLETION --
-  task_complete: "Task complete. Thank you for participating!",
+  task_complete: "Task Complete",
+  result_summary: (categoriesCompleted: number, perseverativeErrors: number, totalErrors: number) => `
+    <div class="instructions">
+      <h3>Your Results</h3>
+      <p><strong>Categories completed:</strong> ${categoriesCompleted}</p>
+      <p><strong>Perseverative errors:</strong> ${perseverativeErrors}</p>
+      <p><strong>Total errors:</strong> ${totalErrors}</p>
+    </div>
+  `,
 };
 
 // Export the type for use in other files

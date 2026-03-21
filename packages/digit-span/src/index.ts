@@ -942,7 +942,34 @@ export function createTimeline(jsPsych: JsPsych, options: DigitSpanOptions = {})
     timeline.push(createTestBlock(jsPsych, config, "backward"));
   }
 
+  // Completion
+  timeline.push(createCompletionTrial(jsPsych, config));
+
   return { timeline };
+}
+
+/**
+ * Creates the completion trial with result summary.
+ */
+function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
+  return {
+    type: jsPsychHtmlButtonResponse,
+    stimulus: () => {
+      const data = jsPsych.data.get();
+      const scores = calculateScores(data);
+      let html = `<div style="max-width: 600px; margin: 0 auto;">`;
+      html += `<h2>${config.text.task_complete}</h2>`;
+      html += config.text.result_summary(scores.forwardMaxSpan, scores.backwardMaxSpan, scores.forwardTotalCorrect + scores.backwardTotalCorrect);
+      html += `</div>`;
+      return html;
+    },
+    choices: [config.text.continue_button],
+    data: {
+      task: TASK_NAME,
+      task_version: VERSION,
+      phase: "completion",
+    },
+  };
 }
 
 /**
@@ -960,6 +987,7 @@ export const timelineUnits = {
   createSingleTrial,
   createPracticeBlock,
   createTestBlock,
+  createCompletionTrial,
 };
 
 /**

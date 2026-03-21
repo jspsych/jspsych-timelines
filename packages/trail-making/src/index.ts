@@ -273,21 +273,11 @@ function createCompletionTrial(
 
       let html = `<div style="max-width: 600px; margin: 0 auto;">`;
       html += `<h2>${config.text.task_complete}</h2>`;
-
-      if (scores.partA) {
-        html += config.text.result_part_a(
-          scores.partA.completionTime ?? 0,
-          scores.partA.numErrors
-        );
-      }
-
-      if (scores.partB) {
-        html += config.text.result_part_b(
-          scores.partB.completionTime ?? 0,
-          scores.partB.numErrors
-        );
-      }
-
+      html += config.text.result_summary(
+        scores.partA?.completionTime ?? null,
+        scores.partB?.completionTime ?? null,
+        scores.differenceScore
+      );
       html += `</div>`;
       return html;
     },

@@ -188,3 +188,64 @@
   font-size: 16px;
   color: #666;
 }
+
+/* Mobile/touch device optimizations */
+@media (pointer: coarse) {
+  .ospan-recall-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 16px;
+    background: inherit;
+  }
+
+  .ospan-recall-grid {
+    max-width: 100%;
+    gap: 12px;
+  }
+
+  .ospan-recall-btn {
+    min-height: 60px;
+    font-size: 20px;
+  }
+
+  .ospan-control-btn {
+    min-height: 48px;
+    font-size: 18px;
+    padding: 10px 16px;
+  }
+
+  .ospan-math {
+    min-width: auto;
+    width: 90%;
+  }
+
+  .ospan-letter {
+    padding: 30px 40px;
+  }
+
+  #jspsych-html-button-response-btngroup {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 16px;
+    background: inherit;
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+  }
+
+  #jspsych-html-button-response-btngroup .jspsych-btn {
+    min-height: 60px;
+    min-width: 120px;
+    font-size: 18px;
+    flex: 1;
+    max-width: 200px;
+  }
+
+  .jspsych-content {
+    padding-bottom: 250px;
+  }
+}

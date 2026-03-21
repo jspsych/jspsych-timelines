@@ -534,37 +534,17 @@ const createBlockBreak = (blockNum: number, num_blocks: number, duration: number
  * @returns A jsPsych trial object for the debrief.
  */
 const createDebrief = (jsPsych: JsPsych, texts = trial_text) => {
-  // Calculate stats when trial starts, not when displayed
-  const calculateStats = () => {
-    const allTrials = jsPsych.data.get().filter({ task: TASK_NAME, phase: "test" }).filter((trial: any) => trial.part === "go" || trial.part === "nogo").values();
-
-    if (allTrials.length === 0) return { accuracy: 0, meanRT: 0 };
-
-    // Calculate accuracy (percentage of correct responses)
-    const correctTrials = allTrials.filter((trial: any) => trial.correct === true);
-    const accuracy = Math.round((correctTrials.length / allTrials.length) * 100);
-
-    // Calculate mean RT for GO trials where response was made
-    const goTrialsWithResponse = allTrials.filter(
-      (trial: any) => trial.is_go_trial === true && trial.response !== null && trial.rt > 0,
-    );
-    const meanRT =
-      goTrialsWithResponse.length > 0
-        ? Math.round(
-            goTrialsWithResponse.reduce((sum: number, trial: any) => sum + trial.rt, 0) /
-              goTrialsWithResponse.length,
-          )
-        : 0;
-
-    return { accuracy, meanRT };
-  };
-
   return {
     type: jsPsychHtmlButtonResponse,
     stimulus: () => {
-      const { accuracy, meanRT } = calculateStats();
+      const data = jsPsych.data.get();
+      const scores = calculateScores(data);
 
-      return `<div class="debrief" >${texts.debriefContent(accuracy, meanRT)}</div>`;
+      let html = `<div class="debrief">`;
+      html += `<h2>${texts.task_complete}</h2>`;
+      html += texts.result_summary(scores.goAccuracy, scores.nogoAccuracy, scores.commissionErrors);
+      html += `</div>`;
+      return html;
     },
     choices: [texts.finishButton],
     data: { task: TASK_NAME, task_version: VERSION, phase: "completion" },

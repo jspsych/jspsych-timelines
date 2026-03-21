@@ -244,8 +244,9 @@ describe("Go-NoGo Timeline", () => {
       const debriefTrial = timeline.timeline[timeline.timeline.length - 1] as any;
       const stimulus = debriefTrial.stimulus();
 
-      expect(stimulus).toContain('67%'); // 2 correct out of 3
-      expect(stimulus).toContain('400ms'); // Only one valid GO RT
+      expect(stimulus).toContain('50.0%'); // 1 correct go out of 2 go trials
+      expect(stimulus).toContain('100.0%'); // 1 correct nogo out of 1 nogo trial
+      expect(stimulus).toContain('Commission Errors'); // Commission errors shown
     });
   });
 

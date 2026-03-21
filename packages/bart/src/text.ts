@@ -70,6 +70,17 @@ export const trial_text = {
   <p>You earned a total of <strong>${points}</strong> points!</p>
   <p>Thanks for participating!</p>
 </div>`,
+
+  // -- COMPLETION --
+  task_complete: "Task Complete",
+  result_summary: (totalPoints: number, popRate: number, adjustedAvgPumps: number) => `
+    <div class="instructions">
+      <h3>Your Results</h3>
+      <p><strong>Total points:</strong> ${totalPoints}</p>
+      <p><strong>Pop rate:</strong> ${(popRate * 100).toFixed(1)}%</p>
+      <p><strong>Average pumps (collected):</strong> ${adjustedAvgPumps.toFixed(1)}</p>
+    </div>
+  `,
 };
 
 // Aliases for consistency with other packages

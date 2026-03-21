@@ -266,9 +266,9 @@ describe("Flanker Task", () => {
       };
       const timeline = createTimeline(jsPsych, config);
 
-      // 3 blocks + 2 transition screens between them = 5 items
-      // Block 1, Transition, Block 2, Transition, Block 3
-      expect(timeline.timeline.length).toBe(5);
+      // 3 blocks + 2 transition screens between them + 1 completion trial = 6 items
+      // Block 1, Transition, Block 2, Transition, Block 3, Completion
+      expect(timeline.timeline.length).toBe(6);
 
       // Verify block numbers in data
       const block1 = timeline.timeline[0] as any;

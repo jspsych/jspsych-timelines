@@ -12,7 +12,7 @@ describe('createTimeline', () => {
 
   it('should create timeline with default parameters', () => {
     const timeline = createTimeline(jsPsych);
-    expect(timeline.timeline).toHaveLength(20);
+    expect(timeline.timeline).toHaveLength(21);
     expect(timeline.timeline[0].rows).toBe(3);
     expect(timeline.timeline[0].cols).toBe(3);
     expect(timeline.timeline[0].data.n_back).toBe(1);
@@ -20,7 +20,7 @@ describe('createTimeline', () => {
 
   it('should create timeline with custom total_trials', () => {
     const timeline = createTimeline(jsPsych, { total_trials: 25 });
-    expect(timeline.timeline).toHaveLength(25);
+    expect(timeline.timeline).toHaveLength(26);
   });
 
   it('should create timeline with custom grid dimensions', () => {
@@ -31,14 +31,15 @@ describe('createTimeline', () => {
 
   it('should set correct n_back in trial data', () => {
     const timeline = createTimeline(jsPsych, { n_back: 3 });
-    timeline.timeline.forEach(trial => {
+    // Exclude the last item (completion trial)
+    timeline.timeline.slice(0, -1).forEach(trial => {
       expect(trial.data.n_back).toBe(3);
     });
   });
 
   it('should include instructions when specified', () => {
     const timeline = createTimeline(jsPsych, { include_instructions: true });
-    expect(timeline.timeline).toHaveLength(2);
+    expect(timeline.timeline).toHaveLength(3);
     expect(timeline.timeline[0].show_clickable_nav).toBeTruthy();
   });
 
@@ -56,7 +57,8 @@ describe('createTimeline', () => {
 
   it('should generate correct trial numbers in data', () => {
     const timeline = createTimeline(jsPsych, { total_trials: 5 });
-    timeline.timeline.forEach((trial, index) => {
+    // Exclude the last item (completion trial)
+    timeline.timeline.slice(0, -1).forEach((trial, index) => {
       expect(trial.data.trial_number).toBe(index + 1);
       expect(trial.data.task).toBe('spatial-nback');
       expect(trial.data.task_version).toBeDefined();
@@ -65,7 +67,8 @@ describe('createTimeline', () => {
 
   it('should include task_version in trial data', () => {
     const timeline = createTimeline(jsPsych, { total_trials: 3 });
-    timeline.timeline.forEach(trial => {
+    // Exclude the last item (completion trial)
+    timeline.timeline.slice(0, -1).forEach(trial => {
       expect(trial.data.task_version).toBe('0.3.0');
     });
   });
@@ -80,7 +83,7 @@ describe('createPracticeTimeline', () => {
 
   it('should create practice timeline with default 5 trials', () => {
     const timeline = createPracticeTimeline(jsPsych);
-    expect(timeline.timeline).toHaveLength(5);
+    expect(timeline.timeline).toHaveLength(6);
   });
 
   it('should enable feedback by default', () => {
@@ -109,9 +112,9 @@ describe('createMultiLevelNBackTimeline', () => {
     });
 
     expect(timeline.timeline).toHaveLength(3);
-    expect(timeline.timeline[0].timeline).toHaveLength(10);
-    expect(timeline.timeline[1].timeline).toHaveLength(10);
-    expect(timeline.timeline[2].timeline).toHaveLength(10);
+    expect(timeline.timeline[0].timeline).toHaveLength(11);
+    expect(timeline.timeline[1].timeline).toHaveLength(11);
+    expect(timeline.timeline[2].timeline).toHaveLength(11);
   });
 
   it('should set correct n_back for each level', () => {
@@ -142,21 +145,21 @@ describe('presetConfigurations', () => {
 
   it('should create easy preset with correct parameters', () => {
     const timeline = presetConfigurations.easy(jsPsych);
-    expect(timeline.timeline).toHaveLength(20);
+    expect(timeline.timeline).toHaveLength(21);
     expect(timeline.timeline[0].data.n_back).toBe(1);
     expect(timeline.timeline[0].show_feedback_text).toBe(true);
   });
 
   it('should create medium preset with correct parameters', () => {
     const timeline = presetConfigurations.medium(jsPsych);
-    expect(timeline.timeline).toHaveLength(30);
+    expect(timeline.timeline).toHaveLength(31);
     expect(timeline.timeline[0].data.n_back).toBe(2);
     expect(timeline.timeline[0].show_feedback_text).toBe(false);
   });
 
   it('should create hard preset with correct parameters', () => {
     const timeline = presetConfigurations.hard(jsPsych);
-    expect(timeline.timeline).toHaveLength(40);
+    expect(timeline.timeline).toHaveLength(41);
     expect(timeline.timeline[0].data.n_back).toBe(3);
     expect(timeline.timeline[0].rows).toBe(4);
     expect(timeline.timeline[0].cols).toBe(4);
@@ -167,9 +170,9 @@ describe('presetConfigurations', () => {
     expect(timeline.timeline).toHaveLength(3);
     expect(timeline.randomize_order).toBe(true);
 
-    // Check each level has 50 trials
+    // Check each level has 50 trials + 1 completion trial
     timeline.timeline.forEach(levelTimeline => {
-      expect(levelTimeline.timeline).toHaveLength(50);
+      expect(levelTimeline.timeline).toHaveLength(51);
     });
   });
 });
@@ -224,7 +227,8 @@ describe('timeline structure validation', () => {
   it('should maintain consistent data structure across trials', () => {
     const timeline = createTimeline(jsPsych, { total_trials: 5 });
 
-    timeline.timeline.forEach(trial => {
+    // Exclude the last item (completion trial)
+    timeline.timeline.slice(0, -1).forEach(trial => {
       expect(trial.data).toHaveProperty('trial_number');
       expect(trial.data).toHaveProperty('n_back');
       expect(trial.data).toHaveProperty('total_trials');

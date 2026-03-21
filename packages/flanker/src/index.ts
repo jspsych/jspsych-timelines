@@ -455,6 +455,31 @@ function createItiTrial(config: ResolvedConfig) {
 }
 
 /**
+ * Creates a completion screen showing results.
+ */
+function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
+  return {
+    type: jsPsychHtmlButtonResponse,
+    stimulus: () => {
+      const data = jsPsych.data.get();
+      const scores = calculateScores(data);
+
+      let html = `<div style="max-width: 600px; margin: 0 auto;">`;
+      html += `<h2>${config.text.task_complete}</h2>`;
+      html += config.text.result_summary(scores.accuracy, scores.flankerEffectRT, scores.meanRT);
+      html += `</div>`;
+      return html;
+    },
+    choices: [config.text.continue_button],
+    data: {
+      task: TASK_NAME,
+      task_version: VERSION,
+      phase: "completion",
+    },
+  };
+}
+
+/**
  * Creates a transition screen between phases.
  */
 function createTransitionTrial(message: string, buttonLabel: string) {
@@ -690,6 +715,9 @@ export function createTimeline(jsPsych: JsPsych, options: FlankerOptions = {}) {
     timeline.push(createTestBlock(jsPsych, config, block));
   }
 
+  // Completion screen
+  timeline.push(createCompletionTrial(jsPsych, config));
+
   return { timeline };
 }
 
@@ -706,6 +734,7 @@ export const timelineUnits = {
   createTransitionTrial,
   createPracticeBlock,
   createTestBlock,
+  createCompletionTrial,
 };
 
 /**

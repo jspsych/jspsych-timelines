@@ -571,15 +571,13 @@ function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
   return {
     type: jsPsychHtmlButtonResponse,
     stimulus: () => {
-      const scores = calculateScores(jsPsych.data.get());
-      return `
-        <div class="ospan-container">
-          <h2>${config.text.task_complete}</h2>
-          <div style="font-size: 20px; margin-top: 20px;">
-            ${config.text.final_score(scores.ospanScore, scores.mathAccuracy)}
-          </div>
-        </div>
-      `;
+      const data = jsPsych.data.get();
+      const scores = calculateScores(data);
+      let html = `<div style="max-width: 600px; margin: 0 auto;">`;
+      html += `<h2>${config.text.task_complete}</h2>`;
+      html += config.text.result_summary(scores.ospanScore, scores.mathAccuracy, scores.meanMathRT);
+      html += `</div>`;
+      return html;
     },
     choices: [config.text.continue_button],
     data: {

@@ -332,18 +332,13 @@ function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
   return {
     type: jsPsychHtmlButtonResponse,
     stimulus: () => {
-      const data = jsPsych.data.get().filter({ task: TASK_NAME, phase: "test", part: "selection" });
-      const lastTrial = data.last(1).values()[0];
-      const finalScore = lastTrial ? lastTrial.total_score : config.startingLoan;
-
-      return `
-        <div class="igt-completion">
-          <h2>Game Complete!</h2>
-          <div class="igt-final-score" style="color: ${finalScore >= config.startingLoan ? "#43a047" : "#e53935"}">
-            ${config.text.task_complete(finalScore, config.currencySymbol)}
-          </div>
-        </div>
-      `;
+      const data = jsPsych.data.get();
+      const scores = calculateScores(data, config.startingLoan);
+      let html = `<div style="max-width: 600px; margin: 0 auto;">`;
+      html += `<h2>${config.text.task_complete}</h2>`;
+      html += config.text.result_summary(scores.finalScore, scores.netScore, scores.advantageousSelections);
+      html += `</div>`;
+      return html;
     },
     choices: [config.text.continue_button],
     data: {

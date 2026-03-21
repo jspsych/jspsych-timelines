@@ -352,10 +352,18 @@ function createTrialBlock(jsPsych: JsPsych, config: ResolvedConfig) {
 /**
  * Creates a completion message trial.
  */
-function createCompletionTrial(config: ResolvedConfig) {
+function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
   return {
     type: jsPsychHtmlButtonResponse,
-    stimulus: `<div class="transition"><p>${config.text.task_complete}</p></div>`,
+    stimulus: () => {
+      const data = jsPsych.data.get();
+      const scores = calculateScores(data);
+      let html = `<div style="max-width: 600px; margin: 0 auto;">`;
+      html += `<h2>${config.text.task_complete}</h2>`;
+      html += config.text.result_summary(scores.categoriesCompleted, scores.perseverativeErrors, scores.totalErrors);
+      html += `</div>`;
+      return html;
+    },
     choices: [config.text.continue_button],
     data: {
       task: TASK_NAME,
@@ -516,7 +524,7 @@ export function createTimeline(jsPsych: JsPsych, options: BcstOptions = {}) {
   timeline.push(createTrialBlock(jsPsych, config));
 
   // Completion message
-  timeline.push(createCompletionTrial(config));
+  timeline.push(createCompletionTrial(jsPsych, config));
 
   return { timeline };
 }

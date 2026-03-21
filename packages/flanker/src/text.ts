@@ -47,6 +47,21 @@ export const defaultText = {
   practice_complete: "Practice complete! Now you will begin the main task. Remember to respond as quickly and accurately as possible.",
   block_complete: (blockNumber: number) => `Block ${blockNumber} complete. Take a short break if needed.`,
 
+  // -- COMPLETION --
+  task_complete: "Task Complete",
+  result_summary: (accuracy: number, flankerEffectRT: number | null, meanRT: number | null) => {
+    let html = `<div style="max-width: 600px; margin: 0 auto;">`;
+    html += `<p><strong>Overall Accuracy:</strong> ${(accuracy * 100).toFixed(1)}%</p>`;
+    if (flankerEffectRT !== null) {
+      html += `<p><strong>Flanker Effect (RT):</strong> ${flankerEffectRT.toFixed(0)} ms</p>`;
+    }
+    if (meanRT !== null) {
+      html += `<p><strong>Mean Response Time:</strong> ${meanRT.toFixed(0)} ms</p>`;
+    }
+    html += `</div>`;
+    return html;
+  },
+
 };
 
 // Export the type for use in other files

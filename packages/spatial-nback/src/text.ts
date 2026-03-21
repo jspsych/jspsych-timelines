@@ -14,6 +14,24 @@ export const trial_text = {
     
     // Button text array - first button is "match", second is "no match"
     button: ["O", "X"],
+
+    // -- COMPLETION --
+    task_complete: "Task Complete",
+    result_summary: (accuracy: number, dPrime: number | null, meanHitRT: number | null) => {
+        let html = `<div style="max-width: 600px; margin: 0 auto;">`;
+        html += `<p><strong>Accuracy:</strong> ${(accuracy * 100).toFixed(1)}%</p>`;
+        if (dPrime !== null) {
+            html += `<p><strong>d':</strong> ${dPrime.toFixed(2)}</p>`;
+        }
+        if (meanHitRT !== null) {
+            html += `<p><strong>Mean Hit RT:</strong> ${meanHitRT.toFixed(0)} ms</p>`;
+        }
+        html += `</div>`;
+        return html;
+    },
+
+    // -- BUTTON LABELS --
+    continue_button: "Continue",
 }
 
 /* 

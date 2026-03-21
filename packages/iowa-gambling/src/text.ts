@@ -49,8 +49,17 @@ export const defaultText = {
   select_deck_prompt: "Select a deck",
 
   // -- COMPLETION --
-  task_complete: (finalScore: number, symbol: string) =>
+  task_complete: "Task Complete",
+  task_complete_score: (finalScore: number, symbol: string) =>
     `Game over! Your final score: ${symbol}${finalScore}`,
+  result_summary: (finalScore: number, netScore: number, advantageousSelections: number) => `
+    <div class="instructions">
+      <h3>Your Results</h3>
+      <p><strong>Final score:</strong> $${finalScore}</p>
+      <p><strong>Net score:</strong> ${netScore >= 0 ? "+" : ""}$${netScore}</p>
+      <p><strong>Advantageous selections:</strong> ${advantageousSelections}</p>
+    </div>
+  `,
 };
 
 // Export the type for use in other files

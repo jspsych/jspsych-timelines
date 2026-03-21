@@ -67,6 +67,20 @@ export const defaultText = {
     `<p><strong>Part A:</strong> ${(time / 1000).toFixed(1)} seconds, ${errors} errors</p>`,
   result_part_b: (time: number, errors: number) =>
     `<p><strong>Part B:</strong> ${(time / 1000).toFixed(1)} seconds, ${errors} errors</p>`,
+  result_summary: (partATime: number | null, partBTime: number | null, differenceScore: number | null) => {
+    let html = `<div style="max-width: 600px; margin: 0 auto;">`;
+    if (partATime !== null) {
+      html += `<p><strong>Part A Time:</strong> ${(partATime / 1000).toFixed(1)} seconds</p>`;
+    }
+    if (partBTime !== null) {
+      html += `<p><strong>Part B Time:</strong> ${(partBTime / 1000).toFixed(1)} seconds</p>`;
+    }
+    if (differenceScore !== null) {
+      html += `<p><strong>Switching Cost:</strong> ${(differenceScore / 1000).toFixed(1)} seconds</p>`;
+    }
+    html += `</div>`;
+    return html;
+  },
 };
 
 // Export the type for use in other files
