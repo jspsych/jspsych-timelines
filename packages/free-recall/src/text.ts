@@ -7,8 +7,8 @@ export interface TextConfig {
   continue_button: string;
   /** Start button label */
   start_button: string;
-  /** Submit button label */
-  submit_button: string;
+  /** Add word button label */
+  add_button: string;
   /** Done recalling button label */
   done_button: string;
   /** Introduction instruction */
@@ -21,8 +21,10 @@ export interface TextConfig {
   input_placeholder: string;
   /** Text shown during word presentation */
   study_prompt: string;
-  /** Recall prompt */
+  /** Recall prompt shown during recall phase */
   recall_prompt: string;
+  /** Label for the recalled words list */
+  words_list_label: string;
   /** Task complete header */
   task_complete: string;
   /** Results summary */
@@ -37,8 +39,8 @@ export interface TextConfig {
 export const defaultText: TextConfig = {
   continue_button: "Continue",
   start_button: "Start",
-  submit_button: "Submit",
-  done_button: "Done Recalling",
+  add_button: "Add",
+  done_button: "Done",
 
   instruction_intro: `
     <div style="max-width: 600px; margin: 0 auto; text-align: left;">
@@ -62,8 +64,8 @@ export const defaultText: TextConfig = {
     <div style="max-width: 600px; margin: 0 auto;">
       <h3>Recall Phase</h3>
       <p>Type each word you remember, one at a time.</p>
-      <p>Press <strong>Submit</strong> after each word.</p>
-      <p>When you can't remember any more, press <strong>Done Recalling</strong>.</p>
+      <p>Press <strong>Add</strong> after each word (or press Enter).</p>
+      <p>When you can't remember any more, press <strong>Done</strong>.</p>
     </div>
   `,
 
@@ -71,7 +73,9 @@ export const defaultText: TextConfig = {
 
   study_prompt: "Remember this word:",
 
-  recall_prompt: "Type the words you remember:",
+  recall_prompt: "<p>Type the words you remember, one at a time.</p>",
+
+  words_list_label: "Words recalled:",
 
   task_complete: "Task Complete",
 

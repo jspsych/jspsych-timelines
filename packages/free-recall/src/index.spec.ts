@@ -211,7 +211,7 @@ describe("Free Recall Timeline", () => {
     it("should have all required text fields", () => {
       expect(utils.text.continue_button).toBeDefined();
       expect(utils.text.start_button).toBeDefined();
-      expect(utils.text.submit_button).toBeDefined();
+      expect(utils.text.add_button).toBeDefined();
       expect(utils.text.done_button).toBeDefined();
       expect(utils.text.instruction_intro).toBeDefined();
       expect(utils.text.instruction_study).toBeDefined();
@@ -219,6 +219,7 @@ describe("Free Recall Timeline", () => {
       expect(utils.text.input_placeholder).toBeDefined();
       expect(utils.text.study_prompt).toBeDefined();
       expect(utils.text.recall_prompt).toBeDefined();
+      expect(utils.text.words_list_label).toBeDefined();
       expect(utils.text.task_complete).toBeDefined();
       expect(typeof utils.text.result_summary).toBe("function");
     });

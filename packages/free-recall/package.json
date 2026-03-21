@@ -46,6 +46,6 @@
     "dependencies": {
         "@jspsych/plugin-html-button-response": "^2.1.0",
         "@jspsych/plugin-html-keyboard-response": "^2.1.0",
-        "@jspsych/plugin-survey-text": "^2.1.0"
+        "@jspsych-contrib/plugin-free-recall-response": "^1.0.0"
     }
 }

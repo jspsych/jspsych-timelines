@@ -2,7 +2,7 @@ import "./styles.css";
 import { JsPsych, DataCollection } from "jspsych";
 import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
 import jsPsychHtmlKeyboardResponse from "@jspsych/plugin-html-keyboard-response";
-import jsPsychSurveyText from "@jspsych/plugin-survey-text";
+import jsPsychFreeRecallResponse from "@jspsych-contrib/plugin-free-recall-response";
 import { defaultText, TextConfig } from "./text";
 
 // -- TYPES --
@@ -30,12 +30,19 @@ export interface TrialData {
   trial_part: string;
   word?: string;
   word_index?: number;
-  response?: string;
-  recall_index?: number;
-  is_correct?: boolean;
-  is_intrusion?: boolean;
-  is_repetition?: boolean;
+  /** For recall trial: array of recalled words with timing */
+  responses?: Array<{ word: string; rt: number }>;
+  /** Total time for recall phase */
   rt?: number;
+}
+
+/** Processed recall response with correctness info */
+export interface ProcessedRecallResponse {
+  word: string;
+  rt: number;
+  is_correct: boolean;
+  is_intrusion: boolean;
+  is_repetition: boolean;
 }
 
 export interface ScoringResult {
@@ -229,10 +236,6 @@ function createStudyPhase(config: ResolvedConfig, words: string[]) {
  * Creates the recall phase.
  */
 function createRecallPhase(jsPsych: JsPsych, config: ResolvedConfig, words: string[]) {
-  // Track recalled words
-  const recalledWords: string[] = [];
-  let recallIndex = 0;
-
   const timeline: any[] = [];
 
   // Delay before recall
@@ -247,70 +250,20 @@ function createRecallPhase(jsPsych: JsPsych, config: ResolvedConfig, words: stri
     },
   });
 
-  // Recall loop using timeline loop
-  const recallTrial = {
-    timeline: [
-      {
-        type: jsPsychSurveyText,
-        questions: [
-          {
-            prompt: config.text.recall_prompt,
-            placeholder: config.text.input_placeholder,
-            name: "recall",
-            required: false,
-          },
-        ],
-        button_label: config.text.submit_button,
-        data: {
-          task: TASK_NAME,
-          task_version: VERSION,
-          trial_part: "recall",
-        },
-        on_finish: (data: any) => {
-          recallIndex++;
-          const response = data.response?.recall?.trim() || "";
-          const normalizedResponse = normalizeWord(response);
-
-          // Check if this is a correct recall
-          const normalizedWords = words.map(normalizeWord);
-          const isCorrect = normalizedWords.includes(normalizedResponse);
-          const isRepetition = recalledWords.includes(normalizedResponse);
-          const isIntrusion = !isCorrect && response.length > 0;
-
-          if (response.length > 0) {
-            recalledWords.push(normalizedResponse);
-          }
-
-          jsPsych.data.get().addToLast({
-            response: response,
-            recall_index: recallIndex,
-            is_correct: isCorrect && !isRepetition,
-            is_intrusion: isIntrusion,
-            is_repetition: isRepetition,
-          });
-        },
-      },
-    ],
-    loop_function: (data: any) => {
-      const lastTrial = data.values()[0];
-      const response = lastTrial.response?.recall?.trim() || "";
-      // Continue if response is not empty
-      return response.length > 0;
-    },
-  };
-
-  timeline.push(recallTrial);
-
-  // Done button trial
+  // Recall trial using custom plugin
   timeline.push({
-    type: jsPsychHtmlButtonResponse,
-    stimulus: `<p style="font-size: 18px;">When you're done recalling, press the button below.</p>`,
-    choices: [config.text.done_button],
+    type: jsPsychFreeRecallResponse,
+    prompt: config.text.recall_prompt,
+    add_button_label: config.text.add_button,
+    done_button_label: config.text.done_button,
+    placeholder: config.text.input_placeholder,
+    words_list_label: config.text.words_list_label,
+    trial_duration: config.maxRecallTime,
     data: {
       task: TASK_NAME,
-      trial_part: "recall_end",
+      task_version: VERSION,
+      trial_part: "recall",
     },
-    // This trial is shown when the loop exits (empty response)
   });
 
   return { timeline };
@@ -349,12 +302,40 @@ function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
 // -- SCORING FUNCTIONS --
 
 /**
+ * Processes raw recall responses to determine correctness.
+ */
+function processRecallResponses(
+  responses: Array<{ word: string; rt: number }>,
+  wordList: string[]
+): ProcessedRecallResponse[] {
+  const normalizedWordList = wordList.map(normalizeWord);
+  const seenWords: string[] = [];
+
+  return responses.map((r) => {
+    const normalizedWord = normalizeWord(r.word);
+    const isCorrect = normalizedWordList.includes(normalizedWord);
+    const isRepetition = seenWords.includes(normalizedWord);
+    const isIntrusion = !isCorrect && r.word.length > 0;
+
+    seenWords.push(normalizedWord);
+
+    return {
+      word: r.word,
+      rt: r.rt,
+      is_correct: isCorrect && !isRepetition,
+      is_intrusion: isIntrusion,
+      is_repetition: isRepetition,
+    };
+  });
+}
+
+/**
  * Calculates scoring metrics from the Free Recall task data.
  */
 function calculateScores(data: DataCollection, wordList?: string[]): ScoringResult {
-  const recallTrials = data
+  const recallTrial = data
     .filter({ task: TASK_NAME, trial_part: "recall" })
-    .values() as TrialData[];
+    .values()[0] as TrialData | undefined;
 
   // Get word list from study trials if not provided
   if (!wordList) {
@@ -366,7 +347,7 @@ function calculateScores(data: DataCollection, wordList?: string[]): ScoringResu
 
   const totalWords = wordList.length;
 
-  if (recallTrials.length === 0) {
+  if (!recallTrial || !recallTrial.responses || recallTrial.responses.length === 0) {
     return {
       correctRecalls: 0,
       totalWords: totalWords,
@@ -381,18 +362,21 @@ function calculateScores(data: DataCollection, wordList?: string[]): ScoringResu
     };
   }
 
+  // Process the responses
+  const processed = processRecallResponses(recallTrial.responses, wordList);
+
   // Count correct recalls, intrusions, repetitions
-  const correctRecalls = recallTrials.filter((t) => t.is_correct).length;
-  const intrusions = recallTrials.filter((t) => t.is_intrusion).length;
-  const repetitions = recallTrials.filter((t) => t.is_repetition).length;
+  const correctRecalls = processed.filter((r) => r.is_correct).length;
+  const intrusions = processed.filter((r) => r.is_intrusion).length;
+  const repetitions = processed.filter((r) => r.is_repetition).length;
 
   // Get recalled words and intrusion words
-  const recalledWords = recallTrials
-    .filter((t) => t.is_correct)
-    .map((t) => normalizeWord(t.response || ""));
-  const intrusionWords = recallTrials
-    .filter((t) => t.is_intrusion)
-    .map((t) => t.response || "");
+  const recalledWords = processed
+    .filter((r) => r.is_correct)
+    .map((r) => normalizeWord(r.word));
+  const intrusionWords = processed
+    .filter((r) => r.is_intrusion)
+    .map((r) => r.word);
 
   // Calculate serial positions of recalled words
   const normalizedWordList = wordList.map(normalizeWord);
@@ -400,10 +384,8 @@ function calculateScores(data: DataCollection, wordList?: string[]): ScoringResu
     (word) => normalizedWordList.indexOf(word) + 1
   );
 
-  // Calculate average RT
-  const rts = recallTrials
-    .filter((t) => t.rt !== undefined && t.rt !== null)
-    .map((t) => t.rt as number);
+  // Calculate average RT (time between adding each word)
+  const rts = processed.map((r) => r.rt);
   const averageRecallRT =
     rts.length > 0 ? rts.reduce((a, b) => a + b, 0) / rts.length : null;
 
@@ -416,7 +398,7 @@ function calculateScores(data: DataCollection, wordList?: string[]): ScoringResu
     recallRate,
     intrusions,
     repetitions,
-    totalResponses: recallTrials.length,
+    totalResponses: processed.length,
     recalledWords,
     intrusionWords,
     serialPositions,
@@ -518,6 +500,7 @@ export const utils = {
   scoring: {
     calculateScores,
     getSummary,
+    processRecallResponses,
   },
   constants: {
     TASK_NAME,
