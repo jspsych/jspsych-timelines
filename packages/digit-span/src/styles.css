@@ -105,8 +105,4 @@
     max-width: 200px;
   }
 
-  /* Add padding to content so it doesn't get hidden behind fixed buttons */
-  .jspsych-content {
-    padding-bottom: 250px;
-  }
 }
