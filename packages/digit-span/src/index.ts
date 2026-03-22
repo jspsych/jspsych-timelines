@@ -192,15 +192,16 @@ function createResponseHtml(
  * Creates interactive instructions with a practice trial.
  * Users must enter a short digit sequence correctly to proceed.
  */
-function createInteractiveInstructions(
+function createInstructionsWithPractice(
   jsPsych: JsPsych,
   config: ResolvedConfig,
   mode: "forward" | "backward"
 ) {
   const text = config.text;
+  const timeline: any[] = [];
 
   // Intro page
-  const introPage = {
+  timeline.push({
     type: jsPsychHtmlButtonResponse,
     stimulus: mode === "forward" ? text.instruction_intro_forward : text.instruction_intro_backward,
     choices: [text.continue_button],
@@ -210,10 +211,10 @@ function createInteractiveInstructions(
       phase: "instructions",
       mode: mode,
     },
-  };
+  });
 
   // Response explanation page
-  const responseExplanation = {
+  timeline.push({
     type: jsPsychHtmlButtonResponse,
     stimulus: mode === "forward" ? text.instruction_response_forward : text.instruction_example_backward,
     choices: [text.continue_button],
@@ -223,136 +224,40 @@ function createInteractiveInstructions(
       phase: "instructions",
       mode: mode,
     },
-  };
+  });
 
-  // Try prompt
-  const tryPrompt = {
-    type: jsPsychHtmlButtonResponse,
-    stimulus: mode === "forward" ? text.instruction_try_forward : text.instruction_try_backward,
-    choices: [text.continue_button],
-    data: {
-      task: TASK_NAME,
-      task_version: VERSION,
-      phase: "instructions",
-      mode: mode,
-    },
-  };
+  // Practice trials
+  if (config.numPracticeTrials > 0) {
+    // Practice prompt
+    timeline.push({
+      type: jsPsychHtmlButtonResponse,
+      stimulus: mode === "forward" ? text.instruction_try_forward : text.instruction_try_backward,
+      choices: [text.continue_button],
+      data: {
+        task: TASK_NAME,
+        task_version: VERSION,
+        phase: "instructions",
+        mode: mode,
+      },
+    });
 
-  // Practice digit sequence (2 digits for simplicity)
-  const practiceDigits = [3, 7];
-  const correctResponse = mode === "forward" ? "37" : "73";
+    // Practice trials at practiceSpan length
+    for (let i = 0; i < config.numPracticeTrials; i++) {
+      timeline.push(
+        ...createSingleTrial(jsPsych, config, mode, config.practiceSpan, "practice", i + 1)
+      );
+    }
 
-  // Ready signal
-  const readyTrial = {
-    type: jsPsychHtmlKeyboardResponse,
-    stimulus: `<div class="ready">${text.ready_prompt}</div>`,
-    choices: "NO_KEYS",
-    trial_duration: config.readyDuration,
-    data: {
-      task: TASK_NAME,
-      task_version: VERSION,
-      phase: "instructions-practice",
-    },
-  };
+    // Transition to test
+    timeline.push(
+      createTransitionTrial(
+        mode === "forward" ? text.practice_complete_forward : text.practice_complete_backward,
+        text.continue_button
+      )
+    );
+  }
 
-  // Digit presentation trials
-  const digitTrials = practiceDigits.map((digit) => ({
-    type: jsPsychHtmlKeyboardResponse,
-    stimulus: `<div class="stimulus">${digit}</div>`,
-    choices: "NO_KEYS",
-    trial_duration: config.digitDuration,
-    data: {
-      task: TASK_NAME,
-      task_version: VERSION,
-      phase: "instructions-practice",
-      digit: digit,
-    },
-  }));
-
-  // Response trial with custom number pad
-  const responseTrial = {
-    type: jsPsychHtmlButtonResponse,
-    stimulus: createResponseHtml("", text, mode),
-    choices: [],
-    trial_duration: null,
-    css_classes: ["response-interface"],
-    data: {
-      task: TASK_NAME,
-      task_version: VERSION,
-      phase: "instructions-practice",
-      mode: mode,
-      correct_response: correctResponse,
-    },
-    on_load: () => {
-      let currentResponse = "";
-      const display = document.getElementById("digit-span-display");
-      const startTime = performance.now();
-
-      document.querySelectorAll(".digit-button").forEach((button) => {
-        button.addEventListener("click", (e) => {
-          const digit = (e.target as HTMLElement).getAttribute("data-digit");
-          if (digit) {
-            currentResponse += digit;
-            if (display) display.textContent = currentResponse;
-          }
-        });
-      });
-
-      const clearBtn = document.getElementById("digit-span-clear");
-      if (clearBtn) {
-        clearBtn.addEventListener("click", () => {
-          currentResponse = "";
-          if (display) display.innerHTML = "&nbsp;";
-        });
-      }
-
-      const doneBtn = document.getElementById("digit-span-done");
-      if (doneBtn) {
-        doneBtn.addEventListener("click", () => {
-          const endTime = performance.now();
-          const rt = endTime - startTime;
-
-          jsPsych.finishTrial({
-            response: currentResponse,
-            rt: rt,
-            correct: currentResponse === correctResponse,
-          });
-        });
-      }
-    },
-  };
-
-  // Feedback trial
-  const feedbackTrial = {
-    type: jsPsychHtmlButtonResponse,
-    stimulus: () => {
-      const lastTrial = jsPsych.data.get().filter({ phase: "instructions-practice" }).last(1).values()[0];
-      if (lastTrial && lastTrial.correct) {
-        return `<div class="feedback correct"><p>${text.instruction_success}</p></div>`;
-      }
-      return `<div class="feedback incorrect"><p>${text.instruction_failure}</p></div>`;
-    },
-    choices: [text.continue_button],
-    data: {
-      task: TASK_NAME,
-      task_version: VERSION,
-      phase: "instructions",
-      mode: mode,
-    },
-  };
-
-  // Create looping practice that retries if incorrect
-  const practiceLoop = {
-    timeline: [tryPrompt, readyTrial, ...digitTrials, responseTrial, feedbackTrial],
-    loop_function: () => {
-      const lastResponseTrial = jsPsych.data.get().filter({ phase: "instructions-practice", correct_response: correctResponse }).last(1).values()[0];
-      return lastResponseTrial && !lastResponseTrial.correct;
-    },
-  };
-
-  return {
-    timeline: [introPage, responseExplanation, practiceLoop],
-  };
+  return { timeline };
 }
 
 /**
@@ -899,17 +804,9 @@ export function createTimeline(jsPsych: JsPsych, options: DigitSpanOptions = {})
 
   // Forward mode
   if (runForward) {
-    // Interactive Instructions
+    // Instructions + practice
     if (config.showInstructions) {
-      timeline.push(createInteractiveInstructions(jsPsych, config, "forward"));
-    }
-
-    // Practice
-    if (config.numPracticeTrials > 0) {
-      timeline.push(createPracticeBlock(jsPsych, config, "forward"));
-      timeline.push(
-        createTransitionTrial(config.text.practice_complete_forward, config.text.continue_button)
-      );
+      timeline.push(createInstructionsWithPractice(jsPsych, config, "forward"));
     }
 
     // Test
@@ -925,17 +822,9 @@ export function createTimeline(jsPsych: JsPsych, options: DigitSpanOptions = {})
 
   // Backward mode
   if (runBackward) {
-    // Interactive Instructions
+    // Instructions + practice
     if (config.showInstructions) {
-      timeline.push(createInteractiveInstructions(jsPsych, config, "backward"));
-    }
-
-    // Practice
-    if (config.numPracticeTrials > 0) {
-      timeline.push(createPracticeBlock(jsPsych, config, "backward"));
-      timeline.push(
-        createTransitionTrial(config.text.practice_complete_backward, config.text.continue_button)
-      );
+      timeline.push(createInstructionsWithPractice(jsPsych, config, "backward"));
     }
 
     // Test
@@ -976,7 +865,7 @@ function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
  * Timeline units that can be used to create custom digit span experiments.
  */
 export const timelineUnits = {
-  createInteractiveInstructions,
+  createInstructionsWithPractice,
   createInstructionTrials,
   createReadyTrial,
   createDigitPresentationTrials,

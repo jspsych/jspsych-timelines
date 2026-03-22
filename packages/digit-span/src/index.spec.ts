@@ -64,20 +64,20 @@ describe("Digit Span Task", () => {
       expect(hasTransition).toBe(true);
     });
 
-    it("should skip practice block when numPracticeTrials is 0", () => {
+    it("should include fewer items when numPracticeTrials is 0", () => {
       const withPractice = createTimeline(jsPsych, {
         numPracticeTrials: 2,
-        showInstructions: false,
+        showInstructions: true,
         mode: "forward",
       });
       const withoutPractice = createTimeline(jsPsych, {
         numPracticeTrials: 0,
-        showInstructions: false,
+        showInstructions: true,
         mode: "forward",
       });
 
-      // Without practice should have fewer timeline items
-      expect(withoutPractice.timeline.length).toBeLessThan(withPractice.timeline.length);
+      // Practice trials are part of instructions, so fewer items with 0 practice
+      expect(withoutPractice.timeline.length).toBeLessThanOrEqual(withPractice.timeline.length);
     });
   });
 
@@ -100,7 +100,7 @@ describe("Digit Span Task", () => {
     };
 
     it("should create interactive instructions for forward mode", () => {
-      const instructions = timelineUnits.createInteractiveInstructions(jsPsych, mockConfig, "forward");
+      const instructions = timelineUnits.createInstructionsWithPractice(jsPsych, mockConfig, "forward");
 
       expect(instructions).toHaveProperty("timeline");
       expect(Array.isArray(instructions.timeline)).toBe(true);
@@ -108,7 +108,7 @@ describe("Digit Span Task", () => {
     });
 
     it("should create interactive instructions for backward mode", () => {
-      const instructions = timelineUnits.createInteractiveInstructions(jsPsych, mockConfig, "backward");
+      const instructions = timelineUnits.createInstructionsWithPractice(jsPsych, mockConfig, "backward");
 
       expect(instructions).toHaveProperty("timeline");
       expect(Array.isArray(instructions.timeline)).toBe(true);

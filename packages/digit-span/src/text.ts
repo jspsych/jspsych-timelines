@@ -30,10 +30,10 @@ export const defaultText = {
   </div>`,
 
   // -- INTERACTIVE INSTRUCTION PROMPTS --
-  instruction_try_forward: `<p>Let's try it! Watch the digits carefully, then enter them in the same order.</p>`,
-  instruction_try_backward: `<p>Let's try it! Watch the digits carefully, then enter them in REVERSE order.</p>`,
-  instruction_success: "Correct! You're ready to begin.",
-  instruction_failure: "That wasn't quite right. Let's try again.",
+  instruction_try_forward: `<p>Let's do a practice round. Watch the digits carefully, then enter them in the same order.</p>`,
+  instruction_try_backward: `<p>Let's do a practice round. Watch the digits carefully, then enter them in REVERSE order.</p>`,
+  instruction_success: "Correct! Now let's move on to the real task.",
+  instruction_failure: "That wasn't quite right. Let's try the practice again.",
 
   // Legacy instruction pages (kept for backward compatibility)
   instruction_pages_forward: [
