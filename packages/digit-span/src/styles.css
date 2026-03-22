@@ -23,12 +23,18 @@
   font-size: 4em;
 }
 
-/* Number pad grid - functional requirement for layout */
+/* Number pad grid */
 .numpad {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-  max-width: 280px;
+  gap: 4px;
+  max-width: 300px;
+}
+
+.numpad .jspsych-btn {
+  min-height: 52px;
+  min-width: 52px;
+  font-size: 20px;
 }
 
 /* Response display */
@@ -69,12 +75,12 @@
 
   .numpad {
     max-width: 100%;
-    gap: 12px;
+    gap: 4px;
   }
 
   .numpad .jspsych-btn {
-    min-height: 60px;
-    font-size: 20px;
+    min-height: 56px;
+    font-size: 22px;
   }
 
   /* Standard button response (for instruction screens) */
