@@ -65,7 +65,7 @@
 /* Mobile/touch device optimizations */
 @media (pointer: coarse) {
   /* Numpad fixed to bottom */
-  .response-container {
+  .numpad-container {
     position: fixed;
     bottom: 0;
     left: 0;

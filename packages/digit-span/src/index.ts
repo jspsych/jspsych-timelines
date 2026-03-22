@@ -165,9 +165,9 @@ function createResponseHtml(
     mode === "forward" ? text.response_prompt : text.response_prompt_backward;
 
   return `
-    <div class="response-container" >
-      <div class="prompt">${prompt}</div>
-      <div class="display" id="digit-span-display">${currentResponse || "&nbsp;"}</div>
+    <div class="prompt">${prompt}</div>
+    <div class="display" id="digit-span-display">${currentResponse || "&nbsp;"}</div>
+    <div class="numpad-container">
       <div class="numpad">
         <button type="button" class="jspsych-btn digit-button" data-digit="1">1</button>
         <button type="button" class="jspsych-btn digit-button" data-digit="2">2</button>
