@@ -18,22 +18,23 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 30px;
-  padding: 20px;
+  gap: clamp(15px, 4vw, 30px);
+  padding: clamp(10px, 2vw, 20px);
 }
 
-/* Reference cards row */
+/* Reference cards row — always fits 4 cards */
 .bcst-reference-cards {
   display: flex;
   justify-content: center;
-  gap: 15px;
-  flex-wrap: wrap;
+  gap: clamp(6px, 2vw, 15px);
+  width: 100%;
+  max-width: 500px;
 }
 
-/* Individual card */
+/* Individual card — sized relative to container */
 .bcst-card {
-  width: 80px;
-  height: 110px;
+  width: clamp(60px, 18vw, 80px);
+  height: clamp(82px, 25vw, 110px);
   border: 2px solid #333;
   border-radius: 8px;
   background-color: white;
@@ -41,7 +42,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: clamp(2px, 0.5vw, 4px);
   cursor: pointer;
   transition: transform 0.1s, box-shadow 0.1s;
 }
@@ -56,54 +57,50 @@
 }
 
 .bcst-card.stimulus {
-  width: 100px;
-  height: 140px;
+  width: clamp(75px, 22vw, 100px);
+  height: clamp(100px, 30vw, 140px);
   cursor: default;
 }
 
-/* Shapes */
+/* Shapes — scale with card size */
 .bcst-shape {
-  width: 20px;
-  height: 20px;
+  width: clamp(14px, 4vw, 20px);
+  height: clamp(14px, 4vw, 20px);
 }
 
 .bcst-shape.triangle {
   width: 0;
   height: 0;
-  border-left: 10px solid transparent;
-  border-right: 10px solid transparent;
-  border-bottom: 18px solid currentColor;
+  border-left: clamp(7px, 2vw, 10px) solid transparent;
+  border-right: clamp(7px, 2vw, 10px) solid transparent;
+  border-bottom: clamp(12px, 3.5vw, 18px) solid currentColor;
 }
 
 .bcst-shape.star {
   position: relative;
-  width: 20px;
-  height: 20px;
 }
 
 .bcst-shape.star::before {
   content: "\2605";
-  font-size: 24px;
-  line-height: 20px;
+  font-size: clamp(18px, 5vw, 24px);
+  line-height: clamp(14px, 4vw, 20px);
   color: currentColor;
 }
 
 .bcst-shape.cross {
   position: relative;
-  width: 20px;
-  height: 20px;
 }
 
 .bcst-shape.cross::before {
   content: "\2716";
-  font-size: 20px;
-  line-height: 20px;
+  font-size: clamp(14px, 4vw, 20px);
+  line-height: clamp(14px, 4vw, 20px);
   color: currentColor;
 }
 
 .bcst-shape.circle {
-  width: 18px;
-  height: 18px;
+  width: clamp(12px, 3.5vw, 18px);
+  height: clamp(12px, 3.5vw, 18px);
   border-radius: 50%;
   background-color: currentColor;
 }
@@ -124,7 +121,7 @@
 
 /* Prompt text */
 .bcst-prompt {
-  font-size: 16px;
+  font-size: clamp(14px, 3vw, 16px);
   color: #666;
   margin: 0;
 }
@@ -147,57 +144,4 @@
 /* Selected card highlight */
 .bcst-card.selected {
   box-shadow: 0 0 0 4px #1e88e5;
-}
-
-/* Mobile/touch device optimizations */
-@media (pointer: coarse) {
-  .bcst-reference-cards {
-    gap: 8px;
-  }
-
-  .bcst-card {
-    width: 70px;
-    height: 95px;
-    gap: 2px;
-  }
-
-  .bcst-card.stimulus {
-    width: 85px;
-    height: 115px;
-  }
-
-  .bcst-shape {
-    width: 16px;
-    height: 16px;
-  }
-
-  .bcst-shape.triangle {
-    border-left-width: 8px;
-    border-right-width: 8px;
-    border-bottom-width: 14px;
-  }
-
-  .bcst-shape.star::before {
-    font-size: 20px;
-    line-height: 16px;
-  }
-
-  .bcst-shape.cross::before {
-    font-size: 16px;
-    line-height: 16px;
-  }
-
-  .bcst-shape.circle {
-    width: 14px;
-    height: 14px;
-  }
-
-  .bcst-container {
-    gap: 15px;
-    padding: 10px;
-  }
-
-  .bcst-prompt {
-    font-size: 14px;
-  }
 }
