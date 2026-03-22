@@ -5,7 +5,7 @@
   <title>Corsi Block Task - Custom Block Layout</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://unpkg.com/jspsych@8"></script>
-  <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@2"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-html-button-response@2"></script>
   <script src="../dist/index.browser.js"></script>
   <link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css">
   <style>
@@ -24,7 +24,7 @@
   });
 
   const instructions = {
-    type: jsPsychHtmlKeyboardResponse,
+    type: jsPsychHtmlButtonResponse,
     stimulus: `
       <div style="max-width: 600px; margin: auto;">
         <h2>Corsi Block Task - Custom Layout</h2>
@@ -36,9 +36,9 @@
   □ □ □
     □
         </pre>
-        <p><em>Press any key to begin.</em></p>
       </div>
-    `
+    `,
+    choices: ['Begin'],
   };
 
   // Custom 5-block cross pattern

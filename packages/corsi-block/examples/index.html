@@ -5,7 +5,7 @@
   <title>Corsi Block Task - Basic Example</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://unpkg.com/jspsych@8"></script>
-  <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@2"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-html-button-response@2"></script>
   <script src="../dist/index.browser.js"></script>
   <link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css">
   <style>
@@ -24,7 +24,7 @@
   });
 
   const instructions = {
-    type: jsPsychHtmlKeyboardResponse,
+    type: jsPsychHtmlButtonResponse,
     stimulus: `
       <div style="max-width: 600px; margin: auto;">
         <h2>Corsi Block Task</h2>
@@ -33,9 +33,9 @@
         <p><strong>Your job is to remember the sequence and then tap the blocks in the same order.</strong></p>
         <p>The sequences will start short and get longer as you succeed.</p>
         <p>The task ends when you can no longer remember the sequence.</p>
-        <p><em>Press any key to begin.</em></p>
       </div>
-    `
+    `,
+    choices: ['Begin'],
   };
 
   // Basic Corsi Block task with default settings

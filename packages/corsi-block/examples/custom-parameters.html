@@ -5,7 +5,7 @@
   <title>Corsi Block Task - Custom Parameters</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://unpkg.com/jspsych@8"></script>
-  <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@2"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-html-button-response@2"></script>
   <script src="../dist/index.browser.js"></script>
   <link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css">
   <style>
@@ -26,7 +26,7 @@
   });
 
   const instructions = {
-    type: jsPsychHtmlKeyboardResponse,
+    type: jsPsychHtmlButtonResponse,
     stimulus: `
       <div style="max-width: 600px; margin: auto;">
         <h2>Corsi Block Task - Fast Research Variant</h2>
@@ -39,9 +39,9 @@
           <li><strong>3 trials per length:</strong> More data points</li>
           <li><strong>Custom colors:</strong> Grey/red theme on dark background</li>
         </ul>
-        <p><em>Press any key to begin the fast-paced version.</em></p>
       </div>
-    `
+    `,
+    choices: ['Begin'],
   };
 
   // Custom fast-paced research variant
