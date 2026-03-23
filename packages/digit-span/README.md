@@ -26,33 +26,14 @@ npm install @jspsych-timelines/digit-span
 
 ## Quick Start
 
-```javascript
-import { initJsPsych } from "jspsych";
-import { createTimeline, utils } from "@jspsych-timelines/digit-span";
-
-const jsPsych = initJsPsych({
-  on_finish: () => {
-    const scores = utils.scoring.getSummary(jsPsych.data.get());
-    console.log("Results:", scores);
-  },
-});
-
-const timeline = createTimeline(jsPsych);
-jsPsych.run([timeline]);
-```
-
-### Using CDN
-
 ```html
 <!DOCTYPE html>
 <html>
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <script src="https://unpkg.com/jspsych"></script>
-  <script src="https://unpkg.com/@jspsych/plugin-html-button-response"></script>
-  <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response"></script>
+  <script src="https://unpkg.com/jspsych@8"></script>
   <script src="https://unpkg.com/@jspsych-timelines/digit-span"></script>
-  <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css">
+  <link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css">
 </head>
 <body></body>
 <script>

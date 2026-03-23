@@ -14,19 +14,24 @@ The timeline includes adaptive difficulty: sequences start at a given length and
 npm install @jspsych-timelines/corsi-block
 ```
 
-## Usage
+## Quick Start
 
-### Basic Example
-
-```javascript
-import { initJsPsych } from 'jspsych';
-import { createTimeline } from '@jspsych-timelines/corsi-block';
-
-const jsPsych = initJsPsych();
-
-const timeline = createTimeline(jsPsych);
-
-jsPsych.run(timeline.timeline);
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <script src="https://unpkg.com/jspsych@8"></script>
+  <script src="https://unpkg.com/@jspsych-timelines/corsi-block"></script>
+  <link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css">
+</head>
+<body></body>
+<script>
+  const jsPsych = initJsPsych();
+  const task = jsPsychTimelineCorsiBlock.createTimeline(jsPsych);
+  jsPsych.run([task]);
+</script>
+</html>
 ```
 
 ### Custom Configuration

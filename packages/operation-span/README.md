@@ -10,19 +10,22 @@ npm install @jspsych-timelines/operation-span
 
 ## Quick Start
 
-```javascript
-import { initJsPsych } from "jspsych";
-import { createTimeline, utils } from "@jspsych-timelines/operation-span";
-
-const jsPsych = initJsPsych({
-  on_finish: () => {
-    const scores = utils.scoring.getSummary(jsPsych.data.get());
-    console.log(scores);
-  },
-});
-
-const timeline = createTimeline(jsPsych);
-jsPsych.run([timeline]);
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <script src="https://unpkg.com/jspsych@8"></script>
+  <script src="https://unpkg.com/@jspsych-timelines/operation-span"></script>
+  <link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css">
+</head>
+<body></body>
+<script>
+  const jsPsych = initJsPsych();
+  const task = jsPsychTimelineOperationSpan.createTimeline(jsPsych);
+  jsPsych.run([task]);
+</script>
+</html>
 ```
 
 ## Task Description
