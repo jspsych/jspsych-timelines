@@ -467,9 +467,23 @@ export function createTimeline(jsPsych: JsPsych, options: TowerOfLondonOptions =
   // Merge text with defaults
   const text: TextConfig = { ...defaultText, ...options.text };
 
+  // Auto-scale canvas to fit viewport if user hasn't set explicit dimensions
+  let resolvedOptions = { ...options };
+  if (options.canvasWidth === undefined && options.canvasHeight === undefined) {
+    const vw = typeof window !== "undefined" ? window.innerWidth : 500;
+    const vh = typeof window !== "undefined" ? window.innerHeight : 400;
+    const maxWidth = Math.min(500, vw - 32);
+    const maxHeight = Math.min(400, vh - 150); // room for prompt, move counter, buttons
+    const scale = Math.min(1, maxWidth / 500, maxHeight / 400);
+    if (scale < 1) {
+      resolvedOptions.canvasWidth = Math.round(500 * scale);
+      resolvedOptions.canvasHeight = Math.round(400 * scale);
+    }
+  }
+
   const config: ResolvedConfig = {
     ...DEFAULT_OPTIONS,
-    ...options,
+    ...resolvedOptions,
     text,
     practicePuzzle: options.practicePuzzle ?? DEFAULT_PRACTICE_PUZZLE,
     puzzles: options.puzzles ?? DEFAULT_PUZZLES,
