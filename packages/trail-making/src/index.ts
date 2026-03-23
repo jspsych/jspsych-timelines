@@ -399,8 +399,10 @@ export function createTimeline(jsPsych: JsPsych, options: TrailMakingOptions = {
   // Auto-scale canvas to fit viewport if user hasn't set explicit dimensions
   let resolvedOptions = { ...options };
   if (options.canvasWidth === undefined && options.canvasHeight === undefined) {
-    const viewportWidth = typeof window !== "undefined" ? window.innerWidth : 600;
-    const maxSize = Math.min(600, viewportWidth - 32); // 16px padding each side
+    const vw = typeof window !== "undefined" ? window.innerWidth : 600;
+    const vh = typeof window !== "undefined" ? window.innerHeight : 600;
+    // Use the smaller dimension, leave room for prompt text and padding
+    const maxSize = Math.min(600, vw - 32, vh - 120);
     if (maxSize < 600) {
       const scale = maxSize / 600;
       resolvedOptions.canvasWidth = maxSize;
