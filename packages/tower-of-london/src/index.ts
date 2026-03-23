@@ -114,6 +114,9 @@ const TASK_NAME = "tower-of-london";
 const VERSION = "0.0.1";
 
 // Standard TOL puzzles with increasing difficulty
+// Classic Tower of London puzzles for [3, 2, 1] peg capacities.
+// Peg 1 holds up to 3 balls, peg 2 holds up to 2, peg 3 holds up to 1.
+// Ball order in arrays is bottom-to-top.
 const DEFAULT_PUZZLES: PuzzleConfig[] = [
   // 2-move puzzles
   {
@@ -124,59 +127,59 @@ const DEFAULT_PUZZLES: PuzzleConfig[] = [
   },
   {
     start_state: [["red", "green", "blue"], [], []],
-    goal_state: [["red"], ["green"], ["blue"]],
+    goal_state: [["red", "blue"], ["green"], []],
     optimal_moves: 2,
     difficulty: "easy",
   },
   // 3-move puzzles
   {
     start_state: [["red", "green", "blue"], [], []],
-    goal_state: [["red"], ["blue"], ["green"]],
+    goal_state: [["red"], ["green", "blue"], []],
     optimal_moves: 3,
     difficulty: "medium",
   },
   {
     start_state: [["red", "green", "blue"], [], []],
-    goal_state: [[], ["red", "green"], ["blue"]],
+    goal_state: [["red"], ["blue"], ["green"]],
     optimal_moves: 3,
     difficulty: "medium",
   },
   // 4-move puzzles
   {
     start_state: [["red", "green", "blue"], [], []],
-    goal_state: [[], ["blue", "green"], ["red"]],
+    goal_state: [["green"], ["red", "blue"], []],
     optimal_moves: 4,
     difficulty: "medium",
   },
   {
     start_state: [["red", "green", "blue"], [], []],
-    goal_state: [["blue"], [], ["red", "green"]],
+    goal_state: [["blue"], ["red"], ["green"]],
     optimal_moves: 4,
     difficulty: "medium",
   },
   // 5-move puzzles
   {
     start_state: [["red", "green", "blue"], [], []],
-    goal_state: [[], ["blue", "red"], ["green"]],
+    goal_state: [["green"], ["blue"], ["red"]],
     optimal_moves: 5,
     difficulty: "hard",
   },
   {
     start_state: [["red", "green", "blue"], [], []],
-    goal_state: [["blue"], ["red"], ["green"]],
+    goal_state: [["blue", "red"], ["green"], []],
     optimal_moves: 5,
     difficulty: "hard",
   },
   // 6-move puzzles
   {
     start_state: [["red", "green", "blue"], [], []],
-    goal_state: [["green"], ["blue"], ["red"]],
+    goal_state: [["green", "red"], ["blue"], []],
     optimal_moves: 6,
     difficulty: "hard",
   },
   {
     start_state: [["red", "green", "blue"], [], []],
-    goal_state: [[], ["green", "blue"], ["red"]],
+    goal_state: [["blue", "green"], ["red"], []],
     optimal_moves: 6,
     difficulty: "hard",
   },
@@ -194,7 +197,7 @@ const DEFAULT_OPTIONS = {
   showPractice: true,
   practicePuzzle: DEFAULT_PRACTICE_PUZZLE,
   puzzles: DEFAULT_PUZZLES,
-  pegCapacities: [3, 3, 3] as [number, number, number],
+  pegCapacities: [3, 2, 1] as [number, number, number],
   canvasWidth: 500,
   canvasHeight: 400,
   ballRadius: 30,
