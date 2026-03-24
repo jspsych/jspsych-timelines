@@ -33,6 +33,13 @@
   text-align: center;
 }
 
+/* Large respond button */
+.jspsych-btn {
+  min-height: 60px;
+  min-width: 150px;
+  font-size: 20px;
+}
+
 /* Feedback state modifiers */
 .feedback.correct {
   color: green;
