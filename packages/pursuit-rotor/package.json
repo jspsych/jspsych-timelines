@@ -46,6 +46,6 @@
   },
   "dependencies": {
     "@jspsych/plugin-html-button-response": "^2.1.0",
-    "@jspsych-contrib/plugin-pursuit-rotor": "^0.1.0"
+    "@jspsych-contrib/plugin-pursuit-rotor": "^1.0.0"
   }
 }
