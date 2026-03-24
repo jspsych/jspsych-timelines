@@ -1,0 +1,120 @@
+/* Task Switching Styles - Minimal, themeable */
+
+/* Instructions container */
+.instructions {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0 20px;
+  text-align: left;
+}
+
+.instructions h2,
+.instructions h3 {
+  text-align: center;
+}
+
+/* Trial content container - fixed height prevents button movement */
+.trial-content {
+  min-height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+/* Stimulus display */
+.ts-stimulus {
+  font-size: 4em;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* Cue display */
+.ts-cue {
+  font-size: 2em;
+  font-weight: bold;
+  text-align: center;
+  color: #333;
+}
+
+/* Task label shown above stimulus in alternating mode */
+.ts-task-label {
+  font-size: 1em;
+  color: #666;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+/* Fixation cross */
+.ts-fixation {
+  font-size: 3em;
+  text-align: center;
+}
+
+/* Feedback state modifiers */
+.feedback.correct {
+  color: green;
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+.feedback.incorrect {
+  color: red;
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+.feedback.timeout {
+  color: orange;
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+/* Disabled buttons during non-response periods */
+.jspsych-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Spread response buttons to left and right when there are two */
+#jspsych-html-button-response-btngroup:has(.jspsych-btn + .jspsych-btn) {
+  display: flex;
+  justify-content: space-between;
+  width: 80vw;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+#jspsych-html-button-response-btngroup .jspsych-btn {
+  min-height: 52px;
+  min-width: 100px;
+  font-size: 18px;
+}
+
+/* Mobile/touch device optimizations */
+@media (pointer: coarse) {
+  #jspsych-html-button-response-btngroup {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 16px;
+    background: inherit;
+    display: flex;
+    gap: 16px;
+    justify-content: space-between;
+  }
+
+  #jspsych-html-button-response-btngroup .jspsych-btn {
+    min-height: 60px;
+    min-width: 120px;
+    font-size: 18px;
+    flex: 1;
+    max-width: 200px;
+  }
+
+  /* Add padding to content so it doesn't get hidden behind fixed buttons */
+  .jspsych-content {
+    padding-bottom: 100px;
+  }
+}
