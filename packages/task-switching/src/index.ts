@@ -921,12 +921,16 @@ export function createTimeline(jsPsych: JsPsych, options: TaskSwitchingOptions =
   // Practice
   if (config.showPractice && config.numPracticeTrials > 0) {
     timeline.push(createPracticeBlock(jsPsych, config));
-    timeline.push(
-      createTransitionTrial(
-        config.text.instruction_task.replace(/<[^>]*>/g, "").trim(),
-        config.text.start_button
-      )
-    );
+    timeline.push({
+      type: jsPsychHtmlButtonResponse,
+      stimulus: config.text.instruction_task,
+      choices: [config.text.start_button],
+      data: {
+        task: TASK_NAME,
+        phase: "practice",
+        part: "transition",
+      },
+    });
   }
 
   // Test blocks
