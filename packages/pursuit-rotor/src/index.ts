@@ -349,9 +349,28 @@ export function createTimeline(jsPsych: JsPsych, options: PursuitRotorOptions = 
   // Merge text with defaults
   const text: TextConfig = { ...defaultText, ...options.text };
 
+  // Auto-scale canvas to fit viewport if user hasn't set explicit dimensions
+  let resolvedOptions = { ...options };
+  if (options.canvasWidth === undefined && options.canvasHeight === undefined) {
+    const vw = typeof window !== "undefined" ? window.innerWidth : 500;
+    const vh = typeof window !== "undefined" ? window.innerHeight : 500;
+    const maxSize = Math.min(500, vw - 32, vh - 120);
+    if (maxSize < 500) {
+      const scale = maxSize / 500;
+      resolvedOptions.canvasWidth = maxSize;
+      resolvedOptions.canvasHeight = maxSize;
+      if (options.pathRadius === undefined) {
+        resolvedOptions.pathRadius = Math.round(150 * scale);
+      }
+      if (options.targetRadius === undefined) {
+        resolvedOptions.targetRadius = Math.round(25 * scale);
+      }
+    }
+  }
+
   const config: ResolvedConfig = {
     ...DEFAULT_OPTIONS,
-    ...options,
+    ...resolvedOptions,
     text,
   };
 
