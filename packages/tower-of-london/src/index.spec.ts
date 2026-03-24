@@ -82,8 +82,8 @@ describe("Tower of London Timeline", () => {
         showInstructions: false,
         showPractice: false,
       });
-      // Should have default puzzles (10) + completion
-      expect(timeline.timeline.length).toBe(11);
+      // Should have default puzzles (12) + completion
+      expect(timeline.timeline.length).toBe(13);
     });
   });
 
@@ -154,7 +154,7 @@ describe("Tower of London Timeline", () => {
       expect(utils.constants.TASK_NAME).toBe("tower-of-london");
       expect(utils.constants.VERSION).toBe("0.0.1");
       expect(utils.constants.DEFAULT_PUZZLES).toBeDefined();
-      expect(utils.constants.DEFAULT_PUZZLES.length).toBe(10);
+      expect(utils.constants.DEFAULT_PUZZLES.length).toBe(12);
       expect(utils.constants.DEFAULT_PRACTICE_PUZZLE).toBeDefined();
     });
 
