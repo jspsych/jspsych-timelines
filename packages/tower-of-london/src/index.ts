@@ -142,7 +142,7 @@ const DEFAULT_PUZZLES: PuzzleConfig[] = [
   },
   {
     start_state: DEFAULT_START_STATE,
-    goal_state: [["green"], ["blue", "red"], []],
+    goal_state: [["green"], ["red", "blue"], []],
     optimal_moves: 3,
     difficulty: "medium",
   },
