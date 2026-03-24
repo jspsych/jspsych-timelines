@@ -52,7 +52,6 @@ export const defaultText = {
   </div>`,
 
   instruction_task: `<div class="instructions">
-    <h2>Main Task</h2>
     <p>Practice is complete. Now you will begin the main task.</p>
     <p>There will be no feedback. Respond as quickly and accurately as possible.</p>
   </div>`,
