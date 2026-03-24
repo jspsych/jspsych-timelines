@@ -1,0 +1,112 @@
+/* Simon Task Styles - Minimal, themeable */
+
+/* Instructions container */
+.instructions {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0 20px;
+  text-align: left;
+}
+
+.instructions h2,
+.instructions h3 {
+  text-align: center;
+}
+
+/* Trial content container - fixed height prevents button movement */
+.trial-content {
+  min-height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Simon stimulus container - relative positioning for lateral placement */
+.simon-container {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  height: 200px;
+  margin: 0 auto;
+}
+
+/* The colored stimulus circle */
+.simon-stimulus {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+}
+
+/* Fixation cross */
+.simon-fixation {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 3em;
+}
+
+/* Feedback state modifiers */
+.feedback.correct {
+  color: green;
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+.feedback.incorrect {
+  color: red;
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+.feedback.timeout {
+  color: orange;
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+/* Disabled buttons during non-response periods */
+.jspsych-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Simon-specific button layout: spread buttons to left and right */
+.simon-button-group #jspsych-html-button-response-btngroup {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Mobile/touch device optimizations */
+@media (pointer: coarse) {
+  #jspsych-html-button-response-btngroup {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 16px;
+    background: inherit;
+    display: flex;
+    gap: 16px;
+    justify-content: space-between;
+  }
+
+  #jspsych-html-button-response-btngroup .jspsych-btn {
+    min-height: 60px;
+    min-width: 120px;
+    font-size: 18px;
+    flex: 1;
+    max-width: 200px;
+  }
+
+  /* Add padding to content so it doesn't get hidden behind fixed buttons */
+  .jspsych-content {
+    padding-bottom: 100px;
+  }
+}
