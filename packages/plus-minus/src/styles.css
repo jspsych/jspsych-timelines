@@ -13,6 +13,52 @@
   text-align: center;
 }
 
+/* Trial layout */
+.pm-trial-container {
+  max-width: 300px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.pm-stimulus {
+  font-size: 48px;
+  margin-bottom: 16px;
+  font-family: monospace;
+}
+
+.pm-response-display {
+  font-size: 36px;
+  height: 50px;
+  border: 2px solid #333;
+  margin-bottom: 12px;
+  line-height: 50px;
+  font-family: monospace;
+  background: #f9f9f9;
+}
+
+/* Number pad */
+.pm-numpad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+.numpad-btn {
+  padding: 12px;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.numpad-btn-clear {
+  font-size: 18px;
+}
+
+.numpad-btn-submit {
+  font-size: 18px;
+  background: #4CAF50;
+  color: white;
+}
+
 /* Feedback state modifiers */
 .feedback.correct {
   color: green;
@@ -50,5 +96,9 @@
 
   .jspsych-content {
     padding-bottom: 100px;
+  }
+
+  .numpad-btn {
+    min-height: 48px;
   }
 }

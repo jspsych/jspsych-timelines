@@ -3,6 +3,8 @@
  * All text strings can be customized for translation or modification.
  */
 export interface TextConfig {
+  /** Orientation lock message */
+  orientation_message: string;
   /** Continue button label */
   continue_button: string;
   /** Start button label */
@@ -30,6 +32,7 @@ export interface TextConfig {
 }
 
 export const defaultText: TextConfig = {
+  orientation_message: "Please rotate your device to portrait mode.",
   continue_button: "Continue",
   start_button: "Start",
 
@@ -50,7 +53,7 @@ export const defaultText: TextConfig = {
   instruction_add: `
     <div class="instructions">
       <h3>Addition Block</h3>
-      <p>For each number, <strong>add 3</strong> and type your answer.</p>
+      <p>You will see a number on the screen. <strong>Add 3</strong> to it and type your answer.</p>
       <p>Work as quickly and accurately as possible.</p>
     </div>
   `,
@@ -58,7 +61,7 @@ export const defaultText: TextConfig = {
   instruction_subtract: `
     <div class="instructions">
       <h3>Subtraction Block</h3>
-      <p>For each number, <strong>subtract 3</strong> and type your answer.</p>
+      <p>You will see a number on the screen. <strong>Subtract 3</strong> from it and type your answer.</p>
       <p>Work as quickly and accurately as possible.</p>
     </div>
   `,
@@ -67,10 +70,8 @@ export const defaultText: TextConfig = {
     <div class="instructions">
       <h3>Alternating Block</h3>
       <p>Now you will <strong>alternate</strong> between adding and subtracting 3.</p>
-      <p>The first number: <strong>ADD 3</strong></p>
-      <p>The second number: <strong>SUBTRACT 3</strong></p>
-      <p>The third number: <strong>ADD 3</strong></p>
-      <p>And so on...</p>
+      <p><strong>Add 3</strong> to the first number, <strong>subtract 3</strong> from the second, <strong>add 3</strong> to the third, and so on.</p>
+      <p>You will need to keep track of which operation to perform. There will be no cue on the screen — just the number.</p>
       <p>Work as quickly and accurately as possible.</p>
     </div>
   `,

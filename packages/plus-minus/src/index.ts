@@ -1,6 +1,7 @@
 import "./styles.css";
 import { JsPsych, DataCollection } from "jspsych";
 import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
+import jsPsychDeviceOrientation from "@jspsych-contrib/plugin-device-orientation";
 import { defaultText, TextConfig } from "./text";
 
 // -- TYPES --
@@ -8,6 +9,8 @@ import { defaultText, TextConfig } from "./text";
 export interface PlusMinusOptions {
   /** Show built-in instruction screens (default: true) */
   showInstructions?: boolean;
+  /** Require portrait orientation on mobile devices (default: true) */
+  requirePortrait?: boolean;
   /** Include practice trials before each block (default: true) */
   showPractice?: boolean;
   /** Number of practice trials per block (default: 3) */
@@ -74,6 +77,7 @@ export interface ScoringResult {
 // Internal config type with text resolved
 interface ResolvedConfig {
   showInstructions: boolean;
+  requirePortrait: boolean;
   showPractice: boolean;
   numPracticeTrials: number;
   trialsPerBlock: number;
@@ -92,6 +96,7 @@ const VERSION = "0.0.1";
 
 const DEFAULT_OPTIONS = {
   showInstructions: true,
+  requirePortrait: true,
   showPractice: true,
   numPracticeTrials: 3,
   trialsPerBlock: 30,
@@ -124,35 +129,26 @@ function generateNumbers(count: number, min: number, max: number): number[] {
 
 /**
  * Creates HTML for a number pad input.
+ * Only the number is shown — the operation is defined by the block-level instructions.
  */
-function createNumberPadHTML(stimulus: number, operation: "add" | "subtract", operand: number): string {
-  const opSymbol = operation === "add" ? "+" : "−";
-  const opLabel = operation === "add" ? "ADD" : "SUBTRACT";
-
+function createNumberPadHTML(stimulus: number): string {
   return `
-    <div style="max-width: 400px; margin: 0 auto; text-align: center;">
-      <div style="margin-bottom: 10px; font-size: 14px; color: #666;">
-        <strong>${opLabel} ${operand}</strong>
-      </div>
-      <div style="font-size: 48px; margin-bottom: 20px; font-family: monospace;">
-        ${stimulus} ${opSymbol} ${operand} = ?
-      </div>
-      <div id="response-display" style="font-size: 36px; height: 50px; border: 2px solid #333; margin-bottom: 15px; line-height: 50px; font-family: monospace; background: #f9f9f9;">
-        &nbsp;
-      </div>
-      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; max-width: 240px; margin: 0 auto;">
-        <button type="button" class="numpad-btn" data-value="1" style="padding: 15px; font-size: 24px; cursor: pointer;">1</button>
-        <button type="button" class="numpad-btn" data-value="2" style="padding: 15px; font-size: 24px; cursor: pointer;">2</button>
-        <button type="button" class="numpad-btn" data-value="3" style="padding: 15px; font-size: 24px; cursor: pointer;">3</button>
-        <button type="button" class="numpad-btn" data-value="4" style="padding: 15px; font-size: 24px; cursor: pointer;">4</button>
-        <button type="button" class="numpad-btn" data-value="5" style="padding: 15px; font-size: 24px; cursor: pointer;">5</button>
-        <button type="button" class="numpad-btn" data-value="6" style="padding: 15px; font-size: 24px; cursor: pointer;">6</button>
-        <button type="button" class="numpad-btn" data-value="7" style="padding: 15px; font-size: 24px; cursor: pointer;">7</button>
-        <button type="button" class="numpad-btn" data-value="8" style="padding: 15px; font-size: 24px; cursor: pointer;">8</button>
-        <button type="button" class="numpad-btn" data-value="9" style="padding: 15px; font-size: 24px; cursor: pointer;">9</button>
-        <button type="button" class="numpad-btn" data-value="clear" style="padding: 15px; font-size: 18px; cursor: pointer;">Clear</button>
-        <button type="button" class="numpad-btn" data-value="0" style="padding: 15px; font-size: 24px; cursor: pointer;">0</button>
-        <button type="button" class="numpad-btn" data-value="submit" style="padding: 15px; font-size: 18px; cursor: pointer; background: #4CAF50; color: white;">OK</button>
+    <div class="pm-trial-container">
+      <div class="pm-stimulus">${stimulus}</div>
+      <div id="response-display" class="pm-response-display">&nbsp;</div>
+      <div class="pm-numpad">
+        <button type="button" class="numpad-btn" data-value="1">1</button>
+        <button type="button" class="numpad-btn" data-value="2">2</button>
+        <button type="button" class="numpad-btn" data-value="3">3</button>
+        <button type="button" class="numpad-btn" data-value="4">4</button>
+        <button type="button" class="numpad-btn" data-value="5">5</button>
+        <button type="button" class="numpad-btn" data-value="6">6</button>
+        <button type="button" class="numpad-btn" data-value="7">7</button>
+        <button type="button" class="numpad-btn" data-value="8">8</button>
+        <button type="button" class="numpad-btn" data-value="9">9</button>
+        <button type="button" class="numpad-btn numpad-btn-clear" data-value="clear">Clear</button>
+        <button type="button" class="numpad-btn" data-value="0">0</button>
+        <button type="button" class="numpad-btn numpad-btn-submit" data-value="submit">OK</button>
       </div>
     </div>
   `;
@@ -233,7 +229,7 @@ function createArithmeticTrial(
   // Main trial with number pad
   timeline.push({
     type: jsPsychHtmlButtonResponse,
-    stimulus: createNumberPadHTML(stimulus, operation, config.operand),
+    stimulus: createNumberPadHTML(stimulus),
     choices: [], // No standard buttons - we use custom handling
     data: {
       task: TASK_NAME,
@@ -511,6 +507,15 @@ export function createTimeline(
   };
 
   const timeline: any[] = [];
+
+  // Require portrait orientation on mobile
+  if (config.requirePortrait) {
+    timeline.push({
+      type: jsPsychDeviceOrientation,
+      orientation: "portrait",
+      message: config.text.orientation_message,
+    });
+  }
 
   // Introduction
   if (config.showInstructions) {

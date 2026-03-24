@@ -43,8 +43,8 @@ describe("Plus-Minus Timeline", () => {
         showPractice: false,
         trialsPerBlock: 5,
       });
-      // 3 blocks (wrapped) + 3 block summaries + 1 completion = 7
-      expect(timeline.timeline.length).toBe(7);
+      // 1 orientation + 3 blocks (wrapped) + 3 block summaries + 1 completion = 8
+      expect(timeline.timeline.length).toBe(8);
     });
   });
 
@@ -52,7 +52,7 @@ describe("Plus-Minus Timeline", () => {
     it("should display introduction instructions", async () => {
       const jsPsych = initJsPsych();
       const { displayElement } = await startTimeline(
-        createTimeline(jsPsych, { showInstructions: true }).timeline
+        createTimeline(jsPsych, { showInstructions: true, requirePortrait: false }).timeline
       );
 
       expect(displayElement.innerHTML).toContain("Plus-Minus");
@@ -151,6 +151,7 @@ describe("Plus-Minus Timeline", () => {
       const { displayElement } = await startTimeline(
         createTimeline(jsPsych, {
           showInstructions: true,
+          requirePortrait: false,
           text: {
             instruction_intro: "<p>Custom intro text</p>",
             continue_button: "Next",
@@ -218,6 +219,7 @@ describe("Plus-Minus Timeline", () => {
       const jsPsych = initJsPsych();
       const config = {
         showInstructions: true,
+        requirePortrait: true,
         showPractice: true,
         numPracticeTrials: 3,
         trialsPerBlock: 30,
@@ -238,6 +240,7 @@ describe("Plus-Minus Timeline", () => {
       const jsPsych = initJsPsych();
       const config = {
         showInstructions: true,
+        requirePortrait: true,
         showPractice: true,
         numPracticeTrials: 3,
         trialsPerBlock: 30,
