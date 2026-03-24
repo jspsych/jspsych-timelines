@@ -74,8 +74,8 @@
   cursor: not-allowed;
 }
 
-/* Spread response buttons to left and right */
-#jspsych-html-button-response-btngroup {
+/* Spread response buttons to left and right when there are two */
+#jspsych-html-button-response-btngroup:has(.jspsych-btn + .jspsych-btn) {
   display: flex;
   justify-content: space-between;
   width: 80vw;
