@@ -1,6 +1,5 @@
 import "./styles.css";
 import { JsPsych, DataCollection } from "jspsych";
-import jsPsychHtmlKeyboardResponse from "@jspsych/plugin-html-keyboard-response";
 import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
 import { defaultText, TextConfig } from "./text";
 
@@ -53,8 +52,6 @@ export interface CPTOptions {
   nonCueLetters?: string[];
   /** Non-probe letters for AX mode (default: ["K","L","M","N","O","P","Q"]) */
   nonProbeLetters?: string[];
-  /** Response key (default: " " spacebar) */
-  responseKey?: string;
   /** Show practice trials (default: true) */
   showPractice?: boolean;
   /** Number of practice trials (default: 10) */
@@ -133,7 +130,6 @@ interface ResolvedConfig {
   probeLetter: string;
   nonCueLetters: string[];
   nonProbeLetters: string[];
-  responseKey: string;
   showPractice: boolean;
   numPracticeTrials: number;
   feedbackDuration: number;
@@ -168,7 +164,6 @@ const DEFAULT_OPTIONS = {
   probeLetter: "X",
   nonCueLetters: ["B", "C", "D", "E", "F", "G", "H"],
   nonProbeLetters: ["K", "L", "M", "N", "O", "P", "Q"],
-  responseKey: " ",
   showPractice: true,
   numPracticeTrials: 10,
   feedbackDuration: 1000,
@@ -617,12 +612,20 @@ function createStandardTrial(
 
   // Stimulus trial: show letter for stimulusDuration, then blank/fixation for ISI
   timeline.push({
-    type: jsPsychHtmlKeyboardResponse,
+    type: jsPsychHtmlButtonResponse,
     stimulus: createStimulusHTML(trialInfo.letter),
-    choices: [config.responseKey],
-    stimulus_duration: config.stimulusDuration,
+    choices: [config.text.respond_button],
     trial_duration: config.stimulusDuration + currentISI,
     response_ends_trial: false,
+    on_load: () => {
+      // Show fixation or blank after stimulus disappears
+      setTimeout(() => {
+        const stimDisplay = document.querySelector("#jspsych-html-button-response-stimulus");
+        if (stimDisplay) {
+          stimDisplay.innerHTML = config.showFixation ? createFixationHTML() : "";
+        }
+      }, config.stimulusDuration);
+    },
     data: {
       task: TASK_NAME,
       task_version: VERSION,
@@ -634,17 +637,6 @@ function createStandardTrial(
       is_target: trialInfo.isTarget,
       isi: currentISI,
       block: block,
-    },
-    on_load: () => {
-      // Show fixation or blank after stimulus disappears
-      if (config.showFixation) {
-        setTimeout(() => {
-          const stimDisplay = document.querySelector("#jspsych-html-keyboard-response-stimulus");
-          if (stimDisplay) {
-            stimDisplay.innerHTML = createFixationHTML();
-          }
-        }, config.stimulusDuration);
-      }
     },
     on_finish: (data: any) => {
       const responded = data.response !== null;
@@ -660,7 +652,7 @@ function createStandardTrial(
   // Feedback (practice only)
   if (isPractice) {
     timeline.push({
-      type: jsPsychHtmlKeyboardResponse,
+      type: jsPsychHtmlButtonResponse,
       stimulus: () => {
         const lastData = jsPsych.data.getLastTrialData().values()[0];
         const responded = lastData.responded;
@@ -676,8 +668,10 @@ function createStandardTrial(
           return `<div class="trial-content"><div class="feedback correct">${config.text.feedback_correct_rejection}</div></div>`;
         }
       },
-      choices: "NO_KEYS",
+      choices: [config.text.respond_button],
+      button_html: (choice: string) => `<button class="jspsych-btn" disabled>${choice}</button>`,
       trial_duration: config.feedbackDuration,
+      response_ends_trial: false,
       data: {
         task: TASK_NAME,
         phase: "practice",
@@ -705,10 +699,10 @@ function createAXTrial(
 
   // Cue trial - responses during cue are not scored
   timeline.push({
-    type: jsPsychHtmlKeyboardResponse,
+    type: jsPsychHtmlButtonResponse,
     stimulus: createStimulusHTML(trialInfo.cue),
-    choices: [config.responseKey],
-    stimulus_duration: config.stimulusDuration,
+    choices: [config.text.respond_button],
+    button_html: (choice: string) => `<button class="jspsych-btn" disabled>${choice}</button>`,
     trial_duration: config.cueDelay,
     response_ends_trial: false,
     data: {
@@ -723,25 +717,30 @@ function createAXTrial(
       block: block,
     },
     on_load: () => {
-      if (config.showFixation) {
-        setTimeout(() => {
-          const stimDisplay = document.querySelector("#jspsych-html-keyboard-response-stimulus");
-          if (stimDisplay) {
-            stimDisplay.innerHTML = createFixationHTML();
-          }
-        }, config.stimulusDuration);
-      }
+      setTimeout(() => {
+        const stimDisplay = document.querySelector("#jspsych-html-button-response-stimulus");
+        if (stimDisplay) {
+          stimDisplay.innerHTML = config.showFixation ? createFixationHTML() : "";
+        }
+      }, config.stimulusDuration);
     },
   });
 
   // Probe trial - this is the scored response
   timeline.push({
-    type: jsPsychHtmlKeyboardResponse,
+    type: jsPsychHtmlButtonResponse,
     stimulus: createStimulusHTML(trialInfo.probe),
-    choices: [config.responseKey],
-    stimulus_duration: config.stimulusDuration,
+    choices: [config.text.respond_button],
     trial_duration: config.stimulusDuration + currentISI,
     response_ends_trial: false,
+    on_load: () => {
+      setTimeout(() => {
+        const stimDisplay = document.querySelector("#jspsych-html-button-response-stimulus");
+        if (stimDisplay) {
+          stimDisplay.innerHTML = config.showFixation ? createFixationHTML() : "";
+        }
+      }, config.stimulusDuration);
+    },
     data: {
       task: TASK_NAME,
       task_version: VERSION,
@@ -755,16 +754,6 @@ function createAXTrial(
       ax_part: "probe",
       isi: currentISI,
       block: block,
-    },
-    on_load: () => {
-      if (config.showFixation) {
-        setTimeout(() => {
-          const stimDisplay = document.querySelector("#jspsych-html-keyboard-response-stimulus");
-          if (stimDisplay) {
-            stimDisplay.innerHTML = createFixationHTML();
-          }
-        }, config.stimulusDuration);
-      }
     },
     on_finish: (data: any) => {
       const responded = data.response !== null;
@@ -780,7 +769,7 @@ function createAXTrial(
   // Feedback (practice only)
   if (isPractice) {
     timeline.push({
-      type: jsPsychHtmlKeyboardResponse,
+      type: jsPsychHtmlButtonResponse,
       stimulus: () => {
         const lastData = jsPsych.data.getLastTrialData().values()[0];
         const responded = lastData.responded;
@@ -796,8 +785,10 @@ function createAXTrial(
           return `<div class="trial-content"><div class="feedback correct">${config.text.feedback_correct_rejection}</div></div>`;
         }
       },
-      choices: "NO_KEYS",
+      choices: [config.text.respond_button],
+      button_html: (choice: string) => `<button class="jspsych-btn" disabled>${choice}</button>`,
       trial_duration: config.feedbackDuration,
+      response_ends_trial: false,
       data: {
         task: TASK_NAME,
         phase: "practice",

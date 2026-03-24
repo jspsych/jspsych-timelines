@@ -358,7 +358,6 @@ describe("Continuous Performance Test", () => {
       expect(defaults.nontargetProbability).toBe(0.1);
       expect(defaults.showPractice).toBe(true);
       expect(defaults.numPracticeTrials).toBe(10);
-      expect(defaults.responseKey).toBe(" ");
     });
   });
 

@@ -45,7 +45,6 @@
         "typescript": "^5.0.2"
     },
     "dependencies": {
-        "@jspsych/plugin-html-keyboard-response": "^2.1.0",
         "@jspsych/plugin-html-button-response": "^2.1.0"
     }
 }

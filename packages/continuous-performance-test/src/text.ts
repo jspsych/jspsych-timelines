@@ -17,6 +17,8 @@ export interface TextConfig {
   instruction_practice: string;
   /** Main task instruction */
   instruction_task: string;
+  /** Respond button label */
+  respond_button: string;
   /** Rest screen text */
   rest_screen: string;
   /** Feedback for correct response (hit) */
@@ -41,13 +43,14 @@ export interface TextConfig {
 export const defaultText: TextConfig = {
   continue_button: "Continue",
   start_button: "Start",
+  respond_button: "RESPOND",
 
   instruction_standard: `
     <div class="instructions">
       <h2>Continuous Performance Test</h2>
       <p>In this task, letters will appear one at a time on the screen.</p>
-      <p>Press the <strong>spacebar</strong> when you see the target letter <strong>X</strong>.</p>
-      <p>Do <strong>not</strong> press for any other letter.</p>
+      <p>Tap the <strong>RESPOND</strong> button when you see the target letter <strong>X</strong>.</p>
+      <p>Do <strong>not</strong> tap for any other letter.</p>
       <p>Try to respond as quickly and accurately as possible.</p>
     </div>
   `,
@@ -56,8 +59,8 @@ export const defaultText: TextConfig = {
     <div class="instructions">
       <h2>Continuous Performance Test</h2>
       <p>In this task, letters will appear one at a time on the screen.</p>
-      <p>Press the <strong>spacebar</strong> for <strong>every</strong> letter you see.</p>
-      <p>Do <strong>not</strong> press when you see the letter <strong>X</strong>.</p>
+      <p>Tap the <strong>RESPOND</strong> button for <strong>every</strong> letter you see.</p>
+      <p>Do <strong>not</strong> tap when you see the letter <strong>X</strong>.</p>
       <p>Try to respond as quickly and accurately as possible.</p>
     </div>
   `,
@@ -66,8 +69,8 @@ export const defaultText: TextConfig = {
     <div class="instructions">
       <h2>Continuous Performance Test</h2>
       <p>In this task, letters will appear in pairs: a <strong>cue</strong> followed by a <strong>probe</strong>.</p>
-      <p>Press the <strong>spacebar</strong> only when you see the letter <strong>X</strong> after the letter <strong>A</strong>.</p>
-      <p>Do <strong>not</strong> press for any other combination.</p>
+      <p>Tap the <strong>RESPOND</strong> button only when you see the letter <strong>X</strong> after the letter <strong>A</strong>.</p>
+      <p>Do <strong>not</strong> tap for any other combination.</p>
       <p>Try to respond as quickly and accurately as possible.</p>
     </div>
   `,
