@@ -395,7 +395,7 @@ function createInstructionTrials(config: ResolvedConfig) {
 }
 
 /**
- * Creates a fixation trial with disabled buttons showing upcoming task labels.
+ * Creates a fixation trial with neutral disabled buttons (no task hint).
  */
 function createFixationTrial(
   jsPsych: JsPsych,
@@ -404,10 +404,7 @@ function createFixationTrial(
   return {
     type: jsPsychHtmlButtonResponse,
     stimulus: `<div class="trial-content"><div class="ts-fixation">${config.text.fixation}</div></div>`,
-    choices: () => {
-      const currentTask = jsPsych.evaluateTimelineVariable("current_task") as "magnitude" | "parity";
-      return getButtonLabels(currentTask, config.text);
-    },
+    choices: ["—", "—"],
     button_html: createDisabledButtonHtml,
     response_ends_trial: false,
     trial_duration: config.fixationDuration,
