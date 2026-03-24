@@ -74,13 +74,19 @@
   cursor: not-allowed;
 }
 
-/* Simon-specific button layout: spread buttons to left and right */
-.simon-button-group #jspsych-html-button-response-btngroup {
+/* Spread response buttons to left and right */
+#jspsych-html-button-response-btngroup {
   display: flex;
   justify-content: space-between;
-  width: 100%;
+  width: 80vw;
   max-width: 600px;
   margin: 0 auto;
+}
+
+#jspsych-html-button-response-btngroup .jspsych-btn {
+  min-height: 52px;
+  min-width: 100px;
+  font-size: 18px;
 }
 
 /* Mobile/touch device optimizations */
