@@ -1,0 +1,47 @@
+/* Continuous Performance Test Styles */
+
+/* Trial content container - fixed height prevents layout shifts */
+.trial-content {
+  min-height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Stimulus letter display */
+.cpt-stimulus {
+  font-size: 72px;
+  font-family: monospace;
+  font-weight: bold;
+}
+
+/* Fixation cross */
+.cpt-fixation {
+  font-size: 48px;
+}
+
+/* Instructions container */
+.instructions {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0 20px;
+  text-align: left;
+}
+
+.instructions h2,
+.instructions h3 {
+  text-align: center;
+}
+
+/* Feedback state modifiers */
+.feedback.correct {
+  color: green;
+}
+
+.feedback.incorrect {
+  color: red;
+}
+
+.feedback.timeout {
+  color: orange;
+}
