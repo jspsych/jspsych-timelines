@@ -19,15 +19,15 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 100%;
 }
 
 /* Simon stimulus container - relative positioning for lateral placement */
 .simon-container {
   position: relative;
-  width: 100%;
+  width: 80vw;
   max-width: 600px;
   height: 200px;
-  margin: 0 auto;
 }
 
 /* The colored stimulus circle */
