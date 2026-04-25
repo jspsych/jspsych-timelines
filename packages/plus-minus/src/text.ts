@@ -1,0 +1,110 @@
+/**
+ * Text configuration for the Plus-Minus task.
+ * All text strings can be customized for translation or modification.
+ */
+export interface TextConfig {
+  /** Orientation lock message */
+  orientation_message: string;
+  /** Continue button label */
+  continue_button: string;
+  /** Start button label */
+  start_button: string;
+  /** Introduction instruction */
+  instruction_intro: string;
+  /** Addition block instruction */
+  instruction_add: string;
+  /** Subtraction block instruction */
+  instruction_subtract: string;
+  /** Alternating block instruction */
+  instruction_alternate: string;
+  /** Practice instruction */
+  instruction_practice: string;
+  /** Feedback for correct response */
+  feedback_correct: string;
+  /** Feedback for incorrect response */
+  feedback_incorrect: string;
+  /** Block complete message */
+  block_complete: (blockName: string, time: number) => string;
+  /** Task complete header */
+  task_complete: string;
+  /** Results summary */
+  result_summary: (addTime: number, subTime: number, altTime: number, switchCost: number) => string;
+}
+
+export const defaultText: TextConfig = {
+  orientation_message: "Please rotate your device to portrait mode.",
+  continue_button: "Continue",
+  start_button: "Start",
+
+  instruction_intro: `
+    <div class="instructions">
+      <h2>Plus-Minus Task</h2>
+      <p>In this task, you will see numbers and perform simple arithmetic.</p>
+      <p>You will complete three blocks:</p>
+      <ol>
+        <li><strong>Addition block:</strong> Add 3 to each number</li>
+        <li><strong>Subtraction block:</strong> Subtract 3 from each number</li>
+        <li><strong>Alternating block:</strong> Switch between adding and subtracting 3</li>
+      </ol>
+      <p>Work as quickly and accurately as possible.</p>
+    </div>
+  `,
+
+  instruction_add: `
+    <div class="instructions">
+      <h3>Addition Block</h3>
+      <p>You will see a number on the screen. <strong>Add 3</strong> to it and type your answer.</p>
+      <p>Work as quickly and accurately as possible.</p>
+    </div>
+  `,
+
+  instruction_subtract: `
+    <div class="instructions">
+      <h3>Subtraction Block</h3>
+      <p>You will see a number on the screen. <strong>Subtract 3</strong> from it and type your answer.</p>
+      <p>Work as quickly and accurately as possible.</p>
+    </div>
+  `,
+
+  instruction_alternate: `
+    <div class="instructions">
+      <h3>Alternating Block</h3>
+      <p>Now you will <strong>alternate</strong> between adding and subtracting 3.</p>
+      <p><strong>Add 3</strong> to the first number, <strong>subtract 3</strong> from the second, <strong>add 3</strong> to the third, and so on.</p>
+      <p>You will need to keep track of which operation to perform. There will be no cue on the screen — just the number.</p>
+      <p>Work as quickly and accurately as possible.</p>
+    </div>
+  `,
+
+  instruction_practice: `
+    <div class="instructions">
+      <h3>Practice</h3>
+      <p>Let's try a few practice trials first.</p>
+    </div>
+  `,
+
+  feedback_correct: `<p style="font-size: 24px; color: green;"><strong>Correct!</strong></p>`,
+
+  feedback_incorrect: `<p style="font-size: 24px; color: red;"><strong>Incorrect</strong></p>`,
+
+  block_complete: (blockName: string, time: number) => `
+    <div class="instructions">
+      <h3>${blockName} Complete</h3>
+      <p>Time: <strong>${(time / 1000).toFixed(2)} seconds</strong></p>
+    </div>
+  `,
+
+  task_complete: "Task Complete",
+
+  result_summary: (addTime: number, subTime: number, altTime: number, switchCost: number) => `
+    <div class="instructions">
+      <h3>Your Results</h3>
+      <p>Addition block: <strong>${(addTime / 1000).toFixed(2)}s</strong></p>
+      <p>Subtraction block: <strong>${(subTime / 1000).toFixed(2)}s</strong></p>
+      <p>Alternating block: <strong>${(altTime / 1000).toFixed(2)}s</strong></p>
+      <hr>
+      <p>Switch cost: <strong>${(switchCost / 1000).toFixed(2)}s</strong></p>
+      <p style="font-size: 12px; color: #666;">(Alternating time minus average of single-task times)</p>
+    </div>
+  `,
+};

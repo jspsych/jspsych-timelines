@@ -5,7 +5,7 @@
     "type": "module",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
-    "unpkg": "dist/index.global.js",
+    "unpkg": "dist/index.browser.js",
     "exports": {
         ".": {
             "import": "./dist/index.js",
@@ -18,7 +18,7 @@
         "dist"
     ],
     "scripts": {
-        "build": "tsup src/index.ts --format esm,iife,cjs --sourcemap --dts --treeshake --clean --global-name jsPsychTimelineGoNoGo && node -e \"const fs = require('fs'); const path = require('path'); function copyDir(src, dest) { if (!fs.existsSync(dest)) fs.mkdirSync(dest, {recursive: true}); fs.readdirSync(src).forEach(file => { const srcFile = path.join(src, file); const destFile = path.join(dest, file); if (fs.lstatSync(srcFile).isDirectory()) copyDir(srcFile, destFile); else fs.copyFileSync(srcFile, destFile); }); } copyDir('src/css', 'dist/css');\"",
+        "build": "tsup src/index.ts --format esm,iife,cjs --sourcemap --dts --treeshake --clean --global-name jsPsychTimelineGoNoGo --inject-style && node -e \"require('fs').renameSync('dist/index.global.js','dist/index.browser.js')\" && node -e \"require('fs').renameSync('dist/index.global.js.map','dist/index.browser.js.map')\"",
         "test": "jest",
         "test:watch": "jest --watch",
         "test:coverage": "jest --coverage"
@@ -50,6 +50,9 @@
         "url": "https://github.com/jspsych/jspsych-timelines/issues"
     },
     "homepage": "/@jspsych-timelines/go-nogo/README.md",
+    "peerDependencies": {
+        "jspsych": ">=8.0.0"
+    },
     "devDependencies": {
         "@jspsych/config": "^3.2.2",
         "@types/jest": "^29.5.0",

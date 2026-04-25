@@ -2,12 +2,12 @@
 <html>
   <head>
     <title>jsPsychTimelineBart Example</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <script src="https://unpkg.com/jspsych"></script>
-    <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css" />
+    <script src="https://unpkg.com/jspsych@8"></script>
+    <link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css" />
 
-    <script src="../dist/index.global.js"></script>
+    <script src="../dist/index.browser.js"></script>
     <link rel="stylesheet" href="../src/css/styles.css" />
 
     <!-- Load the published timeline package here, e.g. -->
@@ -28,7 +28,7 @@
       num_blocks: 1, // number of blocks in the experiment
       trials_per_block: 3, // number of trials per block
       points_per_pump: 25, // each pump is worth 25 cents
-      text_object: {
+      text: {
         pump_button: "Pump Balloon",
         collect_button: "Collect Cash",
         current_value_label: "Current Cash",

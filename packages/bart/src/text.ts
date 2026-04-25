@@ -1,29 +1,37 @@
-/*
- * This is an array of HTML strings for instruction pages displayed before the actual trials.
- * Researchers can modify these instructions to change the task description, add new instruction
- * pages, or translate to different languages.
- *
- * Each string should contain valid HTML that will be displayed as an instruction page.
- * You can add more pages by adding more strings to the array, or modify existing pages
- * by editing the HTML content.
+/**
+ * Default text strings for the BART task.
+ * To translate, create a new object with the same structure and pass it to createTimeline().
  */
-const instruction_pages = [
-  "<b>In this task, you will inflate a balloon to earn money.</b>",
-  "Click <b>Pump</b> to inflate the balloon and earn money with each pump.",
-  "Click <b>Collect</b> to save your money and end the round.",
-  "If the balloon pops, you lose the money for that round!",
-  "Work quickly but carefully - you have limited time per trial.",
-  "Click below to start the task.",
-];
-
-/** Object containing configurable text used in the BART timeline. */
 export const trial_text = {
-  // Instruction messages
-  // Instruction pages buttons text, these will always have arrows < and >
-  // these do not work right now due to CSS fixed position, might fix later
-  next_button: "",
-  back_button: "",
-  instruction_pages: instruction_pages,
+  // -- INSTRUCTION PAGES --
+  instruction_intro: `<div class="instructions">
+    <h2>Balloon Task</h2>
+    <p>In this task, you will inflate balloons to earn points.</p>
+    <p>Each pump adds points to the balloon's value, but pump too much and it will pop!</p>
+  </div>`,
+
+  instruction_pump: `<div class="instructions">
+    <h2>Pumping the Balloon</h2>
+    <p>Click the <strong>Pump</strong> button to inflate the balloon.</p>
+    <p>Each pump increases the balloon's value.</p>
+  </div>`,
+
+  instruction_collect: `<div class="instructions">
+    <h2>Collecting Points</h2>
+    <p>Click the <strong>Collect</strong> button to save your points and end the round.</p>
+    <p>If you don't collect before the balloon pops, you lose all points for that round!</p>
+  </div>`,
+
+  // -- INTERACTIVE INSTRUCTION PROMPTS --
+  instruction_try_pump: `<p>Try pumping the balloon a few times, then collect your points.</p>`,
+  instruction_pump_success: "You collected your points!",
+  instruction_pump_popped: "The balloon popped! In the real task, you would lose those points.",
+
+  instruction_practice_intro: `<div class="instructions">
+    <h2>Practice</h2>
+    <p>Now try a practice round. Pump the balloon to earn points, but collect before it pops!</p>
+    <p>Remember: the more you pump, the more you can earn - but the risk of popping increases.</p>
+  </div>`,
 
   // Task completion messages
   task_complete_header: "Task Complete!",
@@ -62,4 +70,19 @@ export const trial_text = {
   <p>You earned a total of <strong>${points}</strong> points!</p>
   <p>Thanks for participating!</p>
 </div>`,
+
+  // -- COMPLETION --
+  task_complete: "Task Complete",
+  result_summary: (totalPoints: number, popRate: number, adjustedAvgPumps: number) => `
+    <div class="instructions">
+      <h3>Your Results</h3>
+      <p><strong>Total points:</strong> ${totalPoints}</p>
+      <p><strong>Pop rate:</strong> ${(popRate * 100).toFixed(1)}%</p>
+      <p><strong>Average pumps (collected):</strong> ${adjustedAvgPumps.toFixed(1)}</p>
+    </div>
+  `,
 };
+
+// Aliases for consistency with other packages
+export const defaultText = trial_text;
+export type TextConfig = typeof trial_text;

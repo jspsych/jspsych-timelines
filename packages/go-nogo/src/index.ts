@@ -1,7 +1,12 @@
-import { JsPsych } from "jspsych";
+import "./styles.css";
+import { JsPsych, DataCollection } from "jspsych";
 import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
 import jsPsychInstructions from "@jspsych/plugin-instructions";
-import { trial_text, octagon, circle, square } from "./text";
+import { trial_text, defaultText, TextConfig, octagon, circle, square } from "./text";
+
+// -- CONSTANTS --
+const TASK_NAME = "go-nogo";
+const VERSION = "0.5.0";
 
 /**
  * Configuration options for the Go/No-Go timeline and helpers.
@@ -34,7 +39,7 @@ import { trial_text, octagon, circle, square } from "./text";
  * @property {number}   [nogo_practice_timeout=3000] Duration of No-Go practice trial.
  *
  * Texts
- * @property {typeof trial_text}   [text_object=trial_text] Text/config object with UI strings.
+ * @property {typeof trial_text}   [text=trial_text] Text/config object with UI strings.
  */
 interface GoNoGoConfig {
   //general configuration
@@ -63,7 +68,7 @@ interface GoNoGoConfig {
   go_practice_timeout?: number;
   nogo_practice_timeout?: number;
   //texts
-  text_object?: typeof trial_text;
+  text?: Partial<TextConfig>;
 }
 
 /**
@@ -76,15 +81,14 @@ interface GoNoGoConfig {
 export function createInstructions(instructions: string[], texts?) {
   return {
     type: jsPsychInstructions,
-    pages: instructions.map((page) => `<div class="timeline-instructions"><p>${page}</p></div>`),
+    pages: instructions.map((page) => `<div class="instructions" ><p>${page}</p></div>`),
     show_clickable_nav: true,
     allow_keys: true,
     key_forward: "ArrowRight",
     key_backward: "ArrowLeft",
     button_label_previous: texts?.backButton || "",
     button_label_next: texts?.nextButton || "",
-    data: { task: "go-nogo", phase: "instructions" },
-    css_classes: ["jspsych-go-nogo-container"]
+    data: { task: TASK_NAME, phase: "instructions" },
   };
 }
 
@@ -98,8 +102,8 @@ export function createInstructions(instructions: string[], texts?) {
  */
 const createStimulusHTML = (html: string, isGoTrial: boolean, containerHeight?: string): string => {
   const id = isGoTrial ? "go-stimulus" : "nogo-stimulus";
-  const heightStyle = containerHeight ? `height: ${containerHeight};` : '';
-  return `<div id="${id}-container" class="go-nogo-container timeline-trial" style="font-size: 3em; ${heightStyle} display: flex; align-items: center; justify-content: center;">${html}</div>`;
+  const heightStyle = containerHeight ? `min-height: ${containerHeight};` : '';
+  return `<div id="${id}-container" class="stimulus"  style="${heightStyle}">${html}</div>`;
 };
 
 /**
@@ -127,15 +131,15 @@ const createGoPractice = (go_stimulus: string, texts = trial_text, timeout: numb
   const practiceTask = {
     type: jsPsychHtmlButtonResponse,
     stimulus: `
-      <p>${texts.goPageContent}</p>
-      ${go_html}
-      <p class="go-nogo-feedback" style="visibility: hidden;">${texts.goSuccess}</p>
+      <div >
+        <p>${texts.goPageContent}</p>
+        ${go_html}
+        <p class="feedback" style="visibility: hidden;">${texts.goSuccess}</p>
+      </div>
     `,
     choices: [texts.stimulusButton],
     trial_duration: timeout, // default 10 seconds
-    data: { task: "go-nogo", phase: "instructions", page: "go-practice" },
-    button_html: (choice, choice_index) =>
-      `<button id="go-nogo-btn" class="jspsych-btn timeline-html-btn">${choice}</button>`,
+    data: { task: TASK_NAME, phase: "instructions", part: "go-practice" },
     on_finish: (data: any) => {
       if (data.response !== null) {
         // They clicked - show success feedback
@@ -148,41 +152,36 @@ const createGoPractice = (go_stimulus: string, texts = trial_text, timeout: numb
         practiceGoTimeline.push(practiceTask); // infinite retying until they succeed in clicking.
       }
     },
-    css_classes: ["jspsych-go-nogo-container"]
   };
 
   const successFeedback = {
     type: jsPsychHtmlButtonResponse,
     stimulus: `
-      <p>${texts.goPageContent}</p>
-      ${go_html}
-      <p class="go-nogo-feedback" style="color: #28a745;">${texts.goSuccess}</p>
+      <div >
+        <p>${texts.goPageContent}</p>
+        ${go_html}
+        <p class="feedback correct">${texts.goSuccess}</p>
+      </div>
     `,
     choices: [texts.stimulusButton],
     trial_duration: 2000,
     response_ends_trial: false,
-    data: { task: "go-nogo", phase: "instructions", page: "success" },
-    //disabled button to signify click
-    button_html: (choice) =>
-      `<button id="go-nogo-btn" class="jspsych-btn timeline-html-btn" style="opacity: 0.5;" disabled>${choice}</button>`,
-    css_classes: ["jspsych-go-nogo-container"]
+    data: { task: TASK_NAME, phase: "instructions", part: "success" },
   };
 
   const failureFeedback = {
     type: jsPsychHtmlButtonResponse,
     stimulus: `
-      <p>${texts.goPageContent}</p>
-      ${go_html}
-      <p class="go-nogo-feedback" style="color: #dc3545;">${texts.goFailure}</p>
+      <div >
+        <p>${texts.goPageContent}</p>
+        ${go_html}
+        <p class="feedback incorrect">${texts.goFailure}</p>
+      </div>
     `,
     choices: [texts.stimulusButton],
     trial_duration: 2000,
     response_ends_trial: false,
-    data: { task: "go-nogo", phase: "instructions", page: "failure" },
-    //disabled button to signify click
-    button_html: (choice) =>
-      `<button id="go-nogo-btn" class="jspsych-btn timeline-html-btn" style="opacity: 0.5;" disabled>${choice}</button>`,
-    css_classes: ["jspsych-go-nogo-container"]
+    data: { task: TASK_NAME, phase: "instructions", part: "failure" },
   };
 
   practiceGoTimeline.push(practiceTask);
@@ -214,15 +213,15 @@ const createNoGoPractice = (nogo_stimulus: string, texts = trial_text, timeout: 
   const practiceTask = {
     type: jsPsychHtmlButtonResponse,
     stimulus: `
-      <p>${texts.noGoPageContent}</p>
-      ${nogo_html}
-      <p class="go-nogo-feedback" style="visibility: hidden;">${texts.noGoSuccess}</p>
+      <div >
+        <p>${texts.noGoPageContent}</p>
+        ${nogo_html}
+        <p class="feedback" style="visibility: hidden;">${texts.noGoSuccess}</p>
+      </div>
     `,
     choices: [texts.stimulusButton],
     trial_duration: timeout,
-    data: { task: "go-nogo", phase: "instructions", page: "nogo-practice" },
-    button_html: (choice, choice_index) =>
-      `<button id="go-nogo-btn" class="continue-btn jspsych-btn timeline-html-btn">${choice}</button>`,
+    data: { task: TASK_NAME, phase: "instructions", part: "nogo-practice" },
     on_finish: (data: any) => {
       if (data.response === null) {
         // They correctly didn't click - show success feedback
@@ -235,41 +234,36 @@ const createNoGoPractice = (nogo_stimulus: string, texts = trial_text, timeout: 
         practiceNoGoTimeline.push(practiceTask); // infinite retrying until they succeed by not clicking
       }
     },
-    css_classes: ["jspsych-go-nogo-container"]
   };
 
   const correctFeedback = {
     type: jsPsychHtmlButtonResponse,
     stimulus: `
-      <p>${texts.noGoPageContent}</p>
-      ${nogo_html}
-      <p class="go-nogo-feedback" style="color: #28a745;">${texts.noGoSuccess}</p>
+      <div >
+        <p>${texts.noGoPageContent}</p>
+        ${nogo_html}
+        <p class="feedback correct">${texts.noGoSuccess}</p>
+      </div>
     `,
     choices: [texts.stimulusButton],
     trial_duration: 2000,
     response_ends_trial: false,
-    data: { task: "go-nogo", phase: "instructions", page: "success" },
-    //disabled button to signify click
-    button_html: (choice) =>
-      `<button id="go-nogo-btn" class="continue-btn jspsych-btn timeline-html-btn" style="opacity: 0.5;" disabled>${choice}</button>`,
-    css_classes: ["jspsych-go-nogo-container"]
+    data: { task: TASK_NAME, phase: "instructions", part: "success" },
   };
 
   const incorrectFeedback = {
     type: jsPsychHtmlButtonResponse,
     stimulus: `
-      <p>${texts.noGoPageContent}</p>
-      ${nogo_html}
-      <p class="go-nogo-feedback" style="color: #dc3545;">${texts.noGoFailure}</p>
+      <div >
+        <p>${texts.noGoPageContent}</p>
+        ${nogo_html}
+        <p class="feedback incorrect">${texts.noGoFailure}</p>
+      </div>
     `,
     choices: [texts.stimulusButton],
     trial_duration: 2000,
     response_ends_trial: false,
-    data: { task: "go-nogo", phase: "instructions", page: "failure" },
-    //disabled button to signify click
-    button_html: (choice) =>
-      `<button id="go-nogo-btn" class="continue-btn jspsych-btn timeline-html-btn" style="opacity: 0.5;" disabled>${choice}</button>`,
-    css_classes: ["jspsych-go-nogo-container"]
+    data: { task: TASK_NAME, phase: "instructions", part: "failure" },
   };
 
   practiceNoGoTimeline.push(practiceTask);
@@ -286,15 +280,12 @@ const createPracticeCompletion = (texts = trial_text) => {
   const completionTrial = {
     type: jsPsychHtmlButtonResponse,
     stimulus: `
-        <div class="go-nogo-practice">
+        <div class="transition" >
           <p>${texts.practiceCompleteContent}</p>
         </div>
     `,
     choices: [texts.beginTaskButton],
-    data: { task: "go-nogo", phase: "instructions", page: "completion" },
-    button_html: (choice, choice_index) =>
-      `<button id="go-nogo-btn" class="continue-btn jspsych-btn timeline-html-btn">${choice}</button>`,
-    css_classes: ["jspsych-go-nogo-container"]
+    data: { task: TASK_NAME, phase: "instructions", part: "completion" },
   };
 
   return { timeline: [completionTrial] };
@@ -309,12 +300,9 @@ const createPracticeCompletion = (texts = trial_text) => {
 const createEndOfPractice = (texts = trial_text) => {
   return {
     type: jsPsychHtmlButtonResponse,
-    stimulus: `<p>${texts.endOfPracticeContent}</p>`,
+    stimulus: `<div class="transition" ><p>${texts.endOfPracticeContent}</p></div>`,
     choices: [texts.endOfPracticeButton],
-    data: { task: "go-nogo", page: "end-of-practice" },
-    button_html: (choice) =>
-      `<button id="end-practice-btn" class="continue-btn jspsych-btn timeline-html-btn">${choice}</button>`,
-    css_classes: ["jspsych-go-nogo-container"]
+    data: { task: TASK_NAME, phase: "practice", part: "end-of-practice" },
   };
 };
 
@@ -336,18 +324,16 @@ const createGoNoGo = (jsPsych: JsPsych, button_text: string, trial_timeout: numb
     stimulus_duration: stimulus_duration !== undefined ? stimulus_duration : null,
     response_ends_trial: true,
     data: {
-      task: "go-nogo",
+      task: TASK_NAME,
+      task_version: VERSION,
       is_go_trial: jsPsych.timelineVariable("is_go_trial"),
       block_number: jsPsych.timelineVariable("block_number"),
-      page: jsPsych.timelineVariable("page"),
+      part: jsPsych.timelineVariable("part"),
     },
-    button_html: (choice, choice_index) =>
-      `<button id="go-nogo-btn" class="continue-btn timeline-html-btn jspsych-btn">${choice}</button>`,
     on_finish: (data: any) => {
       data.correct =
         (data.is_go_trial && data.response === 0) || (!data.is_go_trial && data.response === null);
     },
-    css_classes: ["jspsych-go-nogo-container"]
   };
 };
 
@@ -369,24 +355,20 @@ const createISIBlank = (
   button_opacity: number = 1.0,
 ) => {
   // Create a blank container with matching height to prevent button movement
-  const blankHTML = stimulus_height
-    ? `<div class="go-nogo-container timeline-trial" style="height: ${stimulus_height}; display: flex; align-items: center; justify-content: center;"></div>`
-    : `<div></div>`;
+  const heightStyle = stimulus_height ? `min-height: ${stimulus_height};` : '';
+  const blankHTML = `<div class="isi-blank"  style="${heightStyle}"></div>`;
 
   return {
     type: jsPsychHtmlButtonResponse,
     stimulus: blankHTML,
-    choices: [button_text],
+    choices: show_button ? [button_text] : [],
     trial_duration: isi_duration,
     response_ends_trial: false,
     data: {
-      task: "go-nogo",
-      page: "isi-blank",
+      task: TASK_NAME,
+      task_version: VERSION,
+      part: "isi-blank",
     },
-    css_classes: ["jspsych-go-nogo-container"],
-    button_html: (choice) =>
-      `<button id="isi-blank-btn" class="continue-btn timeline-html-btn jspsych-btn is-disabled"
-               style="visibility: ${show_button ? 'visible' : 'hidden'}; opacity: ${button_opacity};" disabled>${choice}</button>`,
   };
 };
 
@@ -409,27 +391,20 @@ const createFixation = (
   fixation_size: string = "3em",
   button_opacity: number = 1.0,
 ) => {
-  // If stimulus_height is provided, create a container with matching height to prevent button movement
-  const fixationHTML = stimulus_height
-    ? `<div class="go-nogo-container timeline-trial" style="font-size: ${fixation_size}; height: ${stimulus_height}; display: flex; align-items: center; justify-content: center;"><div class="fixation">+</div></div>`
-    : `<div class="fixation" style="font-size: ${fixation_size};">+</div>`;
+  const heightStyle = stimulus_height ? `min-height: ${stimulus_height};` : '';
+  const fixationHTML = `<div class="fixation"  style="font-size: ${fixation_size}; ${heightStyle}">+</div>`;
 
   return {
-    // Use button plugin so we can provide button_html
     type: jsPsychHtmlButtonResponse,
     stimulus: fixationHTML,
-    choices: [button_text],
+    choices: show_button ? [button_text] : [],
     trial_duration: fixation_duration,
     response_ends_trial: false,
     data: {
-      task: "go-nogo",
-      page: "fixation",
+      task: TASK_NAME,
+      task_version: VERSION,
+      part: "fixation",
     },
-    css_classes: ["jspsych-go-nogo-container"],
-    // Button is disabled during fixation; visibility controlled by show_button parameter
-    button_html: (choice) =>
-      `<button id="go-nogo-btn" class="continue-btn timeline-html-btn jspsych-btn"
-               style="visibility: ${show_button ? 'visible' : 'hidden'}; opacity: ${button_opacity};" disabled>${choice}</button>`,
   };
 };
 
@@ -492,8 +467,8 @@ const createTimelineVariables = (
     trials.push({
       stimulus: createStimulusHTML(stimulus, isGoTrial, containerHeight),
       is_go_trial: isGoTrial,
-      task: "go-nogo",
-      page: isGoTrial ? "go" : "nogo",
+      task: TASK_NAME,
+      part: isGoTrial ? "go" : "nogo",
       block_number: blockNumber,
     });
   }
@@ -509,26 +484,23 @@ const createTimelineVariables = (
  * @param text_object Text configuration object containing messages and labels.
  * @returns A jsPsychHtmlButtonResponse screen prompting to continue or showing a countdown.
  */
-const createBlockBreak = (blockNum: number, num_blocks: number, duration: number | null = null, text_object = trial_text) => {
+const createBlockBreak = (blockNum: number, num_blocks: number, duration: number | null = null, texts = trial_text) => {
   if (duration === null) {
     // Button mode
     return {
       type: jsPsychHtmlButtonResponse,
-      stimulus: `<p>${text_object.blockBreakContent(blockNum, num_blocks)}</p>`,
-      choices: [text_object.continueButton],
-      data: { task: "go-nogo", page: "block-break", block_number: blockNum },
-      button_html: (choice) =>
-        `<button id="block-break-btn" class="continue-btn jspsych-btn timeline-html-btn">${choice}</button>`,
-      css_classes: ["jspsych-go-nogo-container"]
+      stimulus: `<div class="block-break" ><p>${texts.blockBreakContent(blockNum, num_blocks)}</p></div>`,
+      choices: [texts.continueButton],
+      data: { task: TASK_NAME, task_version: VERSION, part: "block-break", block_number: blockNum },
     };
   } else {
     // Timer mode
     return {
       type: jsPsychHtmlButtonResponse,
-      stimulus: `<p>${text_object.blockBreakContent(blockNum, num_blocks)}</p><p id="timer-display"></p>`,
+      stimulus: `<div class="block-break" ><p>${texts.blockBreakContent(blockNum, num_blocks)}</p><p id="timer-display"></p></div>`,
       choices: [],
       trial_duration: duration,
-      data: { task: "go-nogo", page: "block-break", block_number: blockNum },
+      data: { task: TASK_NAME, task_version: VERSION, part: "block-break", block_number: blockNum },
       on_load: () => {
         const timerDisplay = document.getElementById('timer-display');
         let timeRemaining = duration;
@@ -536,7 +508,7 @@ const createBlockBreak = (blockNum: number, num_blocks: number, duration: number
         const updateTimer = () => {
           const seconds = Math.ceil(timeRemaining / 1000);
           if (timerDisplay) {
-            timerDisplay.textContent = text_object.blockBreakTimerText(seconds);
+            timerDisplay.textContent = texts.blockBreakTimerText(seconds);
           }
         };
 
@@ -551,7 +523,6 @@ const createBlockBreak = (blockNum: number, num_blocks: number, duration: number
           }
         }, 100);
       },
-      css_classes: ["jspsych-go-nogo-container"]
     };
   }
 };
@@ -562,44 +533,21 @@ const createBlockBreak = (blockNum: number, num_blocks: number, duration: number
  * @param jsPsych Active jsPsych instance from which results are derived.
  * @returns A jsPsych trial object for the debrief.
  */
-const createDebrief = (jsPsych: JsPsych, text_object = trial_text) => {
-  // Calculate stats when trial starts, not when displayed
-  const calculateStats = () => {
-    const allTrials = jsPsych.data.get().filter({ task: "go-nogo", phase: "main" }).filter((trial: any) => trial.page === "go" || trial.page === "nogo").values();
-
-    if (allTrials.length === 0) return { accuracy: 0, meanRT: 0 };
-
-    // Calculate accuracy (percentage of correct responses)
-    const correctTrials = allTrials.filter((trial: any) => trial.correct === true);
-    const accuracy = Math.round((correctTrials.length / allTrials.length) * 100);
-
-    // Calculate mean RT for GO trials where response was made
-    const goTrialsWithResponse = allTrials.filter(
-      (trial: any) => trial.is_go_trial === true && trial.response !== null && trial.rt > 0,
-    );
-    const meanRT =
-      goTrialsWithResponse.length > 0
-        ? Math.round(
-            goTrialsWithResponse.reduce((sum: number, trial: any) => sum + trial.rt, 0) /
-              goTrialsWithResponse.length,
-          )
-        : 0;
-
-    return { accuracy, meanRT };
-  };
-
+const createDebrief = (jsPsych: JsPsych, texts = trial_text) => {
   return {
     type: jsPsychHtmlButtonResponse,
     stimulus: () => {
-      const { accuracy, meanRT } = calculateStats();
+      const data = jsPsych.data.get();
+      const scores = calculateScores(data);
 
-      return text_object.debriefContent(accuracy, meanRT);
+      let html = `<div class="debrief">`;
+      html += `<h2>${texts.task_complete}</h2>`;
+      html += texts.result_summary(scores.goAccuracy, scores.nogoAccuracy, scores.commissionErrors);
+      html += `</div>`;
+      return html;
     },
-    choices: [text_object.finishButton],
-    data: { task: "go-nogo", phase: "debrief" },
-    button_html: (choice, choice_index) =>
-      `<button id="debrief-btn" class="continue-btn jspsych-btn timeline-html-btn">${choice}</button>`,
-    css_classes: ["jspsych-go-nogo-container"]
+    choices: [texts.finishButton],
+    data: { task: TASK_NAME, task_version: VERSION, phase: "completion" },
   };
 };
 
@@ -643,10 +591,10 @@ export function createTimeline(
     go_practice_timeout = 10000,
     nogo_practice_timeout = 3000,
     // texts
-    text_object = trial_text,
+    text = {},
   }: GoNoGoConfig = {},
 ) {
-  text_object = { ...trial_text, ...(text_object ?? {}) }; // Merge default texts with any overrides from config
+  const mergedText = { ...trial_text, ...text }; // Merge default texts with any overrides from config
   const timeline = [];
 
   // Interactive instructions (go/no-go examples with feedback)
@@ -656,7 +604,7 @@ export function createTimeline(
       nogo_stimulus,
       go_stimuli,
       nogo_stimuli,
-      text_object: text_object,
+      texts: mergedText,
       go_practice_timeout,
       nogo_practice_timeout,
     });
@@ -666,10 +614,10 @@ export function createTimeline(
   const actualGoStimuli = go_stimuli?.length > 0 ? go_stimuli : [go_stimulus];
   const actualNoGoStimuli = nogo_stimuli?.length > 0 ? nogo_stimuli : [nogo_stimulus];
 
-  const goNoGoTrial = createGoNoGo(jsPsych, text_object.stimulusButton, trial_timeout, stimulus_duration);
+  const goNoGoTrial = createGoNoGo(jsPsych, mergedText.stimulusButton, trial_timeout, stimulus_duration);
   const fixationTrial = createFixation(
     fixation_duration,
-    text_object.stimulusButton,
+    mergedText.stimulusButton,
     show_button_during_fixation,
     stimulus_container_height,
     fixation_size,
@@ -677,7 +625,7 @@ export function createTimeline(
   );
   const isiBlankTrial = createISIBlank(
     isi_duration,
-    text_object.stimulusButton,
+    mergedText.stimulusButton,
     show_button_during_fixation,
     stimulus_container_height,
     button_opacity_during_fixation
@@ -706,7 +654,7 @@ export function createTimeline(
     timeline.push(practiceProcedure);
 
     // End of practice screen
-    const endOfPracticeTrial = createEndOfPractice(text_object);
+    const endOfPracticeTrial = createEndOfPractice(mergedText);
     timeline.push({
       timeline: [endOfPracticeTrial],
       data: { phase: "practice" }
@@ -732,17 +680,17 @@ export function createTimeline(
       timeline_variables: blockTrials,
       randomize_order: true,
       data: {
-        phase: "main"
+        phase: "test"
       }
     };
     blocks.push(blockProcedure);
 
     // Add block break page between blocks (except after last block)
     if (blockNum < num_blocks) {
-      const blockBreakTrial = createBlockBreak(blockNum, num_blocks, block_break_duration, text_object);
+      const blockBreakTrial = createBlockBreak(blockNum, num_blocks, block_break_duration, mergedText);
       blocks.push({
         timeline: [blockBreakTrial],
-        data: { phase: "main" }
+        data: { phase: "test" }
       });
     }
   }
@@ -750,7 +698,7 @@ export function createTimeline(
   timeline.push([...blocks]);
 
   if (show_debrief) {
-    const debriefTrial = createDebrief(jsPsych, text_object);
+    const debriefTrial = createDebrief(jsPsych, mergedText);
     timeline.push(debriefTrial);
   }
 
@@ -770,19 +718,119 @@ function createPractice({
   nogo_stimulus,
   go_stimuli,
   nogo_stimuli,
-  text_object = trial_text,
+  texts = trial_text,
   go_practice_timeout = 10000,
   nogo_practice_timeout = 3000,
-}: GoNoGoConfig = {}) {
+}: {
+  go_stimulus?: string;
+  nogo_stimulus?: string;
+  go_stimuli?: string[];
+  nogo_stimuli?: string[];
+  texts?: TextConfig;
+  go_practice_timeout?: number;
+  nogo_practice_timeout?: number;
+} = {}) {
   //check for array stimuli then fallback on go_stimulus
   const actualGoStimuli = go_stimuli?.length > 0 ? go_stimuli : [go_stimulus];
   const actualNoGoStimuli = nogo_stimuli?.length > 0 ? nogo_stimuli : [nogo_stimulus];
 
   return [
-    createGoPractice(actualGoStimuli[0], text_object, go_practice_timeout),
-    createNoGoPractice(actualNoGoStimuli[0], text_object, nogo_practice_timeout),
-    createPracticeCompletion(text_object),
+    createGoPractice(actualGoStimuli[0], texts, go_practice_timeout),
+    createNoGoPractice(actualNoGoStimuli[0], texts, nogo_practice_timeout),
+    createPracticeCompletion(texts),
   ];
+}
+
+// -- SCORING FUNCTIONS --
+
+interface ScoringResult {
+  goAccuracy: number;
+  nogoAccuracy: number;
+  overallAccuracy: number;
+  meanGoRT: number;
+  totalTrials: number;
+  goTrials: number;
+  nogoTrials: number;
+  correctGoTrials: number;
+  correctNogoTrials: number;
+  commissionErrors: number;  // False alarms (clicked on no-go)
+  omissionErrors: number;    // Misses (didn't click on go)
+}
+
+/**
+ * Calculate scoring metrics from Go/No-Go data
+ */
+function calculateScores(data: DataCollection): ScoringResult {
+  const mainTrials = data
+    .filter({ task: TASK_NAME, phase: "test" })
+    .filter((trial: any) => trial.part === "go" || trial.part === "nogo")
+    .values() as any[];
+
+  if (mainTrials.length === 0) {
+    return {
+      goAccuracy: 0,
+      nogoAccuracy: 0,
+      overallAccuracy: 0,
+      meanGoRT: 0,
+      totalTrials: 0,
+      goTrials: 0,
+      nogoTrials: 0,
+      correctGoTrials: 0,
+      correctNogoTrials: 0,
+      commissionErrors: 0,
+      omissionErrors: 0,
+    };
+  }
+
+  const goTrials = mainTrials.filter((t) => t.is_go_trial === true);
+  const nogoTrials = mainTrials.filter((t) => t.is_go_trial === false);
+
+  const correctGoTrials = goTrials.filter((t) => t.correct === true);
+  const correctNogoTrials = nogoTrials.filter((t) => t.correct === true);
+
+  // Commission errors: clicked when shouldn't (false alarms on no-go trials)
+  const commissionErrors = nogoTrials.filter((t) => t.correct === false).length;
+
+  // Omission errors: didn't click when should (misses on go trials)
+  const omissionErrors = goTrials.filter((t) => t.correct === false).length;
+
+  const goAccuracy = goTrials.length > 0 ? correctGoTrials.length / goTrials.length : 0;
+  const nogoAccuracy = nogoTrials.length > 0 ? correctNogoTrials.length / nogoTrials.length : 0;
+  const overallAccuracy = mainTrials.length > 0
+    ? (correctGoTrials.length + correctNogoTrials.length) / mainTrials.length
+    : 0;
+
+  // Calculate mean RT for correct go trials
+  const goTrialsWithRT = correctGoTrials.filter((t) => t.rt > 0);
+  const meanGoRT = goTrialsWithRT.length > 0
+    ? goTrialsWithRT.reduce((sum: number, t: any) => sum + t.rt, 0) / goTrialsWithRT.length
+    : 0;
+
+  return {
+    goAccuracy,
+    nogoAccuracy,
+    overallAccuracy,
+    meanGoRT: Math.round(meanGoRT),
+    totalTrials: mainTrials.length,
+    goTrials: goTrials.length,
+    nogoTrials: nogoTrials.length,
+    correctGoTrials: correctGoTrials.length,
+    correctNogoTrials: correctNogoTrials.length,
+    commissionErrors,
+    omissionErrors,
+  };
+}
+
+/**
+ * Get summary of Go/No-Go performance
+ */
+function getSummary(data: DataCollection): ScoringResult & { taskName: string; version: string } {
+  const scores = calculateScores(data);
+  return {
+    ...scores,
+    taskName: TASK_NAME,
+    version: VERSION,
+  };
 }
 
 /**
@@ -806,7 +854,19 @@ export const timelineUnits = {
  * Namespaced access to utility functions for advanced usage and testing.
  */
 export const utils = {
+  scoring: {
+    calculateScores,
+    getSummary,
+  },
   createStimulusHTML,
   trial_text,
   createTimelineVariables,
+  constants: {
+    TASK_NAME,
+    VERSION,
+  },
+  text: defaultText,
 };
+
+// Re-export types for TypeScript users
+export type { TextConfig } from "./text";

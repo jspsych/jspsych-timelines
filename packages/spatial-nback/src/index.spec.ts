@@ -1,5 +1,5 @@
 import { JsPsych, initJsPsych } from "jspsych";
-import { createTimeline, createPracticeTimeline, createMultiLevelNBackTimeline, presetConfigurations, createGridHTML } from "./index";
+import { createTimeline, createPracticeTimeline, createMultiLevelNBackTimeline, presetConfigurations, createGridHTML, utils } from "./index";
 
 /* Test suite for Spatial N-Back Timeline
   In-depth HTML testing is in the Spatial N-Back plugin. */
@@ -12,7 +12,7 @@ describe('createTimeline', () => {
 
   it('should create timeline with default parameters', () => {
     const timeline = createTimeline(jsPsych);
-    expect(timeline.timeline).toHaveLength(20);
+    expect(timeline.timeline).toHaveLength(21);
     expect(timeline.timeline[0].rows).toBe(3);
     expect(timeline.timeline[0].cols).toBe(3);
     expect(timeline.timeline[0].data.n_back).toBe(1);
@@ -20,7 +20,7 @@ describe('createTimeline', () => {
 
   it('should create timeline with custom total_trials', () => {
     const timeline = createTimeline(jsPsych, { total_trials: 25 });
-    expect(timeline.timeline).toHaveLength(25);
+    expect(timeline.timeline).toHaveLength(26);
   });
 
   it('should create timeline with custom grid dimensions', () => {
@@ -31,14 +31,15 @@ describe('createTimeline', () => {
 
   it('should set correct n_back in trial data', () => {
     const timeline = createTimeline(jsPsych, { n_back: 3 });
-    timeline.timeline.forEach(trial => {
+    // Exclude the last item (completion trial)
+    timeline.timeline.slice(0, -1).forEach(trial => {
       expect(trial.data.n_back).toBe(3);
     });
   });
 
   it('should include instructions when specified', () => {
     const timeline = createTimeline(jsPsych, { include_instructions: true });
-    expect(timeline.timeline).toHaveLength(2);
+    expect(timeline.timeline).toHaveLength(3);
     expect(timeline.timeline[0].show_clickable_nav).toBeTruthy();
   });
 
@@ -56,9 +57,19 @@ describe('createTimeline', () => {
 
   it('should generate correct trial numbers in data', () => {
     const timeline = createTimeline(jsPsych, { total_trials: 5 });
-    timeline.timeline.forEach((trial, index) => {
+    // Exclude the last item (completion trial)
+    timeline.timeline.slice(0, -1).forEach((trial, index) => {
       expect(trial.data.trial_number).toBe(index + 1);
       expect(trial.data.task).toBe('spatial-nback');
+      expect(trial.data.task_version).toBeDefined();
+    });
+  });
+
+  it('should include task_version in trial data', () => {
+    const timeline = createTimeline(jsPsych, { total_trials: 3 });
+    // Exclude the last item (completion trial)
+    timeline.timeline.slice(0, -1).forEach(trial => {
+      expect(trial.data.task_version).toBe('0.3.0');
     });
   });
 });
@@ -72,7 +83,7 @@ describe('createPracticeTimeline', () => {
 
   it('should create practice timeline with default 5 trials', () => {
     const timeline = createPracticeTimeline(jsPsych);
-    expect(timeline.timeline).toHaveLength(5);
+    expect(timeline.timeline).toHaveLength(6);
   });
 
   it('should enable feedback by default', () => {
@@ -101,9 +112,9 @@ describe('createMultiLevelNBackTimeline', () => {
     });
 
     expect(timeline.timeline).toHaveLength(3);
-    expect(timeline.timeline[0].timeline).toHaveLength(10);
-    expect(timeline.timeline[1].timeline).toHaveLength(10);
-    expect(timeline.timeline[2].timeline).toHaveLength(10);
+    expect(timeline.timeline[0].timeline).toHaveLength(11);
+    expect(timeline.timeline[1].timeline).toHaveLength(11);
+    expect(timeline.timeline[2].timeline).toHaveLength(11);
   });
 
   it('should set correct n_back for each level', () => {
@@ -134,21 +145,21 @@ describe('presetConfigurations', () => {
 
   it('should create easy preset with correct parameters', () => {
     const timeline = presetConfigurations.easy(jsPsych);
-    expect(timeline.timeline).toHaveLength(20);
+    expect(timeline.timeline).toHaveLength(21);
     expect(timeline.timeline[0].data.n_back).toBe(1);
     expect(timeline.timeline[0].show_feedback_text).toBe(true);
   });
 
   it('should create medium preset with correct parameters', () => {
     const timeline = presetConfigurations.medium(jsPsych);
-    expect(timeline.timeline).toHaveLength(30);
+    expect(timeline.timeline).toHaveLength(31);
     expect(timeline.timeline[0].data.n_back).toBe(2);
     expect(timeline.timeline[0].show_feedback_text).toBe(false);
   });
 
   it('should create hard preset with correct parameters', () => {
     const timeline = presetConfigurations.hard(jsPsych);
-    expect(timeline.timeline).toHaveLength(40);
+    expect(timeline.timeline).toHaveLength(41);
     expect(timeline.timeline[0].data.n_back).toBe(3);
     expect(timeline.timeline[0].rows).toBe(4);
     expect(timeline.timeline[0].cols).toBe(4);
@@ -159,9 +170,9 @@ describe('presetConfigurations', () => {
     expect(timeline.timeline).toHaveLength(3);
     expect(timeline.randomize_order).toBe(true);
 
-    // Check each level has 50 trials
+    // Check each level has 50 trials + 1 completion trial
     timeline.timeline.forEach(levelTimeline => {
-      expect(levelTimeline.timeline).toHaveLength(50);
+      expect(levelTimeline.timeline).toHaveLength(51);
     });
   });
 });
@@ -216,7 +227,8 @@ describe('timeline structure validation', () => {
   it('should maintain consistent data structure across trials', () => {
     const timeline = createTimeline(jsPsych, { total_trials: 5 });
 
-    timeline.timeline.forEach(trial => {
+    // Exclude the last item (completion trial)
+    timeline.timeline.slice(0, -1).forEach(trial => {
       expect(trial.data).toHaveProperty('trial_number');
       expect(trial.data).toHaveProperty('n_back');
       expect(trial.data).toHaveProperty('total_trials');
@@ -257,5 +269,110 @@ describe('createGridHTML', () => {
   it('should not highlight any position when highlight_position is null', () => {
     const html = createGridHTML({ highlight_position: null });
     expect(html).not.toContain('background-color');
+  });
+});
+
+describe('utils.scoring', () => {
+  let jsPsych: JsPsych;
+
+  beforeEach(() => {
+    jsPsych = initJsPsych();
+  });
+
+  it('should return empty scores for no data', () => {
+    const scores = utils.scoring.calculateScores(jsPsych.data.get());
+
+    expect(scores.totalTrials).toBe(0);
+    expect(scores.accuracy).toBe(0);
+    expect(scores.targetHits).toBe(0);
+    expect(scores.meanRT).toBeNull();
+  });
+
+  it('should calculate accuracy correctly', () => {
+    const dataCollection = jsPsych.data.get();
+    dataCollection.push({ task: 'spatial-nback', phase: 'test', correct: true, is_target: true, rt: 400 });
+    dataCollection.push({ task: 'spatial-nback', phase: 'test', correct: true, is_target: false, rt: 350 });
+    dataCollection.push({ task: 'spatial-nback', phase: 'test', correct: false, is_target: true, rt: 500 });
+    dataCollection.push({ task: 'spatial-nback', phase: 'test', correct: true, is_target: false, rt: 380 });
+
+    const scores = utils.scoring.calculateScores(dataCollection);
+
+    expect(scores.totalTrials).toBe(4);
+    expect(scores.correctTrials).toBe(3);
+    expect(scores.accuracy).toBeCloseTo(0.75, 2);
+  });
+
+  it('should calculate hit rate and false alarm rate', () => {
+    const dataCollection = jsPsych.data.get();
+    // 2 target trials: 1 hit, 1 miss
+    dataCollection.push({ task: 'spatial-nback', phase: 'test', correct: true, is_target: true, rt: 400 });
+    dataCollection.push({ task: 'spatial-nback', phase: 'test', correct: false, is_target: true, rt: null });
+    // 2 non-target trials: 1 correct rejection, 1 false alarm
+    dataCollection.push({ task: 'spatial-nback', phase: 'test', correct: true, is_target: false, rt: 350 });
+    dataCollection.push({ task: 'spatial-nback', phase: 'test', correct: false, is_target: false, rt: 420 });
+
+    const scores = utils.scoring.calculateScores(dataCollection);
+
+    expect(scores.targetTrials).toBe(2);
+    expect(scores.targetHits).toBe(1);
+    expect(scores.targetHitRate).toBeCloseTo(0.5, 2);
+    expect(scores.nonTargetTrials).toBe(2);
+    expect(scores.correctRejections).toBe(1);
+    expect(scores.falseAlarms).toBe(1);
+    expect(scores.falseAlarmRate).toBeCloseTo(0.5, 2);
+  });
+
+  it('should calculate mean RT for correct trials only', () => {
+    const dataCollection = jsPsych.data.get();
+    dataCollection.push({ task: 'spatial-nback', phase: 'test', correct: true, is_target: true, rt: 400 });
+    dataCollection.push({ task: 'spatial-nback', phase: 'test', correct: true, is_target: false, rt: 500 });
+    dataCollection.push({ task: 'spatial-nback', phase: 'test', correct: false, is_target: true, rt: 1000 });
+
+    const scores = utils.scoring.calculateScores(dataCollection);
+
+    expect(scores.meanRT).toBe(450); // (400 + 500) / 2, excluding incorrect
+  });
+
+  it('should calculate d-prime', () => {
+    const dataCollection = jsPsych.data.get();
+    // High hit rate, low false alarm rate = high d'
+    for (let i = 0; i < 8; i++) {
+      dataCollection.push({ task: 'spatial-nback', phase: 'test', correct: true, is_target: true, rt: 400 });
+    }
+    for (let i = 0; i < 2; i++) {
+      dataCollection.push({ task: 'spatial-nback', phase: 'test', correct: false, is_target: true, rt: null });
+    }
+    for (let i = 0; i < 9; i++) {
+      dataCollection.push({ task: 'spatial-nback', phase: 'test', correct: true, is_target: false, rt: 350 });
+    }
+    for (let i = 0; i < 1; i++) {
+      dataCollection.push({ task: 'spatial-nback', phase: 'test', correct: false, is_target: false, rt: 420 });
+    }
+
+    const scores = utils.scoring.calculateScores(dataCollection);
+
+    expect(scores.dPrime).toBeGreaterThan(1); // Good performance = positive d'
+  });
+
+  it('should include task info in getSummary', () => {
+    const summary = utils.scoring.getSummary(jsPsych.data.get());
+
+    expect(summary).toHaveProperty('taskName', 'spatial-nback');
+    expect(summary).toHaveProperty('version');
+  });
+});
+
+describe('utils.constants', () => {
+  it('should export task constants', () => {
+    expect(utils.constants.TASK_NAME).toBe('spatial-nback');
+    expect(utils.constants.VERSION).toBeDefined();
+  });
+});
+
+describe('utils.text', () => {
+  it('should export default text configuration', () => {
+    expect(utils.text).toBeDefined();
+    expect(utils.text.prompt).toBeDefined();
+    expect(utils.text.button).toBeDefined();
   });
 });

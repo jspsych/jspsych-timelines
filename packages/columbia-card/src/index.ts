@@ -1,3 +1,4 @@
+import "./styles.css";
 import { JsPsych } from "jspsych";
 import jsPsychColumbiaCardTask from "@jspsych-contrib/plugin-columbia-card-task";
 import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";

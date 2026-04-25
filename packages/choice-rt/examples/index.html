@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choice RT Task Example</title>
+    <script src="https://unpkg.com/jspsych@8"></script>
+    <script src="../dist/index.browser.js"></script>
+    <!-- Once published: <script src="https://unpkg.com/@jspsych-timelines/choice-rt"></script> -->
+    <link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css" />
+  </head>
+  <body></body>
+  <script>
+    const jsPsych = initJsPsych({
+      on_finish: function () {
+        // Display data
+        jsPsych.data.displayData();
+
+        // Calculate and display scores
+        const scores = jsPsychTimelineChoiceRT.utils.scoring.getSummary(jsPsych.data.get());
+        console.log("Choice RT Task Results:", scores);
+      },
+    });
+
+    // Create the choice RT task with default settings
+    // For a shorter demo, reduce trial counts:
+    const task = jsPsychTimelineChoiceRT.createTimeline(jsPsych, {
+      numPracticeTrials: 4,
+      numTrials: 10,
+    });
+
+    jsPsych.run([task]);
+  </script>
+</html>
