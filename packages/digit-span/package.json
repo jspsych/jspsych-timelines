@@ -1,0 +1,39 @@
+{
+    "name": "digit-span",
+    "version": "0.0.1",
+    "description": "Digit Span Task",
+    "type": "module",
+    "main": "dist/index.mjs",
+    "types": "dist/index.d.ts",
+    "unpkg": "dist/index.browser.min.js",
+    "scripts": {
+        "build": "tsup src/index.ts --format esm,iife --sourcemap --dts --treeshake --clean --global-name jsPsychTimelineDigitSpan",
+        "test": "jest"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/caroline-griem/URSI.git",
+        "directory": ""
+    },
+    "keywords": [
+        "jsPsych"
+    ],
+    "author": {
+        "name": "Caroline Griem",
+        "url": "https://github.com/caroline-griem"
+    },
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/caroline-griem/URSI/issues"
+    },
+    "homepage": "/digit-span/README.md",
+    "devDependencies": {
+        "@jspsych/config": "^3.2.2",
+        "jspsych": "^8.0.0",
+        "tsup": "^6.7.0",
+        "typescript": "^5.0.2"
+    },
+    "dependencies": {
+        "@jspsych/plugin-instructions": "^2.1.0"
+    }
+}
