@@ -81,15 +81,6 @@ Utility functions for custom implementations:
 - `TrialData` - Interface for trial data
 - `StroopState` - Interface for internal state tracking
 
-## Features
-
-- **Configurable colors**: Use any subset of RED, GREEN, BLUE, YELLOW
-- **Flexible trial structure**: Customizable practice and main trial counts
-- **Responsive design**: Button grid layout adapts to screen size
-- **Performance tracking**: Automatic calculation of Stroop effect
-- **Data export**: Built-in data download functionality
-- **Feedback system**: Optional practice trial feedback
-
 ## Data Output
 
 The timeline generates data for each trial including:

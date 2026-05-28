@@ -1,31 +1,35 @@
 {
-    "name": "@jspsych-timeline/stroop-task-timeline",
+    "name": "@jspsych-timelines/stroop-task",
     "version": "0.0.1",
-    "description": "A comprehensive jsPsych timeline implementation of the classic Stroop task. This package provides a complete experiment including instructions, practice trials, main trials, and results display. The Stroop task measures cognitive interference by presenting color words (RED, GREEN, BLUE, YELLOW is the default) in matching or non-matching ink colors.",
+    "description": "A jsPsych timeline implementation of the Stroop task. This package provides instructions, practice trials, main trials, and a results display.",
     "type": "module",
     "main": "dist/index.mjs",
     "types": "dist/index.d.ts",
-    "unpkg": "dist/index.browser.min.js",
+    "unpkg": "dist/index.global.js",
     "scripts": {
-        "build": "tsup src/index.ts --format esm,iife --sourcemap --dts --treeshake --clean --global-name jsPsychTimelineStroopTimeline"
+        "build": "tsup src/index.ts --format esm,iife --sourcemap --dts --treeshake --clean --global-name jsPsychTimelineStroopTask",
+        "test": "jest"
     },
     "repository": {
         "type": "git",
-        "url": "",
-        "directory": "./"
+        "url": "git+https://github.com/jspsych/jspsych-timelines.git",
+        "directory": "packages/stroop-task"
     },
     "keywords": [
         "jsPsych"
     ],
     "author": {
         "name": "Vishnu Lakshman",
-        "url": ""
+        "url": "https://github.com/lakshmanvishnu"
     },
     "license": "MIT",
     "bugs": {
-        "url": "/issues"
+        "url": "https://github.com/jspsych/jspsych-timelines/issues"
     },
-    "homepage": "/stroop-timeline/README.md",
+    "homepage": "https://github.com/jspsych/jspsych-timelines/tree/main/packages/stroop-task#readme",
+    "peerDependencies": {
+        "jspsych": "^8.0.0"
+    },
     "devDependencies": {
         "@jspsych/config": "^3.2.2",
         "@types/jest": "^29.5.14",

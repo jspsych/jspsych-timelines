@@ -96,10 +96,10 @@ interface StroopConfig {
   choice_of_colors?: string[];
   /**
    * Custom text content for instructions, feedback, and results.
-   * If not provided, uses defaultText from text.ts.
+   * Partial — only the keys you provide are overridden.
    * @default defaultText
    */
-  text?: typeof defaultText;
+  trial_text?: Partial<typeof defaultText>;
 }
 
 /**
@@ -222,7 +222,7 @@ function createInstructions(instructionsText: any[], choiceOfColors?: string[]) 
 function createFixation(fixationDuration: number) {
   const trial = {
     type: jsPsychHtmlKeyboardResponse,
-    stimulus: '<div style="font-size:60px;">+</div>',
+    stimulus: '<div class="jspsych-stroop-task-fixation">+</div>',
     choices: "NO_KEYS",
     trial_duration: fixationDuration,
     data: {
@@ -305,16 +305,16 @@ function createStroopTrials(
   const trial = {
     type: jsPsychHtmlButtonResponse,
     stimulus: () => {
-      const color = jsPsych.timelineVariable("color");
-      const word = jsPsych.timelineVariable("word");
-      return `<div style="font-size: 48px; color: ${color}; font-weight: bold;">${word}</div>`;
+      const color = jsPsych.evaluateTimelineVariable("color");
+      const word = jsPsych.evaluateTimelineVariable("word");
+      return `<div class="jspsych-stroop-task-stimulus" style="color: ${color};">${word}</div>`;
     },
     choices: choice_of_colors,
     button_layout: "grid",
     grid_rows: number_of_rows,
     grid_columns: number_of_columns,
     button_html: (choice) =>
-      `<div style="border: 3px solid black; width: 150px; height: 60px; margin: 20px; background-color: white; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold; color: black;">${choice}</div>`,
+      `<div class="jspsych-stroop-task-response-button">${choice}</div>`,
     margin_horizontal: "20px",
     margin_vertical: "20px",
     trial_duration: trial_timeout || null,
@@ -413,10 +413,10 @@ function createPracticeDebrief(practiceDebriefText: string, continueBtnText: str
  * @param text - HTML template for results display (supports placeholders for metrics)
  * @returns jsPsych trial object for results display
  */
-function createResults(jsPsych: JsPsych, text: string) {
+function createResults(jsPsych: JsPsych, text: string, finishButtonText: string = "Finish") {
   const results = {
     type: jsPsychHtmlButtonResponse,
-    choices: ["Finish"],
+    choices: [finishButtonText],
     stimulus: () => {
       const trials = jsPsych.data.get().filter({ task: "stroop", page: "word" });
 
@@ -483,9 +483,10 @@ export function createTimeline(
     number_of_rows = 2,
     number_of_columns = 2,
     choice_of_colors = ["RED", "GREEN", "BLUE", "YELLOW"],
-    text = defaultText,
+    trial_text,
   }: StroopConfig = {}
 ) {
+  const text = { ...defaultText, ...trial_text };
   const timeline: any[] = [];
 
   if (show_instructions) {
@@ -511,10 +512,10 @@ export function createTimeline(
       randomize_fixation_duration,
       fixation_duration,
       show_practice_feedback,
+      text,
     });
     timeline.push(practice_trials);
 
-    // Add practice debrief
     timeline.push(createPracticeDebrief(text.practice_debrief, text.start_button));
   }
 
@@ -535,21 +536,21 @@ export function createTimeline(
     include_fixation,
     randomize_fixation_duration,
     fixation_duration,
+    text,
   });
 
-  // Add results if requested
+  timeline.push(main_trials);
+
   if (show_results) {
-    timeline.push(createResults(jsPsych, text.results));
+    timeline.push(createResults(jsPsych, text.results, text.finish_button));
   }
 
-  const stroop = {
-    timeline: timeline,
+  return {
+    timeline,
     data: {
       task: "stroop",
     },
   };
-
-  return stroop;
 }
 
 /* Export individual components for custom timeline building */
