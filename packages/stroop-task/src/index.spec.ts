@@ -30,7 +30,7 @@ describe("stroop-task utility functions", () => {
     describe("generateStimuli", () => {
         test("generates exact number of requested trials", () => {
             const colors = ['RED', 'GREEN'];
-            const stimuli = utils.generateStimuli(jsPsych, colors, 10, 8);
+            const stimuli = utils.generateStimuli(jsPsych, colors, colors, 10, 8);
             
             const congruent = stimuli.filter(s => s.congruent);
             const incongruent = stimuli.filter(s => !s.congruent);
@@ -42,7 +42,7 @@ describe("stroop-task utility functions", () => {
 
         test("distributes 10 congruent trials evenly across 2 colors (5 each)", () => {
             const colors = ['RED', 'GREEN'];
-            const stimuli = utils.generateStimuli(jsPsych, colors, 10, 0);
+            const stimuli = utils.generateStimuli(jsPsych, colors, colors.map(c => c.toLowerCase()), 10, 0);
             const congruent = stimuli.filter(s => s.congruent);
             
             expect(congruent.length).toBe(10);
@@ -56,7 +56,7 @@ describe("stroop-task utility functions", () => {
 
         test("distributes 18 congruent trials across 4 colors (5, 5, 4, 4)", () => {
             const colors = ['RED', 'GREEN', 'BLUE', 'YELLOW'];
-            const stimuli = utils.generateStimuli(jsPsych, colors, 18, 0);
+            const stimuli = utils.generateStimuli(jsPsych, colors, colors.map(c => c.toLowerCase()), 18, 0);
             const congruent = stimuli.filter(s => s.congruent);
             
             expect(congruent.length).toBe(18);
@@ -77,7 +77,7 @@ describe("stroop-task utility functions", () => {
 
         test("handles exact multiples correctly", () => {
             const colors = ['RED', 'GREEN', 'BLUE', 'YELLOW'];
-            const stimuli = utils.generateStimuli(jsPsych, colors, 20, 0);
+            const stimuli = utils.generateStimuli(jsPsych, colors, colors.map(c => c.toLowerCase()), 20, 0);
             const congruent = stimuli.filter(s => s.congruent);
             
             expect(congruent.length).toBe(20);
@@ -94,7 +94,7 @@ describe("stroop-task utility functions", () => {
 
         test("has correct stimulus structure", () => {
             const colors = ['RED', 'GREEN'];
-            const stimuli = utils.generateStimuli(jsPsych, colors, 4, 2);
+            const stimuli = utils.generateStimuli(jsPsych, colors, colors.map(c => c.toLowerCase()), 4, 2);
             
             stimuli.forEach(stimulus => {
                 expect(stimulus).toHaveProperty('word');
@@ -111,25 +111,25 @@ describe("stroop-task utility functions", () => {
 
         test("generates correct congruent vs incongruent stimuli", () => {
             const colors = ['RED', 'GREEN'];
-            const stimuli = utils.generateStimuli(jsPsych, colors, 4, 6);
+            const stimuli = utils.generateStimuli(jsPsych, colors, colors.map(c => c.toLowerCase()), 4, 6);
             
             const congruent = stimuli.filter(s => s.congruent);
             const incongruent = stimuli.filter(s => !s.congruent);
             
             // Check congruent stimuli have matching word and color
             congruent.forEach(stimulus => {
-                expect(stimulus.word.toLowerCase()).toBe(stimulus.color);
+                expect(stimulus.word.toLowerCase()).toBe(stimulus.color.toLowerCase());
             });
             
             // Check incongruent stimuli have mismatched word and color
             incongruent.forEach(stimulus => {
-                expect(stimulus.word.toLowerCase()).not.toBe(stimulus.color);
+                expect(stimulus.word.toLowerCase()).not.toBe(stimulus.color.toLowerCase());
             });
         });
 
         test("handles single color correctly", () => {
             const colors = ['RED'];
-            const stimuli = utils.generateStimuli(jsPsych, colors, 3, 0);
+            const stimuli = utils.generateStimuli(jsPsych, colors, colors.map(c => c.toLowerCase()), 3, 0);
             
             // With only one color, all trials should be congruent
             expect(stimuli.length).toBe(3);
@@ -139,14 +139,14 @@ describe("stroop-task utility functions", () => {
 
         test("handles zero trials correctly", () => {
             const colors = ['RED', 'GREEN'];
-            const stimuli = utils.generateStimuli(jsPsych, colors, 0, 0);
+            const stimuli = utils.generateStimuli(jsPsych, colors, colors.map(c => c.toLowerCase()), 0, 0);
             
             expect(stimuli.length).toBe(0);
         });
 
         test("distributes incongruent trials evenly", () => {
             const colors = ['RED', 'GREEN', 'BLUE'];
-            const stimuli = utils.generateStimuli(jsPsych, colors, 0, 12);
+            const stimuli = utils.generateStimuli(jsPsych, colors, colors.map(c => c.toLowerCase()), 0, 12);
             const incongruent = stimuli.filter(s => !s.congruent);
             
             expect(incongruent.length).toBe(12);
@@ -217,7 +217,7 @@ describe("stroop-task timeline components", () => {
 
     describe("createFixation", () => {
         test("creates fixation cross with correct properties", () => {
-            const fixation = timelineComponents.createFixation(500);
+            const fixation = timelineComponents.createFixation(500, "+");
             expect(fixation).toHaveProperty('type');
             expect(fixation).toHaveProperty('stimulus');
             expect(fixation).toHaveProperty('choices');
@@ -226,24 +226,24 @@ describe("stroop-task timeline components", () => {
         });
 
         test("has correct stimulus and choices", () => {
-            const fixation = timelineComponents.createFixation(500);
+            const fixation = timelineComponents.createFixation(500, "+");
             expect(fixation.choices).toBe("NO_KEYS");
             expect(fixation.stimulus).toContain('+');
         });
 
         test("accepts custom duration", () => {
             const customDuration = 1000;
-            const fixation = timelineComponents.createFixation(customDuration);
+            const fixation = timelineComponents.createFixation(customDuration, "+");
             expect(fixation.trial_duration).toBe(customDuration);
         });
 
         test("has correct data properties", () => {
-            const fixation = timelineComponents.createFixation(500);
+            const fixation = timelineComponents.createFixation(500, "+");
             expect(fixation.data.page).toBe('fixation');
         });
 
         test("uses provided duration", () => {
-            const fixation = timelineComponents.createFixation(750);
+            const fixation = timelineComponents.createFixation(750, "+");
             expect(fixation.trial_duration).toBe(750);
         });
     });

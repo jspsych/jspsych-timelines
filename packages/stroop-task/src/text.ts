@@ -73,6 +73,8 @@ export const defaultText = {
                 </ul>
             </div>
         `,
+    /** HTML content for the fixation cross stimulus */
+    fixation: "+",
     /** Text for the start button after practice debrief */
     start_button: "Start",
     /** Text for the finish button on the results screen */

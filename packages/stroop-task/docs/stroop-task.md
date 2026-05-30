@@ -6,18 +6,18 @@ A jsPsych implementation of the classic Stroop task for measuring cognitive inte
 
 The Stroop task presents color words (e.g., RED, BLUE) written in ink that either matches or conflicts with the word's meaning. Participants respond with the ink color, not the word. The difference in response time between congruent and incongruent trials is the Stroop effect.
 
-## Installation
+## Installation  
 
 ### NPM
 
 ```bash
-npm install @jspsych-timeline/stroop-task-timeline
+npm install @jspsych-timelines/stroop-task
 ```
 
 ### CDN
 
 ```html
-<script src="https://unpkg.com/@jspsych-timeline/stroop-task-timeline"></script>
+<script src="https://unpkg.com/@jspsych-timelines/stroop-task"></script>
 ```
 
 ## API Reference
@@ -45,12 +45,12 @@ const {
   createPracticeFeedback,
   createPracticeDebrief,
   createResults,
-} = jsPsychTimelineStroopTaskTimeline.timelineComponents;
+} = jsPsychTimelineStroopTask.timelineComponents;
 ```
 
 ### utils
 
-Contains `generateStimuli`, which generates the set of Stroop stimuli for a given color array and trial counts.
+Contains `generateStimuli(jsPsych, colorNames, colorValues, congruent_trials, incongruent_trials)`, which generates the set of Stroop stimuli for a given color array and trial counts. `colorNames` are the button label strings; `colorValues` are the corresponding CSS color values used to render the stimulus text.
 
 ## Configuration Options
 
@@ -60,9 +60,10 @@ Contains `generateStimuli`, which generates the set of Stroop stimuli for a give
 | ---------------------------------- | ------- | ---------------------- | --------------------------------------------------------- |
 | `congruent_practice_trials` | number | `2` | Number of congruent practice trials |
 | `incongruent_practice_trials` | number | `2` | Number of incongruent practice trials |
+| `practice_trial_timeout` | number | `2000` | Maximum response time per practice trial in milliseconds |
 | `congruent_main_trials` | number | `4` | Number of congruent trials in the main experiment |
 | `incongruent_main_trials` | number | `4` | Number of incongruent trials in the main experiment |
-| `trial_timeout` | number | `2000` | Maximum response time per trial in milliseconds |
+| `trial_timeout` | number | `2000` | Maximum response time per main trial in milliseconds |
 | `fixation_duration` | object | `{ min: 300, max: 1500 }` | Duration range for the fixation cross in milliseconds |
 | `show_practice_feedback` | boolean | `true` | Whether to show correct/incorrect feedback after practice trials |
 | `include_fixation` | boolean | `true` | Whether to show a fixation cross before each trial |
@@ -71,8 +72,9 @@ Contains `generateStimuli`, which generates the set of Stroop stimuli for a give
 | `show_results` | boolean | `true` | Whether to show a results summary at the end |
 | `number_of_rows` | number | `2` | Number of rows in the response button grid |
 | `number_of_columns` | number | `2` | Number of columns in the response button grid |
-| `choice_of_colors` | string[] | `['RED', 'GREEN', 'BLUE', 'YELLOW']` | Color names to use as stimuli and response options |
-| `text` | object | `defaultText` | Custom text for instructions, feedback, and results screens |
+| `choice_of_colors` | string[] | `['RED', 'GREEN', 'BLUE', 'YELLOW']` | Color names used as button labels and word stimuli |
+| `choice_of_color_values` | string[] | `null` | CSS color values for rendering stimulus text, one per entry in `choice_of_colors`. If `null`, color names are lowercased and used directly. |
+| `trial_text` | object | `defaultText` | Partial override of text for instructions, feedback, fixation, and results screens |
 
 ## Data Generated
 
@@ -84,7 +86,7 @@ Contains `generateStimuli`, which generates the set of Stroop stimuli for a give
 | `page` | string | Trial type: `'instructions'`, `'fixation'`, `'word'`, `'feedback'`, `'practice_debrief'`, or `'results'` |
 | `phase` | string | `'practice'` or `'test'` for stimulus trials |
 | `word` | string | The color word displayed (e.g., `'RED'`) |
-| `color` | string | The ink color of the word as a lowercase CSS color name (e.g., `'blue'`) |
+| `color` | string | The CSS color value used to render the word (from `choice_of_color_values`, or lowercased `choice_of_colors` if not set) |
 | `correct_response` | number | Index of the correct response button in the `choice_of_colors` array |
 | `congruent` | boolean | Whether the word and ink color match |
 | `response` | number | Index of the button the participant clicked, or `null` on timeout |
@@ -113,6 +115,21 @@ const timeline = createTimeline(jsPsych, {
 jsPsych.run([timeline]);
 ```
 
+### Custom Color Values
+
+Use `choice_of_color_values` when button labels don't map directly to CSS color names, or if you'd like variants of colors to appear under general colors. 
+
+```javascript
+const timeline = createTimeline(jsPsych, {
+  choice_of_colors: ['Rouge', 'Bleu', 'Vert'],
+  choice_of_color_values: ['red', 'blue', 'green'],
+  number_of_rows: 1,
+  number_of_columns: 3,
+});
+
+jsPsych.run([timeline]);
+```
+
 ### Longer Experiment
 
 ```javascript
@@ -121,23 +138,25 @@ const timeline = createTimeline(jsPsych, {
   incongruent_practice_trials: 4,
   congruent_main_trials: 20,
   incongruent_main_trials: 20,
-  trial_timeout: 3000,
+  practice_trial_timeout: 3000,
+  trial_timeout: 2000,
 });
 
 jsPsych.run([timeline]);
 ```
 
-### Filtering Data After the Experiment
+### Custom Text
 
 ```javascript
-// Get only main experiment trials
-const mainTrials = jsPsych.data.get().filter({ task: 'stroop', page: 'word', phase: 'test' });
+const timeline = createTimeline(jsPsych, {
+  trial_text: {
+    fixation: "●",
+    correct_feedback: "<p>Correct!</p>",
+    finish_button: "Done",
+  },
+});
 
-// Get congruent trials only
-const congruent = mainTrials.filter({ congruent: true });
-
-// Calculate mean RT for correct incongruent trials
-const incongruentRT = mainTrials.filter({ congruent: false, correct: true }).select('rt').mean();
+jsPsych.run([timeline]);
 ```
 
 ## License

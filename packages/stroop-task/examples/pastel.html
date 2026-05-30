@@ -15,9 +15,8 @@
 <body></body>
 <script>
   const taskConfig = {
-      congruent_practice_trials: 2,                    // Number of congruent practice trials
-      incongruent_practice_trials: 2,                  // Number of incongruent practice trials
-      practice_trial_timeout: 3000,                    // Time limit for practice trials (milliseconds)
+      congruent_practice_trials: 0,                    // Number of congruent practice trials
+      incongruent_practice_trials: 0,                  // Number of incongruent practice
       congruent_main_trials: 4,                        // Number of congruent main trials
       incongruent_main_trials: 4,                      // Number of incongruent main trials
       trial_timeout: 2000,                             // Time limit for each trial (milliseconds)
@@ -25,24 +24,24 @@
         min: 300,                                      // Minimum duration (milliseconds)
         max: 1500                                      // Maximum duration (milliseconds)
       },
-      show_practice_feedback: true,                    // Show feedback during practice trials
+      show_practice_feedback: false,                    // Show feedback during practice trials
       include_fixation: true,                          // Include fixation cross before trials
-      show_instructions: true,                         // Show welcome message and instructions
-      show_results: true,                              // Show results at the end
+      show_instructions: false,                         // Show welcome message and instructions
+      show_results: false,                              // Show results at the end
       randomize_fixation_duration: true,               // Randomize fixation duration between min/max
       number_of_rows: 2,                               // Number of rows in the display grid
       number_of_columns: 2,                            // Number of columns in the display grid
-      choice_of_colors: [                              // Array of color names for button labels and trial stimuli
+      choice_of_colors: [                              // Array of colors to use
         'RED',
         'BLUE',
         'GREEN',
         'YELLOW'
       ],
-      choice_of_color_values: [                        // Array of CSS color values corresponding to choice_of_colors  
-        'red',
-        'blue',
-        'green',
-        'yellow'
+      choice_of_color_values: [
+        '#FF6961', // Pastel Red
+        '#77DD77', // Pastel Green
+        '#AEC6CF', // Pastel Blue
+        '#FDFD96'  // Pastel Yellow
       ]
     };
   const jsPsych = initJsPsych({

@@ -13,7 +13,8 @@ import { defaultText } from "./text";
  * const stroopTimeline = createTimeline(jsPsych, {
  *   congruent_practice_trials: 5,
  *   incongruent_practice_trials: 5,
- *   choice_of_colors: ['RED', 'GREEN', 'BLUE', 'YELLOW', 'PURPLE'],
+ *   choice_of_colors: ['RED', 'BLUE', 'GREEN', 'YELLOW'],
+ *   choice_of_color_values: ['red', 'blue', 'green', 'yellow'],
  * });
  */
 interface StroopConfig {
@@ -29,6 +30,12 @@ interface StroopConfig {
    * @default 2
    */
   incongruent_practice_trials?: number;
+  /**
+   * Maximum time allowed for responses in practice trials in milliseconds.
+   * Set to null for no timeout.
+   * @default 2000
+   */
+  practice_trial_timeout?: number;
   /**
    * Number of main experiment trials for congruent stimuli.
    * @default 4
@@ -90,10 +97,16 @@ interface StroopConfig {
   number_of_columns?: number;
   /**
    * Array of color names to use in the task.
-   * These will be both the word stimuli and the color options for responses.
+   * These will be used for the names of each button.
    * @default ['RED', 'GREEN', 'BLUE', 'YELLOW']
    */
   choice_of_colors?: string[];
+  /**
+   * CSS color values for rendering stimulus text, one per entry in choice_of_colors.
+   * If null, choice_of_colors entries are lowercased and used directly as CSS values.
+   * @default null
+   */
+  choice_of_color_values?: string[] | null;
   /**
    * Custom text content for instructions, feedback, and results.
    * Partial — only the keys you provide are overridden.
@@ -119,22 +132,28 @@ interface StroopStimulus {
 /**
  * Generates an array of Stroop stimuli for the experiment.
  * @param jsPsych - The jsPsych instance for randomization functions
- * @param selectedColors - Array of color names to use for stimuli generation
+ * @param colorNames - Array of color names to use for button names
+ * @param colorValues - Array of color values (CSS names or hex codes) corresponding to colorNames
  * @param congruent_trials - Number of congruent trials to generate
  * @param incongruent_trials - Number of incongruent trials to generate
  * @returns Array of StroopStimulus objects
  */
 function generateStimuli(
   jsPsych: JsPsych,
-  selectedColors: string[],
+  colorNames: string[],
+  colorValues: string[],
   congruent_trials: number,
   incongruent_trials: number
 ): StroopStimulus[] {
+  if (colorNames.length !== colorValues.length) {
+    throw new Error("stroop-task: colorNames and colorValues arrays must have the same length");
+  }
+
   let stimuli: StroopStimulus[] = [];
 
-  const colorObjectsToUse = selectedColors.map((colorName, index) => ({
+  const colorObjectsToUse = colorNames.map((colorName, index) => ({
     name: colorName,
-    hex: colorName.toLowerCase(),
+    hex: colorValues[index],
     index: index,
   }));
 
@@ -219,10 +238,10 @@ function createInstructions(instructionsText: any[], choiceOfColors?: string[]) 
  * @param fixationDuration - Duration to display the fixation cross in milliseconds
  * @returns jsPsych trial object for fixation display
  */
-function createFixation(fixationDuration: number) {
+function createFixation(fixationDuration: number, fixationText: string) {
   const trial = {
     type: jsPsychHtmlKeyboardResponse,
-    stimulus: '<div class="jspsych-stroop-task-fixation">+</div>',
+    stimulus: `<div class="jspsych-stroop-task-fixation">${fixationText}</div>`,
     choices: "NO_KEYS",
     trial_duration: fixationDuration,
     data: {
@@ -300,7 +319,7 @@ function createStroopTrials(
     );
   }
 
-  const fixation = createFixation(fixationDuration);
+  const fixation = createFixation(fixationDuration, text.fixation);
 
   const trial = {
     type: jsPsychHtmlButtonResponse,
@@ -374,7 +393,7 @@ function createPracticeFeedback(
       if (lastTrial.correct) {
         return correctText.replace("%ANSWER%", correctColorName.toUpperCase());
       } else {
-        return incorrectText.replace("%ANSWER%", lastTrial.color.toUpperCase());
+        return incorrectText.replace("%ANSWER%", correctColorName.toUpperCase());
       }
     },
     choices: [continueBtnText],
@@ -471,6 +490,7 @@ export function createTimeline(
   {
     congruent_practice_trials = 2,
     incongruent_practice_trials = 2,
+    practice_trial_timeout = 2000,
     congruent_main_trials = 4,
     incongruent_main_trials = 4,
     trial_timeout = 2000,
@@ -483,6 +503,7 @@ export function createTimeline(
     number_of_rows = 2,
     number_of_columns = 2,
     choice_of_colors = ["RED", "GREEN", "BLUE", "YELLOW"],
+    choice_of_color_values = null,
     trial_text,
   }: StroopConfig = {}
 ) {
@@ -497,6 +518,7 @@ export function createTimeline(
     const practiceStimuli = generateStimuli(
       jsPsych,
       choice_of_colors,
+      choice_of_color_values || choice_of_colors.map(color => color.toLowerCase()),
       congruent_practice_trials,
       incongruent_practice_trials
     );
@@ -504,7 +526,7 @@ export function createTimeline(
     const practice_trials = createStroopTrials(jsPsych, {
       trial_variables: practiceStimuli,
       is_practice: true,
-      trial_timeout,
+      trial_timeout: practice_trial_timeout,
       number_of_rows,
       number_of_columns,
       choice_of_colors,
@@ -522,6 +544,7 @@ export function createTimeline(
   const mainStimuli = generateStimuli(
     jsPsych,
     choice_of_colors,
+    choice_of_color_values || choice_of_colors.map(color => color.toLowerCase()),
     congruent_main_trials,
     incongruent_main_trials
   );
