@@ -3,6 +3,13 @@
  */
 
 export const trial_text = {
+    instruction_pages: [
+        "<b>You will see a picture at the top.</b>",
+        "Below it, you will see four pictures.",
+        "Click on the picture that matches the one at the top.",
+        "Work quickly but carefully.",
+        "Let's practice first."
+    ],
     // Button texts
     continue_button: "Continue",
     start_button: "Start",
@@ -37,21 +44,3 @@ export const trial_text = {
     // Timing messages
     too_slow_message: "Please respond faster",
 }
-
-/* 
- * This is an array of HTML strings for instruction pages displayed before the actual trials.
- * Researchers can modify these instructions to change the task description, add new instruction 
- * pages, or translate to different languages.
- * 
- * Each string should contain valid HTML that will be displayed as an instruction page.
- * You can add more pages by adding more strings to the array, or modify existing pages
- * by editing the HTML content.
- */
-
-export const instruction_pages = [
-    "<b>You will see a picture at the top.</b>",
-    "Below it, you will see four pictures.",
-    "Click on the picture that matches the one at the top.",
-    "Work quickly but carefully.",
-    "Let's practice first."
-];

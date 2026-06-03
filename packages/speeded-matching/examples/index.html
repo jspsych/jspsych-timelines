@@ -3,21 +3,20 @@
 <head>
   <title>Speeded Matching Task Example</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="https://unpkg.com/jspsych@8.0.0"></script>
-  <script src="https://unpkg.com/@jspsych/plugin-html-button-response@2.0.0"></script>
+  <script src="https://unpkg.com/jspsych@8"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-html-button-response@2"></script>
   <script src="../dist/index.global.js"></script>
   <!-- Once this timeline package is published, it can be loaded via
   <script src="https://unpkg.com/@jspsych-timelines/speeded-matching"></script> -->
-  <link rel="stylesheet" href="https://unpkg.com/jspsych@8.0.0/css/jspsych.css">
+  <link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css">
   <link rel="stylesheet" href="../src/styles.css">
 </head>
 
 <body>
   <script>
     const jsPsych = initJsPsych({
-      on_finish: function(data) {
-        // You can display data at end of the experiment   
-        // jsPsych.data.displayData();
+      on_finish: function(data) {  
+        jsPsych.data.displayData();
       }
     });
 

@@ -2,7 +2,7 @@ import { JsPsych } from "jspsych"
 import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response"
 import jsPsychInstructions from "@jspsych/plugin-instructions"
 import { test_items } from "./test-items"
-import { trial_text, instruction_pages } from "./text"
+import { trial_text } from "./text"
 
 interface SpeedMatchingConfig {
   /** Array of test items (animal SVGs) to use as stimuli */
@@ -22,16 +22,7 @@ interface SpeedMatchingConfig {
   /** Number of practice rounds to show (default 1) */
   practice_rounds?: number
   /** Custom instruction texts */
-  instruction_texts?: typeof instruction_pages
-}
-
-/**
- * Function to get a random selection of test items for creating choice sets
- * This ensures variety in the stimuli presented to participants
- */
-function getRandomTestItems(items: string[], count: number = 4): string[] {
-  const shuffled = [...items].sort(() => 0.5 - Math.random());
-  return shuffled.slice(0, Math.min(count, items.length));
+  text_object?: typeof trial_text
 }
 
 /**
@@ -69,16 +60,16 @@ function createTrialSet(items: string[], target_index: number = 0, num_choices: 
  * Creates instruction pages with configurable text content
  * Uses the jsPsych instructions plugin with simple HTML strings
  */
-function createInstructions(instruction_pages_data = instruction_pages) {
+function createInstructions(instruction_pages: string[], next_button: string = "", back_button: string = "") {
   return {
     type: jsPsychInstructions,
-    pages: instruction_pages_data.map(page => `<div class="instructions-container"><p>${page}</p></div>`),
+    pages: instruction_pages.map(page => `<div class="instructions-container"><p>${page}</p></div>`),
     show_clickable_nav: true,
     allow_keys: true,
     key_forward: 'ArrowRight',
     key_backward: 'ArrowLeft',
-    button_label_previous: trial_text.back_button,
-    button_label_next: trial_text.next_button,
+    button_label_previous: back_button,
+    button_label_next: next_button,
     data: {
       task: 'instruction-pages'
     },
@@ -273,7 +264,7 @@ export function createTimeline(jsPsych: JsPsych, config: SpeedMatchingConfig = {
     show_practice = true,
     practice_rounds = 1,
     num_choices = 4,
-    instruction_texts = instruction_pages
+    text_object = trial_text
   } = config;
 
   const items = config.test_items || test_items;
@@ -282,7 +273,7 @@ export function createTimeline(jsPsych: JsPsych, config: SpeedMatchingConfig = {
 
   // Add instructions if requested
   if (show_instructions) {
-    const instructions = createInstructions(instruction_texts);
+    const instructions = createInstructions(text_object.instruction_pages, text_object.next_button, text_object.back_button);
     timeline.push(instructions);
   }
 
@@ -390,6 +381,7 @@ export function createTimeline(jsPsych: JsPsych, config: SpeedMatchingConfig = {
   };
 }
 
+// TODO: weave this into a proper feedback trial
 /**
  * Function to calculate accuracy and reaction time statistics 
  * just for exporting with utils
@@ -434,28 +426,22 @@ function calculatePerformance(data: any[]) {
     };
   }
 
-
+/**
+ * Namespaced access to building blocks for advanced composition and testing.
+ */
 export const timelineUnits = {
-  instructions: "Instructions for the speeded matching task",
-  practice: "Practice round with demonstrations", 
-  readyScreen: "Confirmation screen before starting the main task",
-  trial: "Single speeded matching trial with target and choice options",
-  interTrialInterval: "Fixation cross between trials",
-  endScreen: "Task completion screen"
-}
-
-export const utils = {
   generateTrials,
   createInstructions,
   createPracticeRound,
   createReadyScreen,
-  createTrialSet,
-  getRandomTestItems,
-  calculatePerformance
+  createTrialSet
 }
 
-// Export text and test items for external use
-export { trial_text, instruction_pages, test_items, createInstructions }
-
-// Default export for convenience
-export default { createTimeline, timelineUnits, utils }
+/**
+ * Namespaced access to utility functions for advanced usage and testing.
+ */
+export const utils = { 
+  trial_text, 
+  test_items, 
+  calculatePerformance
+}

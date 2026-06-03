@@ -66,7 +66,6 @@ Utility functions for speeded matching task:
 - **createPracticeRound**: Create practice round with demonstrations
 - **createReadyScreen**: Create ready confirmation screen
 - **createTrialSet**: Create a single trial with target and distractors
-- **getRandomTestItems**: Get random selection of test items
 - **calculatePerformance**: Calculate accuracy and reaction time statistics
 
 ## Usage Example

@@ -1,5 +1,5 @@
 import { JsPsych } from "jspsych";
-import { createTimeline, utils, timelineUnits, trial_text, instruction_pages } from "./index";
+import { createTimeline, utils, timelineUnits } from "./index";
 import { test_items } from "./test-items";
 
 // Mock jsPsych instance
@@ -220,18 +220,18 @@ describe("Speeded Matching Task", () => {
         (item: any) => item.data?.task === 'end-screen'
       );
       expect(endScreen).toBeDefined();
-      expect(endScreen.stimulus).toContain(trial_text.task_complete_header);
+      expect(endScreen.stimulus).toContain(utils.trial_text.task_complete_header);
     });
   });
 
-  describe("utils.generateTrials", () => {
+  describe("timelineUnits.generateTrials", () => {
     it("should generate the correct number of trials", () => {
-      const trials = utils.generateTrials({ num_trials: 10 });
+      const trials = timelineUnits.generateTrials({ num_trials: 10 });
       expect(trials).toHaveLength(10);
     });
 
     it("should generate trials with required properties", () => {
-      const trials = utils.generateTrials({ num_trials: 1 });
+      const trials = timelineUnits.generateTrials({ num_trials: 1 });
       const trial = trials[0];
       
       expect(trial).toHaveProperty("target");
@@ -242,7 +242,7 @@ describe("Speeded Matching Task", () => {
     });
 
     it("should use default test items when none provided", () => {
-      const trials = utils.generateTrials({ num_trials: 1 });
+      const trials = timelineUnits.generateTrials({ num_trials: 1 });
       const trial = trials[0];
       
       expect(test_items).toContain(trial.target);
@@ -257,7 +257,7 @@ describe("Speeded Matching Task", () => {
         '<svg>item4</svg>'
       ];
       
-      const trials = utils.generateTrials({ 
+      const trials = timelineUnits.generateTrials({ 
         test_items: customItems,
         num_trials: 1 
       });
@@ -268,7 +268,7 @@ describe("Speeded Matching Task", () => {
     });
 
     it("should ensure target is included in choices", () => {
-      const trials = utils.generateTrials({ num_trials: 5 });
+      const trials = timelineUnits.generateTrials({ num_trials: 5 });
       
       trials.forEach(trial => {
         expect(trial.choices).toContain(trial.target);
@@ -293,7 +293,7 @@ describe("Speeded Matching Task", () => {
       });
       
       try {
-        const trials = utils.generateTrials({ num_trials: 5 });
+        const trials = timelineUnits.generateTrials({ num_trials: 5 });
         
         // Check that we get variety in targets
         const uniqueTargets = new Set(trials.map(t => t.target));
@@ -305,11 +305,11 @@ describe("Speeded Matching Task", () => {
     });
   });
 
-  describe("utils.createTrialSet", () => {
+  describe("timelineUnits.createTrialSet", () => {
     const testItems = ['item1', 'item2', 'item3', 'item4', 'item5'];
 
     it("should create trial set with correct structure", () => {
-      const trialSet = utils.createTrialSet(testItems, 0, 4);
+      const trialSet = timelineUnits.createTrialSet(testItems, 0, 4);
       
       expect(trialSet).toHaveProperty("target");
       expect(trialSet).toHaveProperty("choices");
@@ -319,7 +319,7 @@ describe("Speeded Matching Task", () => {
 
     it("should use specified target index", () => {
       const targetIndex = 2;
-      const trialSet = utils.createTrialSet(testItems, targetIndex, 4);
+      const trialSet = timelineUnits.createTrialSet(testItems, targetIndex, 4);
       
       expect(trialSet.target).toBe(testItems[targetIndex]);
       expect(trialSet.target_index).toBe(targetIndex);
@@ -327,44 +327,23 @@ describe("Speeded Matching Task", () => {
 
     it("should create correct number of choices", () => {
       const numChoices = 3;
-      const trialSet = utils.createTrialSet(testItems, 0, numChoices);
+      const trialSet = timelineUnits.createTrialSet(testItems, 0, numChoices);
       
       expect(trialSet.choices).toHaveLength(numChoices);
     });
 
     it("should include target in choices", () => {
-      const trialSet = utils.createTrialSet(testItems, 1, 4);
+      const trialSet = timelineUnits.createTrialSet(testItems, 1, 4);
       
       expect(trialSet.choices).toContain(trialSet.target);
       expect(trialSet.choices[trialSet.correct_answer]).toBe(trialSet.target);
     });
 
     it("should handle invalid target index", () => {
-      const trialSet = utils.createTrialSet(testItems, 999, 4);
+      const trialSet = timelineUnits.createTrialSet(testItems, 999, 4);
       
       expect(trialSet.target).toBe(testItems[0]); // Should fallback to index 0
       expect(trialSet.target_index).toBe(0);
-    });
-  });
-
-  describe("utils.getRandomTestItems", () => {
-    const testItems = ['item1', 'item2', 'item3', 'item4', 'item5'];
-
-    it("should return correct number of items", () => {
-      const items = utils.getRandomTestItems(testItems, 3);
-      expect(items).toHaveLength(3);
-    });
-
-    it("should return all items when count exceeds array length", () => {
-      const items = utils.getRandomTestItems(testItems, 10);
-      expect(items).toHaveLength(testItems.length);
-    });
-
-    it("should return items from original array", () => {
-      const items = utils.getRandomTestItems(testItems, 2);
-      items.forEach(item => {
-        expect(testItems).toContain(item);
-      });
     });
   });
 
@@ -421,12 +400,12 @@ describe("Speeded Matching Task", () => {
   });
 
 
-  describe("utils.createInstructions", () => {
+  describe("timelineUnits.createInstructions", () => {
     it("should create instruction trial with default pages", () => {
-      const instructions = utils.createInstructions();
+      const instructions = timelineUnits.createInstructions(utils.trial_text.instruction_pages, utils.trial_text.next_button, utils.trial_text.back_button);
       
       expect(instructions.pages).toBeInstanceOf(Array);
-      expect(instructions.pages.length).toBe(instruction_pages.length);
+      expect(instructions.pages.length).toBe(utils.trial_text.instruction_pages.length);
       expect(instructions.data?.task).toBe('instruction-pages');
     });
 
@@ -435,7 +414,7 @@ describe("Speeded Matching Task", () => {
         '<div><h1>Custom Header</h1><p>Custom description</p></div>'
       ];
       
-      const instructions = utils.createInstructions(customPages);
+      const instructions = timelineUnits.createInstructions(customPages, utils.trial_text.next_button, utils.trial_text.back_button);
       
       expect(instructions.pages).toHaveLength(1);
       expect(instructions.pages[0]).toContain("Custom Header");
@@ -447,7 +426,7 @@ describe("Speeded Matching Task", () => {
         '<div><h2>Strategy</h2><p>Follow these steps:</p><ul><li>Step 1</li><li>Step 2</li><li>Step 3</li></ul></div>'
       ];
       
-      const instructions = utils.createInstructions(customPages);
+      const instructions = timelineUnits.createInstructions(customPages);
       const page = instructions.pages[0];
       
       expect(page).toContain("Strategy");
@@ -457,16 +436,16 @@ describe("Speeded Matching Task", () => {
     });
   });
 
-  describe("utils.createPracticeRound", () => {
+  describe("timelineUnits.createPracticeRound", () => {
     it("should create practice timeline with correct structure", () => {
-      const practice = utils.createPracticeRound(test_items);
+      const practice = timelineUnits.createPracticeRound(test_items);
       
       expect(practice).toBeInstanceOf(Array);
       expect(practice.length).toBeGreaterThan(0);
     });
 
     it("should include practice instruction screen", () => {
-      const practice = utils.createPracticeRound(test_items);
+      const practice = timelineUnits.createPracticeRound(test_items);
       
       const instructionScreen = practice.find(
         (item: any) => item.data?.task === 'practice-instruction'
@@ -475,7 +454,7 @@ describe("Speeded Matching Task", () => {
     });
 
     it("should include practice demonstration trials", () => {
-      const practice = utils.createPracticeRound(test_items);
+      const practice = timelineUnits.createPracticeRound(test_items);
       
       const demoTrials = practice.filter(
         (item: any) => item.data?.task?.includes('practice')
@@ -484,7 +463,7 @@ describe("Speeded Matching Task", () => {
     });
 
     it("should use first test item for practice", () => {
-      const practice = utils.createPracticeRound(test_items);
+      const practice = timelineUnits.createPracticeRound(test_items);
       
       const targetDemo = practice.find(
         (item: any) => item.data?.task === 'practice-target-demo'
@@ -493,49 +472,14 @@ describe("Speeded Matching Task", () => {
     });
   });
 
-  describe("utils.createReadyScreen", () => {
+  describe("timelineUnits.createReadyScreen", () => {
     it("should create ready screen with correct structure", () => {
-      const readyScreen = utils.createReadyScreen();
+      const readyScreen = timelineUnits.createReadyScreen();
       
       expect(readyScreen).toBeDefined();
       expect(readyScreen.data.task).toBe('ready-screen');
-      expect(readyScreen.stimulus).toContain(trial_text.practice_complete_header);
-      expect(readyScreen.choices).toEqual([trial_text.ready_button]);
-    });
-  });
-
-  describe("Exports", () => {
-    it("should export trial_text configuration", () => {
-      expect(trial_text).toBeDefined();
-      expect(trial_text.continue_button).toBe("Continue");
-      expect(trial_text.practice_header).toBe("Practice Round");
-      expect(trial_text.task_complete_header).toBe("Task Complete!");
-    });
-
-    it("should export instruction_pages configuration", () => {
-      expect(instruction_pages).toBeDefined();
-      expect(instruction_pages).toBeInstanceOf(Array);
-      expect(instruction_pages.length).toBeGreaterThan(0);
-    });
-
-    it("should export timelineUnits descriptions", () => {
-      expect(timelineUnits).toBeDefined();
-      expect(timelineUnits.instructions).toBeDefined();
-      expect(timelineUnits.practice).toBeDefined();
-      expect(timelineUnits.trial).toBeDefined();
-      expect(timelineUnits.interTrialInterval).toBeDefined();
-      expect(timelineUnits.endScreen).toBeDefined();
-    });
-
-    it("should export utils object with required functions", () => {
-      expect(utils).toBeDefined();
-      expect(typeof utils.generateTrials).toBe("function");
-      expect(typeof utils.createInstructions).toBe("function");
-      expect(typeof utils.createPracticeRound).toBe("function");
-      expect(typeof utils.createReadyScreen).toBe("function");
-      expect(typeof utils.createTrialSet).toBe("function");
-      expect(typeof utils.getRandomTestItems).toBe("function");
-      expect(typeof utils.calculatePerformance).toBe("function");
+      expect(readyScreen.stimulus).toContain(utils.trial_text.practice_complete_header);
+      expect(readyScreen.choices).toEqual([utils.trial_text.ready_button]);
     });
   });
 
@@ -599,7 +543,7 @@ describe("Speeded Matching Task", () => {
       ];
       
       const timeline = createTimeline(mockJsPsych, { 
-        instruction_texts: customInstructions,
+        text_object: { ...utils.trial_text, instruction_pages: customInstructions },
         show_instructions: true,
         num_trials: 1,
         show_practice: false
