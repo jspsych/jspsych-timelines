@@ -335,7 +335,7 @@ describe("stroop-task timeline components", () => {
             expect(feedback).toHaveProperty('trial_duration');
         });
 
-        test("has correct choices and duration", () => {
+        test("has correct choices and default duration", () => {
             const colors = ['RED', 'GREEN', 'BLUE'];
             const feedback = timelineComponents.createPracticeFeedback(
                 jsPsych,
@@ -346,6 +346,19 @@ describe("stroop-task timeline components", () => {
             );
             expect(feedback.choices).toEqual(['Continue']);
             expect(feedback.trial_duration).toBe(2000);
+        });
+
+        test("accepts custom feedback_timeout", () => {
+            const colors = ['RED', 'GREEN', 'BLUE'];
+            const feedback = timelineComponents.createPracticeFeedback(
+                jsPsych,
+                colors,
+                'Correct!',
+                'Incorrect. The answer was %ANSWER%',
+                'Continue',
+                3500
+            );
+            expect(feedback.trial_duration).toBe(3500);
         });
 
         test("has dynamic stimulus function", () => {

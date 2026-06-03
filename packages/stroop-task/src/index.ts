@@ -8,13 +8,13 @@ import { defaultText } from "./text";
 /**
  * Configuration options for the Stroop task timeline.
  * All options are optional and have default values.
- * 
+ *
  * Example usage:
  * const stroopTimeline = createTimeline(jsPsych, {
  *   congruent_practice_trials: 5,
  *   incongruent_practice_trials: 5,
- *   choice_of_colors: ['RED', 'BLUE', 'GREEN', 'YELLOW'],
- *   choice_of_color_values: ['red', 'blue', 'green', 'yellow'],
+ *   colors: ['RED', 'BLUE', 'GREEN', 'YELLOW'],
+ *   color_values: ['red', 'blue', 'green', 'yellow'],
  * });
  */
 interface StroopConfig {
@@ -65,6 +65,11 @@ interface StroopConfig {
    */
   show_practice_feedback?: boolean;
   /**
+   * Duration in milliseconds that practice feedback is displayed before auto-advancing.
+   * @default 2000
+   */
+  feedback_timeout?: number;
+  /**
    * Whether to include a fixation cross before each trial.
    * @default true
    */
@@ -100,13 +105,13 @@ interface StroopConfig {
    * These will be used for the names of each button.
    * @default ['RED', 'GREEN', 'BLUE', 'YELLOW']
    */
-  choice_of_colors?: string[];
+  colors?: string[];
   /**
-   * CSS color values for rendering stimulus text, one per entry in choice_of_colors.
-   * If null, choice_of_colors entries are lowercased and used directly as CSS values.
+   * CSS color values for rendering stimulus text, one per entry in colors.
+   * If null, colors entries are lowercased and used directly as CSS values.
    * @default null
    */
-  choice_of_color_values?: string[] | null;
+  color_values?: string[] | null;
   /**
    * Custom text content for instructions, feedback, and results.
    * Partial — only the keys you provide are overridden.
@@ -196,22 +201,19 @@ function generateStimuli(
     result.push(...remainingIncongruent);
   }
 
-  // Shuffle the final stimuli array
-  result = jsPsych.randomization.shuffle(result);
-
   return result;
 }
 
 /**
  * Creates the instruction pages for the Stroop task.
  * @param instructionsText - Array of instruction page content (strings or functions)
- * @param choiceOfColors - Array of color names to show in instructions
+ * @param colors - Array of color names to show in instructions
  * @returns jsPsych instructions trial object
  */
-function createInstructions(instructionsText: any[], choiceOfColors?: string[]) {
+function createInstructions(instructionsText: any[], colors?: string[]) {
   const pages = instructionsText.map((page) => {
     if (typeof page === "function") {
-      return page(choiceOfColors);
+      return page(colors);
     }
     return page;
   });
@@ -267,7 +269,7 @@ interface StroopTrialOptions {
   /** Number of columns in the response button grid layout */
   number_of_columns?: number;
   /** Array of color names for response buttons */
-  choice_of_colors?: string[];
+  colors?: string[];
   /** Whether to show fixation cross before each trial */
   include_fixation?: boolean;
   /** Whether to randomize fixation duration */
@@ -276,6 +278,8 @@ interface StroopTrialOptions {
   fixation_duration?: { min: number; max: number };
   /** Whether to show feedback after practice trials */
   show_practice_feedback?: boolean;
+  /** Duration in milliseconds that practice feedback is displayed before auto-advancing */
+  feedback_timeout?: number;
   /** Text content for feedback and other messages */
   text?: typeof defaultText;
 }
@@ -294,11 +298,12 @@ function createStroopTrials(
     trial_timeout = 2000,
     number_of_rows = 2,
     number_of_columns = 2,
-    choice_of_colors = ["RED", "GREEN", "BLUE", "YELLOW"],
+    colors = ["RED", "GREEN", "BLUE", "YELLOW"],
     include_fixation = true,
     randomize_fixation_duration = true,
     fixation_duration = { min: 300, max: 1500 },
     show_practice_feedback = true,
+    feedback_timeout = 2000,
     text = defaultText,
   }: StroopTrialOptions
 ) {
@@ -328,7 +333,7 @@ function createStroopTrials(
       const word = jsPsych.evaluateTimelineVariable("word");
       return `<div class="jspsych-stroop-task-stimulus" style="color: ${color};">${word}</div>`;
     },
-    choices: choice_of_colors,
+    choices: colors,
     button_layout: "grid",
     grid_rows: number_of_rows,
     grid_columns: number_of_columns,
@@ -351,10 +356,11 @@ function createStroopTrials(
 
   const feedback = createPracticeFeedback(
     jsPsych,
-    choice_of_colors,
+    colors,
     text.correct_feedback,
     text.incorrect_feedback,
-    text.continue_button
+    text.continue_button,
+    feedback_timeout
   );
 
   if (include_fixation) {
@@ -382,7 +388,8 @@ function createPracticeFeedback(
   selectedColors: string[],
   correctText: string,
   incorrectText: string,
-  continueBtnText: string
+  continueBtnText: string,
+  feedbackTimeout: number = 2000
 ) {
   const feedback = {
     type: jsPsychHtmlButtonResponse,
@@ -397,7 +404,7 @@ function createPracticeFeedback(
       }
     },
     choices: [continueBtnText],
-    trial_duration: 2000,
+    trial_duration: feedbackTimeout,
     data: {
       page: "feedback",
     },
@@ -428,6 +435,8 @@ function createPracticeDebrief(practiceDebriefText: string, continueBtnText: str
 
 /**
  * Creates a results summary screen showing performance metrics.
+ * Ensure that trial data is properly marked with `page: "word"` and `task: "stroop"` for this to work correctly. 
+ * 
  * @param jsPsych - The jsPsych instance for accessing trial data
  * @param text - HTML template for results display (supports placeholders for metrics)
  * @returns jsPsych trial object for results display
@@ -496,29 +505,35 @@ export function createTimeline(
     trial_timeout = 2000,
     fixation_duration = { min: 300, max: 1500 },
     show_practice_feedback = true,
+    feedback_timeout = 2000,
     include_fixation = true,
     show_instructions = true,
     show_results = true,
     randomize_fixation_duration = true,
     number_of_rows = 2,
     number_of_columns = 2,
-    choice_of_colors = ["RED", "GREEN", "BLUE", "YELLOW"],
-    choice_of_color_values = null,
+    colors = ["RED", "GREEN", "BLUE", "YELLOW"],
+    color_values = null,
     trial_text,
   }: StroopConfig = {}
 ) {
   const text = { ...defaultText, ...trial_text };
   const timeline: any[] = [];
 
+  const resolvedColorValues = color_values || colors.map((color) => color.toLowerCase());
+  if (resolvedColorValues.length !== colors.length) {
+    throw new Error("stroop-task: colors and color_values must have the same length");
+  }
+
   if (show_instructions) {
-    timeline.push(createInstructions(text.instructions, choice_of_colors));
+    timeline.push(createInstructions(text.instructions, colors));
   }
 
   if (congruent_practice_trials > 0 || incongruent_practice_trials > 0) {
     const practiceStimuli = generateStimuli(
       jsPsych,
-      choice_of_colors,
-      choice_of_color_values || choice_of_colors.map(color => color.toLowerCase()),
+      colors,
+      resolvedColorValues,
       congruent_practice_trials,
       incongruent_practice_trials
     );
@@ -529,11 +544,12 @@ export function createTimeline(
       trial_timeout: practice_trial_timeout,
       number_of_rows,
       number_of_columns,
-      choice_of_colors,
+      colors,
       include_fixation,
       randomize_fixation_duration,
       fixation_duration,
       show_practice_feedback,
+      feedback_timeout,
       text,
     });
     timeline.push(practice_trials);
@@ -543,8 +559,8 @@ export function createTimeline(
 
   const mainStimuli = generateStimuli(
     jsPsych,
-    choice_of_colors,
-    choice_of_color_values || choice_of_colors.map(color => color.toLowerCase()),
+    colors,
+    resolvedColorValues,
     congruent_main_trials,
     incongruent_main_trials
   );
@@ -555,7 +571,7 @@ export function createTimeline(
     trial_timeout,
     number_of_rows,
     number_of_columns,
-    choice_of_colors,
+    colors,
     include_fixation,
     randomize_fixation_duration,
     fixation_duration,
