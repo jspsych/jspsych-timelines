@@ -63,7 +63,7 @@ function createTrialSet(items: string[], target_index: number = 0, num_choices: 
 function createInstructions(instruction_pages: string[], next_button: string = "", back_button: string = "") {
   return {
     type: jsPsychInstructions,
-    pages: instruction_pages.map(page => `<div class="instructions-container"><p>${page}</p></div>`),
+    pages: instruction_pages.map(page => `<div class="jspsych-speeded-matching-instructions-container"><p>${page}</p></div>`),
     show_clickable_nav: true,
     allow_keys: true,
     key_forward: 'ArrowRight',
@@ -90,14 +90,14 @@ function createPracticeRound(items: string[], num_choices: number = 4, practice_
   practice_timeline.push({
     type: jsPsychHtmlButtonResponse,
     stimulus: `
-      <div class="practice-container">
+      <div class="jspsych-speeded-matching-practice-container">
         <h2>${text.practice_header}</h2>
-        <p class="practice-instruction">${text.practice_intro_message}</p>
+        <p class="jspsych-speeded-matching-practice-instruction">${text.practice_intro_message}</p>
       </div>
     `,
     choices: [text.continue_button],
     button_html: function(choice) {
-      return `<button class="jspsych-btn continue-button">${choice}</button>`;
+      return `<button class="jspsych-btn jspsych-speeded-matching-continue-button">${choice}</button>`;
     },
     data: {
       task: 'practice-instruction'
@@ -114,12 +114,12 @@ function createPracticeRound(items: string[], num_choices: number = 4, practice_
     practice_timeline.push({
       type: jsPsychHtmlButtonResponse,
       stimulus: `
-        <div class="trial-container">
-          <div class="task-instructions">
+        <div class="jspsych-speeded-matching-trial-container">
+          <div class="jspsych-speeded-matching-task-instructions">
             <p>${text.practice_look_instruction}</p>
           </div>
-          <div class="target-container">
-            <div class="target-stimulus flash">
+          <div class="jspsych-speeded-matching-target-container">
+            <div class="jspsych-speeded-matching-target-stimulus jspsych-speeded-matching-flash">
               ${practice_set.target}
             </div>
           </div>
@@ -138,12 +138,12 @@ function createPracticeRound(items: string[], num_choices: number = 4, practice_
     practice_timeline.push({
       type: jsPsychHtmlButtonResponse,
       stimulus: `
-        <div class="trial-container">
-          <div class="task-instructions">
+        <div class="jspsych-speeded-matching-trial-container">
+          <div class="jspsych-speeded-matching-task-instructions">
             <p>${text.practice_tap_instruction}</p>
           </div>
-          <div class="target-container">
-            <div class="target-stimulus">
+          <div class="jspsych-speeded-matching-target-container">
+            <div class="jspsych-speeded-matching-target-stimulus">
               ${practice_set.target}
             </div>
           </div>
@@ -153,30 +153,31 @@ function createPracticeRound(items: string[], num_choices: number = 4, practice_
       button_html: function(choice, choice_index) {
         const isCorrect = choice_index === practice_set.correct_answer;
         const disabled = !isCorrect ? 'disabled' : '';
-        const disabledClass = !isCorrect ? 'disabled-choice' : '';
-        return `<button class="jspsych-btn choice-option ${disabledClass}" data-choice="${choice_index}" ${disabled}>${practice_set.choices[choice_index]}</button>`;
+        const disabledClass = !isCorrect ? 'jspsych-speeded-matching-disabled-choice' : '';
+        return `<button class="jspsych-btn jspsych-speeded-matching-choice-option ${disabledClass}" data-choice="${choice_index}" ${disabled}>${practice_set.choices[choice_index]}</button>`;
       },
       // No trial duration - only ends when correct choice is clicked
       response_ends_trial: true,
+      css_classes: ['jspsych-speeded-matching-practice-trial'],
       on_start: function() {},
       on_load: function() {
         // Set CSS custom property for number of choices for dynamic sizing
-        const btnGroup = document.querySelector('.jspsych-btn-group, #jspsych-html-button-response-btngroup') as HTMLElement;
+        const btnGroup = document.querySelector('#jspsych-html-button-response-btngroup') as HTMLElement;
         if (btnGroup) {
           btnGroup.style.setProperty('--num-choices', practice_set.choices.length.toString());
         }
-        
-        // Add flashing animation for practice demo (1.5 seconds total)
+
+        // Add flashing animation for practice demo
         setTimeout(() => {
-          const buttons = document.querySelectorAll('.choice-option:not(.disabled-choice)');
+          const buttons = document.querySelectorAll('.jspsych-speeded-matching-choice-option:not(.jspsych-speeded-matching-disabled-choice)');
           buttons.forEach(button => {
-            button.classList.add('flash-choices');
+            button.classList.add('jspsych-speeded-matching-flash-choices');
           });
         }, 500);
 
         // Disable incorrect choices by preventing click events
         setTimeout(() => {
-          const incorrectButtons = document.querySelectorAll('.choice-option.disabled-choice');
+          const incorrectButtons = document.querySelectorAll('.jspsych-speeded-matching-choice-option.jspsych-speeded-matching-disabled-choice');
           incorrectButtons.forEach(button => {
             button.addEventListener('click', function(e) {
               e.preventDefault();
@@ -210,14 +211,14 @@ function createReadyScreen(text: typeof defaultText = defaultText) {
   return {
     type: jsPsychHtmlButtonResponse,
     stimulus: `
-      <div class="ready-screen">
+      <div class="jspsych-speeded-matching-ready-screen">
         <h2>${text.practice_complete_header}</h2>
         <p>${text.practice_complete_message}</p>
       </div>
     `,
     choices: [text.ready_button],
     button_html: function(choice) {
-      return `<button class="jspsych-btn continue-button">${choice}</button>`;
+      return `<button class="jspsych-btn jspsych-speeded-matching-continue-button">${choice}</button>`;
     },
     data: {
       task: 'ready-screen'
@@ -292,13 +293,14 @@ export function createTimeline(jsPsych: JsPsych, config: SpeedMatchingConfig = {
     // Create the main trial object
     const mainTrial: any = {
       type: jsPsychHtmlButtonResponse,
+      css_classes: ['jspsych-speeded-matching-trial'],
       stimulus: `
-        <div class="trial-container">
-          <div class="task-instructions">
+        <div class="jspsych-speeded-matching-trial-container">
+          <div class="jspsych-speeded-matching-task-instructions">
             <p>${text.main_task_prompt}</p>
           </div>
-          <div class="target-container">
-            <div class="target-stimulus">
+          <div class="jspsych-speeded-matching-target-container">
+            <div class="jspsych-speeded-matching-target-stimulus">
               ${trial.target}
             </div>
           </div>
@@ -306,17 +308,17 @@ export function createTimeline(jsPsych: JsPsych, config: SpeedMatchingConfig = {
       `,
       choices: trial.choices.map((_, i) => i.toString()),
       button_html: function(choice, choice_index) {
-        return `<button class="jspsych-btn choice-option" data-choice="${choice_index}">${trial.choices[choice_index]}</button>`;
+        return `<button class="jspsych-btn jspsych-speeded-matching-choice-option" data-choice="${choice_index}">${trial.choices[choice_index]}</button>`;
       },
       on_load: function() {
         // Set CSS custom property for number of choices for dynamic sizing
-        const btnGroup = document.querySelector('.jspsych-btn-group, #jspsych-html-button-response-btngroup') as HTMLElement;
+        const btnGroup = document.querySelector('#jspsych-html-button-response-btngroup') as HTMLElement;
         if (btnGroup) {
           btnGroup.style.setProperty('--num-choices', trial.choices.length.toString());
         }
-        
+
         // Add click handlers for visual feedback
-        const choices = document.querySelectorAll('.choice-option');
+        const choices = document.querySelectorAll('.jspsych-speeded-matching-choice-option');
         choices.forEach((choice, index) => {
           choice.addEventListener('click', function() {
             choice.classList.add('selected');
@@ -349,7 +351,7 @@ export function createTimeline(jsPsych: JsPsych, config: SpeedMatchingConfig = {
     if (inter_trial_interval !== undefined && inter_trial_interval > 0 && index < trials.length - 1) {
       timeline.push({
         type: jsPsychHtmlButtonResponse,
-        stimulus: `<div class="fixation">${text.fixation_cross}</div>`,
+        stimulus: `<div class="jspsych-speeded-matching-fixation">${text.fixation_cross}</div>`,
         choices: [],
         trial_duration: inter_trial_interval,
         data: {
@@ -363,14 +365,14 @@ export function createTimeline(jsPsych: JsPsych, config: SpeedMatchingConfig = {
   timeline.push({
     type: jsPsychHtmlButtonResponse,
     stimulus: `
-      <div class="end-screen">
+      <div class="jspsych-speeded-matching-end-screen">
         <h2>${text.task_complete_header}</h2>
         <p>${text.task_complete_message}</p>
       </div>
     `,
     choices: [text.end_button],
     button_html: function(choice) {
-      return `<button class="jspsych-btn continue-button">${choice}</button>`;
+      return `<button class="jspsych-btn jspsych-speeded-matching-continue-button">${choice}</button>`;
     },
     data: {
       task: 'end-screen'
