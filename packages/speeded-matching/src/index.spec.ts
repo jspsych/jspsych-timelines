@@ -220,7 +220,7 @@ describe("Speeded Matching Task", () => {
         (item: any) => item.data?.task === 'end-screen'
       );
       expect(endScreen).toBeDefined();
-      expect(endScreen.stimulus).toContain(utils.trial_text.task_complete_header);
+      expect(endScreen.stimulus).toContain(utils.defaultText.task_complete_header);
     });
   });
 
@@ -402,10 +402,10 @@ describe("Speeded Matching Task", () => {
 
   describe("timelineUnits.createInstructions", () => {
     it("should create instruction trial with default pages", () => {
-      const instructions = timelineUnits.createInstructions(utils.trial_text.instruction_pages, utils.trial_text.next_button, utils.trial_text.back_button);
-      
+      const instructions = timelineUnits.createInstructions(utils.defaultText.instruction_pages, utils.defaultText.next_button, utils.defaultText.back_button);
+
       expect(instructions.pages).toBeInstanceOf(Array);
-      expect(instructions.pages.length).toBe(utils.trial_text.instruction_pages.length);
+      expect(instructions.pages.length).toBe(utils.defaultText.instruction_pages.length);
       expect(instructions.data?.task).toBe('instruction-pages');
     });
 
@@ -414,7 +414,7 @@ describe("Speeded Matching Task", () => {
         '<div><h1>Custom Header</h1><p>Custom description</p></div>'
       ];
       
-      const instructions = timelineUnits.createInstructions(customPages, utils.trial_text.next_button, utils.trial_text.back_button);
+      const instructions = timelineUnits.createInstructions(customPages, utils.defaultText.next_button, utils.defaultText.back_button);
       
       expect(instructions.pages).toHaveLength(1);
       expect(instructions.pages[0]).toContain("Custom Header");
@@ -478,8 +478,8 @@ describe("Speeded Matching Task", () => {
       
       expect(readyScreen).toBeDefined();
       expect(readyScreen.data.task).toBe('ready-screen');
-      expect(readyScreen.stimulus).toContain(utils.trial_text.practice_complete_header);
-      expect(readyScreen.choices).toEqual([utils.trial_text.ready_button]);
+      expect(readyScreen.stimulus).toContain(utils.defaultText.practice_complete_header);
+      expect(readyScreen.choices).toEqual([utils.defaultText.ready_button]);
     });
   });
 
@@ -543,7 +543,7 @@ describe("Speeded Matching Task", () => {
       ];
       
       const timeline = createTimeline(mockJsPsych, { 
-        text_object: { ...utils.trial_text, instruction_pages: customInstructions },
+        trial_text: { ...utils.defaultText, instruction_pages: customInstructions },
         show_instructions: true,
         num_trials: 1,
         show_practice: false

@@ -1,8 +1,4 @@
-/* This file contains the configurable text used in the speeded matching timeline.
- * Researchers can modify these texts to change the language or instructions.
- */
-
-export const trial_text = {
+export const defaultText = {
     instruction_pages: [
         "<b>You will see a picture at the top.</b>",
         "Below it, you will see four pictures.",
@@ -44,3 +40,5 @@ export const trial_text = {
     // Timing messages
     too_slow_message: "Please respond faster",
 }
+
+export type TrialText = Partial<typeof defaultText>

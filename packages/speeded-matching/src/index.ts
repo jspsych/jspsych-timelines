@@ -2,7 +2,7 @@ import { JsPsych } from "jspsych"
 import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response"
 import jsPsychInstructions from "@jspsych/plugin-instructions"
 import { test_items } from "./test-items"
-import { trial_text } from "./text"
+import { defaultText, TrialText } from "./text"
 
 interface SpeedMatchingConfig {
   /** Array of test items (animal SVGs) to use as stimuli */
@@ -21,8 +21,8 @@ interface SpeedMatchingConfig {
   show_practice?: boolean
   /** Number of practice rounds to show (default 1) */
   practice_rounds?: number
-  /** Custom instruction texts */
-  text_object?: typeof trial_text
+  /** Custom text overrides */
+  trial_text?: TrialText
 }
 
 /**
@@ -83,19 +83,19 @@ function createInstructions(instruction_pages: string[], next_button: string = "
  * Creates practice rounds with voice instructions and visual demonstrations
  * This helps participants understand the task before the actual trials
  */
-function createPracticeRound(items: string[], num_choices: number = 4, practice_rounds: number = 1) {
+function createPracticeRound(items: string[], num_choices: number = 4, practice_rounds: number = 1, text: typeof defaultText = defaultText) {
   const practice_timeline = [];
-  
+
   // Practice instruction screen
   practice_timeline.push({
     type: jsPsychHtmlButtonResponse,
     stimulus: `
       <div class="practice-container">
-        <h2>${trial_text.practice_header}</h2>
-        <p class="practice-instruction">${trial_text.practice_intro_message}</p>
+        <h2>${text.practice_header}</h2>
+        <p class="practice-instruction">${text.practice_intro_message}</p>
       </div>
     `,
-    choices: [trial_text.continue_button],
+    choices: [text.continue_button],
     button_html: function(choice) {
       return `<button class="jspsych-btn continue-button">${choice}</button>`;
     },
@@ -116,7 +116,7 @@ function createPracticeRound(items: string[], num_choices: number = 4, practice_
       stimulus: `
         <div class="trial-container">
           <div class="task-instructions">
-            <p>${trial_text.practice_look_instruction}</p>
+            <p>${text.practice_look_instruction}</p>
           </div>
           <div class="target-container">
             <div class="target-stimulus flash">
@@ -140,7 +140,7 @@ function createPracticeRound(items: string[], num_choices: number = 4, practice_
       stimulus: `
         <div class="trial-container">
           <div class="task-instructions">
-            <p>${trial_text.practice_tap_instruction}</p>
+            <p>${text.practice_tap_instruction}</p>
           </div>
           <div class="target-container">
             <div class="target-stimulus">
@@ -206,16 +206,16 @@ function createPracticeRound(items: string[], num_choices: number = 4, practice_
 /**
  * Creates ready screen asking if user is ready for the actual test
  */
-function createReadyScreen() {
+function createReadyScreen(text: typeof defaultText = defaultText) {
   return {
     type: jsPsychHtmlButtonResponse,
     stimulus: `
       <div class="ready-screen">
-        <h2>${trial_text.practice_complete_header}</h2>
-        <p>${trial_text.practice_complete_message}</p>
+        <h2>${text.practice_complete_header}</h2>
+        <p>${text.practice_complete_message}</p>
       </div>
     `,
-    choices: [trial_text.ready_button],
+    choices: [text.ready_button],
     button_html: function(choice) {
       return `<button class="jspsych-btn continue-button">${choice}</button>`;
     },
@@ -264,8 +264,9 @@ export function createTimeline(jsPsych: JsPsych, config: SpeedMatchingConfig = {
     show_practice = true,
     practice_rounds = 1,
     num_choices = 4,
-    text_object = trial_text
   } = config;
+
+  const text = { ...defaultText, ...config.trial_text };
 
   const items = config.test_items || test_items;
   const trials = generateTrials(config);
@@ -273,17 +274,17 @@ export function createTimeline(jsPsych: JsPsych, config: SpeedMatchingConfig = {
 
   // Add instructions if requested
   if (show_instructions) {
-    const instructions = createInstructions(text_object.instruction_pages, text_object.next_button, text_object.back_button);
+    const instructions = createInstructions(text.instruction_pages, text.next_button, text.back_button);
     timeline.push(instructions);
   }
 
   // Add practice round if requested
   if (show_practice) {
-    const practice_round = createPracticeRound(items, num_choices, practice_rounds);
+    const practice_round = createPracticeRound(items, num_choices, practice_rounds, text);
     practice_round.forEach(trial => timeline.push(trial));
-    
+
     // Add ready screen after practice
-    timeline.push(createReadyScreen());
+    timeline.push(createReadyScreen(text));
   }
 
   // Create main task trials
@@ -294,7 +295,7 @@ export function createTimeline(jsPsych: JsPsych, config: SpeedMatchingConfig = {
       stimulus: `
         <div class="trial-container">
           <div class="task-instructions">
-            <p>${trial_text.main_task_prompt}</p>
+            <p>${text.main_task_prompt}</p>
           </div>
           <div class="target-container">
             <div class="target-stimulus">
@@ -348,7 +349,7 @@ export function createTimeline(jsPsych: JsPsych, config: SpeedMatchingConfig = {
     if (inter_trial_interval !== undefined && inter_trial_interval > 0 && index < trials.length - 1) {
       timeline.push({
         type: jsPsychHtmlButtonResponse,
-        stimulus: `<div class="fixation">${trial_text.fixation_cross}</div>`,
+        stimulus: `<div class="fixation">${text.fixation_cross}</div>`,
         choices: [],
         trial_duration: inter_trial_interval,
         data: {
@@ -363,11 +364,11 @@ export function createTimeline(jsPsych: JsPsych, config: SpeedMatchingConfig = {
     type: jsPsychHtmlButtonResponse,
     stimulus: `
       <div class="end-screen">
-        <h2>${trial_text.task_complete_header}</h2>
-        <p>${trial_text.task_complete_message}</p>
+        <h2>${text.task_complete_header}</h2>
+        <p>${text.task_complete_message}</p>
       </div>
     `,
-    choices: [trial_text.end_button],
+    choices: [text.end_button],
     button_html: function(choice) {
       return `<button class="jspsych-btn continue-button">${choice}</button>`;
     },
@@ -440,8 +441,8 @@ export const timelineUnits = {
 /**
  * Namespaced access to utility functions for advanced usage and testing.
  */
-export const utils = { 
-  trial_text, 
-  test_items, 
+export const utils = {
+  defaultText,
+  test_items,
   calculatePerformance
 }
