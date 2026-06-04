@@ -9,7 +9,7 @@ interface SpeedMatchingConfig {
   test_items?: string[]
   /** Number of trials to generate */
   num_trials?: number
-  /** Number of choice options per trial (default 4) */
+  /** Number of choice options per trial (default 4). Note: if you change this, also update the `instruction_pages` text in `trial_text` — the default instructions mention "four pictures" specifically. */
   num_choices?: number
   /** Maximum time allowed per trial (in ms) */
   trial_timeout?: number
@@ -21,6 +21,10 @@ interface SpeedMatchingConfig {
   show_practice?: boolean
   /** Number of practice rounds to show (default 1) */
   practice_rounds?: number
+  /** Duration in ms to show the target stimulus during the practice demo (default 3000) */
+  practice_target_duration?: number
+  /** Show the end screen after the main task (default true). Set to false when embedding in a larger study with a custom debrief. */
+  show_end_screen?: boolean
   /** Custom text overrides */
   trial_text?: TrialText
 }
@@ -71,10 +75,8 @@ function createInstructions(instruction_pages: string[], next_button: string = "
     button_label_previous: back_button,
     button_label_next: next_button,
     data: {
-      task: 'instruction-pages'
-    },
-    on_finish: function(data: any) {
-      data.phase = 'instructions';
+      task: 'instruction-pages',
+      phase: 'instructions',
     }
   };
 }
@@ -83,7 +85,7 @@ function createInstructions(instruction_pages: string[], next_button: string = "
  * Creates practice rounds with voice instructions and visual demonstrations
  * This helps participants understand the task before the actual trials
  */
-function createPracticeRound(items: string[], num_choices: number = 4, practice_rounds: number = 1, text: typeof defaultText = defaultText) {
+function createPracticeRound(items: string[], num_choices: number = 4, practice_rounds: number = 1, practice_target_duration: number = 3000, text: typeof defaultText = defaultText) {
   const practice_timeline = [];
 
   // Practice instruction screen
@@ -100,7 +102,8 @@ function createPracticeRound(items: string[], num_choices: number = 4, practice_
       return `<button class="jspsych-btn jspsych-speeded-matching-continue-button">${choice}</button>`;
     },
     data: {
-      task: 'practice-instruction'
+      task: 'practice-instruction',
+      phase: 'practice',
     }
   });
 
@@ -126,11 +129,12 @@ function createPracticeRound(items: string[], num_choices: number = 4, practice_
         </div>
       `,
       choices: [],
-      trial_duration: 3000, // Show for 3 seconds
+      trial_duration: practice_target_duration,
       on_start: function() {},
       data: {
         task: 'practice-target-demo',
-        practice_round: round + 1
+        phase: 'practice',
+        practice_round: round + 1,
       }
     });
 
@@ -195,8 +199,9 @@ function createPracticeRound(items: string[], num_choices: number = 4, practice_
       },
       data: {
         task: 'practice-choices-demo',
+        phase: 'practice',
         practice_round: round + 1,
-        correct_answer: practice_set.correct_answer
+        correct_answer: practice_set.correct_answer,
       }
     });
   }
@@ -221,7 +226,8 @@ function createReadyScreen(text: typeof defaultText = defaultText) {
       return `<button class="jspsych-btn jspsych-speeded-matching-continue-button">${choice}</button>`;
     },
     data: {
-      task: 'ready-screen'
+      task: 'ready-screen',
+      phase: 'practice',
     }
   };
 }
@@ -264,6 +270,8 @@ export function createTimeline(jsPsych: JsPsych, config: SpeedMatchingConfig = {
     show_instructions = true,
     show_practice = true,
     practice_rounds = 1,
+    practice_target_duration = 3000,
+    show_end_screen = true,
     num_choices = 4,
   } = config;
 
@@ -281,7 +289,7 @@ export function createTimeline(jsPsych: JsPsych, config: SpeedMatchingConfig = {
 
   // Add practice round if requested
   if (show_practice) {
-    const practice_round = createPracticeRound(items, num_choices, practice_rounds, text);
+    const practice_round = createPracticeRound(items, num_choices, practice_rounds, practice_target_duration, text);
     practice_round.forEach(trial => timeline.push(trial));
 
     // Add ready screen after practice
@@ -327,16 +335,15 @@ export function createTimeline(jsPsych: JsPsych, config: SpeedMatchingConfig = {
       },
       data: {
         task: 'speeded-matching-trial',
+        phase: 'main',
         trial_number: trial.trial_number,
         correct_answer: trial.correct_answer,
         target_index: trial.target_index,
         target: trial.target,
-        choices: trial.choices
+        choices: trial.choices,
       },
       on_finish: function(data: any) {
-        // Calculate accuracy and response time
         data.correct = data.response === data.correct_answer;
-        data.reaction_time = data.rt;
       }
     };
 
@@ -355,14 +362,15 @@ export function createTimeline(jsPsych: JsPsych, config: SpeedMatchingConfig = {
         choices: [],
         trial_duration: inter_trial_interval,
         data: {
-          task: 'inter-trial-interval'
+          task: 'inter-trial-interval',
+          phase: 'main',
         }
       });
     }
   });
 
   // End screen
-  timeline.push({
+  if (show_end_screen) timeline.push({
     type: jsPsychHtmlButtonResponse,
     stimulus: `
       <div class="jspsych-speeded-matching-end-screen">
@@ -375,7 +383,8 @@ export function createTimeline(jsPsych: JsPsych, config: SpeedMatchingConfig = {
       return `<button class="jspsych-btn jspsych-speeded-matching-continue-button">${choice}</button>`;
     },
     data: {
-      task: 'end-screen'
+      task: 'end-screen',
+      phase: 'end',
     }
   });
 

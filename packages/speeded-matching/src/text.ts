@@ -8,13 +8,10 @@ export const defaultText = {
     ],
     // Button texts
     continue_button: "Continue",
-    start_button: "Start",
     ready_button: "I'm Ready",
     end_button: "End",
-    // Instruction pages buttons text, these will always have arrows < and >
-    // these do not work right now due to CSS fixed position, might fix later
     next_button: "",
-    back_button: "", 
+    back_button: "",
     // Task completion messages
     task_complete_header: "Task Complete!",
     task_complete_message: "Thank you for participating in the speeded matching task.",
@@ -32,13 +29,6 @@ export const defaultText = {
     
     // Fixation and inter-trial
     fixation_cross: "+",
-    
-    // Feedback messages (optional)
-    correct_feedback: "Correct!",
-    incorrect_feedback: "Try again",
-    
-    // Timing messages
-    too_slow_message: "Please respond faster",
 }
 
 export type TrialText = Partial<typeof defaultText>
