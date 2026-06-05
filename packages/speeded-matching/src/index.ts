@@ -210,6 +210,24 @@ function createPracticeRound(items: string[], num_choices: number = 4, practice_
 }
 
 /**
+ * Generates a fixation trial with a customizable `fixation_cross` text and 
+ * `interTrialInterval` duration.
+ */
+function createFixationTrial(text: typeof defaultText = defaultText, interTrialInterval: number = 1000) {
+  return {
+    type: jsPsychHtmlButtonResponse,
+    stimulus: `<div class="jspsych-speeded-matching-fixation">${text.fixation_cross}</div>`,
+    choices: [],
+    trial_duration: interTrialInterval,
+    data: {
+      task: 'fixation',
+      phase: 'main',
+    }
+  }
+}
+
+
+/**
  * Creates ready screen asking if user is ready for the actual test
  */
 function createReadyScreen(text: typeof defaultText = defaultText) {
@@ -257,6 +275,31 @@ function generateTrials(config: SpeedMatchingConfig) {
   }
 
   return trials;
+}
+
+/**
+ * Generates an end screen to show after the main task is complete. 
+ * Uses `end_button`, `task_complete_header`, and `task_complete_message` 
+ * from the text configuration for customizable content.
+ */
+function createEndScreen(text: typeof defaultText = defaultText) {
+  return {
+    type: jsPsychHtmlButtonResponse,
+    stimulus: `
+      <div class="jspsych-speeded-matching-end-screen">
+        <h2>${text.task_complete_header}</h2>
+        <p>${text.task_complete_message}</p>
+      </div>
+    `,
+    choices: [text.end_button],
+    button_html: function (choice) {
+      return `<button class="jspsych-btn jspsych-speeded-matching-continue-button">${choice}</button>`;
+    },
+    data: {
+      task: 'end-screen',
+      phase: 'end',
+    }
+  }
 }
 
 /**
@@ -356,37 +399,16 @@ export function createTimeline(jsPsych: JsPsych, config: SpeedMatchingConfig = {
     
     // Inter-trial interval (fixation cross) - only if defined and > 0
     if (inter_trial_interval !== undefined && inter_trial_interval > 0 && index < trials.length - 1) {
-      timeline.push({
-        type: jsPsychHtmlButtonResponse,
-        stimulus: `<div class="jspsych-speeded-matching-fixation">${text.fixation_cross}</div>`,
-        choices: [],
-        trial_duration: inter_trial_interval,
-        data: {
-          task: 'inter-trial-interval',
-          phase: 'main',
-        }
-      });
+      const fixationTrial = createFixationTrial(text, inter_trial_interval);
+      timeline.push(fixationTrial);
     }
   });
 
   // End screen
-  if (show_end_screen) timeline.push({
-    type: jsPsychHtmlButtonResponse,
-    stimulus: `
-      <div class="jspsych-speeded-matching-end-screen">
-        <h2>${text.task_complete_header}</h2>
-        <p>${text.task_complete_message}</p>
-      </div>
-    `,
-    choices: [text.end_button],
-    button_html: function(choice) {
-      return `<button class="jspsych-btn jspsych-speeded-matching-continue-button">${choice}</button>`;
-    },
-    data: {
-      task: 'end-screen',
-      phase: 'end',
-    }
-  });
+  if (show_end_screen) {
+    const endScreen = createEndScreen(text);
+    timeline.push(endScreen);
+  }
 
   return {
     timeline: timeline
@@ -446,7 +468,9 @@ export const timelineUnits = {
   createInstructions,
   createPracticeRound,
   createReadyScreen,
-  createTrialSet
+  createFixationTrial,
+  createTrialSet,
+  createEndScreen,
 }
 
 /**

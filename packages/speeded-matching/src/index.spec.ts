@@ -163,7 +163,7 @@ describe("Speeded Matching Task", () => {
       });
       
       const intervalTrial = timeline.timeline.find(
-        (item: any) => item.data?.task === 'inter-trial-interval'
+        (item: any) => item.data?.task === 'fixation'
       );
       expect(intervalTrial.trial_duration).toBe(customInterval);
     });
@@ -177,7 +177,7 @@ describe("Speeded Matching Task", () => {
       });
       
       const intervalTrials = timeline.timeline.filter(
-        (item: any) => item.data?.task === 'inter-trial-interval'
+        (item: any) => item.data?.task === 'fixation'
       );
       expect(intervalTrials).toHaveLength(0);
     });
@@ -191,7 +191,7 @@ describe("Speeded Matching Task", () => {
       });
       
       const intervalTrials = timeline.timeline.filter(
-        (item: any) => item.data?.task === 'inter-trial-interval'
+        (item: any) => item.data?.task === 'fixation'
       );
       expect(intervalTrials).toHaveLength(0);
     });
@@ -204,7 +204,7 @@ describe("Speeded Matching Task", () => {
       });
       
       const intervalTrials = timeline.timeline.filter(
-        (item: any) => item.data?.task === 'inter-trial-interval'
+        (item: any) => item.data?.task === 'fixation'
       );
       expect(intervalTrials).toHaveLength(0);
     });
