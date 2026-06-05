@@ -1,5 +1,5 @@
 import { initJsPsych } from "jspsych";
-import { createTimeline, timelineComponents, utils } from "./index";
+import { createTimeline, timelineUnits, utils } from "./index";
 
 // Mock jsPsych plugins
 jest.mock('@jspsych/plugin-html-keyboard-response', () => {
@@ -163,7 +163,7 @@ describe("stroop-task utility functions", () => {
 
 });
 
-describe("stroop-task timeline components", () => {
+describe("stroop-task timeline units", () => {
     let jsPsych;
 
     beforeEach(() => {
@@ -173,7 +173,7 @@ describe("stroop-task timeline components", () => {
     describe("createInstructions", () => {
         test("creates instructions with correct structure", () => {
             const instructionPages = ['<div>Page 1</div>', '<div>Page 2</div>'];
-            const instructions = timelineComponents.createInstructions(instructionPages);
+            const instructions = timelineUnits.createInstructions(instructionPages);
             expect(instructions).toHaveProperty('type');
             expect(instructions).toHaveProperty('pages');
             expect(instructions).toHaveProperty('show_clickable_nav');
@@ -182,7 +182,7 @@ describe("stroop-task timeline components", () => {
 
         test("has multiple pages with instructions", () => {
             const instructionPages = ['<div>Page 1</div>', '<div>Page 2</div>'];
-            const instructions = timelineComponents.createInstructions(instructionPages);
+            const instructions = timelineUnits.createInstructions(instructionPages);
             expect(Array.isArray(instructions.pages)).toBe(true);
             expect(instructions.pages.length).toBe(2);
         });
@@ -192,14 +192,14 @@ describe("stroop-task timeline components", () => {
                 '<div>Static page</div>',
                 (colors?: string[]) => `<div>Colors: ${colors?.join(', ')}</div>`
             ];
-            const instructions = timelineComponents.createInstructions(instructionPages, ['RED', 'BLUE']);
+            const instructions = timelineUnits.createInstructions(instructionPages, ['RED', 'BLUE']);
             expect(instructions.pages[0]).toBe('<div>Static page</div>');
             expect(instructions.pages[1]).toContain('RED, BLUE');
         });
 
         test("has proper HTML structure and navigation settings", () => {
             const instructionPages = ['<div><h1>Welcome</h1></div>'];
-            const instructions = timelineComponents.createInstructions(instructionPages);
+            const instructions = timelineUnits.createInstructions(instructionPages);
             const firstPage = instructions.pages[0];
             expect(firstPage).toMatch(/<div[^>]*>/);
             expect(firstPage).toMatch(/<h1[^>]*>/);
@@ -209,7 +209,7 @@ describe("stroop-task timeline components", () => {
 
         test("has correct data properties", () => {
             const instructionPages = ['<div>Page 1</div>'];
-            const instructions = timelineComponents.createInstructions(instructionPages);
+            const instructions = timelineUnits.createInstructions(instructionPages);
             expect(instructions.data.page).toBe('instructions');
         });
     });
@@ -217,7 +217,7 @@ describe("stroop-task timeline components", () => {
 
     describe("createFixation", () => {
         test("creates fixation cross with correct properties", () => {
-            const fixation = timelineComponents.createFixation(500, "+");
+            const fixation = timelineUnits.createFixation(500, "+");
             expect(fixation).toHaveProperty('type');
             expect(fixation).toHaveProperty('stimulus');
             expect(fixation).toHaveProperty('choices');
@@ -226,24 +226,24 @@ describe("stroop-task timeline components", () => {
         });
 
         test("has correct stimulus and choices", () => {
-            const fixation = timelineComponents.createFixation(500, "+");
+            const fixation = timelineUnits.createFixation(500, "+");
             expect(fixation.choices).toBe("NO_KEYS");
             expect(fixation.stimulus).toContain('+');
         });
 
         test("accepts custom duration", () => {
             const customDuration = 1000;
-            const fixation = timelineComponents.createFixation(customDuration, "+");
+            const fixation = timelineUnits.createFixation(customDuration, "+");
             expect(fixation.trial_duration).toBe(customDuration);
         });
 
         test("has correct data properties", () => {
-            const fixation = timelineComponents.createFixation(500, "+");
+            const fixation = timelineUnits.createFixation(500, "+");
             expect(fixation.data.page).toBe('fixation');
         });
 
         test("uses provided duration", () => {
-            const fixation = timelineComponents.createFixation(750, "+");
+            const fixation = timelineUnits.createFixation(750, "+");
             expect(fixation.trial_duration).toBe(750);
         });
     });
@@ -257,7 +257,7 @@ describe("stroop-task timeline components", () => {
         }];
 
         test("creates timeline with correct structure", () => {
-            const trials = timelineComponents.createStroopTrials(jsPsych, {
+            const trials = timelineUnits.createStroopTrials(jsPsych, {
                 trial_variables: mockStimuli,
                 is_practice: false
             });
@@ -268,7 +268,7 @@ describe("stroop-task timeline components", () => {
         });
 
         test("has correct timeline variables", () => {
-            const trials = timelineComponents.createStroopTrials(jsPsych, {
+            const trials = timelineUnits.createStroopTrials(jsPsych, {
                 trial_variables: mockStimuli,
                 is_practice: false
             });
@@ -276,11 +276,11 @@ describe("stroop-task timeline components", () => {
         });
 
         test("distinguishes practice from main trials", () => {
-            const practiceTrials = timelineComponents.createStroopTrials(jsPsych, {
+            const practiceTrials = timelineUnits.createStroopTrials(jsPsych, {
                 trial_variables: mockStimuli,
                 is_practice: true
             });
-            const mainTrials = timelineComponents.createStroopTrials(jsPsych, {
+            const mainTrials = timelineUnits.createStroopTrials(jsPsych, {
                 trial_variables: mockStimuli,
                 is_practice: false
             });
@@ -290,7 +290,7 @@ describe("stroop-task timeline components", () => {
         });
 
         test("includes fixation when enabled", () => {
-            const trials = timelineComponents.createStroopTrials(jsPsych, {
+            const trials = timelineUnits.createStroopTrials(jsPsych, {
                 trial_variables: mockStimuli,
                 is_practice: false,
                 include_fixation: true
@@ -300,7 +300,7 @@ describe("stroop-task timeline components", () => {
         });
 
         test("excludes fixation when disabled", () => {
-            const trials = timelineComponents.createStroopTrials(jsPsych, {
+            const trials = timelineUnits.createStroopTrials(jsPsych, {
                 trial_variables: mockStimuli,
                 is_practice: false,
                 include_fixation: false
@@ -309,7 +309,7 @@ describe("stroop-task timeline components", () => {
         });
 
         test("includes feedback for practice trials when enabled", () => {
-            const trials = timelineComponents.createStroopTrials(jsPsych, {
+            const trials = timelineUnits.createStroopTrials(jsPsych, {
                 trial_variables: mockStimuli,
                 is_practice: true,
                 show_practice_feedback: true
@@ -322,7 +322,7 @@ describe("stroop-task timeline components", () => {
     describe("createPracticeFeedback", () => {
         test("creates feedback trial", () => {
             const colors = ['RED', 'GREEN', 'BLUE'];
-            const feedback = timelineComponents.createPracticeFeedback(
+            const feedback = timelineUnits.createPracticeFeedback(
                 jsPsych,
                 colors,
                 'Correct!',
@@ -337,7 +337,7 @@ describe("stroop-task timeline components", () => {
 
         test("has correct choices and default duration", () => {
             const colors = ['RED', 'GREEN', 'BLUE'];
-            const feedback = timelineComponents.createPracticeFeedback(
+            const feedback = timelineUnits.createPracticeFeedback(
                 jsPsych,
                 colors,
                 'Correct!',
@@ -350,7 +350,7 @@ describe("stroop-task timeline components", () => {
 
         test("accepts custom feedback_timeout", () => {
             const colors = ['RED', 'GREEN', 'BLUE'];
-            const feedback = timelineComponents.createPracticeFeedback(
+            const feedback = timelineUnits.createPracticeFeedback(
                 jsPsych,
                 colors,
                 'Correct!',
@@ -363,7 +363,7 @@ describe("stroop-task timeline components", () => {
 
         test("has dynamic stimulus function", () => {
             const colors = ['RED', 'GREEN', 'BLUE'];
-            const feedback = timelineComponents.createPracticeFeedback(
+            const feedback = timelineUnits.createPracticeFeedback(
                 jsPsych,
                 colors,
                 'Correct!',
@@ -375,7 +375,7 @@ describe("stroop-task timeline components", () => {
 
         test("has correct data properties", () => {
             const colors = ['RED', 'GREEN', 'BLUE'];
-            const feedback = timelineComponents.createPracticeFeedback(
+            const feedback = timelineUnits.createPracticeFeedback(
                 jsPsych,
                 colors,
                 'Correct!',
@@ -388,7 +388,7 @@ describe("stroop-task timeline components", () => {
 
     describe("createPracticeDebrief", () => {
         test("creates debrief with correct properties", () => {
-            const debrief = timelineComponents.createPracticeDebrief(
+            const debrief = timelineUnits.createPracticeDebrief(
                 'Practice complete!',
                 'Start'
             );
@@ -399,7 +399,7 @@ describe("stroop-task timeline components", () => {
         });
 
         test("has correct choices", () => {
-            const debrief = timelineComponents.createPracticeDebrief(
+            const debrief = timelineUnits.createPracticeDebrief(
                 'Practice complete!',
                 'Start Experiment'
             );
@@ -408,7 +408,7 @@ describe("stroop-task timeline components", () => {
 
         test("uses provided stimulus text", () => {
             const customText = 'Custom practice debrief message';
-            const debrief = timelineComponents.createPracticeDebrief(
+            const debrief = timelineUnits.createPracticeDebrief(
                 customText,
                 'Continue'
             );
@@ -416,7 +416,7 @@ describe("stroop-task timeline components", () => {
         });
 
         test("has correct data properties", () => {
-            const debrief = timelineComponents.createPracticeDebrief(
+            const debrief = timelineUnits.createPracticeDebrief(
                 'Practice complete!',
                 'Start'
             );
@@ -426,7 +426,7 @@ describe("stroop-task timeline components", () => {
 
     describe("createResults", () => {
         test("creates results trial", () => {
-            const results = timelineComponents.createResults(
+            const results = timelineUnits.createResults(
                 jsPsych,
                 'Results: %congruentAccuracy%% accuracy'
             );
@@ -436,7 +436,7 @@ describe("stroop-task timeline components", () => {
         });
 
         test("has correct choices", () => {
-            const results = timelineComponents.createResults(
+            const results = timelineUnits.createResults(
                 jsPsych,
                 'Results: %congruentAccuracy%% accuracy'
             );
@@ -444,7 +444,7 @@ describe("stroop-task timeline components", () => {
         });
 
         test("has dynamic stimulus function", () => {
-            const results = timelineComponents.createResults(
+            const results = timelineUnits.createResults(
                 jsPsych,
                 'Results: %congruentAccuracy%% accuracy'
             );
@@ -452,7 +452,7 @@ describe("stroop-task timeline components", () => {
         });
 
         test("has correct data properties", () => {
-            const results = timelineComponents.createResults(
+            const results = timelineUnits.createResults(
                 jsPsych,
                 'Results: %congruentAccuracy%% accuracy'
             );

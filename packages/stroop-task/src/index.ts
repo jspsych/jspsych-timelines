@@ -175,6 +175,9 @@ function generateStimuli(
 
   const congruentStimuli = stimuli.filter((stimulus) => stimulus.congruent);
   const incongruentStimuli = stimuli.filter((stimulus) => !stimulus.congruent);
+  if (congruentStimuli.length === 0 || incongruentStimuli.length === 0) {
+    throw new Error("stroop-task: At least one congruent and one incongruent stimulus must be generated. Check colorNames and colorValues inputs.");
+  }
 
   // Randomly select the specified number of trials,
   // selecting each stimulus the same number of times if possible
@@ -593,7 +596,7 @@ export function createTimeline(
 }
 
 /* Export individual components for custom timeline building */
-export const timelineComponents = {
+export const timelineUnits = {
   createInstructions,
   createFixation,
   createStroopTrials,

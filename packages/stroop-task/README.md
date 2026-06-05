@@ -45,7 +45,7 @@ const {
   createPracticeFeedback,
   createPracticeDebrief,
   createResults,
-} = jsPsychTimelineStroopTask.timelineComponents;
+} = jsPsychTimelineStroopTask.timelineUnits;
 ```
 
 - `createInstructions(instructionsText, colors?)` — creates the instruction pages trial
