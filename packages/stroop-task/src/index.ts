@@ -175,12 +175,11 @@ function generateStimuli(
 
   const congruentStimuli = stimuli.filter((stimulus) => stimulus.congruent);
   const incongruentStimuli = stimuli.filter((stimulus) => !stimulus.congruent);
-  if (congruentStimuli.length === 0 || incongruentStimuli.length === 0) {
-    throw new Error("stroop-task: At least one congruent and one incongruent stimulus must be generated. Check colorNames and colorValues inputs.");
-  }
 
   // Randomly select the specified number of trials,
   // selecting each stimulus the same number of times if possible
+
+  // a 0/0 is silently handled by jsPsych's repeat by returning an empty array.
   let result: StroopStimulus[] = [];
   const completeCongruentSets = Math.floor(congruent_trials / congruentStimuli.length);
   result.push(...jsPsych.randomization.repeat(congruentStimuli, completeCongruentSets));
