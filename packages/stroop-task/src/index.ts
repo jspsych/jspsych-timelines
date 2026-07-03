@@ -339,8 +339,7 @@ function createStroopTrials(
     button_layout: "grid",
     grid_rows: number_of_rows,
     grid_columns: number_of_columns,
-    button_html: (choice) =>
-      `<div class="jspsych-stroop-task-response-button">${choice}</div>`,
+    button_html: text.response_button_html,
     margin_horizontal: "20px",
     margin_vertical: "20px",
     trial_duration: trial_timeout || null,

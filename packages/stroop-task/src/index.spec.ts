@@ -1,5 +1,6 @@
 import { initJsPsych } from "jspsych";
 import { createTimeline, timelineUnits, utils } from "./index";
+import { defaultText } from "./text";
 
 // Mock jsPsych plugins
 jest.mock('@jspsych/plugin-html-keyboard-response', () => {
@@ -317,6 +318,33 @@ describe("stroop-task timeline units", () => {
             expect(Array.isArray(trials.timeline)).toBe(true);
             expect(trials.timeline.length).toBeGreaterThan(1);
         });
+
+        test("uses the default response_button_html for response buttons", () => {
+            const trials = timelineUnits.createStroopTrials(jsPsych, {
+                trial_variables: mockStimuli,
+                is_practice: false
+            });
+            const wordTrial = trials.timeline.find((t: any) => t.data && t.data.page === 'word');
+            expect(typeof wordTrial.button_html).toBe('function');
+            expect(wordTrial.button_html('RED', 0)).toBe(
+                '<div class="jspsych-stroop-task-response-button">RED</div>'
+            );
+        });
+
+        test("uses a custom response_button_html when provided via text", () => {
+            const custom = (choice: string, choice_index: number) =>
+                `<button class="custom-btn" data-index="${choice_index}">${choice}</button>`;
+            const trials = timelineUnits.createStroopTrials(jsPsych, {
+                trial_variables: mockStimuli,
+                is_practice: false,
+                text: { ...defaultText, response_button_html: custom }
+            });
+            const wordTrial = trials.timeline.find((t: any) => t.data && t.data.page === 'word');
+            expect(wordTrial.button_html).toBe(custom);
+            expect(wordTrial.button_html('BLUE', 2)).toBe(
+                '<button class="custom-btn" data-index="2">BLUE</button>'
+            );
+        });
     });
 
     describe("createPracticeFeedback", () => {
@@ -577,6 +605,24 @@ describe("stroop-task full timeline", () => {
     test("has correct task data", () => {
         const timeline = createTimeline(jsPsych);
         expect(timeline.data.task).toBe('stroop');
+    });
+
+    test("propagates a custom response_button_html to the response trial", () => {
+        const custom = (choice: string, choice_index: number) =>
+            `<span data-i="${choice_index}">${choice}</span>`;
+        const timeline = createTimeline(jsPsych, {
+            show_instructions: false,
+            show_results: false,
+            congruent_practice_trials: 0,
+            incongruent_practice_trials: 0,
+            trial_text: { response_button_html: custom }
+        });
+        const wordTrial = timeline.timeline
+            .flatMap((entry: any) => entry.timeline || [entry])
+            .find((t: any) => t.data && t.data.page === 'word');
+        expect(wordTrial).toBeDefined();
+        expect(wordTrial.button_html).toBe(custom);
+        expect(wordTrial.button_html('GREEN', 1)).toBe('<span data-i="1">GREEN</span>');
     });
 
     test("handles edge case parameters", () => {

@@ -8,6 +8,8 @@
 .jspsych-stroop-task-stimulus {
     font-size: 48px;
     font-weight: bold;
+    line-height: 1.2;
+    margin-bottom: 40px;
     user-select: none;
     -webkit-user-select: none;
 }

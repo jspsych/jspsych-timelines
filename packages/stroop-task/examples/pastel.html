@@ -9,7 +9,7 @@
 <script src="https://unpkg.com/stroop-timeline"></script>
 <script src="../dist/index.global.js"></script> -->
   <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css">
-  <link rel="stylesheet" href="../src/style.css">
+  <link rel="stylesheet" href="../src/styles.css">
 </head>
 
 <body></body>
@@ -19,7 +19,7 @@
       incongruent_practice_trials: 0,                  // Number of incongruent practice
       congruent_main_trials: 4,                        // Number of congruent main trials
       incongruent_main_trials: 4,                      // Number of incongruent main trials
-      trial_timeout: 2000,                             // Time limit for each trial (milliseconds)
+      trial_timeout: 900000,                             // Time limit for each trial (milliseconds)
       fixation_duration: {                             // Fixation cross duration range
         min: 300,                                      // Minimum duration (milliseconds)
         max: 1500                                      // Maximum duration (milliseconds)
@@ -39,10 +39,15 @@
       ],
       color_values: [                                   // Array of CSS color values corresponding to colors
         '#FF6961', // Pastel Red
-        '#77DD77', // Pastel Green
         '#AEC6CF', // Pastel Blue
+        '#77DD77', // Pastel Green
         '#FDFD96'  // Pastel Yellow
-      ]
+      ],
+      trial_text: {
+        // Color each button's label with its own choice color
+        response_button_html: (choice, choice_index) =>
+          `<div class="jspsych-stroop-task-response-button" style="color: ${taskConfig.color_values[choice_index]};">${choice}</div>`
+      }
     };
   const jsPsych = initJsPsych({
     on_finish: function() {

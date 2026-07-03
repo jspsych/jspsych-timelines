@@ -96,6 +96,7 @@ Pass any subset of these keys to `trial_text` to override the defaults:
 | `continue_button` | string | Label for the continue button on the feedback screen. Default: `"Continue"` |
 | `practice_debrief` | string | HTML content for the screen shown between practice and the main experiment. |
 | `fixation` | string | Content rendered inside the fixation element. Default: `"+"` |
+| `response_button_html` | `(choice: string, choice_index: number) => string` | Function returning the HTML for each response button. |
 | `start_button` | string | Label for the button that starts the main experiment after the practice debrief. Default: `"Start"` |
 | `finish_button` | string | Label for the button on the results screen. Default: `"Finish"` |
 | `results` | string | HTML template for the results screen. Supports placeholders: `%congruentAccuracy%`, `%congruentRt%`, `%incongruentAccuracy%`, `%incongruentRt%`, `%stroopEffect%` |

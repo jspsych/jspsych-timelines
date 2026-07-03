@@ -75,6 +75,9 @@ export const defaultText = {
         `,
     /** HTML content for the fixation cross stimulus */
     fixation: "+",
+    /** Function to generate the button HTML for the Stroop tasks. */
+    response_button_html: (choice: string, choice_index: number) =>
+        `<div class="jspsych-stroop-task-response-button">${choice}</div>`,
     /** Text for the start button after practice debrief */
     start_button: "Start",
     /** Text for the finish button on the results screen */
