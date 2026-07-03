@@ -1,4 +1,20 @@
 /**
+ * Metrics passed to the `results` text function.
+ */
+export interface StroopResultsStats {
+    /** Percentage of congruent trials answered correctly */
+    congruentAccuracy: number;
+    /** Mean response time (ms) on correct congruent trials */
+    congruentRt: number;
+    /** Percentage of incongruent trials answered correctly */
+    incongruentAccuracy: number;
+    /** Mean response time (ms) on correct incongruent trials */
+    incongruentRt: number;
+    /** Stroop effect (ms): incongruentRt − congruentRt */
+    stroopEffect: number;
+}
+
+/**
  * Default text content for the Stroop task.
  * Contains all instruction pages, feedback messages, and result templates.
  */
@@ -48,15 +64,18 @@ export const defaultText = {
             <p>Try to go as fast and as accurately as possible.</p>
         </div>`
     ],
-    /** HTML content displayed for correct responses during practice trials
-     * Use %ANSWER% placeholder which will be replaced with the correct color name.
+    /**
+     * Function returning the HTML shown after a correct practice response.
+     * Receives the correct color name (`answer`) and returns an HTML string.
      */
-    correct_feedback: `<div style="font-size: 24px; text-align: center;"><p>✓ CORRECT!</p></div>`,
-    /** 
-     * HTML content displayed for incorrect responses during practice trials.
-     * Use %ANSWER% placeholder which will be replaced with the correct color name.
+    correct_feedback: (answer: string) =>
+        `<div style="font-size: 24px; text-align: center;"><p>✓ CORRECT!</p></div>`,
+    /**
+     * Function returning the HTML shown after an incorrect practice response.
+     * Receives the correct color name (`answer`) and returns an HTML string.
      */
-    incorrect_feedback: `<div style="font-size: 24px; text-align: center;"><p>✗ INCORRECT. The correct answer was %ANSWER%.</p></div>`,
+    incorrect_feedback: (answer: string) =>
+        `<div style="font-size: 24px; text-align: center;"><p>✗ INCORRECT. The correct answer was ${answer.toUpperCase()}.</p></div>`,
     /** Text for the continue button in feedback screens */
     continue_button: "Continue",
     /** HTML content for the screen shown between practice and main experiment */
@@ -83,16 +102,16 @@ export const defaultText = {
     /** Text for the finish button on the results screen */
     finish_button: "Finish",
     /**
-     * HTML template for results display. Supports placeholders:
-     * %congruentAccuracy%, %congruentRt%, %incongruentAccuracy%, %incongruentRt%, %stroopEffect%
+     * Function returning the HTML for the results screen.
+     * Receives a {@link StroopResultsStats} object with the computed metrics.
      */
-    results: `
+    results: (stats: StroopResultsStats) => `
                 <div style="text-align: center; max-width: 600px; margin: 0 auto;">
                     <h2>Experiment Complete!</h2>
                     <div style="text-align: left; background-color: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0;">
-                        <p><strong>Congruent trials:</strong> %congruentAccuracy%% correct, %congruentRt%ms average</p>
-                        <p><strong>Incongruent trials:</strong> %incongruentAccuracy%% correct, %incongruentRt%ms average</p>
-                        <p><strong>Stroop Effect:</strong> %stroopEffect%ms</p>
+                        <p><strong>Congruent trials:</strong> ${stats.congruentAccuracy}% correct, ${stats.congruentRt}ms average</p>
+                        <p><strong>Incongruent trials:</strong> ${stats.incongruentAccuracy}% correct, ${stats.incongruentRt}ms average</p>
+                        <p><strong>Stroop Effect:</strong> ${stats.stroopEffect}ms</p>
                     </div>
                     <p>Thank you for participating!</p>
                 </div>

@@ -3,7 +3,7 @@ import jsPsychHtmlKeyboardResponse from "@jspsych/plugin-html-keyboard-response"
 import jsPsychInstructions from "@jspsych/plugin-instructions";
 import { JsPsych } from "jspsych";
 
-import { defaultText } from "./text";
+import { defaultText, type StroopResultsStats } from "./text";
 
 /**
  * Configuration options for the Stroop task timeline.
@@ -379,16 +379,16 @@ function createStroopTrials(
  * Creates a feedback trial for practice sessions.
  * @param jsPsych - The jsPsych instance
  * @param selectedColors - Array of color names used in the task
- * @param correctText - HTML content to display for correct responses
- * @param incorrectText - HTML content to display for incorrect responses (use %ANSWER% placeholder)
+ * @param correctText - Function returning HTML for correct responses; receives the correct color name
+ * @param incorrectText - Function returning HTML for incorrect responses; receives the correct color name
  * @param continueBtnText - Text for the continue button
  * @returns jsPsych trial object for feedback display
  */
 function createPracticeFeedback(
   jsPsych: JsPsych,
   selectedColors: string[],
-  correctText: string,
-  incorrectText: string,
+  correctText: (answer: string) => string,
+  incorrectText: (answer: string) => string,
   continueBtnText: string,
   feedbackTimeout: number = 2000
 ) {
@@ -399,9 +399,9 @@ function createPracticeFeedback(
       const correctColorName = selectedColors[lastTrial.correct_response];
 
       if (lastTrial.correct) {
-        return correctText.replace("%ANSWER%", correctColorName.toUpperCase());
+        return correctText(correctColorName);
       } else {
-        return incorrectText.replace("%ANSWER%", correctColorName.toUpperCase());
+        return incorrectText(correctColorName);
       }
     },
     choices: [continueBtnText],
@@ -439,10 +439,14 @@ function createPracticeDebrief(practiceDebriefText: string, continueBtnText: str
  * Ensure that trial data is properly marked with `page: "word"` and `task: "stroop"` for this to work correctly. 
  * 
  * @param jsPsych - The jsPsych instance for accessing trial data
- * @param text - HTML template for results display (supports placeholders for metrics)
+ * @param text - Function returning the results HTML; receives the computed metrics
  * @returns jsPsych trial object for results display
  */
-function createResults(jsPsych: JsPsych, text: string, finishButtonText: string = "Finish") {
+function createResults(
+  jsPsych: JsPsych,
+  text: (stats: StroopResultsStats) => string,
+  finishButtonText: string = "Finish"
+) {
   const results = {
     type: jsPsychHtmlButtonResponse,
     choices: [finishButtonText],
@@ -477,14 +481,13 @@ function createResults(jsPsych: JsPsych, text: string, finishButtonText: string 
 
       const stroopEffect = incongruentRt - congruentRt;
 
-      const resultsText = text
-        .replace("%congruentAccuracy%", congruentAccuracy.toString())
-        .replace("%congruentRt%", congruentRt.toString())
-        .replace("%incongruentAccuracy%", incongruentAccuracy.toString())
-        .replace("%incongruentRt%", incongruentRt.toString())
-        .replace("%stroopEffect%", stroopEffect.toString());
-
-      return resultsText;
+      return text({
+        congruentAccuracy,
+        congruentRt,
+        incongruentAccuracy,
+        incongruentRt,
+        stroopEffect,
+      });
     },
     data: {
       page: "results",

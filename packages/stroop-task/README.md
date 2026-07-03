@@ -91,15 +91,15 @@ Pass any subset of these keys to `trial_text` to override the defaults:
 | Key | Type | Description |
 | ------------------- | ------ | --------------------------------------------------------- |
 | `instructions` | `(string \| ((colors?: string[]) => string))[]` | Array of instruction pages. Each entry is an HTML string or a function that receives the `colors` array and returns an HTML string. |
-| `correct_feedback` | string | HTML shown after a correct practice response. Use `%ANSWER%` as a placeholder for the correct color name. |
-| `incorrect_feedback` | string | HTML shown after an incorrect practice response. Use `%ANSWER%` as a placeholder for the correct color name. |
+| `correct_feedback` | `(answer: string) => string` | Function returning the HTML shown after a correct practice response. Receives the correct color name (`answer`). |
+| `incorrect_feedback` | `(answer: string) => string` | Function returning the HTML shown after an incorrect practice response. Receives the correct color name (`answer`), which the default renders uppercased. |
 | `continue_button` | string | Label for the continue button on the feedback screen. Default: `"Continue"` |
 | `practice_debrief` | string | HTML content for the screen shown between practice and the main experiment. |
 | `fixation` | string | Content rendered inside the fixation element. Default: `"+"` |
 | `response_button_html` | `(choice: string, choice_index: number) => string` | Function returning the HTML for each response button. |
 | `start_button` | string | Label for the button that starts the main experiment after the practice debrief. Default: `"Start"` |
 | `finish_button` | string | Label for the button on the results screen. Default: `"Finish"` |
-| `results` | string | HTML template for the results screen. Supports placeholders: `%congruentAccuracy%`, `%congruentRt%`, `%incongruentAccuracy%`, `%incongruentRt%`, `%stroopEffect%` |
+| `results` | `(stats: StroopResultsStats) => string` | Function returning the HTML for the results screen. Receives a `StroopResultsStats` object with `congruentAccuracy`, `congruentRt`, `incongruentAccuracy`, `incongruentRt`, and `stroopEffect` (accuracies as percentages; RTs and Stroop effect in ms). |
 
 ### StroopTrialOptions Interface
 
@@ -195,8 +195,8 @@ jsPsych.run([timeline]);
 const timeline = createTimeline(jsPsych, {
   trial_text: {
     fixation: "●",
-    correct_feedback: "<p>Correct!</p>",
-    incorrect_feedback: "<p>Incorrect. The correct answer was %ANSWER%.</p>",
+    correct_feedback: () => "<p>Correct!</p>",
+    incorrect_feedback: (answer) => `<p>Incorrect. The correct answer was ${answer}.</p>`,
     finish_button: "Done",
   },
 });

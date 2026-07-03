@@ -353,8 +353,8 @@ describe("stroop-task timeline units", () => {
             const feedback = timelineUnits.createPracticeFeedback(
                 jsPsych,
                 colors,
-                'Correct!',
-                'Incorrect. The answer was %ANSWER%',
+                () => 'Correct!',
+                (answer: string) => `Incorrect. The answer was ${answer}`,
                 'Continue'
             );
             expect(feedback).toHaveProperty('type');
@@ -368,8 +368,8 @@ describe("stroop-task timeline units", () => {
             const feedback = timelineUnits.createPracticeFeedback(
                 jsPsych,
                 colors,
-                'Correct!',
-                'Incorrect. The answer was %ANSWER%',
+                () => 'Correct!',
+                (answer: string) => `Incorrect. The answer was ${answer}`,
                 'Continue'
             );
             expect(feedback.choices).toEqual(['Continue']);
@@ -381,8 +381,8 @@ describe("stroop-task timeline units", () => {
             const feedback = timelineUnits.createPracticeFeedback(
                 jsPsych,
                 colors,
-                'Correct!',
-                'Incorrect. The answer was %ANSWER%',
+                () => 'Correct!',
+                (answer: string) => `Incorrect. The answer was ${answer}`,
                 'Continue',
                 3500
             );
@@ -394,8 +394,8 @@ describe("stroop-task timeline units", () => {
             const feedback = timelineUnits.createPracticeFeedback(
                 jsPsych,
                 colors,
-                'Correct!',
-                'Incorrect. The answer was %ANSWER%',
+                () => 'Correct!',
+                (answer: string) => `Incorrect. The answer was ${answer}`,
                 'Continue'
             );
             expect(typeof feedback.stimulus).toBe('function');
@@ -406,8 +406,8 @@ describe("stroop-task timeline units", () => {
             const feedback = timelineUnits.createPracticeFeedback(
                 jsPsych,
                 colors,
-                'Correct!',
-                'Incorrect. The answer was %ANSWER%',
+                () => 'Correct!',
+                (answer: string) => `Incorrect. The answer was ${answer}`,
                 'Continue'
             );
             expect(feedback.data.page).toBe('feedback');
@@ -456,7 +456,7 @@ describe("stroop-task timeline units", () => {
         test("creates results trial", () => {
             const results = timelineUnits.createResults(
                 jsPsych,
-                'Results: %congruentAccuracy%% accuracy'
+                (stats: any) => `Results: ${stats.congruentAccuracy}% accuracy`
             );
             expect(results).toHaveProperty('type');
             expect(results).toHaveProperty('stimulus');
@@ -466,7 +466,7 @@ describe("stroop-task timeline units", () => {
         test("has correct choices", () => {
             const results = timelineUnits.createResults(
                 jsPsych,
-                'Results: %congruentAccuracy%% accuracy'
+                (stats: any) => `Results: ${stats.congruentAccuracy}% accuracy`
             );
             expect(results.choices).toEqual(['Finish']);
         });
@@ -474,7 +474,7 @@ describe("stroop-task timeline units", () => {
         test("has dynamic stimulus function", () => {
             const results = timelineUnits.createResults(
                 jsPsych,
-                'Results: %congruentAccuracy%% accuracy'
+                (stats: any) => `Results: ${stats.congruentAccuracy}% accuracy`
             );
             expect(typeof results.stimulus).toBe('function');
         });
@@ -482,7 +482,7 @@ describe("stroop-task timeline units", () => {
         test("has correct data properties", () => {
             const results = timelineUnits.createResults(
                 jsPsych,
-                'Results: %congruentAccuracy%% accuracy'
+                (stats: any) => `Results: ${stats.congruentAccuracy}% accuracy`
             );
             expect(results.data.page).toBe('results');
         });
@@ -634,5 +634,36 @@ describe("stroop-task full timeline", () => {
                 incongruent_main_trials: 1,
             });
         }).not.toThrow();
+    });
+});
+
+describe("defaultText function-based content", () => {
+    test("incorrect_feedback injects the uppercased answer", () => {
+        const html = defaultText.incorrect_feedback('blue');
+        expect(html).toContain('BLUE');
+        expect(html).not.toContain('%ANSWER%');
+    });
+
+    test("correct_feedback returns HTML and accepts an answer argument", () => {
+        const html = defaultText.correct_feedback('blue');
+        expect(html).toContain('CORRECT');
+        expect(html).not.toContain('%ANSWER%');
+    });
+
+    test("results injects all metrics and leaves no placeholders", () => {
+        const html = defaultText.results({
+            congruentAccuracy: 95,
+            congruentRt: 700,
+            incongruentAccuracy: 80,
+            incongruentRt: 850,
+            stroopEffect: 150,
+        });
+        expect(html).toContain('95% correct');
+        expect(html).toContain('700ms average');
+        expect(html).toContain('80% correct');
+        expect(html).toContain('850ms average');
+        expect(html).toContain('150ms');
+        expect(html).not.toContain('%congruentAccuracy%');
+        expect(html).not.toContain('%stroopEffect%');
     });
 });
