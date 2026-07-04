@@ -1,6 +1,6 @@
 {
     "name": "@jspsych-timelines/hearts-and-flowers",
-    "version": "0.0.1",
+    "version": "0.1.0",
     "description": "Implementation of the Hearts and Flowers task, which tests executive function.",
     "type": "module",
     "main": "dist/index.js",
