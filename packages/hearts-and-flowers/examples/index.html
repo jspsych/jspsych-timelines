@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>jsPsychTimelineHeartsAndFlowers Example</title>
+    <script src="https://unpkg.com/jspsych"></script>
+    <script src="../dist/index.global.js"></script>
+    <!-- Once this timeline package is published, it can be loaded via
+<script src="https://unpkg.com/@jspsych-timelines/hearts-and-flowers"></script> -->
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/jspsych/css/jspsych.css" />
+  </head>
+
+  <body></body>
+  <script>
+    const jsPsych = initJsPsych({
+      on_finish: () => jsPsych.data.displayData(),
+    });
+
+    const task = jsPsychTimelineHeartsAndFlowers.createTimeline(jsPsych, { 
+      n_trials: 5
+    });
+
+    jsPsych.run([task])
+  </script>
+</html>

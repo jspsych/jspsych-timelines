@@ -1,0 +1,43 @@
+{
+  "name": "@jspsych-timelines/columbia-card",
+  "version": "0.1.0",
+  "description": "The Columbia Card Task measures risk preferences through choices in a card game.",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "unpkg": "dist/index.global.js",
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,iife,cjs --sourcemap --dts --treeshake --clean --global-name jsPsychTimelineColumbiaCard && node -e \"const fs = require('fs'); const path = require('path'); function copyDir(src, dest) { if (!fs.existsSync(dest)) fs.mkdirSync(dest, {recursive: true}); fs.readdirSync(src).forEach(file => { const srcFile = path.join(src, file); const destFile = path.join(dest, file); if (fs.lstatSync(srcFile).isDirectory()) copyDir(srcFile, destFile); else fs.copyFileSync(srcFile, destFile); }); } copyDir('src/css', 'dist/css');\"",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jspsych/jspsych-timelines/",
+    "directory": "packages"
+  },
+  "keywords": [
+    "jsPsych"
+  ],
+  "author": {
+    "name": "A. Hunter Farhat",
+    "url": "https://github.com/farhat60"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jspsych/jspsych-timelines/issues"
+  },
+  "homepage": "https://github.com/jspsych/jspsych-timelines/packages/columbia-card/README.md",
+  "devDependencies": {
+    "jspsych": "^8.0.0",
+    "@jspsych/config": "^3.2.2",
+    "tsup": "^6.7.0",
+    "typescript": "^5.0.2"
+  },
+  "dependencies": {
+    "@jspsych-contrib/plugin-columbia-card-task": "^1.0.0",
+    "@jspsych/plugin-html-button-response": "^2.0.0",
+    "@jspsych/plugin-instructions": "^2.0.0"
+  }
+}

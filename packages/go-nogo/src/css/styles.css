@@ -1,0 +1,203 @@
+/* ========================================
+   GENERAL STYLES- for go-nogo elements inside of the go-nogo container (all trials except for fixation)
+======================================== */
+
+.jspsych-go-nogo-container h1, .jspsych-go-nogo-container h2, .jspsych-go-nogo-container h3 { /* From: spatial-nback-styles.css */
+    line-height: 1;
+    margin: 0vmin;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+/* single big letter */
+.jspsych-go-nogo-container h1 {
+    font-size: clamp(40px, 55vmin, 300px);
+}
+
+/* can be used for a big word*/
+.jspsych-go-nogo-container h2 {
+    font-size: clamp(40px, 16vmin, 160px);
+}
+
+.jspsych-go-nogo-container p { /* From: spatial-nback-styles.css */
+    margin: 5vmin 0;
+    font-size: clamp(15px, 5vmin, 120px);
+    line-height: 1.5;    
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+    max-width: 95%;
+    box-sizing: border-box;
+    justify-self: center;
+}
+
+/* ========================================
+   TIMELINE CONTAINERS
+======================================== */
+
+/* INSTRUCTIONS PHASE */
+.jspsych-go-nogo-container .timeline-instructions { /* From: spatial-nback-styles.css exactly */
+    max-width: 90vw; /* Limit width for better readability */
+    margin: 0 auto; /* Center the container */
+    padding: 2vmin; /* Add some padding */
+    box-sizing: border-box; /* Include padding in width calculations */
+    overflow-x: hidden; /* Prevent horizontal overflow */
+}
+
+/* bigger font */
+.jspsych-go-nogo-container .timeline-instructions p {
+    font-size: clamp(15px, 7vmin, 100px);
+}
+
+/* Main trial container - stimulus display area */
+.jspsych-go-nogo-container .timeline-trial {
+    width: 100vw;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    font-weight: bold;
+    /* Consider removing margin */
+    margin: clamp(5px, 3vh, 80px) 0;
+}
+
+/* ========================================
+   BUTTONS
+======================================== */
+
+/* Fixed button container at bottom of screen */
+.jspsych-go-nogo-container .jspsych-btn-group-grid, .jspsych-go-nogo-container .timeline-btn-container { /* From: stroop-styles.css + columbia-card-styles.css */
+    position: fixed;
+    bottom: 2.5vh;
+    left: 50% !important;
+    transform: translateX(-50%);
+    z-index: 1000;
+    width: 95vw;
+    max-width: none;
+    height: 20vh; 
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-end;
+    margin: 0;
+}
+
+/* Primary button styling */
+.jspsych-go-nogo-container .jspsych-btn { /* From: spatial-nback-styles.css exactly */
+    font-size: clamp(20px, 4vmin, 60px);
+    flex: 1 30vw;
+    padding: clamp(15px, 6vmin, 35px) clamp(15px, 4vmin, 40px);
+    max-height: 15vh; /* was 10vh if padding is too much */
+    color: hsl(0, 0%, 100%);
+    background-color: rgb(77, 77, 77) !important;
+    font-weight: 600;
+    transition: background-color 0.2s ease;
+    margin: 1vmin;
+    place-content: center; /* Center text vertically (and horizontally) */
+    /* Disable double-click zoom */
+    touch-action: manipulation;
+    user-select: none;
+}
+
+/* go-nogo feedback container to not go under button */
+.jspsych-go-nogo-container .go-nogo-feedback {
+    margin: 2vh 0 5vh 0;
+}
+
+.jspsych-go-nogo-container .jspsych-btn:hover { /* From: columbia-card-styles.css */
+    background-color: rgb(97, 97, 97);
+    transform: translateY(-2px);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+}
+
+.jspsych-go-nogo-container .jspsych-btn:active { /* From: columbia-card-styles.css */
+    background-color: rgb(57, 57, 57);
+    transform: translateY(1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.jspsych-go-nogo-container .jspsych-btn:disabled { /* From: columbia-card-styles.css */
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Continue button variant */
+.jspsych-go-nogo-container .continue-button { /* From: spatial-nback-styles.css */
+    padding: clamp(15px, 6vmin, 35px) clamp(15px, 8vmin, 40px);
+    font-size: clamp(15px, 6vmin, 35px);
+    border-radius: 1vmin;
+    cursor: pointer;
+    margin: 2vmin;
+    margin-top: 10vh;
+    transition: background-color 0.3s;
+    min-height: 48px;
+    touch-action: manipulation !important;
+    user-select: none !important;
+}
+
+/* ========================================
+   INSTRUCTION NAVIGATION
+======================================== */
+
+/* Mobile-friendly instruction navigation buttons */
+.jspsych-go-nogo-container .jspsych-instructions-nav {
+    display: flex;
+    gap: 25vw;
+    justify-content: center;
+    position: absolute;
+    bottom: 2.5vh;
+    left: 50%;
+    transform: translateX(-50%);
+    align-items: flex-end;
+}
+
+/* Instruction navigation button styles */
+.jspsych-go-nogo-container .jspsych-instructions-nav .jspsych-btn {
+    height: 25vmin;
+    border: 3px solid #000000;
+    border-radius: 50%;
+    font-size: clamp(15px, 7vmin, 35px);
+    cursor: pointer;
+    min-height: 100px;
+    min-width: 100px;
+    aspect-ratio: 1;
+    font-weight: 600;
+    max-height: 16vmin;
+
+    /* Disable double-click zoom */
+    touch-action: manipulation !important;
+    user-select: none !important;
+}
+
+/* For the left button on first page, keep space but hide button */
+.jspsych-go-nogo-container .jspsych-instructions-nav .jspsych-btn:disabled {
+    visibility: hidden;
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+======================================== */
+
+/* Landscape mode adjustment, targeting landscape phone issues */
+@media (orientation: landscape) {
+    /* make text smaller */
+    .jspsych-go-nogo-container p {
+        font-size: clamp(15px, 4vmin, 60px);
+    }
+
+    /* go-nogo, make text smaller sideways */
+    @media (max-width: 940px) { .jspsych-go-nogo-container h1 {
+        font-size: revert;
+    } }
+
+    .jspsych-go-nogo-container .jspsych-btn { /* reduce padding and font size on small screens */
+        padding: clamp(5px, 3.5vmin, 35px) clamp(15px, 4vmin, 40px);
+    }
+}

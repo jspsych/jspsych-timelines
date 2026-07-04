@@ -15,8 +15,7 @@
     "prepare": "husky install",
     "changeset": "changeset",
     "changeset:version": "changeset version && npm install && npm run update-unpkg-links && npm run update-readme",
-    "changeset:publish": "npm run build && changeset publish",
-    "new": "node templates/cli/src/index.js"
+    "changeset:publish": "npm run build && changeset publish"
   },
   "devDependencies": {
     "@changesets/changelog-github": "^0.4.0",
@@ -54,7 +53,10 @@
     "chokidar": "^3.6.0",
     "gulp": "^5.0.0",
     "gulp-replace": "^1.1.4",
-    "jspsych": "^8.0.2",
+    "jspsych": "^8.2.1",
     "run-func": "^3.0.0"
+  },
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "*"
   }
 }

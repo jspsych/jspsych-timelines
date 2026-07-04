@@ -1,0 +1,67 @@
+{
+    "name": "@jspsych-timelines/go-nogo",
+    "version": "0.5.0",
+    "description": "A complete Go/No-Go task implementation for jsPsych measuring response inhibition and sustained attention. Includes interactive practice, configurable parameters, and comprehensive data collection.",
+    "type": "module",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "unpkg": "dist/index.global.js",
+    "exports": {
+        ".": {
+            "import": "./dist/index.js",
+            "require": "./dist/index.cjs"
+        },
+        "./styles.css": "./dist/css/styles.css"
+    },
+    "files": [
+        "src",
+        "dist"
+    ],
+    "scripts": {
+        "build": "tsup src/index.ts --format esm,iife,cjs --sourcemap --dts --treeshake --clean --global-name jsPsychTimelineGoNoGo && node -e \"const fs = require('fs'); const path = require('path'); function copyDir(src, dest) { if (!fs.existsSync(dest)) fs.mkdirSync(dest, {recursive: true}); fs.readdirSync(src).forEach(file => { const srcFile = path.join(src, file); const destFile = path.join(dest, file); if (fs.lstatSync(srcFile).isDirectory()) copyDir(srcFile, destFile); else fs.copyFileSync(srcFile, destFile); }); } copyDir('src/css', 'dist/css');\"",
+        "test": "jest",
+        "test:watch": "jest --watch",
+        "test:coverage": "jest --coverage"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/jspsych/jspsych-timelines",
+        "directory": "packages/go-nogo"
+    },
+    "keywords": [
+        "jsPsych"
+    ],
+    "author": {
+        "name": "URSI 2025 Team",
+        "url": "https://example.com"
+    },
+    "contributors": [
+        {
+            "name": "Caroline Griem",
+            "url": "https://github.com/caroline-griem"
+        },
+        {
+            "name": "Abdullah Hunter Farhat",
+            "url": "https://github.com/farhat60"
+        }
+    ],
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/jspsych/jspsych-timelines/issues"
+    },
+    "homepage": "/@jspsych-timelines/go-nogo/README.md",
+    "devDependencies": {
+        "@jspsych/config": "^3.2.2",
+        "@types/jest": "^29.5.0",
+        "jest": "^29.5.0",
+        "jest-environment-jsdom": "^29.5.0",
+        "jspsych": "^8.0.0",
+        "ts-jest": "^29.1.0",
+        "tsup": "^6.7.0",
+        "typescript": "^5.0.2"
+    },
+    "dependencies": {
+        "@jspsych/plugin-html-button-response": "^2.1.0",
+        "@jspsych/plugin-instructions": "^2.1.0"
+    }
+}
