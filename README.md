@@ -20,6 +20,7 @@ Timeline | Contributor | Description
 [hearts-and-flowers](https://github.com/jspsych/jspsych-timelines/blob/main/packages/hearts-and-flowers/README.md) | [Cherrie Chang](https://github.com/cherriechang) | Implementation of the Hearts and Flowers task, which tests executive function. 
 [spatial-cueing](https://github.com/jspsych/jspsych-timelines/blob/main/packages/spatial-cueing/README.md) | [Cherrie Chang](https://github.com/cherriechang) | A shareable timeline of the Posner spatial cueing task. 
 [spatial-nback](https://github.com/jspsych/jspsych-timelines/blob/main/packages/spatial-nback/README.md) | [A. Hunter Farhat](https://github.com/farhat60) | A deployable spatial grid n-back timeline for jsPsych. Supports custom grid sizes, n-back levels, feedback, and more. 
+[stroop-task](https://github.com/jspsych/jspsych-timelines/blob/main/packages/stroop-task/README.md) | [Vishnu Lakshman](https://github.com/lakshmanvishnu) | A jsPsych timeline implementation of the Stroop task. This package provides instructions, practice trials, main trials, and a results display. 
 
 ## Using timelines from this repository
 

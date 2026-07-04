@@ -1,6 +1,6 @@
 {
     "name": "@jspsych-timelines/stroop-task",
-    "version": "0.0.1",
+    "version": "0.1.0",
     "description": "A jsPsych timeline implementation of the Stroop task. This package provides instructions, practice trials, main trials, and a results display.",
     "type": "module",
     "main": "dist/index.js",
