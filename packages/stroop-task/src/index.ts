@@ -612,4 +612,4 @@ export const utils = {
 };
 
 /* Export types */
-export type { StroopConfig, StroopStimulus, StroopTrialOptions };
+export type { StroopConfig, StroopStimulus, StroopTrialOptions, StroopResultsStats };
