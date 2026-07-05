@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Stroop Task Example</title>
+  <script src="https://unpkg.com/jspsych"></script>
+  <script src="../dist/index.global.js"></script>
+  <!-- Load the published timeline package here, e.g.
+<script src="https://unpkg.com/stroop-timeline"></script>
+<script src="../dist/index.global.js"></script> -->
+  <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css">
+  <link rel="stylesheet" href="../src/styles.css">
+</head>
+
+<body></body>
+<script>
+  const taskConfig = {
+      congruent_practice_trials: 2,                    // Number of congruent practice trials
+      incongruent_practice_trials: 2,                  // Number of incongruent practice trials
+      practice_trial_timeout: 3000,                    // Time limit for practice trials (milliseconds)
+      congruent_main_trials: 4,                        // Number of congruent main trials
+      incongruent_main_trials: 4,                      // Number of incongruent main trials
+      trial_timeout: 2000,                             // Time limit for each trial (milliseconds)
+      fixation_duration: {                             // Fixation cross duration range
+        min: 300,                                      // Minimum duration (milliseconds)
+        max: 1500                                      // Maximum duration (milliseconds)
+      },
+      show_practice_feedback: true,                    // Show feedback during practice trials
+      include_fixation: true,                          // Include fixation cross before trials
+      show_instructions: true,                         // Show welcome message and instructions
+      show_results: true,                              // Show results at the end
+      randomize_fixation_duration: true,               // Randomize fixation duration between min/max
+      number_of_rows: 2,                               // Number of rows in the display grid
+      number_of_columns: 2,                            // Number of columns in the display grid
+      colors: [                                         // Array of color names for button labels and trial stimuli
+        'RED',
+        'BLUE',
+        'GREEN',
+        'YELLOW'
+      ],
+      color_values: [                                   // Array of CSS color values corresponding to colors
+        'red',
+        'blue',
+        'green',
+        'yellow'
+      ]
+    };
+  const jsPsych = initJsPsych({
+    on_finish: function() {
+      jsPsych.data.displayData();
+    }
+  });
+
+  const task = jsPsychTimelineStroopTask.createTimeline(jsPsych, taskConfig);
+
+  jsPsych.run([task]);
+</script>
+
+</html>

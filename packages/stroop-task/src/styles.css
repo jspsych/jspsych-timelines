@@ -1,0 +1,62 @@
+.jspsych-stroop-task-fixation {
+    font-size: 60px;
+    text-align: center;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.jspsych-stroop-task-stimulus {
+    font-size: 48px;
+    font-weight: bold;
+    line-height: 1.2;
+    margin-bottom: 40px;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.jspsych-stroop-task-response-button {
+    border: 3px solid black;
+    width: 150px;
+    height: 60px;
+    margin: 20px;
+    background-color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: black;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.jspsych-stroop-task-instructions {
+    max-width: 90vw;
+    margin: 0 auto;
+    padding: 2vmin;
+    box-sizing: border-box;
+    overflow-x: hidden;
+    min-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+}
+
+.jspsych-stroop-task-instructions p,
+.jspsych-stroop-task-instructions li {
+    font-size: 18px;
+}
+
+@media (max-width: 768px) {
+    .jspsych-stroop-task-instructions {
+        padding-bottom: 45vmin;
+    }
+}
+
+@media (max-width: 480px) {
+    .jspsych-stroop-task-instructions {
+        padding-bottom: 40vmin;
+    }
+}
