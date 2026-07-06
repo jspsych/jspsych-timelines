@@ -3,7 +3,8 @@ import jsPsychHtmlKeyboardResponse from "@jspsych/plugin-html-keyboard-response"
 import jsPsychInstructions from "@jspsych/plugin-instructions";
 import { JsPsych } from "jspsych";
 
-import { StroopResultsStats, defaultText, type } from "./text";
+import { defaultText } from "./text";
+import type { StroopResultsStats } from "./text";
 
 /**
  * Configuration options for the Stroop task timeline.
