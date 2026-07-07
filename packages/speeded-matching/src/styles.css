@@ -169,20 +169,26 @@
     }
 }
 
-/* Button group layout — scoped to speeded-matching trials only */
+/* Button group layout — scoped to speeded-matching trials only.
+   The html-button-response plugin owns the grid track structure: it writes
+   `grid-template-columns/rows` inline based on the trial's grid_columns/grid_rows
+   params (set to a balanced ceil(sqrt(n)) column count in index.ts), so choices
+   wrap into even rows (e.g. 6 -> 3x2). We only theme the group here — spacing,
+   width cap, and centering. Do NOT set grid-template-columns here; the plugin's
+   inline value would override it anyway. */
 .jspsych-speeded-matching-trial #jspsych-html-button-response-btngroup,
 .jspsych-speeded-matching-practice-trial #jspsych-html-button-response-btngroup {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
     gap: 2vmin;
+    width: fit-content;
     max-width: 95vw;
     margin: 3vmin auto;
-    justify-content: center;
-    align-items: center;
 }
 
 /* Choice buttons - dynamic sizing based on available space */
 .jspsych-speeded-matching-choice-option {
+    /* prevents overflow */
+    box-sizing: border-box;
     border: 2px solid #bdc3c7;
     border-radius: 2vmin;
     background-color: white !important;
@@ -196,8 +202,7 @@
     margin: 2px 5px;
     touch-action: manipulation !important;
     user-select: none !important;
-    flex: 0 0 auto;
-    flex-basis: clamp(20vmin, calc(163vmin / var(--num-choices, 4)), 90vmin);
+    width: clamp(20vmin, calc(163vmin / var(--num-choices, 4)), 90vmin);
     height: clamp(20vmin, calc(80vh / var(--num-choices, 4)), 33vmin);
     svg {
         width: 100%;
@@ -246,7 +251,7 @@
 
     .jspsych-speeded-matching-choice-option {
         height: clamp(20vmin, calc(85vh / var(--num-choices, 4)), 30vh);
-        flex-basis: clamp(15vmin, calc(165vw / var(--num-choices, 4)), 43vw);
+        width: clamp(15vmin, calc(165vw / var(--num-choices, 4)), 43vw);
     }
 }
 
@@ -283,10 +288,19 @@
         border: 4px solid #000000bd;
     }
 
+    /* tighten the group's vertical margin in landscape to bank headroom for the
+       row gap on short (phone-landscape) viewports. */
+    .jspsych-speeded-matching-trial #jspsych-html-button-response-btngroup,
+    .jspsych-speeded-matching-practice-trial #jspsych-html-button-response-btngroup {
+        margin: 1.5vmin auto;
+    }
+
     .jspsych-speeded-matching-choice-option {
+        /* margin: 0 — rely on the group's `gap` for even spacing in both axes.
+           (A previous negative vertical margin here collapsed the row gap so the
+           top/bottom cells of each column touched.) */
         margin: 0;
-        flex-basis: clamp(15vmin, calc(85vw / var(--num-choices, 4)), 25vw) !important;
-        height: clamp(15vmin, calc(135vh / var(--num-choices, 4)), 35vmin) !important;
-        margin: -10px 2px;
+        width: clamp(15vmin, calc(85vw / var(--num-choices, 4)), 25vw) !important;
+        height: clamp(15vmin, calc(120vh / var(--num-choices, 4)), 32vmin) !important;
     }
 }
