@@ -6,7 +6,7 @@ import { test_items } from "./test-items";
 import { TrialText, defaultText } from "./text";
 
 interface SpeedMatchingConfig {
-  /** Array of test items (animal SVGs) to use as stimuli */
+  /** Array of test items (such as animal SVGs) to use as stimuli */
   test_items?: string[];
   /** Number of trials to generate */
   num_trials?: number;
@@ -20,13 +20,13 @@ interface SpeedMatchingConfig {
   show_instructions?: boolean;
   /** Show practice round before main task */
   show_practice?: boolean;
-  /** Number of practice rounds to show (default 1) */
+  /** Number of practice rounds to show */
   practice_rounds?: number;
-  /** Duration in ms to show the target stimulus during the practice demo (default 3000) */
+  /** Duration in ms to show the target stimulus during the practice demo */
   practice_target_duration?: number;
-  /** Show the end screen after the main task (default true). Set to false when embedding in a larger study with a custom debrief. */
+  /** Show the end screen after the main task. Set to false when embedding in a larger study with a custom debrief. */
   show_end_screen?: boolean;
-  /** Custom text overrides */
+  /** Object containing overrides for all text found in the trial */
   trial_text?: TrialText;
 }
 
