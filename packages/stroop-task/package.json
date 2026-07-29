@@ -1,0 +1,57 @@
+{
+    "name": "@jspsych-timelines/stroop-task",
+    "version": "0.0.1",
+    "description": "A jsPsych timeline implementation of the Stroop task. This package provides instructions, practice trials, main trials, and a results display.",
+    "type": "module",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "unpkg": "dist/index.global.js",
+    "exports": {
+        ".": {
+            "import": "./dist/index.js",
+            "require": "./dist/index.cjs"
+        },
+        "./styles.css": "./dist/css/styles.css"
+    },
+    "files": [
+        "src",
+        "dist"
+    ],
+    "scripts": {
+        "build": "tsup src/index.ts --format esm,iife --sourcemap --dts --treeshake --clean --global-name jsPsychTimelineStroopTask && node -e \"require('fs').mkdirSync('dist/css', {recursive:true}); require('fs').copyFileSync('src/styles.css', 'dist/css/styles.css')\"",
+        "test": "jest"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/jspsych/jspsych-timelines.git",
+        "directory": "packages/stroop-task"
+    },
+    "keywords": [
+        "jsPsych"
+    ],
+    "author": {
+        "name": "Vishnu Lakshman",
+        "url": "https://github.com/lakshmanvishnu"
+    },
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/jspsych/jspsych-timelines/issues"
+    },
+    "homepage": "https://github.com/jspsych/jspsych-timelines/tree/main/packages/stroop-task#readme",
+    "peerDependencies": {
+        "jspsych": "^8.0.0"
+    },
+    "devDependencies": {
+        "@jspsych/config": "^3.2.2",
+        "@types/jest": "^29.5.14",
+        "jspsych": "^8.0.0",
+        "ts-jest": "^29.3.4",
+        "tsup": "^6.7.0",
+        "typescript": "^5.8.3"
+    },
+    "dependencies": {
+        "@jspsych/plugin-html-button-response": "^2.1.0",
+        "@jspsych/plugin-html-keyboard-response": "^2.1.0",
+        "@jspsych/plugin-instructions": "^2.1.0"
+    }
+}
