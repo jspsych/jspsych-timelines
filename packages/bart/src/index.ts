@@ -1,8 +1,10 @@
 import "./styles.css";
-import { JsPsych, DataCollection } from "jspsych";
-import HtmlButtonResponsePlugin from "@jspsych/plugin-html-button-response";
+
 import BartPlugin from "@jspsych-contrib/plugin-bart";
-import { trial_text, defaultText, TextConfig } from "./text";
+import HtmlButtonResponsePlugin from "@jspsych/plugin-html-button-response";
+import { DataCollection, JsPsych } from "jspsych";
+
+import { TextConfig, defaultText, trial_text } from "./text";
 
 // -- CONSTANTS --
 const TASK_NAME = "bart";
@@ -79,7 +81,8 @@ function createInteractiveInstructions(jsPsych: JsPsych, texts: TextConfig = tri
 
   const practiceSuccess = {
     type: HtmlButtonResponsePlugin,
-    stimulus: () => `<div class="feedback correct"><p>${texts.instruction_pump_success}</p></div>`,
+    stimulus: () =>
+      `<div class="jspsych-bart-feedback jspsych-bart-feedback-correct"><p>${texts.instruction_pump_success}</p></div>`,
     choices: [texts.continue_button],
     data: {
       task: TASK_NAME,
@@ -122,11 +125,15 @@ function createInteractiveInstructions(jsPsych: JsPsych, texts: TextConfig = tri
   const practiceFeedback = {
     type: HtmlButtonResponsePlugin,
     stimulus: () => {
-      const lastTrial = jsPsych.data.get().filter({ phase: "practice", part: "instruction" }).last(1).values()[0];
+      const lastTrial = jsPsych.data
+        .get()
+        .filter({ phase: "practice", part: "instruction" })
+        .last(1)
+        .values()[0];
       if (lastTrial && lastTrial.popped) {
-        return `<div class="feedback incorrect"><p>${texts.instruction_pump_popped}</p></div>`;
+        return `<div class="jspsych-bart-feedback jspsych-bart-feedback-incorrect"><p>${texts.instruction_pump_popped}</p></div>`;
       }
-      return `<div class="feedback correct"><p>${texts.instruction_pump_success}</p></div>`;
+      return `<div class="jspsych-bart-feedback jspsych-bart-feedback-correct"><p>${texts.instruction_pump_success}</p></div>`;
     },
     choices: [texts.continue_button],
     data: {
@@ -137,6 +144,9 @@ function createInteractiveInstructions(jsPsych: JsPsych, texts: TextConfig = tri
   };
 
   return {
+    // Scopes this timeline's style overrides to its own trials; inherited by
+    // every child trial. See styles.css.
+    css_classes: ["jspsych-bart"],
     timeline: [
       introPage,
       pumpExplanation,
@@ -159,7 +169,7 @@ function createInterBlockBreak(
   jsPsych: JsPsych,
   currentBlock: number,
   totalBlocks: number,
-  texts: TextConfig = trial_text,
+  texts: TextConfig = trial_text
 ) {
   const instructions = {
     type: HtmlButtonResponsePlugin,
@@ -167,13 +177,14 @@ function createInterBlockBreak(
       const data = jsPsych.data.get().filter({ task: TASK_NAME });
       const totalPoints = data.select("points_earned").sum();
 
-      return `<div class="block-break" >${texts.block_break_message(
+      return `<div class="jspsych-bart-block-break">${texts.block_break_message(
         currentBlock,
         totalBlocks,
-        totalPoints,
+        totalPoints
       )}</div>`;
     },
     choices: [texts.continue_button],
+    css_classes: ["jspsych-bart"],
     data: {
       task: TASK_NAME,
       task_version: VERSION,
@@ -201,6 +212,7 @@ function createEndResults(jsPsych: JsPsych, texts: TextConfig) {
       return html;
     },
     choices: [texts.finish_button],
+    css_classes: ["jspsych-bart"],
     data: {
       task: TASK_NAME,
       task_version: VERSION,
@@ -218,7 +230,7 @@ function createTrialBlock(
   minPumps: number,
   pointsPerPump: number,
   totalTrials: number,
-  texts: TextConfig = trial_text,
+  texts: TextConfig = trial_text
 ) {
   const generatePopThreshold = () => {
     return Math.floor(Math.random() * (maxPumps - minPumps + 1)) + minPumps;
@@ -241,12 +253,13 @@ function createTrialBlock(
       on_finish: (data: any) => {
         totalPoints = data.total_points;
       },
+      css_classes: ["jspsych-bart"],
       data: {
         task: TASK_NAME,
         task_version: VERSION,
         phase: "test",
       },
-    }
+    };
     trials.push(trial);
   }
   return trials;
@@ -274,7 +287,7 @@ export function createTimeline(
     show_instructions?: boolean;
     show_end_results?: boolean;
     text?: Partial<TextConfig>;
-  } = {},
+  } = {}
 ) {
   const mergedText = { ...trial_text, ...text };
 
@@ -292,7 +305,7 @@ export function createTimeline(
       min_pumps,
       points_per_pump,
       trials_per_block,
-      mergedText,
+      mergedText
     );
     trials.push(trial);
 
@@ -324,16 +337,14 @@ interface ScoringResult {
   popRate: number;
   avgPumpsBeforePop: number;
   avgPumpsBeforeCollect: number;
-  adjustedAvgPumps: number;  // Average pumps on non-popped trials (standard BART measure)
+  adjustedAvgPumps: number; // Average pumps on non-popped trials (standard BART measure)
 }
 
 /**
  * Calculate scoring metrics from BART data
  */
 function calculateScores(data: DataCollection): ScoringResult {
-  const trialData = data
-    .filter({ task: TASK_NAME, phase: "test" })
-    .values() as any[];
+  const trialData = data.filter({ task: TASK_NAME, phase: "test" }).values() as any[];
 
   if (trialData.length === 0) {
     return {
@@ -354,13 +365,15 @@ function calculateScores(data: DataCollection): ScoringResult {
   const totalPoints = trialData.reduce((sum, t) => sum + (t.points_earned || 0), 0);
   const popRate = poppedTrials.length / trialData.length;
 
-  const avgPumpsBeforePop = poppedTrials.length > 0
-    ? poppedTrials.reduce((sum, t) => sum + t.pumps, 0) / poppedTrials.length
-    : 0;
+  const avgPumpsBeforePop =
+    poppedTrials.length > 0
+      ? poppedTrials.reduce((sum, t) => sum + t.pumps, 0) / poppedTrials.length
+      : 0;
 
-  const avgPumpsBeforeCollect = collectedTrials.length > 0
-    ? collectedTrials.reduce((sum, t) => sum + t.pumps, 0) / collectedTrials.length
-    : 0;
+  const avgPumpsBeforeCollect =
+    collectedTrials.length > 0
+      ? collectedTrials.reduce((sum, t) => sum + t.pumps, 0) / collectedTrials.length
+      : 0;
 
   // Adjusted average pumps (standard BART measure) - only counts non-popped trials
   const adjustedAvgPumps = avgPumpsBeforeCollect;

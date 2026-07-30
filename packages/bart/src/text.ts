@@ -4,20 +4,20 @@
  */
 export const trial_text = {
   // -- INSTRUCTION PAGES --
-  instruction_intro: `<div class="instructions">
-    <h2>Balloon Task</h2>
+  instruction_intro: `<div class="jspsych-bart-instructions">
+    <h2 class="jspsych-bart-instructions-title">Balloon Task</h2>
     <p>In this task, you will inflate balloons to earn points.</p>
     <p>Each pump adds points to the balloon's value, but pump too much and it will pop!</p>
   </div>`,
 
-  instruction_pump: `<div class="instructions">
-    <h2>Pumping the Balloon</h2>
+  instruction_pump: `<div class="jspsych-bart-instructions">
+    <h2 class="jspsych-bart-instructions-title">Pumping the Balloon</h2>
     <p>Click the <strong>Pump</strong> button to inflate the balloon.</p>
     <p>Each pump increases the balloon's value.</p>
   </div>`,
 
-  instruction_collect: `<div class="instructions">
-    <h2>Collecting Points</h2>
+  instruction_collect: `<div class="jspsych-bart-instructions">
+    <h2 class="jspsych-bart-instructions-title">Collecting Points</h2>
     <p>Click the <strong>Collect</strong> button to save your points and end the round.</p>
     <p>If you don't collect before the balloon pops, you lose all points for that round!</p>
   </div>`,
@@ -27,8 +27,8 @@ export const trial_text = {
   instruction_pump_success: "You collected your points!",
   instruction_pump_popped: "The balloon popped! In the real task, you would lose those points.",
 
-  instruction_practice_intro: `<div class="instructions">
-    <h2>Practice</h2>
+  instruction_practice_intro: `<div class="jspsych-bart-instructions">
+    <h2 class="jspsych-bart-instructions-title">Practice</h2>
     <p>Now try a practice round. Pump the balloon to earn points, but collect before it pops!</p>
     <p>Remember: the more you pump, the more you can earn - but the risk of popping increases.</p>
   </div>`,
@@ -58,7 +58,7 @@ export const trial_text = {
 
   // Block break messages
   block_break_message: (currentBlock: number, totalBlocks: number, totalPoints: number) => `
-<div class="instructions-container">
+<div class="jspsych-bart-instructions-container">
   <p>You have completed block ${currentBlock} of ${totalBlocks}.</p>
   <p>Current total earnings: <strong>${totalPoints}</strong></p>
   <p>Take a break if you need one, then click Continue when ready for the next block.</p>
@@ -66,7 +66,7 @@ export const trial_text = {
 
   // Final results
   end_result_message: (points: number) => `
-<div class="instructions-container">
+<div class="jspsych-bart-instructions-container">
   <p>You earned a total of <strong>${points}</strong> points!</p>
   <p>Thanks for participating!</p>
 </div>`,
@@ -74,8 +74,8 @@ export const trial_text = {
   // -- COMPLETION --
   task_complete: "Task Complete",
   result_summary: (totalPoints: number, popRate: number, adjustedAvgPumps: number) => `
-    <div class="instructions">
-      <h3>Your Results</h3>
+    <div class="jspsych-bart-instructions">
+      <h3 class="jspsych-bart-instructions-title">Your Results</h3>
       <p><strong>Total points:</strong> ${totalPoints}</p>
       <p><strong>Pop rate:</strong> ${(popRate * 100).toFixed(1)}%</p>
       <p><strong>Average pumps (collected):</strong> ${adjustedAvgPumps.toFixed(1)}</p>
