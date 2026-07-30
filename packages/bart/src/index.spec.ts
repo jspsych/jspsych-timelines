@@ -1,4 +1,5 @@
 import { JsPsych, initJsPsych } from "jspsych";
+
 import { createTimeline, timelineUnits, utils } from ".";
 
 describe("BART Task", () => {
@@ -104,6 +105,36 @@ describe("BART Task", () => {
       });
     });
 
+    it("should forward max_pumps and points_per_pump to the plugin", () => {
+      const timeline = createTimeline(jsPsych, {
+        max_pumps: 60,
+        points_per_pump: 25,
+        num_blocks: 1,
+        trials_per_block: 3,
+        show_instructions: true,
+        show_end_results: false,
+      });
+
+      // The plugin uses max_pumps to calibrate balloon growth so it fills the
+      // container at that pump count; leaving it unset silently scales for 20.
+      const block = timeline.timeline[1] as any[];
+      block.forEach((trial) => {
+        expect(trial.max_pumps).toBe(60);
+        expect(trial.points_per_pump).toBe(25);
+      });
+
+      // Practice balloons must teach the same value structure as the real task.
+      const instructions = timeline.timeline[0] as any;
+      const practiceBalloons = instructions.timeline.filter(
+        (t: any) => t.pop_threshold !== undefined
+      );
+      expect(practiceBalloons.length).toBe(2);
+      practiceBalloons.forEach((trial: any) => {
+        expect(trial.max_pumps).toBe(60);
+        expect(trial.points_per_pump).toBe(25);
+      });
+    });
+
     it("should include end results screen when show_end_results is true", () => {
       const timeline = createTimeline(jsPsych, {
         num_blocks: 1,
@@ -174,11 +205,18 @@ describe("BART Task", () => {
     });
 
     it("should create inter-block break", () => {
-      const breakTrial = timelineUnits.createInterBlockBreak(1, 3);
+      const breakTrial = timelineUnits.createInterBlockBreak(jsPsych, 1, 3, utils.text);
 
       expect(breakTrial).toHaveProperty("type");
-      expect(breakTrial).toHaveProperty("stimulus");
       expect(breakTrial).toHaveProperty("choices");
+      expect(breakTrial.data.phase).toBe("block-break");
+      expect(typeof breakTrial.stimulus).toBe("function");
+    });
+
+    it("should render block position into the inter-block break stimulus", () => {
+      const breakTrial = timelineUnits.createInterBlockBreak(jsPsych, 1, 3, utils.text);
+
+      expect(breakTrial.stimulus()).toContain("block 1 of 3");
     });
 
     it("should create end results screen", () => {

@@ -13,8 +13,16 @@ const VERSION = "0.1.0";
 /**
  * Creates interactive instructions with practice trials.
  * Users must actually pump and collect a balloon to proceed.
+ *
+ * `pointsPerPump` and `maxPumps` should match the values passed to createTrialBlock so
+ * that practice teaches the same value structure and balloon scaling as the real task.
  */
-function createInteractiveInstructions(jsPsych: JsPsych, texts: TextConfig = trial_text) {
+function createInteractiveInstructions(
+  jsPsych: JsPsych,
+  texts: TextConfig = trial_text,
+  pointsPerPump = 1,
+  maxPumps = 20
+) {
   const introPage = {
     type: HtmlButtonResponsePlugin,
     stimulus: texts.instruction_intro,
@@ -63,7 +71,8 @@ function createInteractiveInstructions(jsPsych: JsPsych, texts: TextConfig = tri
   const practiceBalloon = {
     type: BartPlugin,
     pop_threshold: 100, // Safe - won't pop during practice
-    points_per_pump: 1,
+    max_pumps: maxPumps, // visual scaling only; does not cap pumping
+    points_per_pump: pointsPerPump,
     starting_total_points: 0,
     pump_button_label: texts.pump_button,
     collect_button_label: texts.collect_button,
@@ -106,7 +115,8 @@ function createInteractiveInstructions(jsPsych: JsPsych, texts: TextConfig = tri
   const practiceWithRisk = {
     type: BartPlugin,
     pop_threshold: 10, // Lower threshold - can pop
-    points_per_pump: 1,
+    max_pumps: maxPumps, // visual scaling only; does not cap pumping
+    points_per_pump: pointsPerPump,
     starting_total_points: 0,
     pump_button_label: texts.pump_button,
     collect_button_label: texts.collect_button,
@@ -242,6 +252,7 @@ function createTrialBlock(
     const trial = {
       type: BartPlugin,
       pop_threshold: generatePopThreshold(),
+      max_pumps: maxPumps, // visual scaling only; does not cap pumping
       points_per_pump: pointsPerPump,
       starting_total_points: () => totalPoints,
       pump_button_label: texts.pump_button,
@@ -282,8 +293,6 @@ export function createTimeline(
     points_per_pump?: number;
     num_blocks?: number;
     trials_per_block?: number;
-    trial_timeout?: number;
-    enable_timeout?: boolean;
     show_instructions?: boolean;
     show_end_results?: boolean;
     text?: Partial<TextConfig>;
@@ -294,7 +303,12 @@ export function createTimeline(
   const trials = [];
 
   if (show_instructions) {
-    const instructions = createInteractiveInstructions(jsPsych, mergedText);
+    const instructions = createInteractiveInstructions(
+      jsPsych,
+      mergedText,
+      points_per_pump,
+      max_pumps
+    );
     trials.push(instructions);
   }
 

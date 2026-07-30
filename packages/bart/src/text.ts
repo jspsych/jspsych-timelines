@@ -1,6 +1,15 @@
 /**
  * Default text strings for the BART task.
  * To translate, create a new object with the same structure and pass it to createTimeline().
+ *
+ * COUPLED KEYS - these must be edited in pairs. Three instruction strings name a
+ * button by its label, and the label itself lives under a separate key. Change one
+ * without the other and the instructions will tell the participant to click a
+ * button that does not exist:
+ *
+ *   instruction_pump      <-> pump_button      ("Pump")
+ *   instruction_collect   <-> collect_button   ("Collect")
+ *   block_break_message   <-> continue_button  ("Continue")
  */
 export const trial_text = {
   // -- INSTRUCTION PAGES --
@@ -33,28 +42,15 @@ export const trial_text = {
     <p>Remember: the more you pump, the more you can earn - but the risk of popping increases.</p>
   </div>`,
 
-  // Task completion messages
-  task_complete_header: "Task Complete!",
-  task_complete_message: "Thank you for participating in the balloon task.",
-
   // BART specific text
   pump_button: "Pump",
   collect_button: "Collect",
   continue_button: "Continue",
-  start_button: "Start",
   finish_button: "Finish",
   current_value_label: "Balloon value",
   total_points_label: "Total Points",
   point_display_format: (points: number) => `${points} points`,
   total_points_format: (points: number) => `${points}`,
-
-  // Trial feedback messages
-  balloon_popped_message: "The balloon exploded. You earned nothing this round.",
-  collected_message: "You collected",
-  timeout_message: "Time limit reached - earnings automatically collected.",
-  total_earnings_message: "Total earnings across all rounds:",
-  current_earnings_message: "Current total earnings:",
-  possible_earnings_message: "Possible earnings this round:",
 
   // Block break messages
   block_break_message: (currentBlock: number, totalBlocks: number, totalPoints: number) => `
@@ -62,13 +58,6 @@ export const trial_text = {
   <p>You have completed block ${currentBlock} of ${totalBlocks}.</p>
   <p>Current total earnings: <strong>${totalPoints}</strong></p>
   <p>Take a break if you need one, then click Continue when ready for the next block.</p>
-</div>`,
-
-  // Final results
-  end_result_message: (points: number) => `
-<div class="jspsych-bart-instructions-container">
-  <p>You earned a total of <strong>${points}</strong> points!</p>
-  <p>Thanks for participating!</p>
 </div>`,
 
   // -- COMPLETION --

@@ -35,9 +35,11 @@
         total_points_label: "Total Cash",
         point_display_format: (points) => `$${(points / 100).toFixed(2)}`,
         total_points_format: (points) => `$${(points / 100).toFixed(2)}`,
-        end_result_message: (points) => `
-<div class="instructions-container">
-  <p>You earned a total of <strong>$${(points / 100).toFixed(2)}</strong>!</p>
+        result_summary: (totalPoints, popRate, adjustedAvgPumps) => `
+<div class="jspsych-bart-instructions-container">
+  <p>You earned a total of <strong>$${(totalPoints / 100).toFixed(2)}</strong>!</p>
+  <p>You popped ${(popRate * 100).toFixed(0)}% of your balloons, and pumped an average of
+     ${adjustedAvgPumps.toFixed(1)} times on the ones you cashed out.</p>
   <p>Thanks for participating!</p>
 </div>`
       }
