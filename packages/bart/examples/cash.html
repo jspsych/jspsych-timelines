@@ -7,12 +7,11 @@
     <script src="https://unpkg.com/jspsych@8"></script>
     <link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css" />
 
+    <!-- Styles are bundled into the script via --inject-style; no stylesheet to load. -->
     <script src="../dist/index.browser.js"></script>
-    <link rel="stylesheet" href="../src/css/styles.css" />
 
     <!-- Load the published timeline package here, e.g. -->
     <!-- <script src="https://unpkg.com/@jspsych-timelines/bart"></script> -->
-    <!-- <link rel="stylesheet" href="https://unpkg.com/@jspsych-timelines/bart/dist/css/styles.css" /> -->
   </head>
 
   <body></body>
@@ -35,11 +34,15 @@
         total_points_label: "Total Cash",
         point_display_format: (points) => `$${(points / 100).toFixed(2)}`,
         total_points_format: (points) => `$${(points / 100).toFixed(2)}`,
+        // adjustedAvgPumps is null when every balloon popped, so guard before formatting.
         result_summary: (totalPoints, popRate, adjustedAvgPumps) => `
 <div class="jspsych-bart-instructions-container">
   <p>You earned a total of <strong>$${(totalPoints / 100).toFixed(2)}</strong>!</p>
-  <p>You popped ${(popRate * 100).toFixed(0)}% of your balloons, and pumped an average of
-     ${adjustedAvgPumps.toFixed(1)} times on the ones you cashed out.</p>
+  <p>You popped ${(popRate * 100).toFixed(0)}% of your balloons${
+    adjustedAvgPumps === null
+      ? ", and never cashed one out."
+      : `, and pumped an average of ${adjustedAvgPumps.toFixed(1)} times on the ones you cashed out.`
+  }</p>
   <p>Thanks for participating!</p>
 </div>`
       }

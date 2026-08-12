@@ -4,11 +4,12 @@ import BartPlugin from "@jspsych-contrib/plugin-bart";
 import HtmlButtonResponsePlugin from "@jspsych/plugin-html-button-response";
 import { DataCollection, JsPsych } from "jspsych";
 
-import { TextConfig, defaultText, trial_text } from "./text";
+import { version } from "../package.json";
+import { TextConfig, trial_text } from "./text";
 
 // -- CONSTANTS --
 const TASK_NAME = "bart";
-const VERSION = "0.1.0";
+const VERSION = version;
 
 /**
  * Creates interactive instructions with practice trials.
@@ -137,7 +138,7 @@ function createInteractiveInstructions(
     stimulus: () => {
       const lastTrial = jsPsych.data
         .get()
-        .filter({ phase: "practice", part: "instruction" })
+        .filter({ task: TASK_NAME, phase: "practice", part: "instruction" })
         .last(1)
         .values()[0];
       if (lastTrial && lastTrial.popped) {
@@ -184,7 +185,7 @@ function createInterBlockBreak(
   const instructions = {
     type: HtmlButtonResponsePlugin,
     stimulus: () => {
-      const data = jsPsych.data.get().filter({ task: TASK_NAME });
+      const data = jsPsych.data.get().filter({ task: TASK_NAME, phase: "test" });
       const totalPoints = data.select("points_earned").sum();
 
       return `<div class="jspsych-bart-block-break">${texts.block_break_message(
@@ -298,6 +299,21 @@ export function createTimeline(
     text?: Partial<TextConfig>;
   } = {}
 ) {
+  if (!Number.isInteger(min_pumps) || min_pumps < 1) {
+    throw new Error(`[bart] min_pumps must be an integer >= 1, got ${min_pumps}`);
+  }
+  if (!Number.isInteger(max_pumps) || max_pumps < min_pumps) {
+    throw new Error(
+      `[bart] max_pumps must be an integer >= min_pumps (${min_pumps}), got ${max_pumps}`
+    );
+  }
+  if (!Number.isInteger(num_blocks) || num_blocks < 1) {
+    throw new Error(`[bart] num_blocks must be an integer >= 1, got ${num_blocks}`);
+  }
+  if (!Number.isInteger(trials_per_block) || trials_per_block < 1) {
+    throw new Error(`[bart] trials_per_block must be an integer >= 1, got ${trials_per_block}`);
+  }
+
   const mergedText = { ...trial_text, ...text };
 
   const trials = [];
@@ -349,9 +365,10 @@ interface ScoringResult {
   poppedTrials: number;
   collectedTrials: number;
   popRate: number;
-  avgPumpsBeforePop: number;
-  avgPumpsBeforeCollect: number;
-  adjustedAvgPumps: number; // Average pumps on non-popped trials (standard BART measure)
+  // if denominator is 0, return null (standard BART convention)
+  avgPumpsBeforePop: number | null;
+  avgPumpsBeforeCollect: number | null;
+  adjustedAvgPumps: number | null; // Average pumps on non-popped trials (standard BART measure)
 }
 
 /**
@@ -367,9 +384,9 @@ function calculateScores(data: DataCollection): ScoringResult {
       poppedTrials: 0,
       collectedTrials: 0,
       popRate: 0,
-      avgPumpsBeforePop: 0,
-      avgPumpsBeforeCollect: 0,
-      adjustedAvgPumps: 0,
+      avgPumpsBeforePop: null,
+      avgPumpsBeforeCollect: null,
+      adjustedAvgPumps: null,
     };
   }
 
@@ -379,15 +396,17 @@ function calculateScores(data: DataCollection): ScoringResult {
   const totalPoints = trialData.reduce((sum, t) => sum + (t.points_earned || 0), 0);
   const popRate = poppedTrials.length / trialData.length;
 
+  const roundOrNull = (n: number | null) => (n === null ? null : Math.round(n * 100) / 100);
+
   const avgPumpsBeforePop =
     poppedTrials.length > 0
       ? poppedTrials.reduce((sum, t) => sum + t.pumps, 0) / poppedTrials.length
-      : 0;
+      : null;
 
   const avgPumpsBeforeCollect =
     collectedTrials.length > 0
       ? collectedTrials.reduce((sum, t) => sum + t.pumps, 0) / collectedTrials.length
-      : 0;
+      : null;
 
   // Adjusted average pumps (standard BART measure) - only counts non-popped trials
   const adjustedAvgPumps = avgPumpsBeforeCollect;
@@ -398,9 +417,9 @@ function calculateScores(data: DataCollection): ScoringResult {
     poppedTrials: poppedTrials.length,
     collectedTrials: collectedTrials.length,
     popRate,
-    avgPumpsBeforePop: Math.round(avgPumpsBeforePop * 100) / 100,
-    avgPumpsBeforeCollect: Math.round(avgPumpsBeforeCollect * 100) / 100,
-    adjustedAvgPumps: Math.round(adjustedAvgPumps * 100) / 100,
+    avgPumpsBeforePop: roundOrNull(avgPumpsBeforePop),
+    avgPumpsBeforeCollect: roundOrNull(avgPumpsBeforeCollect),
+    adjustedAvgPumps: roundOrNull(adjustedAvgPumps),
   };
 }
 
@@ -428,13 +447,13 @@ export const utils = {
     calculateScores,
     getSummary,
   },
-  trial_text,
   constants: {
     TASK_NAME,
     VERSION,
   },
-  text: defaultText,
+  text: trial_text,
 };
 
 // Re-export types for TypeScript users
+export type { ScoringResult };
 export type { TextConfig } from "./text";

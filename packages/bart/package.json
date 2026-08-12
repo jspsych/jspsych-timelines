@@ -1,7 +1,7 @@
 {
   "name": "@jspsych-timelines/bart",
   "version": "0.1.0",
-  "description": "Balloon Analog Risk Task for jsPsych",
+  "description": "Balloon Analogue Risk Task (BART) for jsPsych, with practice balloons, blocked trials and built-in scoring.",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -25,7 +25,7 @@
   "bugs": {
     "url": "https://github.com/jspsych/jspsych-timelines/issues"
   },
-  "homepage": "/bart/README.md",
+  "homepage": "https://github.com/jspsych/jspsych-timelines/tree/main/packages/bart#readme",
   "peerDependencies": {
     "jspsych": ">=8.0.0"
   },
@@ -38,10 +38,6 @@
   },
   "dependencies": {
     "@jspsych-contrib/plugin-bart": "^1.1.0",
-    "@jspsych/plugin-fullscreen": "^2.1.0",
-    "@jspsych/plugin-html-button-response": "^2.1.0",
-    "@jspsych/plugin-html-keyboard-response": "^2.1.0",
-    "@jspsych/plugin-instructions": "^2.1.0",
-    "@jspsych/plugin-preload": "^2.1.0"
+    "@jspsych/plugin-html-button-response": "^2.1.0"
   }
 }

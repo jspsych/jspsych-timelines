@@ -135,6 +135,33 @@ describe("BART Task", () => {
       });
     });
 
+    it("should reject invalid pump bounds", () => {
+      // Inverted range: silently produced thresholds unrelated to either bound.
+      expect(() => createTimeline(jsPsych, { min_pumps: 10, max_pumps: 5 })).toThrow(
+        /max_pumps must be an integer >= min_pumps/
+      );
+
+      // min_pumps < 1: every balloon pops on the first pump, so the participant
+      // can never earn a point and the data looks like extreme risk aversion.
+      expect(() => createTimeline(jsPsych, { min_pumps: 0 })).toThrow(
+        /min_pumps must be an integer >= 1/
+      );
+
+      // Non-integer bounds give thresholds that can never be reached.
+      expect(() => createTimeline(jsPsych, { max_pumps: 20.5 })).toThrow(
+        /max_pumps must be an integer/
+      );
+    });
+
+    it("should reject invalid block and trial counts", () => {
+      expect(() => createTimeline(jsPsych, { num_blocks: 0 })).toThrow(
+        /num_blocks must be an integer >= 1/
+      );
+      expect(() => createTimeline(jsPsych, { trials_per_block: 0 })).toThrow(
+        /trials_per_block must be an integer >= 1/
+      );
+    });
+
     it("should include end results screen when show_end_results is true", () => {
       const timeline = createTimeline(jsPsych, {
         num_blocks: 1,
@@ -268,6 +295,64 @@ describe("BART Task", () => {
       expect(scores.totalPoints).toBe(8); // 5 + 0 + 3
       expect(scores.poppedTrials).toBe(1);
       expect(scores.collectedTrials).toBe(2);
+    });
+
+    it("should report null rather than 0 when every balloon popped", () => {
+      const dataCollection = jsPsych.data.get();
+      dataCollection.push({
+        task: "bart",
+        phase: "test",
+        points_earned: 0,
+        pumps: 9,
+        popped: true,
+      });
+      dataCollection.push({
+        task: "bart",
+        phase: "test",
+        points_earned: 0,
+        pumps: 7,
+        popped: true,
+      });
+
+      const scores = utils.scoring.calculateScores(dataCollection);
+
+      // 0 here would read as maximally risk-averse for the opposite behaviour.
+      expect(scores.adjustedAvgPumps).toBeNull();
+      expect(scores.avgPumpsBeforeCollect).toBeNull();
+      expect(scores.avgPumpsBeforePop).toBe(8); // (9 + 7) / 2
+    });
+
+    it("should report null for avgPumpsBeforePop when nothing popped", () => {
+      const dataCollection = jsPsych.data.get();
+      dataCollection.push({
+        task: "bart",
+        phase: "test",
+        points_earned: 4,
+        pumps: 4,
+        popped: false,
+      });
+
+      const scores = utils.scoring.calculateScores(dataCollection);
+
+      expect(scores.avgPumpsBeforePop).toBeNull();
+      expect(scores.adjustedAvgPumps).toBe(4);
+    });
+
+    it("should render the results screen when no balloon was collected", () => {
+      const dataCollection = jsPsych.data.get();
+      dataCollection.push({
+        task: "bart",
+        phase: "test",
+        points_earned: 0,
+        pumps: 9,
+        popped: true,
+      });
+
+      // result_summary calls .toFixed() on adjustedAvgPumps, so an unguarded null
+      // would throw here rather than render.
+      const results = timelineUnits.createEndResults(jsPsych, utils.text) as any;
+      expect(() => results.stimulus()).not.toThrow();
+      expect(results.stimulus()).toContain("no balloons collected");
     });
 
     it("should include task info in getSummary", () => {
