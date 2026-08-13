@@ -12,19 +12,21 @@
  */
 
 import "./styles.css";
-import { JsPsych, DataCollection } from 'jspsych';
-import jsPsychHtmlKeyboardResponse from '@jspsych/plugin-html-keyboard-response';
-import jsPsychHtmlButtonResponse from '@jspsych/plugin-html-button-response';
-import jsPsychCorsiBlocks from '@jspsych-contrib/plugin-corsi-blocks';
-import { CorsiBlockConfig } from './types';
-import { DEFAULT_CONFIG, DEFAULT_BLOCKS } from './constants';
-import { mergeConfig, getSequencesForLength } from './utils';
-import { createDisplayTrial, createInputTrial, createStartTrial } from './trials';
-import { defaultText, TextConfig } from './text';
+
+import jsPsychCorsiBlocks from "@jspsych-contrib/plugin-corsi-blocks";
+import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
+import jsPsychHtmlKeyboardResponse from "@jspsych/plugin-html-keyboard-response";
+import { DataCollection, JsPsych } from "jspsych";
+
+import { CSS_ROOT_CLASS, DEFAULT_BLOCKS, DEFAULT_CONFIG } from "./constants";
+import { TextConfig, defaultText } from "./text";
+import { createDisplayTrial, createInputTrial, createStartTrial } from "./trials";
+import { CorsiBlockConfig } from "./types";
+import { getSequencesForLength, mergeConfig } from "./utils";
 
 // -- CONSTANTS --
-const TASK_NAME = 'corsi-block';
-const VERSION = '0.1.0';
+const TASK_NAME = "corsi-block";
+const VERSION = "0.1.0";
 
 /**
  * Creates interactive instructions with a practice trial.
@@ -35,10 +37,11 @@ function createInteractiveInstructions(jsPsych: JsPsych, config: any, text: Text
     type: jsPsychHtmlButtonResponse,
     stimulus: text.instruction_intro,
     choices: [text.continue_button],
+    css_classes: [CSS_ROOT_CLASS],
     data: {
       task: TASK_NAME,
       task_version: VERSION,
-      phase: 'instructions',
+      phase: "instructions",
     },
   };
 
@@ -46,10 +49,11 @@ function createInteractiveInstructions(jsPsych: JsPsych, config: any, text: Text
     type: jsPsychHtmlButtonResponse,
     stimulus: text.instruction_watch,
     choices: [text.continue_button],
+    css_classes: [CSS_ROOT_CLASS],
     data: {
       task: TASK_NAME,
       task_version: VERSION,
-      phase: 'instructions',
+      phase: "instructions",
     },
   };
 
@@ -57,10 +61,11 @@ function createInteractiveInstructions(jsPsych: JsPsych, config: any, text: Text
     type: jsPsychHtmlButtonResponse,
     stimulus: text.instruction_tap,
     choices: [text.continue_button],
+    css_classes: [CSS_ROOT_CLASS],
     data: {
       task: TASK_NAME,
       task_version: VERSION,
-      phase: 'instructions',
+      phase: "instructions",
     },
   };
 
@@ -71,16 +76,17 @@ function createInteractiveInstructions(jsPsych: JsPsych, config: any, text: Text
     type: jsPsychHtmlButtonResponse,
     stimulus: text.instruction_try_watch,
     choices: [text.continue_button],
+    css_classes: [CSS_ROOT_CLASS],
     data: {
       task: TASK_NAME,
       task_version: VERSION,
-      phase: 'instructions',
+      phase: "instructions",
     },
   };
 
   const practiceDisplay = {
     type: jsPsychCorsiBlocks,
-    mode: 'display',
+    mode: "display",
     sequence: practiceSequence,
     blocks: config.blocks || DEFAULT_BLOCKS,
     sequence_block_duration: config.stimulus_duration,
@@ -94,11 +100,12 @@ function createInteractiveInstructions(jsPsych: JsPsych, config: any, text: Text
     display_height: config.display_height,
     block_size: config.block_size,
     prompt: text.display_prompt,
+    css_classes: [CSS_ROOT_CLASS],
     data: {
       task: TASK_NAME,
       task_version: VERSION,
-      phase: 'practice',
-      part: 'instruction',
+      phase: "practice",
+      part: "instruction",
     },
   };
 
@@ -106,16 +113,17 @@ function createInteractiveInstructions(jsPsych: JsPsych, config: any, text: Text
     type: jsPsychHtmlButtonResponse,
     stimulus: text.instruction_try_tap,
     choices: [text.continue_button],
+    css_classes: [CSS_ROOT_CLASS],
     data: {
       task: TASK_NAME,
       task_version: VERSION,
-      phase: 'instructions',
+      phase: "instructions",
     },
   };
 
   const practiceInput = {
     type: jsPsychCorsiBlocks,
-    mode: 'input',
+    mode: "input",
     sequence: practiceSequence,
     blocks: config.blocks || DEFAULT_BLOCKS,
     post_sequence_delay: config.post_sequence_delay,
@@ -124,44 +132,59 @@ function createInteractiveInstructions(jsPsych: JsPsych, config: any, text: Text
     response_animation_duration: config.click_feedback_duration,
     block_color: config.block_colors.inactive,
     highlight_color: config.block_colors.active,
-    correct_color: config.block_colors.correct || '#00ff00',
-    incorrect_color: config.block_colors.incorrect || '#ff0000',
+    correct_color: config.block_colors.correct || "#00ff00",
+    incorrect_color: config.block_colors.incorrect || "#ff0000",
     background_color: config.background_color,
     display_width: config.display_width,
     display_height: config.display_height,
     block_size: config.block_size,
     prompt: text.input_prompt,
+    css_classes: [CSS_ROOT_CLASS],
     data: {
       task: TASK_NAME,
       task_version: VERSION,
-      phase: 'practice',
-      part: 'instruction',
+      phase: "practice",
+      part: "instruction",
     },
   };
 
   const practiceFeedback = {
     type: jsPsychHtmlButtonResponse,
     stimulus: () => {
-      const lastTrial = jsPsych.data.get().filter({ phase: 'practice', part: 'instruction' }).last(1).values()[0];
+      const lastTrial = jsPsych.data
+        .get()
+        .filter({ phase: "practice", part: "instruction" })
+        .last(1)
+        .values()[0];
       if (lastTrial && lastTrial.correct) {
-        return `<div class="feedback correct"><p>${text.instruction_success}</p></div>`;
+        return `<div class="jspsych-corsi-block-feedback jspsych-corsi-block-feedback-correct"><p>${text.instruction_success}</p></div>`;
       }
-      return `<div class="feedback incorrect"><p>${text.instruction_failure}</p></div>`;
+      return `<div class="jspsych-corsi-block-feedback jspsych-corsi-block-feedback-incorrect"><p>${text.instruction_failure}</p></div>`;
     },
     choices: [text.continue_button],
+    css_classes: [CSS_ROOT_CLASS],
     data: {
       task: TASK_NAME,
       task_version: VERSION,
-      phase: 'instructions',
+      phase: "instructions",
     },
   };
 
   // Create a looping practice that retries if incorrect
   const practiceLoop = {
-    timeline: [practiceWatchPrompt, practiceDisplay, practiceTapPrompt, practiceInput, practiceFeedback],
+    timeline: [
+      practiceWatchPrompt,
+      practiceDisplay,
+      practiceTapPrompt,
+      practiceInput,
+      practiceFeedback,
+    ],
     loop_function: () => {
-      const lastInputTrial = jsPsych.data.get().filter({ phase: 'practice',
-      part: 'instruction', task: TASK_NAME }).last(1).values()[0];
+      const lastInputTrial = jsPsych.data
+        .get()
+        .filter({ phase: "practice", part: "instruction", task: TASK_NAME })
+        .last(1)
+        .values()[0];
       // Continue looping if incorrect
       return lastInputTrial && !lastInputTrial.correct;
     },
@@ -196,10 +219,7 @@ function createInteractiveInstructions(jsPsych: JsPsych, config: any, text: Text
  *   }
  * });
  */
-export function createTimeline(
-  jsPsych: JsPsych,
-  config: CorsiBlockConfig = {}
-): any {
+export function createTimeline(jsPsych: JsPsych, config: CorsiBlockConfig = {}): any {
   // Merge with defaults
   const fullConfig = mergeConfig(config, DEFAULT_CONFIG);
 
@@ -228,7 +248,7 @@ export function createTimeline(
     const trial_variables = sequences.map((sequence, index) => ({
       sequence,
       sequence_length: length,
-      trial_index: index
+      trial_index: index,
     }));
 
     // Build trial sequence
@@ -244,14 +264,14 @@ export function createTimeline(
         inter_trial_delay: 0,
         block_colors: {
           inactive: fullConfig.block_colors.inactive,
-          active: fullConfig.block_colors.active
+          active: fullConfig.block_colors.active,
         },
         background_color: fullConfig.background_color,
         display_width: fullConfig.display_width,
         display_height: fullConfig.display_height,
         block_size: fullConfig.block_size,
         prompt: text.display_prompt,
-        data_labels: { task_version: VERSION, ...config.data_labels }
+        data_labels: { task_version: VERSION, ...config.data_labels },
       })
     );
 
@@ -266,24 +286,26 @@ export function createTimeline(
         block_colors: {
           inactive: fullConfig.block_colors.inactive,
           active: fullConfig.block_colors.active,
-          correct: fullConfig.block_colors.correct || '#00ff00',
-          incorrect: fullConfig.block_colors.incorrect || '#ff0000'
+          correct: fullConfig.block_colors.correct || "#00ff00",
+          incorrect: fullConfig.block_colors.incorrect || "#ff0000",
         },
         background_color: fullConfig.background_color,
         display_width: fullConfig.display_width,
         display_height: fullConfig.display_height,
         block_size: fullConfig.block_size,
         prompt: text.input_prompt,
-        data_labels: { task_version: VERSION, ...config.data_labels }
+        data_labels: { task_version: VERSION, ...config.data_labels },
       })
     );
 
     // Create conditional timeline for this length
     const lengthNode = {
-      timeline: [{
-        timeline: trialSequence,
-        timeline_variables: trial_variables
-      }],
+      timeline: [
+        {
+          timeline: trialSequence,
+          timeline_variables: trial_variables,
+        },
+      ],
       conditional_function: () => {
         // Always run the first length
         if (length === fullConfig.starting_length) {
@@ -293,10 +315,10 @@ export function createTimeline(
         // Check performance at previous length
         const previousLength = length - 1;
         const previousTrials = jsPsych.data.get().filter({
-          task: 'corsi-block',
-          phase: 'test',
-          part: 'response',
-          sequence_length: previousLength
+          task: "corsi-block",
+          phase: "test",
+          part: "response",
+          sequence_length: previousLength,
         });
 
         // If no previous trials, skip this length
@@ -308,7 +330,7 @@ export function createTimeline(
         const failures = previousTrials.filter({ correct: false }).count();
 
         // Stop rule: both-trials
-        if (fullConfig.stop_rule === 'both-trials') {
+        if (fullConfig.stop_rule === "both-trials") {
           // Continue if not all trials failed
           if (failures < fullConfig.trials_per_length) {
             return true;
@@ -321,16 +343,21 @@ export function createTimeline(
         }
 
         // Stop rule: consecutive-errors
-        if (fullConfig.stop_rule === 'consecutive-errors') {
+        if (fullConfig.stop_rule === "consecutive-errors") {
           // Count recent consecutive errors
-          const recentTrials = jsPsych.data.get().filter({
-            task: 'corsi-block',
-            phase: 'test',
-            part: 'response'
-          }).last(fullConfig.consecutive_errors_threshold);
+          const recentTrials = jsPsych.data
+            .get()
+            .filter({
+              task: "corsi-block",
+              phase: "test",
+              part: "response",
+            })
+            .last(fullConfig.consecutive_errors_threshold);
 
           if (recentTrials.count() >= fullConfig.consecutive_errors_threshold) {
-            const allFailed = recentTrials.filter({ correct: false }).count() === fullConfig.consecutive_errors_threshold;
+            const allFailed =
+              recentTrials.filter({ correct: false }).count() ===
+              fullConfig.consecutive_errors_threshold;
             if (allFailed) {
               const span = previousLength;
               jsPsych.data.addProperties({ corsi_span: span });
@@ -340,7 +367,7 @@ export function createTimeline(
         }
 
         return true;
-      }
+      },
     };
 
     timeline.push(lengthNode);
@@ -348,23 +375,26 @@ export function createTimeline(
 
   // Add final span calculation if reached max length
   timeline.push({
-    timeline: [{
-      type: jsPsychHtmlKeyboardResponse,
-      stimulus: '',
-      trial_duration: 0,
-      on_start: () => {
-        // Check if span was already set (by failure)
-        const data = jsPsych.data.get().values()[0];
-        if (!data.corsi_span) {
-          // Reached max length successfully
-          jsPsych.data.addProperties({ corsi_span: fullConfig.max_length });
-        }
-      }
-    }]
+    timeline: [
+      {
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: "",
+        trial_duration: 0,
+        css_classes: [CSS_ROOT_CLASS],
+        on_start: () => {
+          // Check if span was already set (by failure)
+          const data = jsPsych.data.get().values()[0];
+          if (!data.corsi_span) {
+            // Reached max length successfully
+            jsPsych.data.addProperties({ corsi_span: fullConfig.max_length });
+          }
+        },
+      },
+    ],
   });
 
   return {
-    timeline
+    timeline,
   };
 }
 
@@ -383,7 +413,7 @@ interface ScoringResult {
  */
 function calculateScores(data: DataCollection): ScoringResult {
   const inputTrials = data
-    .filter({ task: TASK_NAME, phase: 'test', part: 'response' })
+    .filter({ task: TASK_NAME, phase: "test", part: "response" })
     .values() as any[];
 
   if (inputTrials.length === 0) {
@@ -458,5 +488,5 @@ export const utils = {
 };
 
 // Re-export types for TypeScript users
-export type { CorsiBlockConfig } from './types';
-export type { TextConfig } from './text';
+export type { CorsiBlockConfig } from "./types";
+export type { TextConfig } from "./text";

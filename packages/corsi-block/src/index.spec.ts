@@ -1,4 +1,5 @@
 import { JsPsych, initJsPsych } from "jspsych";
+
 import { createTimeline } from ".";
 
 describe("Corsi Block Task", () => {
@@ -19,7 +20,7 @@ describe("Corsi Block Task", () => {
     it("should create timeline with default parameters", () => {
       const timeline = createTimeline(jsPsych, {
         starting_length: 2,
-        trials_per_length: 2
+        trials_per_length: 2,
       });
       expect(timeline).toBeDefined();
       expect(timeline.timeline.length).toBeGreaterThan(0);
@@ -29,7 +30,7 @@ describe("Corsi Block Task", () => {
       const timeline = createTimeline(jsPsych, {
         starting_length: 3,
         max_length: 5,
-        trials_per_length: 2
+        trials_per_length: 2,
       });
 
       // Timeline includes: instructions + (3 lengths * 1 node each) + final span calculation
@@ -43,7 +44,7 @@ describe("Corsi Block Task", () => {
       const timeline = createTimeline(jsPsych, {
         starting_length: 2,
         max_length: 3,
-        trials_per_length: 4
+        trials_per_length: 4,
       });
 
       // Find a length node (skip instructions at index 0)
@@ -57,7 +58,7 @@ describe("Corsi Block Task", () => {
       const timeline = createTimeline(jsPsych, {
         starting_length: 3,
         max_length: 4,
-        trials_per_length: 2
+        trials_per_length: 2,
       });
 
       // First length node (after instructions)
@@ -74,7 +75,7 @@ describe("Corsi Block Task", () => {
       const timeline = createTimeline(jsPsych, {
         starting_length: 4,
         max_length: 5,
-        trials_per_length: 2
+        trials_per_length: 2,
       });
 
       // First length node (after instructions)
@@ -89,27 +90,27 @@ describe("Corsi Block Task", () => {
 
     it("should apply both-trials stop rule via conditional_function", () => {
       const timeline = createTimeline(jsPsych, {
-        stop_rule: 'both-trials',
+        stop_rule: "both-trials",
         starting_length: 2,
         max_length: 4,
-        trials_per_length: 2
+        trials_per_length: 2,
       });
 
       // The second length node should have a conditional_function
       const lengthNode = timeline.timeline[2] as any;
-      expect(typeof lengthNode.conditional_function).toBe('function');
+      expect(typeof lengthNode.conditional_function).toBe("function");
     });
 
     it("should apply consecutive-errors stop rule via conditional_function", () => {
       const timeline = createTimeline(jsPsych, {
-        stop_rule: 'consecutive-errors',
+        stop_rule: "consecutive-errors",
         consecutive_errors_threshold: 3,
         starting_length: 2,
-        max_length: 4
+        max_length: 4,
       });
 
       const lengthNode = timeline.timeline[2] as any;
-      expect(typeof lengthNode.conditional_function).toBe('function');
+      expect(typeof lengthNode.conditional_function).toBe("function");
     });
 
     it("should generate sequences without repeats when allow_repeats is false", () => {
@@ -118,7 +119,7 @@ describe("Corsi Block Task", () => {
         starting_length: 5,
         max_length: 5,
         trials_per_length: 10,
-        sequence_generation: 'random'
+        sequence_generation: "random",
       });
 
       const lengthNode = timeline.timeline[1] as any;
@@ -136,14 +137,14 @@ describe("Corsi Block Task", () => {
     it("should use custom block_colors in display trials", () => {
       const timeline = createTimeline(jsPsych, {
         block_colors: {
-          inactive: '#555555',
-          active: '#ff0000',
-          correct: '#00ff00',
-          incorrect: '#0000ff'
+          inactive: "#555555",
+          active: "#ff0000",
+          correct: "#00ff00",
+          incorrect: "#0000ff",
         },
         starting_length: 2,
         max_length: 2,
-        trials_per_length: 1
+        trials_per_length: 1,
       });
 
       // Instructions are at index 0, first length node at index 1
@@ -151,8 +152,8 @@ describe("Corsi Block Task", () => {
       const innerTimeline = lengthNode.timeline[0];
       const displayTrial = innerTimeline.timeline[0];
 
-      expect(displayTrial.block_color).toBe('#555555');
-      expect(displayTrial.highlight_color).toBe('#ff0000');
+      expect(displayTrial.block_color).toBe("#555555");
+      expect(displayTrial.highlight_color).toBe("#ff0000");
     });
 
     it("should use custom temporal parameters in display trials", () => {
@@ -161,7 +162,7 @@ describe("Corsi Block Task", () => {
         inter_stimulus_interval: 1200,
         starting_length: 2,
         max_length: 2,
-        trials_per_length: 1
+        trials_per_length: 1,
       });
 
       const lengthNode = timeline.timeline[1] as any;
@@ -174,7 +175,7 @@ describe("Corsi Block Task", () => {
 
     it("should support auto sequence initiation", () => {
       const timeline = createTimeline(jsPsych, {
-        sequence_initiation: 'auto'
+        sequence_initiation: "auto",
       });
       expect(timeline).toBeDefined();
       // Timeline includes interactive instructions and trials
@@ -183,7 +184,7 @@ describe("Corsi Block Task", () => {
 
     it("should support button sequence initiation", () => {
       const timeline = createTimeline(jsPsych, {
-        sequence_initiation: 'button'
+        sequence_initiation: "button",
       });
       expect(timeline).toBeDefined();
       // Timeline includes interactive instructions and trials
@@ -197,22 +198,22 @@ describe("Corsi Block Task", () => {
           { x: 20, y: 20 },
           { x: 30, y: 30 },
           { x: 40, y: 40 },
-          { x: 50, y: 50 }
-        ]
+          { x: 50, y: 50 },
+        ],
       });
       expect(timeline).toBeDefined();
     });
 
     it("should support allowing repeats", () => {
       const timeline = createTimeline(jsPsych, {
-        allow_repeats: true
+        allow_repeats: true,
       });
       expect(timeline).toBeDefined();
     });
 
     it("should support disallowing repeats", () => {
       const timeline = createTimeline(jsPsych, {
-        allow_repeats: false
+        allow_repeats: false,
       });
       expect(timeline).toBeDefined();
     });
@@ -220,48 +221,54 @@ describe("Corsi Block Task", () => {
     it("should support custom data labels", () => {
       const timeline = createTimeline(jsPsych, {
         data_labels: {
-          task: 'corsi-block',
-          condition: 'experiment-1',
-          participant_group: 'control'
-        }
+          task: "corsi-block",
+          condition: "experiment-1",
+          participant_group: "control",
+        },
       });
       expect(timeline).toBeDefined();
     });
 
     it("should support touchscreen input modality", () => {
       const timeline = createTimeline(jsPsych, {
-        input_modality: 'touchscreen'
+        input_modality: "touchscreen",
       });
       expect(timeline).toBeDefined();
     });
 
     it("should support mouse input modality", () => {
       const timeline = createTimeline(jsPsych, {
-        input_modality: 'mouse'
+        input_modality: "mouse",
       });
       expect(timeline).toBeDefined();
     });
 
     it("should support fixed ISI mode", () => {
       const timeline = createTimeline(jsPsych, {
-        isi_mode: 'fixed'
+        isi_mode: "fixed",
       });
       expect(timeline).toBeDefined();
     });
 
-    it("should support custom text configuration", () => {
+    it("should route custom text through to the trial prompts", () => {
       const timeline = createTimeline(jsPsych, {
-        text_object: {
-          display_prompt: 'Regardez la séquence',
-          input_prompt: 'Tapez les blocs dans le même ordre'
-        }
+        text: {
+          display_prompt: "Regardez la séquence",
+          input_prompt: "Tapez les blocs dans le même ordre",
+        },
+        starting_length: 2,
+        max_length: 2,
+        trials_per_length: 1,
       });
-      expect(timeline).toBeDefined();
+
+      const innerTimeline = (timeline.timeline[1] as any).timeline[0];
+      expect(innerTimeline.timeline[0].prompt).toBe("Regardez la séquence");
+      expect(innerTimeline.timeline[1].prompt).toBe("Tapez les blocs dans le même ordre");
     });
 
     it("should support null response timeout for unlimited time", () => {
       const timeline = createTimeline(jsPsych, {
-        response_timeout: null
+        response_timeout: null,
       });
       expect(timeline).toBeDefined();
     });
@@ -275,11 +282,32 @@ describe("Corsi Block Task", () => {
         inter_trial_delay: 1500,
         starting_length: 2,
         trials_per_length: 2,
-        stop_rule: 'both-trials',
-        sequence_generation: 'fixed',
-        allow_repeats: false
+        stop_rule: "both-trials",
+        sequence_generation: "fixed",
+        allow_repeats: false,
       });
       expect(timeline).toBeDefined();
+    });
+
+    it("should scope every trial it creates under the timeline's css class", () => {
+      const timeline = createTimeline(jsPsych, {
+        starting_length: 2,
+        max_length: 4,
+        trials_per_length: 2,
+      });
+
+      const trials: any[] = [];
+      const collect = (node: any) => {
+        if (Array.isArray(node)) return node.forEach(collect);
+        if (node?.timeline) return collect(node.timeline);
+        if (node?.type) trials.push(node);
+      };
+      collect(timeline);
+
+      expect(trials.length).toBeGreaterThan(0);
+      for (const trial of trials) {
+        expect(trial.css_classes).toEqual(["jspsych-corsi-block-container"]);
+      }
     });
 
     it("should handle research variant parameters", () => {
@@ -291,7 +319,7 @@ describe("Corsi Block Task", () => {
         inter_trial_delay: 1000,
         starting_length: 3,
         trials_per_length: 3,
-        max_length: 8
+        max_length: 8,
       });
       expect(timeline).toBeDefined();
     });

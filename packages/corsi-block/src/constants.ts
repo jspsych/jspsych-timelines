@@ -4,7 +4,13 @@
  * Default parameter values based on standard Corsi Block methodology
  */
 
-import { CorsiBlockConfig, BlockPosition } from './types';
+import { BlockPosition, CorsiBlockConfig } from "./types";
+
+/**
+ * root class for the Corsi Block task container, to be
+ * used in `css_classes` for all trials
+ */
+export const CSS_ROOT_CLASS = "jspsych-corsi-block-container";
 
 /**
  * Default block positions approximating the original Corsi block layout
@@ -25,39 +31,39 @@ export const DEFAULT_BLOCKS: BlockPosition[] = [
 /**
  * Default configuration values based on standard Corsi Block parameters
  */
-export const DEFAULT_CONFIG: Required<Omit<CorsiBlockConfig, 'text_object' | 'data_labels' | 'blocks'>> = {
+export const DEFAULT_CONFIG: Required<Omit<CorsiBlockConfig, "text" | "data_labels" | "blocks">> = {
   // Temporal parameters
-  stimulus_duration: 1000,  // Standard: 1000ms
-  inter_stimulus_interval: 1000,  // Standard: 1000ms
-  isi_mode: 'fixed',
-  post_sequence_delay: 500,  // Standard: 500ms
-  inter_trial_delay: 1500,  // Standard: 1500ms
-  response_timeout: null,  // Standard: None (infinite)
+  stimulus_duration: 1000, // Standard: 1000ms
+  inter_stimulus_interval: 1000, // Standard: 1000ms
+  isi_mode: "fixed",
+  post_sequence_delay: 500, // Standard: 500ms
+  inter_trial_delay: 1500, // Standard: 1500ms
+  response_timeout: null, // Standard: None (infinite)
 
   // Visual parameters
   block_colors: {
-    inactive: '#0066cc',  // Blue
-    active: '#ffcc00',    // Yellow
-    correct: '#00ff00',   // Green
-    incorrect: '#ff0000'  // Red
+    inactive: "#0066cc", // Blue
+    active: "#ffcc00", // Yellow
+    correct: "#00ff00", // Green
+    incorrect: "#ff0000", // Red
   },
-  background_color: '#000000',  // Black
-  click_feedback_duration: 200,  // Standard: ~200ms flash
-  display_width: '400px',
-  display_height: '400px',
+  background_color: "#000000", // Black
+  click_feedback_duration: 200, // Standard: ~200ms flash
+  display_width: "400px",
+  display_height: "400px",
   block_size: 12,
 
   // Interaction parameters
-  input_modality: 'touchscreen',
-  sequence_initiation: 'auto',
+  input_modality: "touchscreen",
+  sequence_initiation: "auto",
   allow_correction: false,
 
   // Algorithm parameters
-  starting_length: 2,  // Standard: 2 blocks
-  trials_per_length: 2,  // Standard: 2 trials
-  stop_rule: 'both-trials',  // Standard: fail both trials
+  starting_length: 2, // Standard: 2 blocks
+  trials_per_length: 2, // Standard: 2 trials
+  stop_rule: "both-trials", // Standard: fail both trials
   consecutive_errors_threshold: 3,
-  sequence_generation: 'fixed',
-  allow_repeats: false,  // Standard: no immediate repeats
-  max_length: 9  // Standard: typically tests up to 9
+  sequence_generation: "fixed",
+  allow_repeats: false, // Standard: no immediate repeats
+  max_length: 9, // Standard: typically tests up to 9
 };

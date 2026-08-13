@@ -4,9 +4,10 @@
  * Helper functions for sequence generation and configuration
  */
 
-import { JsPsych } from 'jspsych';
-import { CorsiBlockConfig, BlockPosition, SequenceGeneration } from './types';
-import { DEFAULT_CONFIG, DEFAULT_BLOCKS } from './constants';
+import { JsPsych } from "jspsych";
+
+import { DEFAULT_BLOCKS, DEFAULT_CONFIG } from "./constants";
+import { BlockPosition, CorsiBlockConfig, SequenceGeneration } from "./types";
 
 /**
  * Merge user config with defaults
@@ -21,13 +22,13 @@ export function mergeConfig(
   if (userConfig.block_colors) {
     merged.block_colors = {
       ...defaults.block_colors,
-      ...userConfig.block_colors
+      ...userConfig.block_colors,
     };
   }
 
   // Copy all other top-level properties
-  Object.keys(userConfig).forEach(key => {
-    if (key !== 'block_colors' && key !== 'text_object' && key !== 'data_labels' && key !== 'blocks') {
+  Object.keys(userConfig).forEach((key) => {
+    if (key !== "block_colors" && key !== "text" && key !== "data_labels" && key !== "blocks") {
       if (userConfig[key] !== undefined) {
         merged[key] = userConfig[key];
       }
@@ -51,7 +52,7 @@ export function generateSequence(
   allowRepeats: boolean,
   fixedSequences?: number[][]
 ): number[] {
-  if (mode === 'fixed' && fixedSequences && fixedSequences[length - 2]) {
+  if (mode === "fixed" && fixedSequences && fixedSequences[length - 2]) {
     // Use fixed sequence if available (length-2 because array is 0-indexed starting from length 2)
     return fixedSequences[length - 2].slice();
   }
@@ -109,7 +110,7 @@ export const STANDARD_SEQUENCES: number[][] = [
 
   // Length 9
   [4, 1, 3, 6, 2, 8, 5, 7, 0],
-  [6, 4, 8, 1, 5, 2, 7, 0, 3]
+  [6, 4, 8, 1, 5, 2, 7, 0, 3],
 ];
 
 /**
@@ -136,7 +137,7 @@ export function getSequencesForLength(
         numBlocks,
         generation,
         allowRepeats,
-        generation === 'fixed' ? [fixedSequence] : undefined
+        generation === "fixed" ? [fixedSequence] : undefined
       )
     );
   }
@@ -147,10 +148,7 @@ export function getSequencesForLength(
 /**
  * Calculate Euclidean distance between two blocks
  */
-export function calculateDistance(
-  block1: BlockPosition,
-  block2: BlockPosition
-): number {
+export function calculateDistance(block1: BlockPosition, block2: BlockPosition): number {
   const dx = block2.x - block1.x;
   const dy = block2.y - block1.y;
   return Math.sqrt(dx * dx + dy * dy);
@@ -167,5 +165,5 @@ export function calculateDistanceBasedISI(
   scaleFactor: number = 0.5
 ): number {
   const distance = calculateDistance(block1, block2);
-  return Math.round(baseISI + (distance * scaleFactor));
+  return Math.round(baseISI + distance * scaleFactor);
 }
