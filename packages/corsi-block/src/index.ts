@@ -329,17 +329,10 @@ export function createTimeline(jsPsych: JsPsych, config: CorsiBlockConfig = {}):
         // Count failures at previous length
         const failures = previousTrials.filter({ correct: false }).count();
 
-        // Stop rule: both-trials
+        // Stop rule: both-trials. Stop once every trial at the previous length
+        // was failed.
         if (fullConfig.stop_rule === "both-trials") {
-          // Continue if not all trials failed
-          if (failures < fullConfig.trials_per_length) {
-            return true;
-          } else {
-            // Failed all trials - calculate span and stop
-            const span = previousLength;
-            jsPsych.data.addProperties({ corsi_span: span });
-            return false;
-          }
+          return failures < fullConfig.trials_per_length;
         }
 
         // Stop rule: consecutive-errors
@@ -359,8 +352,6 @@ export function createTimeline(jsPsych: JsPsych, config: CorsiBlockConfig = {}):
               recentTrials.filter({ correct: false }).count() ===
               fullConfig.consecutive_errors_threshold;
             if (allFailed) {
-              const span = previousLength;
-              jsPsych.data.addProperties({ corsi_span: span });
               return false;
             }
           }
@@ -373,24 +364,21 @@ export function createTimeline(jsPsych: JsPsych, config: CorsiBlockConfig = {}):
     timeline.push(lengthNode);
   }
 
-  // Add final span calculation if reached max length
+  // trial with nothing, only serves to record the span in data.
   timeline.push({
-    timeline: [
-      {
-        type: jsPsychHtmlKeyboardResponse,
-        stimulus: "",
-        trial_duration: 0,
-        css_classes: [CSS_ROOT_CLASS],
-        on_start: () => {
-          // Check if span was already set (by failure)
-          const data = jsPsych.data.get().values()[0];
-          if (!data.corsi_span) {
-            // Reached max length successfully
-            jsPsych.data.addProperties({ corsi_span: fullConfig.max_length });
-          }
-        },
-      },
-    ],
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: "",
+    choices: "NO_KEYS",
+    trial_duration: 0,
+    css_classes: [CSS_ROOT_CLASS],
+    data: {
+      task: TASK_NAME,
+      task_version: VERSION,
+      phase: "scoring",
+    },
+    on_finish: (data: any) => {
+      data.corsi_span = calculateSpan(jsPsych.data.get());
+    },
   });
 
   return {
@@ -401,11 +389,32 @@ export function createTimeline(jsPsych: JsPsych, config: CorsiBlockConfig = {}):
 // -- SCORING FUNCTIONS --
 
 interface ScoringResult {
+  /** Longest sequence length reproduced correctly, or null if none was */
   span: number | null;
   totalTrials: number;
   correctTrials: number;
-  accuracy: number;
-  maxLengthAttempted: number;
+  /** Proportion of response trials correct, or null if there were none */
+  accuracy: number | null;
+  /** Longest sequence length presented, or null if none was */
+  maxLengthAttempted: number | null;
+}
+
+/**
+ * calculates the corsi span: the longest sequence length the participant
+ * reproduced correctly at least once.
+ *
+ * @returns corsi span, null if all trials were failed.
+ */
+function calculateSpan(data: DataCollection): number | null {
+  const passedTrials = data
+    .filter({ task: TASK_NAME, phase: "test", part: "response", correct: true })
+    .values() as any[];
+
+  if (passedTrials.length === 0) {
+    return null;
+  }
+
+  return Math.max(...passedTrials.map((trial) => trial.sequence_length));
 }
 
 /**
@@ -421,26 +430,19 @@ function calculateScores(data: DataCollection): ScoringResult {
       span: null,
       totalTrials: 0,
       correctTrials: 0,
-      accuracy: 0,
-      maxLengthAttempted: 0,
+      accuracy: null,
+      maxLengthAttempted: null,
     };
   }
 
-  const correctTrials = inputTrials.filter((t) => t.correct);
-  const totalTrials = inputTrials.length;
-  const accuracy = correctTrials.length / totalTrials;
-  const maxLengthAttempted = Math.max(...inputTrials.map((t) => t.sequence_length));
-
-  // Get span from data (set by the task on completion)
-  const allData = data.values();
-  const span = allData.length > 0 && allData[0].corsi_span ? allData[0].corsi_span : null;
+  const correctTrials = inputTrials.filter((trial) => trial.correct);
 
   return {
-    span,
-    totalTrials,
+    span: calculateSpan(data),
+    totalTrials: inputTrials.length,
     correctTrials: correctTrials.length,
-    accuracy,
-    maxLengthAttempted,
+    accuracy: correctTrials.length / inputTrials.length,
+    maxLengthAttempted: Math.max(...inputTrials.map((trial) => trial.sequence_length)),
   };
 }
 

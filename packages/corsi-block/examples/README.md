@@ -99,7 +99,7 @@ After task completion:
 ```javascript
 on_finish: function() {
   // Get the calculated span
-  const span = jsPsych.data.get().values()[0].corsi_span;
+  const span = jsPsychTimelineCorsiBlock.utils.scoring.getSummary(jsPsych.data.get()).span;
 
   // Get all input trials
   const trials = jsPsych.data.get().filter({

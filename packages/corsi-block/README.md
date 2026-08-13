@@ -143,9 +143,10 @@ The timeline records the following data for each trial:
 - `correct`: Whether response was correct (input trials only)
 - `rt`: Array of response times (input trials only)
 
-At the end of the task, the calculated span is added to the data:
+At the end of the task, a single empty `phase: 'scoring'` trial records the result:
 
-- `corsi_span`: The highest sequence length successfully completed
+- `corsi_span`: The longest sequence length reproduced correctly, or `null` if
+  no length was passed. 
 
 ## Scoring
 
@@ -169,8 +170,11 @@ console.log(scores);
 
 ```javascript
 // Get the final Corsi span
-const data = jsPsych.data.get();
-const span = data.values()[0].corsi_span;
+const span = utils.scoring.getSummary(jsPsych.data.get()).span;
+
+// ...or read the scoring row directly
+const scoringRow = jsPsych.data.get().filter({ task: 'corsi-block', phase: 'scoring' });
+const spanFromData = scoringRow.values()[0].corsi_span;
 
 // Get all trial data
 const allTrials = jsPsych.data.get().filter({ task: 'corsi-block' });

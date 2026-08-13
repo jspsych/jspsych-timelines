@@ -1,6 +1,6 @@
 import { JsPsych, initJsPsych } from "jspsych";
 
-import { createTimeline } from ".";
+import { createTimeline, utils } from ".";
 
 describe("Corsi Block Task", () => {
   let jsPsych: JsPsych;
@@ -381,6 +381,107 @@ describe("Corsi Block Task", () => {
       expect(() => createTimeline(jsPsych, { block_size: 0 })).toThrow(
         /block_size is a percentage of the display/
       );
+    });
+
+    it("should score the span as the longest length passed, not the length failed", () => {
+      const timeline = createTimeline(jsPsych, {
+        starting_length: 2,
+        max_length: 5,
+        trials_per_length: 2,
+      });
+
+      // Passed length 2, failed both trials at length 3. Span is 2.
+      [
+        { sequence_length: 2, correct: true },
+        { sequence_length: 2, correct: true },
+        { sequence_length: 3, correct: false },
+        { sequence_length: 3, correct: false },
+      ].forEach((trial) =>
+        jsPsych.data.get().push({ task: "corsi-block", phase: "test", part: "response", ...trial })
+      );
+
+      const scoringTrial = timeline.timeline[timeline.timeline.length - 1] as any;
+      const row: any = {};
+      scoringTrial.on_finish(row);
+
+      expect(row.corsi_span).toBe(2);
+    });
+
+    it("should not award max_length when the final length was failed", () => {
+      const timeline = createTimeline(jsPsych, {
+        starting_length: 2,
+        max_length: 3,
+        trials_per_length: 2,
+      });
+
+      // Reached the ceiling but failed every trial there. Span is 2, not 3.
+      [
+        { sequence_length: 2, correct: true },
+        { sequence_length: 2, correct: true },
+        { sequence_length: 3, correct: false },
+        { sequence_length: 3, correct: false },
+      ].forEach((trial) =>
+        jsPsych.data.get().push({ task: "corsi-block", phase: "test", part: "response", ...trial })
+      );
+
+      const scoringTrial = timeline.timeline[timeline.timeline.length - 1] as any;
+      const row: any = {};
+      scoringTrial.on_finish(row);
+
+      expect(row.corsi_span).toBe(3 - 1);
+    });
+
+    it("should record the span on its own row rather than every row", () => {
+      const timeline = createTimeline(jsPsych, { starting_length: 2, max_length: 3 });
+      const scoringTrial = timeline.timeline[timeline.timeline.length - 1] as any;
+
+      // A trial belonging to another task in a composed battery
+      jsPsych.data.get().push({ task: "some-other-task", trial_index: 0 });
+      jsPsych.data
+        .get()
+        .push({
+          task: "corsi-block",
+          phase: "test",
+          part: "response",
+          sequence_length: 2,
+          correct: true,
+        });
+
+      const row: any = {};
+      scoringTrial.on_finish(row);
+
+      expect(row.corsi_span).toBe(2);
+      expect(scoringTrial.data.phase).toBe("scoring");
+      // Nothing else in the dataset gained a corsi_span column
+      jsPsych.data
+        .get()
+        .values()
+        .forEach((trial: any) => expect(trial.corsi_span).toBeUndefined());
+    });
+
+    it("should report undefined measures as null rather than 0", () => {
+      const summary = utils.scoring.getSummary(jsPsych.data.get());
+
+      expect(summary.totalTrials).toBe(0);
+      expect(summary.correctTrials).toBe(0);
+      // 0 is a meaningful accuracy and a meaningful span; absence is not
+      expect(summary.accuracy).toBeNull();
+      expect(summary.maxLengthAttempted).toBeNull();
+      expect(summary.span).toBeNull();
+    });
+
+    it("should leave the span undefined when no length was ever passed", () => {
+      [
+        { sequence_length: 2, correct: false },
+        { sequence_length: 2, correct: false },
+      ].forEach((trial) =>
+        jsPsych.data.get().push({ task: "corsi-block", phase: "test", part: "response", ...trial })
+      );
+
+      const summary = utils.scoring.getSummary(jsPsych.data.get());
+      expect(summary.span).toBeNull();
+      expect(summary.accuracy).toBe(0);
+      expect(summary.totalTrials).toBe(2);
     });
 
     it("should scope every trial it creates under the timeline's css class", () => {

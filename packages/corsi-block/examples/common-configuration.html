@@ -20,7 +20,7 @@
 <script>
   const jsPsych = initJsPsych({
     on_finish: function() {
-      const span = jsPsych.data.get().values()[0].corsi_span;
+      const span = jsPsychTimelineCorsiBlock.utils.scoring.getSummary(jsPsych.data.get()).span;
       const inputTrials = jsPsych.data.get().filter({ task: 'corsi-block', phase: 'input' });
 
       let summary = `<div style="max-width: 600px; margin: auto; padding: 20px; background: white; border-radius: 10px;">`;
