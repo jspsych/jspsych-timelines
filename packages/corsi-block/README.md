@@ -102,8 +102,23 @@ const timeline = createTimeline(jsPsych, {
 | `max_length` | number | 9 | Maximum sequence length |
 | `stop_rule` | 'both-trials' \| 'consecutive-errors' | 'both-trials' | When to stop the task |
 | `consecutive_errors_threshold` | number | 3 | Errors needed for consecutive-errors rule |
-| `sequence_generation` | 'fixed' \| 'random' | 'fixed' | Use fixed sequences or random |
+| `sequence_generation` | 'fixed' \| 'random' | 'fixed' | Use fixed sequences or random (see below) |
 | `allow_repeats` | boolean | false | Allow same block twice in a row |
+
+#### Fixed sequences
+
+With the default `sequence_generation: 'fixed'`, every sequence comes from a
+standard table, so two runs of the same configuration present identical
+sequences. The table holds **2 sequences per length for lengths 2-9**, indexing
+the default 9-block layout.
+
+A configuration the table cannot cover throws at `createTimeline` rather than
+quietly substituting random sequences. Use `sequence_generation: 'random'` if
+you need any of the following:
+
+- more than 2 `trials_per_length`
+- a `starting_length` below 2 or a `max_length` above 9
+- a custom `blocks` layout with fewer than 9 blocks
 
 ### Other Parameters
 

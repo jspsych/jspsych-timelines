@@ -22,7 +22,7 @@ import { CSS_ROOT_CLASS, DEFAULT_BLOCKS, DEFAULT_CONFIG } from "./constants";
 import { TextConfig, defaultText } from "./text";
 import { createDisplayTrial, createInputTrial, createStartTrial } from "./trials";
 import { CorsiBlockConfig } from "./types";
-import { getSequencesForLength, mergeConfig } from "./utils";
+import { getSequencesForLength, mergeConfig, validateConfig } from "./utils";
 
 // -- CONSTANTS --
 const TASK_NAME = "corsi-block";
@@ -220,8 +220,8 @@ function createInteractiveInstructions(jsPsych: JsPsych, config: any, text: Text
  * });
  */
 export function createTimeline(jsPsych: JsPsych, config: CorsiBlockConfig = {}): any {
-  // Merge with defaults
   const fullConfig = mergeConfig(config, DEFAULT_CONFIG);
+  validateConfig(fullConfig);
 
   // Merge text configuration
   const text = { ...defaultText, ...config.text };

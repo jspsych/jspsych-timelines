@@ -55,6 +55,9 @@
     starting_length: 2,
     trials_per_length: 2,
     max_length: 5,  // Only 5 blocks total
+    // The standard fixed sequences index the default 9-block layout, so a
+    // custom layout with fewer blocks must generate sequences randomly.
+    sequence_generation: 'random',
     block_size: 18,  // Larger blocks for fewer total blocks
     display_width: '450px',
     display_height: '450px'

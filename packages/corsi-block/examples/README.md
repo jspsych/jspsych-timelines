@@ -58,9 +58,10 @@ The `load-from-unpkg.html` example can run directly without any build step.
 ### Adjusting Difficulty
 ```javascript
 const corsiTask = jsPsychTimelineCorsiBlock.createTimeline(jsPsych, {
-  starting_length: 3,      // Start harder
-  max_length: 7,           // End earlier
-  trials_per_length: 3     // More trials per level
+  starting_length: 3,             // Start harder
+  max_length: 7,                  // End earlier
+  trials_per_length: 3,           // More trials per level
+  sequence_generation: 'random'   // Required: the fixed table holds 2 per length
 });
 ```
 

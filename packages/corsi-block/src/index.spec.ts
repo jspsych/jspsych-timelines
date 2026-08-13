@@ -45,6 +45,8 @@ describe("Corsi Block Task", () => {
         starting_length: 2,
         max_length: 3,
         trials_per_length: 4,
+        // The fixed table only holds 2 sequences per length
+        sequence_generation: "random",
       });
 
       // Find a length node (skip instructions at index 0)
@@ -200,6 +202,9 @@ describe("Corsi Block Task", () => {
           { x: 40, y: 40 },
           { x: 50, y: 50 },
         ],
+        // The fixed table indexes blocks the default 9-block layout provides
+        sequence_generation: "random",
+        max_length: 5,
       });
       expect(timeline).toBeDefined();
     });
@@ -289,6 +294,95 @@ describe("Corsi Block Task", () => {
       expect(timeline).toBeDefined();
     });
 
+    it("should use the standard fixed sequences at every length, not just the first", () => {
+      // Guards against the fixed table being consulted only at the starting
+      // length and silently falling through to random sequences above it.
+      const sequencesFor = (instance: JsPsych) =>
+        (
+          createTimeline(instance, {
+            starting_length: 2,
+            max_length: 5,
+            trials_per_length: 2,
+            sequence_generation: "fixed",
+          }).timeline.slice(1, -1) as any[]
+        ).map((node) => node.timeline[0].timeline_variables.map((v: any) => v.sequence));
+
+      expect(sequencesFor(jsPsych)).toEqual([
+        [
+          [2, 4],
+          [5, 8],
+        ], // length 2
+        [
+          [6, 2, 8],
+          [4, 7, 3],
+        ], // length 3
+        [
+          [6, 1, 5, 8],
+          [4, 2, 7, 3],
+        ], // length 4
+        [
+          [4, 2, 8, 6, 5],
+          [6, 1, 5, 8, 3],
+        ], // length 5
+      ]);
+
+      // ...and they are stable across runs, which is the point of 'fixed'
+      expect(sequencesFor(initJsPsych())).toEqual(sequencesFor(initJsPsych()));
+    });
+
+    it("should reject configurations that would generate no trials", () => {
+      expect(() => createTimeline(jsPsych, { starting_length: 5, max_length: 3 })).toThrow(
+        /max_length \(3\) must be >= starting_length \(5\)/
+      );
+    });
+
+    it("should reject fixed sequences the standard table cannot cover", () => {
+      expect(() =>
+        createTimeline(jsPsych, { sequence_generation: "fixed", trials_per_length: 3 })
+      ).toThrow(/trials_per_length may be at most 2/);
+
+      expect(() =>
+        createTimeline(jsPsych, { sequence_generation: "fixed", max_length: 10 })
+      ).toThrow(/covers sequence lengths 2-9/);
+
+      expect(() =>
+        createTimeline(jsPsych, {
+          sequence_generation: "fixed",
+          blocks: [
+            { x: 10, y: 10 },
+            { x: 20, y: 20 },
+          ],
+        })
+      ).toThrow(/requires at least 9 blocks, got 2/);
+    });
+
+    it("should reject block layouts too small to generate a sequence", () => {
+      // A single block with allow_repeats: false has no legal successor, which
+      // would otherwise spin forever in the rejection loop.
+      expect(() =>
+        createTimeline(jsPsych, {
+          blocks: [{ x: 50, y: 50 }],
+          sequence_generation: "random",
+          allow_repeats: false,
+        })
+      ).toThrow(/blocks must contain at least 2 positions/);
+    });
+
+    it("should reject out-of-range counts and durations", () => {
+      expect(() => createTimeline(jsPsych, { trials_per_length: 0 })).toThrow(
+        /trials_per_length must be an integer >= 1/
+      );
+      expect(() => createTimeline(jsPsych, { stimulus_duration: -1 })).toThrow(
+        /stimulus_duration must be a duration in milliseconds >= 0/
+      );
+      expect(() => createTimeline(jsPsych, { response_timeout: 0 })).toThrow(
+        /response_timeout must be null \(no limit\) or a positive number/
+      );
+      expect(() => createTimeline(jsPsych, { block_size: 0 })).toThrow(
+        /block_size is a percentage of the display/
+      );
+    });
+
     it("should scope every trial it creates under the timeline's css class", () => {
       const timeline = createTimeline(jsPsych, {
         starting_length: 2,
@@ -320,6 +414,8 @@ describe("Corsi Block Task", () => {
         starting_length: 3,
         trials_per_length: 3,
         max_length: 8,
+        // The fixed table only holds 2 sequences per length
+        sequence_generation: "random",
       });
       expect(timeline).toBeDefined();
     });
