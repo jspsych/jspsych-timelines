@@ -4,7 +4,7 @@
  * Based on standard Corsi Block tapping task methodology
  */
 
-import type { TrialText } from './text';
+import type { TrialText } from "./text";
 
 /**
  * Block positioning configuration
@@ -17,27 +17,27 @@ export interface BlockPosition {
 /**
  * ISI mode configuration
  */
-export type ISIMode = 'fixed' | 'distance-based';
+export type ISIMode = "fixed" | "distance-based";
 
 /**
  * Sequence initiation mode
  */
-export type SequenceInitiation = 'auto' | 'button';
+export type SequenceInitiation = "auto" | "button";
 
 /**
  * Stop rule for discontinuation
  */
-export type StopRule = 'both-trials' | 'consecutive-errors';
+export type StopRule = "both-trials" | "consecutive-errors";
 
 /**
  * Sequence generation mode
  */
-export type SequenceGeneration = 'fixed' | 'random';
+export type SequenceGeneration = "fixed" | "random";
 
 /**
  * Input modality
  */
-export type InputModality = 'touchscreen' | 'mouse';
+export type InputModality = "touchscreen" | "mouse";
 
 /**
  * Block color configuration
@@ -132,12 +132,21 @@ export interface CorsiBlockConfig {
 
   // === Data Parameters ===
   /** Custom data labels added to all trials */
-  data_labels?: {
-    task?: string;
-    condition?: string;
-    [key: string]: any;
-  };
+  data_labels?: DataLabels;
 }
+
+/** reserve specific data labels that cannot be overriden by the user */
+export type ReservedDataField =
+  | "task"
+  | "task_version"
+  | "phase"
+  | "part"
+  | "sequence_length"
+  | "trial_in_length";
+
+export type DataLabels = { [key: string]: any } & {
+  [K in ReservedDataField]?: never;
+};
 
 /**
  * Trial result data
@@ -149,5 +158,5 @@ export interface CorsiTrialResult {
   response: number[];
   correct: boolean;
   rt: number[];
-  span?: number;  // Calculated span (if this was the final trial)
+  span?: number; // Calculated span (if this was the final trial)
 }

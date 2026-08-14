@@ -10,7 +10,9 @@ import { JsPsych } from "jspsych";
 
 import { CSS_ROOT_CLASS } from "./constants";
 import type { TrialText } from "./text";
-import type { BlockPosition } from "./types";
+import type { BlockPosition, DataLabels } from "./types";
+
+const TASK_NAME = "corsi-block";
 
 /**
  * Create a display trial (show sequence)
@@ -32,7 +34,8 @@ export function createDisplayTrial(
     display_height: string;
     block_size: number;
     prompt?: string;
-    data_labels?: any;
+    task_version?: string;
+    data_labels?: DataLabels;
   }
 ) {
   return {
@@ -53,12 +56,13 @@ export function createDisplayTrial(
     prompt: options.prompt,
     css_classes: [CSS_ROOT_CLASS],
     data: {
-      task: "corsi-block",
+      ...options.data_labels,
+      task: TASK_NAME,
+      task_version: options.task_version,
       phase: "test",
       part: "display",
       sequence_length: () => jsPsych.timelineVariable("sequence_length"),
-      trial_index: () => jsPsych.timelineVariable("trial_index"),
-      ...options.data_labels,
+      trial_in_length: () => jsPsych.timelineVariable("trial_in_length"),
     },
   };
 }
@@ -85,7 +89,8 @@ export function createInputTrial(
     display_height: string;
     block_size: number;
     prompt?: string;
-    data_labels?: any;
+    task_version?: string;
+    data_labels?: DataLabels;
   }
 ) {
   return {
@@ -108,12 +113,13 @@ export function createInputTrial(
     prompt: options.prompt,
     css_classes: [CSS_ROOT_CLASS],
     data: {
-      task: "corsi-block",
+      ...options.data_labels,
+      task: TASK_NAME,
+      task_version: options.task_version,
       phase: "test",
       part: "response",
       sequence_length: () => jsPsych.timelineVariable("sequence_length"),
-      trial_index: () => jsPsych.timelineVariable("trial_index"),
-      ...options.data_labels,
+      trial_in_length: () => jsPsych.timelineVariable("trial_in_length"),
     },
   };
 }
@@ -131,7 +137,7 @@ export function createStartTrial(text: TrialText) {
     choices: "ALL_KEYS",
     css_classes: [CSS_ROOT_CLASS],
     data: {
-      task: "corsi-block",
+      task: TASK_NAME,
       phase: "instruction",
     },
   };
@@ -150,7 +156,7 @@ export function createLevelBreak(options: { current_length: number; text?: strin
     choices: "ALL_KEYS",
     css_classes: [CSS_ROOT_CLASS],
     data: {
-      task: "corsi-block",
+      task: TASK_NAME,
       phase: "break",
       previous_length: options.current_length - 1,
     },

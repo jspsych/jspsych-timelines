@@ -128,7 +128,18 @@ you need any of the following:
 | `input_modality` | 'touchscreen' \| 'mouse' | 'touchscreen' | Input method (cosmetic) |
 | `sequence_initiation` | 'auto' \| 'button' | 'auto' | Start automatically or with button |
 | `text` | Partial<TextConfig> | English defaults | Custom text for internationalization |
-| `data_labels` | object | {} | Custom data labels for all trials |
+| `data_labels` | object | {} | Custom fields added to the recorded test trials (see below) |
+
+#### Reserved data fields
+
+`data_labels` cannot supply `task`, `task_version`, `phase`, `part`,
+`sequence_length` or `trial_in_length`. The timeline always writes those itself,
+and TypeScript rejects them.
+
+They are reserved because the adaptive stop rules and the scoring functions
+query the recorded data by `task`, `phase` and `part`. Replacing one would not
+just relabel a row — it would make those queries match nothing, ending the task
+after the first sequence length and reporting a span with no trials behind it.
 
 ## Data
 
@@ -137,7 +148,8 @@ The timeline records the following data for each trial:
 - `task`: 'corsi-block'
 - `phase`: 'display' or 'input'
 - `sequence_length`: Length of the sequence
-- `trial_index`: Index of trial at current length
+- `trial_in_length`: Index of the trial within the current length (0-based)
+  Not `trial_index`, which is written by jsPsych already under that name
 - `sequence`: Array of block indices shown
 - `response`: Array of block indices clicked (input trials only)
 - `correct`: Whether response was correct (input trials only)

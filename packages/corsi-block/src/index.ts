@@ -248,7 +248,7 @@ export function createTimeline(jsPsych: JsPsych, config: CorsiBlockConfig = {}):
     const trial_variables = sequences.map((sequence, index) => ({
       sequence,
       sequence_length: length,
-      trial_index: index,
+      trial_in_length: index,
     }));
 
     // Build trial sequence
@@ -271,7 +271,8 @@ export function createTimeline(jsPsych: JsPsych, config: CorsiBlockConfig = {}):
         display_height: fullConfig.display_height,
         block_size: fullConfig.block_size,
         prompt: text.display_prompt,
-        data_labels: { task_version: VERSION, ...config.data_labels },
+        task_version: VERSION,
+        data_labels: config.data_labels,
       })
     );
 
@@ -294,7 +295,8 @@ export function createTimeline(jsPsych: JsPsych, config: CorsiBlockConfig = {}):
         display_height: fullConfig.display_height,
         block_size: fullConfig.block_size,
         prompt: text.input_prompt,
-        data_labels: { task_version: VERSION, ...config.data_labels },
+        task_version: VERSION,
+        data_labels: config.data_labels,
       })
     );
 

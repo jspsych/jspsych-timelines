@@ -223,15 +223,88 @@ describe("Corsi Block Task", () => {
       expect(timeline).toBeDefined();
     });
 
-    it("should support custom data labels", () => {
+    it("should add custom data labels to the recorded trials", () => {
       const timeline = createTimeline(jsPsych, {
         data_labels: {
-          task: "corsi-block",
           condition: "experiment-1",
           participant_group: "control",
         },
+        starting_length: 2,
+        max_length: 2,
+        trials_per_length: 1,
       });
-      expect(timeline).toBeDefined();
+
+      const innerTimeline = (timeline.timeline[1] as any).timeline[0];
+      const [displayTrial, inputTrial] = innerTimeline.timeline;
+
+      for (const trial of [displayTrial, inputTrial]) {
+        expect(trial.data.condition).toBe("experiment-1");
+        expect(trial.data.participant_group).toBe("control");
+      }
+    });
+
+    it("should not let data_labels overwrite the fields the timeline queries", () => {
+      const timeline = createTimeline(jsPsych, {
+        // `task`, `phase` and `part` are reserved; TypeScript rejects them, but
+        // a plain-JS caller can still pass them through.
+        data_labels: {
+          task: "my-study",
+          phase: "whatever",
+          part: "whatever",
+          task_version: "9.9.9",
+        } as any,
+        starting_length: 2,
+        max_length: 3,
+        trials_per_length: 2,
+      });
+
+      const innerTimeline = (timeline.timeline[1] as any).timeline[0];
+      const inputTrial = innerTimeline.timeline[1];
+
+      expect(inputTrial.data.task).toBe("corsi-block");
+      expect(inputTrial.data.phase).toBe("test");
+      expect(inputTrial.data.part).toBe("response");
+      expect(inputTrial.data.task_version).not.toBe("9.9.9");
+
+      // ...so the staircase still advances on correct responses
+      jsPsych.data
+        .get()
+        .push({
+          task: "corsi-block",
+          phase: "test",
+          part: "response",
+          sequence_length: 2,
+          correct: true,
+        });
+      jsPsych.data
+        .get()
+        .push({
+          task: "corsi-block",
+          phase: "test",
+          part: "response",
+          sequence_length: 2,
+          correct: true,
+        });
+
+      expect((timeline.timeline[2] as any).conditional_function()).toBe(true);
+    });
+
+    it("should record the within-length trial number under a key jsPsych will not overwrite", () => {
+      // jsPsych writes its own global `trial_index` onto every row after the
+      // data parameter is applied, so this must not be called `trial_index`.
+      const timeline = createTimeline(jsPsych, {
+        starting_length: 2,
+        max_length: 2,
+        trials_per_length: 2,
+      });
+
+      const innerTimeline = (timeline.timeline[1] as any).timeline[0];
+
+      expect(innerTimeline.timeline_variables.map((v: any) => v.trial_in_length)).toEqual([0, 1]);
+      for (const trial of innerTimeline.timeline) {
+        expect(trial.data.trial_in_length).toBeDefined();
+        expect(trial.data.trial_index).toBeUndefined();
+      }
     });
 
     it("should support touchscreen input modality", () => {
@@ -437,15 +510,13 @@ describe("Corsi Block Task", () => {
 
       // A trial belonging to another task in a composed battery
       jsPsych.data.get().push({ task: "some-other-task", trial_index: 0 });
-      jsPsych.data
-        .get()
-        .push({
-          task: "corsi-block",
-          phase: "test",
-          part: "response",
-          sequence_length: 2,
-          correct: true,
-        });
+      jsPsych.data.get().push({
+        task: "corsi-block",
+        phase: "test",
+        part: "response",
+        sequence_length: 2,
+        correct: true,
+      });
 
       const row: any = {};
       scoringTrial.on_finish(row);
