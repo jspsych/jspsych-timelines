@@ -34,6 +34,12 @@ This directory contains example implementations of the Corsi Block Task timeline
 - Uses 5-block cross pattern instead of standard 9 blocks
 - Shows how to define custom layouts
 
+### [practice-attempts.html](practice-attempts.html)
+**Limited Practice Attempts**
+- Caps the instruction practice at 2 attempts with `max_practice_attempts`
+- Continues to the task even if the participant never passes
+- Shows how to check afterwards whether the practice was passed
+
 ### [load-from-unpkg.html](load-from-unpkg.html)
 **CDN Loading**
 - Shows how to load from unpkg CDN

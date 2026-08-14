@@ -267,24 +267,20 @@ describe("Corsi Block Task", () => {
       expect(inputTrial.data.task_version).not.toBe("9.9.9");
 
       // ...so the staircase still advances on correct responses
-      jsPsych.data
-        .get()
-        .push({
-          task: "corsi-block",
-          phase: "test",
-          part: "response",
-          sequence_length: 2,
-          correct: true,
-        });
-      jsPsych.data
-        .get()
-        .push({
-          task: "corsi-block",
-          phase: "test",
-          part: "response",
-          sequence_length: 2,
-          correct: true,
-        });
+      jsPsych.data.get().push({
+        task: "corsi-block",
+        phase: "test",
+        part: "response",
+        sequence_length: 2,
+        correct: true,
+      });
+      jsPsych.data.get().push({
+        task: "corsi-block",
+        phase: "test",
+        part: "response",
+        sequence_length: 2,
+        correct: true,
+      });
 
       expect((timeline.timeline[2] as any).conditional_function()).toBe(true);
     });
@@ -553,6 +549,95 @@ describe("Corsi Block Task", () => {
       expect(summary.span).toBeNull();
       expect(summary.accuracy).toBe(0);
       expect(summary.totalTrials).toBe(2);
+    });
+
+    it("should stop repeating the practice once max_practice_attempts is reached", () => {
+      const timeline = createTimeline(jsPsych, { max_practice_attempts: 3 });
+      const practiceLoop = (timeline.timeline[0] as any).timeline[3];
+
+      const failPractice = () =>
+        jsPsych.data
+          .get()
+          .push({ task: "corsi-block", phase: "practice", part: "instruction", correct: false });
+
+      // Attempts 1 and 2 fail and retry; the third exhausts the allowance
+      failPractice();
+      expect(practiceLoop.loop_function()).toBe(true);
+      failPractice();
+      expect(practiceLoop.loop_function()).toBe(true);
+      failPractice();
+      expect(practiceLoop.loop_function()).toBe(false);
+    });
+
+    it.each([
+      ["by default", {}],
+      ["when max_practice_attempts is null", { max_practice_attempts: null }],
+    ])("should repeat the practice indefinitely %s", (_label, config) => {
+      const timeline = createTimeline(jsPsych, config);
+      const practiceLoop = (timeline.timeline[0] as any).timeline[3];
+
+      for (let attempt = 0; attempt < 25; attempt++) {
+        jsPsych.data
+          .get()
+          .push({ task: "corsi-block", phase: "practice", part: "instruction", correct: false });
+        expect(practiceLoop.loop_function()).toBe(true);
+      }
+    });
+
+    it("should stop repeating the practice as soon as it is passed", () => {
+      const timeline = createTimeline(jsPsych, { max_practice_attempts: 3 });
+      const practiceLoop = (timeline.timeline[0] as any).timeline[3];
+
+      jsPsych.data
+        .get()
+        .push({ task: "corsi-block", phase: "practice", part: "instruction", correct: true });
+
+      expect(practiceLoop.loop_function()).toBe(false);
+    });
+
+    it("should not read another task's practice trials", () => {
+      const timeline = createTimeline(jsPsych, { max_practice_attempts: 3 });
+      const practiceLoop = (timeline.timeline[0] as any).timeline[3];
+      const practiceFeedback = (timeline.timeline[0] as any).timeline[3].timeline[4];
+
+      // `phase: "practice"` is near-universal across these packages, so a
+      // sibling task's row must not be mistaken for this task's response.
+      jsPsych.data
+        .get()
+        .push({ task: "some-other-task", phase: "practice", part: "instruction", correct: true });
+
+      expect(practiceLoop.loop_function()).toBe(false);
+      expect(practiceFeedback.stimulus()).toContain("wasn't quite right");
+
+      // ...whereas this task's own correct response is read
+      jsPsych.data
+        .get()
+        .push({ task: "corsi-block", phase: "practice", part: "instruction", correct: true });
+      expect(practiceFeedback.stimulus()).toContain("ready to begin");
+    });
+
+    it("should not promise another try on the final practice attempt", () => {
+      const timeline = createTimeline(jsPsych, { max_practice_attempts: 2 });
+      const practiceLoop = (timeline.timeline[0] as any).timeline[3];
+      const practiceFeedback = practiceLoop.timeline[4];
+
+      const failPractice = () =>
+        jsPsych.data
+          .get()
+          .push({ task: "corsi-block", phase: "practice", part: "instruction", correct: false });
+
+      failPractice();
+      expect(practiceFeedback.stimulus()).toContain("try again");
+      expect(practiceLoop.loop_function()).toBe(true);
+
+      failPractice();
+      expect(practiceFeedback.stimulus()).toContain("move on to the task");
+    });
+
+    it("should reject a practice cap below one attempt", () => {
+      expect(() => createTimeline(jsPsych, { max_practice_attempts: 0 })).toThrow(
+        /max_practice_attempts must be an integer >= 1/
+      );
     });
 
     it("should scope every trial it creates under the timeline's css class", () => {

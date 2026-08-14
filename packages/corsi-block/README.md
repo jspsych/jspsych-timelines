@@ -125,6 +125,7 @@ you need any of the following:
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
 | `blocks` | BlockPosition[] | Default 9-block layout | Custom block positions |
+| `max_practice_attempts` | number \| null | null | Attempts allowed at the instruction practice before the task continues anyway; `null` repeats until passed |
 | `input_modality` | 'touchscreen' \| 'mouse' | 'touchscreen' | Input method (cosmetic) |
 | `sequence_initiation` | 'auto' \| 'button' | 'auto' | Start automatically or with button |
 | `text` | Partial<TextConfig> | English defaults | Custom text for internationalization |
@@ -154,6 +155,15 @@ The timeline records the following data for each trial:
 - `response`: Array of block indices clicked (input trials only)
 - `correct`: Whether response was correct (input trials only)
 - `rt`: Array of response times (input trials only)
+
+Practice trials (`phase: 'practice'`) additionally record:
+
+- `practice_attempt`: Which attempt at the instruction practice this was (1-based)
+
+Whether the participant ever passed the practice is derivable: a `phase: 'practice'` 
+row with `correct: true`. By default the practice repeats until
+that happens. If you set `max_practice_attempts`, a participant can reach the
+task without ever passing, so check this before analysing.
 
 At the end of the task, a single empty `phase: 'scoring'` trial records the result:
 

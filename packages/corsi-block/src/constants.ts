@@ -57,6 +57,7 @@ export const DEFAULT_CONFIG: Required<Omit<CorsiBlockConfig, "text" | "data_labe
   input_modality: "touchscreen",
   sequence_initiation: "auto",
   allow_correction: false,
+  max_practice_attempts: null,
 
   // Algorithm parameters
   starting_length: 2, // Standard: 2 blocks

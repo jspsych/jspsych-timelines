@@ -30,9 +30,25 @@ const VERSION = "0.1.0";
 
 /**
  * Creates interactive instructions with a practice trial.
- * Users must watch a sequence and tap the blocks correctly to proceed.
+ *
+ * The practice repeats until the participant reproduces the sequence, or until
+ * `max_practice_attempts` is reached. Without that cap a participant who cannot
+ * do the task is stuck before the experiment starts, with no way forward.
  */
 function createInteractiveInstructions(jsPsych: JsPsych, config: any, text: TextConfig) {
+  const maxAttempts: number | null = config.max_practice_attempts;
+  let practiceAttempt = 1;
+
+  /** The practice response just given, if there is one. */
+  const lastPracticeResponse = () =>
+    jsPsych.data
+      .get()
+      .filter({ task: TASK_NAME, phase: "practice", part: "instruction" })
+      .last(1)
+      .values()[0];
+
+  const attemptsRemain = () => maxAttempts === null || practiceAttempt < maxAttempts;
+
   const introPage = {
     type: jsPsychHtmlButtonResponse,
     stimulus: text.instruction_intro,
@@ -106,6 +122,7 @@ function createInteractiveInstructions(jsPsych: JsPsych, config: any, text: Text
       task_version: VERSION,
       phase: "practice",
       part: "instruction",
+      practice_attempt: () => practiceAttempt,
     },
   };
 
@@ -145,21 +162,22 @@ function createInteractiveInstructions(jsPsych: JsPsych, config: any, text: Text
       task_version: VERSION,
       phase: "practice",
       part: "instruction",
+      practice_attempt: () => practiceAttempt,
     },
   };
 
   const practiceFeedback = {
     type: jsPsychHtmlButtonResponse,
     stimulus: () => {
-      const lastTrial = jsPsych.data
-        .get()
-        .filter({ phase: "practice", part: "instruction" })
-        .last(1)
-        .values()[0];
+      const lastTrial = lastPracticeResponse();
       if (lastTrial && lastTrial.correct) {
         return `<div class="jspsych-corsi-block-feedback jspsych-corsi-block-feedback-correct"><p>${text.instruction_success}</p></div>`;
       }
-      return `<div class="jspsych-corsi-block-feedback jspsych-corsi-block-feedback-incorrect"><p>${text.instruction_failure}</p></div>`;
+      // Don't promise another try when this was the last one
+      const message = attemptsRemain()
+        ? text.instruction_failure
+        : text.instruction_practice_exhausted;
+      return `<div class="jspsych-corsi-block-feedback jspsych-corsi-block-feedback-incorrect"><p>${message}</p></div>`;
     },
     choices: [text.continue_button],
     css_classes: [CSS_ROOT_CLASS],
@@ -180,13 +198,18 @@ function createInteractiveInstructions(jsPsych: JsPsych, config: any, text: Text
       practiceFeedback,
     ],
     loop_function: () => {
-      const lastInputTrial = jsPsych.data
-        .get()
-        .filter({ phase: "practice", part: "instruction", task: TASK_NAME })
-        .last(1)
-        .values()[0];
-      // Continue looping if incorrect
-      return lastInputTrial && !lastInputTrial.correct;
+      const lastInputTrial = lastPracticeResponse();
+
+      if (!lastInputTrial || lastInputTrial.correct) {
+        return false;
+      }
+
+      if (!attemptsRemain()) {
+        return false;
+      }
+
+      practiceAttempt += 1;
+      return true;
     },
   };
 

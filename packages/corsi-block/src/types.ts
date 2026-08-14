@@ -101,6 +101,13 @@ export interface CorsiBlockConfig {
   /** Allow correction/undo */
   allow_correction?: boolean;
 
+  /**
+   * How many times the participant may attempt the instruction practice before
+   * the task continues regardless. If `null`, the practice will repeat indefinitely
+   * until the participant succeeds.
+   */
+  max_practice_attempts?: number | null;
+
   // === Algorithm Parameters ===
   /** Starting sequence length */
   starting_length?: number;

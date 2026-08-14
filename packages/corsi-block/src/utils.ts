@@ -205,6 +205,9 @@ export function validateConfig(config: typeof DEFAULT_CONFIG & { blocks: BlockPo
   // -- Trial counts --
   requireInt("trials_per_length", config.trials_per_length, 1);
   requireInt("consecutive_errors_threshold", config.consecutive_errors_threshold, 1);
+  if (config.max_practice_attempts !== null) {
+    requireInt("max_practice_attempts", config.max_practice_attempts, 1);
+  }
 
   // -- Block layout --
   if (!Array.isArray(config.blocks) || config.blocks.length < 2) {

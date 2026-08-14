@@ -14,6 +14,7 @@ export interface TrialText {
   instruction_try_tap: string;
   instruction_success: string;
   instruction_failure: string;
+  instruction_practice_exhausted: string;
 
   // -- TRIAL PROMPTS --
   display_prompt: string;
@@ -51,6 +52,7 @@ export const defaultText: TrialText = {
   instruction_try_tap: `<p>Now tap the blocks in the same order you just saw.</p>`,
   instruction_success: "Correct! You're ready to begin.",
   instruction_failure: "That wasn't quite right. Let's try again.",
+  instruction_practice_exhausted: "That's alright, let's move on to the task.",
 
   // -- TRIAL PROMPTS --
   display_prompt: "Watch the sequence",
