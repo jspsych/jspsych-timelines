@@ -175,24 +175,6 @@ describe("Corsi Block Task", () => {
       expect(displayTrial.sequence_gap_duration).toBe(1200);
     });
 
-    it("should support auto sequence initiation", () => {
-      const timeline = createTimeline(jsPsych, {
-        sequence_initiation: "auto",
-      });
-      expect(timeline).toBeDefined();
-      // Timeline includes interactive instructions and trials
-      expect(timeline.timeline.length).toBeGreaterThan(0);
-    });
-
-    it("should support button sequence initiation", () => {
-      const timeline = createTimeline(jsPsych, {
-        sequence_initiation: "button",
-      });
-      expect(timeline).toBeDefined();
-      // Timeline includes interactive instructions and trials
-      expect(timeline.timeline.length).toBeGreaterThan(0);
-    });
-
     it("should support custom block positions", () => {
       const timeline = createTimeline(jsPsych, {
         blocks: [
@@ -303,27 +285,6 @@ describe("Corsi Block Task", () => {
       }
     });
 
-    it("should support touchscreen input modality", () => {
-      const timeline = createTimeline(jsPsych, {
-        input_modality: "touchscreen",
-      });
-      expect(timeline).toBeDefined();
-    });
-
-    it("should support mouse input modality", () => {
-      const timeline = createTimeline(jsPsych, {
-        input_modality: "mouse",
-      });
-      expect(timeline).toBeDefined();
-    });
-
-    it("should support fixed ISI mode", () => {
-      const timeline = createTimeline(jsPsych, {
-        isi_mode: "fixed",
-      });
-      expect(timeline).toBeDefined();
-    });
-
     it("should route custom text through to the trial prompts", () => {
       const timeline = createTimeline(jsPsych, {
         text: {
@@ -338,13 +299,6 @@ describe("Corsi Block Task", () => {
       const innerTimeline = (timeline.timeline[1] as any).timeline[0];
       expect(innerTimeline.timeline[0].prompt).toBe("Regardez la séquence");
       expect(innerTimeline.timeline[1].prompt).toBe("Tapez les blocs dans le même ordre");
-    });
-
-    it("should support null response timeout for unlimited time", () => {
-      const timeline = createTimeline(jsPsych, {
-        response_timeout: null,
-      });
-      expect(timeline).toBeDefined();
     });
 
     it("should handle clinical standard parameters", () => {
@@ -444,8 +398,8 @@ describe("Corsi Block Task", () => {
       expect(() => createTimeline(jsPsych, { stimulus_duration: -1 })).toThrow(
         /stimulus_duration must be a duration in milliseconds >= 0/
       );
-      expect(() => createTimeline(jsPsych, { response_timeout: 0 })).toThrow(
-        /response_timeout must be null \(no limit\) or a positive number/
+      expect(() => createTimeline(jsPsych, { pre_stim_duration: -1 })).toThrow(
+        /pre_stim_duration must be a duration in milliseconds >= 0/
       );
       expect(() => createTimeline(jsPsych, { block_size: 0 })).toThrow(
         /block_size is a percentage of the display/
@@ -638,6 +592,74 @@ describe("Corsi Block Task", () => {
       expect(() => createTimeline(jsPsych, { max_practice_attempts: 0 })).toThrow(
         /max_practice_attempts must be an integer >= 1/
       );
+    });
+
+    it("should route the timing options to parameters that actually take effect", () => {
+      const timeline = createTimeline(jsPsych, {
+        pre_stim_duration: 250,
+        post_sequence_delay: 750,
+        inter_trial_delay: 1250,
+        starting_length: 2,
+        max_length: 2,
+        trials_per_length: 1,
+      });
+
+      const innerTimeline = (timeline.timeline[1] as any).timeline[0];
+      const [displayTrial, inputTrial] = innerTimeline.timeline;
+
+      // pre_stim_duration is a real plugin parameter
+      expect(displayTrial.pre_stim_duration).toBe(250);
+      // the other two have no plugin equivalent, so they become jsPsych gaps
+      expect(displayTrial.post_trial_gap).toBe(750);
+      expect(inputTrial.post_trial_gap).toBe(1250);
+
+      // ...and nothing is forwarded to plugin parameters that do not exist
+      for (const trial of [displayTrial, inputTrial]) {
+        expect(trial.post_sequence_delay).toBeUndefined();
+        expect(trial.inter_trial_delay).toBeUndefined();
+        expect(trial.response_timeout).toBeUndefined();
+        expect(trial.background_color).toBeUndefined();
+      }
+    });
+
+    it("should leave the display unpainted unless background_color is set", () => {
+      const asDefault = createTimeline(jsPsych, { starting_length: 2, max_length: 2 });
+      const defaultDisplay = (asDefault.timeline[1] as any).timeline[0].timeline[0];
+      expect(defaultDisplay.on_load).toBeUndefined();
+
+      const painted = createTimeline(initJsPsych(), {
+        background_color: "#123456",
+        starting_length: 2,
+        max_length: 2,
+      });
+      const paintedDisplay = (painted.timeline[1] as any).timeline[0].timeline[0];
+      expect(typeof paintedDisplay.on_load).toBe("function");
+    });
+
+    it("should add data_labels to every trial it creates, not just the test trials", () => {
+      const timeline = createTimeline(jsPsych, {
+        data_labels: { condition: "A" },
+        starting_length: 2,
+        max_length: 2,
+        trials_per_length: 1,
+      });
+
+      const trials: any[] = [];
+      const collect = (node: any) => {
+        if (Array.isArray(node)) return node.forEach(collect);
+        if (node?.timeline) return collect(node.timeline);
+        if (node?.type) trials.push(node);
+      };
+      collect(timeline);
+
+      expect(trials.length).toBeGreaterThan(0);
+      for (const trial of trials) {
+        expect(trial.data.condition).toBe("A");
+      }
+      // including the row that carries the span
+      const scoringTrial = timeline.timeline[timeline.timeline.length - 1] as any;
+      expect(scoringTrial.data.phase).toBe("scoring");
+      expect(scoringTrial.data.condition).toBe("A");
     });
 
     it("should scope every trial it creates under the timeline's css class", () => {

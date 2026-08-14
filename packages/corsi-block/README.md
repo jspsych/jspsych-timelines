@@ -41,9 +41,9 @@ const timeline = createTimeline(jsPsych, {
   // Temporal parameters
   stimulus_duration: 750,              // How long each block lights up
   inter_stimulus_interval: 1000,       // Pause between blocks
-  post_sequence_delay: 500,            // Delay before response enabled
-  inter_trial_delay: 1500,             // Pause between trials
-  response_timeout: 60000,             // Max time for response (ms)
+  pre_stim_duration: 500,              // Blocks shown before the sequence starts
+  post_sequence_delay: 500,            // Blank pause before the response screen
+  inter_trial_delay: 1500,             // Blank pause between trials
 
   // Visual parameters
   block_colors: {
@@ -52,7 +52,7 @@ const timeline = createTimeline(jsPsych, {
     correct: '#00ff00',                // Green feedback
     incorrect: '#ff0000'               // Red feedback
   },
-  background_color: '#000000',         // Black background
+  background_color: '#1a1a1a',         // Block display background (null = inherit)
   display_width: '500px',
   display_height: '500px',
   block_size: 15,                      // Percentage of display
@@ -75,9 +75,9 @@ const timeline = createTimeline(jsPsych, {
 |-----------|------|---------|-------------|
 | `stimulus_duration` | number | 1000 | Duration each block remains highlighted (ms) |
 | `inter_stimulus_interval` | number | 1000 | Pause between blocks in sequence (ms) |
-| `post_sequence_delay` | number | 500 | Delay after sequence before response enabled (ms) |
-| `inter_trial_delay` | number | 1500 | Pause between trials (ms) |
-| `response_timeout` | number \| null | null | Maximum time for response (ms), null = no limit |
+| `pre_stim_duration` | number | 500 | How long the blocks are shown before the sequence starts (ms) |
+| `post_sequence_delay` | number | 500 | Blank pause between the sequence ending and the response screen (ms) |
+| `inter_trial_delay` | number | 1500 | Blank pause between trials (ms) |
 
 ### Visual Parameters
 
@@ -87,7 +87,7 @@ const timeline = createTimeline(jsPsych, {
 | `block_colors.active` | string | '#ffcc00' | Color when block is highlighted |
 | `block_colors.correct` | string | '#00ff00' | Color for correct feedback |
 | `block_colors.incorrect` | string | '#ff0000' | Color for incorrect feedback |
-| `background_color` | string | '#000000' | Background color |
+| `background_color` | string \| null | null | Background colour of the block display area; `null` inherits the page background |
 | `display_width` | string | '400px' | Width of display area |
 | `display_height` | string | '400px' | Height of display area |
 | `block_size` | number | 12 | Size of blocks as % of display |
@@ -126,10 +126,8 @@ you need any of the following:
 |-----------|------|---------|-------------|
 | `blocks` | BlockPosition[] | Default 9-block layout | Custom block positions |
 | `max_practice_attempts` | number \| null | null | Attempts allowed at the instruction practice before the task continues anyway; `null` repeats until passed |
-| `input_modality` | 'touchscreen' \| 'mouse' | 'touchscreen' | Input method (cosmetic) |
-| `sequence_initiation` | 'auto' \| 'button' | 'auto' | Start automatically or with button |
 | `text` | Partial<TextConfig> | English defaults | Custom text for internationalization |
-| `data_labels` | object | {} | Custom fields added to the recorded test trials (see below) |
+| `data_labels` | object | {} | Custom fields added to every trial the timeline records (see below) |
 
 #### Reserved data fields
 

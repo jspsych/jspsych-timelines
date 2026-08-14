@@ -220,20 +220,19 @@ export function validateConfig(config: typeof DEFAULT_CONFIG & { blocks: BlockPo
   // -- Timing --
   requireDuration("stimulus_duration", config.stimulus_duration);
   requireDuration("inter_stimulus_interval", config.inter_stimulus_interval);
+  requireDuration("pre_stim_duration", config.pre_stim_duration);
   requireDuration("post_sequence_delay", config.post_sequence_delay);
   requireDuration("inter_trial_delay", config.inter_trial_delay);
   requireDuration("click_feedback_duration", config.click_feedback_duration);
 
-  if (config.response_timeout !== null) {
-    if (typeof config.response_timeout !== "number" || config.response_timeout <= 0) {
-      throw new Error(
-        `[corsi-block] response_timeout must be null (no limit) or a positive number of ` +
-          `milliseconds, got ${config.response_timeout}`
-      );
-    }
+  // -- Display --
+  if (config.background_color !== null && typeof config.background_color !== "string") {
+    throw new Error(
+      `[corsi-block] background_color must be a CSS colour string or null, ` +
+        `got ${typeof config.background_color}`
+    );
   }
 
-  // -- Display --
   if (typeof config.block_size !== "number" || config.block_size <= 0 || config.block_size > 100) {
     throw new Error(
       `[corsi-block] block_size is a percentage of the display and must be > 0 and <= 100, ` +
@@ -273,27 +272,4 @@ export function validateConfig(config: typeof DEFAULT_CONFIG & { blocks: BlockPo
       );
     }
   }
-}
-
-/**
- * Calculate Euclidean distance between two blocks
- */
-export function calculateDistance(block1: BlockPosition, block2: BlockPosition): number {
-  const dx = block2.x - block1.x;
-  const dy = block2.y - block1.y;
-  return Math.sqrt(dx * dx + dy * dy);
-}
-
-/**
- * Calculate ISI based on distance if using distance-based mode
- * Uses a simple linear scaling: base ISI + (distance * scale factor)
- */
-export function calculateDistanceBasedISI(
-  block1: BlockPosition,
-  block2: BlockPosition,
-  baseISI: number,
-  scaleFactor: number = 0.5
-): number {
-  const distance = calculateDistance(block1, block2);
-  return Math.round(baseISI + distance * scaleFactor);
 }

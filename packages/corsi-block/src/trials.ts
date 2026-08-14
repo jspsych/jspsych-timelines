@@ -15,6 +15,24 @@ import type { BlockPosition, DataLabels } from "./types";
 const TASK_NAME = "corsi-block";
 
 /**
+ * paints the display element according to the param color, which should
+ * be provided by config's `background_color`.
+ */
+export function paintBackground(jsPsych: JsPsych, color: string | null) {
+  if (color === null) {
+    return undefined;
+  }
+  return () => {
+    const stimulus = jsPsych
+      .getDisplayElement()
+      .querySelector<HTMLElement>("#jspsych-corsi-stimulus");
+    if (stimulus) {
+      stimulus.style.backgroundColor = color;
+    }
+  };
+}
+
+/**
  * Create a display trial (show sequence)
  */
 export function createDisplayTrial(
@@ -24,12 +42,12 @@ export function createDisplayTrial(
     stimulus_duration: number;
     inter_stimulus_interval: number;
     pre_stim_duration: number;
-    inter_trial_delay: number;
+    post_sequence_delay: number;
     block_colors: {
       inactive: string;
       active: string;
     };
-    background_color: string;
+    background_color: string | null;
     display_width: string;
     display_height: string;
     block_size: number;
@@ -46,15 +64,16 @@ export function createDisplayTrial(
     sequence_block_duration: options.stimulus_duration,
     sequence_gap_duration: options.inter_stimulus_interval,
     pre_stim_duration: options.pre_stim_duration,
-    inter_trial_delay: options.inter_trial_delay,
     block_color: options.block_colors.inactive,
     highlight_color: options.block_colors.active,
-    background_color: options.background_color,
     display_width: options.display_width,
     display_height: options.display_height,
     block_size: options.block_size,
     prompt: options.prompt,
     css_classes: [CSS_ROOT_CLASS],
+    // Blank pause between the sequence ending and the response screen
+    post_trial_gap: options.post_sequence_delay,
+    on_load: paintBackground(jsPsych, options.background_color),
     data: {
       ...options.data_labels,
       task: TASK_NAME,
@@ -74,9 +93,7 @@ export function createInputTrial(
   jsPsych: JsPsych,
   options: {
     blocks: BlockPosition[];
-    post_sequence_delay: number;
     inter_trial_delay: number;
-    response_timeout: number | null;
     click_feedback_duration: number;
     block_colors: {
       inactive: string;
@@ -84,7 +101,7 @@ export function createInputTrial(
       correct: string;
       incorrect: string;
     };
-    background_color: string;
+    background_color: string | null;
     display_width: string;
     display_height: string;
     block_size: number;
@@ -98,20 +115,18 @@ export function createInputTrial(
     mode: "input",
     sequence: () => jsPsych.timelineVariable("sequence"),
     blocks: options.blocks,
-    post_sequence_delay: options.post_sequence_delay,
-    inter_trial_delay: options.inter_trial_delay,
-    response_timeout: options.response_timeout,
     response_animation_duration: options.click_feedback_duration,
     block_color: options.block_colors.inactive,
     highlight_color: options.block_colors.active,
     correct_color: options.block_colors.correct,
     incorrect_color: options.block_colors.incorrect,
-    background_color: options.background_color,
     display_width: options.display_width,
     display_height: options.display_height,
     block_size: options.block_size,
     prompt: options.prompt,
     css_classes: [CSS_ROOT_CLASS],
+    post_trial_gap: options.inter_trial_delay,
+    on_load: paintBackground(jsPsych, options.background_color),
     data: {
       ...options.data_labels,
       task: TASK_NAME,

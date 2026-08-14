@@ -24,7 +24,7 @@ This directory contains example implementations of the Corsi Block Task timeline
 - Faster presentation (500ms vs 1000ms)
 - Starts at length 3
 - 3 trials per length
-- Response timeout enabled
+- Shorter delays between sequence and response
 - Custom color theme
 - Random sequence generation
 

@@ -15,16 +15,6 @@ export interface BlockPosition {
 }
 
 /**
- * ISI mode configuration
- */
-export type ISIMode = "fixed" | "distance-based";
-
-/**
- * Sequence initiation mode
- */
-export type SequenceInitiation = "auto" | "button";
-
-/**
  * Stop rule for discontinuation
  */
 export type StopRule = "both-trials" | "consecutive-errors";
@@ -33,11 +23,6 @@ export type StopRule = "both-trials" | "consecutive-errors";
  * Sequence generation mode
  */
 export type SequenceGeneration = "fixed" | "random";
-
-/**
- * Input modality
- */
-export type InputModality = "touchscreen" | "mouse";
 
 /**
  * Block color configuration
@@ -60,24 +45,28 @@ export interface CorsiBlockConfig {
   /** Inter-stimulus interval: pause between blocks (ms) */
   inter_stimulus_interval?: number;
 
-  /** ISI mode: fixed time or distance-based */
-  isi_mode?: ISIMode;
+  /** Duration the blocks are shown before the sequence begins (ms) */
+  pre_stim_duration?: number;
 
-  /** Post-sequence delay: pause after sequence before response enabled (ms) */
+  /**
+   * Pause between the end of the sequence and the response screen (ms).
+   *
+   * The screen is blank for this interval. jsPsych clears the display before
+   * the gap, so the board cannot be left visible while responses are disabled.
+   */
   post_sequence_delay?: number;
 
-  /** Inter-trial delay: pause between trials (ms) */
+  /** Inter-trial delay: blank pause between trials (ms) */
   inter_trial_delay?: number;
-
-  /** Response timeout: max time for response (ms). null = no limit */
-  response_timeout?: number | null;
 
   // === Visual Parameters ===
   /** Block color configuration */
   block_colors?: BlockColors;
 
-  /** Background color */
-  background_color?: string;
+  /**
+   * Background colour of the block display area, `null` to inherit page background.
+   */
+  background_color?: string | null;
 
   /** Click feedback duration (ms) */
   click_feedback_duration?: number;
@@ -92,15 +81,6 @@ export interface CorsiBlockConfig {
   block_size?: number;
 
   // === Interaction Parameters ===
-  /** Input modality */
-  input_modality?: InputModality;
-
-  /** Sequence initiation mode */
-  sequence_initiation?: SequenceInitiation;
-
-  /** Allow correction/undo */
-  allow_correction?: boolean;
-
   /**
    * How many times the participant may attempt the instruction practice before
    * the task continues regardless. If `null`, the practice will repeat indefinitely

@@ -20,8 +20,8 @@ import { DataCollection, JsPsych } from "jspsych";
 
 import { CSS_ROOT_CLASS, DEFAULT_BLOCKS, DEFAULT_CONFIG } from "./constants";
 import { TextConfig, defaultText } from "./text";
-import { createDisplayTrial, createInputTrial, createStartTrial } from "./trials";
-import { CorsiBlockConfig } from "./types";
+import { createDisplayTrial, createInputTrial, createStartTrial, paintBackground } from "./trials";
+import { CorsiBlockConfig, DataLabels } from "./types";
 import { getSequencesForLength, mergeConfig, validateConfig } from "./utils";
 
 // -- CONSTANTS --
@@ -35,7 +35,12 @@ const VERSION = "0.1.0";
  * `max_practice_attempts` is reached. Without that cap a participant who cannot
  * do the task is stuck before the experiment starts, with no way forward.
  */
-function createInteractiveInstructions(jsPsych: JsPsych, config: any, text: TextConfig) {
+function createInteractiveInstructions(
+  jsPsych: JsPsych,
+  config: any,
+  text: TextConfig,
+  dataLabels: DataLabels = {}
+) {
   const maxAttempts: number | null = config.max_practice_attempts;
   let practiceAttempt = 1;
 
@@ -55,6 +60,7 @@ function createInteractiveInstructions(jsPsych: JsPsych, config: any, text: Text
     choices: [text.continue_button],
     css_classes: [CSS_ROOT_CLASS],
     data: {
+      ...dataLabels,
       task: TASK_NAME,
       task_version: VERSION,
       phase: "instructions",
@@ -67,6 +73,7 @@ function createInteractiveInstructions(jsPsych: JsPsych, config: any, text: Text
     choices: [text.continue_button],
     css_classes: [CSS_ROOT_CLASS],
     data: {
+      ...dataLabels,
       task: TASK_NAME,
       task_version: VERSION,
       phase: "instructions",
@@ -79,6 +86,7 @@ function createInteractiveInstructions(jsPsych: JsPsych, config: any, text: Text
     choices: [text.continue_button],
     css_classes: [CSS_ROOT_CLASS],
     data: {
+      ...dataLabels,
       task: TASK_NAME,
       task_version: VERSION,
       phase: "instructions",
@@ -94,6 +102,7 @@ function createInteractiveInstructions(jsPsych: JsPsych, config: any, text: Text
     choices: [text.continue_button],
     css_classes: [CSS_ROOT_CLASS],
     data: {
+      ...dataLabels,
       task: TASK_NAME,
       task_version: VERSION,
       phase: "instructions",
@@ -107,17 +116,18 @@ function createInteractiveInstructions(jsPsych: JsPsych, config: any, text: Text
     blocks: config.blocks || DEFAULT_BLOCKS,
     sequence_block_duration: config.stimulus_duration,
     sequence_gap_duration: config.inter_stimulus_interval,
-    pre_stim_duration: 500,
-    inter_trial_delay: 0,
+    pre_stim_duration: config.pre_stim_duration,
     block_color: config.block_colors.inactive,
     highlight_color: config.block_colors.active,
-    background_color: config.background_color,
     display_width: config.display_width,
     display_height: config.display_height,
     block_size: config.block_size,
     prompt: text.display_prompt,
     css_classes: [CSS_ROOT_CLASS],
+    post_trial_gap: config.post_sequence_delay,
+    on_load: paintBackground(jsPsych, config.background_color),
     data: {
+      ...dataLabels,
       task: TASK_NAME,
       task_version: VERSION,
       phase: "practice",
@@ -132,6 +142,7 @@ function createInteractiveInstructions(jsPsych: JsPsych, config: any, text: Text
     choices: [text.continue_button],
     css_classes: [CSS_ROOT_CLASS],
     data: {
+      ...dataLabels,
       task: TASK_NAME,
       task_version: VERSION,
       phase: "instructions",
@@ -143,21 +154,19 @@ function createInteractiveInstructions(jsPsych: JsPsych, config: any, text: Text
     mode: "input",
     sequence: practiceSequence,
     blocks: config.blocks || DEFAULT_BLOCKS,
-    post_sequence_delay: config.post_sequence_delay,
-    inter_trial_delay: 0,
-    response_timeout: null, // No timeout for practice
     response_animation_duration: config.click_feedback_duration,
     block_color: config.block_colors.inactive,
     highlight_color: config.block_colors.active,
     correct_color: config.block_colors.correct || "#00ff00",
     incorrect_color: config.block_colors.incorrect || "#ff0000",
-    background_color: config.background_color,
     display_width: config.display_width,
     display_height: config.display_height,
     block_size: config.block_size,
     prompt: text.input_prompt,
     css_classes: [CSS_ROOT_CLASS],
+    on_load: paintBackground(jsPsych, config.background_color),
     data: {
+      ...dataLabels,
       task: TASK_NAME,
       task_version: VERSION,
       phase: "practice",
@@ -182,6 +191,7 @@ function createInteractiveInstructions(jsPsych: JsPsych, config: any, text: Text
     choices: [text.continue_button],
     css_classes: [CSS_ROOT_CLASS],
     data: {
+      ...dataLabels,
       task: TASK_NAME,
       task_version: VERSION,
       phase: "instructions",
@@ -253,7 +263,7 @@ export function createTimeline(jsPsych: JsPsych, config: CorsiBlockConfig = {}):
   const timeline: any[] = [];
 
   // Add interactive instructions at the beginning
-  timeline.push(createInteractiveInstructions(jsPsych, fullConfig, text));
+  timeline.push(createInteractiveInstructions(jsPsych, fullConfig, text, config.data_labels));
 
   // Generate all trials for all lengths upfront
   for (let length = fullConfig.starting_length; length <= fullConfig.max_length; length++) {
@@ -283,8 +293,8 @@ export function createTimeline(jsPsych: JsPsych, config: CorsiBlockConfig = {}):
         blocks: fullConfig.blocks,
         stimulus_duration: fullConfig.stimulus_duration,
         inter_stimulus_interval: fullConfig.inter_stimulus_interval,
-        pre_stim_duration: 500,
-        inter_trial_delay: 0,
+        pre_stim_duration: fullConfig.pre_stim_duration,
+        post_sequence_delay: fullConfig.post_sequence_delay,
         block_colors: {
           inactive: fullConfig.block_colors.inactive,
           active: fullConfig.block_colors.active,
@@ -303,9 +313,7 @@ export function createTimeline(jsPsych: JsPsych, config: CorsiBlockConfig = {}):
     trialSequence.push(
       createInputTrial(jsPsych, {
         blocks: fullConfig.blocks,
-        post_sequence_delay: fullConfig.post_sequence_delay,
         inter_trial_delay: fullConfig.inter_trial_delay,
-        response_timeout: fullConfig.response_timeout,
         click_feedback_duration: fullConfig.click_feedback_duration,
         block_colors: {
           inactive: fullConfig.block_colors.inactive,
@@ -397,6 +405,7 @@ export function createTimeline(jsPsych: JsPsych, config: CorsiBlockConfig = {}):
     trial_duration: 0,
     css_classes: [CSS_ROOT_CLASS],
     data: {
+      ...config.data_labels,
       task: TASK_NAME,
       task_version: VERSION,
       phase: "scoring",

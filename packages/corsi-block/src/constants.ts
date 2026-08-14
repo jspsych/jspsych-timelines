@@ -35,10 +35,9 @@ export const DEFAULT_CONFIG: Required<Omit<CorsiBlockConfig, "text" | "data_labe
   // Temporal parameters
   stimulus_duration: 1000, // Standard: 1000ms
   inter_stimulus_interval: 1000, // Standard: 1000ms
-  isi_mode: "fixed",
+  pre_stim_duration: 500, // Blocks visible before the sequence starts
   post_sequence_delay: 500, // Standard: 500ms
   inter_trial_delay: 1500, // Standard: 1500ms
-  response_timeout: null, // Standard: None (infinite)
 
   // Visual parameters
   block_colors: {
@@ -47,16 +46,13 @@ export const DEFAULT_CONFIG: Required<Omit<CorsiBlockConfig, "text" | "data_labe
     correct: "#00ff00", // Green
     incorrect: "#ff0000", // Red
   },
-  background_color: "#000000", // Black
+  background_color: null, // Inherit the page background
   click_feedback_duration: 200, // Standard: ~200ms flash
   display_width: "400px",
   display_height: "400px",
   block_size: 12,
 
   // Interaction parameters
-  input_modality: "touchscreen",
-  sequence_initiation: "auto",
-  allow_correction: false,
   max_practice_attempts: null,
 
   // Algorithm parameters
