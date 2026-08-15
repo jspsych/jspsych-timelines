@@ -2,6 +2,34 @@ import { JsPsych, initJsPsych } from "jspsych";
 
 import { createTimeline, utils } from ".";
 
+/** append scored response trials, as a real run would record them. */
+function respond(jsPsych: JsPsych, trials: Array<{ sequence_length: number; correct: boolean }>) {
+  for (const trial of trials) {
+    jsPsych.data.get().push({ task: "corsi-block", phase: "test", part: "response", ...trial });
+  }
+}
+
+/** append instruction-practice responses, as a real run would record them. */
+function respondToPractice(jsPsych: JsPsych, ...outcomes: boolean[]) {
+  for (const correct of outcomes) {
+    jsPsych.data
+      .get()
+      .push({ task: "corsi-block", phase: "practice", part: "instruction", correct });
+  }
+}
+
+/** get all trials from a timeline node */
+function allTrials(node: any, found: any[] = []): any[] {
+  if (Array.isArray(node)) {
+    node.forEach((child) => allTrials(child, found));
+  } else if (node?.timeline) {
+    allTrials(node.timeline, found);
+  } else if (node?.type) {
+    found.push(node);
+  }
+  return found;
+}
+
 describe("Corsi Block Task", () => {
   let jsPsych: JsPsych;
 
@@ -10,20 +38,57 @@ describe("Corsi Block Task", () => {
   });
 
   describe("createTimeline", () => {
-    it("should return a timeline", () => {
-      const timeline = createTimeline(jsPsych);
-      expect(timeline).toBeDefined();
-      expect(timeline.timeline).toBeDefined();
-      expect(Array.isArray(timeline.timeline)).toBe(true);
-    });
-
-    it("should create timeline with default parameters", () => {
+    it("should return instructions, one node per length, then a scoring trial", () => {
       const timeline = createTimeline(jsPsych, {
         starting_length: 2,
+        max_length: 4,
         trials_per_length: 2,
       });
-      expect(timeline).toBeDefined();
-      expect(timeline.timeline.length).toBeGreaterThan(0);
+
+      const [instructions, ...rest] = timeline.timeline;
+      const scoring = rest.pop() as any;
+      const lengthNodes = rest as any[];
+
+      // instructions are a plain timeline node, not a trial
+      expect(instructions.type).toBeUndefined();
+      expect(Array.isArray(instructions.timeline)).toBe(true);
+
+      // one conditional node per length from starting_length to max_length
+      expect(lengthNodes).toHaveLength(3);
+      for (const node of lengthNodes) {
+        expect(typeof node.conditional_function).toBe("function");
+      }
+      expect(lengthNodes.map((n) => n.timeline[0].timeline_variables[0].sequence_length)).toEqual([
+        2, 3, 4,
+      ]);
+
+      // the scoring trial is last and carries the span
+      expect(scoring.data.phase).toBe("scoring");
+      expect(typeof scoring.on_finish).toBe("function");
+    });
+
+    it("should apply the documented defaults when given no configuration", () => {
+      const timeline = createTimeline(jsPsych);
+
+      // starting_length 2 through max_length 9 => 8 length nodes
+      const lengthNodes = timeline.timeline.slice(1, -1) as any[];
+      expect(lengthNodes).toHaveLength(8);
+      expect(lengthNodes.map((n) => n.timeline[0].timeline_variables[0].sequence_length)).toEqual([
+        2, 3, 4, 5, 6, 7, 8, 9,
+      ]);
+
+      // trials_per_length 2
+      for (const node of lengthNodes) {
+        expect(node.timeline[0].timeline_variables).toHaveLength(2);
+      }
+
+      const displayTrial = lengthNodes[0].timeline[0].timeline[0];
+      expect(displayTrial.sequence_block_duration).toBe(1000); // stimulus_duration
+      expect(displayTrial.sequence_gap_duration).toBe(1000); // inter_stimulus_interval
+      expect(displayTrial.pre_stim_duration).toBe(500);
+      expect(displayTrial.block_size).toBe(12);
+      // background_color defaults to null, so nothing is painted
+      expect(displayTrial.on_load).toBeUndefined();
     });
 
     it("should create timeline nodes for each length from starting_length to max_length", () => {
@@ -90,29 +155,80 @@ describe("Corsi Block Task", () => {
       });
     });
 
-    it("should apply both-trials stop rule via conditional_function", () => {
+    it("should continue under both-trials until every trial at a length fails", () => {
       const timeline = createTimeline(jsPsych, {
         stop_rule: "both-trials",
         starting_length: 2,
         max_length: 4,
         trials_per_length: 2,
       });
+      const lengthThree = (timeline.timeline[2] as any).conditional_function;
 
-      // The second length node should have a conditional_function
-      const lengthNode = timeline.timeline[2] as any;
-      expect(typeof lengthNode.conditional_function).toBe("function");
+      // one of two correct at length 2 is a pass, so length 3 runs
+      respond(jsPsych, [
+        { sequence_length: 2, correct: true },
+        { sequence_length: 2, correct: false },
+      ]);
+      expect(lengthThree()).toBe(true);
     });
 
-    it("should apply consecutive-errors stop rule via conditional_function", () => {
+    it("should stop under both-trials once every trial at a length fails", () => {
+      const timeline = createTimeline(jsPsych, {
+        stop_rule: "both-trials",
+        starting_length: 2,
+        max_length: 4,
+        trials_per_length: 2,
+      });
+      const lengthThree = (timeline.timeline[2] as any).conditional_function;
+
+      respond(jsPsych, [
+        { sequence_length: 2, correct: false },
+        { sequence_length: 2, correct: false },
+      ]);
+      expect(lengthThree()).toBe(false);
+    });
+
+    it("should stop under consecutive-errors only once the threshold is reached", () => {
       const timeline = createTimeline(jsPsych, {
         stop_rule: "consecutive-errors",
         consecutive_errors_threshold: 3,
         starting_length: 2,
-        max_length: 4,
+        max_length: 6,
+        trials_per_length: 2,
       });
+      const lengthFour = (timeline.timeline[3] as any).conditional_function;
 
-      const lengthNode = timeline.timeline[2] as any;
-      expect(typeof lengthNode.conditional_function).toBe("function");
+      // two recent errors is below the threshold of three
+      respond(jsPsych, [
+        { sequence_length: 2, correct: true },
+        { sequence_length: 2, correct: true },
+        { sequence_length: 3, correct: false },
+        { sequence_length: 3, correct: false },
+      ]);
+      expect(lengthFour()).toBe(true);
+
+      // a third consecutive error reaches it
+      respond(jsPsych, [{ sequence_length: 3, correct: false }]);
+      expect(lengthFour()).toBe(false);
+    });
+
+    it("should not stop under consecutive-errors when the errors are not consecutive", () => {
+      const timeline = createTimeline(jsPsych, {
+        stop_rule: "consecutive-errors",
+        consecutive_errors_threshold: 3,
+        starting_length: 2,
+        max_length: 6,
+        trials_per_length: 2,
+      });
+      const lengthFour = (timeline.timeline[3] as any).conditional_function;
+
+      respond(jsPsych, [
+        { sequence_length: 3, correct: false },
+        { sequence_length: 3, correct: true },
+        { sequence_length: 3, correct: false },
+        { sequence_length: 3, correct: false },
+      ]);
+      expect(lengthFour()).toBe(true);
     });
 
     it("should generate sequences without repeats when allow_repeats is false", () => {
@@ -175,34 +291,63 @@ describe("Corsi Block Task", () => {
       expect(displayTrial.sequence_gap_duration).toBe(1200);
     });
 
-    it("should support custom block positions", () => {
+    it("should use a custom block layout and keep sequences within it", () => {
+      const blocks = [
+        { x: 10, y: 10 },
+        { x: 20, y: 20 },
+        { x: 30, y: 30 },
+        { x: 40, y: 40 },
+        { x: 50, y: 50 },
+      ];
       const timeline = createTimeline(jsPsych, {
-        blocks: [
-          { x: 10, y: 10 },
-          { x: 20, y: 20 },
-          { x: 30, y: 30 },
-          { x: 40, y: 40 },
-          { x: 50, y: 50 },
-        ],
+        blocks,
         // The fixed table indexes blocks the default 9-block layout provides
         sequence_generation: "random",
         max_length: 5,
       });
-      expect(timeline).toBeDefined();
+
+      // the layout reaches the plugin
+      for (const trial of allTrials(timeline).filter((t) => t.blocks)) {
+        expect(trial.blocks).toEqual(blocks);
+      }
+
+      // and no generated sequence indexes past it, which would crash the plugin
+      const lengthNodes = timeline.timeline.slice(1, -1) as any[];
+      const indices = lengthNodes.flatMap((node) =>
+        node.timeline[0].timeline_variables.flatMap((v: any) => v.sequence)
+      );
+      expect(indices.length).toBeGreaterThan(0);
+      expect(Math.max(...indices)).toBeLessThan(blocks.length);
     });
 
-    it("should support allowing repeats", () => {
-      const timeline = createTimeline(jsPsych, {
-        allow_repeats: true,
-      });
-      expect(timeline).toBeDefined();
-    });
+    it("should permit immediate repeats when allow_repeats is true", () => {
+      // Seeding makes generation deterministic: setSeed swaps Math.random, which
+      // randomization.randomInt uses. Without it this assertion is a coin flip.
+      const realRandom = Math.random;
+      try {
+        jsPsych.randomization.setSeed("corsi-block-repeats");
+        const timeline = createTimeline(jsPsych, {
+          allow_repeats: true,
+          sequence_generation: "random",
+          starting_length: 8,
+          max_length: 8,
+          trials_per_length: 20,
+          blocks: [
+            { x: 25, y: 25 },
+            { x: 75, y: 75 },
+          ],
+        });
 
-    it("should support disallowing repeats", () => {
-      const timeline = createTimeline(jsPsych, {
-        allow_repeats: false,
-      });
-      expect(timeline).toBeDefined();
+        const sequences = (timeline.timeline[1] as any).timeline[0].timeline_variables.map(
+          (v: any) => v.sequence
+        );
+        const hasImmediateRepeat = sequences.some((sequence: number[]) =>
+          sequence.some((block, i) => i > 0 && block === sequence[i - 1])
+        );
+        expect(hasImmediateRepeat).toBe(true);
+      } finally {
+        Math.random = realRandom;
+      }
     });
 
     it("should add custom data labels to the recorded trials", () => {
@@ -301,8 +446,8 @@ describe("Corsi Block Task", () => {
       expect(innerTimeline.timeline[1].prompt).toBe("Tapez les blocs dans le même ordre");
     });
 
-    it("should handle clinical standard parameters", () => {
-      // Clinical standard: 1000ms stimulus, 1000ms ISI, 500ms delays
+    it("should build the commonly reported clinical configuration", () => {
+      // 1000ms stimulus, 1000ms ISI, 500ms delays, 2 fixed trials per length
       const timeline = createTimeline(jsPsych, {
         stimulus_duration: 1000,
         inter_stimulus_interval: 1000,
@@ -314,7 +459,20 @@ describe("Corsi Block Task", () => {
         sequence_generation: "fixed",
         allow_repeats: false,
       });
-      expect(timeline).toBeDefined();
+
+      const lengthNodes = timeline.timeline.slice(1, -1) as any[];
+      const [displayTrial, inputTrial] = lengthNodes[0].timeline[0].timeline;
+
+      expect(displayTrial.sequence_block_duration).toBe(1000);
+      expect(displayTrial.sequence_gap_duration).toBe(1000);
+      expect(displayTrial.post_trial_gap).toBe(500);
+      expect(inputTrial.post_trial_gap).toBe(1500);
+
+      // fixed generation means the standard table, verbatim
+      expect(lengthNodes[0].timeline[0].timeline_variables.map((v: any) => v.sequence)).toEqual([
+        [2, 4],
+        [5, 8],
+      ]);
     });
 
     it("should use the standard fixed sequences at every length, not just the first", () => {
@@ -414,14 +572,12 @@ describe("Corsi Block Task", () => {
       });
 
       // Passed length 2, failed both trials at length 3. Span is 2.
-      [
+      respond(jsPsych, [
         { sequence_length: 2, correct: true },
         { sequence_length: 2, correct: true },
         { sequence_length: 3, correct: false },
         { sequence_length: 3, correct: false },
-      ].forEach((trial) =>
-        jsPsych.data.get().push({ task: "corsi-block", phase: "test", part: "response", ...trial })
-      );
+      ]);
 
       const scoringTrial = timeline.timeline[timeline.timeline.length - 1] as any;
       const row: any = {};
@@ -438,14 +594,12 @@ describe("Corsi Block Task", () => {
       });
 
       // Reached the ceiling but failed every trial there. Span is 2, not 3.
-      [
+      respond(jsPsych, [
         { sequence_length: 2, correct: true },
         { sequence_length: 2, correct: true },
         { sequence_length: 3, correct: false },
         { sequence_length: 3, correct: false },
-      ].forEach((trial) =>
-        jsPsych.data.get().push({ task: "corsi-block", phase: "test", part: "response", ...trial })
-      );
+      ]);
 
       const scoringTrial = timeline.timeline[timeline.timeline.length - 1] as any;
       const row: any = {};
@@ -492,12 +646,10 @@ describe("Corsi Block Task", () => {
     });
 
     it("should leave the span undefined when no length was ever passed", () => {
-      [
+      respond(jsPsych, [
         { sequence_length: 2, correct: false },
         { sequence_length: 2, correct: false },
-      ].forEach((trial) =>
-        jsPsych.data.get().push({ task: "corsi-block", phase: "test", part: "response", ...trial })
-      );
+      ]);
 
       const summary = utils.scoring.getSummary(jsPsych.data.get());
       expect(summary.span).toBeNull();
@@ -509,10 +661,7 @@ describe("Corsi Block Task", () => {
       const timeline = createTimeline(jsPsych, { max_practice_attempts: 3 });
       const practiceLoop = (timeline.timeline[0] as any).timeline[3];
 
-      const failPractice = () =>
-        jsPsych.data
-          .get()
-          .push({ task: "corsi-block", phase: "practice", part: "instruction", correct: false });
+      const failPractice = () => respondToPractice(jsPsych, false);
 
       // Attempts 1 and 2 fail and retry; the third exhausts the allowance
       failPractice();
@@ -531,9 +680,7 @@ describe("Corsi Block Task", () => {
       const practiceLoop = (timeline.timeline[0] as any).timeline[3];
 
       for (let attempt = 0; attempt < 25; attempt++) {
-        jsPsych.data
-          .get()
-          .push({ task: "corsi-block", phase: "practice", part: "instruction", correct: false });
+        respondToPractice(jsPsych, false);
         expect(practiceLoop.loop_function()).toBe(true);
       }
     });
@@ -542,9 +689,7 @@ describe("Corsi Block Task", () => {
       const timeline = createTimeline(jsPsych, { max_practice_attempts: 3 });
       const practiceLoop = (timeline.timeline[0] as any).timeline[3];
 
-      jsPsych.data
-        .get()
-        .push({ task: "corsi-block", phase: "practice", part: "instruction", correct: true });
+      respondToPractice(jsPsych, true);
 
       expect(practiceLoop.loop_function()).toBe(false);
     });
@@ -564,9 +709,7 @@ describe("Corsi Block Task", () => {
       expect(practiceFeedback.stimulus()).toContain("wasn't quite right");
 
       // ...whereas this task's own correct response is read
-      jsPsych.data
-        .get()
-        .push({ task: "corsi-block", phase: "practice", part: "instruction", correct: true });
+      respondToPractice(jsPsych, true);
       expect(practiceFeedback.stimulus()).toContain("ready to begin");
     });
 
@@ -575,10 +718,7 @@ describe("Corsi Block Task", () => {
       const practiceLoop = (timeline.timeline[0] as any).timeline[3];
       const practiceFeedback = practiceLoop.timeline[4];
 
-      const failPractice = () =>
-        jsPsych.data
-          .get()
-          .push({ task: "corsi-block", phase: "practice", part: "instruction", correct: false });
+      const failPractice = () => respondToPractice(jsPsych, false);
 
       failPractice();
       expect(practiceFeedback.stimulus()).toContain("try again");
@@ -644,13 +784,7 @@ describe("Corsi Block Task", () => {
         trials_per_length: 1,
       });
 
-      const trials: any[] = [];
-      const collect = (node: any) => {
-        if (Array.isArray(node)) return node.forEach(collect);
-        if (node?.timeline) return collect(node.timeline);
-        if (node?.type) trials.push(node);
-      };
-      collect(timeline);
+      const trials = allTrials(timeline);
 
       expect(trials.length).toBeGreaterThan(0);
       for (const trial of trials) {
@@ -669,13 +803,7 @@ describe("Corsi Block Task", () => {
         trials_per_length: 2,
       });
 
-      const trials: any[] = [];
-      const collect = (node: any) => {
-        if (Array.isArray(node)) return node.forEach(collect);
-        if (node?.timeline) return collect(node.timeline);
-        if (node?.type) trials.push(node);
-      };
-      collect(timeline);
+      const trials = allTrials(timeline);
 
       expect(trials.length).toBeGreaterThan(0);
       for (const trial of trials) {
@@ -683,8 +811,7 @@ describe("Corsi Block Task", () => {
       }
     });
 
-    it("should handle research variant parameters", () => {
-      // Faster variant for research
+    it("should build a faster research variant that starts and ends where asked", () => {
       const timeline = createTimeline(jsPsych, {
         stimulus_duration: 500,
         inter_stimulus_interval: 500,
@@ -696,7 +823,25 @@ describe("Corsi Block Task", () => {
         // The fixed table only holds 2 sequences per length
         sequence_generation: "random",
       });
-      expect(timeline).toBeDefined();
+
+      const lengthNodes = timeline.timeline.slice(1, -1) as any[];
+      expect(lengthNodes.map((n) => n.timeline[0].timeline_variables[0].sequence_length)).toEqual([
+        3, 4, 5, 6, 7, 8,
+      ]);
+
+      for (const node of lengthNodes) {
+        const variables = node.timeline[0].timeline_variables;
+        expect(variables).toHaveLength(3);
+        // every generated sequence is as long as its level
+        for (const variable of variables) {
+          expect(variable.sequence).toHaveLength(variable.sequence_length);
+        }
+      }
+
+      const [displayTrial, inputTrial] = lengthNodes[0].timeline[0].timeline;
+      expect(displayTrial.sequence_block_duration).toBe(500);
+      expect(displayTrial.post_trial_gap).toBe(250);
+      expect(inputTrial.post_trial_gap).toBe(1000);
     });
   });
 });
