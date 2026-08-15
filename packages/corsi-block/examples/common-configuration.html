@@ -21,7 +21,9 @@
   const jsPsych = initJsPsych({
     on_finish: function() {
       const span = jsPsychTimelineCorsiBlock.utils.scoring.getSummary(jsPsych.data.get()).span;
-      const inputTrials = jsPsych.data.get().filter({ task: 'corsi-block', phase: 'input' });
+      const inputTrials = jsPsych.data.get().filter({
+        task: 'corsi-block', phase: 'test', part: 'response'
+      });
 
       let summary = `<div style="max-width: 600px; margin: auto; padding: 20px; background: white; border-radius: 10px;">`;
       summary += `<h2>Task Complete</h2>`;

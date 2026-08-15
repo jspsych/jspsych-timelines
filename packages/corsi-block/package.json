@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "Corsi block tapping task for jsPsych",
   "type": "module",
-  "main": "dist/index.mjs",
+  "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "unpkg": "dist/index.browser.js",
   "scripts": {
@@ -28,12 +28,13 @@
   "bugs": {
     "url": "https://github.com/jspsych/jspsych-timelines/issues"
   },
-  "homepage": "https://github.com/jspsych/jspsych-timelines/packages/corsi-block#readme",
+  "homepage": "https://github.com/jspsych/jspsych-timelines/tree/main/packages/corsi-block#readme",
   "peerDependencies": {
     "jspsych": ">=8.0.0"
   },
   "dependencies": {
     "@jspsych-contrib/plugin-corsi-blocks": "^2.0.0",
+    "@jspsych/plugin-html-button-response": "^2.0.0",
     "@jspsych/plugin-html-keyboard-response": "^2.0.0"
   },
   "devDependencies": {

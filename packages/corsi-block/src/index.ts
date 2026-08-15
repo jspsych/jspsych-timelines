@@ -1,12 +1,11 @@
 /**
  * Corsi Block Task for jsPsych
  *
- * A comprehensive implementation of the Corsi Block Tapping Task.
- * Supports extensive parameterization for research applications including:
+ * An implementation of the Corsi Block Tapping Task, parameterised for research
+ * use:
  * - Temporal manipulation (stimulus duration, ISI, delays)
  * - Visual configuration (colors, sizes)
  * - Algorithm control (starting length, stop rules, sequence generation)
- * - Multiple input modalities
  *
  * @module @jspsych-timelines/corsi-block
  */
@@ -18,6 +17,7 @@ import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
 import jsPsychHtmlKeyboardResponse from "@jspsych/plugin-html-keyboard-response";
 import { DataCollection, JsPsych } from "jspsych";
 
+import { version } from "../package.json";
 import { CSS_ROOT_CLASS, DEFAULT_BLOCKS, DEFAULT_CONFIG } from "./constants";
 import { TextConfig, defaultText } from "./text";
 import { createDisplayTrial, createInputTrial, createStartTrial, paintBackground } from "./trials";
@@ -26,7 +26,8 @@ import { getSequencesForLength, mergeConfig, validateConfig } from "./utils";
 
 // -- CONSTANTS --
 const TASK_NAME = "corsi-block";
-const VERSION = "0.1.0";
+
+const VERSION = version;
 
 /**
  * Creates interactive instructions with a practice trial.

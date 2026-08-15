@@ -20,7 +20,7 @@ npm install @jspsych-timelines/corsi-block
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://unpkg.com/jspsych@8"></script>
   <script src="https://unpkg.com/@jspsych-timelines/corsi-block"></script>
   <link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css">
@@ -87,7 +87,7 @@ const timeline = createTimeline(jsPsych, {
 | `block_colors.active` | string | '#ffcc00' | Color when block is highlighted |
 | `block_colors.correct` | string | '#00ff00' | Color for correct feedback |
 | `block_colors.incorrect` | string | '#ff0000' | Color for incorrect feedback |
-| `background_color` | string \| null | null | Background colour of the block display area; `null` inherits the page background |
+| `background_color` | string \| null | null | Background color of the block display area; `null` inherits the page background |
 | `display_width` | string | '400px' | Width of display area |
 | `display_height` | string | '400px' | Height of display area |
 | `block_size` | number | 12 | Size of blocks as % of display |
@@ -142,31 +142,45 @@ after the first sequence length and reporting a span with no trials behind it.
 
 ## Data
 
-The timeline records the following data for each trial:
+Every row the timeline records carries `task: 'corsi-block'`, the
+`task_version`, and a `phase` saying which part of the task it came from. The
+scored trials additionally carry a `part`, because each sequence is presented
+and answered as two separate trials:
 
-- `task`: 'corsi-block'
-- `phase`: 'display' or 'input'
+| `phase` | `part` | What it is |
+|---------|--------|------------|
+| `'instructions'` | — | The instruction pages and the practice feedback screen |
+| `'practice'` | `'instruction'` | The practice sequence and response |
+| `'test'` | `'display'` | A scored sequence being shown |
+| `'test'` | `'response'` | The participant's answer to that sequence |
+| `'scoring'` | — | A single empty trial at the end carrying `corsi_span` |
+
+**Scored trials** (`phase: 'test'`) record:
+
 - `sequence_length`: Length of the sequence
-- `trial_in_length`: Index of the trial within the current length (0-based)
-  Not `trial_index`, which is written by jsPsych already under that name
+- `trial_in_length`: Index of the trial within the current length (0-based).
+  Not `trial_index` — jsPsych writes its own global trial counter under that name
 - `sequence`: Array of block indices shown
-- `response`: Array of block indices clicked (input trials only)
-- `correct`: Whether response was correct (input trials only)
-- `rt`: Array of response times (input trials only)
+- `response`: Array of block indices clicked (`part: 'response'` only)
+- `correct`: Whether the response was correct (`part: 'response'` only)
+- `rt`: Cumulative response times, one per click (`part: 'response'` only)
 
-Practice trials (`phase: 'practice'`) additionally record:
+**Practice trials** (`phase: 'practice'`) record the same fields, plus:
 
 - `practice_attempt`: Which attempt at the instruction practice this was (1-based)
 
-Whether the participant ever passed the practice is derivable: a `phase: 'practice'` 
-row with `correct: true`. By default the practice repeats until
-that happens. If you set `max_practice_attempts`, a participant can reach the
-task without ever passing, so check this before analysing.
+Whether the participant ever passed the practice is derivable: a
+`phase: 'practice'` row with `correct: true`. By default the practice repeats
+until that happens. If you set `max_practice_attempts`, a participant can reach
+the task without ever passing, so check this before analysing.
 
-At the end of the task, a single empty `phase: 'scoring'` trial records the result:
+**The scoring trial** (`phase: 'scoring'`) records:
 
 - `corsi_span`: The longest sequence length reproduced correctly, or `null` if
-  no length was passed. 
+  no length was passed
+
+`null` is not the same as `0` here: a participant who failed every trial at
+`starting_length` has a span somewhere below it, not a span of zero.
 
 ## Scoring
 
@@ -176,15 +190,19 @@ import { utils } from '@jspsych-timelines/corsi-block';
 const scores = utils.scoring.getSummary(jsPsych.data.get());
 console.log(scores);
 // {
-//   span: 5,              // Corsi span achieved
-//   totalTrials: 8,       // Total input trials
-//   correctTrials: 6,     // Correct trials
-//   accuracy: 0.75,       // Proportion correct
-//   maxLengthAttempted: 6,
+//   span: 5,                 // Longest length reproduced correctly
+//   totalTrials: 8,          // Scored response trials
+//   correctTrials: 6,
+//   accuracy: 0.75,          // Proportion of response trials correct
+//   maxLengthAttempted: 6,   // Longest length presented
 //   taskName: 'corsi-block',
 //   version: '0.1.0'
 // }
 ```
+
+`span`, `accuracy` and `maxLengthAttempted` are `null` when the dataset contains
+no scored responses, so that "no data" is never reported as a score of zero.
+`totalTrials` and `correctTrials` are genuine counts and stay `0`.
 
 ## Accessing Results
 
@@ -199,11 +217,19 @@ const spanFromData = scoringRow.values()[0].corsi_span;
 // Get all trial data
 const allTrials = jsPsych.data.get().filter({ task: 'corsi-block' });
 
-// Get only input trials
-const inputTrials = jsPsych.data.get().filter({
+// Get only the scored responses - the rows with `correct` and `rt` on them
+const responses = jsPsych.data.get().filter({
   task: 'corsi-block',
-  phase: 'input'
+  phase: 'test',
+  part: 'response'
 });
+
+// Accuracy at each sequence length
+const byLength = {};
+for (const trial of responses.values()) {
+  byLength[trial.sequence_length] ??= [];
+  byLength[trial.sequence_length].push(trial.correct);
+}
 ```
 
 ## Common Configurations

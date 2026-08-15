@@ -95,9 +95,12 @@ const corsiTask = jsPsychTimelineCorsiBlock.createTimeline(jsPsych, {
 
 ### Mobile-Optimized
 All examples include:
-- Viewport meta tags for proper mobile scaling
+- `<meta name="viewport" content="width=device-width, initial-scale=1.0">` for
+  proper mobile scaling
 - `touch-action: manipulation` for better touch response
-- `user-scalable=no` to prevent accidental zooming
+
+Pinch-zoom is deliberately left enabled; the blocks are sized as a percentage of
+the display area, so a participant who needs to zoom can.
 
 ## Data Access
 
@@ -107,10 +110,12 @@ on_finish: function() {
   // Get the calculated span
   const span = jsPsychTimelineCorsiBlock.utils.scoring.getSummary(jsPsych.data.get()).span;
 
-  // Get all input trials
+  // Get the scored responses. Each sequence is two trials - one that shows it
+  // and one that collects the answer - so `part` matters as well as `phase`.
   const trials = jsPsych.data.get().filter({
     task: 'corsi-block',
-    phase: 'input'
+    phase: 'test',
+    part: 'response'
   });
 
   // Calculate accuracy
