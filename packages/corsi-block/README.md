@@ -172,7 +172,7 @@ and answered as two separate trials:
 Whether the participant ever passed the practice is derivable: a
 `phase: 'practice'` row with `correct: true`. By default the practice repeats
 until that happens. If you set `max_practice_attempts`, a participant can reach
-the task without ever passing, so check this before analysing.
+the task without ever passing, so check this before analyzing.
 
 **The scoring trial** (`phase: 'scoring'`) records:
 

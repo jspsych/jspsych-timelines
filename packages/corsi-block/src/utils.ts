@@ -228,7 +228,7 @@ export function validateConfig(config: typeof DEFAULT_CONFIG & { blocks: BlockPo
   // -- Display --
   if (config.background_color !== null && typeof config.background_color !== "string") {
     throw new Error(
-      `[corsi-block] background_color must be a CSS colour string or null, ` +
+      `[corsi-block] background_color must be a CSS color string or null, ` +
         `got ${typeof config.background_color}`
     );
   }

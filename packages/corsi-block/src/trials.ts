@@ -5,11 +5,9 @@
  */
 
 import jsPsychCorsiBlocks from "@jspsych-contrib/plugin-corsi-blocks";
-import jsPsychHtmlKeyboardResponse from "@jspsych/plugin-html-keyboard-response";
 import { JsPsych } from "jspsych";
 
 import { CSS_ROOT_CLASS } from "./constants";
-import type { TrialText } from "./text";
 import type { BlockPosition, DataLabels } from "./types";
 
 const TASK_NAME = "corsi-block";
@@ -135,45 +133,6 @@ export function createInputTrial(
       part: "response",
       sequence_length: () => jsPsych.timelineVariable("sequence_length"),
       trial_in_length: () => jsPsych.timelineVariable("trial_in_length"),
-    },
-  };
-}
-
-/**
- * Create a start button trial
- */
-export function createStartTrial(text: TrialText) {
-  return {
-    type: jsPsychHtmlKeyboardResponse,
-    stimulus: `<div class="jspsych-corsi-block-instructions" >
-      <p>${text.display_prompt}</p>
-      <p>Press any key when ready</p>
-    </div>`,
-    choices: "ALL_KEYS",
-    css_classes: [CSS_ROOT_CLASS],
-    data: {
-      task: TASK_NAME,
-      phase: "instruction",
-    },
-  };
-}
-
-/**
- * Create a break between levels
- */
-export function createLevelBreak(options: { current_length: number; text?: string }) {
-  return {
-    type: jsPsychHtmlKeyboardResponse,
-    stimulus: `<div class="jspsych-corsi-block-level-break" >
-      <p>${options.text || `Level ${options.current_length - 1} complete`}</p>
-      <p>Press any key to continue</p>
-    </div>`,
-    choices: "ALL_KEYS",
-    css_classes: [CSS_ROOT_CLASS],
-    data: {
-      task: TASK_NAME,
-      phase: "break",
-      previous_length: options.current_length - 1,
     },
   };
 }

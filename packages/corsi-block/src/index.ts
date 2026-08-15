@@ -1,7 +1,7 @@
 /**
  * Corsi Block Task for jsPsych
  *
- * An implementation of the Corsi Block Tapping Task, parameterised for research
+ * An implementation of the Corsi Block Tapping Task, parameterized for research
  * use:
  * - Temporal manipulation (stimulus duration, ISI, delays)
  * - Visual configuration (colors, sizes)
@@ -20,7 +20,7 @@ import { DataCollection, JsPsych } from "jspsych";
 import { version } from "../package.json";
 import { CSS_ROOT_CLASS, DEFAULT_BLOCKS, DEFAULT_CONFIG } from "./constants";
 import { TextConfig, defaultText } from "./text";
-import { createDisplayTrial, createInputTrial, createStartTrial, paintBackground } from "./trials";
+import { createDisplayTrial, createInputTrial, paintBackground } from "./trials";
 import { CorsiBlockConfig, DataLabels } from "./types";
 import { getSequencesForLength, mergeConfig, validateConfig } from "./utils";
 
@@ -253,7 +253,7 @@ function createInteractiveInstructions(
  *   }
  * });
  */
-export function createTimeline(jsPsych: JsPsych, config: CorsiBlockConfig = {}): any {
+export function createTimeline(jsPsych: JsPsych, config: CorsiBlockConfig = {}) {
   const fullConfig = mergeConfig(config, DEFAULT_CONFIG);
   validateConfig(fullConfig);
 
@@ -369,25 +369,23 @@ export function createTimeline(jsPsych: JsPsych, config: CorsiBlockConfig = {}):
           return failures < fullConfig.trials_per_length;
         }
 
-        // Stop rule: consecutive-errors
+        // Stop rule: consecutive-errors. `last` caps the window at the
+        // threshold, so counting the errors in it is enough on its own: fewer
+        // recorded trials than the threshold can never reach the count.
         if (fullConfig.stop_rule === "consecutive-errors") {
-          // Count recent consecutive errors
-          const recentTrials = jsPsych.data
+          const recentErrors = jsPsych.data
             .get()
             .filter({
               task: "corsi-block",
               phase: "test",
               part: "response",
             })
-            .last(fullConfig.consecutive_errors_threshold);
+            .last(fullConfig.consecutive_errors_threshold)
+            .filter({ correct: false })
+            .count();
 
-          if (recentTrials.count() >= fullConfig.consecutive_errors_threshold) {
-            const allFailed =
-              recentTrials.filter({ correct: false }).count() ===
-              fullConfig.consecutive_errors_threshold;
-            if (allFailed) {
-              return false;
-            }
+          if (recentErrors === fullConfig.consecutive_errors_threshold) {
+            return false;
           }
         }
 
@@ -499,7 +497,6 @@ function getSummary(data: DataCollection): ScoringResult & { taskName: string; v
 export const timelineUnits = {
   createDisplayTrial,
   createInputTrial,
-  createStartTrial,
   createInteractiveInstructions,
 };
 
@@ -511,19 +508,24 @@ export const utils = {
     calculateScores,
     getSummary,
   },
-  trials: {
-    createDisplayTrial,
-    createInputTrial,
-    createStartTrial,
-  },
   constants: {
     TASK_NAME,
     VERSION,
     DEFAULT_CONFIG,
+    DEFAULT_BLOCKS,
   },
   text: defaultText,
 };
 
 // Re-export types for TypeScript users
-export type { CorsiBlockConfig } from "./types";
+export type { ScoringResult };
+export type {
+  BlockColors,
+  BlockPosition,
+  CorsiBlockConfig,
+  DataLabels,
+  ReservedDataField,
+  SequenceGeneration,
+  StopRule,
+} from "./types";
 export type { TextConfig } from "./text";

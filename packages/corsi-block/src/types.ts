@@ -4,7 +4,7 @@
  * Based on standard Corsi Block tapping task methodology
  */
 
-import type { TrialText } from "./text";
+import type { TextConfig } from "./text";
 
 /**
  * Block positioning configuration
@@ -64,7 +64,7 @@ export interface CorsiBlockConfig {
   block_colors?: BlockColors;
 
   /**
-   * Background colour of the block display area, `null` to inherit page background.
+   * Background color of the block display area, `null` to inherit page background.
    */
   background_color?: string | null;
 
@@ -115,7 +115,7 @@ export interface CorsiBlockConfig {
 
   // === Text Configuration ===
   /** Custom text for internationalization */
-  text?: Partial<TrialText>;
+  text?: Partial<TextConfig>;
 
   // === Data Parameters ===
   /** Custom data labels added to all trials */
@@ -134,16 +134,3 @@ export type ReservedDataField =
 export type DataLabels = { [key: string]: any } & {
   [K in ReservedDataField]?: never;
 };
-
-/**
- * Trial result data
- */
-export interface CorsiTrialResult {
-  sequence_length: number;
-  trial_number: number;
-  sequence: number[];
-  response: number[];
-  correct: boolean;
-  rt: number[];
-  span?: number; // Calculated span (if this was the final trial)
-}

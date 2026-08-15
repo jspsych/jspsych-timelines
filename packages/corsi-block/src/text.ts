@@ -3,7 +3,7 @@
  * Supports internationalization and customization
  */
 
-export interface TrialText {
+export interface TextConfig {
   // -- INSTRUCTION PAGES --
   instruction_intro: string;
   instruction_watch: string;
@@ -19,15 +19,13 @@ export interface TrialText {
   // -- TRIAL PROMPTS --
   display_prompt: string;
   input_prompt: string;
-  button_text: string;
   continue_button: string;
-  block_break_text: (block: number, total: number) => string;
 }
 
 /**
  * Default English text
  */
-export const defaultText: TrialText = {
+export const defaultText: TextConfig = {
   // -- INSTRUCTION PAGES --
   instruction_intro: `<div class="jspsych-corsi-block-instructions">
     <h2>Block Tapping Task</h2>
@@ -57,14 +55,5 @@ export const defaultText: TrialText = {
   // -- TRIAL PROMPTS --
   display_prompt: "Watch the sequence",
   input_prompt: "Tap the blocks in the same order",
-  button_text: "Start",
   continue_button: "Continue",
-  block_break_text: (block: number, total: number) =>
-    `Block ${block} of ${total} complete. Press any key to continue.`,
 };
-
-// Alias for consistency with other packages
-export type TextConfig = TrialText;
-
-// Keep old export name for backwards compatibility
-export const trial_text = defaultText;
