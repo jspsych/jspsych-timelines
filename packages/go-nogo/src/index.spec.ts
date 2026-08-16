@@ -174,6 +174,81 @@ describe("Go-NoGo Timeline", () => {
     });
   });
 
+  describe("config validation", () => {
+    it.each([
+      ["num_blocks", 0],
+      ["num_blocks", -1],
+      ["num_blocks", 2.5],
+      ["num_trials", 0],
+      ["num_trials", -5],
+      ["num_trials", 10.5],
+      ["probability", 0],
+      ["probability", 1],
+      ["probability", 1.5],
+      ["probability", -0.5],
+      ["probability", NaN],
+      ["trial_timeout", -1],
+      ["fixation_duration", -1],
+      ["isi_duration", -1],
+      ["stimulus_duration", -1],
+      ["block_break_duration", -1],
+    ])("should reject %s = %p", (param, value) => {
+      expect(() => createTimeline(jsPsych, { [param]: value } as any)).toThrow(/^\[go-nogo\]/);
+    });
+
+    it.each([
+      ["num_practice_trials", 0],
+      ["num_practice_trials", 1.5],
+      ["practice_probability", 0],
+      ["practice_probability", 1],
+      ["practice_probability", NaN],
+    ])("should reject %s = %p when show_practice is true", (param, value) => {
+      expect(() => createTimeline(jsPsych, { show_practice: true, [param]: value } as any)).toThrow(
+        /^\[go-nogo\]/
+      );
+    });
+
+    it("should reject a probability that rounds away one trial type", () => {
+      // 0.96 is inside (0, 1) but Math.round collapses no-go to zero.
+      expect(() => createTimeline(jsPsych, { num_trials: 10, probability: 0.96 })).toThrow(
+        /yields 10 go and 0 no-go/
+      );
+      expect(() => createTimeline(jsPsych, { num_trials: 10, probability: 0.04 })).toThrow(
+        /yields 0 go and 10 no-go/
+      );
+    });
+
+    it("should allow null for the optional duration parameters", () => {
+      expect(() =>
+        createTimeline(jsPsych, { stimulus_duration: null, block_break_duration: null })
+      ).not.toThrow();
+    });
+
+    it("should accept a valid config", () => {
+      expect(() =>
+        createTimeline(jsPsych, {
+          num_blocks: 2,
+          num_trials: 20,
+          probability: 0.75,
+          show_practice: true,
+          num_practice_trials: 8,
+          practice_probability: 0.5,
+          trial_timeout: 0,
+          fixation_duration: 0,
+          isi_duration: 0,
+          stimulus_duration: 200,
+          block_break_duration: 5000,
+        })
+      ).not.toThrow();
+    });
+
+    it("should not validate practice parameters when show_practice is false", () => {
+      expect(() =>
+        createTimeline(jsPsych, { show_practice: false, num_practice_trials: 0 })
+      ).not.toThrow();
+    });
+  });
+
   describe("createInstructions", () => {
     it("should create instructions trial", () => {
       const instructions = createInstructions(["hi", "<b>test<b>"], {

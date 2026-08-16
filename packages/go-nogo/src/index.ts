@@ -443,10 +443,20 @@ const createTimelineVariables = (
   const numGoTrials = Math.round(num_trials * probability);
   const numNoGoTrials = num_trials - numGoTrials;
 
-  // Validate inputs
-  if (numGoTrials < 0 || numNoGoTrials < 0) {
+  // Validate the derived counts, not just the probability. Rounding can still
+  // collapse one type at a probability well inside (0, 1) — 10 trials at 0.96
+  // yields 10 go and 0 no-go — and a block missing a trial type makes response
+  // inhibition unmeasurable while still producing a full-looking dataset. The
+  // isInteger checks also reject NaN and a fractional num_trials, which would
+  // otherwise reach Array() as an invalid length.
+  if (
+    !Number.isInteger(numGoTrials) ||
+    !Number.isInteger(numNoGoTrials) ||
+    numGoTrials < 1 ||
+    numNoGoTrials < 1
+  ) {
     throw new Error(
-      `Invalid trial configuration: probability (${probability}) results in ${numGoTrials} go trials and ${numNoGoTrials} no-go trials for ${num_trials} total trials. Both must be non-negative.`
+      `[go-nogo] probability ${probability} over ${num_trials} trials yields ${numGoTrials} go and ${numNoGoTrials} no-go trials; both must be at least 1. Increase num_trials or move probability closer to 0.5.`
     );
   }
 
@@ -612,6 +622,52 @@ export function createTimeline(
     text = {},
   }: GoNoGoConfig = {}
 ) {
+  if (!Number.isInteger(num_blocks) || num_blocks < 1) {
+    throw new Error(`[go-nogo] num_blocks must be an integer >= 1, got ${num_blocks}`);
+  }
+  if (!Number.isInteger(num_trials) || num_trials < 1) {
+    throw new Error(`[go-nogo] num_trials must be an integer >= 1, got ${num_trials}`);
+  }
+  // rejects NaN, Infinity, and values outside (0, 1) in case numbers get VERY mangled../
+  if (!(probability > 0) || !(probability < 1)) {
+    throw new Error(
+      `[go-nogo] probability must be a number between 0 and 1 (exclusive), got ${probability}`
+    );
+  }
+  if (show_practice) {
+    if (!Number.isInteger(num_practice_trials) || num_practice_trials < 1) {
+      throw new Error(
+        `[go-nogo] num_practice_trials must be an integer >= 1, got ${num_practice_trials}`
+      );
+    }
+    if (!(practice_probability > 0) || !(practice_probability < 1)) {
+      throw new Error(
+        `[go-nogo] practice_probability must be a number between 0 and 1 (exclusive), got ${practice_probability}`
+      );
+    }
+  }
+  for (const [name, value] of [
+    ["trial_timeout", trial_timeout],
+    ["fixation_duration", fixation_duration],
+    ["isi_duration", isi_duration],
+  ] as const) {
+    if (!Number.isFinite(value) || value < 0) {
+      throw new Error(
+        `[go-nogo] ${name} must be a non-negative number of milliseconds, got ${value}`
+      );
+    }
+  }
+  for (const [name, value] of [
+    ["stimulus_duration", stimulus_duration],
+    ["block_break_duration", block_break_duration],
+  ] as const) {
+    if (value !== null && (!Number.isFinite(value) || value < 0)) {
+      throw new Error(
+        `[go-nogo] ${name} must be null or a non-negative number of milliseconds, got ${value}`
+      );
+    }
+  }
+
   const mergedText = { ...trial_text, ...text }; // Merge default texts with any overrides from config
   const timeline = [];
 
