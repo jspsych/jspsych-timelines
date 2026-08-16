@@ -467,16 +467,20 @@ const createTimelineVariables = (
   const numGoTrials = Math.round(num_trials * probability);
   const numNoGoTrials = num_trials - numGoTrials;
 
-  // validate derived counts of the two trial types not just probability,
-  // to ensure that both trial types are represented at least once in the block.
+  // Validate the derived counts, not just probability. A block with none of one
+  // trial type is allowed — pure blocks are a real design, and rounding produces
+  // one at extreme probabilities — so this guards only what Array() cannot
+  // represent: a negative count, NaN from a mangled probability, or a fraction
+  // from a non-integer num_trials. An accuracy with no trials behind it is
+  // reported as 0; see the caveat on ScoringResult.
   if (
     !Number.isInteger(numGoTrials) ||
     !Number.isInteger(numNoGoTrials) ||
-    numGoTrials < 1 ||
-    numNoGoTrials < 1
+    numGoTrials < 0 ||
+    numNoGoTrials < 0
   ) {
     throw new Error(
-      `[go-nogo] probability ${probability} over ${num_trials} trials yields ${numGoTrials} go and ${numNoGoTrials} no-go trials; both must be at least 1. Increase num_trials or move probability closer to 0.5.`
+      `[go-nogo] probability ${probability} over ${num_trials} trials yields ${numGoTrials} go and ${numNoGoTrials} no-go trials; both must be whole numbers >= 0.`
     );
   }
 
@@ -647,10 +651,10 @@ export function createTimeline(
   if (!Number.isInteger(num_trials) || num_trials < 1) {
     throw new Error(`[go-nogo] num_trials must be an integer >= 1, got ${num_trials}`);
   }
-  // rejects NaN, Infinity, and values outside (0, 1) in case numbers get VERY mangled../
-  if (!(probability > 0) || !(probability < 1)) {
+  // rejects NaN, Infinity, and values outside [0, 1] in case numbers get VERY mangled..
+  if (!(probability >= 0) || !(probability <= 1)) {
     throw new Error(
-      `[go-nogo] probability must be a number between 0 and 1 (exclusive), got ${probability}`
+      `[go-nogo] probability must be a number between 0 and 1 inclusive, got ${probability}`
     );
   }
   if (show_practice) {
@@ -659,9 +663,9 @@ export function createTimeline(
         `[go-nogo] num_practice_trials must be an integer >= 1, got ${num_practice_trials}`
       );
     }
-    if (!(practice_probability > 0) || !(practice_probability < 1)) {
+    if (!(practice_probability >= 0) || !(practice_probability <= 1)) {
       throw new Error(
-        `[go-nogo] practice_probability must be a number between 0 and 1 (exclusive), got ${practice_probability}`
+        `[go-nogo] practice_probability must be a number between 0 and 1 inclusive, got ${practice_probability}`
       );
     }
   }
@@ -851,7 +855,17 @@ function createPractice({
 // -- SCORING FUNCTIONS --
 
 interface ScoringResult {
+  /**
+   * proportion of Go trials answered correctly, [0, 1].
+   *
+   * NOTE!!! this is `0` if there are no Go trials at all.
+   */
   goAccuracy: number;
+  /**
+   * proportion of NoGo trials answered correctly, [0, 1].
+   *
+   * NOTE!!! this is `0` if there are no NoGo trials at all.
+   */
   nogoAccuracy: number;
   overallAccuracy: number;
   /**

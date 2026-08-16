@@ -182,8 +182,6 @@ describe("Go-NoGo Timeline", () => {
       ["num_trials", 0],
       ["num_trials", -5],
       ["num_trials", 10.5],
-      ["probability", 0],
-      ["probability", 1],
       ["probability", 1.5],
       ["probability", -0.5],
       ["probability", NaN],
@@ -199,8 +197,6 @@ describe("Go-NoGo Timeline", () => {
     it.each([
       ["num_practice_trials", 0],
       ["num_practice_trials", 1.5],
-      ["practice_probability", 0],
-      ["practice_probability", 1],
       ["practice_probability", NaN],
     ])("should reject %s = %p when show_practice is true", (param, value) => {
       expect(() => createTimeline(jsPsych, { show_practice: true, [param]: value } as any)).toThrow(
@@ -208,14 +204,38 @@ describe("Go-NoGo Timeline", () => {
       );
     });
 
-    it("should reject a probability that rounds away one trial type", () => {
-      // 0.96 is inside (0, 1) but Math.round collapses no-go to zero.
-      expect(() => createTimeline(jsPsych, { num_trials: 10, probability: 0.96 })).toThrow(
-        /yields 10 go and 0 no-go/
+    it("should allow a pure go block", () => {
+      const vars = utils.createTimelineVariables(jsPsych, 1, 10, 1, ["G"], ["N"]);
+
+      expect(vars).toHaveLength(10);
+      expect(vars.every((v: any) => v.is_go_trial)).toBe(true);
+    });
+
+    it("should allow a pure nogo block", () => {
+      const vars = utils.createTimelineVariables(jsPsych, 1, 10, 0, ["G"], ["N"]);
+
+      expect(vars).toHaveLength(10);
+      expect(vars.every((v: any) => !v.is_go_trial)).toBe(true);
+    });
+
+    it("should reject counts Array() cannot represent", () => {
+      expect(() => utils.createTimelineVariables(jsPsych, 1, 10, 1.5, ["G"], ["N"])).toThrow(
+        /whole numbers >= 0/
       );
-      expect(() => createTimeline(jsPsych, { num_trials: 10, probability: 0.04 })).toThrow(
-        /yields 0 go and 10 no-go/
+      expect(() => utils.createTimelineVariables(jsPsych, 1, 10.5, 0.75, ["G"], ["N"])).toThrow(
+        /whole numbers >= 0/
       );
+      expect(() => utils.createTimelineVariables(jsPsych, 1, 10, NaN, ["G"], ["N"])).toThrow(
+        /whole numbers >= 0/
+      );
+    });
+
+    it("should allow probability 0 and 1 through createTimeline", () => {
+      expect(() => createTimeline(jsPsych, { num_trials: 10, probability: 1 })).not.toThrow();
+      expect(() => createTimeline(jsPsych, { num_trials: 10, probability: 0 })).not.toThrow();
+      expect(() =>
+        createTimeline(jsPsych, { show_practice: true, practice_probability: 1 })
+      ).not.toThrow();
     });
 
     it("should allow null for the optional duration parameters", () => {
@@ -682,6 +702,25 @@ describe("Go-NoGo Timeline", () => {
       const scores = utils.scoring.calculateScores(data);
       expect(scores.meanGoRT).toBe(0);
       expect(scores.correctGoTrials).toBe(0);
+    });
+
+    it("should report accuracy of 0 for a trial type that was never presented", () => {
+      const data = jsPsych.data.get();
+      data.push({
+        task: "go-nogo",
+        phase: "test",
+        part: "go",
+        is_go_trial: true,
+        correct: true,
+        rt: 300,
+      });
+
+      // Pure-go block: nogoAccuracy is 0 because nothing was presented, not
+      // because the participant failed. nogoTrials is what tells them apart.
+      const scores = utils.scoring.calculateScores(data);
+      expect(scores.nogoAccuracy).toBe(0);
+      expect(scores.nogoTrials).toBe(0);
+      expect(scores.goAccuracy).toBe(1);
     });
 
     it("should report zeros when there are no scorable trials", () => {
