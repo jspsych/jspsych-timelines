@@ -23,58 +23,63 @@ export const trial_text = {
   ],
 
   // Default stimuli
-  stimulusButton: 'Click',
+  stimulusButton: "Click",
 
   //instructions button labels, empty strings give us just arrows per jsPsychInstructions
-  backButton: '',
-  nextButton: '',
+  backButton: "",
+  nextButton: "",
 
   // Page 1: GO Practice
-  goPageContent:
-  `<b>GO Trials</b><br>
+  goPageContent: `<b>GO Trials</b><br>
   When you see the circle, click the button as quickly as possible!<br>
   Try clicking the button below to practice:`,
-  goSuccess: 'Perfect! You clicked quickly for the circle stimulus.',
-  goFailure: 'You failed to click in time for the circle stimulus.',
+  goSuccess: "Perfect! You clicked quickly for the circle stimulus.",
+  goFailure: "You failed to click in time for the circle stimulus.",
 
   // Page 2: NO-GO Practice
-  noGoPageContent:
-  `<b>NO-GO Trials</b><br>
+  noGoPageContent: `<b>NO-GO Trials</b><br>
   When you see the octagon, do NOT click the button!<br>
   Try waiting without clicking the button below:`,
-  noGoSuccess: 'Excellent! You correctly did NOT click for the octagon.',
-  noGoFailure: 'Remember, you should NOT click for the octagon!',
+  noGoSuccess: "Excellent! You correctly did NOT click for the octagon.",
+  noGoFailure: "Remember, you should NOT click for the octagon!",
 
   // Practice completion page (after interactive instructions)
-  practiceCompleteContent:
-  `We now start with a short practice round to get used to the task before the real task begins.`,
-  beginTaskButton: 'Begin Task',
+  practiceCompleteContent: `We now start with a short practice round to get used to the task before the real task begins.`,
+  beginTaskButton: "Begin Task",
 
   // End of practice block page (after practice block)
   endOfPracticeContent: `Okay, now let's begin the real task!`,
-  endOfPracticeButton: 'Continue',
+  endOfPracticeButton: "Continue",
 
   // Block instructions
-  blockBreakContent: (blockNum: number, totalBlocks: number) => '<b>Block ' + blockNum + ' Complete!</b><br>You have completed block ' + blockNum + ' of ' + totalBlocks + '.<br>Take a short break if needed, then click below to continue.',
-  continueButton: 'Continue',
-  blockBreakTimerText: (seconds: number) => `Next block begins in ${seconds} second${seconds !== 1 ? 's' : ''}...`,
+  blockBreakContent: (blockNum: number, totalBlocks: number) =>
+    "<b>Block " +
+    blockNum +
+    " Complete!</b><br>You have completed block " +
+    blockNum +
+    " of " +
+    totalBlocks +
+    ".<br>Take a short break if needed, then click below to continue.",
+  continueButton: "Continue",
+  blockBreakTimerText: (seconds: number) =>
+    `Next block begins in ${seconds} second${seconds !== 1 ? "s" : ""}...`,
 
   // Results/Debrief
   debriefContent: (accuracy: number, meanRT: number) => `
-    <div class="go-nogo-debrief">
+    <div class="jspsych-go-nogo-debrief">
       <p>Thank you for completing the Go/No-Go task!</p>
       <p><strong>Overall Accuracy:</strong> ${accuracy}%</p>
       <p><strong>Average Response Time (GO trials):</strong> ${meanRT}ms</p>
     </div>`,
-  thankYouMessage: 'Thank you for completing the Go/No-Go task!',
-  overallAccuracy: 'Overall Accuracy:',
-  averageResponseTime: 'Average Response Time (GO trials):',
-  finishButton: 'Finish',
+  thankYouMessage: "Thank you for completing the Go/No-Go task!",
+  overallAccuracy: "Overall Accuracy:",
+  averageResponseTime: "Average Response Time (GO trials):",
+  finishButton: "Finish",
 
   // -- COMPLETION --
-  task_complete: 'Task Complete',
+  task_complete: "Task Complete",
   result_summary: (goAccuracy: number, nogoAccuracy: number, commissionErrors: number) => {
-    let html = `<div class="instructions">`;
+    let html = `<div class="jspsych-go-nogo-instructions">`;
     html += `<p><strong>Go Accuracy:</strong> ${(goAccuracy * 100).toFixed(1)}%</p>`;
     html += `<p><strong>No-Go Accuracy:</strong> ${(nogoAccuracy * 100).toFixed(1)}%</p>`;
     html += `<p><strong>Commission Errors:</strong> ${commissionErrors}</p>`;

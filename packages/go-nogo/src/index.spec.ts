@@ -1,3 +1,6 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+
 import { JsPsych, initJsPsych } from "jspsych";
 
 import { createInstructions, createTimeline, timelineUnits, utils } from ".";
@@ -269,6 +272,134 @@ describe("Go-NoGo Timeline", () => {
     });
   });
 
+  describe("CSS scoping", () => {
+    const ROOT = "jspsych-go-nogo";
+
+    // Walk a timeline description and collect every trial (a node with `type`).
+    const allTrials = (node: any, out: any[] = []) => {
+      if (Array.isArray(node)) node.forEach((n) => allTrials(n, out));
+      else if (node && typeof node === "object") {
+        if (node.type) out.push(node);
+        if (node.timeline) allTrials(node.timeline, out);
+      }
+      return out;
+    };
+
+    it("should put the scoping root on every trial it generates", () => {
+      const { timeline } = createTimeline(jsPsych, {
+        show_instructions: true,
+        show_practice: true,
+        show_debrief: true,
+        num_blocks: 2,
+        num_trials: 6,
+      });
+
+      const trials = allTrials(timeline);
+      expect(trials.length).toBeGreaterThan(5);
+      // css_classes cascades, but these are also exported as standalone units,
+      // so the root is set per trial rather than relying on a parent node.
+      expect(trials.filter((t) => t.css_classes !== ROOT)).toEqual([]);
+    });
+
+    it.each([
+      ["createFixation", () => timelineUnits.createFixation(jsPsych, 500, "Click", true)],
+      ["createISIBlank", () => timelineUnits.createISIBlank(jsPsych, 500, "Click", true)],
+      ["createGoNoGo", () => timelineUnits.createGoNoGo(jsPsych, "Click", 500)],
+      ["createBlockBreak", () => timelineUnits.createBlockBreak(1, 3)],
+      ["createDebrief", () => timelineUnits.createDebrief(jsPsych)],
+      ["createEndOfPractice", () => timelineUnits.createEndOfPractice()],
+      ["createInstructions", () => createInstructions(["a"])],
+    ])("should scope %s when used standalone", (_name, make) => {
+      expect((make() as any).css_classes).toBe(ROOT);
+    });
+
+    it("should prefix every class it writes into the DOM", () => {
+      const { timeline } = createTimeline(jsPsych, {
+        show_instructions: true,
+        show_practice: true,
+        show_debrief: true,
+        num_blocks: 1,
+        num_trials: 4,
+      });
+
+      const html = allTrials(timeline)
+        .map((t) => {
+          const s = typeof t.stimulus === "function" ? t.stimulus() : t.stimulus;
+          return [s, ...(t.pages ?? [])].join(" ");
+        })
+        .join(" ");
+
+      const classes = [...html.matchAll(/class="([^"]*)"/g)].flatMap((m) => m[1].split(/\s+/));
+      expect(classes.length).toBeGreaterThan(0);
+      expect(classes.filter((c) => c && !c.startsWith("jspsych-go-nogo"))).toEqual([]);
+    });
+
+    it("should prefix every id it writes into the DOM", () => {
+      const stimulus = utils.createStimulusHTML("X", false, "25vh");
+      const timerBreak: any = timelineUnits.createBlockBreak(1, 2, 5000);
+
+      const ids = [...`${stimulus} ${timerBreak.stimulus}`.matchAll(/id="([^"]*)"/g)].map(
+        (m) => m[1]
+      );
+
+      expect(ids.length).toBeGreaterThan(0);
+      expect(ids.filter((id) => !id.startsWith("jspsych-go-nogo"))).toEqual([]);
+    });
+  });
+
+  describe("stimulus and fixation alignment", () => {
+    // jsdom has no layout engine and does not apply the injected stylesheet to
+    // getComputedStyle, so assert against the stylesheet that actually ships.
+    const css = readFileSync(join(__dirname, "styles.css"), "utf8");
+
+    const declarationsFor = (selector: string) =>
+      [...css.matchAll(/([^{}]+)\{([^{}]*)\}/g)]
+        .filter(([, sels]) => sels.split(",").some((s) => s.trim().endsWith(selector)))
+        .map(([, , body]) => body.replace(/\s+/g, " ").trim())
+        .join(" ");
+
+    // Every box that receives stimulus_container_height must center its
+    // contents, or the screens line up while their contents do not.
+    it.each([
+      [".jspsych-go-nogo-fixation"],
+      [".jspsych-go-nogo-stimulus"],
+      [".jspsych-go-nogo-isi-blank"],
+    ])("should center the contents of %s", (selector) => {
+      const decls = declarationsFor(selector);
+
+      expect(decls).toMatch(/display:\s*grid/);
+      expect(decls).toMatch(/place-items:\s*center/);
+    });
+
+    it("should center fixation and stimulus identically", () => {
+      // The two screens alternate, so any difference shows up as the stimulus
+      // jumping relative to the fixation cross.
+      expect(declarationsFor(".jspsych-go-nogo-fixation")).toBe(
+        declarationsFor(".jspsych-go-nogo-stimulus")
+      );
+    });
+
+    it("should give fixation and stimulus the same box height", () => {
+      const height = "30vh";
+      const timeline = createTimeline(jsPsych, {
+        stimulus_container_height: height,
+        num_blocks: 1,
+        num_trials: 4,
+        show_instructions: false,
+        show_practice: false,
+        show_debrief: false,
+      });
+
+      const blockProcedure = (timeline.timeline[0] as any[])[0];
+      const [fixation, , isi] = blockProcedure.timeline;
+      const stimulus = blockProcedure.timeline_variables[0].stimulus;
+
+      expect(fixation.stimulus).toContain(`min-height: ${height}`);
+      expect(isi.stimulus).toContain(`min-height: ${height}`);
+      expect(stimulus).toContain(`min-height: ${height}`);
+    });
+  });
+
   describe("createInstructions", () => {
     it("should create instructions trial", () => {
       const instructions = createInstructions(["hi", "<b>test<b>"], {
@@ -280,8 +411,8 @@ describe("Go-NoGo Timeline", () => {
       expect(instructions).toHaveProperty("pages");
       // example of testing via functionality-- does it generate the correct number of pages with the right content?
       expect(instructions.pages).toEqual([
-        '<div class="instructions" ><p>hi</p></div>',
-        '<div class="instructions" ><p><b>test<b></p></div>',
+        '<div class="jspsych-go-nogo-instructions" ><p>hi</p></div>',
+        '<div class="jspsych-go-nogo-instructions" ><p><b>test<b></p></div>',
       ]);
     });
   });
@@ -749,8 +880,8 @@ describe("Go-NoGo Timeline", () => {
     it("should provide createStimulusHTML function", () => {
       expect(typeof utils.createStimulusHTML).toBe("function");
       const html = utils.createStimulusHTML("TEST", true);
-      expect(html).toContain(`<div id="go-stimulus-container"`);
-      expect(html).toContain(`class="stimulus"`);
+      expect(html).toContain(`<div id="jspsych-go-nogo-go-stimulus-container"`);
+      expect(html).toContain(`class="jspsych-go-nogo-stimulus"`);
       expect(html).toContain(`TEST</div>`);
     });
   });
