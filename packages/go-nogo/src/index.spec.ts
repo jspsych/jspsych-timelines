@@ -311,6 +311,128 @@ describe("Go-NoGo Timeline", () => {
     });
   });
 
+  describe("fixation and ISI response blocking", () => {
+    // Render a trial's stimulus into the display element the way the plugin
+    // does, then run its on_load, and report whether the button ends up
+    // disabled. This is what a participant can actually click.
+    const buttonStateAfterLoad = (trial: any) => {
+      const display = document.createElement("div");
+      document.body.appendChild(display);
+      jsPsych.getDisplayElement = () => display;
+      display.innerHTML =
+        `<div id="jspsych-html-button-response-btngroup">` +
+        trial.choices.map(() => `<button class="jspsych-btn">Click</button>`).join("") +
+        `</div>`;
+      trial.on_load?.();
+      return Array.from(display.querySelectorAll("button")).map((b: any) => b.disabled);
+    };
+
+    it("should disable the fixation button as soon as it renders", () => {
+      const fixation = timelineUnits.createFixation(jsPsych, 500, "Click", true, "25vh", "3em");
+
+      expect(buttonStateAfterLoad(fixation)).toEqual([true]);
+    });
+
+    it("should disable the ISI button as soon as it renders", () => {
+      const isiBlank = timelineUnits.createISIBlank(jsPsych, 300, "Click", true, "25vh");
+
+      expect(buttonStateAfterLoad(isiBlank)).toEqual([true]);
+    });
+
+    it("should disable the button even when the duration is 0", () => {
+      // isi_duration defaults to 0; a duration-derived guard would be a no-op here.
+      const isiBlank = timelineUnits.createISIBlank(jsPsych, 0, "Click", true, "25vh");
+
+      expect(buttonStateAfterLoad(isiBlank)).toEqual([true]);
+    });
+
+    it("should leave the scored stimulus trial responsive", () => {
+      const trial = timelineUnits.createGoNoGo(jsPsych, "Click", 500);
+
+      expect(trial).not.toHaveProperty("on_load");
+    });
+
+    it("should disable fixation and ISI buttons within a built timeline", () => {
+      const timeline = createTimeline(jsPsych, {
+        fixation_duration: 750,
+        isi_duration: 250,
+        num_blocks: 1,
+        num_trials: 8,
+        show_instructions: false,
+        show_practice: false,
+        show_debrief: false,
+      });
+
+      const blockProcedure = (timeline.timeline[0] as any[])[0];
+      // Trial sequence: [fixation, stimulus, isi_blank]
+      expect(buttonStateAfterLoad(blockProcedure.timeline[0])).toEqual([true]);
+      expect(buttonStateAfterLoad(blockProcedure.timeline[2])).toEqual([true]);
+      expect(blockProcedure.timeline[1].on_load).toBeUndefined();
+    });
+
+    it("should not render a button at all when show_button_during_fixation is false", () => {
+      const timeline = createTimeline(jsPsych, {
+        show_button_during_fixation: false,
+        num_blocks: 1,
+        num_trials: 8,
+        show_instructions: false,
+        show_practice: false,
+        show_debrief: false,
+      });
+
+      const blockProcedure = (timeline.timeline[0] as any[])[0];
+      expect(blockProcedure.timeline[0].choices).toEqual([]);
+      expect(blockProcedure.timeline[2].choices).toEqual([]);
+    });
+  });
+
+  describe("trial order", () => {
+    it("should interleave go and nogo trials rather than blocking them", () => {
+      const vars = utils.createTimelineVariables(jsPsych, 1, 40, 0.5, ["G"], ["N"]);
+      const order = vars.map((v: any) => (v.is_go_trial ? "G" : "N")).join("");
+
+      expect(vars.length).toBe(40);
+      // A discarded shuffle produced "GGGG...NNNN". Any real shuffle of 20/20
+      // alternates far more than the 1 run-boundary a sorted sequence has.
+      const runBoundaries = order.split("").filter((c, i) => i > 0 && c !== order[i - 1]).length;
+      expect(runBoundaries).toBeGreaterThan(1);
+      expect(order).not.toBe("G".repeat(20) + "N".repeat(20));
+    });
+
+    it("should produce a different order on repeated calls", () => {
+      const order = () =>
+        utils
+          .createTimelineVariables(jsPsych, 1, 40, 0.5, ["G"], ["N"])
+          .map((v: any) => (v.is_go_trial ? "G" : "N"))
+          .join("");
+
+      // 40C20 makes a collision across 5 draws effectively impossible.
+      const orders = new Set([order(), order(), order(), order(), order()]);
+      expect(orders.size).toBeGreaterThan(1);
+    });
+
+    it("should preserve the exact go/nogo counts through the shuffle", () => {
+      const vars = utils.createTimelineVariables(jsPsych, 1, 40, 0.75, ["G"], ["N"]);
+
+      expect(vars.filter((v: any) => v.is_go_trial).length).toBe(30);
+      expect(vars.filter((v: any) => !v.is_go_trial).length).toBe(10);
+    });
+
+    it("should not re-randomize order at the procedure level", () => {
+      const timeline = createTimeline(jsPsych, {
+        num_blocks: 1,
+        num_trials: 10,
+        show_instructions: false,
+        show_practice: false,
+        show_debrief: false,
+      });
+
+      // Ordering has a single source, so recorded timeline_variables order
+      // matches presentation order.
+      expect((timeline.timeline[0] as any[])[0].randomize_order).toBe(false);
+    });
+  });
+
   describe("debrief calculation", () => {
     it("should calculate accuracy and RT correctly", () => {
       // Manually add data to the internal data store
@@ -491,6 +613,77 @@ describe("Go-NoGo Timeline", () => {
       expect(utils.scoring.calculateScores(data).totalTrials).toBe(6);
     });
 
+    it("should include an rt of 0 in meanGoRT", () => {
+      const data = jsPsych.data.get();
+      data.push({
+        task: "go-nogo",
+        phase: "test",
+        part: "go",
+        is_go_trial: true,
+        correct: true,
+        rt: 0,
+      });
+      data.push({
+        task: "go-nogo",
+        phase: "test",
+        part: "go",
+        is_go_trial: true,
+        correct: true,
+        rt: 400,
+      });
+
+      // A `rt > 0` guard dropped the 0 and reported 400, biasing the mean upward.
+      expect(utils.scoring.calculateScores(data).meanGoRT).toBe(200);
+    });
+
+    it("should exclude go trials with no response from meanGoRT", () => {
+      const data = jsPsych.data.get();
+      data.push({
+        task: "go-nogo",
+        phase: "test",
+        part: "go",
+        is_go_trial: true,
+        correct: true,
+        rt: 300,
+      });
+      data.push({
+        task: "go-nogo",
+        phase: "test",
+        part: "go",
+        is_go_trial: true,
+        correct: false,
+        rt: null,
+      });
+
+      expect(utils.scoring.calculateScores(data).meanGoRT).toBe(300);
+    });
+
+    it("should report meanGoRT of 0 when no go trial was answered correctly", () => {
+      const data = jsPsych.data.get();
+      data.push({
+        task: "go-nogo",
+        phase: "test",
+        part: "go",
+        is_go_trial: true,
+        correct: false,
+        rt: null,
+      });
+      data.push({
+        task: "go-nogo",
+        phase: "test",
+        part: "nogo",
+        is_go_trial: false,
+        correct: true,
+        rt: null,
+      });
+
+      // Documented caveat: 0 means "no valid RT", not a measured mean.
+      // correctGoTrials is what distinguishes the two.
+      const scores = utils.scoring.calculateScores(data);
+      expect(scores.meanGoRT).toBe(0);
+      expect(scores.correctGoTrials).toBe(0);
+    });
+
     it("should report zeros when there are no scorable trials", () => {
       const scores = utils.scoring.calculateScores(jsPsych.data.get());
 
@@ -525,8 +718,16 @@ describe("Go-NoGo Timeline", () => {
 
   describe("timing and display parameters", () => {
     it("should show button during fixation when show_button_during_fixation is true", () => {
-      const fixationWithButton = timelineUnits.createFixation(500, "Click", true, "25vh", "3em");
+      const fixationWithButton = timelineUnits.createFixation(
+        jsPsych,
+        500,
+        "Click",
+        true,
+        "25vh",
+        "3em"
+      );
       const fixationWithoutButton = timelineUnits.createFixation(
+        jsPsych,
         500,
         "Click",
         false,
@@ -557,7 +758,7 @@ describe("Go-NoGo Timeline", () => {
     });
 
     it("should apply fixation_size to fixation stimulus HTML", () => {
-      const fixation = timelineUnits.createFixation(500, "Click", true, "25vh", "5em");
+      const fixation = timelineUnits.createFixation(jsPsych, 500, "Click", true, "25vh", "5em");
 
       expect(fixation.stimulus).toContain("font-size: 5em");
     });
@@ -595,7 +796,7 @@ describe("Go-NoGo Timeline", () => {
     });
 
     it("should create fixation with correct duration and button text", () => {
-      const fixation = timelineUnits.createFixation(1000, "Press", true, "25vh", "4em");
+      const fixation = timelineUnits.createFixation(jsPsych, 1000, "Press", true, "25vh", "4em");
 
       expect(fixation.trial_duration).toBe(1000);
       expect(fixation.choices).toEqual(["Press"]);
@@ -604,7 +805,7 @@ describe("Go-NoGo Timeline", () => {
     });
 
     it("should create ISI blank with correct duration", () => {
-      const isiBlank = timelineUnits.createISIBlank(500, "Click", true, "25vh");
+      const isiBlank = timelineUnits.createISIBlank(jsPsych, 500, "Click", true, "25vh");
 
       expect(isiBlank.trial_duration).toBe(500);
       expect(isiBlank.data.part).toBe("isi-blank");

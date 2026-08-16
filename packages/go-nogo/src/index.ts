@@ -26,8 +26,7 @@ const VERSION = "0.5.0";
  * @property {number}  [isi_duration=0] Inter-stimulus interval (blank screen after stimulus) in milliseconds.
  * @property {number}  [probability=0.75] Probability of a Go trial in each main block (0..1).
  * @property {boolean} [show_debrief=false] Whether to append the debrief summary at the end.
- * @property {boolean} [show_button_during_fixation=true] Whether to show the GO button (disabled) during fixation trials.
- * @property {number}  [button_opacity_during_fixation=1.0] Opacity of the button during fixation and ISI (0.0 to 1.0).
+ * @property {boolean} [show_button_during_fixation=true] Whether to show the GO button, disabled, during fixation and ISI screens. Reserves its layout space without accepting a response.
  * @property {number|null} [block_break_duration=null] Duration of block breaks in milliseconds. If null, shows a continue button. If a number, shows a countdown timer.
  * @property {string}  [stimulus_container_height="25vh"] Height for stimulus container (e.g., "25vh", "200px"). Prevents button movement between fixation and stimulus.
  * @property {string}  [fixation_size="3em"] Font size for fixation cross (e.g., "3em", "48px", "5rem").
@@ -58,7 +57,6 @@ interface GoNoGoConfig {
   probability?: number;
   show_debrief?: boolean;
   show_button_during_fixation?: boolean;
-  button_opacity_during_fixation?: number;
   block_break_duration?: number | null;
   stimulus_container_height?: string;
   fixation_size?: string;
@@ -345,21 +343,38 @@ const createGoNoGo = (
 };
 
 /**
+ * Disable every response button currently rendered in the jsPsych display.
+ *
+ * Scoped to the display element rather than the document so the package never
+ * touches DOM it does not own.
+ *
+ * @param jsPsych Active jsPsych instance.
+ */
+const disableButtons = (jsPsych: JsPsych) => {
+  jsPsych
+    .getDisplayElement()
+    .querySelectorAll("button")
+    .forEach((button) => {
+      button.disabled = true;
+    });
+};
+
+/**
  * Creates a blank ISI screen (inter-stimulus interval after the stimulus).
  *
+ * @param jsPsych Active jsPsych instance (used to disable the button).
  * @param isi_duration Duration (ms) to show the blank screen.
  * @param button_text Label for the button.
  * @param show_button Whether to show the button (disabled) during ISI.
  * @param stimulus_height Height to match stimulus container (e.g., "25vh").
- * @param button_opacity Opacity of the button (0.0 to 1.0).
  * @returns A non-responsive jsPsych trial showing a blank screen.
  */
 const createISIBlank = (
+  jsPsych: JsPsych,
   isi_duration: number,
   button_text: string,
   show_button: boolean = true,
-  stimulus_height?: string,
-  button_opacity: number = 1.0
+  stimulus_height?: string
 ) => {
   // Create a blank container with matching height to prevent button movement
   const heightStyle = stimulus_height ? `min-height: ${stimulus_height};` : "";
@@ -371,6 +386,11 @@ const createISIBlank = (
     choices: show_button ? [button_text] : [],
     trial_duration: isi_duration,
     response_ends_trial: false,
+    // The button is shown only to reserve its layout space; a response here
+    // would land on a row scoring never reads. Disabled in on_load rather than
+    // via the plugin's enable_button_after, whose re-enable timer can fire
+    // before the trial-ending timer when the event loop is busy.
+    on_load: () => disableButtons(jsPsych),
     data: {
       task: TASK_NAME,
       task_version: VERSION,
@@ -382,21 +402,21 @@ const createISIBlank = (
 /**
  * Creates a fixation screen.
  *
+ * @param jsPsych Active jsPsych instance (used to disable the button).
  * @param fixation_duration Duration (ms) to show the fixation.
  * @param button_text Label for the button.
  * @param show_button Whether to show the button (disabled) during fixation.
  * @param stimulus_height Height of the stimulus to match (e.g., "25vh"). If provided, creates a container with this height.
  * @param fixation_size Font size for the fixation cross (e.g., "3em").
- * @param button_opacity Opacity of the button (0.0 to 1.0).
  * @returns A non-responsive jsPsych trial showing a fixation cross.
  */
 const createFixation = (
+  jsPsych: JsPsych,
   fixation_duration: number,
   button_text: string,
   show_button: boolean = true,
   stimulus_height?: string,
-  fixation_size: string = "3em",
-  button_opacity: number = 1.0
+  fixation_size: string = "3em"
 ) => {
   const heightStyle = stimulus_height ? `min-height: ${stimulus_height};` : "";
   const fixationHTML = `<div class="fixation"  style="font-size: ${fixation_size}; ${heightStyle}">+</div>`;
@@ -407,6 +427,10 @@ const createFixation = (
     choices: show_button ? [button_text] : [],
     trial_duration: fixation_duration,
     response_ends_trial: false,
+    // An anticipatory response here would land on a fixation row that scoring
+    // never reads, silently hiding impulsivity. See createISIBlank on why this
+    // is an on_load hook rather than enable_button_after.
+    on_load: () => disableButtons(jsPsych),
     data: {
       task: TASK_NAME,
       task_version: VERSION,
@@ -443,12 +467,8 @@ const createTimelineVariables = (
   const numGoTrials = Math.round(num_trials * probability);
   const numNoGoTrials = num_trials - numGoTrials;
 
-  // Validate the derived counts, not just the probability. Rounding can still
-  // collapse one type at a probability well inside (0, 1) — 10 trials at 0.96
-  // yields 10 go and 0 no-go — and a block missing a trial type makes response
-  // inhibition unmeasurable while still producing a full-looking dataset. The
-  // isInteger checks also reject NaN and a fractional num_trials, which would
-  // otherwise reach Array() as an invalid length.
+  // validate derived counts of the two trial types not just probability,
+  // to ensure that both trial types are represented at least once in the block.
   if (
     !Number.isInteger(numGoTrials) ||
     !Number.isInteger(numNoGoTrials) ||
@@ -460,10 +480,10 @@ const createTimelineVariables = (
     );
   }
 
-  // Create fixed array of trial types
-  const trialTypes = Array(numGoTrials).fill(true).concat(Array(numNoGoTrials).fill(false));
-  // Shuffle trial types
-  jsPsych.randomization.shuffle(trialTypes);
+  // fixed array of trial types -> shuffle
+  const trialTypes = jsPsych.randomization.shuffle(
+    Array(numGoTrials).fill(true).concat(Array(numNoGoTrials).fill(false))
+  );
 
   let goTrialCount = 0;
   let noGoTrialCount = 0;
@@ -607,7 +627,6 @@ export function createTimeline(
     probability = 0.75,
     show_debrief = false,
     show_button_during_fixation = true,
-    button_opacity_during_fixation = 1.0,
     block_break_duration = null,
     stimulus_container_height = "25vh",
     fixation_size = "3em",
@@ -695,19 +714,19 @@ export function createTimeline(
     stimulus_duration
   );
   const fixationTrial = createFixation(
+    jsPsych,
     fixation_duration,
     mergedText.stimulusButton,
     show_button_during_fixation,
     stimulus_container_height,
-    fixation_size,
-    button_opacity_during_fixation
+    fixation_size
   );
   const isiBlankTrial = createISIBlank(
+    jsPsych,
     isi_duration,
     mergedText.stimulusButton,
     show_button_during_fixation,
-    stimulus_container_height,
-    button_opacity_during_fixation
+    stimulus_container_height
   );
 
   // Practice block (matches main task format)
@@ -725,7 +744,9 @@ export function createTimeline(
     const practiceProcedure = {
       timeline: [fixationTrial, goNoGoTrial, isiBlankTrial],
       timeline_variables: practiceTrials,
-      randomize_order: true,
+      // order comes from createTimelineVariables' shuffle, so the recorded
+      // timeline_variables order matches presentation order
+      randomize_order: false,
       data: {
         phase: "practice",
       },
@@ -757,7 +778,9 @@ export function createTimeline(
     const blockProcedure = {
       timeline: [fixationTrial, goNoGoTrial, isiBlankTrial],
       timeline_variables: blockTrials,
-      randomize_order: true,
+      // order also comes from createTimelineVariables' shuffle, so the recorded
+      // timeline_variables order matches presentation order
+      randomize_order: false,
       data: {
         phase: "test",
       },
@@ -831,6 +854,15 @@ interface ScoringResult {
   goAccuracy: number;
   nogoAccuracy: number;
   overallAccuracy: number;
+  /**
+   * mean response time over correct Go trials, in milliseconds.
+   *
+   * NOTE!!! this is `0` when there is no valid RT to average (a participant
+   * who missed every Go trial, or a dataset with no scored trials at all)
+   *
+   * `0` is not distinguishable from a genuine mean here, so check
+   * `correctGoTrials > 0` before treating it as a measurement.
+   */
   meanGoRT: number;
   totalTrials: number;
   goTrials: number;
@@ -885,8 +917,8 @@ function calculateScores(data: DataCollection): ScoringResult {
       ? (correctGoTrials.length + correctNogoTrials.length) / mainTrials.length
       : 0;
 
-  // Calculate mean RT for correct go trials
-  const goTrialsWithRT = correctGoTrials.filter((t) => t.rt > 0);
+  // guard against null instead of rt > 0 in case of super fast responses vs actual missing data
+  const goTrialsWithRT = correctGoTrials.filter((t) => t.rt !== null && t.rt !== undefined);
   const meanGoRT =
     goTrialsWithRT.length > 0
       ? goTrialsWithRT.reduce((sum: number, t: any) => sum + t.rt, 0) / goTrialsWithRT.length
