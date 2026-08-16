@@ -1,5 +1,6 @@
 import { JsPsych, initJsPsych } from "jspsych";
-import { createTimeline, createInstructions, timelineUnits, utils } from ".";
+
+import { createInstructions, createTimeline, timelineUnits, utils } from ".";
 
 describe("Go-NoGo Timeline", () => {
   let jsPsych: JsPsych;
@@ -12,7 +13,7 @@ describe("Go-NoGo Timeline", () => {
     it("should create timeline with default config", () => {
       const timeline = createTimeline(jsPsych);
 
-      expect(timeline).toHaveProperty('timeline');
+      expect(timeline).toHaveProperty("timeline");
       expect(Array.isArray(timeline.timeline)).toBe(true);
     });
 
@@ -33,8 +34,8 @@ describe("Go-NoGo Timeline", () => {
       // Verify block breaks are in correct positions
       const break1 = blocksArray[1];
       const break2 = blocksArray[3];
-      expect(break1.timeline[0].data.part).toBe('block-break');
-      expect(break2.timeline[0].data.part).toBe('block-break');
+      expect(break1.timeline[0].data.part).toBe("block-break");
+      expect(break2.timeline[0].data.part).toBe("block-break");
     });
 
     it("should create correct number of trials per block via timeline_variables", () => {
@@ -101,8 +102,8 @@ describe("Go-NoGo Timeline", () => {
       });
 
       const lastItem = timeline.timeline[timeline.timeline.length - 1] as any;
-      expect(lastItem.data.phase).toBe('completion');
-      expect(typeof lastItem.stimulus).toBe('function');
+      expect(lastItem.data.phase).toBe("completion");
+      expect(typeof lastItem.stimulus).toBe("function");
     });
 
     it("should exclude debrief when show_debrief is false", () => {
@@ -147,13 +148,13 @@ describe("Go-NoGo Timeline", () => {
 
       // First item should be practice procedure, followed by end-of-practice screen
       const firstItem = timeline.timeline[0] as any;
-      expect(firstItem.data.phase).toBe('practice');
+      expect(firstItem.data.phase).toBe("practice");
     });
 
     it("should use custom go_stimulus and nogo_stimulus in timeline_variables", () => {
       const timeline = createTimeline(jsPsych, {
-        go_stimulus: '<span>GO!</span>',
-        nogo_stimulus: '<span>STOP!</span>',
+        go_stimulus: "<span>GO!</span>",
+        nogo_stimulus: "<span>STOP!</span>",
         num_blocks: 1,
         num_trials: 10,
         show_instructions: false,
@@ -168,21 +169,24 @@ describe("Go-NoGo Timeline", () => {
       const goTrial = trialVars.find((v: any) => v.is_go_trial === true);
       const nogoTrial = trialVars.find((v: any) => v.is_go_trial === false);
 
-      expect(goTrial.stimulus).toContain('GO!');
-      expect(nogoTrial.stimulus).toContain('STOP!');
+      expect(goTrial.stimulus).toContain("GO!");
+      expect(nogoTrial.stimulus).toContain("STOP!");
     });
   });
 
   describe("createInstructions", () => {
     it("should create instructions trial", () => {
-      const instructions = createInstructions(["hi","<b>test<b>"], {backButton: 'back', nextButton: 'next'});
-      
-      expect(instructions).toHaveProperty('type');
-      expect(instructions).toHaveProperty('pages');
+      const instructions = createInstructions(["hi", "<b>test<b>"], {
+        backButton: "back",
+        nextButton: "next",
+      });
+
+      expect(instructions).toHaveProperty("type");
+      expect(instructions).toHaveProperty("pages");
       // example of testing via functionality-- does it generate the correct number of pages with the right content?
       expect(instructions.pages).toEqual([
         '<div class="instructions" ><p>hi</p></div>',
-        '<div class="instructions" ><p><b>test<b></p></div>'
+        '<div class="instructions" ><p><b>test<b></p></div>',
       ]);
     });
   });
@@ -190,45 +194,45 @@ describe("Go-NoGo Timeline", () => {
   describe("timelineUnits", () => {
     it("should create functional practice trials", () => {
       const practice = timelineUnits.createPractice();
-      
+
       expect(Array.isArray(practice)).toBe(true);
       expect(practice.length).toBe(3); // go, nogo, completion
-      
+
       // Test that each practice trial has timeline with stimulus
-      practice.forEach(trial => {
-        expect(trial).toHaveProperty('timeline');
+      practice.forEach((trial) => {
+        expect(trial).toHaveProperty("timeline");
         expect(Array.isArray(trial.timeline)).toBe(true);
-        trial.timeline.forEach(subTrial => {
-          expect(subTrial).toHaveProperty('stimulus');
-          expect(typeof subTrial.stimulus).toBe('string');
+        trial.timeline.forEach((subTrial) => {
+          expect(subTrial).toHaveProperty("stimulus");
+          expect(typeof subTrial.stimulus).toBe("string");
         });
       });
     });
 
     it("should create functional debrief trial", () => {
       const debrief = timelineUnits.createDebrief(jsPsych);
-      
-      expect(debrief).toHaveProperty('type');
-      expect(debrief).toHaveProperty('stimulus');
-      expect(debrief).toHaveProperty('choices');
-      expect(typeof debrief.stimulus).toBe('function');
+
+      expect(debrief).toHaveProperty("type");
+      expect(debrief).toHaveProperty("stimulus");
+      expect(debrief).toHaveProperty("choices");
+      expect(typeof debrief.stimulus).toBe("function");
     });
 
     it("should create functional go-nogo trial", () => {
-      const trial = timelineUnits.createGoNoGo(jsPsych, 'Click', 1000);
-      
-      expect(trial).toHaveProperty('type');
-      expect(trial).toHaveProperty('choices');
-      expect(trial.choices).toContain('Click');
+      const trial = timelineUnits.createGoNoGo(jsPsych, "Click", 1000);
+
+      expect(trial).toHaveProperty("type");
+      expect(trial).toHaveProperty("choices");
+      expect(trial.choices).toContain("Click");
       expect(trial.trial_duration).toBe(1000);
     });
 
     it("should create block break trial", () => {
       const blockBreak = timelineUnits.createBlockBreak(1, 3);
-      
-      expect(blockBreak).toHaveProperty('type');
-      expect(blockBreak).toHaveProperty('stimulus');
-      expect(blockBreak).toHaveProperty('choices');
+
+      expect(blockBreak).toHaveProperty("type");
+      expect(blockBreak).toHaveProperty("stimulus");
+      expect(blockBreak).toHaveProperty("choices");
     });
   });
 
@@ -236,24 +240,208 @@ describe("Go-NoGo Timeline", () => {
     it("should calculate accuracy and RT correctly", () => {
       // Manually add data to the internal data store
       const dataCollection = jsPsych.data.get();
-      dataCollection.push({ task: 'go-nogo', phase: 'test', part: 'go', correct: true, is_go_trial: true, response: 0, rt: 400 });
-      dataCollection.push({ task: 'go-nogo', phase: 'test', part: 'go', correct: false, is_go_trial: true, response: null, rt: null });
-      dataCollection.push({ task: 'go-nogo', phase: 'test', part: 'nogo', correct: true, is_go_trial: false, response: null, rt: null });
+      dataCollection.push({
+        task: "go-nogo",
+        phase: "test",
+        part: "go",
+        correct: true,
+        is_go_trial: true,
+        response: 0,
+        rt: 400,
+      });
+      dataCollection.push({
+        task: "go-nogo",
+        phase: "test",
+        part: "go",
+        correct: false,
+        is_go_trial: true,
+        response: null,
+        rt: null,
+      });
+      dataCollection.push({
+        task: "go-nogo",
+        phase: "test",
+        part: "nogo",
+        correct: true,
+        is_go_trial: false,
+        response: null,
+        rt: null,
+      });
 
       const timeline = createTimeline(jsPsych, { show_debrief: true });
       const debriefTrial = timeline.timeline[timeline.timeline.length - 1] as any;
       const stimulus = debriefTrial.stimulus();
 
-      expect(stimulus).toContain('50.0%'); // 1 correct go out of 2 go trials
-      expect(stimulus).toContain('100.0%'); // 1 correct nogo out of 1 nogo trial
-      expect(stimulus).toContain('Commission Errors'); // Commission errors shown
+      expect(stimulus).toContain("50.0%"); // 1 correct go out of 2 go trials
+      expect(stimulus).toContain("100.0%"); // 1 correct nogo out of 1 nogo trial
+      expect(stimulus).toContain("Commission Errors"); // Commission errors shown
+    });
+  });
+
+  describe("calculateScores", () => {
+    // 4 go trials (3 correct, rt 300/320/340; 1 omission), 2 nogo trials
+    // (1 correct withhold, 1 commission). 6 scorable trials, 4 correct.
+    const addScorableTrials = (data: any) => {
+      data.push({
+        task: "go-nogo",
+        phase: "test",
+        part: "go",
+        is_go_trial: true,
+        correct: true,
+        rt: 300,
+      });
+      data.push({
+        task: "go-nogo",
+        phase: "test",
+        part: "go",
+        is_go_trial: true,
+        correct: true,
+        rt: 320,
+      });
+      data.push({
+        task: "go-nogo",
+        phase: "test",
+        part: "go",
+        is_go_trial: true,
+        correct: true,
+        rt: 340,
+      });
+      data.push({
+        task: "go-nogo",
+        phase: "test",
+        part: "go",
+        is_go_trial: true,
+        correct: false,
+        rt: null,
+      });
+      data.push({
+        task: "go-nogo",
+        phase: "test",
+        part: "nogo",
+        is_go_trial: false,
+        correct: true,
+        rt: null,
+      });
+      data.push({
+        task: "go-nogo",
+        phase: "test",
+        part: "nogo",
+        is_go_trial: false,
+        correct: false,
+        rt: 200,
+      });
+    };
+
+    // The non-response rows a real run interleaves with the scorable ones.
+    const addNonResponseTrials = (data: any) => {
+      for (let i = 0; i < 6; i++) {
+        data.push({ task: "go-nogo", phase: "test", part: "fixation" });
+        data.push({ task: "go-nogo", phase: "test", part: "isi-blank" });
+      }
+      data.push({ task: "go-nogo", phase: "test", part: "block-break" });
+    };
+
+    it("should score a hand-worked dataset", () => {
+      const data = jsPsych.data.get();
+      addScorableTrials(data);
+
+      expect(utils.scoring.calculateScores(data)).toEqual({
+        totalTrials: 6,
+        goTrials: 4,
+        nogoTrials: 2,
+        correctGoTrials: 3,
+        correctNogoTrials: 1,
+        goAccuracy: 0.75,
+        nogoAccuracy: 0.5,
+        overallAccuracy: 4 / 6,
+        commissionErrors: 1,
+        omissionErrors: 1,
+        meanGoRT: 320,
+      });
+    });
+
+    it("should not count fixation, isi-blank or block-break rows as trials", () => {
+      const data = jsPsych.data.get();
+      addScorableTrials(data);
+      addNonResponseTrials(data);
+
+      const scores = utils.scoring.calculateScores(data);
+
+      // Regression: DataCollection.filter ignores a predicate and keeps every
+      // row, which inflated totalTrials to 19 and deflated overallAccuracy to
+      // 4/19. Only the 6 go/nogo rows are scorable.
+      expect(scores.totalTrials).toBe(6);
+      expect(scores.overallAccuracy).toBe(4 / 6);
+    });
+
+    it("should exclude practice-phase trials from scoring", () => {
+      const data = jsPsych.data.get();
+      addScorableTrials(data);
+      data.push({
+        task: "go-nogo",
+        phase: "practice",
+        part: "go",
+        is_go_trial: true,
+        correct: false,
+        rt: null,
+      });
+      data.push({
+        task: "go-nogo",
+        phase: "practice",
+        part: "nogo",
+        is_go_trial: false,
+        correct: false,
+        rt: 100,
+      });
+
+      const scores = utils.scoring.calculateScores(data);
+
+      expect(scores.totalTrials).toBe(6);
+      expect(scores.omissionErrors).toBe(1);
+      expect(scores.commissionErrors).toBe(1);
+    });
+
+    it("should exclude trials belonging to another task", () => {
+      const data = jsPsych.data.get();
+      addScorableTrials(data);
+      data.push({
+        task: "flanker",
+        phase: "test",
+        part: "go",
+        is_go_trial: true,
+        correct: false,
+        rt: null,
+      });
+
+      expect(utils.scoring.calculateScores(data).totalTrials).toBe(6);
+    });
+
+    it("should report zeros when there are no scorable trials", () => {
+      const scores = utils.scoring.calculateScores(jsPsych.data.get());
+
+      expect(scores.totalTrials).toBe(0);
+      expect(scores.overallAccuracy).toBe(0);
+      expect(scores.meanGoRT).toBe(0);
+    });
+
+    it("should carry scores through getSummary with task name and version", () => {
+      const data = jsPsych.data.get();
+      addScorableTrials(data);
+      addNonResponseTrials(data);
+
+      const summary = utils.scoring.getSummary(data);
+
+      expect(summary.totalTrials).toBe(6);
+      expect(summary.overallAccuracy).toBe(4 / 6);
+      expect(summary.taskName).toBe(utils.constants.TASK_NAME);
+      expect(summary.version).toBe(utils.constants.VERSION);
     });
   });
 
   describe("utils", () => {
     it("should provide createStimulusHTML function", () => {
-      expect(typeof utils.createStimulusHTML).toBe('function');
-      const html = utils.createStimulusHTML('TEST', true);
+      expect(typeof utils.createStimulusHTML).toBe("function");
+      const html = utils.createStimulusHTML("TEST", true);
       expect(html).toContain(`<div id="go-stimulus-container"`);
       expect(html).toContain(`class="stimulus"`);
       expect(html).toContain(`TEST</div>`);
@@ -262,10 +450,16 @@ describe("Go-NoGo Timeline", () => {
 
   describe("timing and display parameters", () => {
     it("should show button during fixation when show_button_during_fixation is true", () => {
-      const fixationWithButton = timelineUnits.createFixation(500, 'Click', true, '25vh', '3em');
-      const fixationWithoutButton = timelineUnits.createFixation(500, 'Click', false, '25vh', '3em');
+      const fixationWithButton = timelineUnits.createFixation(500, "Click", true, "25vh", "3em");
+      const fixationWithoutButton = timelineUnits.createFixation(
+        500,
+        "Click",
+        false,
+        "25vh",
+        "3em"
+      );
 
-      expect(fixationWithButton.choices).toEqual(['Click']);
+      expect(fixationWithButton.choices).toEqual(["Click"]);
       expect(fixationWithoutButton.choices).toEqual([]);
     });
 
@@ -288,9 +482,9 @@ describe("Go-NoGo Timeline", () => {
     });
 
     it("should apply fixation_size to fixation stimulus HTML", () => {
-      const fixation = timelineUnits.createFixation(500, 'Click', true, '25vh', '5em');
+      const fixation = timelineUnits.createFixation(500, "Click", true, "25vh", "5em");
 
-      expect(fixation.stimulus).toContain('font-size: 5em');
+      expect(fixation.stimulus).toContain("font-size: 5em");
     });
 
     it("should apply stimulus_duration to stimulus trial", () => {
@@ -313,32 +507,32 @@ describe("Go-NoGo Timeline", () => {
     });
 
     it("should set stimulus_duration to null when not specified", () => {
-      const trial = timelineUnits.createGoNoGo(jsPsych, 'Click', 500);
+      const trial = timelineUnits.createGoNoGo(jsPsych, "Click", 500);
 
       expect(trial.stimulus_duration).toBeNull();
     });
 
     it("should apply stimulus_container_height to createStimulusHTML", () => {
       const containerHeight = "25vh";
-      const html = utils.createStimulusHTML('TEST', true, containerHeight);
+      const html = utils.createStimulusHTML("TEST", true, containerHeight);
 
       expect(html).toContain(`min-height: ${containerHeight}`);
     });
 
     it("should create fixation with correct duration and button text", () => {
-      const fixation = timelineUnits.createFixation(1000, 'Press', true, '25vh', '4em');
+      const fixation = timelineUnits.createFixation(1000, "Press", true, "25vh", "4em");
 
       expect(fixation.trial_duration).toBe(1000);
-      expect(fixation.choices).toEqual(['Press']);
-      expect(fixation.data.part).toBe('fixation');
+      expect(fixation.choices).toEqual(["Press"]);
+      expect(fixation.data.part).toBe("fixation");
       expect(fixation.response_ends_trial).toBe(false);
     });
 
     it("should create ISI blank with correct duration", () => {
-      const isiBlank = timelineUnits.createISIBlank(500, 'Click', true, '25vh');
+      const isiBlank = timelineUnits.createISIBlank(500, "Click", true, "25vh");
 
       expect(isiBlank.trial_duration).toBe(500);
-      expect(isiBlank.data.part).toBe('isi-blank');
+      expect(isiBlank.data.part).toBe("isi-blank");
       expect(isiBlank.response_ends_trial).toBe(false);
     });
 
@@ -377,7 +571,7 @@ describe("Go-NoGo Timeline", () => {
     });
 
     it("should set stimulus_duration on trial when provided", () => {
-      const trial = timelineUnits.createGoNoGo(jsPsych, 'Click', 1000, 200);
+      const trial = timelineUnits.createGoNoGo(jsPsych, "Click", 1000, 200);
 
       expect(trial.stimulus_duration).toBe(200);
     });

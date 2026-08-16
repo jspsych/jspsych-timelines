@@ -1,8 +1,10 @@
 import "./styles.css";
-import { JsPsych, DataCollection } from "jspsych";
+
 import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
 import jsPsychInstructions from "@jspsych/plugin-instructions";
-import { trial_text, defaultText, TextConfig, octagon, circle, square } from "./text";
+import { DataCollection, JsPsych } from "jspsych";
+
+import { TextConfig, circle, defaultText, octagon, square, trial_text } from "./text";
 
 // -- CONSTANTS --
 const TASK_NAME = "go-nogo";
@@ -102,7 +104,7 @@ export function createInstructions(instructions: string[], texts?) {
  */
 const createStimulusHTML = (html: string, isGoTrial: boolean, containerHeight?: string): string => {
   const id = isGoTrial ? "go-stimulus" : "nogo-stimulus";
-  const heightStyle = containerHeight ? `min-height: ${containerHeight};` : '';
+  const heightStyle = containerHeight ? `min-height: ${containerHeight};` : "";
   return `<div id="${id}-container" class="stimulus"  style="${heightStyle}">${html}</div>`;
 };
 
@@ -315,7 +317,12 @@ const createEndOfPractice = (texts = trial_text) => {
  * @param stimulus_duration Duration to display the stimulus in milliseconds (null means show until response/timeout).
  * @returns A jsPsych trial definition to be used within a procedure.
  */
-const createGoNoGo = (jsPsych: JsPsych, button_text: string, trial_timeout: number, stimulus_duration?: number | null) => {
+const createGoNoGo = (
+  jsPsych: JsPsych,
+  button_text: string,
+  trial_timeout: number,
+  stimulus_duration?: number | null
+) => {
   return {
     type: jsPsychHtmlButtonResponse,
     stimulus: jsPsych.timelineVariable("stimulus"),
@@ -352,10 +359,10 @@ const createISIBlank = (
   button_text: string,
   show_button: boolean = true,
   stimulus_height?: string,
-  button_opacity: number = 1.0,
+  button_opacity: number = 1.0
 ) => {
   // Create a blank container with matching height to prevent button movement
-  const heightStyle = stimulus_height ? `min-height: ${stimulus_height};` : '';
+  const heightStyle = stimulus_height ? `min-height: ${stimulus_height};` : "";
   const blankHTML = `<div class="isi-blank"  style="${heightStyle}"></div>`;
 
   return {
@@ -389,9 +396,9 @@ const createFixation = (
   show_button: boolean = true,
   stimulus_height?: string,
   fixation_size: string = "3em",
-  button_opacity: number = 1.0,
+  button_opacity: number = 1.0
 ) => {
-  const heightStyle = stimulus_height ? `min-height: ${stimulus_height};` : '';
+  const heightStyle = stimulus_height ? `min-height: ${stimulus_height};` : "";
   const fixationHTML = `<div class="fixation"  style="font-size: ${fixation_size}; ${heightStyle}">+</div>`;
 
   return {
@@ -428,7 +435,7 @@ const createTimelineVariables = (
   probability: number,
   actualGoStimuli: string[],
   actualNoGoStimuli: string[],
-  containerHeight?: string,
+  containerHeight?: string
 ) => {
   const trials: any[] = [];
 
@@ -439,7 +446,7 @@ const createTimelineVariables = (
   // Validate inputs
   if (numGoTrials < 0 || numNoGoTrials < 0) {
     throw new Error(
-      `Invalid trial configuration: probability (${probability}) results in ${numGoTrials} go trials and ${numNoGoTrials} no-go trials for ${num_trials} total trials. Both must be non-negative.`,
+      `Invalid trial configuration: probability (${probability}) results in ${numGoTrials} go trials and ${numNoGoTrials} no-go trials for ${num_trials} total trials. Both must be non-negative.`
     );
   }
 
@@ -484,12 +491,20 @@ const createTimelineVariables = (
  * @param text_object Text configuration object containing messages and labels.
  * @returns A jsPsychHtmlButtonResponse screen prompting to continue or showing a countdown.
  */
-const createBlockBreak = (blockNum: number, num_blocks: number, duration: number | null = null, texts = trial_text) => {
+const createBlockBreak = (
+  blockNum: number,
+  num_blocks: number,
+  duration: number | null = null,
+  texts = trial_text
+) => {
   if (duration === null) {
     // Button mode
     return {
       type: jsPsychHtmlButtonResponse,
-      stimulus: `<div class="block-break" ><p>${texts.blockBreakContent(blockNum, num_blocks)}</p></div>`,
+      stimulus: `<div class="block-break" ><p>${texts.blockBreakContent(
+        blockNum,
+        num_blocks
+      )}</p></div>`,
       choices: [texts.continueButton],
       data: { task: TASK_NAME, task_version: VERSION, part: "block-break", block_number: blockNum },
     };
@@ -497,12 +512,15 @@ const createBlockBreak = (blockNum: number, num_blocks: number, duration: number
     // Timer mode
     return {
       type: jsPsychHtmlButtonResponse,
-      stimulus: `<div class="block-break" ><p>${texts.blockBreakContent(blockNum, num_blocks)}</p><p id="timer-display"></p></div>`,
+      stimulus: `<div class="block-break" ><p>${texts.blockBreakContent(
+        blockNum,
+        num_blocks
+      )}</p><p id="timer-display"></p></div>`,
       choices: [],
       trial_duration: duration,
       data: { task: TASK_NAME, task_version: VERSION, part: "block-break", block_number: blockNum },
       on_load: () => {
-        const timerDisplay = document.getElementById('timer-display');
+        const timerDisplay = document.getElementById("timer-display");
         let timeRemaining = duration;
 
         const updateTimer = () => {
@@ -592,7 +610,7 @@ export function createTimeline(
     nogo_practice_timeout = 3000,
     // texts
     text = {},
-  }: GoNoGoConfig = {},
+  }: GoNoGoConfig = {}
 ) {
   const mergedText = { ...trial_text, ...text }; // Merge default texts with any overrides from config
   const timeline = [];
@@ -614,7 +632,12 @@ export function createTimeline(
   const actualGoStimuli = go_stimuli?.length > 0 ? go_stimuli : [go_stimulus];
   const actualNoGoStimuli = nogo_stimuli?.length > 0 ? nogo_stimuli : [nogo_stimulus];
 
-  const goNoGoTrial = createGoNoGo(jsPsych, mergedText.stimulusButton, trial_timeout, stimulus_duration);
+  const goNoGoTrial = createGoNoGo(
+    jsPsych,
+    mergedText.stimulusButton,
+    trial_timeout,
+    stimulus_duration
+  );
   const fixationTrial = createFixation(
     fixation_duration,
     mergedText.stimulusButton,
@@ -640,7 +663,7 @@ export function createTimeline(
       practice_probability,
       actualGoStimuli,
       actualNoGoStimuli,
-      stimulus_container_height,
+      stimulus_container_height
     );
 
     const practiceProcedure = {
@@ -648,8 +671,8 @@ export function createTimeline(
       timeline_variables: practiceTrials,
       randomize_order: true,
       data: {
-        phase: "practice"
-      }
+        phase: "practice",
+      },
     };
     timeline.push(practiceProcedure);
 
@@ -657,7 +680,7 @@ export function createTimeline(
     const endOfPracticeTrial = createEndOfPractice(mergedText);
     timeline.push({
       timeline: [endOfPracticeTrial],
-      data: { phase: "practice" }
+      data: { phase: "practice" },
     });
   }
 
@@ -671,7 +694,7 @@ export function createTimeline(
       probability,
       actualGoStimuli,
       actualNoGoStimuli,
-      stimulus_container_height,
+      stimulus_container_height
     );
 
     // Add block trials: fixation → stimulus → ISI blank
@@ -680,17 +703,22 @@ export function createTimeline(
       timeline_variables: blockTrials,
       randomize_order: true,
       data: {
-        phase: "test"
-      }
+        phase: "test",
+      },
     };
     blocks.push(blockProcedure);
 
     // Add block break page between blocks (except after last block)
     if (blockNum < num_blocks) {
-      const blockBreakTrial = createBlockBreak(blockNum, num_blocks, block_break_duration, mergedText);
+      const blockBreakTrial = createBlockBreak(
+        blockNum,
+        num_blocks,
+        block_break_duration,
+        mergedText
+      );
       blocks.push({
         timeline: [blockBreakTrial],
-        data: { phase: "test" }
+        data: { phase: "test" },
       });
     }
   }
@@ -753,8 +781,8 @@ interface ScoringResult {
   nogoTrials: number;
   correctGoTrials: number;
   correctNogoTrials: number;
-  commissionErrors: number;  // False alarms (clicked on no-go)
-  omissionErrors: number;    // Misses (didn't click on go)
+  commissionErrors: number; // False alarms (clicked on no-go)
+  omissionErrors: number; // Misses (didn't click on go)
 }
 
 /**
@@ -763,7 +791,7 @@ interface ScoringResult {
 function calculateScores(data: DataCollection): ScoringResult {
   const mainTrials = data
     .filter({ task: TASK_NAME, phase: "test" })
-    .filter((trial: any) => trial.part === "go" || trial.part === "nogo")
+    .filterCustom((trial: any) => trial.part === "go" || trial.part === "nogo")
     .values() as any[];
 
   if (mainTrials.length === 0) {
@@ -796,15 +824,17 @@ function calculateScores(data: DataCollection): ScoringResult {
 
   const goAccuracy = goTrials.length > 0 ? correctGoTrials.length / goTrials.length : 0;
   const nogoAccuracy = nogoTrials.length > 0 ? correctNogoTrials.length / nogoTrials.length : 0;
-  const overallAccuracy = mainTrials.length > 0
-    ? (correctGoTrials.length + correctNogoTrials.length) / mainTrials.length
-    : 0;
+  const overallAccuracy =
+    mainTrials.length > 0
+      ? (correctGoTrials.length + correctNogoTrials.length) / mainTrials.length
+      : 0;
 
   // Calculate mean RT for correct go trials
   const goTrialsWithRT = correctGoTrials.filter((t) => t.rt > 0);
-  const meanGoRT = goTrialsWithRT.length > 0
-    ? goTrialsWithRT.reduce((sum: number, t: any) => sum + t.rt, 0) / goTrialsWithRT.length
-    : 0;
+  const meanGoRT =
+    goTrialsWithRT.length > 0
+      ? goTrialsWithRT.reduce((sum: number, t: any) => sum + t.rt, 0) / goTrialsWithRT.length
+      : 0;
 
   return {
     goAccuracy,
