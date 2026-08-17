@@ -1,19 +1,22 @@
 // constant shapes to use across the task
 export const square = `
-  <div role="img" aria-label="Go square"
+  <div role="img" aria-label="square"
     style="height:25vh;aspect-ratio:1;background:#000;margin:auto;"></div>`;
 export const octagon = `
-  <div role="img" aria-label="No-Go octagon"
+  <div role="img" aria-label="octagon"
     style="height:25vh;aspect-ratio:1;background:#000;margin:auto;clip-path:polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);"></div>`;
 export const circle = `
-  <div role="img" aria-label="No-Go circle"
+  <div role="img" aria-label="circle"
     style="height:25vh;aspect-ratio:1;background:#000;border-radius:50%;margin:auto;"></div>`;
 
 /**
  * Object with text properties used in the Go/No-Go task.
+ *
+ * note: coupled to the stimuli, so if you use different ones
+ * ensure you change the instructions accordingly.
  */
 export const trial_text = {
-  // Instruction pages
+  // can feed HTML strings, so we can include the shapes
   instructions_pages: [
     "In this task, you will see symbols appear one at a time on the screen.",
     "When you see a circle, click the button as quickly as possible." + circle,
@@ -29,14 +32,14 @@ export const trial_text = {
   backButton: "",
   nextButton: "",
 
-  // Page 1: GO Practice
+  // go practice: coupled with the stimuli
   goPageContent: `<b>GO Trials</b><br>
   When you see the circle, click the button as quickly as possible!<br>
   Try clicking the button below to practice:`,
   goSuccess: "Perfect! You clicked quickly for the circle stimulus.",
   goFailure: "You failed to click in time for the circle stimulus.",
 
-  // Page 2: NO-GO Practice
+  // no-go practice: coupled with the stimuli
   noGoPageContent: `<b>NO-GO Trials</b><br>
   When you see the octagon, do NOT click the button!<br>
   Try waiting without clicking the button below:`,
@@ -88,6 +91,4 @@ export const trial_text = {
   },
 };
 
-// Aliases for consistency with other packages
-export const defaultText = trial_text;
 export type TextConfig = typeof trial_text;

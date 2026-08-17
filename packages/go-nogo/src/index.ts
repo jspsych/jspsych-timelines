@@ -4,7 +4,7 @@ import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
 import jsPsychInstructions from "@jspsych/plugin-instructions";
 import { DataCollection, JsPsych } from "jspsych";
 
-import { TextConfig, circle, defaultText, octagon, square, trial_text } from "./text";
+import { TextConfig, circle, octagon, square, trial_text } from "./text";
 
 // -- CONSTANTS --
 const TASK_NAME = "go-nogo";
@@ -77,11 +77,14 @@ interface GoNoGoConfig {
 /**
  * Creates a set of instructions for the Go/No-Go Task.
  *
- * @param {string[]} instructions - Array of instruction pages to display.
- * @param {object} texts - Text configuration object containing messages and labels.
- * @returns {object} jsPsychInstructions trial object.
+ * @param instructions Pages to display. Defaults to the pages in the text config.
+ * @param texts Text configuration object containing messages and labels.
+ * @returns jsPsychInstructions trial object.
  */
-export function createInstructions(instructions: string[], texts?) {
+export function createInstructions(
+  instructions: string[] = trial_text.instructions_pages,
+  texts: Partial<TextConfig> = trial_text
+) {
   return {
     type: jsPsychInstructions,
     pages: instructions.map(
@@ -1017,8 +1020,13 @@ export const utils = {
     TASK_NAME,
     VERSION,
   },
-  text: defaultText,
+  shapes: {
+    circle,
+    octagon,
+    square,
+  },
 };
 
 // Re-export types for TypeScript users
+export type { ScoringResult };
 export type { TextConfig } from "./text";

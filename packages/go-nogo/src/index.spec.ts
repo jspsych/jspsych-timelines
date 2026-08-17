@@ -417,6 +417,63 @@ describe("Go-NoGo Timeline", () => {
     });
   });
 
+  describe("public API surface", () => {
+    it("should build instruction pages with no arguments", () => {
+      // Both the README and docs call this with no arguments; it used to throw
+      // because `instructions` had no default.
+      const instructions = createInstructions() as any;
+
+      expect(instructions.pages).toHaveLength(utils.trial_text.instructions_pages.length);
+      expect(instructions.pages[0]).toContain(utils.trial_text.instructions_pages[0]);
+    });
+
+    it("should default the button labels from the text config", () => {
+      const instructions = createInstructions(["a"]) as any;
+
+      expect(instructions.button_label_previous).toBe(utils.trial_text.backButton);
+      expect(instructions.button_label_next).toBe(utils.trial_text.nextButton);
+    });
+
+    it("should still accept explicit pages and texts", () => {
+      const instructions = createInstructions(["only"], { nextButton: "Next" }) as any;
+
+      expect(instructions.pages).toHaveLength(1);
+      expect(instructions.button_label_next).toBe("Next");
+    });
+
+    it("should expose the stimulus shapes named in the changelog", () => {
+      // CHANGELOG 0.2.0 tells users migrating the default change to set
+      // `go_stimulus: square`, which was impossible while these were unreachable.
+      for (const shape of ["circle", "octagon", "square"] as const) {
+        expect(typeof utils.shapes[shape]).toBe("string");
+        expect(utils.shapes[shape]).toContain("aria-label");
+      }
+    });
+
+    it("should accept a shape from utils.shapes as a stimulus", () => {
+      const timeline = createTimeline(jsPsych, {
+        go_stimulus: utils.shapes.square,
+        num_blocks: 1,
+        num_trials: 4,
+        show_instructions: false,
+        show_practice: false,
+        show_debrief: false,
+      });
+
+      const vars = (timeline.timeline[0] as any[])[0].timeline_variables;
+      expect(vars.find((v: any) => v.is_go_trial).stimulus).toContain('aria-label="square"');
+    });
+
+    it("should not also expose the shapes at the top level", async () => {
+      const mod: any = await import(".");
+
+      // One name per thing, as with utils.trial_text.
+      for (const shape of ["circle", "octagon", "square"]) {
+        expect(mod[shape]).toBeUndefined();
+      }
+    });
+  });
+
   describe("timelineUnits", () => {
     it("should create functional practice trials", () => {
       const practice = timelineUnits.createPractice();
