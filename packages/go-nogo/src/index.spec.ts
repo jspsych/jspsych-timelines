@@ -417,6 +417,34 @@ describe("Go-NoGo Timeline", () => {
     });
   });
 
+  describe("text configuration", () => {
+    it("should render the debrief from task_complete and result_summary", () => {
+      const debrief: any = timelineUnits.createDebrief(jsPsych, {
+        ...utils.trial_text,
+        task_complete: "ALL DONE",
+        result_summary: () => "<p>SUMMARY</p>",
+      });
+
+      const html = debrief.stimulus();
+      expect(html).toContain("ALL DONE");
+      expect(html).toContain("SUMMARY");
+    });
+
+    it("should let a text override reach the screen", () => {
+      const timeline = createTimeline(jsPsych, {
+        text: { finishButton: "Fertig" },
+        show_debrief: true,
+        show_instructions: false,
+        show_practice: false,
+        num_blocks: 1,
+        num_trials: 4,
+      });
+
+      const debrief = timeline.timeline[timeline.timeline.length - 1] as any;
+      expect(debrief.choices).toEqual(["Fertig"]);
+    });
+  });
+
   describe("public API surface", () => {
     it("should build instruction pages with no arguments", () => {
       // Both the README and docs call this with no arguments; it used to throw

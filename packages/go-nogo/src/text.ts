@@ -68,15 +68,6 @@ export const trial_text = {
     `Next block begins in ${seconds} second${seconds !== 1 ? "s" : ""}...`,
 
   // Results/Debrief
-  debriefContent: (accuracy: number, meanRT: number) => `
-    <div class="jspsych-go-nogo-debrief">
-      <p>Thank you for completing the Go/No-Go task!</p>
-      <p><strong>Overall Accuracy:</strong> ${accuracy}%</p>
-      <p><strong>Average Response Time (GO trials):</strong> ${meanRT}ms</p>
-    </div>`,
-  thankYouMessage: "Thank you for completing the Go/No-Go task!",
-  overallAccuracy: "Overall Accuracy:",
-  averageResponseTime: "Average Response Time (GO trials):",
   finishButton: "Finish",
 
   // -- COMPLETION --
