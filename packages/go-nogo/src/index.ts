@@ -4,6 +4,7 @@ import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
 import jsPsychInstructions from "@jspsych/plugin-instructions";
 import { DataCollection, JsPsych } from "jspsych";
 
+import { version } from "../package.json";
 import { TextConfig, circle, octagon, square, trial_text } from "./text";
 
 // -- CONSTANTS --
@@ -11,7 +12,7 @@ const TASK_NAME = "go-nogo";
 // Scoping root for this package's CSS. Added to every trial via css_classes so
 // styles.css can be written as descendant rules and cannot reach another task.
 const CSS_ROOT = "jspsych-go-nogo";
-const VERSION = "0.5.0";
+const VERSION = version;
 
 /**
  * Configuration options for the Go/No-Go timeline and helpers.
@@ -97,7 +98,7 @@ export function createInstructions(
     button_label_previous: texts?.backButton || "",
     button_label_next: texts?.nextButton || "",
     css_classes: CSS_ROOT,
-    data: { task: TASK_NAME, phase: "instructions" },
+    data: { task: TASK_NAME, task_version: VERSION, phase: "instructions" },
   };
 }
 
@@ -149,7 +150,7 @@ const createGoPractice = (go_stimulus: string, texts = trial_text, timeout: numb
     choices: [texts.stimulusButton],
     trial_duration: timeout, // default 10 seconds
     css_classes: CSS_ROOT,
-    data: { task: TASK_NAME, phase: "instructions", part: "go-practice" },
+    data: { task: TASK_NAME, task_version: VERSION, phase: "instructions", part: "go-practice" },
     on_finish: (data: any) => {
       if (data.response !== null) {
         // They clicked - show success feedback
@@ -177,7 +178,7 @@ const createGoPractice = (go_stimulus: string, texts = trial_text, timeout: numb
     trial_duration: 2000,
     response_ends_trial: false,
     css_classes: CSS_ROOT,
-    data: { task: TASK_NAME, phase: "instructions", part: "success" },
+    data: { task: TASK_NAME, task_version: VERSION, phase: "instructions", part: "success" },
   };
 
   const failureFeedback = {
@@ -193,7 +194,7 @@ const createGoPractice = (go_stimulus: string, texts = trial_text, timeout: numb
     trial_duration: 2000,
     response_ends_trial: false,
     css_classes: CSS_ROOT,
-    data: { task: TASK_NAME, phase: "instructions", part: "failure" },
+    data: { task: TASK_NAME, task_version: VERSION, phase: "instructions", part: "failure" },
   };
 
   practiceGoTimeline.push(practiceTask);
@@ -234,7 +235,7 @@ const createNoGoPractice = (nogo_stimulus: string, texts = trial_text, timeout: 
     choices: [texts.stimulusButton],
     trial_duration: timeout,
     css_classes: CSS_ROOT,
-    data: { task: TASK_NAME, phase: "instructions", part: "nogo-practice" },
+    data: { task: TASK_NAME, task_version: VERSION, phase: "instructions", part: "nogo-practice" },
     on_finish: (data: any) => {
       if (data.response === null) {
         // They correctly didn't click - show success feedback
@@ -262,7 +263,7 @@ const createNoGoPractice = (nogo_stimulus: string, texts = trial_text, timeout: 
     trial_duration: 2000,
     response_ends_trial: false,
     css_classes: CSS_ROOT,
-    data: { task: TASK_NAME, phase: "instructions", part: "success" },
+    data: { task: TASK_NAME, task_version: VERSION, phase: "instructions", part: "success" },
   };
 
   const incorrectFeedback = {
@@ -278,7 +279,7 @@ const createNoGoPractice = (nogo_stimulus: string, texts = trial_text, timeout: 
     trial_duration: 2000,
     response_ends_trial: false,
     css_classes: CSS_ROOT,
-    data: { task: TASK_NAME, phase: "instructions", part: "failure" },
+    data: { task: TASK_NAME, task_version: VERSION, phase: "instructions", part: "failure" },
   };
 
   practiceNoGoTimeline.push(practiceTask);
@@ -301,7 +302,7 @@ const createPracticeCompletion = (texts = trial_text) => {
     `,
     choices: [texts.beginTaskButton],
     css_classes: CSS_ROOT,
-    data: { task: TASK_NAME, phase: "instructions", part: "completion" },
+    data: { task: TASK_NAME, task_version: VERSION, phase: "instructions", part: "completion" },
   };
 
   return { timeline: [completionTrial] };
@@ -319,7 +320,7 @@ const createEndOfPractice = (texts = trial_text) => {
     stimulus: `<div class="jspsych-go-nogo-transition" ><p>${texts.endOfPracticeContent}</p></div>`,
     choices: [texts.endOfPracticeButton],
     css_classes: CSS_ROOT,
-    data: { task: TASK_NAME, phase: "practice", part: "end-of-practice" },
+    data: { task: TASK_NAME, task_version: VERSION, phase: "practice", part: "end-of-practice" },
   };
 };
 

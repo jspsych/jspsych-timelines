@@ -48,7 +48,7 @@
     "bugs": {
         "url": "https://github.com/jspsych/jspsych-timelines/issues"
     },
-    "homepage": "/@jspsych-timelines/go-nogo/README.md",
+    "homepage": "https://github.com/jspsych/jspsych-timelines/tree/main/packages/go-nogo",
     "peerDependencies": {
         "jspsych": ">=8.0.0"
     },

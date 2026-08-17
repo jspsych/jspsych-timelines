@@ -417,6 +417,41 @@ describe("Go-NoGo Timeline", () => {
     });
   });
 
+  describe("package metadata", () => {
+    it("should report the version from package.json", () => {
+      // A hardcoded VERSION drifts from the manifest and is written into every
+      // row as task_version.
+      const pkg = JSON.parse(readFileSync(join(__dirname, "..", "package.json"), "utf8"));
+
+      expect(utils.constants.VERSION).toBe(pkg.version);
+      expect(utils.constants.TASK_NAME).toBe("go-nogo");
+    });
+
+    it("should stamp task and task_version on every trial", () => {
+      const { timeline } = createTimeline(jsPsych, {
+        show_instructions: true,
+        show_practice: true,
+        show_debrief: true,
+        num_blocks: 2,
+        num_trials: 6,
+      });
+
+      const trials: any[] = [];
+      const walk = (node: any) => {
+        if (Array.isArray(node)) node.forEach(walk);
+        else if (node && typeof node === "object") {
+          if (node.type) trials.push(node);
+          if (node.timeline) walk(node.timeline);
+        }
+      };
+      walk(timeline);
+
+      expect(trials.length).toBeGreaterThan(5);
+      expect(trials.filter((t) => t.data?.task !== "go-nogo")).toEqual([]);
+      expect(trials.filter((t) => t.data?.task_version !== utils.constants.VERSION)).toEqual([]);
+    });
+  });
+
   describe("text configuration", () => {
     it("should render the debrief from task_complete and result_summary", () => {
       const debrief: any = timelineUnits.createDebrief(jsPsych, {
