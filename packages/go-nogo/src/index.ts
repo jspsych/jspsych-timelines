@@ -542,7 +542,7 @@ const createTimelineVariables = (
  * @param blockNum 1-based index of the block that just finished.
  * @param num_blocks Total number of blocks.
  * @param duration Duration in milliseconds. If null, shows a button. If a number, shows a countdown timer.
- * @param text_object Text configuration object containing messages and labels.
+ * @param texts Text configuration object containing messages and labels.
  * @returns A jsPsychHtmlButtonResponse screen prompting to continue or showing a countdown.
  */
 const createBlockBreak = (
