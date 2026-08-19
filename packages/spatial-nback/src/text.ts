@@ -1,6 +1,5 @@
 /* This file contains the configurable text used in the spatial n-back timeline.
  * Researchers can modify these texts to change the language or instructions.
- * replaceable holders: {n_back}, {plural}, {trial}, {total}
  */
 
 export const trial_text = {
@@ -10,8 +9,10 @@ export const trial_text = {
   back_button: "",
 
   // Main task instructions
-  prompt:
-    "Click the MATCH button if the current position matches the position from {n_back} trial{plural} ago. (trial {trial} of {total})",
+  prompt: (n_back: number, trial_number: number, total_trials: number) =>
+    `Click the MATCH button if the current position matches the position from ${n_back} trial${
+      n_back > 1 ? "s" : ""
+    } ago. (trial ${trial_number} of ${total_trials})`,
 
   // Button text array - first button is "match", second is "no match"
   button: ["O", "X"],

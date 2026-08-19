@@ -131,7 +131,7 @@ export function createTimeline(
     show_feedback_text?: boolean;
     show_feedback_border?: boolean;
     cell_size?: number;
-    prompt?: string;
+    prompt?: (n_back: number, trial_number: number, total_trials: number) => string;
     buttons?: string[];
     stimulus_color?: string;
     correct_color?: string;
@@ -152,11 +152,7 @@ export function createTimeline(
   // Create individual trial objects
   const trials = [];
   for (let i = 0; i < total_trials; i++) {
-    const trial_instructions = `<p>${effective_prompt
-      .replace(/{n_back}/g, n_back.toString())
-      .replace(/{plural}/g, n_back > 1 ? "s" : "")
-      .replace(/{trial}/g, (i + 1).toString())
-      .replace(/{total}/g, total_trials.toString())}</p>`;
+    const trial_instructions = `<p>${effective_prompt(n_back, i + 1, total_trials)}</p>`;
 
     trials.push({
       type: jsPsychPluginSpatialNback,
@@ -232,8 +228,10 @@ export function createPracticeTimeline(
     show_feedback_text: true,
     show_feedback_border: true,
     include_instructions: false,
-    prompt:
-      "Match the current position with the position from {n_back} trial{plural} ago. (trial {trial} of {total})",
+    prompt: (n_back: number, trial_number: number, total_trials: number) =>
+      `Match the current position with the position from ${n_back} trial${
+        n_back > 1 ? "s" : ""
+      } ago. (trial ${trial_number} of ${total_trials})`,
   });
 }
 

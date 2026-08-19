@@ -245,9 +245,10 @@ describe("timeline instruction customization", () => {
     jsPsych = initJsPsych();
   });
 
-  it("should replace placeholders in trial prompt", () => {
+  it("should call the prompt function with the trial's values", () => {
     const timeline = createTimeline(jsPsych, {
-      prompt: "Level {n_back}, Trial {trial} of {total}",
+      prompt: (n_back, trial_number, total_trials) =>
+        `Level ${n_back}, Trial ${trial_number} of ${total_trials}`,
       n_back: 2,
       total_trials: 5,
     });
@@ -256,8 +257,27 @@ describe("timeline instruction customization", () => {
     expect(timeline.timeline[4].instructions).toBe("<p>Level 2, Trial 5 of 5</p>");
   });
 
+  it("should let the prompt function ignore arguments it does not need", () => {
+    const timeline = createTimeline(jsPsych, {
+      prompt: () => "Respond now",
+      total_trials: 2,
+    });
+
+    expect(timeline.timeline[0].instructions).toBe("<p>Respond now</p>");
+    expect(timeline.timeline[1].instructions).toBe("<p>Respond now</p>");
+  });
+
+  it("should pluralize the default prompt from n_back", () => {
+    const one = createTimeline(jsPsych, { n_back: 1, total_trials: 1 });
+    const many = createTimeline(jsPsych, { n_back: 2, total_trials: 1 });
+
+    expect(one.timeline[0].instructions).toContain("1 trial ago");
+    expect(many.timeline[0].instructions).toContain("2 trials ago");
+  });
+
   it("should use custom prompt parameter when provided", () => {
-    const customPrompt = "Custom instruction: Position {n_back} back (Trial {trial}/{total})";
+    const customPrompt = (n_back: number, trial_number: number, total_trials: number) =>
+      `Custom instruction: Position ${n_back} back (Trial ${trial_number}/${total_trials})`;
     const timeline = createTimeline(jsPsych, {
       prompt: customPrompt,
       n_back: 1,

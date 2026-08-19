@@ -62,7 +62,8 @@ const customTimeline = createTimeline({
 ### With Custom Text Object
 ```javascript
 const customTexts = {
-  prompt: "Press YES if the position matches {n_back} steps back (trial {trial}/{total})",
+  prompt: (n_back, trial_number, total_trials) =>
+    `Press YES if the position matches ${n_back} steps back (trial ${trial_number}/${total_trials})`,
   button: ["YES", "NO"],
   correct: "Great job!",
   incorrect: "Try again!",
@@ -118,7 +119,7 @@ const timelineWithCustomTexts = createTimeline({
 
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
-| **prompt** | string | "Click the MATCH button..." | Instructions template for each trial |
+| **prompt** | function | see `text.ts` | `(n_back, trial_number, total_trials) => string`, called once per trial to build its instructions |
 | **buttons** | string[] | ["O", "X"] | Array of button text strings. First button is "match", second is "no match" |
 | **include_instructions** | boolean | false | Whether to include instruction pages at the start |
 | **show_completion** | boolean | true | Whether to append the results screen. Set false when this timeline is one block of a larger one |
