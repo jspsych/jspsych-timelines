@@ -31,7 +31,7 @@ const jsPsych = initJsPsych({
   }
 });
 
-const timeline = createTimeline({
+const timeline = createTimeline(jsPsych, {
   n_back: 2,
   total_trials: 30,
   target_percentage: 40,
@@ -43,7 +43,7 @@ jsPsych.run(timeline);
 
 ### With Custom Configuration
 ```javascript
-const customTimeline = createTimeline({
+const customTimeline = createTimeline(jsPsych, {
   rows: 4,
   cols: 4,
   n_back: 3,
@@ -71,7 +71,7 @@ const customTexts = {
   back_button: "Previous"
 };
 
-const timelineWithCustomTexts = createTimeline({
+const timelineWithCustomTexts = createTimeline(jsPsych, {
   n_back: 2,
   total_trials: 20,
   texts: customTexts,
@@ -130,27 +130,41 @@ const timelineWithCustomTexts = createTimeline({
 
 In addition to the default data collected by jsPsych, this timeline records the following data for each trial:
 
+Every row carries `task`, `task_version` and `phase`. The `phase` values emitted are
+`"instructions"`, `"test"` and `"completion"`; no `part` is recorded.
+
+Rows with `phase: "test"` are the n-back trials and additionally carry:
+
 | Name | Type | Value |
 |------|------|-------|
-| **trial_number** | number | The trial index (1-based) |
+| **trial_number** | number | The trial index within the block (1-based) |
 | **n_back** | number | The n-back level for the timeline |
-| **total_trials** | number | Total number of trials in the timeline |
-| **task** | string | "spatial-nback" |
-| **phase** | string | "trial" or "instructions" |
-| **response** | string/number | Participant's response (if applicable) |
-| **rt** | number | Response time in milliseconds |
+| **total_trials** | number | Total number of trials in the block |
+| **is_target** | boolean | Whether this trial's position matched n trials back |
+| **correct** | boolean | Whether the response was correct |
+| **response** | number \| null | Index of the button pressed, `null` if no response |
+| **response_time** | number \| null | Response time in milliseconds, `null` if no response |
+| **stimulus_row** | number | Row of the highlighted cell (0-based) |
+| **stimulus_col** | number | Column of the highlighted cell (0-based) |
+
+`is_target`, `correct`, `response`, `response_time`, `stimulus_row` and `stimulus_col`
+come from the underlying plugin. Note the name: the plugin records **`response_time`**,
+not `rt`. Rows for the instruction and results screens carry `rt` instead, because those
+are `@jspsych/plugin-instructions` and `@jspsych/plugin-html-button-response` trials.
 
 ## Functions
 
-### createTimeline(params)
+### createTimeline(jsPsych, params)
 Creates a spatial n-back timeline with the specified parameters.
 
 **Parameters:**
+- `jsPsych` (JsPsych): The instance returned by `initJsPsych()`. Required — the results
+  screen reads accumulated data from it
 - `params` (object): Configuration object with parameters described above
 
 **Returns:** A jsPsych timeline object
 
-### createPracticeTimeline(params)
+### createPracticeTimeline(jsPsych, params)
 Creates a short practice timeline optimized for learning the task.
 
 **Default Configuration:**
@@ -164,7 +178,7 @@ Creates a short practice timeline optimized for learning the task.
 
 **Returns:** A jsPsych timeline object
 
-### createMultiLevelNBackTimeline(params)
+### createMultiLevelNBackTimeline(jsPsych, params)
 Creates a timeline with multiple n-back levels for progressive difficulty.
 
 **Parameters:**
@@ -188,17 +202,44 @@ Pre-configured timelines for common use cases:
 import { presetConfigurations } from '@jspsych-timelines/spatial-nback';
 
 // Easy: 1-back, 20 trials, feedback enabled
-const easy = presetConfigurations.easy();
+const easy = presetConfigurations.easy(jsPsych);
 
 // Medium: 2-back, 30 trials, no feedback
-const medium = presetConfigurations.medium();
+const medium = presetConfigurations.medium(jsPsych);
 
 // Hard: 3-back, 4x4 grid, 40 trials
-const hard = presetConfigurations.hard();
+const hard = presetConfigurations.hard(jsPsych);
 
 // Research: Multi-level 1-3 back, 50 trials each
-const research = presetConfigurations.research();
+const research = presetConfigurations.research(jsPsych);
 ```
+
+### utils.scoring.calculateScores(data)
+Computes performance measures from a `DataCollection`. Selects rows matching
+`{ task: "spatial-nback", phase: "test" }`, so practice or other tasks in a battery do
+not contribute.
+
+**Parameters:**
+- `data` (DataCollection): usually `jsPsych.data.get()`
+
+**Returns:** an object with
+
+| Field | Type | Notes |
+|-------|------|-------|
+| **totalTrials** | number | Scored trials found |
+| **correctTrials** | number | |
+| **accuracy** | number | `correctTrials / totalTrials` |
+| **targetTrials** / **nonTargetTrials** | number | |
+| **targetHits** / **misses** | number | |
+| **correctRejections** / **falseAlarms** | number | |
+| **targetHitRate** / **missRate** | number | |
+| **correctRejectionRate** / **falseAlarmRate** | number | |
+| **meanRT** | number \| null | Correct trials only; `null` when none had a response |
+| **meanTargetRT** | number \| null | Hits only; `null` when there were none |
+| **dPrime** | number \| null | `null` when there are no target or no non-target trials, since d' is undefined without both. A genuine `0` from equal hit and false-alarm rates is still reported |
+
+### utils.scoring.getSummary(data)
+`calculateScores(data)` plus `taskName` and `version`.
 
 ### generateNBackSequence(total_trials, n_back, target_percentage, rows, cols)
 Generates the sequence of positions and target flags for the task.
@@ -212,19 +253,33 @@ Generates the sequence of positions and target flags for the task.
 
 **Returns:** Object with `positions` and `is_target` arrays
 
-### createInstructions(instruction_pages)
-Creates instruction pages. Takes an array of strings.
+### timelineUnits.createInstructions(instruction_pages, texts)
+Creates the instruction pages trial.
 
 **Parameters:**
-- `instruction_pages` (string[]): Array of instruction HTML strings
+- `instruction_pages` (string[]): Array of instruction HTML strings. Defaults to the
+  built-in `instruction_pages`
+- `texts` (object): Text object supplying `next_button` and `back_button`. Defaults to
+  the built-in `trial_text`
 
 **Returns:** A jsPsych instructions trial object with a page for each string.
+
+### timelineUnits.createCompletionTrial(jsPsych, texts)
+Creates the results screen shown at the end of a run. `createTimeline` appends this
+automatically unless `show_completion` is `false`.
+
+**Parameters:**
+- `jsPsych` (JsPsych): The instance whose data the screen scores
+- `texts` (object): Text object supplying `task_complete`, `result_summary` and
+  `continue_button`
+
+**Returns:** A jsPsych html-button-response trial object.
 
 ## Examples
 
 ### Basic 2-Back Task
 ```javascript
-const timeline = createTimeline({
+const timeline = createTimeline(jsPsych, {
   n_back: 2,
   total_trials: 30,
   target_percentage: 40,
@@ -234,7 +289,7 @@ const timeline = createTimeline({
 
 ### Research Protocol with Multiple Levels
 ```javascript
-const timeline = createMultiLevelNBackTimeline({
+const timeline = createMultiLevelNBackTimeline(jsPsych, {
   n_backs: [1, 2, 3],
   trials_per_level: 50,
   target_percentage: 40,
@@ -245,7 +300,7 @@ const timeline = createMultiLevelNBackTimeline({
 
 ### Version with Feedback
 ```javascript
-const timeline = createTimeline({
+const timeline = createTimeline(jsPsych, {
   n_back: 1,
   total_trials: 20,
   include_instructions: true,
@@ -256,7 +311,7 @@ const timeline = createTimeline({
 
 ### High Difficulty Configuration
 ```javascript
-const timeline = createTimeline({
+const timeline = createTimeline(jsPsych, {
   n_back: 3,
   rows: 4,
   cols: 4,
@@ -281,12 +336,12 @@ const experiment = [
   },
   
   // Practice trials
-  createPracticeTimeline({
+  createPracticeTimeline(jsPsych, {
     show_feedback_text: true
   }),
   
   // Main task
-  createTimeline({
+  createTimeline(jsPsych, {
     n_back: 2,
     total_trials: 100,
     target_percentage: 40
@@ -311,8 +366,8 @@ const jsPsych = initJsPsych({
     const nbackData = jsPsych.data.get().filter({task: 'spatial-nback'});
     
     // Calculate performance metrics
-    const accuracy = nbackData.filter({phase: 'trial'}).select('correct').mean();
-    const rt = nbackData.filter({phase: 'trial'}).select('rt').mean();
+    const accuracy = nbackData.filter({phase: 'test'}).select('correct').mean();
+    const rt = nbackData.filter({phase: 'test'}).select('response_time').mean();
     
     console.log(`Accuracy: ${accuracy}, Mean RT: ${rt}`);
     
@@ -327,9 +382,12 @@ const jsPsych = initJsPsych({
 ### Common Issues
 
 **Grid not displaying correctly:**
-- Verify CSS imports are included
 - Check container dimensions
 - Ensure cell_size parameter is appropriate
+
+The timeline's stylesheet is bundled into the script and injected when the module is
+imported, so there is no CSS file to link. All of its rules are scoped under
+`.jspsych-spatial-nback-container`, the class the timeline puts on its own trials.
 
 **Performance issues:**
 - Reduce grid size for better performance (can override auto-size using cell_size)
@@ -349,47 +407,6 @@ const jsPsych = initJsPsych({
 **Also known as:** A. Hunter Farhat  
 **ORCID:** [0009-0008-7042-469X](https://orcid.org/0009-0008-7042-469X)  
 **GitHub:** [@farhat60](https://github.com/farhat60)
-
-### How to Cite
-
-If you use this timeline in academic work, please cite it as:
-
-**APA Style:**
-```
-Farhat, A. H. (2024). @jspsych-timelines/spatial-nback: A deployable spatial grid n-back timeline for jsPsych (Version 0.0.2) [Software]. GitHub. https://github.com/jspsych/jspsych-timelines/tree/main/packages/spatial-nback
-```
-
-**BibTeX:**
-```bibtex
-@software{farhat2024spatial,
-  author = {Farhat, Abdullah Hunter},
-  title = {{@jspsych-timelines/spatial-nback: A deployable spatial grid n-back timeline for jsPsych}},
-  url = {https://github.com/jspsych/jspsych-timelines/tree/main/packages/spatial-nback},
-  version = {0.0.2},
-  year = {2024}
-}
-```
-
-**IEEE Style:**
-```
-A. H. Farhat, "@jspsych-timelines/spatial-nback: A deployable spatial grid n-back timeline for jsPsych," Version 0.0.2, GitHub, 2024. [Online]. Available: https://github.com/jspsych/jspsych-timelines/tree/main/packages/spatial-nback
-```
-
-### Why Citations Matter
-
-Citations help demonstrate that this software is used and valued by the research community, which:
-- Supports continued development and maintenance
-- Helps with funding applications and career advancement
-- Enables tracking of research impact
-- Builds a network of researchers using similar tools
-
-### Contributing
-
-If you use this timeline and find it helpful, please consider:
-- Citing it in your publications
-- Reporting bugs or suggesting improvements
-- Contributing code or documentation
-- Sharing your experience with the community
 
 ---
 

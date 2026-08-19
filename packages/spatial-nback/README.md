@@ -39,7 +39,7 @@ const jsPsych = initJsPsych({
 });
 
 // Create a basic 1-back task with instructions
-const timeline = createTimeline({
+const timeline = createTimeline(jsPsych, {
   n_back: 1,
   total_trials: 20,
   target_percentage: 40,
@@ -56,7 +56,7 @@ jsPsych.run(timeline);
 import { createPracticeTimeline } from '@jspsych-timelines/spatial-nback';
 
 // Short practice with feedback
-const practiceTimeline = createPracticeTimeline({
+const practiceTimeline = createPracticeTimeline(jsPsych, {
   n_back: 1,
   include_instructions: true
 });
@@ -70,17 +70,17 @@ jsPsych.run(practiceTimeline);
 import { presetConfigurations } from '@jspsych-timelines/spatial-nback';
 
 // Easy configuration (1-back, 20 trials, feedback enabled)
-const easyTask = presetConfigurations.easy();
+const easyTask = presetConfigurations.easy(jsPsych);
 
 // Research configuration (multi-level 1-3 back, 50 trials each)
-const researchTask = presetConfigurations.research();
+const researchTask = presetConfigurations.research(jsPsych);
 ```
 
 ## Documentation
 
 ### createTimeline
 
-#### createTimeline(options) ⇒ <code>timeline</code>
+#### createTimeline(jsPsych, options) ⇒ <code>timeline</code>
 Creates a spatial n-back timeline with the specified parameters.
 
 **Key Parameters:**
@@ -92,20 +92,38 @@ Creates a spatial n-back timeline with the specified parameters.
 | target_percentage | number | 40 | Percentage of trials that are targets |
 | rows | number | 3 | Grid rows |
 | cols | number | 3 | Grid columns |
+| stimulus_duration | number | 750 | How long the cell stays highlighted, in ms |
+| isi_duration | number | 500 | Blank interval after the stimulus, in ms |
+| feedback_duration | number | 0 | Extra time held for feedback, in ms |
+| show_feedback_text | boolean | false | Show correctness feedback |
+| show_feedback_border | boolean | false | Outline the grid in the feedback color |
+| cell_size | number \| null | null | Cell size in px; `null` uses a viewport-relative size |
+| prompt | function \| null | null | `(n_back, trial_number, total_trials) => string`; `null` uses `texts.prompt` |
+| buttons | string[] \| null | null | Response button labels; `null` uses `texts.button` |
+| stimulus_color | string | "#2196F3" | Highlight color |
+| correct_color | string | "#4CAF50" | Correct feedback color |
+| incorrect_color | string | "#F44336" | Incorrect feedback color |
 | include_instructions | boolean | false | Include instruction pages |
 | show_completion | boolean | true | Append the results screen |
-| show_feedback_text | boolean | false | Show correctness feedback |
+| instruction_texts | string[] | instruction_pages | Instruction page HTML |
+| texts | object | trial_text | Text object for prompts, buttons and the results screen |
 
 ### timelineUnits
 
-- **createPracticeTimeline(options)** - Creates a short practice version (6 trials, feedback enabled)
-- **createMultiLevelNBackTimeline(options)** - Creates timeline with multiple n-back levels
+- **createPracticeTimeline(jsPsych, options)** - Creates a short practice version (5 trials with feedback, plus a results screen)
+- **createMultiLevelNBackTimeline(jsPsych, options)** - Creates a timeline with multiple n-back levels and one results screen at the end
+- **createInstructions(instruction_pages, texts)** - Creates the instruction pages trial
+- **createCompletionTrial(jsPsych, texts)** - Creates the results screen
 
 ### utils
 
+- **scoring.calculateScores(data)** - Accuracy, hit and false-alarm rates, RTs and d' from a DataCollection
+- **scoring.getSummary(data)** - The same, plus task name and version
+- **constants** - `TASK_NAME` and `VERSION`
+- **text** - The default text object
 - **presetConfigurations** - Pre-configured timelines (easy, medium, hard, research)
-- **generateNBackSequence()** - Generate stimulus sequences
-- **createInstructions()** - Create instruction pages with optional TTS
+- **generateNBackSequence(total_trials, n_back, target_percentage, rows, cols)** - Generate stimulus sequences
+- **createGridHTML(options)** - Render a static grid as an HTML string
 
 ## Author / Citation
 
@@ -113,25 +131,3 @@ Creates a spatial n-back timeline with the specified parameters.
 **Also known as:** A. Hunter Farhat  
 **ORCID:** [0009-0008-7042-469X](https://orcid.org/0009-0008-7042-469X)  
 **GitHub:** [@farhat60](https://github.com/farhat60)
-
-### How to Cite
-
-If you use this timeline in academic work, please cite it as:
-
-**APA Style:**
-```
-Farhat, A. H. (2024). @jspsych-timelines/spatial-nback: A deployable spatial grid n-back timeline for jsPsych (Version 0.0.2) [Software]. GitHub. https://github.com/jspsych/jspsych-timelines/tree/main/packages/spatial-nback
-```
-
-**BibTeX:**
-```bibtex
-@software{farhat2024spatial,
-  author = {Farhat, Abdullah Hunter},
-  title = {{@jspsych-timelines/spatial-nback: A deployable spatial grid n-back timeline for jsPsych}},
-  url = {https://github.com/jspsych/jspsych-timelines/tree/main/packages/spatial-nback},
-  version = {0.0.2},
-  year = {2024}
-}
-```
-
-Citations help demonstrate that this software is used and valued, which supports continued development and maintenance.
