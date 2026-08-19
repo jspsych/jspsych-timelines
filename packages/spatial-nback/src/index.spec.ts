@@ -3,6 +3,7 @@ import { join } from "path";
 
 import { JsPsych, initJsPsych } from "jspsych";
 
+import { version } from "../package.json";
 import {
   createGridHTML,
   createMultiLevelNBackTimeline,
@@ -94,9 +95,8 @@ describe("createTimeline", () => {
 
   it("should include task_version in trial data", () => {
     const timeline = createTimeline(jsPsych, { total_trials: 3 });
-    // Exclude the last item (completion trial)
     timeline.timeline.slice(0, -1).forEach((trial) => {
-      expect(trial.data.task_version).toBe("0.3.0");
+      expect(trial.data.task_version).toBe(version);
     });
   });
 });
@@ -522,7 +522,7 @@ describe("utils.scoring", () => {
 describe("utils.constants", () => {
   it("should export task constants", () => {
     expect(utils.constants.TASK_NAME).toBe("spatial-nback");
-    expect(utils.constants.VERSION).toBeDefined();
+    expect(utils.constants.VERSION).toBe(version);
   });
 });
 

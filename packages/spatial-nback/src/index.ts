@@ -5,11 +5,12 @@ import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
 import jsPsychInstructions from "@jspsych/plugin-instructions";
 import { DataCollection, JsPsych } from "jspsych";
 
+import { version } from "../package.json";
 import { instruction_pages, trial_text } from "./text";
 
 // Constants
 const TASK_NAME = "spatial-nback";
-const VERSION = "0.3.0";
+const VERSION = version;
 
 function createInstructions(instruction_pages_data = instruction_pages, texts = trial_text) {
   return {
