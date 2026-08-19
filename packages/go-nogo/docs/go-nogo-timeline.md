@@ -164,7 +164,7 @@ const summary = scoring.getSummary(jsPsych.data.get());
 | `utils.createStimulusHTML(html, isGoTrial, height?)` | Wrap stimulus content in the standard container |
 | `utils.createTimelineVariables(...)` | Generate one block's shuffled trial list |
 | `utils.shapes` | `circle`, `octagon`, `square` |
-| `utils.trial_text` | Default text object |
+| `utils.text` | Default text object |
 | `utils.constants` | `TASK_NAME`, `VERSION` |
 
 TypeScript users can import the `TextConfig` and `ScoringResult` types.
@@ -214,7 +214,7 @@ TypeScript users can import the `TextConfig` and `ScoringResult` types.
 
 | Parameter | Type | Default | Description |
 | --- | --- | --- | --- |
-| `text` | Partial\<TextConfig\> | `{}` | Merged over `utils.trial_text` |
+| `text` | Partial\<TextConfig\> | `{}` | Merged over `utils.text` |
 
 Seven strings name the default shapes and are **not** derived from the stimulus options: `instructions_pages`, `goPageContent`, `goSuccess`, `goFailure`, `noGoPageContent`, `noGoSuccess`, `noGoFailure`. Override them alongside any stimulus change, or the practice screens will describe a shape the participant is not being shown.
 

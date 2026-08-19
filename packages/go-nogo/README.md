@@ -117,7 +117,7 @@ jsPsych.run([...practice, task]);
 | `utils.scoring.getSummary(data)` | Same, plus `taskName` and `version` |
 | `utils.createStimulusHTML(html, isGoTrial, height?)` | Wraps stimulus content in the standard container |
 | `utils.createTimelineVariables(jsPsych, block, nTrials, probability, goStimuli, nogoStimuli, height?)` | Generates one block's shuffled trial list |
-| `utils.trial_text` | The default text object |
+| `utils.text` | The default text object |
 | `utils.shapes` | The built-in `circle`, `octagon` and `square` stimuli |
 | `utils.constants` | `TASK_NAME` and `VERSION` |
 
@@ -168,7 +168,7 @@ All options are optional.
 
 | Parameter | Type | Default | Description |
 | --- | --- | --- | --- |
-| `text` | Partial\<TextConfig\> | `{}` | Overrides merged over `utils.trial_text` |
+| `text` | Partial\<TextConfig\> | `{}` | Overrides merged over `utils.text` |
 
 Every participant-facing string lives in the text object, so a different language needs only a `text` override:
 

@@ -455,7 +455,7 @@ describe("Go-NoGo Timeline", () => {
   describe("text configuration", () => {
     it("should render the debrief from task_complete and result_summary", () => {
       const debrief: any = timelineUnits.createDebrief(jsPsych, {
-        ...utils.trial_text,
+        ...utils.text,
         task_complete: "ALL DONE",
         result_summary: () => "<p>SUMMARY</p>",
       });
@@ -486,15 +486,15 @@ describe("Go-NoGo Timeline", () => {
       // because `instructions` had no default.
       const instructions = createInstructions() as any;
 
-      expect(instructions.pages).toHaveLength(utils.trial_text.instructions_pages.length);
-      expect(instructions.pages[0]).toContain(utils.trial_text.instructions_pages[0]);
+      expect(instructions.pages).toHaveLength(utils.text.instructions_pages.length);
+      expect(instructions.pages[0]).toContain(utils.text.instructions_pages[0]);
     });
 
     it("should default the button labels from the text config", () => {
       const instructions = createInstructions(["a"]) as any;
 
-      expect(instructions.button_label_previous).toBe(utils.trial_text.backButton);
-      expect(instructions.button_label_next).toBe(utils.trial_text.nextButton);
+      expect(instructions.button_label_previous).toBe(utils.text.backButton);
+      expect(instructions.button_label_next).toBe(utils.text.nextButton);
     });
 
     it("should still accept explicit pages and texts", () => {
@@ -530,7 +530,7 @@ describe("Go-NoGo Timeline", () => {
     it("should not also expose the shapes at the top level", async () => {
       const mod: any = await import(".");
 
-      // One name per thing, as with utils.trial_text.
+      // One name per thing, as with utils.text.
       for (const shape of ["circle", "octagon", "square"]) {
         expect(mod[shape]).toBeUndefined();
       }

@@ -1015,7 +1015,7 @@ export const utils = {
     getSummary,
   },
   createStimulusHTML,
-  trial_text,
+  text: trial_text,
   createTimelineVariables,
   constants: {
     TASK_NAME,
