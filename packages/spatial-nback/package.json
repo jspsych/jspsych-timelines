@@ -5,7 +5,7 @@
     "type": "module",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
-    "unpkg": "dist/index.global.js",
+    "unpkg": "dist/index.browser.js",
     "scripts": {
         "build": "tsup src/index.ts --format esm,iife,cjs --sourcemap --dts --treeshake --clean --global-name jsPsychTimelineSpatialNback --inject-style && node -e \"require('fs').renameSync('dist/index.global.js','dist/index.browser.js')\" && node -e \"require('fs').renameSync('dist/index.global.js.map','dist/index.browser.js.map')\"",
         "test": "jest",
@@ -27,7 +27,7 @@
     "bugs": {
         "url": "https://github.com/jspsych/jspsych-timelines/issues"
     },
-    "homepage": "https://github.com/jspsych/jspsych-timelines/packages/spatial-nback#readme",
+    "homepage": "https://github.com/jspsych/jspsych-timelines/tree/main/packages/spatial-nback#readme",
     "peerDependencies": {
         "jspsych": ">=8.0.0"
     },
@@ -40,7 +40,6 @@
     "dependencies": {
         "@jspsych-contrib/plugin-spatial-nback": "^1.1.0",
         "@jspsych/plugin-html-button-response": "^2.1.0",
-        "@jspsych/plugin-instructions": "^2.1.0",
-        "jsPsych": "npm:jspsych@^8.2.1"
+        "@jspsych/plugin-instructions": "^2.1.0"
     }
 }
