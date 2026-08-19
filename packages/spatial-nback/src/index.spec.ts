@@ -511,6 +511,93 @@ describe("utils.scoring", () => {
     expect(scores.dPrime).toBeGreaterThan(1); // Good performance = positive d'
   });
 
+  it("should report dPrime as null when there are no target trials", () => {
+    const dataCollection = jsPsych.data.get();
+    for (let i = 0; i < 4; i++) {
+      dataCollection.push({
+        task: "spatial-nback",
+        phase: "test",
+        correct: true,
+        is_target: false,
+        response_time: 400,
+      });
+    }
+
+    const scores = utils.scoring.calculateScores(dataCollection);
+
+    expect(scores.targetTrials).toBe(0);
+    expect(scores.dPrime).toBeNull();
+  });
+
+  it("should report dPrime as null when there are no non-target trials", () => {
+    const dataCollection = jsPsych.data.get();
+    for (let i = 0; i < 4; i++) {
+      dataCollection.push({
+        task: "spatial-nback",
+        phase: "test",
+        correct: true,
+        is_target: true,
+        response_time: 400,
+      });
+    }
+
+    const scores = utils.scoring.calculateScores(dataCollection);
+
+    expect(scores.nonTargetTrials).toBe(0);
+    expect(scores.dPrime).toBeNull();
+  });
+
+  it("should still report a genuine dPrime of 0 at chance performance", () => {
+    const dataCollection = jsPsych.data.get();
+    // hit rate 0.5 and false alarm rate 0.5: no discrimination, but measurable
+    for (let i = 0; i < 2; i++) {
+      dataCollection.push({ task: "spatial-nback", phase: "test", correct: true, is_target: true });
+      dataCollection.push({
+        task: "spatial-nback",
+        phase: "test",
+        correct: false,
+        is_target: true,
+      });
+      dataCollection.push({
+        task: "spatial-nback",
+        phase: "test",
+        correct: true,
+        is_target: false,
+      });
+      dataCollection.push({
+        task: "spatial-nback",
+        phase: "test",
+        correct: false,
+        is_target: false,
+      });
+    }
+
+    const scores = utils.scoring.calculateScores(dataCollection);
+
+    expect(scores.targetHitRate).toBe(0.5);
+    expect(scores.falseAlarmRate).toBe(0.5);
+    expect(scores.dPrime).toBe(0);
+  });
+
+  it("should omit the d-prime line from the results screen when it is null", () => {
+    const timeline = createTimeline(jsPsych, { total_trials: 1, target_percentage: 0 });
+    const dataCollection = jsPsych.data.get();
+    dataCollection.push({
+      task: "spatial-nback",
+      phase: "test",
+      correct: true,
+      is_target: false,
+      response_time: 400,
+    });
+
+    const completion: any = timeline.timeline[timeline.timeline.length - 1];
+    const html = completion.stimulus();
+
+    expect(html).toContain("Accuracy:");
+    expect(html).not.toContain("d&#39;");
+    expect(html).not.toContain("d':");
+  });
+
   it("should include task info in getSummary", () => {
     const summary = utils.scoring.getSummary(jsPsych.data.get());
 

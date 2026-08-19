@@ -438,6 +438,9 @@ const scoring = {
     const falseAlarmRate =
       nonTargetTrials.length > 0 ? falseAlarms.length / nonTargetTrials.length : 0;
 
+    // ensure d-prime is only calculated if both hit rate and false alarm rate are defined
+    const dPrimeIsDefined = targetTrials.length > 0 && nonTargetTrials.length > 0;
+
     // Apply corrections for extreme values (0 or 1) to allow z-score calculation
     const adjustedHitRate = Math.max(0.01, Math.min(0.99, hitRate));
     const adjustedFARate = Math.max(0.01, Math.min(0.99, falseAlarmRate));
@@ -445,7 +448,7 @@ const scoring = {
     // Z-score approximation using inverse normal
     const zHit = inverseNormalCDF(adjustedHitRate);
     const zFA = inverseNormalCDF(adjustedFARate);
-    const dPrime = zHit - zFA;
+    const dPrime = dPrimeIsDefined ? zHit - zFA : null;
 
     return {
       totalTrials: trials.length,
