@@ -121,6 +121,7 @@ const timelineWithCustomTexts = createTimeline({
 | **prompt** | string | "Click the MATCH button..." | Instructions template for each trial |
 | **buttons** | string[] | ["O", "X"] | Array of button text strings. First button is "match", second is "no match" |
 | **include_instructions** | boolean | false | Whether to include instruction pages at the start |
+| **show_completion** | boolean | true | Whether to append the results screen. Set false when this timeline is one block of a larger one |
 | **instruction_texts** | string[] | See text.ts | Custom instruction pages |
 | **texts** | object | trial_text | Custom text object containing prompt, buttons, and other text elements |
 
@@ -170,6 +171,10 @@ Creates a timeline with multiple n-back levels for progressive difficulty.
 - `trials_per_level` (number): Trials per level (default: 20)
 - `randomize_levels` (boolean): Randomize level order (default: false)
 - Additional parameters from createTimeline
+
+A single results screen is shown once, after every level. It pools all levels, so
+read per-level performance from the recorded `n_back` field rather than from the
+screen.
 
 **Returns:** A jsPsych timeline object
 

@@ -115,6 +115,7 @@ export function createTimeline(
     correct_color = "#4CAF50",
     incorrect_color = "#F44336",
     include_instructions = false,
+    show_completion = true,
     instruction_texts = instruction_pages,
     texts = trial_text,
   }: {
@@ -135,6 +136,7 @@ export function createTimeline(
     correct_color?: string;
     incorrect_color?: string;
     include_instructions?: boolean;
+    show_completion?: boolean;
     instruction_texts?: typeof instruction_pages;
     texts?: typeof trial_text;
   } = {}
@@ -198,20 +200,21 @@ export function createTimeline(
     timeline: trials,
   };
 
-  // Completion screen
-  const completionTrial = createCompletionTrial(jsPsych, texts);
+  // Completion screen. Suppressed when this timeline is one block of a larger
+  // one that reports its own results once at the end.
+  const completion = show_completion ? [createCompletionTrial(jsPsych, texts)] : [];
 
   // Return complete timeline with or without instructions
   if (include_instructions) {
     const instructions = createInstructions(instruction_texts, texts);
 
     const nested_timeline = {
-      timeline: [instructions, task_timeline, completionTrial],
+      timeline: [instructions, task_timeline, ...completion],
     };
     return nested_timeline;
   } else {
     return {
-      timeline: [...trials, completionTrial],
+      timeline: [...trials, ...completion],
     };
   }
 }
@@ -253,12 +256,21 @@ export function createMultiLevelNBackTimeline(
       n_back: level,
       total_trials: trials_per_level,
       include_instructions: false,
+      // would report a completion after each level if not for this
+      show_completion: false,
     });
   });
 
+  // randomize_order shuffles the children of the node it sits on, so the levels
+  // are nested one deeper to keep the results screen last.
   return {
-    timeline: level_timelines,
-    randomize_order: randomize_levels,
+    timeline: [
+      {
+        timeline: level_timelines,
+        randomize_order: randomize_levels,
+      },
+      createCompletionTrial(jsPsych, sharedOptions.texts ?? trial_text),
+    ],
   };
 }
 

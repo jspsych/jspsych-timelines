@@ -93,6 +93,7 @@ Creates a spatial n-back timeline with the specified parameters.
 | rows | number | 3 | Grid rows |
 | cols | number | 3 | Grid columns |
 | include_instructions | boolean | false | Include instruction pages |
+| show_completion | boolean | true | Append the results screen |
 | show_feedback_text | boolean | false | Show correctness feedback |
 
 ### timelineUnits

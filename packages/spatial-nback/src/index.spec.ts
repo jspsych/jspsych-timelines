@@ -48,6 +48,22 @@ describe("createTimeline", () => {
     });
   });
 
+  it("should omit the results screen when show_completion is false", () => {
+    const timeline = createTimeline(jsPsych, { total_trials: 4, show_completion: false });
+
+    expect(timeline.timeline).toHaveLength(4);
+    timeline.timeline.forEach((trial: any) => {
+      expect(trial.data.phase).toBe("test");
+    });
+  });
+
+  it("should include the results screen by default", () => {
+    const timeline = createTimeline(jsPsych, { total_trials: 4 });
+
+    expect(timeline.timeline).toHaveLength(5);
+    expect((timeline.timeline[4] as any).data.phase).toBe("completion");
+  });
+
   it("should include instructions when specified", () => {
     const timeline = createTimeline(jsPsych, { include_instructions: true });
     expect(timeline.timeline).toHaveLength(3);
@@ -122,10 +138,40 @@ describe("createMultiLevelNBackTimeline", () => {
       trials_per_level: 10,
     });
 
-    expect(timeline.timeline).toHaveLength(3);
-    expect(timeline.timeline[0].timeline).toHaveLength(11);
-    expect(timeline.timeline[1].timeline).toHaveLength(11);
-    expect(timeline.timeline[2].timeline).toHaveLength(11);
+    // levels block, then one results screen
+    expect(timeline.timeline).toHaveLength(2);
+
+    const levels = (timeline.timeline[0] as any).timeline;
+    expect(levels).toHaveLength(3);
+    levels.forEach((level: any) => {
+      expect(level.timeline).toHaveLength(10);
+    });
+  });
+
+  it("should show exactly one results screen, after every level", () => {
+    const timeline = createMultiLevelNBackTimeline(jsPsych, {
+      n_backs: [1, 2, 3],
+      trials_per_level: 4,
+    });
+
+    const flatten = (node: any): any[] => (node.timeline ? node.timeline.flatMap(flatten) : [node]);
+    const trials = flatten(timeline);
+    const completions = trials.filter((trial) => trial.data?.phase === "completion");
+
+    expect(completions).toHaveLength(1);
+    expect(trials[trials.length - 1]).toBe(completions[0]);
+  });
+
+  it("should not let randomize_order move the results screen", () => {
+    const timeline = createMultiLevelNBackTimeline(jsPsych, {
+      randomize_levels: true,
+    });
+
+    // randomize_order must sit on the node holding the levels, not on the node
+    // that also holds the results screen, or the screen can be shuffled inward
+    expect((timeline as any).randomize_order).toBeUndefined();
+    expect((timeline.timeline[0] as any).randomize_order).toBe(true);
+    expect((timeline.timeline[1] as any).data.phase).toBe("completion");
   });
 
   it("should set correct n_back for each level", () => {
@@ -134,8 +180,9 @@ describe("createMultiLevelNBackTimeline", () => {
       trials_per_level: 5,
     });
 
-    expect(timeline.timeline[0].timeline[0].data.n_back).toBe(1);
-    expect(timeline.timeline[1].timeline[0].data.n_back).toBe(3);
+    const levels = (timeline.timeline[0] as any).timeline;
+    expect(levels[0].timeline[0].data.n_back).toBe(1);
+    expect(levels[1].timeline[0].data.n_back).toBe(3);
   });
 
   it("should randomize levels when specified", () => {
@@ -143,7 +190,7 @@ describe("createMultiLevelNBackTimeline", () => {
       randomize_levels: true,
     });
 
-    expect(timeline.randomize_order).toBe(true);
+    expect((timeline.timeline[0] as any).randomize_order).toBe(true);
   });
 });
 
@@ -178,12 +225,15 @@ describe("presetConfigurations", () => {
 
   it("should create research preset with multi-level timeline", () => {
     const timeline = presetConfigurations.research(jsPsych);
-    expect(timeline.timeline).toHaveLength(3);
-    expect(timeline.randomize_order).toBe(true);
+    expect(timeline.timeline).toHaveLength(2);
 
-    // Check each level has 50 trials + 1 completion trial
-    timeline.timeline.forEach((levelTimeline) => {
-      expect(levelTimeline.timeline).toHaveLength(51);
+    const levels = (timeline.timeline[0] as any).timeline;
+    expect(levels).toHaveLength(3);
+    expect((timeline.timeline[0] as any).randomize_order).toBe(true);
+
+    // 50 trials per level, and no per-level results screen
+    levels.forEach((levelTimeline: any) => {
+      expect(levelTimeline.timeline).toHaveLength(50);
     });
   });
 });
