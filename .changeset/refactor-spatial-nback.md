@@ -1,5 +1,7 @@
 ---
-"@jspsych-timelines/spatial-nback": patch
+"@jspsych-timelines/spatial-nback": minor
 ---
 
-Refactored for cognitive battery consistency.
+Refactored for cognitive battery consistency. A results screen now ends each run, scoring accuracy, d' and mean hit RT from the participant's own data through the new `utils.scoring`; a multi-level run reports once at the end. `dPrime` is reported as `null` rather than `0` when there are no target or no non-target trials, since it is undefined without both. The stylesheet is bundled into the package and injected on import, so it no longer has to be linked by hand from `src/`. Every row records `task_version`, read from `package.json`. `unpkg` now points at the bundle the build emits, the 0.3.0 URL resolved to a file that is renamed away, and an unused aliased `jspsych` dependency is gone. 
+
+Breaking: n-back trials record `phase: "test"` instead of `phase: "trial"`, so analysis filtering on `{phase: 'trial'}` now matches nothing; `createTimeline` appends a results screen by default, changing the length of the returned timeline (pass `show_completion: false` to opt out); `prompt` is now a function `(n_back, trial_number, total_trials) => string` instead of a string with `{n_back}`, `{plural}`, `{trial}` and `{total}` placeholders; `createMultiLevelNBackTimeline` nests its levels one node deeper, with `randomize_order` on that inner node; and the emitted CSS classes are renamed with a `jspsych-spatial-nback-` prefix, replacing `.timeline-instructions`, `.continue-button`, `#timeline-btn-container` and `.nback-grid-instructions`, which matters if you linked the old `src/css/styles.css` yourself.
