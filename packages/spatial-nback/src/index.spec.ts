@@ -1,3 +1,6 @@
+import { readFileSync } from "fs";
+import { join } from "path";
+
 import { JsPsych, initJsPsych } from "jspsych";
 
 import {
@@ -520,5 +523,68 @@ describe("plugin data contract", () => {
     const scores = utils.scoring.calculateScores(jsPsych.data.get());
     expect(scores.meanRT).toBe(row.response_time);
     expect(scores.meanTargetRT).toBeNull(); // no target trials in this run
+  });
+});
+
+/* jsdom has no cascade for the injected stylesheet and no layout engine, so these assert against the 
+   stylesheet text that ships and against the class tokens the source emits, not computed styles. */
+describe("styles", () => {
+  const ROOT = "jspsych-spatial-nback-container";
+  const PREFIX = "jspsych-spatial-nback";
+
+  const css = readFileSync(join(__dirname, "styles.css"), "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
+
+  const selectors = [...css.matchAll(/([^{}]+)\{/g)]
+    .map((match) => match[1].trim())
+    .filter((selector) => selector.length > 0 && !selector.startsWith("@"))
+    .flatMap((selector) => selector.split(",").map((part) => part.trim()))
+    .filter((selector) => selector.length > 0);
+
+  const flatten = (node: any): any[] => (node.timeline ? node.timeline.flatMap(flatten) : [node]);
+
+  it("should define at least one rule", () => {
+    // guards the two tests below from passing on an empty parse
+    expect(selectors.length).toBeGreaterThan(5);
+  });
+
+  it("should scope every rule under the timeline root", () => {
+    const unscoped = selectors.filter((selector) => !selector.startsWith(`.${ROOT}`));
+    expect(unscoped).toEqual([]);
+  });
+
+  it("should not reach outside the timeline's own DOM", () => {
+    const escapes = selectors.filter((selector) =>
+      /(^|\s)(body|html|\*)(\s|$)|^\.(jspsych-content|jspsych-display-element)/.test(selector)
+    );
+    expect(escapes).toEqual([]);
+  });
+
+  it("should prefix every class the source emits", () => {
+    const sources = ["index.ts", "text.ts"].map((file) =>
+      readFileSync(join(__dirname, file), "utf8")
+    );
+    const emitted = sources.flatMap((source) => [
+      ...[...source.matchAll(/class=["']([^"']+)["']/g)].flatMap((m) => m[1].split(/\s+/)),
+      ...[...source.matchAll(/classList\.add\(["']([^"']+)["']\)/g)].map((m) => m[1]),
+    ]);
+
+    expect(emitted.length).toBeGreaterThan(0);
+    emitted.forEach((token) => {
+      expect(token.startsWith(PREFIX)).toBe(true);
+    });
+  });
+
+  it("should put the scoping root on every trial the timeline produces", () => {
+    const jsPsych = initJsPsych();
+    const timeline = createTimeline(jsPsych, {
+      total_trials: 2,
+      include_instructions: true,
+    });
+
+    const trials = flatten(timeline);
+    expect(trials.length).toBe(4); // instructions, 2 trials, results screen
+    trials.forEach((trial) => {
+      expect(trial.css_classes).toContain(ROOT);
+    });
   });
 });

@@ -15,7 +15,7 @@ function createInstructions(instruction_pages_data = instruction_pages, texts = 
   return {
     type: jsPsychInstructions,
     pages: instruction_pages_data.map(
-      (page) => `<div class="timeline-instructions"><p>${page}</p></div>`
+      (page) => `<div class="jspsych-spatial-nback-instructions"><p>${page}</p></div>`
     ),
     show_clickable_nav: true,
     allow_keys: true,
@@ -174,14 +174,12 @@ export function createTimeline(
       correct_color: correct_color,
       incorrect_color: incorrect_color,
       on_load: function () {
-        // Automatically set CSS variable for button count, should add this to plugin later maybe
-        document.getElementById("nback-grid-container")?.classList.add("timeline-trial");
-
-        const buttonContainer = document.getElementById("nback-buttons-container");
-        buttonContainer.classList.add("timeline-btn-container");
-        if (buttonContainer) {
-          buttonContainer.style.setProperty("--button-count", effective_buttons.length.toString());
-        }
+        document
+          .getElementById("nback-grid-container")
+          ?.classList.add("jspsych-spatial-nback-trial");
+        document
+          .getElementById("nback-buttons-container")
+          ?.classList.add("jspsych-spatial-nback-buttons");
       },
       data: {
         task: TASK_NAME,
@@ -549,6 +547,7 @@ function createCompletionTrial(jsPsych: JsPsych, texts = trial_text) {
       task_version: VERSION,
       phase: "completion",
     },
+    css_classes: ["jspsych-spatial-nback-container"],
   };
 }
 
