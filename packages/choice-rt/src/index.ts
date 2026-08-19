@@ -1,7 +1,9 @@
 import "./styles.css";
-import { JsPsych, DataCollection } from "jspsych";
+
 import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
-import { defaultText, TextConfig } from "./text";
+import { DataCollection, JsPsych } from "jspsych";
+
+import { TextConfig, defaultText } from "./text";
 
 // -- TYPES --
 
@@ -130,10 +132,7 @@ function generateForeperiod(min: number, max: number): number {
  */
 function generateStimulusSequence(numTrials: number): Array<1 | 2> {
   const half = Math.floor(numTrials / 2);
-  const sequence: Array<1 | 2> = [
-    ...Array(half).fill(1),
-    ...Array(numTrials - half).fill(2),
-  ];
+  const sequence: Array<1 | 2> = [...Array(half).fill(1), ...Array(numTrials - half).fill(2)];
   // Shuffle
   for (let i = sequence.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -181,10 +180,7 @@ function calculateStd(values: number[]): number | null {
 /**
  * Creates instruction trials.
  */
-function createInstructionTrials(
-  config: ResolvedConfig,
-  part: "intro" | "task" | "practice"
-) {
+function createInstructionTrials(config: ResolvedConfig, part: "intro" | "task" | "practice") {
   let stimulus: string;
   let buttonLabel: string;
 
@@ -411,22 +407,16 @@ function calculateScores(data: DataCollection): ScoringResult {
   }
 
   // Correct trials: correct and not anticipated
-  const correctTrials = responseTrials.filter(
-    (t) => t.correct && t.rt !== null && !t.anticipated
-  );
+  const correctTrials = responseTrials.filter((t) => t.correct && t.rt !== null && !t.anticipated);
   const correctRTs = correctTrials.map((t) => t.rt as number);
 
   const meanRT =
-    correctRTs.length > 0
-      ? correctRTs.reduce((a, b) => a + b, 0) / correctRTs.length
-      : null;
+    correctRTs.length > 0 ? correctRTs.reduce((a, b) => a + b, 0) / correctRTs.length : null;
   const rtStd = calculateStd(correctRTs);
 
   // Accuracy: percentage of correct responses
   const accuracy =
-    responseTrials.length > 0
-      ? (correctTrials.length / responseTrials.length) * 100
-      : 0;
+    responseTrials.length > 0 ? (correctTrials.length / responseTrials.length) * 100 : 0;
 
   // Incorrect, anticipated, and timeout counts
   const incorrectTrials = responseTrials.filter(
@@ -450,15 +440,74 @@ function calculateScores(data: DataCollection): ScoringResult {
 /**
  * Returns a summary of the Choice RT task performance.
  */
-function getSummary(
-  data: DataCollection
-): ScoringResult & { taskName: string; version: string } {
+function getSummary(data: DataCollection): ScoringResult & { taskName: string; version: string } {
   const scores = calculateScores(data);
   return {
     ...scores,
     taskName: TASK_NAME,
     version: VERSION,
   };
+}
+
+// -- VALIDATION --
+
+/**
+ * Rejects configurations that would silently produce a degenerate dataset,
+ * failing loudly at construction rather than at analysis.
+ */
+function validateConfig(config: ResolvedConfig): void {
+  const requireInt = (name: string, value: number, min: number) => {
+    if (!Number.isInteger(value) || value < min) {
+      throw new Error(`[choice-rt] ${name} must be an integer >= ${min}, got ${value}`);
+    }
+  };
+
+  const requireDuration = (name: string, value: number) => {
+    if (!Number.isFinite(value) || value < 0) {
+      throw new Error(
+        `[choice-rt] ${name} must be a non-negative number of milliseconds, got ${value}`
+      );
+    }
+  };
+
+  requireInt("numTrials", config.numTrials, 1);
+
+  requireDuration("foreperiodMin", config.foreperiodMin);
+  requireDuration("foreperiodMax", config.foreperiodMax);
+  requireDuration("iti", config.iti);
+  requireDuration("minValidRT", config.minValidRT);
+
+  if (config.foreperiodMax < config.foreperiodMin) {
+    throw new Error(
+      `[choice-rt] foreperiodMax (${config.foreperiodMax}) must be >= foreperiodMin ` +
+        `(${config.foreperiodMin}); as given, the foreperiod range is inverted`
+    );
+  }
+
+  if (!Number.isFinite(config.responseTimeout) || config.responseTimeout <= 0) {
+    throw new Error(
+      `[choice-rt] responseTimeout must be a positive number of milliseconds, ` +
+        `got ${config.responseTimeout}`
+    );
+  }
+
+  if (config.minValidRT >= config.responseTimeout) {
+    throw new Error(
+      `[choice-rt] minValidRT (${config.minValidRT}) must be < responseTimeout ` +
+        `(${config.responseTimeout}); every response would be counted as anticipated`
+    );
+  }
+
+  if (!Number.isFinite(config.stimulusSize) || config.stimulusSize <= 0) {
+    throw new Error(
+      `[choice-rt] stimulusSize must be a positive number of pixels, got ${config.stimulusSize}`
+    );
+  }
+
+  if (config.showPractice) {
+    requireInt("numPracticeTrials", config.numPracticeTrials, 1);
+    requireDuration("feedbackDuration", config.feedbackDuration);
+  }
 }
 
 // -- MAIN EXPORT --
@@ -480,10 +529,7 @@ function getSummary(
  * jsPsych.run([choiceRTTimeline]);
  * ```
  */
-export function createTimeline(
-  jsPsych: JsPsych,
-  options: ChoiceRTOptions = {}
-) {
+export function createTimeline(jsPsych: JsPsych, options: ChoiceRTOptions = {}) {
   // Merge text with defaults
   const text: TextConfig = { ...defaultText, ...options.text };
 
@@ -492,6 +538,8 @@ export function createTimeline(
     ...options,
     text,
   };
+
+  validateConfig(config);
 
   const timeline: any[] = [];
 

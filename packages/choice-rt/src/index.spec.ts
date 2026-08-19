@@ -1,6 +1,7 @@
-import { initJsPsych } from "jspsych";
 import { startTimeline } from "@jspsych/test-utils";
-import { createTimeline, utils, timelineUnits } from "./index";
+import { initJsPsych } from "jspsych";
+
+import { createTimeline, timelineUnits, utils } from "./index";
 
 jest.useFakeTimers();
 
@@ -24,18 +25,100 @@ describe("Choice RT Timeline", () => {
       const jsPsych = initJsPsych();
       const withInstructions = createTimeline(jsPsych, { showInstructions: true });
       const withoutInstructions = createTimeline(jsPsych, { showInstructions: false });
-      expect(withoutInstructions.timeline.length).toBeLessThan(
-        withInstructions.timeline.length
-      );
+      expect(withoutInstructions.timeline.length).toBeLessThan(withInstructions.timeline.length);
     });
 
     it("should skip practice when showPractice is false", () => {
       const jsPsych = initJsPsych();
       const withPractice = createTimeline(jsPsych, { showPractice: true });
       const withoutPractice = createTimeline(jsPsych, { showPractice: false });
-      expect(withoutPractice.timeline.length).toBeLessThan(
-        withPractice.timeline.length
+      expect(withoutPractice.timeline.length).toBeLessThan(withPractice.timeline.length);
+    });
+  });
+
+  describe("validation", () => {
+    it("should accept the default configuration", () => {
+      const jsPsych = initJsPsych();
+      expect(() => createTimeline(jsPsych)).not.toThrow();
+    });
+
+    it.each([0, -1, 2.5, NaN])("should reject numTrials of %p", (numTrials) => {
+      const jsPsych = initJsPsych();
+      expect(() => createTimeline(jsPsych, { numTrials })).toThrow(
+        /\[choice-rt\] numTrials must be an integer >= 1/
       );
+    });
+
+    it("should reject an inverted foreperiod range", () => {
+      const jsPsych = initJsPsych();
+      expect(() => createTimeline(jsPsych, { foreperiodMin: 1500, foreperiodMax: 500 })).toThrow(
+        /foreperiodMax \(500\) must be >= foreperiodMin \(1500\)/
+      );
+    });
+
+    it("should accept a foreperiod range with equal bounds", () => {
+      const jsPsych = initJsPsych();
+      expect(() =>
+        createTimeline(jsPsych, { foreperiodMin: 800, foreperiodMax: 800 })
+      ).not.toThrow();
+    });
+
+    it.each([
+      ["foreperiodMin", { foreperiodMin: -200 }],
+      ["foreperiodMax", { foreperiodMax: -1 }],
+      ["iti", { iti: -500 }],
+      ["minValidRT", { minValidRT: -1 }],
+    ])("should reject a negative %s", (name, options) => {
+      const jsPsych = initJsPsych();
+      expect(() => createTimeline(jsPsych, options)).toThrow(
+        new RegExp(`\\[choice-rt\\] ${name} must be a non-negative number of milliseconds`)
+      );
+    });
+
+    it.each([0, -100, Infinity])("should reject a responseTimeout of %p", (responseTimeout) => {
+      const jsPsych = initJsPsych();
+      expect(() => createTimeline(jsPsych, { responseTimeout })).toThrow(
+        /responseTimeout must be a positive number of milliseconds/
+      );
+    });
+
+    it("should reject minValidRT at or above responseTimeout", () => {
+      const jsPsych = initJsPsych();
+      expect(() => createTimeline(jsPsych, { minValidRT: 1500, responseTimeout: 1500 })).toThrow(
+        /every response would be counted as anticipated/
+      );
+    });
+
+    it.each([0, -60])("should reject a stimulusSize of %p", (stimulusSize) => {
+      const jsPsych = initJsPsych();
+      expect(() => createTimeline(jsPsych, { stimulusSize })).toThrow(
+        /stimulusSize must be a positive number of pixels/
+      );
+    });
+
+    it("should reject numPracticeTrials below 1 when practice is shown", () => {
+      const jsPsych = initJsPsych();
+      expect(() => createTimeline(jsPsych, { showPractice: true, numPracticeTrials: 0 })).toThrow(
+        /\[choice-rt\] numPracticeTrials must be an integer >= 1/
+      );
+    });
+
+    it("should reject a negative feedbackDuration when practice is shown", () => {
+      const jsPsych = initJsPsych();
+      expect(() => createTimeline(jsPsych, { showPractice: true, feedbackDuration: -1 })).toThrow(
+        /\[choice-rt\] feedbackDuration must be a non-negative number/
+      );
+    });
+
+    it("should ignore practice parameters when practice is not shown", () => {
+      const jsPsych = initJsPsych();
+      expect(() =>
+        createTimeline(jsPsych, {
+          showPractice: false,
+          numPracticeTrials: 0,
+          feedbackDuration: -1,
+        })
+      ).not.toThrow();
     });
   });
 
