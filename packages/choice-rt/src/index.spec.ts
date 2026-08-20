@@ -41,13 +41,17 @@ describe("Choice RT Timeline", () => {
     // jsPsych's result processing, which is where reserved keys get overwritten
     const runTask = async (options = {}) => {
       const jsPsych = initJsPsych();
+      // the whole node, not node.timeline: the timeline-level `data` that
+      // stamps task_version onto every row lives on the node itself
       const { getData } = await simulateTimeline(
-        createTimeline(jsPsych, {
-          numTrials: 4,
-          numPracticeTrials: 2,
-          showInstructions: false,
-          ...options,
-        }).timeline,
+        [
+          createTimeline(jsPsych, {
+            numTrials: 4,
+            numPracticeTrials: 2,
+            showInstructions: false,
+            ...options,
+          }),
+        ],
         "data-only",
         {},
         jsPsych
@@ -85,6 +89,47 @@ describe("Choice RT Timeline", () => {
       // two must not be the same field
       expect(test.map((r: any) => r.trial_index)).not.toEqual([1, 2, 3, 4]);
       expect(test.every((r: any) => r.trial_index > r.trial_number)).toBe(true);
+    });
+
+    it("should stamp task and task_version on every row", async () => {
+      const data = await runTask({ showInstructions: true });
+      const rows = data.values();
+
+      expect(rows.length).toBeGreaterThan(0);
+      for (const row of rows) {
+        expect((row as any).task).toBe("choice-rt");
+        expect((row as any).task_version).toBe(utils.constants.VERSION);
+      }
+    });
+
+    it("should label every row with a phase and a part", async () => {
+      const data = await runTask({ showInstructions: true });
+
+      for (const row of data.values()) {
+        expect(typeof (row as any).phase).toBe("string");
+        expect(typeof (row as any).part).toBe("string");
+      }
+    });
+
+    it("should emit the documented phase and part values", async () => {
+      const data = await runTask({ showInstructions: true });
+      const kinds = new Set(data.values().map((r: any) => `${r.phase}/${r.part}`));
+
+      expect(kinds).toEqual(
+        new Set([
+          "instructions/instruction",
+          "practice/instruction",
+          "practice/foreperiod",
+          "practice/response",
+          "practice/feedback",
+          "practice/iti",
+          "test/instruction",
+          "test/foreperiod",
+          "test/response",
+          "test/iti",
+          "completion/results",
+        ])
+      );
     });
 
     it("should record the foreperiod on every response row", async () => {

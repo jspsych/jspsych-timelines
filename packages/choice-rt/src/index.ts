@@ -206,6 +206,7 @@ function createInstructionTrials(config: ResolvedConfig, part: "intro" | "task" 
   switch (part) {
     case "intro":
       data.phase = "instructions";
+      data.part = "instruction";
       break;
     case "practice":
       data.phase = "practice";
@@ -269,7 +270,6 @@ function createChoiceRTTrial(
     // `stimulus`, and jsPsych writes `trial_index`, both after `data` is spread.
     data: {
       task: TASK_NAME,
-      task_version: VERSION,
       phase: isPractice ? "practice" : "test",
       part: "response",
       trial_number: trialIndex,
@@ -379,8 +379,8 @@ function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
     choices: [config.text.continue_button],
     data: {
       task: TASK_NAME,
-      task_version: VERSION,
       phase: "completion",
+      part: "results",
     },
   };
 }
@@ -567,7 +567,9 @@ export function createTimeline(jsPsych: JsPsych, options: ChoiceRTOptions = {}) 
   // Completion screen
   timeline.push(createCompletionTrial(jsPsych, config));
 
-  return { timeline };
+  // parent data is merged into every descendant row, so the version is stamped
+  // once here rather than repeated on each trial
+  return { timeline, data: { task: TASK_NAME, task_version: VERSION } };
 }
 
 /**
