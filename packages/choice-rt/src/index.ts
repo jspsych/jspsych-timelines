@@ -128,11 +128,14 @@ function generateForeperiod(min: number, max: number): number {
 }
 
 /**
- * Generates balanced trial sequence for choice RT.
+ * Generates balanced trial sequence for choice RT. An odd trial count cannot be
+ * split evenly, so the extra trial goes to a color chosen at random rather than
+ * always to color 2.
  */
 function generateStimulusSequence(numTrials: number): Array<1 | 2> {
   const half = Math.floor(numTrials / 2);
-  const sequence: Array<1 | 2> = [...Array(half).fill(1), ...Array(numTrials - half).fill(2)];
+  const count1 = numTrials % 2 === 0 || Math.random() < 0.5 ? half : half + 1;
+  const sequence: Array<1 | 2> = [...Array(count1).fill(1), ...Array(numTrials - count1).fill(2)];
   // Shuffle
   for (let i = sequence.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));

@@ -438,6 +438,52 @@ describe("Choice RT Timeline", () => {
       expect(count2).toBe(10);
     });
 
+    it("should stay within one trial of balanced for any count", () => {
+      for (const n of [1, 2, 3, 5, 8, 9, 20, 21]) {
+        const sequence = timelineUnits.generateStimulusSequence(n);
+        const count1 = sequence.filter((s) => s === 1).length;
+        const count2 = sequence.filter((s) => s === 2).length;
+
+        expect(sequence).toHaveLength(n);
+        expect(count1 + count2).toBe(n);
+        expect(Math.abs(count1 - count2)).toBeLessThanOrEqual(1);
+      }
+    });
+
+    it("should give the extra trial of an odd count to either color", () => {
+      const counts = new Set<number>();
+      for (let i = 0; i < 200; i++) {
+        counts.add(timelineUnits.generateStimulusSequence(5).filter((s) => s === 1).length);
+      }
+
+      // the remainder always going to color 2 would make this {2}
+      expect(counts).toEqual(new Set([2, 3]));
+    });
+
+    it("should not favor one color across many single-trial sequences", () => {
+      const drawn = new Set<number>();
+      for (let i = 0; i < 200; i++) {
+        drawn.add(timelineUnits.generateStimulusSequence(1)[0]);
+      }
+
+      expect(drawn).toEqual(new Set([1, 2]));
+    });
+
+    it("should be reproducible under a seeded Math.random", () => {
+      const jsPsych = initJsPsych();
+      const realRandom = Math.random;
+      try {
+        jsPsych.randomization.setSeed("choice-rt-seed");
+        const first = timelineUnits.generateStimulusSequence(9).join(",");
+        jsPsych.randomization.setSeed("choice-rt-seed");
+        const second = timelineUnits.generateStimulusSequence(9).join(",");
+
+        expect(second).toBe(first);
+      } finally {
+        Math.random = realRandom;
+      }
+    });
+
     it("should shuffle the sequence", () => {
       const results: string[] = [];
       for (let i = 0; i < 10; i++) {
