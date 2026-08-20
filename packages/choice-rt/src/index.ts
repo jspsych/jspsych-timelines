@@ -28,9 +28,9 @@ export interface ChoiceRTOptions {
   numPracticeTrials?: number;
   /** Feedback duration during practice in ms (default: 1000) */
   feedbackDuration?: number;
-  /** Stimulus color 1 - mapped to button 1 (default: "#4A90D9" - blue) */
+  /** Stimulus color 1 (mapped to button 1; change text.button_1 to match (default: "#4A90D9" - blue)) */
   stimulusColor1?: string;
-  /** Stimulus color 2 - mapped to button 2 (default: "#E8913A" - orange) */
+  /** Stimulus color 2 (mapped to button 2; change text.button_2 to match (default: "#E8913A" - orange)) */
   stimulusColor2?: string;
   /** Stimulus size in pixels (default: 60) */
   stimulusSize?: number;
@@ -192,7 +192,12 @@ function createInstructionTrials(config: ResolvedConfig, part: "intro" | "task" 
 
   switch (part) {
     case "intro":
-      stimulus = config.text.instruction_intro;
+      stimulus = config.text.instruction_intro(
+        config.stimulusColor1,
+        config.stimulusColor2,
+        config.text.button_1,
+        config.text.button_2
+      );
       buttonLabel = config.text.continue_button;
       break;
     case "task":

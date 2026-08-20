@@ -11,8 +11,11 @@ export interface TextConfig {
   button_1: string;
   /** Button 2 label (corresponds to stimulus color 2) */
   button_2: string;
-  /** Introduction instruction */
-  instruction_intro: string;
+  /**
+   * Introduction instruction, as a function of the stimulus colors and the
+   * button labels
+   */
+  instruction_intro: (color1: string, color2: string, label1: string, label2: string) => string;
   /** Task instruction */
   instruction_task: string;
   /** Practice instruction */
@@ -37,14 +40,14 @@ export const defaultText: TextConfig = {
   button_1: "BLUE",
   button_2: "ORANGE",
 
-  instruction_intro: `
+  instruction_intro: (color1, color2, label1, label2) => `
     <div class="jspsych-choice-rt-instructions">
       <h2>Choice Reaction Time</h2>
       <p>In this task, you will see colored circles appear on the screen.</p>
       <p>Your job is to press the button that matches the color of the circle as quickly as possible.</p>
       <ul>
-        <li>When you see a <strong style="color: #4A90D9;">BLUE</strong> circle, press the <strong>BLUE</strong> button.</li>
-        <li>When you see an <strong style="color: #E8913A;">ORANGE</strong> circle, press the <strong>ORANGE</strong> button.</li>
+        <li>When the circle is <strong style="color: ${color1};">${label1}</strong>, press the <strong>${label1}</strong> button.</li>
+        <li>When the circle is <strong style="color: ${color2};">${label2}</strong>, press the <strong>${label2}</strong> button.</li>
       </ul>
       <p>Try to respond as fast and accurately as you can!</p>
     </div>

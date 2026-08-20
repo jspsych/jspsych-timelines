@@ -525,7 +525,7 @@ describe("Choice RT Timeline", () => {
         createTimeline(jsPsych, {
           showInstructions: true,
           text: {
-            instruction_intro: "<p>Custom intro text</p>",
+            instruction_intro: () => "<p>Custom intro text</p>",
             continue_button: "Next",
           },
         }).timeline
@@ -544,6 +544,77 @@ describe("Choice RT Timeline", () => {
       });
 
       expect(timeline.timeline).toBeDefined();
+    });
+  });
+
+  describe("instruction text", () => {
+    const introOf = async (options: any) => {
+      const jsPsych = initJsPsych();
+      const { displayElement } = await startTimeline(
+        createTimeline(jsPsych, { showInstructions: true, ...options }).timeline
+      );
+      return displayElement.innerHTML;
+    };
+
+    it("should show the configured colors and button labels", async () => {
+      const html = await introOf({
+        stimulusColor1: "#00FF00",
+        stimulusColor2: "#FF0000",
+        text: { button_1: "GREEN", button_2: "RED" },
+      });
+
+      expect(html).toContain("#00FF00");
+      expect(html).toContain("#FF0000");
+      expect(html).toContain("GREEN");
+      expect(html).toContain("RED");
+    });
+
+    it("should not fall back to the default colors or labels", async () => {
+      const html = await introOf({
+        stimulusColor1: "#00FF00",
+        stimulusColor2: "#FF0000",
+        text: { button_1: "GREEN", button_2: "RED" },
+      });
+
+      for (const stale of ["#4A90D9", "#E8913A", "BLUE", "ORANGE"]) {
+        expect(html).not.toContain(stale);
+      }
+    });
+
+    it("should pair each color with its own button label", async () => {
+      const html = await introOf({
+        stimulusColor1: "#00FF00",
+        stimulusColor2: "#FF0000",
+        text: { button_1: "GREEN", button_2: "RED" },
+      });
+      const items = html.match(/<li>[\s\S]*?<\/li>/g) ?? [];
+
+      // color 1 maps to button 1: a swap here tells the participant to press
+      // the wrong button and nothing else in the run contradicts it
+      expect(items).toHaveLength(2);
+      expect(items.find((item) => item.includes("#00FF00"))).toContain("GREEN");
+      expect(items.find((item) => item.includes("#FF0000"))).toContain("RED");
+    });
+
+    it("should describe the stimulus the participant will actually see", async () => {
+      const jsPsych = initJsPsych();
+      const options = {
+        stimulusColor1: "#123456",
+        stimulusColor2: "#654321",
+        text: { button_1: "ONE", button_2: "TWO" },
+      };
+      const intro = await introOf(options);
+      const stimulus = timelineUnits.createStimulusHTML("#123456", 60);
+
+      // the color named in the instructions is the color the trial renders
+      expect(intro).toContain("#123456");
+      expect(stimulus).toContain("background-color: #123456");
+    });
+
+    it("should let a translator ignore the arguments entirely", () => {
+      expect(utils.text.instruction_intro("#000", "#fff", "A", "B")).toContain("A");
+      const translated: any = () => "<p>Appuyez sur le bouton</p>";
+      expect(translated("#000", "#fff", "A", "B")).toBe("<p>Appuyez sur le bouton</p>");
     });
   });
 
@@ -613,7 +684,7 @@ describe("Choice RT Timeline", () => {
       expect(utils.text.start_button).toBeDefined();
       expect(utils.text.button_1).toBeDefined();
       expect(utils.text.button_2).toBeDefined();
-      expect(utils.text.instruction_intro).toBeDefined();
+      expect(typeof utils.text.instruction_intro).toBe("function");
       expect(utils.text.instruction_task).toBeDefined();
       expect(utils.text.instruction_practice).toBeDefined();
       expect(utils.text.feedback_correct).toBeDefined();
