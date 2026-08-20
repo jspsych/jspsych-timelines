@@ -38,7 +38,7 @@ export const defaultText: TextConfig = {
   button_2: "ORANGE",
 
   instruction_intro: `
-    <div class="instructions">
+    <div class="jspsych-choice-rt-instructions">
       <h2>Choice Reaction Time</h2>
       <p>In this task, you will see colored circles appear on the screen.</p>
       <p>Your job is to press the button that matches the color of the circle as quickly as possible.</p>
@@ -51,7 +51,7 @@ export const defaultText: TextConfig = {
   `,
 
   instruction_task: `
-    <div class="instructions">
+    <div class="jspsych-choice-rt-instructions">
       <h3>Get Ready</h3>
       <p>Press the button that matches the color of each circle.</p>
       <p>Respond as quickly and accurately as possible!</p>
@@ -59,7 +59,7 @@ export const defaultText: TextConfig = {
   `,
 
   instruction_practice: `
-    <div class="instructions">
+    <div class="jspsych-choice-rt-instructions">
       <h3>Practice</h3>
       <p>Let's try a few practice trials. You will receive feedback.</p>
     </div>
@@ -73,7 +73,7 @@ export const defaultText: TextConfig = {
   task_complete: "Task Complete",
 
   result_summary: (meanRT: number | null, accuracy: number | null) => `
-    <div class="instructions">
+    <div class="jspsych-choice-rt-instructions">
       <h3>Your Results</h3>
       ${
         meanRT !== null

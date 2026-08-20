@@ -1,3 +1,6 @@
+import { readFileSync } from "fs";
+import { join } from "path";
+
 import { simulateTimeline, startTimeline } from "@jspsych/test-utils";
 import { initJsPsych } from "jspsych";
 
@@ -653,6 +656,91 @@ describe("Choice RT Timeline", () => {
       };
       const block = timelineUnits.createTrialBlock(jsPsych, config, 10, false);
       expect(block.timeline.length).toBe(10);
+    });
+  });
+});
+
+/* jsdom has no cascade for the injected stylesheet and no layout engine, so these
+   assert against the stylesheet text that ships and against the class tokens the
+   source emits, not computed styles. */
+describe("styles", () => {
+  const ROOT = "jspsych-choice-rt";
+
+  const css = readFileSync(join(__dirname, "styles.css"), "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
+
+  const selectors = [...css.matchAll(/([^{}]+)\{/g)]
+    .map((match) => match[1].trim())
+    .filter((selector) => selector.length > 0 && !selector.startsWith("@"))
+    .flatMap((selector) => selector.split(",").map((part) => part.trim()))
+    .filter((selector) => selector.length > 0);
+
+  const flatten = (node: any): any[] => (node.timeline ? node.timeline.flatMap(flatten) : [node]);
+
+  it("should define at least one rule", () => {
+    // guards the tests below from passing on an empty parse
+    expect(selectors.length).toBeGreaterThan(5);
+  });
+
+  it("should scope every rule under the timeline root", () => {
+    const unscoped = selectors.filter((selector) => !selector.startsWith(`.${ROOT}`));
+    expect(unscoped).toEqual([]);
+  });
+
+  it("should not reach outside the timeline's own DOM", () => {
+    const escapes = selectors.filter((selector) =>
+      // element selectors are fine as descendants of the root, which the test
+      // above already requires; these are the tokens that escape it entirely
+      /(^|\s)(body|html|\*)(\s|$)|\.(jspsych-content|jspsych-display-element)\b/.test(selector)
+    );
+    expect(escapes).toEqual([]);
+  });
+
+  it("should prefix every class the source emits", () => {
+    const sources = ["index.ts", "text.ts"].map((file) =>
+      readFileSync(join(__dirname, file), "utf8")
+    );
+    const emitted = sources.flatMap((source) =>
+      [...source.matchAll(/class=["']([^"']+)["']/g)].flatMap((m) => m[1].split(/\s+/))
+    );
+
+    expect(emitted.length).toBeGreaterThan(0);
+    emitted.forEach((token) => {
+      // jspsych-btn is the plugin's own class, re-emitted so its styling applies
+      expect(token === "jspsych-btn" || token.startsWith(ROOT)).toBe(true);
+    });
+  });
+
+  it("should put the scoping root on every trial the timeline produces", () => {
+    const jsPsych = initJsPsych();
+    const trials = flatten(
+      createTimeline(jsPsych, { numTrials: 2, numPracticeTrials: 1, showInstructions: true })
+    );
+
+    // 3 instruction screens, 1 practice trial (4 screens), 2 test trials
+    // (3 screens each), 1 completion screen
+    expect(trials.length).toBe(14);
+    trials.forEach((trial) => {
+      expect(trial.css_classes).toContain(ROOT);
+    });
+  });
+
+  it("should render the same button markup on every screen of a trial", () => {
+    const jsPsych = initJsPsych();
+    const config = { ...utils.constants.DEFAULT_OPTIONS, text: utils.text };
+    const screens = flatten(timelineUnits.createChoiceRTTrial(jsPsych, config, 1, 1, true));
+
+    // a screen that styles its buttons inline moves them relative to the
+    // screens that do not - at the moment the stimulus appears and RT starts
+    const markup = screens.map((screen: any) =>
+      screen.button_html
+        ? screen.button_html("BLUE", 0)
+        : '<button class="jspsych-btn">BLUE</button>'
+    );
+
+    expect(markup.length).toBe(4);
+    markup.forEach((html: string) => {
+      expect(html).toContain('class="jspsych-btn"');
+      expect(html).not.toContain("style=");
     });
   });
 });

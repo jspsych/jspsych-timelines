@@ -94,6 +94,10 @@ interface ResolvedConfig {
 const TASK_NAME = "choice-rt";
 const VERSION = "0.0.1";
 
+// added to the display element via `css_classes`; every rule in styles.css is
+// scoped under it, so nothing this package styles reaches another task
+const CSS_ROOT = "jspsych-choice-rt";
+
 const DEFAULT_OPTIONS = {
   showInstructions: true,
   numTrials: 20,
@@ -149,11 +153,10 @@ function generateStimulusSequence(numTrials: number): Array<1 | 2> {
  */
 function createStimulusHTML(color: string, size: number): string {
   return `
-    <div class="trial-content">
-      <div style="
+    <div class="jspsych-choice-rt-trial-content">
+      <div class="jspsych-choice-rt-stimulus" style="
         width: ${size}px;
         height: ${size}px;
-        border-radius: 50%;
         background-color: ${color};
       "></div>
     </div>
@@ -164,7 +167,7 @@ function createStimulusHTML(color: string, size: number): string {
  * Creates HTML for the fixation cross.
  */
 function createFixationHTML(): string {
-  return `<div class="trial-content"><p style="font-size: 48px; margin: 0;">+</p></div>`;
+  return `<div class="jspsych-choice-rt-trial-content"><p class="jspsych-choice-rt-fixation">+</p></div>`;
 }
 
 /**
@@ -223,6 +226,7 @@ function createInstructionTrials(config: ResolvedConfig, part: "intro" | "task" 
 
   return {
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: stimulus,
     choices: [buttonLabel],
     data,
@@ -246,6 +250,7 @@ function createChoiceRTTrial(
   // Fixation / foreperiod - buttons are disabled
   timeline.push({
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: createFixationHTML(),
     choices: [config.text.button_1, config.text.button_2],
     button_html: createDisabledButtonHtml,
@@ -262,13 +267,11 @@ function createChoiceRTTrial(
   // Stimulus with choice
   timeline.push({
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: createStimulusHTML(stimulusColor, config.stimulusSize),
     choices: [config.text.button_1, config.text.button_2],
     trial_duration: config.responseTimeout,
     response_ends_trial: true,
-    button_html: (choice: string) => {
-      return `<button class="jspsych-btn" style="margin: 0 20px;">${choice}</button>`;
-    },
     // `stimulus` and `trial_index` are reserved: the plugin returns its own
     // `stimulus`, and jsPsych writes `trial_index`, both after `data` is spread.
     data: {
@@ -302,17 +305,18 @@ function createChoiceRTTrial(
   if (isPractice) {
     timeline.push({
       type: jsPsychHtmlButtonResponse,
+      css_classes: [CSS_ROOT],
       stimulus: () => {
         const lastData = jsPsych.data.getLastTrialData().values()[0];
         if (lastData.response === null) {
-          return `<div class="trial-content"><p class="feedback timeout">${config.text.feedback_timeout}</p></div>`;
+          return `<div class="jspsych-choice-rt-trial-content"><p class="jspsych-choice-rt-feedback-timeout">${config.text.feedback_timeout}</p></div>`;
         }
         if (lastData.anticipated) {
-          return `<div class="trial-content"><p class="feedback incorrect">${config.text.feedback_anticipated}</p></div>`;
+          return `<div class="jspsych-choice-rt-trial-content"><p class="jspsych-choice-rt-feedback-incorrect">${config.text.feedback_anticipated}</p></div>`;
         }
         return lastData.correct
-          ? `<div class="trial-content"><p class="feedback correct">${config.text.feedback_correct}</p></div>`
-          : `<div class="trial-content"><p class="feedback incorrect">${config.text.feedback_incorrect}</p></div>`;
+          ? `<div class="jspsych-choice-rt-trial-content"><p class="jspsych-choice-rt-feedback-correct">${config.text.feedback_correct}</p></div>`
+          : `<div class="jspsych-choice-rt-trial-content"><p class="jspsych-choice-rt-feedback-incorrect">${config.text.feedback_incorrect}</p></div>`;
       },
       choices: [config.text.button_1, config.text.button_2],
       button_html: createDisabledButtonHtml,
@@ -329,7 +333,8 @@ function createChoiceRTTrial(
   // ITI
   timeline.push({
     type: jsPsychHtmlButtonResponse,
-    stimulus: `<div class="trial-content"></div>`,
+    css_classes: [CSS_ROOT],
+    stimulus: `<div class="jspsych-choice-rt-trial-content"></div>`,
     choices: [config.text.button_1, config.text.button_2],
     button_html: createDisabledButtonHtml,
     response_ends_trial: false,
@@ -369,11 +374,12 @@ function createTrialBlock(
 function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
   return {
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: () => {
       const data = jsPsych.data.get();
       const scores = calculateScores(data);
 
-      let html = `<div style="max-width: 600px; margin: 0 auto;">`;
+      let html = `<div class="jspsych-choice-rt-results">`;
       html += `<h2>${config.text.task_complete}</h2>`;
       html += config.text.result_summary(scores.meanRT, scores.accuracy);
       html += `</div>`;
