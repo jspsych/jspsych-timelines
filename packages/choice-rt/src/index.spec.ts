@@ -1,4 +1,4 @@
-import { startTimeline } from "@jspsych/test-utils";
+import { simulateTimeline, startTimeline } from "@jspsych/test-utils";
 import { initJsPsych } from "jspsych";
 
 import { createTimeline, timelineUnits, utils } from "./index";
@@ -33,6 +33,68 @@ describe("Choice RT Timeline", () => {
       const withPractice = createTimeline(jsPsych, { showPractice: true });
       const withoutPractice = createTimeline(jsPsych, { showPractice: false });
       expect(withoutPractice.timeline.length).toBeLessThan(withPractice.timeline.length);
+    });
+  });
+
+  describe("recorded data", () => {
+    // data-only simulation runs every trial through the real plugin and through
+    // jsPsych's result processing, which is where reserved keys get overwritten
+    const runTask = async (options = {}) => {
+      const jsPsych = initJsPsych();
+      const { getData } = await simulateTimeline(
+        createTimeline(jsPsych, {
+          numTrials: 4,
+          numPracticeTrials: 2,
+          showInstructions: false,
+          ...options,
+        }).timeline,
+        "data-only",
+        {},
+        jsPsych
+      );
+      return getData();
+    };
+
+    it("should record the stimulus type as 1 or 2, not the stimulus HTML", async () => {
+      const data = await runTask();
+      const rows = data.filter({ task: "choice-rt", phase: "test", part: "response" }).values();
+
+      expect(rows).toHaveLength(4);
+      expect(rows.map((r: any) => r.stimulus_type).sort()).toEqual([1, 1, 2, 2]);
+      for (const row of rows) {
+        expect(typeof (row as any).stimulus_type).toBe("number");
+      }
+    });
+
+    it("should number trials within the block, restarting for the test phase", async () => {
+      const data = await runTask();
+      const practice = data
+        .filter({ task: "choice-rt", phase: "practice", part: "response" })
+        .values();
+      const test = data.filter({ task: "choice-rt", phase: "test", part: "response" }).values();
+
+      expect(practice.map((r: any) => r.trial_number)).toEqual([1, 2]);
+      expect(test.map((r: any) => r.trial_number)).toEqual([1, 2, 3, 4]);
+    });
+
+    it("should not use jsPsych's reserved trial_index for the block position", async () => {
+      const data = await runTask();
+      const test = data.filter({ task: "choice-rt", phase: "test", part: "response" }).values();
+
+      // jsPsych overwrites trial_index with the experiment-wide position, so the
+      // two must not be the same field
+      expect(test.map((r: any) => r.trial_index)).not.toEqual([1, 2, 3, 4]);
+      expect(test.every((r: any) => r.trial_index > r.trial_number)).toBe(true);
+    });
+
+    it("should record the foreperiod on every response row", async () => {
+      const data = await runTask({ foreperiodMin: 400, foreperiodMax: 900 });
+      const rows = data.filter({ task: "choice-rt", phase: "test", part: "response" }).values();
+
+      for (const row of rows) {
+        expect((row as any).foreperiod).toBeGreaterThanOrEqual(400);
+        expect((row as any).foreperiod).toBeLessThanOrEqual(900);
+      }
     });
   });
 

@@ -43,9 +43,9 @@ export interface TrialData {
   task_version: string;
   phase: string;
   part: string;
-  trial_index: number;
+  trial_number: number;
   foreperiod: number;
-  stimulus: 1 | 2;
+  stimulus_type: 1 | 2;
   response: 1 | 2 | null;
   correct: boolean;
   anticipated: boolean;
@@ -265,14 +265,16 @@ function createChoiceRTTrial(
     button_html: (choice: string) => {
       return `<button class="jspsych-btn" style="margin: 0 20px;">${choice}</button>`;
     },
+    // `stimulus` and `trial_index` are reserved: the plugin returns its own
+    // `stimulus`, and jsPsych writes `trial_index`, both after `data` is spread.
     data: {
       task: TASK_NAME,
       task_version: VERSION,
       phase: isPractice ? "practice" : "test",
       part: "response",
-      trial_index: trialIndex,
+      trial_number: trialIndex,
       foreperiod: foreperiod,
-      stimulus: stimulusType,
+      stimulus_type: stimulusType,
     },
     on_finish: (data: any) => {
       let response: 1 | 2 | null = null;
