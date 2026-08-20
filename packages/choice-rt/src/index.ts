@@ -57,8 +57,8 @@ export interface ScoringResult {
   meanRT: number | null;
   /** Standard deviation of RT for correct trials */
   rtStd: number | null;
-  /** Accuracy (percentage of correct, non-anticipated responses) */
-  accuracy: number;
+  /** Percentage correct among valid trials; null when the participant made none */
+  accuracy: number | null;
   /** Total number of trials */
   totalTrials: number;
   /** Number of correct trials */
@@ -399,7 +399,7 @@ function calculateScores(data: DataCollection): ScoringResult {
     return {
       meanRT: null,
       rtStd: null,
-      accuracy: 0,
+      accuracy: null,
       totalTrials: 0,
       correctTrials: 0,
       incorrectTrials: 0,
@@ -416,14 +416,14 @@ function calculateScores(data: DataCollection): ScoringResult {
     correctRTs.length > 0 ? correctRTs.reduce((a, b) => a + b, 0) / correctRTs.length : null;
   const rtStd = calculateStd(correctRTs);
 
-  // Accuracy: percentage of correct responses
-  const accuracy =
-    responseTrials.length > 0 ? (correctTrials.length / responseTrials.length) * 100 : 0;
+  const validTrials = responseTrials.filter((t) => t.rt !== null && !t.anticipated);
 
-  // Incorrect, anticipated, and timeout counts
-  const incorrectTrials = responseTrials.filter(
-    (t) => !t.correct && t.rt !== null && !t.anticipated
-  ).length;
+  const accuracy =
+    validTrials.length > 0 ? (correctTrials.length / validTrials.length) * 100 : null;
+
+  // correctTrials is a subset of validTrials, so this is the same set the
+  // previous filter produced
+  const incorrectTrials = validTrials.length - correctTrials.length;
   const anticipatedResponses = responseTrials.filter((t) => t.anticipated).length;
   const timeoutResponses = responseTrials.filter((t) => t.rt === null).length;
 

@@ -28,7 +28,7 @@ export interface TextConfig {
   /** Task complete header */
   task_complete: string;
   /** Results summary */
-  result_summary: (meanRT: number | null, accuracy: number) => string;
+  result_summary: (meanRT: number | null, accuracy: number | null) => string;
 }
 
 export const defaultText: TextConfig = {
@@ -72,11 +72,15 @@ export const defaultText: TextConfig = {
 
   task_complete: "Task Complete",
 
-  result_summary: (meanRT: number | null, accuracy: number) => `
+  result_summary: (meanRT: number | null, accuracy: number | null) => `
     <div class="instructions">
       <h3>Your Results</h3>
-      ${meanRT !== null ? `<p><strong>Average reaction time:</strong> ${meanRT.toFixed(0)} ms</p>` : ""}
-      <p><strong>Accuracy:</strong> ${accuracy.toFixed(1)}%</p>
+      ${
+        meanRT !== null
+          ? `<p><strong>Average reaction time:</strong> ${meanRT.toFixed(0)} ms</p>`
+          : ""
+      }
+      ${accuracy !== null ? `<p><strong>Accuracy:</strong> ${accuracy.toFixed(1)}%</p>` : ""}
     </div>
   `,
 };

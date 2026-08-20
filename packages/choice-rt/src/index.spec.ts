@@ -247,7 +247,7 @@ describe("Choice RT Timeline", () => {
 
       expect(scores.meanRT).toBeNull();
       expect(scores.rtStd).toBeNull();
-      expect(scores.accuracy).toBe(0);
+      expect(scores.accuracy).toBeNull();
       expect(scores.totalTrials).toBe(0);
       expect(scores.correctTrials).toBe(0);
       expect(scores.incorrectTrials).toBe(0);
@@ -267,6 +267,99 @@ describe("Choice RT Timeline", () => {
       expect(scores).toHaveProperty("incorrectTrials");
       expect(scores).toHaveProperty("anticipatedResponses");
       expect(scores).toHaveProperty("timeoutResponses");
+    });
+  });
+
+  describe("accuracy", () => {
+    const pushResponse = (jsPsych: any, row: Record<string, unknown>) =>
+      jsPsych.data.get().push({
+        task: "choice-rt",
+        phase: "test",
+        part: "response",
+        ...row,
+      });
+
+    const correct = { correct: true, anticipated: false, rt: 400 };
+    const incorrect = { correct: false, anticipated: false, rt: 450 };
+    const anticipated = { correct: false, anticipated: true, rt: 50 };
+    const timeout = { correct: false, anticipated: false, rt: null };
+
+    it("should exclude anticipated and timed-out trials from the denominator", () => {
+      const jsPsych = initJsPsych();
+      pushResponse(jsPsych, correct);
+      pushResponse(jsPsych, correct);
+      pushResponse(jsPsych, incorrect);
+      pushResponse(jsPsych, anticipated);
+      pushResponse(jsPsych, timeout);
+
+      const scores = utils.scoring.calculateScores(jsPsych.data.get());
+
+      // 2 of the 3 valid trials, not 2 of 5
+      expect(scores.accuracy).toBeCloseTo(66.667, 2);
+      expect(scores.totalTrials).toBe(5);
+      expect(scores.correctTrials).toBe(2);
+      expect(scores.incorrectTrials).toBe(1);
+      expect(scores.anticipatedResponses).toBe(1);
+      expect(scores.timeoutResponses).toBe(1);
+    });
+
+    it("should report 0 when the participant responded validly and got them all wrong", () => {
+      const jsPsych = initJsPsych();
+      pushResponse(jsPsych, incorrect);
+      pushResponse(jsPsych, incorrect);
+
+      // a real 0 must survive: guarding on the computed value would null this out
+      expect(utils.scoring.calculateScores(jsPsych.data.get()).accuracy).toBe(0);
+    });
+
+    it("should report null when no valid trial exists", () => {
+      const jsPsych = initJsPsych();
+      pushResponse(jsPsych, anticipated);
+      pushResponse(jsPsych, timeout);
+
+      const scores = utils.scoring.calculateScores(jsPsych.data.get());
+
+      expect(scores.accuracy).toBeNull();
+      expect(scores.totalTrials).toBe(2);
+      expect(scores.correctTrials).toBe(0);
+    });
+
+    it("should report 100 when every valid trial is correct", () => {
+      const jsPsych = initJsPsych();
+      pushResponse(jsPsych, correct);
+      pushResponse(jsPsych, anticipated);
+
+      expect(utils.scoring.calculateScores(jsPsych.data.get()).accuracy).toBe(100);
+    });
+
+    it("should partition every response trial into exactly one category", () => {
+      const jsPsych = initJsPsych();
+      for (const row of [correct, incorrect, anticipated, timeout, correct]) {
+        pushResponse(jsPsych, row);
+      }
+
+      const s = utils.scoring.calculateScores(jsPsych.data.get());
+
+      expect(
+        s.correctTrials + s.incorrectTrials + s.anticipatedResponses + s.timeoutResponses
+      ).toBe(s.totalTrials);
+    });
+
+    it("should ignore practice trials and other tasks", () => {
+      const jsPsych = initJsPsych();
+      pushResponse(jsPsych, correct);
+      pushResponse(jsPsych, { ...incorrect, phase: "practice" });
+      pushResponse(jsPsych, { ...incorrect, task: "some-other-task" });
+
+      const scores = utils.scoring.calculateScores(jsPsych.data.get());
+
+      expect(scores.totalTrials).toBe(1);
+      expect(scores.accuracy).toBe(100);
+    });
+
+    it("should omit the accuracy line from the results screen when it is null", () => {
+      expect(utils.text.result_summary(null, null)).not.toContain("Accuracy");
+      expect(utils.text.result_summary(420, 0)).toContain("0.0%");
     });
   });
 
