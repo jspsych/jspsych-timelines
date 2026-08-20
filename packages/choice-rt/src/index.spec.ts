@@ -8,6 +8,13 @@ import { createTimeline, timelineUnits, utils } from "./index";
 
 jest.useFakeTimers();
 
+const flattenTrials = (node: any): any[] =>
+  node.timeline ? node.timeline.flatMap(flattenTrials) : [node];
+
+/** every screen of a built timeline whose data.part matches */
+const screensOf = (node: any, part: string) =>
+  flattenTrials(node).filter((trial) => trial.data?.part === part);
+
 describe("Choice RT Timeline", () => {
   describe("createTimeline", () => {
     it("should create a timeline object", () => {
@@ -258,18 +265,20 @@ describe("Choice RT Timeline", () => {
       expect(scores.timeoutResponses).toBe(0);
     });
 
-    it("should have correct scoring structure", () => {
+    it("should report exactly the documented set of fields", () => {
       const jsPsych = initJsPsych();
       const scores = utils.scoring.calculateScores(jsPsych.data.get());
 
-      expect(scores).toHaveProperty("meanRT");
-      expect(scores).toHaveProperty("rtStd");
-      expect(scores).toHaveProperty("accuracy");
-      expect(scores).toHaveProperty("totalTrials");
-      expect(scores).toHaveProperty("correctTrials");
-      expect(scores).toHaveProperty("incorrectTrials");
-      expect(scores).toHaveProperty("anticipatedResponses");
-      expect(scores).toHaveProperty("timeoutResponses");
+      expect(Object.keys(scores).sort()).toEqual([
+        "accuracy",
+        "anticipatedResponses",
+        "correctTrials",
+        "incorrectTrials",
+        "meanRT",
+        "rtStd",
+        "timeoutResponses",
+        "totalTrials",
+      ]);
     });
   });
 
@@ -538,12 +547,14 @@ describe("Choice RT Timeline", () => {
     it("should merge partial text with defaults", () => {
       const jsPsych = initJsPsych();
       const timeline = createTimeline(jsPsych, {
-        text: {
-          continue_button: "Custom Continue",
-        },
+        text: { continue_button: "Custom Continue" },
       });
 
-      expect(timeline.timeline).toBeDefined();
+      const choices = flattenTrials(timeline).flatMap((t: any) => t.choices ?? []);
+      expect(choices).toContain("Custom Continue"); // the override
+      expect(choices).toContain("Start"); // an untouched default
+      expect(choices).toContain(utils.text.button_1);
+      expect(choices).not.toContain("Continue");
     });
   });
 
@@ -619,62 +630,144 @@ describe("Choice RT Timeline", () => {
   });
 
   describe("configuration options", () => {
-    it("should accept custom number of trials", () => {
+    it("should build exactly the requested number of scored trials", () => {
       const jsPsych = initJsPsych();
-      const timeline = createTimeline(jsPsych, {
-        numTrials: 10,
-      });
-      expect(timeline.timeline).toBeDefined();
+      const timeline = createTimeline(jsPsych, { numTrials: 10, numPracticeTrials: 3 });
+
+      const responses = screensOf(timeline, "response");
+      expect(responses.filter((t) => t.data.phase === "test")).toHaveLength(10);
+      expect(responses.filter((t) => t.data.phase === "practice")).toHaveLength(3);
     });
 
-    it("should accept custom foreperiod range", () => {
+    it("should draw every foreperiod from the configured range", () => {
       const jsPsych = initJsPsych();
       const timeline = createTimeline(jsPsych, {
+        numTrials: 30,
         foreperiodMin: 300,
         foreperiodMax: 800,
       });
-      expect(timeline.timeline).toBeDefined();
-    });
 
-    it("should accept custom response timeout", () => {
-      const jsPsych = initJsPsych();
-      const timeline = createTimeline(jsPsych, {
-        responseTimeout: 2000,
+      const durations = screensOf(timeline, "foreperiod").map((t) => t.trial_duration);
+      expect(durations.length).toBe(35);
+      durations.forEach((d) => {
+        expect(d).toBeGreaterThanOrEqual(300);
+        expect(d).toBeLessThanOrEqual(800);
       });
-      expect(timeline.timeline).toBeDefined();
+      // and the fixation screen records what it waited
+      screensOf(timeline, "foreperiod").forEach((t) => {
+        expect(t.data.foreperiod).toBe(t.trial_duration);
+      });
     });
 
-    it("should accept custom stimulus colors", () => {
+    it("should give every response screen the configured timeout", () => {
+      const jsPsych = initJsPsych();
+      const timeline = createTimeline(jsPsych, { responseTimeout: 2000 });
+
+      const responses = screensOf(timeline, "response");
+      expect(responses.length).toBeGreaterThan(0);
+      responses.forEach((t) => {
+        expect(t.trial_duration).toBe(2000);
+        expect(t.response_ends_trial).toBe(true);
+      });
+    });
+
+    it("should render each stimulus in its configured color", () => {
       const jsPsych = initJsPsych();
       const timeline = createTimeline(jsPsych, {
+        numTrials: 20,
+        showPractice: false,
         stimulusColor1: "#00FF00",
         stimulusColor2: "#FF0000",
       });
-      expect(timeline.timeline).toBeDefined();
+
+      const colors = screensOf(timeline, "response").map((t) =>
+        t.stimulus.includes("#00FF00") ? 1 : t.stimulus.includes("#FF0000") ? 2 : null
+      );
+      expect(colors).not.toContain(null);
+      // balanced across the block, and each color paired with its own type
+      expect(colors.filter((c) => c === 1)).toHaveLength(10);
+      screensOf(timeline, "response").forEach((t) => {
+        const expected = t.data.stimulus_type === 1 ? "#00FF00" : "#FF0000";
+        expect(t.stimulus).toContain(expected);
+      });
     });
 
-    it("should accept custom stimulus size", () => {
+    it("should size every stimulus as configured", () => {
       const jsPsych = initJsPsych();
-      const timeline = createTimeline(jsPsych, {
-        stimulusSize: 80,
+      const timeline = createTimeline(jsPsych, { stimulusSize: 80 });
+
+      const responses = screensOf(timeline, "response");
+      expect(responses.length).toBeGreaterThan(0);
+      responses.forEach((t) => {
+        expect(t.stimulus).toContain("width: 80px");
+        expect(t.stimulus).toContain("height: 80px");
       });
-      expect(timeline.timeline).toBeDefined();
     });
 
-    it("should accept custom min valid RT", () => {
+    it("should classify responses faster than minValidRT as anticipated", () => {
       const jsPsych = initJsPsych();
-      const timeline = createTimeline(jsPsych, {
-        minValidRT: 150,
-      });
-      expect(timeline.timeline).toBeDefined();
+      const timeline = createTimeline(jsPsych, { minValidRT: 150, showPractice: false });
+      const response = screensOf(timeline, "response")[0];
+
+      const run = (rt: number) => {
+        const row: any = { response: 0, rt };
+        jsPsych.data.get().push(row);
+        response.on_finish(row);
+        return jsPsych.data.get().values().slice(-1)[0];
+      };
+
+      expect(run(149).anticipated).toBe(true);
+      expect(run(150).anticipated).toBe(false);
+      expect(run(151).anticipated).toBe(false);
     });
 
-    it("should accept custom ITI", () => {
+    it("should hold the configured ITI between trials", () => {
       const jsPsych = initJsPsych();
-      const timeline = createTimeline(jsPsych, {
-        iti: 750,
+      const timeline = createTimeline(jsPsych, { iti: 750, feedbackDuration: 250 });
+
+      screensOf(timeline, "iti").forEach((t) => {
+        expect(t.trial_duration).toBe(750);
+        expect(t.response_ends_trial).toBe(false);
       });
-      expect(timeline.timeline).toBeDefined();
+      screensOf(timeline, "feedback").forEach((t) => {
+        expect(t.trial_duration).toBe(250);
+      });
+    });
+  });
+
+  describe("text object", () => {
+    const source = ["index.ts", "text.ts"]
+      .map((file) => readFileSync(join(__dirname, file), "utf8"))
+      .join("\n");
+
+    it("should read every key it defines", () => {
+      const keys = Object.keys(utils.text);
+      expect(keys.length).toBeGreaterThan(10);
+
+      const dead = keys.filter((key) => {
+        // its interface line, its default, and at least one read site
+        const references = source.split(new RegExp(`\\b${key}\\b`)).length - 1;
+        return references < 3;
+      });
+      expect(dead).toEqual([]);
+    });
+
+    it("should define every key the interface declares", () => {
+      const iface = readFileSync(join(__dirname, "text.ts"), "utf8");
+      const declared = [...iface.matchAll(/^  ([a-z_]+):/gm)].map((m) => m[1]);
+
+      expect(declared.length).toBeGreaterThan(10);
+      declared.forEach((key) => {
+        expect(utils.text).toHaveProperty(key);
+        const value = (utils.text as any)[key];
+        expect(typeof value === "string" ? value.length > 0 : typeof value).toBeTruthy();
+      });
+    });
+
+    it("should expose the text object as utils.text and nothing else", () => {
+      expect(utils.text).toBeDefined();
+      expect((utils as any).trial_text).toBeUndefined();
+      expect((utils as any).defaultText).toBeUndefined();
     });
   });
 
@@ -697,24 +790,40 @@ describe("Choice RT Timeline", () => {
   });
 
   describe("choice RT trial creation", () => {
-    it("should create choice RT trial with stimulus type 1", () => {
+    it.each([
+      [1, "#4A90D9"],
+      [2, "#E8913A"],
+    ] as const)("should build a scored trial for stimulus type %i", (type, color) => {
       const jsPsych = initJsPsych();
-      const config = {
-        ...utils.constants.DEFAULT_OPTIONS,
-        text: utils.text,
-      };
-      const trial = timelineUnits.createChoiceRTTrial(jsPsych, config, 1, 1, false);
-      expect(trial.timeline).toBeDefined();
+      const config = { ...utils.constants.DEFAULT_OPTIONS, text: utils.text };
+      const trial = timelineUnits.createChoiceRTTrial(jsPsych, config, type, 7, false);
+
+      // fixation, response, ITI - no feedback outside practice
+      expect(trial.timeline.map((t: any) => t.data.part)).toEqual([
+        "foreperiod",
+        "response",
+        "iti",
+      ]);
+
+      const response = trial.timeline[1];
+      expect(response.stimulus).toContain(color);
+      expect(response.data.stimulus_type).toBe(type);
+      expect(response.data.trial_number).toBe(7);
+      expect(response.data.phase).toBe("test");
     });
 
-    it("should create choice RT trial with stimulus type 2", () => {
+    it("should add a feedback screen to practice trials only", () => {
       const jsPsych = initJsPsych();
-      const config = {
-        ...utils.constants.DEFAULT_OPTIONS,
-        text: utils.text,
-      };
-      const trial = timelineUnits.createChoiceRTTrial(jsPsych, config, 2, 1, false);
-      expect(trial.timeline).toBeDefined();
+      const config = { ...utils.constants.DEFAULT_OPTIONS, text: utils.text };
+
+      const practice = timelineUnits.createChoiceRTTrial(jsPsych, config, 1, 1, true);
+      expect(practice.timeline.map((t: any) => t.data.part)).toEqual([
+        "foreperiod",
+        "response",
+        "feedback",
+        "iti",
+      ]);
+      practice.timeline.forEach((t: any) => expect(t.data.phase).toBe("practice"));
     });
   });
 
