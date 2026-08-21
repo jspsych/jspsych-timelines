@@ -227,12 +227,15 @@ describe("Berg Card Sorting Test", () => {
   });
 
   describe("utils.scoring", () => {
-    it("should return zero scores for no data", () => {
+    it("should report undefined measures as null for no data", () => {
       const scores = utils.scoring.calculateScores(jsPsych.data.get());
 
       expect(scores.totalTrials).toBe(0);
-      expect(scores.accuracy).toBe(0);
       expect(scores.categoriesCompleted).toBe(0);
+      // null, not 0: nothing was sorted, which is not the same as sorting
+      // everything wrong.
+      expect(scores.accuracy).toBeNull();
+      expect(scores.percentPerseverativeErrors).toBeNull();
       expect(scores.meanRT).toBeNull();
     });
 
@@ -357,7 +360,7 @@ describe("Berg Card Sorting Test", () => {
 
     it("should count conceptual level responses (runs of 3+)", () => {
       const dataCollection = jsPsych.data.get();
-      // Run of 4 correct = 2 conceptual level responses (trial 3 and 4)
+      // Run of 4 correct = 4 conceptual level responses; the run qualifies at 3
       for (let i = 0; i < 4; i++) {
         dataCollection.push({
           task: "berg-card-sorting-test",
@@ -379,7 +382,7 @@ describe("Berg Card Sorting Test", () => {
         categories_completed: 0,
         rt: 500,
       });
-      // Another run of 3 = 1 conceptual level response
+      // Another run of 3 = 3 conceptual level responses
       for (let i = 0; i < 3; i++) {
         dataCollection.push({
           task: "berg-card-sorting-test",
@@ -394,7 +397,7 @@ describe("Berg Card Sorting Test", () => {
 
       const scores = utils.scoring.calculateScores(dataCollection);
 
-      expect(scores.conceptualLevelResponses).toBe(3); // 2 from first run + 1 from second
+      expect(scores.conceptualLevelResponses).toBe(7); // 4 from first run + 3 from second
     });
 
     it("should count failure to maintain set", () => {
@@ -427,12 +430,177 @@ describe("Berg Card Sorting Test", () => {
       expect(scores.failureToMaintainSet).toBe(1);
     });
 
+    it("should not count the error after a completed category as a failure to maintain set", () => {
+      const dataCollection = jsPsych.data.get();
+      const sortingRow = (correct: boolean, categories_completed: number) => ({
+        task: "berg-card-sorting-test",
+        phase: "test",
+        part: "sorting",
+        correct,
+        is_perseverative: false,
+        categories_completed,
+        rt: 500,
+      });
+
+      // Five correct, the fifth completing a category, then the unavoidable error
+      // that follows the unannounced rule change.
+      for (let i = 0; i < 4; i++) dataCollection.push(sortingRow(true, 0));
+      dataCollection.push(sortingRow(true, 1));
+      dataCollection.push(sortingRow(false, 1));
+
+      const scores = utils.scoring.calculateScores(dataCollection);
+
+      expect(scores.categoriesCompleted).toBe(1);
+      expect(scores.failureToMaintainSet).toBe(0);
+    });
+
+    it("should separate perseverative responses from perseverative errors", () => {
+      const dataCollection = jsPsych.data.get();
+      const sortingRow = (correct: boolean, is_perseverative: boolean) => ({
+        task: "berg-card-sorting-test",
+        phase: "test",
+        part: "sorting",
+        correct,
+        is_perseverative,
+        categories_completed: 1,
+        rt: 500,
+      });
+
+      // A card can match the perseverated-to principle and the current rule at
+      // once, which makes the response perseverative but not an error.
+      dataCollection.push(sortingRow(true, true));
+      dataCollection.push(sortingRow(false, true));
+      dataCollection.push(sortingRow(false, false));
+
+      const scores = utils.scoring.calculateScores(dataCollection);
+
+      expect(scores.perseverativeResponses).toBe(2);
+      expect(scores.perseverativeErrors).toBe(1);
+      expect(scores.nonPerseverativeErrors).toBe(1);
+    });
+
+    it("should report 0 percent perseverative errors when errors exist but none persevere", () => {
+      const dataCollection = jsPsych.data.get();
+      dataCollection.push({
+        task: "berg-card-sorting-test",
+        phase: "test",
+        part: "sorting",
+        correct: false,
+        is_perseverative: false,
+        categories_completed: 0,
+        rt: 500,
+      });
+
+      const scores = utils.scoring.calculateScores(dataCollection);
+
+      // A real 0 on the same scale, distinct from the null above.
+      expect(scores.percentPerseverativeErrors).toBe(0);
+    });
+
+    it("should report null percent perseverative errors when there were no errors", () => {
+      const dataCollection = jsPsych.data.get();
+      for (let i = 0; i < 2; i++) {
+        dataCollection.push({
+          task: "berg-card-sorting-test",
+          phase: "test",
+          part: "sorting",
+          correct: true,
+          is_perseverative: false,
+          categories_completed: 0,
+          rt: 500,
+        });
+      }
+
+      const scores = utils.scoring.calculateScores(dataCollection);
+
+      expect(scores.accuracy).toBe(1);
+      expect(scores.percentPerseverativeErrors).toBeNull();
+    });
+
     it("should include task info in getSummary", () => {
       const summary = utils.scoring.getSummary(jsPsych.data.get());
 
       expect(summary.taskName).toBe("berg-card-sorting-test");
       expect(summary.version).toBeDefined();
     });
+  });
+
+  /* Drives the real timeline rather than fabricating rows, because the seeding
+     rule lives in the trial engine and no synthetic row can exercise it. */
+  describe("perseveration engine", () => {
+    it("should establish and update the perseverated-to principle", async () => {
+      const timeline = createTimeline(jsPsych, {
+        showInstructions: false,
+        showFeedback: false,
+        useCanonicalOrder: true,
+        numCategories: 2,
+      });
+
+      const finished = jsPsych.run([timeline]);
+
+      // In canonical order the first sixteen cards are all red, so reference card
+      // 0 is the color match throughout. The responder sorts by NUMBER for six
+      // trials -- a principle that is never correct while color is the rule --
+      // then switches to color, which completes the first category.
+      let guard = 0;
+      const pump = setInterval(() => {
+        if (guard++ > 2000) return clearInterval(pump);
+        const buttons = document.querySelectorAll<HTMLButtonElement>(
+          "#jspsych-html-button-response-btngroup button"
+        );
+        if (buttons.length === 0) return;
+        const card = document.querySelector(".bcst-card.stimulus");
+        if (!card) return buttons[0].click(); // completion screen
+        const sorted = jsPsych.data
+          .get()
+          .filter({ task: "berg-card-sorting-test", part: "sorting" })
+          .count();
+        // reference card i carries i + 1 symbols
+        const stimulusNumber = card.querySelectorAll(".bcst-shape").length;
+        buttons[sorted < 6 ? stimulusNumber - 1 : 0].click();
+      }, 1);
+
+      await finished;
+      clearInterval(pump);
+
+      const rows = jsPsych.data
+        .get()
+        .filter({ task: "berg-card-sorting-test", part: "sorting" })
+        .values();
+
+      // Nothing to perseverate to yet on the first trial.
+      expect(rows[0].perseverated_to).toBeNull();
+
+      // Trial 1 matches reference 0 on shape AND number, so it identifies neither
+      // and does not start a run. Seeding therefore needs trials 2-4, not 1-3.
+      expect(rows[3].perseverated_to).toBeNull();
+
+      // Established with no category completed -- the case that scored zero before.
+      expect(rows[4].perseverated_to).toBe("number");
+      expect(rows[4].categories_completed).toBe(0);
+
+      // A card matching both the perseverated-to principle and the current rule
+      // is a perseverative response but not an error.
+      expect(rows[4].is_perseverative).toBe(true);
+      expect(rows[4].correct).toBe(true);
+
+      // ...and the next one repeats the principle while the color rule is active,
+      // which is a perseverative error.
+      expect(rows[5].is_perseverative).toBe(true);
+      expect(rows[5].correct).toBe(false);
+
+      // Completing a category hands the principle over to the rule just finished.
+      // The row is written at trial start, so the handover shows on the trial
+      // *after* the one that completed the category.
+      const completing = rows.findIndex((r: any) => r.categories_completed === 1);
+      expect(rows[completing].current_rule).toBe("color");
+      expect(rows[completing + 1].perseverated_to).toBe("color");
+      expect(rows[completing + 1].current_rule).toBe("shape");
+
+      const scores = utils.scoring.getSummary(jsPsych.data.get());
+      expect(scores.perseverativeErrors).toBeGreaterThan(0);
+      expect(scores.perseverativeResponses).toBeGreaterThan(scores.perseverativeErrors);
+    }, 15000);
   });
 
   describe("utils.constants", () => {

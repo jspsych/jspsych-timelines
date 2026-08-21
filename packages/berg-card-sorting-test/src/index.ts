@@ -38,6 +38,7 @@ export interface TrialData {
   response: number | null;
   current_rule: string;
   previous_rule: string | null;
+  perseverated_to: string | null;
   correct: boolean;
   is_perseverative: boolean;
   consecutive_correct: number;
@@ -51,13 +52,15 @@ export interface ScoringResult {
   totalTrials: number;
   totalCorrect: number;
   totalErrors: number;
-  accuracy: number;
+  /** null when no trials were sorted. */
+  accuracy: number | null;
   categoriesCompleted: number;
   trialsToFirstCategory: number | null;
   perseverativeResponses: number;
   perseverativeErrors: number;
   nonPerseverativeErrors: number;
-  percentPerseverativeErrors: number;
+  /** null when there were no errors to take a percentage of. */
+  percentPerseverativeErrors: number | null;
   conceptualLevelResponses: number;
   failureToMaintainSet: number;
   meanRT: number | null;
@@ -89,6 +92,19 @@ type Rule = "color" | "shape" | "number";
 
 const TASK_NAME = "berg-card-sorting-test";
 const VERSION = "0.0.1";
+
+/**
+ * consecutive responses matching one non-current dimension needed to establish the
+ * perseverated-to principle before any category has been completed (heaton).
+ */
+const PERSEVERATION_SEED_RUN = 3;
+
+/** correct responses in a row before the run counts toward conceptual level. */
+const CONCEPTUAL_RUN_LENGTH = 3;
+
+/** correct responses in a row a within-category error must break to count as a
+ * failure to maintain set. */
+const SET_MAINTENANCE_RUN_LENGTH = 5;
 
 const COLORS: Card["color"][] = ["red", "green", "yellow", "blue"];
 const SHAPES: Card["shape"][] = ["triangle", "star", "cross", "circle"];
@@ -250,6 +266,10 @@ function createTrialBlock(jsPsych: JsPsych, config: ResolvedConfig) {
   const state = {
     currentRuleIndex: 0,
     previousRule: null as Rule | null,
+    /** The principle a perseverative response repeats. See on_finish. */
+    perseveratedTo: null as Rule | null,
+    /** Consecutive responses matching each non-current dimension, for seeding. */
+    candidateRuns: { color: 0, shape: 0, number: 0 } as Record<Rule, number>,
     consecutiveCorrect: 0,
     categoriesCompleted: 0,
     trialNumber: 0,
@@ -289,6 +309,7 @@ function createTrialBlock(jsPsych: JsPsych, config: ResolvedConfig) {
         stimulus_number: stimulus.number,
         current_rule: currentRule,
         previous_rule: state.previousRule,
+        perseverated_to: state.perseveratedTo,
         phase: "test",
         part: "sorting",
       };
@@ -301,20 +322,46 @@ function createTrialBlock(jsPsych: JsPsych, config: ResolvedConfig) {
       // Check if correct on current rule
       data.correct = matchesDimension(stimulus, response, currentRule);
 
-      // Check if perseverative (matches previous rule but not current)
-      if (state.previousRule !== null) {
-        const matchesPrevious = matchesDimension(stimulus, response, state.previousRule);
-        data.is_perseverative = matchesPrevious && !data.correct;
-      } else {
-        data.is_perseverative = false;
+      // A perseverative response repeats the perseverated-to principle, whether or
+      // not it also happens to be correct under the current rule. Splitting
+      // responses from errors is the scorer's job -- folding `!correct` in here
+      // made perseverativeResponses and perseverativeErrors the same number.
+      data.is_perseverative =
+        state.perseveratedTo !== null && matchesDimension(stimulus, response, state.perseveratedTo);
+
+      // Until a category is completed there is no previously-correct rule to
+      // perseverate to, so the principle is seeded from the participant's own
+      // behavior: PERSEVERATION_SEED_RUN consecutive responses matching a single
+      // non-current dimension. Without this a participant who never completes a
+      // category -- the most perseverative profile there is -- scores zero
+      // perseverative errors.
+      if (state.perseveratedTo === null) {
+        // Only a sort matching exactly one non-current dimension says which
+        // principle the participant is using; a card matching two identifies
+        // neither, and breaks the run rather than extending it.
+        const matched = rules.filter(
+          (rule) => rule !== currentRule && matchesDimension(stimulus, response, rule)
+        );
+        for (const rule of rules) {
+          if (matched.length === 1 && rule === matched[0]) {
+            state.candidateRuns[rule]++;
+            if (state.candidateRuns[rule] >= PERSEVERATION_SEED_RUN) {
+              state.perseveratedTo = rule;
+            }
+          } else {
+            state.candidateRuns[rule] = 0;
+          }
+        }
       }
 
       // Update state
       if (data.correct) {
         state.consecutiveCorrect++;
         if (state.consecutiveCorrect >= config.runLength) {
-          // Rule change
+          // Rule change. The rule just completed becomes the principle a
+          // perseverative response repeats from here on.
           state.previousRule = currentRule;
+          state.perseveratedTo = currentRule;
           state.currentRuleIndex = (state.currentRuleIndex + 1) % rules.length;
           state.consecutiveCorrect = 0;
           state.categoriesCompleted++;
@@ -397,13 +444,13 @@ function calculateScores(data: DataCollection): ScoringResult {
       totalTrials: 0,
       totalCorrect: 0,
       totalErrors: 0,
-      accuracy: 0,
+      accuracy: null,
       categoriesCompleted: 0,
       trialsToFirstCategory: null,
       perseverativeResponses: 0,
       perseverativeErrors: 0,
       nonPerseverativeErrors: 0,
-      percentPerseverativeErrors: 0,
+      percentPerseverativeErrors: null,
       conceptualLevelResponses: 0,
       failureToMaintainSet: 0,
       meanRT: null,
@@ -414,6 +461,7 @@ function calculateScores(data: DataCollection): ScoringResult {
   const correctTrials = trials.filter((t) => t.correct);
   const totalCorrect = correctTrials.length;
   const totalErrors = totalTrials - totalCorrect;
+  // totalTrials is non-zero here; the empty case returned null above.
   const accuracy = totalCorrect / totalTrials;
 
   // Categories
@@ -430,15 +478,19 @@ function calculateScores(data: DataCollection): ScoringResult {
   const nonPerseverativeErrors = totalErrors - perseverativeErrors;
 
   const percentPerseverativeErrors =
-    totalErrors > 0 ? (perseverativeErrors / totalErrors) * 100 : 0;
+    totalErrors > 0 ? (perseverativeErrors / totalErrors) * 100 : null;
 
-  // Conceptual level responses (runs of 3+ correct)
+  // Conceptual level responses: every correct response in a run of 3 or more, so
+  // a run of 4 counts 4. The run only qualifies once it reaches 3, at which point
+  // the two responses that led up to it are counted retroactively.
   let conceptualLevelResponses = 0;
   let currentRun = 0;
   for (const trial of trials) {
     if (trial.correct) {
       currentRun++;
-      if (currentRun >= 3) {
+      if (currentRun === CONCEPTUAL_RUN_LENGTH) {
+        conceptualLevelResponses += CONCEPTUAL_RUN_LENGTH;
+      } else if (currentRun > CONCEPTUAL_RUN_LENGTH) {
         conceptualLevelResponses++;
       }
     } else {
@@ -446,18 +498,27 @@ function calculateScores(data: DataCollection): ScoringResult {
     }
   }
 
-  // Failure to maintain set (errors after 5+ consecutive correct)
+  // Failure to maintain set: an error that breaks a run of 5 or more *within* a
+  // category. The error right after a rule change also follows a long run, but the
+  // participant cannot know the rule moved -- counting it would score one failure
+  // per completed category, which is what a near-perfect performer would collect.
+  // A completed category is visible in the data as categories_completed advancing.
   let failureToMaintainSet = 0;
   currentRun = 0;
+  let categoriesSoFar = 0;
   for (const trial of trials) {
     if (trial.correct) {
       currentRun++;
+      if (trial.categories_completed > categoriesSoFar) {
+        currentRun = 0;
+      }
     } else {
-      if (currentRun >= 5) {
+      if (currentRun >= SET_MAINTENANCE_RUN_LENGTH) {
         failureToMaintainSet++;
       }
       currentRun = 0;
     }
+    categoriesSoFar = trial.categories_completed;
   }
 
   // Mean RT
