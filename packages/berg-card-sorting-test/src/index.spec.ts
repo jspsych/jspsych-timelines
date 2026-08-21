@@ -105,6 +105,65 @@ describe("Berg Card Sorting Test", () => {
     });
   });
 
+  describe("parameter validation", () => {
+    it("should reject a deck of zero cards", () => {
+      expect(() => createTimeline(jsPsych, { deckRepeats: 0 })).toThrow(
+        /\[berg-card-sorting-test\] deckRepeats must be an integer >= 1, got 0/
+      );
+    });
+
+    it("should reject a fractional deckRepeats rather than rounding up", () => {
+      expect(() => createTimeline(jsPsych, { deckRepeats: 2.5 })).toThrow(/deckRepeats/);
+    });
+
+    it("should reject a runLength below 1", () => {
+      // runLength 0 completes a category on any correct response.
+      expect(() => createTimeline(jsPsych, { runLength: 0 })).toThrow(
+        /\[berg-card-sorting-test\] runLength must be an integer >= 1, got 0/
+      );
+      expect(() => createTimeline(jsPsych, { runLength: -3 })).toThrow(/runLength/);
+      expect(() => createTimeline(jsPsych, { runLength: 2.5 })).toThrow(/runLength/);
+    });
+
+    it("should reject a numCategories below 1", () => {
+      expect(() => createTimeline(jsPsych, { numCategories: 0 })).toThrow(
+        /\[berg-card-sorting-test\] numCategories must be an integer >= 1, got 0/
+      );
+      expect(() => createTimeline(jsPsych, { numCategories: 3.5 })).toThrow(/numCategories/);
+    });
+
+    it("should reject a negative feedbackDuration", () => {
+      expect(() => createTimeline(jsPsych, { feedbackDuration: -100 })).toThrow(
+        /\[berg-card-sorting-test\] feedbackDuration must be a number >= 0, got -100/
+      );
+    });
+
+    it("should reject a non-finite feedbackDuration", () => {
+      // Infinity would leave the participant on a feedback screen that never ends,
+      // since the feedback trial accepts no keys.
+      expect(() => createTimeline(jsPsych, { feedbackDuration: Infinity })).toThrow(
+        /feedbackDuration/
+      );
+      expect(() => createTimeline(jsPsych, { feedbackDuration: NaN })).toThrow(/feedbackDuration/);
+    });
+
+    it("should accept the smallest valid value for every guarded option", () => {
+      expect(() =>
+        createTimeline(jsPsych, {
+          showInstructions: false,
+          feedbackDuration: 0,
+          runLength: 1,
+          numCategories: 1,
+          deckRepeats: 1,
+        })
+      ).not.toThrow();
+    });
+
+    it("should accept the defaults", () => {
+      expect(() => createTimeline(jsPsych)).not.toThrow();
+    });
+  });
+
   describe("utils.stimuli", () => {
     it("should generate a 64-card deck", () => {
       const deck = utils.stimuli.generateDeck();

@@ -1,9 +1,11 @@
 import "./styles.css";
-import { JsPsych, DataCollection } from "jspsych";
+
 import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
 import jsPsychHtmlKeyboardResponse from "@jspsych/plugin-html-keyboard-response";
 import jsPsychInstructions from "@jspsych/plugin-instructions";
-import { defaultText, TextConfig } from "./text";
+import { DataCollection, JsPsych } from "jspsych";
+
+import { TextConfig, defaultText } from "./text";
 
 // -- TYPES --
 
@@ -272,7 +274,9 @@ function createTrialBlock(jsPsych: JsPsych, config: ResolvedConfig) {
     },
     choices: ["", "", "", ""],
     button_html: (choice: string, index: number) =>
-      `<button class="jspsych-btn" style="padding: 0; border: none; background: none;">${generateCardHtml(REFERENCE_CARDS[index])}</button>`,
+      `<button class="jspsych-btn" style="padding: 0; border: none; background: none;">${generateCardHtml(
+        REFERENCE_CARDS[index]
+      )}</button>`,
     data: () => {
       const stimulus = deck[state.cardIndex];
       const currentRule = rules[state.currentRuleIndex];
@@ -360,7 +364,11 @@ function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
       const scores = calculateScores(data);
       let html = `<div style="max-width: 600px; margin: 0 auto;">`;
       html += `<h2>${config.text.task_complete}</h2>`;
-      html += config.text.result_summary(scores.categoriesCompleted, scores.perseverativeErrors, scores.totalErrors);
+      html += config.text.result_summary(
+        scores.categoriesCompleted,
+        scores.perseverativeErrors,
+        scores.totalErrors
+      );
       html += `</div>`;
       return html;
     },
@@ -414,9 +422,7 @@ function calculateScores(data: DataCollection): ScoringResult {
 
   // Trials to first category
   const firstCategoryTrial = trials.find((t) => t.categories_completed === 1);
-  const trialsToFirstCategory = firstCategoryTrial
-    ? trials.indexOf(firstCategoryTrial) + 1
-    : null;
+  const trialsToFirstCategory = firstCategoryTrial ? trials.indexOf(firstCategoryTrial) + 1 : null;
 
   // Perseveration
   const perseverativeResponses = trials.filter((t) => t.is_perseverative).length;
@@ -512,6 +518,25 @@ export function createTimeline(jsPsych: JsPsych, options: BcstOptions = {}) {
     ...options,
     text,
   };
+
+  if (!Number.isFinite(config.feedbackDuration) || config.feedbackDuration < 0) {
+    throw new Error(
+      `[${TASK_NAME}] feedbackDuration must be a number >= 0, got ${config.feedbackDuration}`
+    );
+  }
+  if (!Number.isInteger(config.runLength) || config.runLength < 1) {
+    throw new Error(`[${TASK_NAME}] runLength must be an integer >= 1, got ${config.runLength}`);
+  }
+  if (!Number.isInteger(config.numCategories) || config.numCategories < 1) {
+    throw new Error(
+      `[${TASK_NAME}] numCategories must be an integer >= 1, got ${config.numCategories}`
+    );
+  }
+  if (!Number.isInteger(config.deckRepeats) || config.deckRepeats < 1) {
+    throw new Error(
+      `[${TASK_NAME}] deckRepeats must be an integer >= 1, got ${config.deckRepeats}`
+    );
+  }
 
   const timeline: any[] = [];
 
