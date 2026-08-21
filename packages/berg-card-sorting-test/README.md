@@ -90,7 +90,6 @@ Recorded on every sorting trial (`phase: "test"`, `part: "sorting"`):
 | `response` | number | Selected reference card (0-3) |
 | `rt` | number | Response time (ms) |
 | `current_rule` | string | Rule in force on this trial |
-| `previous_rule` | string \| null | Rule of the last completed category |
 | `perseverated_to` | string \| null | Principle a perseverative response repeats on this trial. See [Perseveration scoring](#perseveration-scoring) |
 | `correct` | boolean | Whether the response matched `current_rule` |
 | `is_perseverative` | boolean | Whether the response matched `perseverated_to` |

@@ -665,6 +665,8 @@ describe("Berg Card Sorting Test", () => {
   });
 
   describe("recorded trial fields", () => {
+    const re = /export interface TrialData \{([\s\S]*?)\n\}/;
+
     it("should record the streak the category-completing trial reached", async () => {
       const timeline = createTimeline(jsPsych, {
         showInstructions: false,
@@ -715,6 +717,34 @@ describe("Berg Card Sorting Test", () => {
       // was written -- and the sixth starts a fresh streak on the new rule.
       expect(rows.slice(0, 6).map((r: any) => r.consecutive_correct)).toEqual([1, 0, 1, 2, 3, 1]);
       expect(rows.slice(0, 6).map((r: any) => r.categories_completed)).toEqual([0, 0, 0, 0, 1, 1]);
+
+      // The row and the TrialData interface must describe the same thing: every
+      // declared field present, and nothing recorded that is not declared.
+      const source = readFileSync(join(__dirname, "index.ts"), "utf8");
+      const declared = re
+        .exec(source)![1]
+        .split("\n")
+        .map((line) => /^\s+([a-z_]+)[?]?:/.exec(line)?.[1])
+        .filter(Boolean) as string[];
+      expect(declared.length).toBeGreaterThan(10);
+
+      // written by jsPsych itself, or by the timeline for routing rather than scoring
+      const notScoring = [
+        "trial_type",
+        "trial_index",
+        "plugin_version",
+        "time_elapsed",
+        "stimulus",
+        "phase",
+        "part",
+      ];
+
+      expect(declared.filter((field) => !(field in rows[0]))).toEqual([]);
+      expect(
+        Object.keys(rows[0]).filter(
+          (field) => !declared.includes(field) && !notScoring.includes(field)
+        )
+      ).toEqual([]);
     }, 15000);
   });
 

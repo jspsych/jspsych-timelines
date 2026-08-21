@@ -40,7 +40,6 @@ export interface TrialData {
   stimulus_number: number;
   response: number | null;
   current_rule: string;
-  previous_rule: string | null;
   perseverated_to: string | null;
   correct: boolean;
   is_perseverative: boolean;
@@ -314,7 +313,6 @@ function createTrialBlock(jsPsych: JsPsych, options: BcstOptions = {}) {
   // State object that persists across trials
   const state = {
     currentRuleIndex: 0,
-    previousRule: null as Rule | null,
     /** The principle a perseverative response repeats. See on_finish. */
     perseveratedTo: null as Rule | null,
     /** Consecutive responses matching each non-current dimension, for seeding. */
@@ -358,7 +356,6 @@ function createTrialBlock(jsPsych: JsPsych, options: BcstOptions = {}) {
         stimulus_shape: stimulus.shape,
         stimulus_number: stimulus.number,
         current_rule: currentRule,
-        previous_rule: state.previousRule,
         perseverated_to: state.perseveratedTo,
         phase: "test",
         part: "sorting",
@@ -421,7 +418,6 @@ function createTrialBlock(jsPsych: JsPsych, options: BcstOptions = {}) {
       if (state.consecutiveCorrect >= config.runLength) {
         // Rule change. The rule just completed becomes the principle a
         // perseverative response repeats from here on.
-        state.previousRule = currentRule;
         state.perseveratedTo = currentRule;
         state.currentRuleIndex = (state.currentRuleIndex + 1) % rules.length;
         state.consecutiveCorrect = 0;
