@@ -1,4 +1,5 @@
 import { JsPsych, initJsPsych } from "jspsych";
+
 import { createTimeline, timelineUnits, utils } from ".";
 
 describe("Berg Card Sorting Test", () => {
@@ -146,7 +147,7 @@ describe("Berg Card Sorting Test", () => {
     });
 
     it("should generate card HTML with correct structure", () => {
-      const card = { color: "red" as const, shape: "triangle" as const, number: 2 };
+      const card = { color: "red" as const, shape: "triangle" as const, number: 2 as const };
       const html = utils.stimuli.generateCardHtml(card, false);
 
       expect(html).toContain("bcst-card");
@@ -159,7 +160,7 @@ describe("Berg Card Sorting Test", () => {
     });
 
     it("should generate stimulus card HTML with stimulus class", () => {
-      const card = { color: "blue" as const, shape: "circle" as const, number: 1 };
+      const card = { color: "blue" as const, shape: "circle" as const, number: 1 as const };
       const html = utils.stimuli.generateCardHtml(card, true);
 
       expect(html).toContain("stimulus");
@@ -302,7 +303,7 @@ describe("Berg Card Sorting Test", () => {
         dataCollection.push({
           task: "berg-card-sorting-test",
           phase: "test",
-        part: "sorting",
+          part: "sorting",
           correct: true,
           is_perseverative: false,
           categories_completed: 0,
@@ -324,7 +325,7 @@ describe("Berg Card Sorting Test", () => {
         dataCollection.push({
           task: "berg-card-sorting-test",
           phase: "test",
-        part: "sorting",
+          part: "sorting",
           correct: true,
           is_perseverative: false,
           categories_completed: 0,
@@ -344,7 +345,7 @@ describe("Berg Card Sorting Test", () => {
         dataCollection.push({
           task: "berg-card-sorting-test",
           phase: "test",
-        part: "sorting",
+          part: "sorting",
           correct: true,
           is_perseverative: false,
           categories_completed: 0,
