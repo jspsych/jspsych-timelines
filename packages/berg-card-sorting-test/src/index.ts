@@ -5,6 +5,7 @@ import jsPsychHtmlKeyboardResponse from "@jspsych/plugin-html-keyboard-response"
 import jsPsychInstructions from "@jspsych/plugin-instructions";
 import { DataCollection, JsPsych } from "jspsych";
 
+import { version } from "../package.json";
 import { TextConfig, defaultText } from "./text";
 
 // -- TYPES --
@@ -99,7 +100,8 @@ const TASK_NAME = "berg-card-sorting-test";
 // builds. Each rule in styles.css is scoped under it, so nothing this package
 // styles reaches another task in a composed battery.
 const CSS_ROOT = "jspsych-berg-card-sorting-test";
-const VERSION = "0.0.1";
+// Read from package.json so it cannot drift from the published version.
+const VERSION = version;
 
 /**
  * consecutive responses matching one non-current dimension needed to establish the

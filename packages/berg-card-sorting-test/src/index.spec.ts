@@ -3,6 +3,7 @@ import { join } from "path";
 
 import { JsPsych, initJsPsych } from "jspsych";
 
+import { version } from "../package.json";
 import { Card, createTimeline, timelineUnits, utils } from ".";
 
 describe("Berg Card Sorting Test", () => {
@@ -581,7 +582,7 @@ describe("Berg Card Sorting Test", () => {
       const summary = utils.scoring.getSummary(jsPsych.data.get());
 
       expect(summary.taskName).toBe("berg-card-sorting-test");
-      expect(summary.version).toBeDefined();
+      expect(summary.version).toBe(version);
     });
   });
 
@@ -757,7 +758,7 @@ describe("Berg Card Sorting Test", () => {
   describe("utils.constants", () => {
     it("should export task constants", () => {
       expect(utils.constants.TASK_NAME).toBe("berg-card-sorting-test");
-      expect(utils.constants.VERSION).toBeDefined();
+      expect(utils.constants.VERSION).toBe(version);
     });
 
     it("should export default options", () => {
