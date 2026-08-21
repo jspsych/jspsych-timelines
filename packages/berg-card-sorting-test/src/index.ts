@@ -24,6 +24,8 @@ export interface BcstOptions {
   deckRepeats?: number;
   /** Use Berg's original canonical card order (default: false = random) */
   useCanonicalOrder?: boolean;
+  /** Show the results screen to the participant at the end (default: true) */
+  showResults?: boolean;
   /** Custom text strings for translation. Partial objects are merged with defaults. */
   text?: Partial<TextConfig>;
 }
@@ -75,6 +77,7 @@ interface ResolvedConfig {
   numCategories: number;
   deckRepeats: number;
   useCanonicalOrder: boolean;
+  showResults: boolean;
   text: TextConfig;
 }
 
@@ -131,6 +134,7 @@ const DEFAULT_OPTIONS = {
   numCategories: 6,
   deckRepeats: 2,
   useCanonicalOrder: false,
+  showResults: true,
 };
 
 // -- UTILITY FUNCTIONS --
@@ -216,12 +220,44 @@ function matchesDimension(stimulus: Card, referenceIndex: number, dimension: Rul
   return stimulus[dimension] === reference[dimension];
 }
 
+/**
+ * Merges caller options over the defaults and validates the result.
+ */
+function resolveConfig(options: BcstOptions = {}): ResolvedConfig {
+  const text: TextConfig = { ...defaultText, ...options.text };
+  const config: ResolvedConfig = { ...DEFAULT_OPTIONS, ...options, text };
+
+  if (!Number.isFinite(config.feedbackDuration) || config.feedbackDuration < 0) {
+    throw new Error(
+      `[${TASK_NAME}] feedbackDuration must be a number >= 0, got ${config.feedbackDuration}`
+    );
+  }
+  if (!Number.isInteger(config.runLength) || config.runLength < 1) {
+    throw new Error(`[${TASK_NAME}] runLength must be an integer >= 1, got ${config.runLength}`);
+  }
+  if (!Number.isInteger(config.numCategories) || config.numCategories < 1) {
+    throw new Error(
+      `[${TASK_NAME}] numCategories must be an integer >= 1, got ${config.numCategories}`
+    );
+  }
+  // A deck of zero cards leaves the first sorting trial with no card to draw, and
+  // a fractional count silently rounds up in generateStimulusDeck.
+  if (!Number.isInteger(config.deckRepeats) || config.deckRepeats < 1) {
+    throw new Error(
+      `[${TASK_NAME}] deckRepeats must be an integer >= 1, got ${config.deckRepeats}`
+    );
+  }
+
+  return config;
+}
+
 // -- TIMELINE UNITS --
 
 /**
  * Creates instruction trials using the instructions plugin.
  */
-function createInstructionTrials(config: ResolvedConfig) {
+function createInstructionTrials(options: BcstOptions = {}) {
+  const config = resolveConfig(options);
   return {
     type: jsPsychInstructions,
     css_classes: [CSS_ROOT],
@@ -239,7 +275,8 @@ function createInstructionTrials(config: ResolvedConfig) {
 /**
  * Creates a feedback trial.
  */
-function createFeedbackTrial(jsPsych: JsPsych, config: ResolvedConfig) {
+function createFeedbackTrial(jsPsych: JsPsych, options: BcstOptions = {}) {
+  const config = resolveConfig(options);
   return {
     type: jsPsychHtmlKeyboardResponse,
     css_classes: [CSS_ROOT],
@@ -267,7 +304,8 @@ function createFeedbackTrial(jsPsych: JsPsych, config: ResolvedConfig) {
 /**
  * Creates the main trial block using loop_function for stopping.
  */
-function createTrialBlock(jsPsych: JsPsych, config: ResolvedConfig) {
+function createTrialBlock(jsPsych: JsPsych, options: BcstOptions = {}) {
+  const config = resolveConfig(options);
   const deck = generateStimulusDeck(config);
   const rules: Rule[] = ["color", "shape", "number"];
 
@@ -398,7 +436,7 @@ function createTrialBlock(jsPsych: JsPsych, config: ResolvedConfig) {
 
   // Feedback trial
   if (config.showFeedback) {
-    trialTimeline.push(createFeedbackTrial(jsPsych, config));
+    trialTimeline.push(createFeedbackTrial(jsPsych, options));
   }
 
   return {
@@ -420,7 +458,8 @@ function createTrialBlock(jsPsych: JsPsych, config: ResolvedConfig) {
 /**
  * Creates a completion message trial.
  */
-function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
+function createCompletionTrial(jsPsych: JsPsych, options: BcstOptions = {}) {
+  const config = resolveConfig(options);
   return {
     type: jsPsychHtmlButtonResponse,
     css_classes: [CSS_ROOT],
@@ -589,46 +628,24 @@ function getSummary(data: DataCollection): ScoringResult {
  * ```
  */
 export function createTimeline(jsPsych: JsPsych, options: BcstOptions = {}) {
-  // Merge text with defaults
-  const text: TextConfig = { ...defaultText, ...options.text };
-
-  const config: ResolvedConfig = {
-    ...DEFAULT_OPTIONS,
-    ...options,
-    text,
-  };
-
-  if (!Number.isFinite(config.feedbackDuration) || config.feedbackDuration < 0) {
-    throw new Error(
-      `[${TASK_NAME}] feedbackDuration must be a number >= 0, got ${config.feedbackDuration}`
-    );
-  }
-  if (!Number.isInteger(config.runLength) || config.runLength < 1) {
-    throw new Error(`[${TASK_NAME}] runLength must be an integer >= 1, got ${config.runLength}`);
-  }
-  if (!Number.isInteger(config.numCategories) || config.numCategories < 1) {
-    throw new Error(
-      `[${TASK_NAME}] numCategories must be an integer >= 1, got ${config.numCategories}`
-    );
-  }
-  if (!Number.isInteger(config.deckRepeats) || config.deckRepeats < 1) {
-    throw new Error(
-      `[${TASK_NAME}] deckRepeats must be an integer >= 1, got ${config.deckRepeats}`
-    );
-  }
+  const config = resolveConfig(options);
 
   const timeline: any[] = [];
 
   // Instructions
   if (config.showInstructions) {
-    timeline.push(createInstructionTrials(config));
+    timeline.push(createInstructionTrials(options));
   }
 
   // Main trial block
-  timeline.push(createTrialBlock(jsPsych, config));
+  timeline.push(createTrialBlock(jsPsych, options));
 
-  // Completion message
-  timeline.push(createCompletionTrial(jsPsych, config));
+  // Results screen. Off in a composed battery, where showing a participant their
+  // perseverative error count mid-session is a disclosure the researcher may not
+  // want.
+  if (config.showResults) {
+    timeline.push(createCompletionTrial(jsPsych, options));
+  }
 
   return { timeline };
 }
@@ -668,5 +685,7 @@ export const utils = {
   text: defaultText,
 };
 
-// Re-export types
+// Re-export types. Card appears in the signatures of utils.stimuli, so a
+// TypeScript caller needs to be able to name it.
 export type { TextConfig };
+export type { Card, Rule };

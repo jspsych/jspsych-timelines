@@ -3,7 +3,7 @@ import { join } from "path";
 
 import { JsPsych, initJsPsych } from "jspsych";
 
-import { createTimeline, timelineUnits, utils } from ".";
+import { Card, createTimeline, timelineUnits, utils } from ".";
 
 describe("Berg Card Sorting Test", () => {
   let jsPsych: JsPsych;
@@ -105,6 +105,62 @@ describe("Berg Card Sorting Test", () => {
       const timeline = createTimeline(jsPsych, { showInstructions: false });
       const lastItem = timeline.timeline[timeline.timeline.length - 1] as any;
       expect(lastItem.data.phase).toBe("completion");
+    });
+
+    it("should omit the results screen when showResults is false", () => {
+      const timeline = createTimeline(jsPsych, { showInstructions: false, showResults: false });
+
+      expect(timeline.timeline.length).toBe(1);
+      const lastItem = timeline.timeline[timeline.timeline.length - 1] as any;
+      expect(lastItem.timeline).toBeDefined(); // the trial block, not a results screen
+    });
+  });
+
+  describe("timelineUnits", () => {
+    // Every unit used to require a fully-resolved internal config that only
+    // createTimeline could build, and whose type was not exported. Calling one
+    // the way the README documents threw.
+    it("should build every unit from public options alone", () => {
+      expect(timelineUnits.createInstructionTrials().pages.length).toBe(4);
+      expect(timelineUnits.createFeedbackTrial(jsPsych).trial_duration).toBe(500);
+      expect(timelineUnits.createTrialBlock(jsPsych).timeline.length).toBe(2);
+      expect(timelineUnits.createCompletionTrial(jsPsych).data.phase).toBe("completion");
+    });
+
+    it("should apply options passed to a unit on its own", () => {
+      expect(
+        timelineUnits.createInstructionTrials({ text: { instruction_pages: ["only one"] } }).pages
+      ).toEqual(["only one"]);
+      expect(
+        timelineUnits.createFeedbackTrial(jsPsych, { feedbackDuration: 42 }).trial_duration
+      ).toBe(42);
+      expect(timelineUnits.createTrialBlock(jsPsych, { showFeedback: false }).timeline.length).toBe(
+        1
+      );
+    });
+
+    it("should validate options passed to a unit on its own", () => {
+      // showFeedback: false matters -- with feedback on, the nested
+      // createFeedbackTrial validates first and this would pass for the wrong
+      // reason, leaving createTrialBlock's own guard unchecked.
+      expect(() =>
+        timelineUnits.createTrialBlock(jsPsych, { deckRepeats: 0, showFeedback: false })
+      ).toThrow(/deckRepeats/);
+      expect(() => timelineUnits.createFeedbackTrial(jsPsych, { feedbackDuration: -1 })).toThrow(
+        /feedbackDuration/
+      );
+      expect(() => timelineUnits.createCompletionTrial(jsPsych, { runLength: 0 })).toThrow(
+        /runLength/
+      );
+      expect(() => timelineUnits.createInstructionTrials({ numCategories: 0 })).toThrow(
+        /numCategories/
+      );
+    });
+
+    it("should export the types its signatures name", () => {
+      // compile-time assertion: this only typechecks if Card is exported
+      const card: Card = { color: "red", shape: "triangle", number: 1 };
+      expect(utils.stimuli.generateCardHtml(card)).toContain("bcst-shape-triangle");
     });
   });
 
