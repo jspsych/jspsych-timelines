@@ -29,7 +29,7 @@ export const defaultText = {
 
   // -- BUTTON LABELS --
   continue_button: "Continue",
-  start_button: "Start",
+  back_button: "Back",
 
   // -- FEEDBACK MESSAGES --
   correct_feedback: "Correct!",

@@ -264,7 +264,7 @@ function createInstructionTrials(options: BcstOptions = {}) {
     pages: config.text.instruction_pages,
     show_clickable_nav: true,
     button_label_next: config.text.continue_button,
-    button_label_previous: "Back",
+    button_label_previous: config.text.back_button,
     data: {
       task: TASK_NAME,
       phase: "instructions",

@@ -717,6 +717,43 @@ describe("Berg Card Sorting Test", () => {
     }, 15000);
   });
 
+  describe("text object", () => {
+    const source = readFileSync(join(__dirname, "index.ts"), "utf8");
+
+    it("should read every key it defines", () => {
+      const keys = Object.keys(utils.text);
+      expect(keys.length).toBeGreaterThan(5);
+
+      // a key nothing reads is a knob the researcher can turn with no effect
+      const dead = keys.filter((key) => !source.includes(`config.text.${key}`));
+      expect(dead).toEqual([]);
+    });
+
+    it("should let a text object alone translate every participant-facing string", () => {
+      const instructions = timelineUnits.createInstructionTrials({
+        text: {
+          instruction_pages: ["<p>pagina uno</p>"],
+          continue_button: "Continuar",
+          back_button: "Atras",
+        },
+      });
+
+      expect(instructions.pages).toEqual(["<p>pagina uno</p>"]);
+      expect(instructions.button_label_next).toBe("Continuar");
+      // this was hardcoded English, unreachable from the text object
+      expect(instructions.button_label_previous).toBe("Atras");
+    });
+
+    it("should fall back to the default for keys the override omits", () => {
+      const instructions = timelineUnits.createInstructionTrials({
+        text: { continue_button: "Continuar" },
+      });
+
+      expect(instructions.button_label_next).toBe("Continuar");
+      expect(instructions.button_label_previous).toBe("Back");
+    });
+  });
+
   describe("utils.constants", () => {
     it("should export task constants", () => {
       expect(utils.constants.TASK_NAME).toBe("berg-card-sorting-test");
