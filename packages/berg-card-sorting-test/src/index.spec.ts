@@ -1,3 +1,6 @@
+import { readFileSync } from "fs";
+import { join } from "path";
+
 import { JsPsych, initJsPsych } from "jspsych";
 
 import { createTimeline, timelineUnits, utils } from ".";
@@ -212,9 +215,10 @@ describe("Berg Card Sorting Test", () => {
       expect(html).toContain("bcst-card");
       expect(html).toContain("bcst-shape");
       expect(html).toContain("bcst-red");
-      expect(html).toContain("triangle");
-      // Should have 2 shapes for number: 2
-      const shapeMatches = html.match(/bcst-shape/g);
+      expect(html).toContain("bcst-shape-triangle");
+      // Should have 2 shapes for number: 2. Count the shape divs rather than the
+      // token, which now appears twice per div (bcst-shape bcst-shape-triangle).
+      const shapeMatches = html.match(/<div class="bcst-shape /g);
       expect(shapeMatches?.length).toBe(2);
     });
 
@@ -222,7 +226,7 @@ describe("Berg Card Sorting Test", () => {
       const card = { color: "blue" as const, shape: "circle" as const, number: 1 as const };
       const html = utils.stimuli.generateCardHtml(card, true);
 
-      expect(html).toContain("stimulus");
+      expect(html).toContain("bcst-card-stimulus");
     });
   });
 
@@ -549,7 +553,7 @@ describe("Berg Card Sorting Test", () => {
           "#jspsych-html-button-response-btngroup button"
         );
         if (buttons.length === 0) return;
-        const card = document.querySelector(".bcst-card.stimulus");
+        const card = document.querySelector(".bcst-card-stimulus");
         if (!card) return buttons[0].click(); // completion screen
         const sorted = jsPsych.data
           .get()
@@ -677,5 +681,96 @@ describe("Berg Card Sorting Test", () => {
       expect(utils.text.incorrect_feedback).toBeDefined();
       expect(utils.text.instruction_pages).toBeDefined();
     });
+  });
+});
+
+/* jsdom has no cascade for the injected stylesheet and no layout engine, so these
+   assert against the stylesheet text that ships and the class tokens the source
+   emits, not computed styles. */
+describe("styles", () => {
+  const ROOT = "jspsych-berg-card-sorting-test";
+  const PREFIX = "bcst-";
+
+  const css = readFileSync(join(__dirname, "styles.css"), "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
+
+  const selectors = [...css.matchAll(/([^{}]+)\{/g)]
+    .map((match) => match[1].trim())
+    .filter((selector) => selector.length > 0 && !selector.startsWith("@"))
+    .flatMap((selector) => selector.split(",").map((part) => part.trim()))
+    .filter((selector) => selector.length > 0);
+
+  const sources = ["index.ts", "text.ts"]
+    .map((file) => readFileSync(join(__dirname, file), "utf8"))
+    .join("\n");
+
+  const flatten = (node: any): any[] => (node.timeline ? node.timeline.flatMap(flatten) : [node]);
+
+  it("should define at least one rule", () => {
+    // guards the tests below from passing on an empty parse
+    expect(selectors.length).toBeGreaterThan(20);
+  });
+
+  it("should scope every rule under the timeline root", () => {
+    const unscoped = selectors.filter((selector) => !selector.startsWith(`.${ROOT}`));
+    expect(unscoped).toEqual([]);
+  });
+
+  it("should not reach outside the timeline's own DOM", () => {
+    const escapes = selectors.filter((selector) =>
+      // bare element selectors are fine as descendants of the root, which the test
+      // above already requires; these are the tokens that escape it entirely
+      /(^|\s)(body|html|\*)(\s|$)|\.(jspsych-content|jspsych-display-element)\b/.test(selector)
+    );
+    expect(escapes).toEqual([]);
+  });
+
+  it("should prefix every class the source emits", () => {
+    const emitted = [...sources.matchAll(/class=["']([^"']+)["']/g)]
+      .flatMap((m) => m[1].split(/\s+/))
+      // a class attribute can be cut short by an interpolation opening its own
+      // quote; keep the tokens that are whole literals, which is what this checks
+      .filter((token) => /^[a-z][a-z0-9-]*$/.test(token));
+
+    expect(emitted.length).toBeGreaterThan(5);
+    emitted.forEach((token) => {
+      // jspsych-btn is the plugin's own class, re-emitted so its styling applies
+      expect(token === "jspsych-btn" || token.startsWith(PREFIX)).toBe(true);
+    });
+  });
+
+  it("should emit every class the stylesheet styles", () => {
+    const styled = [
+      ...new Set([...css.matchAll(new RegExp(`\\.(${PREFIX}[a-z0-9-]+)`, "g"))].map((m) => m[1])),
+    ];
+    expect(styled.length).toBeGreaterThan(10);
+
+    // A rule nothing emits is dead. Tokens built by interpolation (bcst-shape-star
+    // from `bcst-shape-${card.shape}`) are matched by their stem plus the value.
+    const dead = styled.filter((cls) => {
+      if (sources.includes(cls)) return false;
+      const cut = cls.lastIndexOf("-");
+      const stem = cls.slice(0, cut);
+      const leaf = cls.slice(cut + 1);
+      return !(sources.includes(`${stem}-$`) && sources.includes(`"${leaf}"`));
+    });
+    expect(dead).toEqual([]);
+  });
+
+  it("should draw every shape geometrically rather than as a font glyph", () => {
+    // A glyph in a ::before is sized and positioned by the font's metrics, not by
+    // the CSS box, so it renders small, sits low, and moves with the font stack.
+    const shapeRules = [...css.matchAll(/\.bcst-shape-[a-z]+[^{]*\{([^}]*)\}/g)].map((m) => m[1]);
+    expect(shapeRules.length).toBe(4);
+    shapeRules.forEach((body) => expect(body).not.toMatch(/content\s*:/));
+    expect(css).not.toMatch(/\.bcst-shape-[a-z]+::before/);
+  });
+
+  it("should put the scoping root on every trial the timeline produces", () => {
+    const jsPsych = initJsPsych();
+    const trials = flatten(createTimeline(jsPsych, { showInstructions: true, showFeedback: true }));
+
+    // instructions, sorting, feedback, completion
+    expect(trials.length).toBe(4);
+    trials.forEach((trial) => expect(trial.css_classes).toEqual([ROOT]));
   });
 });

@@ -91,6 +91,11 @@ type Rule = "color" | "shape" | "number";
 // -- CONSTANTS --
 
 const TASK_NAME = "berg-card-sorting-test";
+
+// Added to the display element via `css_classes` on every trial this package
+// builds. Each rule in styles.css is scoped under it, so nothing this package
+// styles reaches another task in a composed battery.
+const CSS_ROOT = "jspsych-berg-card-sorting-test";
 const VERSION = "0.0.1";
 
 /**
@@ -182,11 +187,11 @@ function generateStimulusDeck(config: ResolvedConfig): Card[] {
 function generateCardHtml(card: Card, isStimulus: boolean = false): string {
   const shapes = Array(card.number)
     .fill(null)
-    .map(() => `<div class="bcst-shape ${card.shape} bcst-${card.color}"></div>`)
+    .map(() => `<div class="bcst-shape bcst-shape-${card.shape} bcst-${card.color}"></div>`)
     .join("");
 
   return `
-    <div class="bcst-card ${isStimulus ? "stimulus" : "reference"}">
+    <div class="bcst-card ${isStimulus ? "bcst-card-stimulus" : "bcst-card-reference"}">
       ${shapes}
     </div>
   `;
@@ -219,6 +224,7 @@ function matchesDimension(stimulus: Card, referenceIndex: number, dimension: Rul
 function createInstructionTrials(config: ResolvedConfig) {
   return {
     type: jsPsychInstructions,
+    css_classes: [CSS_ROOT],
     pages: config.text.instruction_pages,
     show_clickable_nav: true,
     button_label_next: config.text.continue_button,
@@ -236,12 +242,15 @@ function createInstructionTrials(config: ResolvedConfig) {
 function createFeedbackTrial(jsPsych: JsPsych, config: ResolvedConfig) {
   return {
     type: jsPsychHtmlKeyboardResponse,
+    css_classes: [CSS_ROOT],
     stimulus: () => {
       const lastTrial = jsPsych.data.get().last(1).values()[0];
       const feedbackText = lastTrial.correct
         ? config.text.correct_feedback
         : config.text.incorrect_feedback;
-      const feedbackClass = lastTrial.correct ? "feedback correct" : "feedback incorrect";
+      const feedbackClass = lastTrial.correct
+        ? "bcst-feedback bcst-feedback-correct"
+        : "bcst-feedback bcst-feedback-incorrect";
 
       return `<div class="${feedbackClass}">${feedbackText}</div>`;
     },
@@ -281,6 +290,7 @@ function createTrialBlock(jsPsych: JsPsych, config: ResolvedConfig) {
   // Sorting trial
   trialTimeline.push({
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: () => {
       const stimulus = deck[state.cardIndex];
       return `
@@ -294,7 +304,7 @@ function createTrialBlock(jsPsych: JsPsych, config: ResolvedConfig) {
     },
     choices: ["", "", "", ""],
     button_html: (choice: string, index: number) =>
-      `<button class="jspsych-btn" style="padding: 0; border: none; background: none;">${generateCardHtml(
+      `<button class="jspsych-btn bcst-choice-button">${generateCardHtml(
         REFERENCE_CARDS[index]
       )}</button>`,
     data: () => {
@@ -413,10 +423,11 @@ function createTrialBlock(jsPsych: JsPsych, config: ResolvedConfig) {
 function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
   return {
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: () => {
       const data = jsPsych.data.get();
       const scores = calculateScores(data);
-      let html = `<div style="max-width: 600px; margin: 0 auto;">`;
+      let html = `<div class="bcst-results">`;
       html += `<h2>${config.text.task_complete}</h2>`;
       html += config.text.result_summary(
         scores.categoriesCompleted,
