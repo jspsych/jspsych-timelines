@@ -603,6 +603,60 @@ describe("Berg Card Sorting Test", () => {
     }, 15000);
   });
 
+  describe("recorded trial fields", () => {
+    it("should record the streak the category-completing trial reached", async () => {
+      const timeline = createTimeline(jsPsych, {
+        showInstructions: false,
+        showFeedback: false,
+        useCanonicalOrder: true,
+        runLength: 3,
+        numCategories: 2,
+      });
+
+      const finished = jsPsych.run([timeline]);
+
+      // The first sixteen canonical cards are red, so reference 0 is the color
+      // match and reference 1 is not. Deliberately miss the second card, complete
+      // the first category, then sort the next card by SHAPE -- which is the rule
+      // the shift moved to -- so a correct trial lands right after the shift.
+      let guard = 0;
+      const pump = setInterval(() => {
+        if (guard++ > 2000) return clearInterval(pump);
+        const buttons = document.querySelectorAll<HTMLButtonElement>(
+          "#jspsych-html-button-response-btngroup button"
+        );
+        if (buttons.length === 0) return;
+        const sorted = jsPsych.data
+          .get()
+          .filter({ task: "berg-card-sorting-test", part: "sorting" })
+          .count();
+        buttons[sorted === 1 || sorted === 5 ? 1 : 0].click();
+      }, 1);
+
+      await finished;
+      clearInterval(pump);
+
+      const rows = jsPsych.data
+        .get()
+        .filter({ task: "berg-card-sorting-test", part: "sorting" })
+        .values();
+
+      expect(rows.slice(0, 6).map((r: any) => r.correct)).toEqual([
+        true,
+        false,
+        true,
+        true,
+        true,
+        true,
+      ]);
+      // The error resets the streak; the fifth trial reaches 3 and completes the
+      // category -- it used to report 0, because the reset ran before the field
+      // was written -- and the sixth starts a fresh streak on the new rule.
+      expect(rows.slice(0, 6).map((r: any) => r.consecutive_correct)).toEqual([1, 0, 1, 2, 3, 1]);
+      expect(rows.slice(0, 6).map((r: any) => r.categories_completed)).toEqual([0, 0, 0, 0, 1, 1]);
+    }, 15000);
+  });
+
   describe("utils.constants", () => {
     it("should export task constants", () => {
       expect(utils.constants.TASK_NAME).toBe("berg-card-sorting-test");

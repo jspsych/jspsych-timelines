@@ -357,20 +357,27 @@ function createTrialBlock(jsPsych: JsPsych, config: ResolvedConfig) {
       // Update state
       if (data.correct) {
         state.consecutiveCorrect++;
-        if (state.consecutiveCorrect >= config.runLength) {
-          // Rule change. The rule just completed becomes the principle a
-          // perseverative response repeats from here on.
-          state.previousRule = currentRule;
-          state.perseveratedTo = currentRule;
-          state.currentRuleIndex = (state.currentRuleIndex + 1) % rules.length;
-          state.consecutiveCorrect = 0;
-          state.categoriesCompleted++;
-        }
       } else {
         state.consecutiveCorrect = 0;
       }
 
+      // The streak this trial reached, recorded before completing a category
+      // resets it. Otherwise the one trial an analyst looks for -- the trial that
+      // reaches runLength -- is the one that reports 0.
       data.consecutive_correct = state.consecutiveCorrect;
+
+      // runLength is validated as >= 1, so a streak of 0 cannot reach it and only
+      // a correct response can complete a category here.
+      if (state.consecutiveCorrect >= config.runLength) {
+        // Rule change. The rule just completed becomes the principle a
+        // perseverative response repeats from here on.
+        state.previousRule = currentRule;
+        state.perseveratedTo = currentRule;
+        state.currentRuleIndex = (state.currentRuleIndex + 1) % rules.length;
+        state.consecutiveCorrect = 0;
+        state.categoriesCompleted++;
+      }
+
       data.categories_completed = state.categoriesCompleted;
 
       // Advance to next card
