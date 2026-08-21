@@ -1,7 +1,7 @@
 {
     "name": "@jspsych-timelines/choice-rt",
     "version": "0.0.1",
-    "description": "Simple and Choice Reaction Time Task for measuring processing speed.",
+    "description": "Two-alternative choice reaction time task for jsPsych, with a variable foreperiod, anticipation detection and built-in scoring.",
     "type": "module",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
@@ -18,7 +18,6 @@
     "keywords": [
         "jsPsych",
         "reaction time",
-        "simple RT",
         "choice RT",
         "processing speed"
     ],
@@ -44,7 +43,6 @@
         "jspsych": ">=8.0.0"
     },
     "dependencies": {
-        "@jspsych/plugin-html-button-response": "^2.1.0",
-        "@jspsych/plugin-html-keyboard-response": "^2.1.0"
+        "@jspsych/plugin-html-button-response": "^2.1.0"
     }
 }

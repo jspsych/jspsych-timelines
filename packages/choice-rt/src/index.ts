@@ -3,6 +3,7 @@ import "./styles.css";
 import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
 import { DataCollection, JsPsych } from "jspsych";
 
+import { version } from "../package.json";
 import { TextConfig, defaultText } from "./text";
 
 // -- TYPES --
@@ -92,7 +93,7 @@ interface ResolvedConfig {
 // -- CONSTANTS --
 
 const TASK_NAME = "choice-rt";
-const VERSION = "0.0.1";
+const VERSION = version;
 
 // added to the display element via `css_classes`; every rule in styles.css is
 // scoped under it, so nothing this package styles reaches another task
