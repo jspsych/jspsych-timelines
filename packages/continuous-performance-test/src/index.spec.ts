@@ -1,6 +1,7 @@
-import { initJsPsych } from "jspsych";
 import { startTimeline } from "@jspsych/test-utils";
-import { createTimeline, utils, timelineUnits } from "./index";
+import { initJsPsych } from "jspsych";
+
+import { createTimeline, timelineUnits, utils } from "./index";
 
 jest.useFakeTimers();
 
@@ -72,18 +73,14 @@ describe("Continuous Performance Test", () => {
       const jsPsych = initJsPsych();
       const withPractice = createTimeline(jsPsych, { showPractice: true });
       const withoutPractice = createTimeline(jsPsych, { showPractice: false });
-      expect(withoutPractice.timeline.length).toBeLessThan(
-        withPractice.timeline.length
-      );
+      expect(withoutPractice.timeline.length).toBeLessThan(withPractice.timeline.length);
     });
 
     it("should skip instructions when showInstructions is false", () => {
       const jsPsych = initJsPsych();
       const withInstructions = createTimeline(jsPsych, { showInstructions: true });
       const withoutInstructions = createTimeline(jsPsych, { showInstructions: false });
-      expect(withoutInstructions.timeline.length).toBeLessThan(
-        withInstructions.timeline.length
-      );
+      expect(withoutInstructions.timeline.length).toBeLessThan(withInstructions.timeline.length);
     });
   });
 
@@ -413,6 +410,183 @@ describe("Continuous Performance Test", () => {
       });
       // 1 test block + 1 completion = 2
       expect(timeline.timeline.length).toBe(2);
+    });
+  });
+
+  describe("configuration validation", () => {
+    const build = (opts: any) => () => createTimeline(initJsPsych(), opts);
+
+    it.each([
+      ["numTrials of 0", { numTrials: 0 }, /numTrials must be an integer >= 1/],
+      ["negative numTrials", { numTrials: -5 }, /numTrials must be an integer >= 1/],
+      ["fractional numTrials", { numTrials: 10.5 }, /numTrials must be an integer >= 1/],
+      ["numBlocks of 0", { numBlocks: 0 }, /numBlocks must be an integer >= 1/],
+      [
+        "more blocks than trials",
+        { numTrials: 3, numBlocks: 5 },
+        /numBlocks \(5\) cannot exceed numTrials \(3\)/,
+      ],
+      [
+        "zero stimulusDuration",
+        { stimulusDuration: 0 },
+        /stimulusDuration must be a finite number >= 1/,
+      ],
+      ["inverted ISI range", { isiMin: 2000, isiMax: 500 }, /isiMax must be >= isiMin \(2000\)/],
+      ["negative isiMin", { isiMin: -100, isiMax: 100 }, /isiMin must be a finite number >= 0/],
+      ["empty isiSet", { isiSet: [] }, /isiSet must be a non-empty array/],
+      [
+        "negative value in isiSet",
+        { isiSet: [500, -1] },
+        /isiSet\[1\] must be a finite number >= 0/,
+      ],
+      [
+        "zero practice trials while practice is shown",
+        { showPractice: true, numPracticeTrials: 0 },
+        /numPracticeTrials must be an integer >= 1/,
+      ],
+    ])("rejects %s", (_label, opts, message) => {
+      expect(build(opts)).toThrow(message);
+    });
+
+    it.each([
+      [
+        "targetProbability above 1",
+        { mode: "standard", targetProbability: 1.5 },
+        /targetProbability must be a probability between 0 and 1/,
+      ],
+      [
+        "negative targetProbability",
+        { mode: "standard", targetProbability: -0.2 },
+        /targetProbability must be a probability between 0 and 1/,
+      ],
+      [
+        "nontargetProbability above 1",
+        { mode: "inhibition", nontargetProbability: 2 },
+        /nontargetProbability must be a probability between 0 and 1/,
+      ],
+      [
+        "a stimuliPool holding only the target letter",
+        { mode: "standard", targetLetter: "X", stimuliPool: ["X"] },
+        /stimuliPool must contain at least one letter other than targetLetter \("X"\)/,
+      ],
+      [
+        "an empty stimuliPool",
+        { mode: "standard", stimuliPool: [] },
+        /stimuliPool must be a non-empty array/,
+      ],
+      [
+        "an empty targetLetter",
+        { mode: "standard", targetLetter: "" },
+        /targetLetter must be a non-empty string/,
+      ],
+    ])("rejects %s", (_label, opts, message) => {
+      expect(build(opts)).toThrow(message);
+    });
+
+    it.each([
+      [
+        "AX probabilities summing above 1",
+        {
+          mode: "ax",
+          axProbability: 0.5,
+          ayProbability: 0.3,
+          bxProbability: 0.3,
+          byProbability: 0.3,
+        },
+        /must sum to 1, got 1\.4/,
+      ],
+      [
+        "AX probabilities summing below 1",
+        {
+          mode: "ax",
+          axProbability: 0.2,
+          ayProbability: 0.2,
+          bxProbability: 0.2,
+          byProbability: 0.2,
+        },
+        /must sum to 1, got 0\.8/,
+      ],
+      [
+        "cueDelay shorter than stimulusDuration",
+        { mode: "ax", cueDelay: 80, stimulusDuration: 250 },
+        /cueDelay must be >= stimulusDuration \(250\)/,
+      ],
+      [
+        "AX counts that round past numTrials",
+        {
+          mode: "ax",
+          numTrials: 1,
+          axProbability: 0.5,
+          ayProbability: 0.5,
+          bxProbability: 0,
+          byProbability: 0,
+          showPractice: false,
+        },
+        /round to more than numTrials \(1\)/,
+      ],
+      [
+        // Sums to exactly 1, so only the per-probability check can catch it.
+        "an out-of-range AX probability that still sums to 1",
+        { mode: "ax", axProbability: 1.5, ayProbability: -0.5, bxProbability: 0, byProbability: 0 },
+        /axProbability must be a probability between 0 and 1, got 1\.5/,
+      ],
+      [
+        "a negative AX probability that still sums to 1",
+        {
+          mode: "ax",
+          axProbability: 0.5,
+          ayProbability: 0.7,
+          bxProbability: -0.2,
+          byProbability: 0,
+        },
+        /bxProbability must be a probability between 0 and 1, got -0\.2/,
+      ],
+    ])("rejects %s", (_label, opts, message) => {
+      expect(build(opts)).toThrow(message);
+    });
+
+    it("reports the offending value in the message", () => {
+      expect(build({ numTrials: -5 })).toThrow("got -5");
+    });
+
+    it("names the package in every error", () => {
+      expect(build({ numTrials: 0 })).toThrow(/^\[continuous-performance-test\]/);
+    });
+
+    it("accepts a pure-target block, which is a legitimate design", () => {
+      expect(build({ mode: "standard", targetProbability: 1 })).not.toThrow();
+    });
+
+    it("accepts a pure-nontarget block, which is a legitimate design", () => {
+      expect(build({ mode: "standard", targetProbability: 0 })).not.toThrow();
+    });
+
+    it("allows a stimuliPool of only the target letter when no pool letters are needed", () => {
+      // targetProbability 1 means every trial is the target letter, so the pool is unused.
+      expect(build({ mode: "standard", targetProbability: 1, stimuliPool: ["X"] })).not.toThrow();
+    });
+
+    it("ignores AX parameters when the mode is not ax", () => {
+      // Leftover AX values must not block a standard run they cannot affect.
+      expect(build({ mode: "standard", axProbability: 0.9, cueDelay: 1 })).not.toThrow();
+    });
+
+    it("ignores practice parameters when practice is disabled", () => {
+      expect(build({ showPractice: false, numPracticeTrials: 0 })).not.toThrow();
+    });
+
+    it("ignores isiMin/isiMax when isiSet is supplied", () => {
+      expect(build({ isiSet: [500, 1000], isiMin: 2000, isiMax: 100 })).not.toThrow();
+    });
+
+    it("accepts the documented Conners-style configuration", () => {
+      expect(
+        build({ mode: "inhibition", numTrials: 360, isiSet: [1000, 2000, 4000], numBlocks: 6 })
+      ).not.toThrow();
+    });
+
+    it("accepts the documented AX-CPT configuration", () => {
+      expect(build({ mode: "ax", numTrials: 120, cueDelay: 3000, numBlocks: 4 })).not.toThrow();
     });
   });
 

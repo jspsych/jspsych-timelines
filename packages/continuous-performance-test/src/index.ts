@@ -1,7 +1,9 @@
 import "./styles.css";
-import { JsPsych, DataCollection } from "jspsych";
+
 import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
-import { defaultText, TextConfig } from "./text";
+import { DataCollection, JsPsych } from "jspsych";
+
+import { TextConfig, defaultText } from "./text";
 
 // -- TYPES --
 
@@ -254,7 +256,10 @@ function constrainSequence<T>(
         consecutiveTargets = 0;
       }
 
-      if (consecutiveTargets > maxConsecutiveTargets || consecutiveNontargets > maxConsecutiveNontargets) {
+      if (
+        consecutiveTargets > maxConsecutiveTargets ||
+        consecutiveNontargets > maxConsecutiveNontargets
+      ) {
         valid = false;
         problemIndex = i;
         break;
@@ -290,11 +295,15 @@ function generateStandardSequence(
   const nontargetPool = stimuliPool.filter((l) => l !== targetLetter);
 
   const sequence: Array<{ letter: string; isTarget: boolean }> = [
-    ...Array(numTargets).fill(null).map(() => ({ letter: targetLetter, isTarget: true })),
-    ...Array(numNontargets).fill(null).map(() => ({
-      letter: randomChoice(nontargetPool),
-      isTarget: false,
-    })),
+    ...Array(numTargets)
+      .fill(null)
+      .map(() => ({ letter: targetLetter, isTarget: true })),
+    ...Array(numNontargets)
+      .fill(null)
+      .map(() => ({
+        letter: randomChoice(nontargetPool),
+        isTarget: false,
+      })),
   ];
 
   const shuffled = shuffleArray(sequence);
@@ -318,11 +327,15 @@ function generateInhibitionSequence(
   const sequence: Array<{ letter: string; isTarget: boolean }> = [
     // In inhibition mode, the nogo stimulus is the "nontarget" (do not respond)
     // and everything else is a "target" (respond)
-    ...Array(numNogo).fill(null).map(() => ({ letter: targetLetter, isTarget: false })),
-    ...Array(numGo).fill(null).map(() => ({
-      letter: randomChoice(goPool),
-      isTarget: true,
-    })),
+    ...Array(numNogo)
+      .fill(null)
+      .map(() => ({ letter: targetLetter, isTarget: false })),
+    ...Array(numGo)
+      .fill(null)
+      .map(() => ({
+        letter: randomChoice(goPool),
+        isTarget: true,
+      })),
   ];
 
   const shuffled = shuffleArray(sequence);
@@ -350,32 +363,41 @@ function generateAXSequence(
   // Remainder goes to BY to ensure we hit numTrials exactly
   const numBY = numTrials - numAX - numAY - numBX;
 
-  const sequence: Array<{ cue: string; probe: string; trialType: AXTrialType; isTarget: boolean }> = [
-    ...Array(numAX).fill(null).map(() => ({
-      cue: cueLetter,
-      probe: probeLetter,
-      trialType: "ax" as AXTrialType,
-      isTarget: true,
-    })),
-    ...Array(numAY).fill(null).map(() => ({
-      cue: cueLetter,
-      probe: randomChoice(nonProbeLetters),
-      trialType: "ay" as AXTrialType,
-      isTarget: false,
-    })),
-    ...Array(numBX).fill(null).map(() => ({
-      cue: randomChoice(nonCueLetters),
-      probe: probeLetter,
-      trialType: "bx" as AXTrialType,
-      isTarget: false,
-    })),
-    ...Array(numBY).fill(null).map(() => ({
-      cue: randomChoice(nonCueLetters),
-      probe: randomChoice(nonProbeLetters),
-      trialType: "by" as AXTrialType,
-      isTarget: false,
-    })),
-  ];
+  const sequence: Array<{ cue: string; probe: string; trialType: AXTrialType; isTarget: boolean }> =
+    [
+      ...Array(numAX)
+        .fill(null)
+        .map(() => ({
+          cue: cueLetter,
+          probe: probeLetter,
+          trialType: "ax" as AXTrialType,
+          isTarget: true,
+        })),
+      ...Array(numAY)
+        .fill(null)
+        .map(() => ({
+          cue: cueLetter,
+          probe: randomChoice(nonProbeLetters),
+          trialType: "ay" as AXTrialType,
+          isTarget: false,
+        })),
+      ...Array(numBX)
+        .fill(null)
+        .map(() => ({
+          cue: randomChoice(nonCueLetters),
+          probe: probeLetter,
+          trialType: "bx" as AXTrialType,
+          isTarget: false,
+        })),
+      ...Array(numBY)
+        .fill(null)
+        .map(() => ({
+          cue: randomChoice(nonCueLetters),
+          probe: randomChoice(nonProbeLetters),
+          trialType: "by" as AXTrialType,
+          isTarget: false,
+        })),
+    ];
 
   const shuffled = shuffleArray(sequence);
   return constrainSequence(shuffled, (item) => item.isTarget);
@@ -434,9 +456,9 @@ function inverseNormalCDF(p: number): number {
   const a1 = -3.969683028665376e1;
   const a2 = 2.209460984245205e2;
   const a3 = -2.759285104469687e2;
-  const a4 = 1.383577518672690e2;
+  const a4 = 1.38357751867269e2;
   const a5 = -3.066479806614716e1;
-  const a6 = 2.506628277459239e0;
+  const a6 = 2.506628277459239;
 
   const b1 = -5.447609879822406e1;
   const b2 = 1.615858368580409e2;
@@ -446,15 +468,15 @@ function inverseNormalCDF(p: number): number {
 
   const c1 = -7.784894002430293e-3;
   const c2 = -3.223964580411365e-1;
-  const c3 = -2.400758277161838e0;
-  const c4 = -2.549732539343734e0;
-  const c5 = 4.374664141464968e0;
-  const c6 = 2.938163982698783e0;
+  const c3 = -2.400758277161838;
+  const c4 = -2.549732539343734;
+  const c5 = 4.374664141464968;
+  const c6 = 2.938163982698783;
 
   const d1 = 7.784695709041462e-3;
   const d2 = 3.224671290700398e-1;
-  const d3 = 2.445134137142996e0;
-  const d4 = 3.754408661907416e0;
+  const d3 = 2.445134137142996;
+  const d4 = 3.754408661907416;
 
   const pLow = 0.02425;
   const pHigh = 1 - pLow;
@@ -533,15 +555,193 @@ function calculateDPrimeAndBeta(
   return { dPrime, beta };
 }
 
+/**
+ * reject configurations that would produce invalid/degenerate datasets,
+ * always failing loudly at construction rather than silently.
+ */
+function validateConfig(config: ResolvedConfig): void {
+  for (const [name, value] of [
+    ["numTrials", config.numTrials],
+    ["numBlocks", config.numBlocks],
+  ] as const) {
+    if (!Number.isInteger(value) || value < 1) {
+      throw new Error(`[${TASK_NAME}] ${name} must be an integer >= 1, got ${value}`);
+    }
+  }
+
+  if (!Number.isFinite(config.stimulusDuration) || config.stimulusDuration < 1) {
+    throw new Error(
+      `[${TASK_NAME}] stimulusDuration must be a finite number >= 1, got ${config.stimulusDuration}`
+    );
+  }
+
+  if (config.numBlocks > config.numTrials) {
+    throw new Error(
+      `[${TASK_NAME}] numBlocks (${config.numBlocks}) cannot exceed numTrials ` +
+        `(${config.numTrials}); every block must contain at least one trial`
+    );
+  }
+
+  if (config.isiSet !== null) {
+    if (!Array.isArray(config.isiSet) || config.isiSet.length === 0) {
+      throw new Error(`[${TASK_NAME}] isiSet must be a non-empty array of durations`);
+    }
+    config.isiSet.forEach((isi, i) => {
+      if (!Number.isFinite(isi) || isi < 0) {
+        throw new Error(`[${TASK_NAME}] isiSet[${i}] must be a finite number >= 0, got ${isi}`);
+      }
+    });
+  } else {
+    for (const [name, value] of [
+      ["isiMin", config.isiMin],
+      ["isiMax", config.isiMax],
+    ] as const) {
+      if (!Number.isFinite(value) || value < 0) {
+        throw new Error(`[${TASK_NAME}] ${name} must be a finite number >= 0, got ${value}`);
+      }
+    }
+    if (config.isiMax < config.isiMin) {
+      throw new Error(
+        `[${TASK_NAME}] isiMax must be >= isiMin (${config.isiMin}), got ${config.isiMax}`
+      );
+    }
+  }
+
+  if (config.showPractice) {
+    if (!Number.isInteger(config.numPracticeTrials) || config.numPracticeTrials < 1) {
+      throw new Error(
+        `[${TASK_NAME}] numPracticeTrials must be an integer >= 1, got ${config.numPracticeTrials}`
+      );
+    }
+    if (!Number.isFinite(config.feedbackDuration) || config.feedbackDuration < 1) {
+      throw new Error(
+        `[${TASK_NAME}] feedbackDuration must be a finite number >= 1, got ${config.feedbackDuration}`
+      );
+    }
+  }
+
+  if (config.mode === "standard" || config.mode === "inhibition") {
+    if (typeof config.targetLetter !== "string" || config.targetLetter.length === 0) {
+      throw new Error(
+        `[${TASK_NAME}] targetLetter must be a non-empty string, got ${JSON.stringify(
+          config.targetLetter
+        )}`
+      );
+    }
+    if (!Array.isArray(config.stimuliPool) || config.stimuliPool.length === 0) {
+      throw new Error(`[${TASK_NAME}] stimuliPool must be a non-empty array of letters`);
+    }
+    if (config.stimuliPool.some((l) => typeof l !== "string" || l.length === 0)) {
+      throw new Error(`[${TASK_NAME}] stimuliPool must contain only non-empty strings`);
+    }
+
+    const probabilityName =
+      config.mode === "standard" ? "targetProbability" : "nontargetProbability";
+    const probability =
+      config.mode === "standard" ? config.targetProbability : config.nontargetProbability;
+    // rejects NaN and Infinity as well as values outside [0, 1]
+    if (!(probability >= 0) || !(probability <= 1)) {
+      throw new Error(
+        `[${TASK_NAME}] ${probabilityName} must be a probability between 0 and 1, got ${probability}`
+      );
+    }
+
+    // the pool supplies the letters that are not the target letter, so it only has
+    // to be non-degenerate when the sequence actually draws from it.
+    const numFromPool = config.numTrials - Math.round(config.numTrials * probability);
+    if (numFromPool > 0 && config.stimuliPool.every((l) => l === config.targetLetter)) {
+      throw new Error(
+        `[${TASK_NAME}] stimuliPool must contain at least one letter other than ` +
+          `targetLetter ("${config.targetLetter}")`
+      );
+    }
+  }
+
+  if (config.mode === "ax") {
+    for (const [name, value] of [
+      ["cueLetter", config.cueLetter],
+      ["probeLetter", config.probeLetter],
+    ] as const) {
+      if (typeof value !== "string" || value.length === 0) {
+        throw new Error(
+          `[${TASK_NAME}] ${name} must be a non-empty string, got ${JSON.stringify(value)}`
+        );
+      }
+    }
+
+    for (const [name, value] of [
+      ["axProbability", config.axProbability],
+      ["ayProbability", config.ayProbability],
+      ["bxProbability", config.bxProbability],
+      ["byProbability", config.byProbability],
+    ] as const) {
+      // rejects NaN and Infinity as well as values outside [0, 1]
+      if (!(value >= 0) || !(value <= 1)) {
+        throw new Error(
+          `[${TASK_NAME}] ${name} must be a probability between 0 and 1, got ${value}`
+        );
+      }
+    }
+
+    const sum =
+      config.axProbability + config.ayProbability + config.bxProbability + config.byProbability;
+    if (Math.abs(sum - 1) > 1e-9) {
+      throw new Error(
+        `[${TASK_NAME}] axProbability, ayProbability, bxProbability and byProbability ` +
+          `must sum to 1, got ${sum}`
+      );
+    }
+
+    // Rounding each probability independently can still overshoot numTrials on short
+    // runs (BY takes the remainder and would go negative), so check the counts the
+    // generator will actually derive.
+    const numAX = Math.round(config.numTrials * config.axProbability);
+    const numAY = Math.round(config.numTrials * config.ayProbability);
+    const numBX = Math.round(config.numTrials * config.bxProbability);
+    const numBY = config.numTrials - numAX - numAY - numBX;
+    if (numBY < 0) {
+      throw new Error(
+        `[${TASK_NAME}] the AX trial-type probabilities round to more than numTrials ` +
+          `(${config.numTrials}) at this trial count: ax=${numAX}, ay=${numAY}, ` +
+          `bx=${numBX} leaves ${numBY} for by. Increase numTrials or adjust the probabilities`
+      );
+    }
+
+    for (const [name, pool, needed] of [
+      ["nonCueLetters", config.nonCueLetters, numBX > 0 || numBY > 0],
+      ["nonProbeLetters", config.nonProbeLetters, numAY > 0 || numBY > 0],
+    ] as const) {
+      if (!needed) continue;
+      if (!Array.isArray(pool) || pool.length === 0) {
+        throw new Error(`[${TASK_NAME}] ${name} must be a non-empty array of letters`);
+      }
+      if (pool.some((l) => typeof l !== "string" || l.length === 0)) {
+        throw new Error(`[${TASK_NAME}] ${name} must contain only non-empty strings`);
+      }
+    }
+
+    if (!Number.isFinite(config.cueDelay) || config.cueDelay < 1) {
+      throw new Error(
+        `[${TASK_NAME}] cueDelay must be a finite number >= 1, got ${config.cueDelay}`
+      );
+    }
+    // The cue is swapped for a fixation after stimulusDuration, which only happens
+    // while the cue trial is still on screen.
+    if (config.cueDelay < config.stimulusDuration) {
+      throw new Error(
+        `[${TASK_NAME}] cueDelay must be >= stimulusDuration ` +
+          `(${config.stimulusDuration}), got ${config.cueDelay}`
+      );
+    }
+  }
+}
+
 // -- TIMELINE UNITS --
 
 /**
  * Creates instruction trials.
  */
-function createInstructionTrials(
-  config: ResolvedConfig,
-  part: "intro" | "practice" | "main"
-) {
+function createInstructionTrials(config: ResolvedConfig, part: "intro" | "practice" | "main") {
   let stimulus: string;
   let buttonLabel: string;
 
@@ -803,10 +1003,7 @@ function createAXTrial(
 /**
  * Creates a practice block.
  */
-function createPracticeBlock(
-  jsPsych: JsPsych,
-  config: ResolvedConfig
-) {
+function createPracticeBlock(jsPsych: JsPsych, config: ResolvedConfig) {
   const sequence = generateTrialSequence(config, config.numPracticeTrials);
   const timeline: any[] = [];
 
@@ -979,10 +1176,7 @@ function calculateScores(data: DataCollection): ScoringResult {
     .filter((t) => t.responded && t.rt !== null)
     .map((t) => t.rt as number);
 
-  const meanRT =
-    hitRTs.length > 0
-      ? hitRTs.reduce((a, b) => a + b, 0) / hitRTs.length
-      : null;
+  const meanRT = hitRTs.length > 0 ? hitRTs.reduce((a, b) => a + b, 0) / hitRTs.length : null;
 
   const rtStd = calculateStd(hitRTs);
 
@@ -1041,10 +1235,7 @@ function computeBlockScores(data: DataCollection): ScoringResult[] {
       .filter((t) => t.responded && t.rt !== null)
       .map((t) => t.rt as number);
 
-    const meanRT =
-      hitRTs.length > 0
-        ? hitRTs.reduce((a, b) => a + b, 0) / hitRTs.length
-        : null;
+    const meanRT = hitRTs.length > 0 ? hitRTs.reduce((a, b) => a + b, 0) / hitRTs.length : null;
 
     const rtStd = calculateStd(hitRTs);
 
@@ -1110,10 +1301,7 @@ function computeAXScores(data: DataCollection): Record<AXTrialType, ScoringResul
     const respondedTrials = trials.filter((t) => t.responded && t.rt !== null);
     const rts = respondedTrials.map((t) => t.rt as number);
 
-    const meanRT =
-      rts.length > 0
-        ? rts.reduce((a, b) => a + b, 0) / rts.length
-        : null;
+    const meanRT = rts.length > 0 ? rts.reduce((a, b) => a + b, 0) / rts.length : null;
 
     const rtStd = calculateStd(rts);
 
@@ -1141,7 +1329,12 @@ function computeAXScores(data: DataCollection): Record<AXTrialType, ScoringResul
  */
 function getSummary(
   data: DataCollection
-): ScoringResult & { taskName: string; version: string; blockScores?: ScoringResult[]; axScores?: Record<AXTrialType, ScoringResult> } {
+): ScoringResult & {
+  taskName: string;
+  version: string;
+  blockScores?: ScoringResult[];
+  axScores?: Record<AXTrialType, ScoringResult>;
+} {
   const scores = calculateScores(data);
   const blockScores = computeBlockScores(data);
 
@@ -1187,10 +1380,7 @@ function getSummary(
  * jsPsych.run([cptTimeline]);
  * ```
  */
-export function createTimeline(
-  jsPsych: JsPsych,
-  options: CPTOptions = {}
-) {
+export function createTimeline(jsPsych: JsPsych, options: CPTOptions = {}) {
   // Merge text with defaults
   const text: TextConfig = { ...defaultText, ...options.text };
 
@@ -1200,6 +1390,8 @@ export function createTimeline(
     isiSet: options.isiSet ?? DEFAULT_OPTIONS.isiSet,
     text,
   };
+
+  validateConfig(config);
 
   const timeline: any[] = [];
 
