@@ -144,6 +144,21 @@ interface ResolvedConfig {
 const TASK_NAME = "continuous-performance-test";
 const VERSION = "0.0.1";
 
+// Longest run of each stimulus class the sequence generators aim for. Standard and
+// AX mode make the responded-to stimulus the rare one; inhibition mode inverts that,
+// so its limits are written against the go/no-go split rather than reused.
+const MAX_CONSECUTIVE_TARGETS = 3;
+const MAX_CONSECUTIVE_NONTARGETS = 8;
+const MAX_CONSECUTIVE_GO = 8;
+const MAX_CONSECUTIVE_NOGO = 2;
+
+// How much room a feasible run limit is given above the minimum the composition
+// allows. At exactly the minimum only near-periodic arrangements survive.
+const RUN_LIMIT_HEADROOM = 2;
+
+// Random swaps per trial applied when mixing an arrangement.
+const MIX_SWEEPS = 4;
+
 const DEFAULT_OPTIONS = {
   mode: "standard" as CPTMode,
   showInstructions: true,
@@ -228,55 +243,149 @@ function createBlankHTML(): string {
 }
 
 /**
- * Constrains a sequence so that no more than maxConsecutiveTargets targets
- * appear in a row and no more than maxConsecutiveNontargets nontargets in a row.
+ * Smallest maximum run length that `count` items of one class can be held to,
+ * given `others` items of the other class available to break them up. The other
+ * class creates at most `others + 1` gaps to distribute this class across.
+ */
+function minFeasibleRun(count: number, others: number): number {
+  return count === 0 ? 0 : Math.ceil(count / (others + 1));
+}
+
+/**
+ * Raises a desired run limit to one the trial composition can actually satisfy.
+ *
+ * Holding a class to exactly its minimum feasible run leaves so few valid
+ * arrangements that the sequence becomes periodic and predictable, so a feasible
+ * limit is given room above the minimum.
+ */
+function feasibleRunLimit(count: number, others: number, desired: number): number {
+  return Math.max(desired, minFeasibleRun(count, others) * RUN_LIMIT_HEADROOM);
+}
+
+/**
+ * True when no run of either class exceeds its limit.
+ */
+function runsWithinLimits(plan: boolean[], maxTargetRun: number, maxNontargetRun: number): boolean {
+  let run = 0;
+  let current: boolean | null = null;
+  for (const isTarget of plan) {
+    run = isTarget === current ? run + 1 : 1;
+    current = isTarget;
+    if (run > (isTarget ? maxTargetRun : maxNontargetRun)) return false;
+  }
+  return true;
+}
+
+/**
+ * Builds one arrangement satisfying both run limits, choosing each position from
+ * the classes that still have trials left and cannot strand the remainder.
+ *
+ * Returns null when the limits are unsatisfiable for this composition.
+ */
+function seedArrangement(
+  numTargets: number,
+  numNontargets: number,
+  maxTargetRun: number,
+  maxNontargetRun: number
+): boolean[] | null {
+  const plan: boolean[] = [];
+  let targetsLeft = numTargets;
+  let nontargetsLeft = numNontargets;
+  let inTargetRun = false;
+  let run = 0;
+
+  while (targetsLeft > 0 || nontargetsLeft > 0) {
+    // Length this position would give the current run for each choice.
+    const targetRun = inTargetRun ? run + 1 : 1;
+    const nontargetRun = inTargetRun ? 1 : run + 1;
+
+    // A choice is only allowed if what remains can still be arranged: the leftover
+    // trials of each class have to fit in the runs the other class can separate.
+    const canTakeTarget =
+      targetsLeft > 0 &&
+      targetRun <= maxTargetRun &&
+      targetsLeft - 1 <= maxTargetRun - targetRun + maxTargetRun * nontargetsLeft &&
+      nontargetsLeft <= maxNontargetRun * targetsLeft;
+    const canTakeNontarget =
+      nontargetsLeft > 0 &&
+      nontargetRun <= maxNontargetRun &&
+      nontargetsLeft - 1 <= maxNontargetRun - nontargetRun + maxNontargetRun * targetsLeft &&
+      targetsLeft <= maxTargetRun * nontargetsLeft;
+
+    let takeTarget: boolean;
+    if (canTakeTarget && canTakeNontarget) {
+      // Weight by what is left so the classes stay proportionally mixed.
+      takeTarget = Math.random() * (targetsLeft + nontargetsLeft) < targetsLeft;
+    } else if (canTakeTarget) {
+      takeTarget = true;
+    } else if (canTakeNontarget) {
+      takeTarget = false;
+    } else {
+      return null;
+    }
+
+    plan.push(takeTarget);
+    run = takeTarget === inTargetRun ? run + 1 : 1;
+    inTargetRun = takeTarget;
+    if (takeTarget) targetsLeft--;
+    else nontargetsLeft--;
+  }
+
+  return plan;
+}
+
+/**
+ * Removes the seed's ordering bias by swapping pairs at random and keeping only
+ * the swaps that leave both run limits satisfied. Swapping preserves the trial
+ * counts exactly, so only the arrangement changes.
+ */
+function mixArrangement(plan: boolean[], maxTargetRun: number, maxNontargetRun: number): void {
+  const swaps = plan.length * MIX_SWEEPS;
+  for (let s = 0; s < swaps; s++) {
+    const i = Math.floor(Math.random() * plan.length);
+    const j = Math.floor(Math.random() * plan.length);
+    if (plan[i] === plan[j]) continue;
+    [plan[i], plan[j]] = [plan[j], plan[i]];
+    if (!runsWithinLimits(plan, maxTargetRun, maxNontargetRun)) {
+      [plan[i], plan[j]] = [plan[j], plan[i]];
+    }
+  }
+}
+
+/**
+ * Returns a random permutation of `sequence` in which no more than
+ * `desiredTargetRun` targets and no more than `desiredNontargetRun` non-targets
+ * appear consecutively.
+ *
+ * Each limit is raised first to something the trial composition can satisfy, so a
+ * limit written for one mode's proportions cannot silently mangle another's.
  */
 function constrainSequence<T>(
   sequence: T[],
   isTarget: (item: T) => boolean,
-  maxConsecutiveTargets: number = 3,
-  maxConsecutiveNontargets: number = 8
+  desiredTargetRun: number,
+  desiredNontargetRun: number
 ): T[] {
-  const result = [...sequence];
-  const maxAttempts = result.length * 10;
-  let attempts = 0;
+  const targets = shuffleArray(sequence.filter((item) => isTarget(item)));
+  const nontargets = shuffleArray(sequence.filter((item) => !isTarget(item)));
 
-  while (attempts < maxAttempts) {
-    let valid = true;
-    let consecutiveTargets = 0;
-    let consecutiveNontargets = 0;
-    let problemIndex = -1;
+  const maxTargetRun = feasibleRunLimit(targets.length, nontargets.length, desiredTargetRun);
+  const maxNontargetRun = feasibleRunLimit(nontargets.length, targets.length, desiredNontargetRun);
 
-    for (let i = 0; i < result.length; i++) {
-      if (isTarget(result[i])) {
-        consecutiveTargets++;
-        consecutiveNontargets = 0;
-      } else {
-        consecutiveNontargets++;
-        consecutiveTargets = 0;
-      }
-
-      if (
-        consecutiveTargets > maxConsecutiveTargets ||
-        consecutiveNontargets > maxConsecutiveNontargets
-      ) {
-        valid = false;
-        problemIndex = i;
-        break;
-      }
-    }
-
-    if (valid) break;
-
-    // Swap the problem element with a random one
-    const swapIdx = Math.floor(Math.random() * result.length);
-    if (swapIdx !== problemIndex) {
-      [result[problemIndex], result[swapIdx]] = [result[swapIdx], result[problemIndex]];
-    }
-    attempts++;
+  const plan = seedArrangement(targets.length, nontargets.length, maxTargetRun, maxNontargetRun);
+  if (plan === null) {
+    throw new Error(
+      `[${TASK_NAME}] cannot arrange ${targets.length} target and ${nontargets.length} ` +
+        `non-target trials with runs of at most ${maxTargetRun} and ${maxNontargetRun}`
+    );
   }
+  mixArrangement(plan, maxTargetRun, maxNontargetRun);
 
-  return result;
+  let nextTarget = 0;
+  let nextNontarget = 0;
+  return plan.map((takeTarget) =>
+    takeTarget ? targets[nextTarget++] : nontargets[nextNontarget++]
+  );
 }
 
 /**
@@ -306,8 +415,12 @@ function generateStandardSequence(
       })),
   ];
 
-  const shuffled = shuffleArray(sequence);
-  return constrainSequence(shuffled, (item) => item.isTarget);
+  return constrainSequence(
+    sequence,
+    (item) => item.isTarget,
+    MAX_CONSECUTIVE_TARGETS,
+    MAX_CONSECUTIVE_NONTARGETS
+  );
 }
 
 /**
@@ -338,8 +451,14 @@ function generateInhibitionSequence(
       })),
   ];
 
-  const shuffled = shuffleArray(sequence);
-  return constrainSequence(shuffled, (item) => item.isTarget);
+  // isTarget marks the frequent go stimulus here, so the limits are the go/no-go
+  // pair rather than the rare-target pair the other modes use.
+  return constrainSequence(
+    sequence,
+    (item) => item.isTarget,
+    MAX_CONSECUTIVE_GO,
+    MAX_CONSECUTIVE_NOGO
+  );
 }
 
 /**
@@ -399,8 +518,12 @@ function generateAXSequence(
         })),
     ];
 
-  const shuffled = shuffleArray(sequence);
-  return constrainSequence(shuffled, (item) => item.isTarget);
+  return constrainSequence(
+    sequence,
+    (item) => item.isTarget,
+    MAX_CONSECUTIVE_TARGETS,
+    MAX_CONSECUTIVE_NONTARGETS
+  );
 }
 
 /**
@@ -1327,9 +1450,7 @@ function computeAXScores(data: DataCollection): Record<AXTrialType, ScoringResul
 /**
  * Returns a full summary of the CPT performance.
  */
-function getSummary(
-  data: DataCollection
-): ScoringResult & {
+function getSummary(data: DataCollection): ScoringResult & {
   taskName: string;
   version: string;
   blockScores?: ScoringResult[];

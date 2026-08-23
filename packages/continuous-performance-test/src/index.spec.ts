@@ -226,6 +226,133 @@ describe("Continuous Performance Test", () => {
     });
   });
 
+  describe("sequence distribution", () => {
+    const cfg = (over: any = {}) => ({
+      ...utils.constants.DEFAULT_OPTIONS,
+      text: utils.text,
+      ...over,
+    });
+    const longestRun = (seq: any[], pred: (s: any) => boolean) => {
+      let max = 0;
+      let run = 0;
+      for (const s of seq) {
+        run = pred(s) ? run + 1 : 0;
+        if (run > max) max = run;
+      }
+      return max;
+    };
+    /**
+     * Mean position of the matching trials, scaled to 0..1. An unbiased sequence
+     * centres on 0.5; crowding them toward either end moves it off centre. This is
+     * a sharper probe than counting halves, which stays at 50% under a bias big
+     * enough to matter.
+     */
+    const meanPosition = (mode: string, pred: (s: any) => boolean, n = 100, runs = 300) => {
+      let sum = 0;
+      let count = 0;
+      for (let r = 0; r < runs; r++) {
+        const seq = utils.sequence.generateTrialSequence(cfg({ mode }), n);
+        seq.forEach((s, i) => {
+          if (pred(s)) {
+            sum += i / (n - 1);
+            count++;
+          }
+        });
+      }
+      return sum / count;
+    };
+
+    // The defect this guards: inhibition mode's rare no-go trials were all crammed
+    // into the first half of the run, leaving later blocks with nothing to score.
+    it.each([
+      ["inhibition no-go", "inhibition", (s: any) => !s.isTarget],
+      ["standard target", "standard", (s: any) => s.isTarget],
+      ["AX target", "ax", (s: any) => s.isTarget],
+    ])("centres %s trials in the run rather than crowding one end", (_label, mode, pred) => {
+      const position = meanPosition(mode, pred);
+      expect(position).toBeGreaterThan(0.485);
+      expect(position).toBeLessThan(0.515);
+    });
+
+    // Holding a class to exactly its minimum feasible run makes the rare stimulus
+    // land on a near-fixed cycle, which a participant can learn. Gaps between
+    // no-go trials must stay irregular.
+    it("keeps the spacing between inhibition no-go trials irregular", () => {
+      const gaps: number[] = [];
+      for (let r = 0; r < 200; r++) {
+        const seq = utils.sequence.generateTrialSequence(cfg({ mode: "inhibition" }), 100);
+        let previous = -1;
+        seq.forEach((s, i) => {
+          if (!s.isTarget) {
+            if (previous >= 0) gaps.push(i - previous);
+            previous = i;
+          }
+        });
+      }
+      const mean = gaps.reduce((a, b) => a + b, 0) / gaps.length;
+      const sd = Math.sqrt(gaps.reduce((a, b) => a + (b - mean) ** 2, 0) / gaps.length);
+      expect(sd / mean).toBeGreaterThan(0.35);
+    });
+
+    it("reaches the end of a long inhibition run with no-go trials still to come", () => {
+      // A 360-trial run previously placed its last no-go trial around trial 138.
+      const seq = utils.sequence.generateTrialSequence(cfg({ mode: "inhibition" }), 360);
+      const lastNoGo = seq.reduce((last, s, i) => (!s.isTarget ? i : last), -1);
+      expect(lastNoGo).toBeGreaterThan(240);
+    });
+
+    it.each([
+      ["standard", 3, 8],
+      ["ax", 3, 8],
+    ])("holds %s mode to runs of %i targets and %i non-targets", (mode, maxT, maxN) => {
+      for (let r = 0; r < 50; r++) {
+        const seq = utils.sequence.generateTrialSequence(cfg({ mode }), 100);
+        expect(longestRun(seq, (s) => s.isTarget)).toBeLessThanOrEqual(maxT);
+        expect(longestRun(seq, (s) => !s.isTarget)).toBeLessThanOrEqual(maxN);
+      }
+    });
+
+    it("holds inhibition mode to limits its 90/10 split can actually satisfy", () => {
+      // Reusing the rare-target limits here is what broke the distribution: 90 go
+      // trials cannot be held to runs of 3 by any arrangement. The iteration count
+      // is high because a run of 3 no-go trials is rare enough that a short loop
+      // misses a loosened limit.
+      let longestNoGo = 0;
+      for (let r = 0; r < 400; r++) {
+        const seq = utils.sequence.generateTrialSequence(cfg({ mode: "inhibition" }), 100);
+        longestNoGo = Math.max(
+          longestNoGo,
+          longestRun(seq, (s) => !s.isTarget)
+        );
+        expect(longestRun(seq, (s) => s.isTarget)).toBeLessThanOrEqual(18);
+      }
+      expect(longestNoGo).toBeLessThanOrEqual(2);
+      // and the limit is genuinely reached, so the assertion above is not vacuous
+      expect(longestNoGo).toBe(2);
+    });
+
+    it.each(["standard", "inhibition", "ax"])(
+      "preserves the exact trial counts in %s mode",
+      (mode) => {
+        const seq = utils.sequence.generateTrialSequence(cfg({ mode }), 100);
+        expect(seq).toHaveLength(100);
+        const targets = seq.filter((s) => s.isTarget).length;
+        expect(targets).toBe(mode === "standard" ? 20 : mode === "inhibition" ? 90 : 40);
+      }
+    );
+
+    it.each([
+      ["a pure-target block", { mode: "standard", targetProbability: 1 }],
+      ["a pure-nontarget block", { mode: "standard", targetProbability: 0 }],
+      ["a single trial", { mode: "standard" }],
+    ])("builds %s without stranding trials", (_label, over) => {
+      const n = "targetProbability" in over ? 40 : 1;
+      const seq = utils.sequence.generateTrialSequence(cfg(over), n);
+      expect(seq).toHaveLength(n);
+      expect(seq.every((s) => s !== undefined)).toBe(true);
+    });
+  });
+
   describe("scoring functions", () => {
     it("should handle empty data", () => {
       const jsPsych = initJsPsych();
