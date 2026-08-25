@@ -195,11 +195,13 @@ to pick up the built-in layout; every class this timeline styles is prefixed
 ```javascript
 const spanishText = {
   respond_button: "RESPONDER",
-  instruction_standard: `
+  // Strings that mention a configurable value are functions of that value, so the
+  // button label and the target letter cannot drift out of sync with the config.
+  instruction_standard: (targetLetter, respondLabel) => `
     <div class="cpt-instructions">
       <h2>Test de Rendimiento Continuo</h2>
       <p>Verás letras en la pantalla una a la vez.</p>
-      <p>Toca el botón <strong>RESPONDER</strong> cuando veas la letra <strong>X</strong>.</p>
+      <p>Toca el botón <strong>${respondLabel}</strong> cuando veas la letra <strong>${targetLetter}</strong>.</p>
       <p>No toques nada para otras letras.</p>
     </div>
   `,
@@ -208,6 +210,19 @@ const spanishText = {
 
 const task = createTimeline(jsPsych, { text: spanishText });
 ```
+
+### Text keys that take arguments
+
+Most keys are plain strings. Keys whose wording depends on a configured value are
+functions of that value, so a translation cannot desync from the config. Arguments
+may be ignored — `() => "..."` is a valid override.
+
+| Key | Signature |
+|-----|-----------|
+| `instruction_standard` | `(targetLetter, respondLabel) => string` |
+| `instruction_inhibition` | `(noGoLetter, respondLabel) => string` |
+| `instruction_ax` | `(cueLetter, probeLetter, respondLabel) => string` |
+| `result_summary` | `(hitRate, commissionRate, dPrime, averageRT) => string` — rates may be `null` |
 
 ## Timeline Units
 

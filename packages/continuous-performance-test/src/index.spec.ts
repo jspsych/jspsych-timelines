@@ -959,7 +959,8 @@ describe("Continuous Performance Test", () => {
         createTimeline(jsPsych, {
           showInstructions: true,
           text: {
-            instruction_standard: "<p>Custom intro text</p>",
+            // arguments can be ignored: an override need not use the values
+            instruction_standard: () => "<p>Custom intro text</p>",
             continue_button: "Next",
           },
         }).timeline
@@ -978,6 +979,87 @@ describe("Continuous Performance Test", () => {
       });
 
       expect(timeline.timeline).toBeDefined();
+    });
+  });
+
+  describe("instruction text tracks the configured stimuli", () => {
+    const introHTML = async (options: any) => {
+      const jsPsych = initJsPsych();
+      const { displayElement } = await startTimeline(
+        createTimeline(jsPsych, { showInstructions: true, ...options }).timeline
+      );
+      return displayElement.innerHTML;
+    };
+
+    // The defect this guards: the instructions hardcoded "X", "A" and "RESPOND"
+    // while targetLetter, cueLetter, probeLetter and respond_button were all
+    // separately configurable, so changing one silently desynced the other.
+    it("names the configured target letter in standard mode", async () => {
+      const html = await introHTML({ mode: "standard", targetLetter: "Z" });
+      expect(html).toContain("<strong>Z</strong>");
+      expect(html).not.toContain("target letter <strong>X</strong>");
+    });
+
+    it("names the configured no-go letter in inhibition mode", async () => {
+      const html = await introHTML({ mode: "inhibition", targetLetter: "Q" });
+      expect(html).toContain("<strong>Q</strong>");
+      expect(html).not.toContain("letter <strong>X</strong>");
+    });
+
+    it("names the configured cue and probe letters in AX mode", async () => {
+      const html = await introHTML({ mode: "ax", cueLetter: "M", probeLetter: "T" });
+      // Asserting only that both letters appear would not catch them being swapped,
+      // so this pins each letter to its role in the sentence.
+      expect(html).toContain("<strong>T</strong> after the letter <strong>M</strong>");
+      expect(html).not.toContain("<strong>A</strong>");
+    });
+
+    it("keeps the cue and probe the right way round", async () => {
+      const html = await introHTML({ mode: "ax", cueLetter: "M", probeLetter: "T" });
+      const probeAt = html.indexOf("<strong>T</strong>");
+      const cueAt = html.indexOf("<strong>M</strong>");
+      const afterAt = html.indexOf("after the letter");
+      expect(probeAt).toBeLessThan(afterAt);
+      expect(cueAt).toBeGreaterThan(afterAt);
+    });
+
+    it.each([
+      ["standard", { mode: "standard" }],
+      ["inhibition", { mode: "inhibition" }],
+      ["ax", { mode: "ax" }],
+    ])("names the configured respond button in %s mode", async (_label, options) => {
+      const html = await introHTML({
+        ...options,
+        text: { respond_button: "PULSA" },
+      });
+      expect(html).toContain("<strong>PULSA</strong>");
+      expect(html).not.toContain("<strong>RESPOND</strong>");
+    });
+
+    it("uses the same label on the button the instructions name", async () => {
+      const jsPsych = initJsPsych();
+      const timeline = createTimeline(jsPsych, {
+        mode: "standard",
+        showInstructions: false,
+        showPractice: false,
+        numTrials: 1,
+        text: { respond_button: "PULSA" },
+      });
+      const labels: string[] = [];
+      const walk = (node: any) => {
+        if (Array.isArray(node.timeline)) return node.timeline.forEach(walk);
+        if (node.choices) labels.push(...node.choices);
+      };
+      walk(timeline);
+      expect(labels).toContain("PULSA");
+    });
+
+    it("lets a translation override ignore the arguments entirely", async () => {
+      const html = await introHTML({
+        mode: "standard",
+        text: { instruction_standard: () => "<p>Sólo esto</p>" },
+      });
+      expect(html).toContain("Sólo esto");
     });
   });
 

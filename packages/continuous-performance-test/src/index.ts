@@ -898,13 +898,23 @@ function createInstructionTrials(config: ResolvedConfig, part: "intro" | "practi
     case "intro":
       switch (config.mode) {
         case "standard":
-          stimulus = config.text.instruction_standard;
+          stimulus = config.text.instruction_standard(
+            config.targetLetter,
+            config.text.respond_button
+          );
           break;
         case "inhibition":
-          stimulus = config.text.instruction_inhibition;
+          stimulus = config.text.instruction_inhibition(
+            config.targetLetter,
+            config.text.respond_button
+          );
           break;
         case "ax":
-          stimulus = config.text.instruction_ax;
+          stimulus = config.text.instruction_ax(
+            config.cueLetter,
+            config.probeLetter,
+            config.text.respond_button
+          );
           break;
       }
       buttonLabel = config.text.continue_button;

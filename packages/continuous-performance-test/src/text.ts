@@ -8,11 +8,11 @@ export interface TextConfig {
   /** Start button label */
   start_button: string;
   /** Introduction instruction for standard mode */
-  instruction_standard: string;
+  instruction_standard: (targetLetter: string, respondLabel: string) => string;
   /** Introduction instruction for inhibition mode */
-  instruction_inhibition: string;
+  instruction_inhibition: (noGoLetter: string, respondLabel: string) => string;
   /** Introduction instruction for AX mode */
-  instruction_ax: string;
+  instruction_ax: (cueLetter: string, probeLetter: string, respondLabel: string) => string;
   /** Practice instruction */
   instruction_practice: string;
   /** Main task instruction */
@@ -45,31 +45,31 @@ export const defaultText: TextConfig = {
   start_button: "Start",
   respond_button: "RESPOND",
 
-  instruction_standard: `
+  instruction_standard: (targetLetter: string, respondLabel: string) => `
     <div class="cpt-instructions">
       <h2>Continuous Performance Test</h2>
       <p>In this task, letters will appear one at a time on the screen.</p>
-      <p>Tap the <strong>RESPOND</strong> button when you see the target letter <strong>X</strong>.</p>
+      <p>Tap the <strong>${respondLabel}</strong> button when you see the target letter <strong>${targetLetter}</strong>.</p>
       <p>Do <strong>not</strong> tap for any other letter.</p>
       <p>Try to respond as quickly and accurately as possible.</p>
     </div>
   `,
 
-  instruction_inhibition: `
+  instruction_inhibition: (noGoLetter: string, respondLabel: string) => `
     <div class="cpt-instructions">
       <h2>Continuous Performance Test</h2>
       <p>In this task, letters will appear one at a time on the screen.</p>
-      <p>Tap the <strong>RESPOND</strong> button for <strong>every</strong> letter you see.</p>
-      <p>Do <strong>not</strong> tap when you see the letter <strong>X</strong>.</p>
+      <p>Tap the <strong>${respondLabel}</strong> button for <strong>every</strong> letter you see.</p>
+      <p>Do <strong>not</strong> tap when you see the letter <strong>${noGoLetter}</strong>.</p>
       <p>Try to respond as quickly and accurately as possible.</p>
     </div>
   `,
 
-  instruction_ax: `
+  instruction_ax: (cueLetter: string, probeLetter: string, respondLabel: string) => `
     <div class="cpt-instructions">
       <h2>Continuous Performance Test</h2>
       <p>In this task, letters will appear in pairs: a <strong>cue</strong> followed by a <strong>probe</strong>.</p>
-      <p>Tap the <strong>RESPOND</strong> button only when you see the letter <strong>X</strong> after the letter <strong>A</strong>.</p>
+      <p>Tap the <strong>${respondLabel}</strong> button only when you see the letter <strong>${probeLetter}</strong> after the letter <strong>${cueLetter}</strong>.</p>
       <p>Do <strong>not</strong> tap for any other combination.</p>
       <p>Try to respond as quickly and accurately as possible.</p>
     </div>
