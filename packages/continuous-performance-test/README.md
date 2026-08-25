@@ -188,11 +188,15 @@ const scores = jsPsychTimelineCPT.utils.scoring.getSummary(jsPsych.data.get());
 
 ## Translation
 
+Instruction, rest and results strings are HTML. Wrap copy in `cpt-instructions`
+to pick up the built-in layout; every class this timeline styles is prefixed
+`cpt-` and scoped to its own trials.
+
 ```javascript
 const spanishText = {
   respond_button: "RESPONDER",
   instruction_standard: `
-    <div class="instructions">
+    <div class="cpt-instructions">
       <h2>Test de Rendimiento Continuo</h2>
       <p>Verás letras en la pantalla una a la vez.</p>
       <p>Toca el botón <strong>RESPONDER</strong> cuando veas la letra <strong>X</strong>.</p>

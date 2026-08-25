@@ -1,7 +1,7 @@
 /* Continuous Performance Test Styles */
 
 /* Trial content container - fixed height prevents layout shifts */
-.trial-content {
+.cpt-trial-content {
   min-height: 200px;
   display: flex;
   justify-content: center;
@@ -20,35 +20,33 @@
   font-size: 48px;
 }
 
-/* Instructions container */
-.instructions {
+/* Instructions, rest and results copy */
+.cpt-instructions {
   max-width: 600px;
   margin: 0 auto;
   padding: 0 20px;
   text-align: left;
 }
 
-.instructions h2,
-.instructions h3 {
+.cpt-instructions h2,
+.cpt-instructions h3 {
   text-align: center;
 }
 
-/* Large respond button */
-.jspsych-btn {
-  min-height: 60px;
-  min-width: 150px;
-  font-size: 20px;
-}
-
-/* Feedback state modifiers */
-.feedback.correct {
+/* Practice feedback. The shipped feedback strings carry their own inline colour,
+ * so these apply to a text object that supplies unstyled markup. */
+.cpt-feedback-correct {
   color: green;
 }
 
-.feedback.incorrect {
+.cpt-feedback-incorrect {
   color: red;
 }
 
-.feedback.timeout {
-  color: orange;
+/* Large respond button. Scoped under the timeline root so it cannot resize
+ * buttons belonging to other tasks in a composed battery. */
+.jspsych-continuous-performance-test .jspsych-btn {
+  min-height: 60px;
+  min-width: 150px;
+  font-size: 20px;
 }

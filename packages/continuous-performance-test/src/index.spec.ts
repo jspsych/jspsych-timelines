@@ -1,3 +1,7 @@
+import { readFileSync } from "fs";
+import { join } from "path";
+
+import htmlButtonResponse from "@jspsych/plugin-html-button-response";
 import { simulateTimeline, startTimeline } from "@jspsych/test-utils";
 import { initJsPsych } from "jspsych";
 
@@ -377,7 +381,7 @@ describe("Continuous Performance Test", () => {
       const display = document.createElement("div");
       display.innerHTML =
         '<div id="jspsych-html-button-response-stimulus">' +
-        '<div class="trial-content"><span class="cpt-stimulus">X</span></div>' +
+        '<div class="cpt-trial-content"><span class="cpt-stimulus">X</span></div>' +
         "</div>";
       document.body.appendChild(display);
       jsPsych.getDisplayElement = () => display;
@@ -440,6 +444,123 @@ describe("Continuous Performance Test", () => {
       expect(stimulus.innerHTML).toContain("trial-content");
       expect(stimulus.innerHTML).not.toContain("cpt-stimulus");
       expect(stimulus.innerHTML).not.toContain("cpt-fixation");
+    });
+  });
+
+  describe("CSS containment", () => {
+    const CSS_ROOT = "jspsych-continuous-performance-test";
+    // The stylesheet as it ships, read the same way the bundler inlines it.
+    const stylesheet = readFileSync(join(__dirname, "styles.css"), "utf8");
+    const selectors = stylesheet
+      .replace(/\/\*[\s\S]*?\*\//g, "")
+      .split("}")
+      .flatMap((rule: string) => rule.split("{")[0].split(","))
+      .map((sel: string) => sel.trim())
+      .filter(Boolean);
+
+    it("defines no bare element, body or universal selectors", () => {
+      const bare = selectors.filter((sel: string) => /(^|\s)(?![.#])[a-z]+\d?(\s|$)/.test(sel));
+      // Element selectors are only allowed as descendants of a cpt- class.
+      const unscoped = bare.filter((sel: string) => !/\.cpt-/.test(sel));
+      expect(unscoped).toEqual([]);
+      expect(selectors.filter((sel: string) => /^(body|html|\*)\b/.test(sel))).toEqual([]);
+    });
+
+    it("scopes every jsPsych-owned selector under the timeline root", () => {
+      const jsPsychOwned = selectors.filter((sel: string) => /(^|\s)[.#]jspsych-/.test(sel));
+      expect(jsPsychOwned.length).toBeGreaterThan(0);
+      jsPsychOwned.forEach((sel: string) => expect(sel.startsWith(`.${CSS_ROOT} `)).toBe(true));
+    });
+
+    it("prefixes every class it defines", () => {
+      const classes = new Set(
+        selectors
+          .flatMap((sel: string) => sel.match(/\.[a-zA-Z][\w-]*/g) ?? [])
+          .map((c: string) => c.slice(1))
+      );
+      classes.forEach((cls: string) => {
+        if (cls === CSS_ROOT) return;
+        // jspsych-btn is core's, and is only reached via the scoped rule above.
+        if (cls === "jspsych-btn") return;
+        expect(cls.startsWith("cpt-")).toBe(true);
+      });
+    });
+
+    // Prefixed but unstyled classes are deliberate hooks for researchers to target;
+    // an unprefixed one would not be acceptable. Listed so a new one is a decision.
+    const UNSTYLED_HOOKS = ["cpt-feedback"];
+
+    it("emits no unprefixed class into the global namespace", () => {
+      const markup = [
+        readFileSync(join(__dirname, "index.ts"), "utf8"),
+        readFileSync(join(__dirname, "text.ts"), "utf8"),
+      ].join("");
+      const emitted = new Set(
+        [...markup.matchAll(/class="([^"$]+)"/g)].flatMap((m) => m[1].split(/\s+/))
+      );
+      // jspsych-btn is core's own class, reused deliberately on the disabled buttons.
+      const foreign = [...emitted].filter(
+        (cls) => !cls.startsWith("cpt-") && cls !== "jspsych-btn"
+      );
+      expect(foreign).toEqual([]);
+    });
+
+    it("defines every class it emits, and emits every class it defines", () => {
+      const source = readFileSync(join(__dirname, "index.ts"), "utf8");
+      const text = readFileSync(join(__dirname, "text.ts"), "utf8");
+      const emitted = new Set(
+        [...`${source}${text}`.matchAll(/class="([^"$]+)"/g)]
+          .flatMap((m) => m[1].split(/\s+/))
+          .filter((c) => c.startsWith("cpt-"))
+      );
+      const defined = new Set([...stylesheet.matchAll(/\.(cpt-[\w-]+)/g)].map((m) => m[1]));
+      expect([...emitted].filter((c) => !defined.has(c) && !UNSTYLED_HOOKS.includes(c))).toEqual(
+        []
+      );
+      expect([...defined].filter((c) => !emitted.has(c))).toEqual([]);
+    });
+
+    it.each(["standard", "inhibition", "ax"])(
+      "puts the root on every trial %s mode creates",
+      (mode) => {
+        const jsPsych = initJsPsych();
+        const timeline = createTimeline(jsPsych, {
+          mode: mode as any,
+          numTrials: 2,
+          numBlocks: 2,
+          showInstructions: true,
+          showPractice: true,
+          numPracticeTrials: 1,
+        });
+        const roots: any[] = [];
+        const walk = (node: any) => {
+          if (Array.isArray(node.timeline)) return node.timeline.forEach(walk);
+          roots.push(node.css_classes);
+        };
+        walk(timeline);
+        expect(roots.length).toBeGreaterThan(0);
+        roots.forEach((classes) => expect(classes).toEqual([CSS_ROOT]));
+      }
+    );
+
+    it("removes the root before a foreign trial renders", async () => {
+      const jsPsych = initJsPsych();
+      const foreign = {
+        type: htmlButtonResponse,
+        stimulus: "<p>another task</p>",
+        choices: ["ok"],
+      };
+      const cpt = createTimeline(jsPsych, {
+        numTrials: 1,
+        numBlocks: 1,
+        showInstructions: false,
+        showPractice: false,
+      });
+      const { getData } = await simulateTimeline([cpt, foreign], "data-only", {}, jsPsych);
+      expect(getData().values().length).toBeGreaterThan(0);
+      // jsPsych strips css_classes when a trial ends, so the class is not present
+      // for a trial that never asked for it.
+      expect(jsPsych.getDisplayElement()?.classList.contains(CSS_ROOT)).toBe(false);
     });
   });
 

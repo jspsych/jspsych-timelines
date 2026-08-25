@@ -143,6 +143,11 @@ interface ResolvedConfig {
 // -- CONSTANTS --
 
 const TASK_NAME = "continuous-performance-test";
+
+// Added to the display element via `css_classes` on every trial this package
+// creates, so the stylesheet can scope rules that target jsPsych-owned DOM
+// without reaching trials belonging to other tasks.
+const CSS_ROOT = "jspsych-continuous-performance-test";
 const VERSION = "0.0.1";
 
 // Longest run of each stimulus class the sequence generators aim for. Standard and
@@ -226,14 +231,14 @@ function generateISI(config: ResolvedConfig): number {
  * Creates the stimulus HTML for a letter.
  */
 function createStimulusHTML(letter: string): string {
-  return `<div class="trial-content"><span class="cpt-stimulus">${letter}</span></div>`;
+  return `<div class="cpt-trial-content"><span class="cpt-stimulus">${letter}</span></div>`;
 }
 
 /**
  * Creates the fixation cross HTML.
  */
 function createFixationHTML(): string {
-  return `<div class="trial-content"><span class="cpt-fixation">+</span></div>`;
+  return `<div class="cpt-trial-content"><span class="cpt-fixation">+</span></div>`;
 }
 
 /**
@@ -258,7 +263,7 @@ function scheduleStimulusOffset(jsPsych: JsPsych, config: ResolvedConfig): void 
  * Creates blank HTML for the ISI period.
  */
 function createBlankHTML(): string {
-  return `<div class="trial-content"></div>`;
+  return `<div class="cpt-trial-content"></div>`;
 }
 
 /**
@@ -934,6 +939,7 @@ function createInstructionTrials(config: ResolvedConfig, part: "intro" | "practi
 
   return {
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: stimulus,
     choices: [buttonLabel],
     data,
@@ -957,6 +963,7 @@ function createStandardTrial(
   // Stimulus trial: show letter for stimulusDuration, then blank/fixation for ISI
   timeline.push({
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: createStimulusHTML(trialInfo.letter),
     choices: [config.text.respond_button],
     trial_duration: config.stimulusDuration + currentISI,
@@ -989,19 +996,20 @@ function createStandardTrial(
   if (isPractice) {
     timeline.push({
       type: jsPsychHtmlButtonResponse,
+      css_classes: [CSS_ROOT],
       stimulus: () => {
         const lastData = jsPsych.data.getLastTrialData().values()[0];
         const responded = lastData.responded;
         const isTargetTrial = lastData.is_target;
 
         if (isTargetTrial && responded) {
-          return `<div class="trial-content"><div class="feedback correct">${config.text.feedback_hit}</div></div>`;
+          return `<div class="cpt-trial-content"><div class="cpt-feedback cpt-feedback-correct">${config.text.feedback_hit}</div></div>`;
         } else if (isTargetTrial && !responded) {
-          return `<div class="trial-content"><div class="feedback incorrect">${config.text.feedback_miss}</div></div>`;
+          return `<div class="cpt-trial-content"><div class="cpt-feedback cpt-feedback-incorrect">${config.text.feedback_miss}</div></div>`;
         } else if (!isTargetTrial && responded) {
-          return `<div class="trial-content"><div class="feedback incorrect">${config.text.feedback_false_alarm}</div></div>`;
+          return `<div class="cpt-trial-content"><div class="cpt-feedback cpt-feedback-incorrect">${config.text.feedback_false_alarm}</div></div>`;
         } else {
-          return `<div class="trial-content"><div class="feedback correct">${config.text.feedback_correct_rejection}</div></div>`;
+          return `<div class="cpt-trial-content"><div class="cpt-feedback cpt-feedback-correct">${config.text.feedback_correct_rejection}</div></div>`;
         }
       },
       choices: [config.text.respond_button],
@@ -1036,6 +1044,7 @@ function createAXTrial(
   // Cue trial - responses during cue are not scored
   timeline.push({
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: createStimulusHTML(trialInfo.cue),
     choices: [config.text.respond_button],
     button_html: (choice: string) => `<button class="jspsych-btn" disabled>${choice}</button>`,
@@ -1058,6 +1067,7 @@ function createAXTrial(
   // Probe trial - this is the scored response
   timeline.push({
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: createStimulusHTML(trialInfo.probe),
     choices: [config.text.respond_button],
     trial_duration: config.stimulusDuration + currentISI,
@@ -1092,19 +1102,20 @@ function createAXTrial(
   if (isPractice) {
     timeline.push({
       type: jsPsychHtmlButtonResponse,
+      css_classes: [CSS_ROOT],
       stimulus: () => {
         const lastData = jsPsych.data.getLastTrialData().values()[0];
         const responded = lastData.responded;
         const isTargetTrial = lastData.is_target;
 
         if (isTargetTrial && responded) {
-          return `<div class="trial-content"><div class="feedback correct">${config.text.feedback_hit}</div></div>`;
+          return `<div class="cpt-trial-content"><div class="cpt-feedback cpt-feedback-correct">${config.text.feedback_hit}</div></div>`;
         } else if (isTargetTrial && !responded) {
-          return `<div class="trial-content"><div class="feedback incorrect">${config.text.feedback_miss}</div></div>`;
+          return `<div class="cpt-trial-content"><div class="cpt-feedback cpt-feedback-incorrect">${config.text.feedback_miss}</div></div>`;
         } else if (!isTargetTrial && responded) {
-          return `<div class="trial-content"><div class="feedback incorrect">${config.text.feedback_false_alarm}</div></div>`;
+          return `<div class="cpt-trial-content"><div class="cpt-feedback cpt-feedback-incorrect">${config.text.feedback_false_alarm}</div></div>`;
         } else {
-          return `<div class="trial-content"><div class="feedback correct">${config.text.feedback_correct_rejection}</div></div>`;
+          return `<div class="cpt-trial-content"><div class="cpt-feedback cpt-feedback-correct">${config.text.feedback_correct_rejection}</div></div>`;
         }
       },
       choices: [config.text.respond_button],
@@ -1205,6 +1216,7 @@ function createTestBlock(
 function createRestScreen(config: ResolvedConfig) {
   return {
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: config.text.rest_screen,
     choices: [config.text.continue_button],
     data: {
@@ -1221,11 +1233,12 @@ function createRestScreen(config: ResolvedConfig) {
 function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
   return {
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: () => {
       const data = jsPsych.data.get();
       const scores = calculateScores(data);
 
-      let html = `<div style="max-width: 600px; margin: 0 auto;">`;
+      let html = `<div class="cpt-instructions">`;
       html += `<h2>${config.text.task_complete}</h2>`;
       html += config.text.result_summary(
         scores.hitRate,

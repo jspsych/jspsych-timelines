@@ -46,7 +46,7 @@ export const defaultText: TextConfig = {
   respond_button: "RESPOND",
 
   instruction_standard: `
-    <div class="instructions">
+    <div class="cpt-instructions">
       <h2>Continuous Performance Test</h2>
       <p>In this task, letters will appear one at a time on the screen.</p>
       <p>Tap the <strong>RESPOND</strong> button when you see the target letter <strong>X</strong>.</p>
@@ -56,7 +56,7 @@ export const defaultText: TextConfig = {
   `,
 
   instruction_inhibition: `
-    <div class="instructions">
+    <div class="cpt-instructions">
       <h2>Continuous Performance Test</h2>
       <p>In this task, letters will appear one at a time on the screen.</p>
       <p>Tap the <strong>RESPOND</strong> button for <strong>every</strong> letter you see.</p>
@@ -66,7 +66,7 @@ export const defaultText: TextConfig = {
   `,
 
   instruction_ax: `
-    <div class="instructions">
+    <div class="cpt-instructions">
       <h2>Continuous Performance Test</h2>
       <p>In this task, letters will appear in pairs: a <strong>cue</strong> followed by a <strong>probe</strong>.</p>
       <p>Tap the <strong>RESPOND</strong> button only when you see the letter <strong>X</strong> after the letter <strong>A</strong>.</p>
@@ -76,14 +76,14 @@ export const defaultText: TextConfig = {
   `,
 
   instruction_practice: `
-    <div class="instructions">
+    <div class="cpt-instructions">
       <h3>Practice</h3>
       <p>Let's try a few practice trials. You will receive feedback after each response.</p>
     </div>
   `,
 
   instruction_task: `
-    <div class="instructions">
+    <div class="cpt-instructions">
       <h3>Main Task</h3>
       <p>Now you will complete the main task. There will be no feedback.</p>
       <p>Try to respond as quickly and accurately as possible.</p>
@@ -91,7 +91,7 @@ export const defaultText: TextConfig = {
   `,
 
   rest_screen: `
-    <div class="instructions">
+    <div class="cpt-instructions">
       <h3>Rest</h3>
       <p>Take a short break. Press the button when you are ready to continue.</p>
     </div>
@@ -110,7 +110,7 @@ export const defaultText: TextConfig = {
     dPrime: number | null,
     averageRT: number | null
   ) => `
-    <div class="instructions">
+    <div class="cpt-instructions">
       <h3>Your Results</h3>
       ${hitRate !== null ? `<p><strong>Hit rate:</strong> ${(hitRate * 100).toFixed(1)}%</p>` : ""}
       ${
