@@ -25,7 +25,7 @@ export interface CPTOptions {
   /** Maximum ISI in ms, used when isiSet is not provided (default: 1000) */
   isiMax?: number;
   /** Set of ISI values to randomly sample from; overrides isiMin/isiMax */
-  isiSet?: number[];
+  isiSet?: number[] | null;
   /** Show fixation cross during ISI (default: true) */
   showFixation?: boolean;
   /** Target probability for standard mode (default: 0.2) */
@@ -553,7 +553,7 @@ function generateAXSequence(
 /**
  * Unified sequence generator that dispatches based on mode.
  */
-function generateTrialSequence(
+function generateSequence(
   config: ResolvedConfig,
   numTrials: number
 ): Array<{
@@ -885,12 +885,45 @@ function validateConfig(config: ResolvedConfig): void {
   }
 }
 
+/**
+ * Builds a trial sequence for `numTrials` trials under `options`.
+ *
+ * Takes the same options object as `createTimeline`, so a researcher assembling a
+ * custom timeline does not need the internal resolved-config shape.
+ */
+function generateTrialSequence(options: CPTOptions = {}, numTrials?: number) {
+  const config = resolveConfig(options);
+  return generateSequence(config, numTrials ?? config.numTrials);
+}
+
+/**
+ * Merges caller options over the defaults and validates the result.
+ *
+ * Every public entry point takes `CPTOptions` and resolves here, so a researcher
+ * never has to assemble a fully populated config by hand.
+ */
+function resolveConfig(options: CPTOptions = {}): ResolvedConfig {
+  const text: TextConfig = { ...defaultText, ...options.text };
+  const config: ResolvedConfig = {
+    ...DEFAULT_OPTIONS,
+    ...options,
+    isiSet: options.isiSet ?? DEFAULT_OPTIONS.isiSet,
+    text,
+  };
+  validateConfig(config);
+  return config;
+}
+
 // -- TIMELINE UNITS --
 
 /**
  * Creates instruction trials.
  */
-function createInstructionTrials(config: ResolvedConfig, part: "intro" | "practice" | "main") {
+function createInstructionTrials(
+  options: CPTOptions = {},
+  part: "intro" | "practice" | "main" = "intro"
+) {
+  const config = resolveConfig(options);
   let stimulus: string;
   let buttonLabel: string;
 
@@ -1146,8 +1179,9 @@ function createAXTrial(
 /**
  * Creates a practice block.
  */
-function createPracticeBlock(jsPsych: JsPsych, config: ResolvedConfig) {
-  const sequence = generateTrialSequence(config, config.numPracticeTrials);
+function createPracticeBlock(jsPsych: JsPsych, options: CPTOptions = {}) {
+  const config = resolveConfig(options);
+  const sequence = generateSequence(config, config.numPracticeTrials);
   const timeline: any[] = [];
 
   sequence.forEach((trialInfo, index) => {
@@ -1182,13 +1216,9 @@ function createPracticeBlock(jsPsych: JsPsych, config: ResolvedConfig) {
 /**
  * Creates a test block.
  */
-function createTestBlock(
-  jsPsych: JsPsych,
-  config: ResolvedConfig,
-  numTrials: number,
-  block: number
-) {
-  const sequence = generateTrialSequence(config, numTrials);
+function createTestBlock(jsPsych: JsPsych, options: CPTOptions = {}, block = 1) {
+  const config = resolveConfig(options);
+  const sequence = generateSequence(config, config.numTrials);
   const timeline: any[] = [];
 
   sequence.forEach((trialInfo, index) => {
@@ -1223,7 +1253,8 @@ function createTestBlock(
 /**
  * Creates a rest screen between blocks.
  */
-function createRestScreen(config: ResolvedConfig) {
+function createRestScreen(options: CPTOptions = {}) {
+  const config = resolveConfig(options);
   return {
     type: jsPsychHtmlButtonResponse,
     css_classes: [CSS_ROOT],
@@ -1240,7 +1271,8 @@ function createRestScreen(config: ResolvedConfig) {
 /**
  * Creates the completion trial.
  */
-function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
+function createCompletionTrial(jsPsych: JsPsych, options: CPTOptions = {}) {
+  const config = resolveConfig(options);
   return {
     type: jsPsychHtmlButtonResponse,
     css_classes: [CSS_ROOT],
@@ -1431,17 +1463,7 @@ function getSummary(data: DataCollection): ScoringResult & {
  * ```
  */
 export function createTimeline(jsPsych: JsPsych, options: CPTOptions = {}) {
-  // Merge text with defaults
-  const text: TextConfig = { ...defaultText, ...options.text };
-
-  const config: ResolvedConfig = {
-    ...DEFAULT_OPTIONS,
-    ...options,
-    isiSet: options.isiSet ?? DEFAULT_OPTIONS.isiSet,
-    text,
-  };
-
-  validateConfig(config);
+  const config = resolveConfig(options);
 
   const timeline: any[] = [];
 
@@ -1464,14 +1486,17 @@ export function createTimeline(jsPsych: JsPsych, options: CPTOptions = {}) {
   }
 
   if (config.numBlocks <= 1) {
-    timeline.push(createTestBlock(jsPsych, config, config.numTrials, 1));
+    timeline.push(createTestBlock(jsPsych, config, 1));
   } else {
     const trialsPerBlock = Math.floor(config.numTrials / config.numBlocks);
     const remainder = config.numTrials % config.numBlocks;
 
     for (let b = 0; b < config.numBlocks; b++) {
       const blockTrials = trialsPerBlock + (b < remainder ? 1 : 0);
-      timeline.push(createTestBlock(jsPsych, config, blockTrials, b + 1));
+      // Each block is built as a standalone one-block run of its own trial count.
+      timeline.push(
+        createTestBlock(jsPsych, { ...config, numTrials: blockTrials, numBlocks: 1 }, b + 1)
+      );
 
       // Rest screen between blocks (not after the last block)
       if (b < config.numBlocks - 1) {

@@ -228,15 +228,33 @@ may be ignored — `() => "..."` is a valid override.
 
 For custom experiments:
 
-```javascript
-import { timelineUnits } from "@jspsych-timelines/continuous-performance-test";
+Every unit takes the same options object as `createTimeline` and fills in the
+defaults for anything you leave out, so there is no separate config type to build.
+Options are validated on the way in.
 
-// Available units:
-// - createInstructionTrials(config, mode)
-// - createPracticeBlock(jsPsych, config)
-// - createTestBlock(jsPsych, config, trialSequence, blockNum)
-// - createRestScreen(config)
-// - createCompletionTrial(jsPsych, config)
+| Unit | Signature |
+|------|-----------|
+| `createInstructionTrials` | `(options?, part?) => trial` — `part` is `"intro"`, `"practice"` or `"main"` (default `"intro"`) |
+| `createPracticeBlock` | `(jsPsych, options?) => { timeline }` — `numPracticeTrials` trials with feedback |
+| `createTestBlock` | `(jsPsych, options?, block?) => { timeline }` — one block of `numTrials` trials, labelled `block` (default `1`) |
+| `createRestScreen` | `(options?) => trial` |
+| `createCompletionTrial` | `(jsPsych, options?) => trial` |
+
+```javascript
+import { timelineUnits, utils } from "@jspsych-timelines/continuous-performance-test";
+
+const options = { mode: "inhibition", numTrials: 60, nontargetProbability: 0.1 };
+
+const timeline = [
+  timelineUnits.createInstructionTrials(options, "intro"),
+  timelineUnits.createTestBlock(jsPsych, options, 1),
+  timelineUnits.createRestScreen(options),
+  timelineUnits.createTestBlock(jsPsych, options, 2),
+  timelineUnits.createCompletionTrial(jsPsych, options),
+];
+
+// the same options build a bare sequence, if you are assembling trials yourself
+const sequence = utils.sequence.generateTrialSequence(options, 60);
 ```
 
 ## Citation

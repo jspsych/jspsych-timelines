@@ -386,7 +386,8 @@ describe("Continuous Performance Test", () => {
       document.body.appendChild(display);
       jsPsych.getDisplayElement = () => display;
       const stimulus = display.querySelector("#jspsych-html-button-response-stimulus")!;
-      const trial = timelineUnits.createTestBlock(jsPsych, config, 1, 1).timeline[0].timeline[0];
+      const trial = timelineUnits.createTestBlock(jsPsych, { ...config, numTrials: 1 }, 1)
+        .timeline[0].timeline[0];
       return { display, stimulus, trial };
     };
 
@@ -1060,6 +1061,77 @@ describe("Continuous Performance Test", () => {
         text: { instruction_standard: () => "<p>Sólo esto</p>" },
       });
       expect(html).toContain("Sólo esto");
+    });
+  });
+
+  describe("timeline units are callable from the public API", () => {
+    // The defect this guards: every unit took the internal resolved-config type,
+    // which was never exported, so a TypeScript consumer could not name the
+    // argument and a JavaScript one had to hand-build all 25 fields.
+    it("builds a test block from a plain options object", () => {
+      const jsPsych = initJsPsych();
+      const block = timelineUnits.createTestBlock(jsPsych, { mode: "ax", numTrials: 4 }, 2);
+      expect(block.timeline).toHaveLength(4);
+    });
+
+    it("defaults every option a unit is not given", () => {
+      const jsPsych = initJsPsych();
+      expect(timelineUnits.createTestBlock(jsPsych).timeline).toHaveLength(
+        utils.constants.DEFAULT_OPTIONS.numTrials
+      );
+      expect(timelineUnits.createPracticeBlock(jsPsych).timeline).toHaveLength(
+        utils.constants.DEFAULT_OPTIONS.numPracticeTrials
+      );
+    });
+
+    it("labels the block it is told to build", () => {
+      const jsPsych = initJsPsych();
+      const block = timelineUnits.createTestBlock(jsPsych, { numTrials: 2 }, 7);
+      const blocks: number[] = [];
+      const walk = (node: any) => {
+        if (Array.isArray(node.timeline)) return node.timeline.forEach(walk);
+        if (node.data?.block !== undefined) blocks.push(node.data.block);
+      };
+      walk(block);
+      expect(new Set(blocks)).toEqual(new Set([7]));
+    });
+
+    it("validates options handed to a unit directly", () => {
+      const jsPsych = initJsPsych();
+      expect(() => timelineUnits.createTestBlock(jsPsych, { numTrials: 0 })).toThrow(
+        /numTrials must be an integer >= 1/
+      );
+      expect(() => timelineUnits.createRestScreen({ isiMin: 500, isiMax: 100 })).toThrow(
+        /isiMax must be >= isiMin/
+      );
+    });
+
+    it("builds each instruction screen by part", () => {
+      const intro = timelineUnits.createInstructionTrials({ mode: "ax" }, "intro");
+      const practice = timelineUnits.createInstructionTrials({}, "practice");
+      const main = timelineUnits.createInstructionTrials({}, "main");
+      expect(intro.stimulus).toContain("cue");
+      expect(practice.stimulus).toContain("Practice");
+      expect(main.stimulus).toContain("Main Task");
+      // the part argument defaults rather than silently yielding a blank screen
+      expect(timelineUnits.createInstructionTrials({}).stimulus).not.toBe("");
+    });
+
+    it("generates a sequence from the same options object as createTimeline", () => {
+      const sequence = utils.sequence.generateTrialSequence({ mode: "inhibition" }, 50);
+      expect(sequence).toHaveLength(50);
+      expect(sequence.filter((s: any) => !s.isTarget)).toHaveLength(5);
+      // and falls back to the configured numTrials when no count is given
+      expect(utils.sequence.generateTrialSequence({ numTrials: 12 })).toHaveLength(12);
+    });
+
+    it("accepts a resolved config back, so units compose with each other", () => {
+      const jsPsych = initJsPsych();
+      const options = { mode: "standard" as const, numTrials: 3, targetLetter: "Q" };
+      const sequence = utils.sequence.generateTrialSequence(options);
+      const block = timelineUnits.createTestBlock(jsPsych, options, 1);
+      expect(sequence).toHaveLength(3);
+      expect(block.timeline).toHaveLength(3);
     });
   });
 
