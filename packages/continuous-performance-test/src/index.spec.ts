@@ -353,6 +353,96 @@ describe("Continuous Performance Test", () => {
     });
   });
 
+  describe("stimulus offset timer", () => {
+    const resolved = (over: any = {}) => ({
+      ...utils.constants.DEFAULT_OPTIONS,
+      text: utils.text,
+      ...over,
+    });
+
+    afterEach(() => {
+      document.body.innerHTML = "";
+    });
+
+    /**
+     * Stands in for the DOM a trial renders into, and points the jsPsych instance
+     * at it the way the framework would once the trial is on screen.
+     *
+     * The display is attached to the document, and a previous mount is torn down
+     * the way cleanupTrial would, so that a document-wide lookup at timer time
+     * would genuinely resolve to the current trial's stimulus.
+     */
+    const mountTrial = (jsPsych: any, config: any) => {
+      document.body.innerHTML = "";
+      const display = document.createElement("div");
+      display.innerHTML =
+        '<div id="jspsych-html-button-response-stimulus">' +
+        '<div class="trial-content"><span class="cpt-stimulus">X</span></div>' +
+        "</div>";
+      document.body.appendChild(display);
+      jsPsych.getDisplayElement = () => display;
+      const stimulus = display.querySelector("#jspsych-html-button-response-stimulus")!;
+      const trial = timelineUnits.createTestBlock(jsPsych, config, 1, 1).timeline[0].timeline[0];
+      return { display, stimulus, trial };
+    };
+
+    it("swaps the stimulus for the fixation cross after stimulusDuration", () => {
+      const jsPsych = initJsPsych();
+      const config = resolved({ stimulusDuration: 250, showFixation: true });
+      const { stimulus, trial } = mountTrial(jsPsych, config);
+
+      trial.on_load();
+      expect(stimulus.innerHTML).toContain("cpt-stimulus");
+      jest.advanceTimersByTime(250);
+      expect(stimulus.innerHTML).toContain("cpt-fixation");
+    });
+
+    // The defect this guards: a bare setTimeout survived its own trial, and a
+    // document-wide lookup then erased the stimulus of the trial that followed.
+    it("cancels the pending swap when the trial ends early", () => {
+      const jsPsych = initJsPsych();
+      const config = resolved({ stimulusDuration: 250 });
+      const { stimulus, trial } = mountTrial(jsPsych, config);
+
+      trial.on_load();
+      // jsPsych clears plugin-API timers in cleanupTrial when the trial ends.
+      jsPsych.pluginAPI.clearAllTimeouts();
+      jest.advanceTimersByTime(1000);
+
+      expect(stimulus.innerHTML).toContain("cpt-stimulus");
+      expect(stimulus.innerHTML).not.toContain("cpt-fixation");
+    });
+
+    it("writes to the trial it was scheduled from, not whatever is on screen later", () => {
+      const jsPsych = initJsPsych();
+      const config = resolved({ stimulusDuration: 250 });
+      const first = mountTrial(jsPsych, config);
+
+      first.trial.on_load();
+      // A later trial replaces the display before the timer is due.
+      const second = mountTrial(jsPsych, config);
+      jest.advanceTimersByTime(1000);
+
+      expect(second.stimulus.innerHTML).toContain("cpt-stimulus");
+      expect(second.stimulus.innerHTML).not.toContain("cpt-fixation");
+    });
+
+    it("keeps the stimulus box occupied when showFixation is false", () => {
+      const jsPsych = initJsPsych();
+      const config = resolved({ stimulusDuration: 250, showFixation: false });
+      const { stimulus, trial } = mountTrial(jsPsych, config);
+
+      trial.on_load();
+      jest.advanceTimersByTime(250);
+
+      // An empty string here would collapse the sized box and shift the button.
+      expect(stimulus.innerHTML).not.toBe("");
+      expect(stimulus.innerHTML).toContain("trial-content");
+      expect(stimulus.innerHTML).not.toContain("cpt-stimulus");
+      expect(stimulus.innerHTML).not.toContain("cpt-fixation");
+    });
+  });
+
   describe("scoring functions", () => {
     it("should handle empty data", () => {
       const jsPsych = initJsPsych();

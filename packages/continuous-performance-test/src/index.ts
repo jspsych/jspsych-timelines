@@ -236,6 +236,24 @@ function createFixationHTML(): string {
 }
 
 /**
+ * replaces the stimulus with the fixation cross once it's been shown for
+ * `stimulusDuration`, leaving the rest of the trial as the ISI.
+ *
+ * timer is set by pluginAPI so jsPsych always cancels at the end of the trial,
+ * avoiding a desync between when the probe stops watching and the end of a trial.
+ */
+function scheduleStimulusOffset(jsPsych: JsPsych, config: ResolvedConfig): void {
+  const stimulus = jsPsych
+    .getDisplayElement()
+    ?.querySelector("#jspsych-html-button-response-stimulus");
+  if (!stimulus) return;
+
+  jsPsych.pluginAPI.setTimeout(() => {
+    stimulus.innerHTML = config.showFixation ? createFixationHTML() : createBlankHTML();
+  }, config.stimulusDuration);
+}
+
+/**
  * Creates blank HTML for the ISI period.
  */
 function createBlankHTML(): string {
@@ -940,15 +958,7 @@ function createStandardTrial(
     choices: [config.text.respond_button],
     trial_duration: config.stimulusDuration + currentISI,
     response_ends_trial: false,
-    on_load: () => {
-      // Show fixation or blank after stimulus disappears
-      setTimeout(() => {
-        const stimDisplay = document.querySelector("#jspsych-html-button-response-stimulus");
-        if (stimDisplay) {
-          stimDisplay.innerHTML = config.showFixation ? createFixationHTML() : "";
-        }
-      }, config.stimulusDuration);
-    },
+    on_load: () => scheduleStimulusOffset(jsPsych, config),
     data: {
       task: TASK_NAME,
       task_version: VERSION,
@@ -1039,14 +1049,7 @@ function createAXTrial(
       ax_part: "cue",
       block: block,
     },
-    on_load: () => {
-      setTimeout(() => {
-        const stimDisplay = document.querySelector("#jspsych-html-button-response-stimulus");
-        if (stimDisplay) {
-          stimDisplay.innerHTML = config.showFixation ? createFixationHTML() : "";
-        }
-      }, config.stimulusDuration);
-    },
+    on_load: () => scheduleStimulusOffset(jsPsych, config),
   });
 
   // Probe trial - this is the scored response
@@ -1056,14 +1059,7 @@ function createAXTrial(
     choices: [config.text.respond_button],
     trial_duration: config.stimulusDuration + currentISI,
     response_ends_trial: false,
-    on_load: () => {
-      setTimeout(() => {
-        const stimDisplay = document.querySelector("#jspsych-html-button-response-stimulus");
-        if (stimDisplay) {
-          stimDisplay.innerHTML = config.showFixation ? createFixationHTML() : "";
-        }
-      }, config.stimulusDuration);
-    },
+    on_load: () => scheduleStimulusOffset(jsPsych, config),
     data: {
       task: TASK_NAME,
       task_version: VERSION,
