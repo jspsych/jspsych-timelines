@@ -138,7 +138,7 @@ const task = jsPsychTimelineCPT.createTimeline(jsPsych, {
 | `task_version` | string | Package version |
 | `phase` | string | `"practice"`, `"test"`, or `"completion"` |
 | `part` | string | `"stimulus"`, `"cue"`, `"feedback"`, or `"rest"` |
-| `trial_index` | number | Trial number within the block |
+| `trial_number` | number | Position of this trial within its block (1-indexed) |
 | `stimulus_letter` | string | The letter shown |
 | `stimulus_type` | string | `"target"` or `"nontarget"` |
 | `is_target` | boolean | Whether a response was expected |

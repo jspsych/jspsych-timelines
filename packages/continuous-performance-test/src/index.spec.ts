@@ -1,4 +1,4 @@
-import { startTimeline } from "@jspsych/test-utils";
+import { simulateTimeline, startTimeline } from "@jspsych/test-utils";
 import { initJsPsych } from "jspsych";
 
 import { createTimeline, timelineUnits, utils } from "./index";
@@ -440,6 +440,78 @@ describe("Continuous Performance Test", () => {
       expect(stimulus.innerHTML).toContain("trial-content");
       expect(stimulus.innerHTML).not.toContain("cpt-stimulus");
       expect(stimulus.innerHTML).not.toContain("cpt-fixation");
+    });
+  });
+
+  describe("recorded trial position", () => {
+    /** Runs a whole timeline in data-only simulation and returns the rows. */
+    const runToCompletion = async (options: any) => {
+      const jsPsych = initJsPsych();
+      const timeline = createTimeline(jsPsych, options);
+      const { getData } = await simulateTimeline(timeline.timeline, "data-only", {}, jsPsych);
+      return getData().values();
+    };
+
+    // The defect this guards: the package wrote its counter to `trial_index`,
+    // which jsPsych overwrites with the whole-timeline index in processResult.
+    // The value was discarded on every row.
+    it("keeps a 1-indexed position within each block", async () => {
+      const rows = (
+        await runToCompletion({
+          mode: "standard",
+          numTrials: 6,
+          numBlocks: 2,
+          showInstructions: false,
+          showPractice: false,
+        })
+      ).filter((r: any) => r.part === "stimulus");
+
+      expect(rows).toHaveLength(6);
+      const byBlock: Record<number, number[]> = {};
+      rows.forEach((r: any) => (byBlock[r.block] ??= []).push(r.trial_number));
+      expect(Object.keys(byBlock)).toHaveLength(2);
+      for (const positions of Object.values(byBlock)) {
+        expect(positions).toEqual(Array.from({ length: positions.length }, (_, i) => i + 1));
+      }
+    });
+
+    it("survives the trial_index jsPsych writes over the data parameter", async () => {
+      const rows = (
+        await runToCompletion({
+          mode: "standard",
+          numTrials: 4,
+          showInstructions: true,
+          showPractice: false,
+        })
+      ).filter((r: any) => r.part === "stimulus");
+
+      expect(rows.map((r: any) => r.trial_number)).toEqual([1, 2, 3, 4]);
+      // jsPsych still stamps its own whole-timeline index. Instruction screens run
+      // first, so it cannot start at 1 and the two fields are plainly different.
+      expect(rows[0].trial_index).toBeGreaterThan(0);
+      expect(rows.map((r: any) => r.trial_index)).not.toEqual([1, 2, 3, 4]);
+    });
+
+    it("numbers AX cue and probe rows as one pair", async () => {
+      const rows = (
+        await runToCompletion({
+          mode: "ax",
+          numTrials: 3,
+          showInstructions: false,
+          showPractice: false,
+        })
+      ).filter((r: any) => r.part === "cue" || r.part === "stimulus");
+
+      // each pair shares one position: cue 1, probe 1, cue 2, probe 2, ...
+      expect(rows.map((r: any) => r.trial_number)).toEqual([1, 1, 2, 2, 3, 3]);
+      expect(rows.map((r: any) => r.ax_part)).toEqual([
+        "cue",
+        "probe",
+        "cue",
+        "probe",
+        "cue",
+        "probe",
+      ]);
     });
   });
 

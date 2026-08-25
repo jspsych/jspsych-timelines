@@ -71,7 +71,8 @@ export interface TrialData {
   task_version: string;
   phase: string;
   part: string;
-  trial_index: number;
+  /** Position of this trial within its block, 1-indexed */
+  trial_number: number;
   stimulus_letter: string;
   stimulus_type: "target" | "nontarget";
   is_target: boolean;
@@ -966,7 +967,7 @@ function createStandardTrial(
       task_version: VERSION,
       phase: isPractice ? "practice" : "test",
       part: "stimulus",
-      trial_index: trialIndex,
+      trial_number: trialIndex,
       stimulus_letter: trialInfo.letter,
       stimulus_type: trialInfo.isTarget ? "target" : "nontarget",
       is_target: trialInfo.isTarget,
@@ -1045,7 +1046,7 @@ function createAXTrial(
       task_version: VERSION,
       phase: isPractice ? "practice" : "test",
       part: "cue",
-      trial_index: trialIndex,
+      trial_number: trialIndex,
       stimulus_letter: trialInfo.cue,
       ax_trial_type: trialInfo.trialType,
       ax_part: "cue",
@@ -1067,7 +1068,7 @@ function createAXTrial(
       task_version: VERSION,
       phase: isPractice ? "practice" : "test",
       part: "stimulus",
-      trial_index: trialIndex,
+      trial_number: trialIndex,
       stimulus_letter: trialInfo.probe,
       stimulus_type: trialInfo.isTarget ? "target" : "nontarget",
       is_target: trialInfo.isTarget,
