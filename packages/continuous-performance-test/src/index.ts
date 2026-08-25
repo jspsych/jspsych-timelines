@@ -89,16 +89,16 @@ export interface ScoringResult {
   hits: number;
   /** Total number of targets */
   totalTargets: number;
-  /** Hit rate (hits / total targets) */
-  hitRate: number;
-  /** Omission rate (missed targets / total targets) */
-  omissionRate: number;
+  /** Hit rate (hits / total targets), or null when there were no target trials */
+  hitRate: number | null;
+  /** Omission rate (missed targets / total targets), or null when there were no target trials */
+  omissionRate: number | null;
   /** Number of commission errors (false alarms) */
   commissions: number;
   /** Total number of non-targets */
   totalNontargets: number;
-  /** Commission rate (false alarms / total non-targets) */
-  commissionRate: number;
+  /** Commission rate (false alarms / total non-targets), or null when there were no non-target trials */
+  commissionRate: number | null;
   /** Mean RT for hits in ms */
   meanRT: number | null;
   /** Standard deviation of RT for hits */
@@ -662,27 +662,29 @@ function calculateStd(values: number[]): number | null {
  * Uses log-linear correction for extreme values.
  */
 function calculateDPrimeAndBeta(
-  hitRate: number,
-  falseAlarmRate: number,
+  hits: number,
   nTargets: number,
+  falseAlarms: number,
   nNontargets: number
 ): { dPrime: number | null; beta: number | null } {
+  // d-prime is undefined without both kinds of trial to compare
   if (nTargets === 0 || nNontargets === 0) {
     return { dPrime: null, beta: null };
   }
+
+  const hitRate = hits / nTargets;
+  const falseAlarmRate = falseAlarms / nNontargets;
 
   // Log-linear correction: (count + 0.5) / (total + 1)
   let adjustedHR = hitRate;
   let adjustedFAR = falseAlarmRate;
 
   if (hitRate === 0 || hitRate === 1) {
-    const hits = hitRate * nTargets;
     adjustedHR = (hits + 0.5) / (nTargets + 1);
   }
 
   if (falseAlarmRate === 0 || falseAlarmRate === 1) {
-    const fa = falseAlarmRate * nNontargets;
-    adjustedFAR = (fa + 0.5) / (nNontargets + 1);
+    adjustedFAR = (falseAlarms + 0.5) / (nNontargets + 1);
   }
 
   const zHit = inverseNormalCDF(adjustedHR);
@@ -1245,6 +1247,52 @@ function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
 // -- SCORING FUNCTIONS --
 
 /**
+ * Builds a ScoringResult from one set of target and non-target trials.
+ *
+ * A rate is null when the trials it describes do not exist. Zero is a real value
+ * on the same scale — a hit rate of 0 means every target was missed — so reporting
+ * 0 for "no targets were shown" would conflate opposite outcomes.
+ *
+ * `rtSource` selects which responses feed the RT statistics: the overall and
+ * per-block summaries describe hits, while a per-AX-type summary describes every
+ * response of that type, since a single AX type contains only one trial class.
+ */
+function summarizeTrials(
+  targetTrials: TrialData[],
+  nontargetTrials: TrialData[],
+  options: { rtSource: "hits" | "all" }
+): ScoringResult {
+  const totalTargets = targetTrials.length;
+  const totalNontargets = nontargetTrials.length;
+
+  const hits = targetTrials.filter((t) => t.responded).length;
+  const misses = totalTargets - hits;
+  const commissions = nontargetTrials.filter((t) => t.responded).length;
+
+  // Null whenever one class is absent, which is also what makes d-prime null for a
+  // single AX trial type: those hold only targets or only non-targets.
+  const { dPrime, beta } = calculateDPrimeAndBeta(hits, totalTargets, commissions, totalNontargets);
+
+  const rtTrials =
+    options.rtSource === "hits" ? targetTrials : [...targetTrials, ...nontargetTrials];
+  const rts = rtTrials.filter((t) => t.responded && t.rt !== null).map((t) => t.rt as number);
+
+  return {
+    hits,
+    totalTargets,
+    hitRate: totalTargets > 0 ? hits / totalTargets : null,
+    omissionRate: totalTargets > 0 ? misses / totalTargets : null,
+    commissions,
+    totalNontargets,
+    commissionRate: totalNontargets > 0 ? commissions / totalNontargets : null,
+    meanRT: rts.length > 0 ? rts.reduce((a, b) => a + b, 0) / rts.length : null,
+    rtStd: calculateStd(rts),
+    dPrime,
+    beta,
+  };
+}
+
+/**
  * Calculates scoring metrics from the CPT task data.
  */
 function calculateScores(data: DataCollection): ScoringResult {
@@ -1252,66 +1300,11 @@ function calculateScores(data: DataCollection): ScoringResult {
     .filter({ task: TASK_NAME, phase: "test", part: "stimulus" })
     .values() as TrialData[];
 
-  if (responseTrials.length === 0) {
-    return {
-      hits: 0,
-      totalTargets: 0,
-      hitRate: 0,
-      omissionRate: 0,
-      commissions: 0,
-      totalNontargets: 0,
-      commissionRate: 0,
-      meanRT: null,
-      rtStd: null,
-      dPrime: null,
-      beta: null,
-    };
-  }
-
-  const targetTrials = responseTrials.filter((t) => t.is_target);
-  const nontargetTrials = responseTrials.filter((t) => !t.is_target);
-
-  const hits = targetTrials.filter((t) => t.responded).length;
-  const misses = targetTrials.length - hits;
-  const commissions = nontargetTrials.filter((t) => t.responded).length;
-
-  const totalTargets = targetTrials.length;
-  const totalNontargets = nontargetTrials.length;
-
-  const hitRate = totalTargets > 0 ? hits / totalTargets : 0;
-  const omissionRate = totalTargets > 0 ? misses / totalTargets : 0;
-  const commissionRate = totalNontargets > 0 ? commissions / totalNontargets : 0;
-
-  // d-prime and beta
-  const { dPrime, beta } = calculateDPrimeAndBeta(
-    hitRate,
-    commissionRate,
-    totalTargets,
-    totalNontargets
+  return summarizeTrials(
+    responseTrials.filter((t) => t.is_target),
+    responseTrials.filter((t) => !t.is_target),
+    { rtSource: "hits" }
   );
-
-  // Mean RT and std for hits
-  const hitRTs = targetTrials
-    .filter((t) => t.responded && t.rt !== null)
-    .map((t) => t.rt as number);
-
-  const meanRT = hitRTs.length > 0 ? hitRTs.reduce((a, b) => a + b, 0) / hitRTs.length : null;
-
-  const rtStd = calculateStd(hitRTs);
-
-  return {
-    hits,
-    totalTargets,
-    hitRate,
-    omissionRate,
-    commissions,
-    totalNontargets,
-    commissionRate,
-    meanRT,
-    rtStd,
-    dPrime,
-    beta,
-  };
 }
 
 /**
@@ -1322,55 +1315,16 @@ function computeBlockScores(data: DataCollection): ScoringResult[] {
     .filter({ task: TASK_NAME, phase: "test", part: "stimulus" })
     .values() as TrialData[];
 
-  if (responseTrials.length === 0) return [];
-
   const blocks = new Set(responseTrials.map((t) => t.block).filter((b) => b !== undefined));
   const blockNumbers = Array.from(blocks).sort((a, b) => (a as number) - (b as number));
 
   return blockNumbers.map((blockNum) => {
     const blockTrials = responseTrials.filter((t) => t.block === blockNum);
-    const targetTrials = blockTrials.filter((t) => t.is_target);
-    const nontargetTrials = blockTrials.filter((t) => !t.is_target);
-
-    const hits = targetTrials.filter((t) => t.responded).length;
-    const misses = targetTrials.length - hits;
-    const commissions = nontargetTrials.filter((t) => t.responded).length;
-
-    const totalTargets = targetTrials.length;
-    const totalNontargets = nontargetTrials.length;
-
-    const hitRate = totalTargets > 0 ? hits / totalTargets : 0;
-    const omissionRate = totalTargets > 0 ? misses / totalTargets : 0;
-    const commissionRate = totalNontargets > 0 ? commissions / totalNontargets : 0;
-
-    const { dPrime, beta } = calculateDPrimeAndBeta(
-      hitRate,
-      commissionRate,
-      totalTargets,
-      totalNontargets
+    return summarizeTrials(
+      blockTrials.filter((t) => t.is_target),
+      blockTrials.filter((t) => !t.is_target),
+      { rtSource: "hits" }
     );
-
-    const hitRTs = targetTrials
-      .filter((t) => t.responded && t.rt !== null)
-      .map((t) => t.rt as number);
-
-    const meanRT = hitRTs.length > 0 ? hitRTs.reduce((a, b) => a + b, 0) / hitRTs.length : null;
-
-    const rtStd = calculateStd(hitRTs);
-
-    return {
-      hits,
-      totalTargets,
-      hitRate,
-      omissionRate,
-      commissions,
-      totalNontargets,
-      commissionRate,
-      meanRT,
-      rtStd,
-      dPrime,
-      beta,
-    };
   });
 }
 
@@ -1386,58 +1340,13 @@ function computeAXScores(data: DataCollection): Record<AXTrialType, ScoringResul
       .filter({ task: TASK_NAME, phase: "test", part: "stimulus", ax_trial_type: tt })
       .values() as TrialData[];
 
-    if (trials.length === 0) {
-      result[tt] = {
-        hits: 0,
-        totalTargets: 0,
-        hitRate: 0,
-        omissionRate: 0,
-        commissions: 0,
-        totalNontargets: 0,
-        commissionRate: 0,
-        meanRT: null,
-        rtStd: null,
-        dPrime: null,
-        beta: null,
-      };
-      continue;
-    }
-
-    const targetTrials = trials.filter((t) => t.is_target);
-    const nontargetTrials = trials.filter((t) => !t.is_target);
-
-    const hits = targetTrials.filter((t) => t.responded).length;
-    const misses = targetTrials.length - hits;
-    const commissions = nontargetTrials.filter((t) => t.responded).length;
-
-    const totalTargets = targetTrials.length;
-    const totalNontargets = nontargetTrials.length;
-
-    const hitRate = totalTargets > 0 ? hits / totalTargets : 0;
-    const omissionRate = totalTargets > 0 ? misses / totalTargets : 0;
-    const commissionRate = totalNontargets > 0 ? commissions / totalNontargets : 0;
-
-    const respondedTrials = trials.filter((t) => t.responded && t.rt !== null);
-    const rts = respondedTrials.map((t) => t.rt as number);
-
-    const meanRT = rts.length > 0 ? rts.reduce((a, b) => a + b, 0) / rts.length : null;
-
-    const rtStd = calculateStd(rts);
-
-    // d-prime for AX is computed at the overall level, not per-type
-    result[tt] = {
-      hits,
-      totalTargets,
-      hitRate,
-      omissionRate,
-      commissions,
-      totalNontargets,
-      commissionRate,
-      meanRT,
-      rtStd,
-      dPrime: null,
-      beta: null,
-    };
+    // d-prime needs both trial classes, which a single AX type never has; it is
+    // reported at the overall level instead.
+    result[tt] = summarizeTrials(
+      trials.filter((t) => t.is_target),
+      trials.filter((t) => !t.is_target),
+      { rtSource: "all" }
+    );
   }
 
   return result as Record<AXTrialType, ScoringResult>;

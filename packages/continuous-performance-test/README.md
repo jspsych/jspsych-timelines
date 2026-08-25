@@ -167,11 +167,11 @@ const scores = jsPsychTimelineCPT.utils.scoring.getSummary(jsPsych.data.get());
 |--------|-------------|
 | `hits` | Number of correct responses to targets |
 | `totalTargets` | Total target trials |
-| `hitRate` | Hits / total targets |
-| `omissionRate` | Missed targets / total targets |
+| `hitRate` | Hits / total targets; `null` if no target trials were shown |
+| `omissionRate` | Missed targets / total targets; `null` if no target trials were shown |
 | `commissions` | False alarm count |
 | `totalNontargets` | Total non-target trials |
-| `commissionRate` | False alarms / total non-targets |
+| `commissionRate` | False alarms / total non-targets; `null` if no non-target trials were shown |
 | `meanRT` | Mean RT for hits (ms) |
 | `rtStd` | RT standard deviation for hits |
 | `dPrime` | d-prime sensitivity index (log-linear corrected) |
@@ -182,6 +182,7 @@ const scores = jsPsychTimelineCPT.utils.scoring.getSummary(jsPsych.data.get());
 - **High omission rate**: Inattention / lapses in vigilance
 - **High commission rate**: Impulsivity / poor response inhibition
 - **Low d-prime**: Poor discriminability between targets and non-targets
+- **A `null` rate**: the trials it describes were never shown, which is not the same as a rate of 0
 - **Decreasing hit rate across blocks**: Vigilance decrement (sustained attention failure)
 - **In AX mode**: High BX errors suggest poor context maintenance
 

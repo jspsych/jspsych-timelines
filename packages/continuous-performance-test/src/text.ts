@@ -33,8 +33,8 @@ export interface TextConfig {
   task_complete: string;
   /** Results summary */
   result_summary: (
-    hitRate: number,
-    commissionRate: number,
+    hitRate: number | null,
+    commissionRate: number | null,
     dPrime: number | null,
     averageRT: number | null
   ) => string;
@@ -105,15 +105,19 @@ export const defaultText: TextConfig = {
   task_complete: "Task Complete",
 
   result_summary: (
-    hitRate: number,
-    commissionRate: number,
+    hitRate: number | null,
+    commissionRate: number | null,
     dPrime: number | null,
     averageRT: number | null
   ) => `
     <div class="instructions">
       <h3>Your Results</h3>
-      <p><strong>Hit rate:</strong> ${(hitRate * 100).toFixed(1)}%</p>
-      <p><strong>Commission rate:</strong> ${(commissionRate * 100).toFixed(1)}%</p>
+      ${hitRate !== null ? `<p><strong>Hit rate:</strong> ${(hitRate * 100).toFixed(1)}%</p>` : ""}
+      ${
+        commissionRate !== null
+          ? `<p><strong>Commission rate:</strong> ${(commissionRate * 100).toFixed(1)}%</p>`
+          : ""
+      }
       ${dPrime !== null ? `<p><strong>Sensitivity (d'):</strong> ${dPrime.toFixed(2)}</p>` : ""}
       ${averageRT !== null ? `<p><strong>Average RT:</strong> ${averageRT.toFixed(0)}ms</p>` : ""}
     </div>

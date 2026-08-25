@@ -444,37 +444,271 @@ describe("Continuous Performance Test", () => {
   });
 
   describe("scoring functions", () => {
-    it("should handle empty data", () => {
+    /**
+     * Pushes synthetic stimulus rows straight into the live collection, so scoring
+     * can be checked against a hand-worked participant without running trials.
+     */
+    const withTrials = (rows: any[]) => {
+      const jsPsych = initJsPsych();
+      const data = jsPsych.data.get();
+      rows.forEach((r) =>
+        data.push({
+          task: "continuous-performance-test",
+          phase: "test",
+          part: "stimulus",
+          block: 1,
+          ...r,
+        })
+      );
+      return { jsPsych, data };
+    };
+    /** n trials of one class, the first `responded` of them answered at `rt`. */
+    const trials = (n: number, isTarget: boolean, responded: number, rt: number | null = 400) =>
+      Array.from({ length: n }, (_, i) => ({
+        is_target: isTarget,
+        stimulus_type: isTarget ? "target" : "nontarget",
+        responded: i < responded,
+        rt: i < responded ? rt : null,
+      }));
+
+    it("counts hits, misses and commissions from a hand-worked participant", () => {
+      // 10 targets, 7 answered; 20 non-targets, 3 answered.
+      const { data } = withTrials([...trials(10, true, 7), ...trials(20, false, 3)]);
+      const scores = utils.scoring.calculateScores(data);
+
+      expect(scores.totalTargets).toBe(10);
+      expect(scores.totalNontargets).toBe(20);
+      expect(scores.hits).toBe(7);
+      expect(scores.commissions).toBe(3);
+      expect(scores.hitRate).toBeCloseTo(0.7, 10);
+      expect(scores.omissionRate).toBeCloseTo(0.3, 10);
+      expect(scores.commissionRate).toBeCloseTo(0.15, 10);
+    });
+
+    it("averages RT over hits only, not over every response", () => {
+      const { data } = withTrials([
+        ...trials(2, true, 2, 300), // hits at 300ms
+        ...trials(2, false, 2, 900), // false alarms at 900ms
+      ]);
+      const scores = utils.scoring.calculateScores(data);
+
+      expect(scores.meanRT).toBe(300);
+    });
+
+    it("reports the standard deviation of hit RTs", () => {
+      const { data } = withTrials([
+        { is_target: true, responded: true, rt: 200 },
+        { is_target: true, responded: true, rt: 400 },
+        { is_target: false, responded: false, rt: null },
+      ]);
+      const scores = utils.scoring.calculateScores(data);
+
+      expect(scores.meanRT).toBe(300);
+      // sample SD of {200, 400} = sqrt(((100^2)+(100^2))/1)
+      expect(scores.rtStd).toBeCloseTo(Math.sqrt(20000), 10);
+    });
+
+    it("leaves rtStd null when a single hit gives nothing to vary", () => {
+      const { data } = withTrials([...trials(1, true, 1, 250), ...trials(1, false, 0)]);
+      expect(utils.scoring.calculateScores(data).rtStd).toBeNull();
+    });
+
+    it("computes d-prime above zero when hits outnumber false alarms", () => {
+      const { data } = withTrials([...trials(20, true, 18), ...trials(20, false, 2)]);
+      const scores = utils.scoring.calculateScores(data);
+
+      expect(scores.dPrime).not.toBeNull();
+      expect(scores.dPrime!).toBeGreaterThan(1.5);
+    });
+
+    it("computes d-prime below zero when false alarms outnumber hits", () => {
+      const { data } = withTrials([...trials(20, true, 2), ...trials(20, false, 18)]);
+      expect(utils.scoring.calculateScores(data).dPrime!).toBeLessThan(-1.5);
+    });
+
+    // The mistake the null-guard invites: over-nulling. A d-prime of 0 from equal
+    // hit and false-alarm rates is a real result, not a missing one.
+    it("keeps a d-prime of zero when hit and false-alarm rates match", () => {
+      const { data } = withTrials([...trials(20, true, 10), ...trials(20, false, 10)]);
+      const scores = utils.scoring.calculateScores(data);
+
+      expect(scores.dPrime).not.toBeNull();
+      expect(scores.dPrime!).toBeCloseTo(0, 10);
+    });
+
+    it("applies the log-linear correction at ceiling performance", () => {
+      const { data } = withTrials([...trials(20, true, 20), ...trials(20, false, 0)]);
+      const scores = utils.scoring.calculateScores(data);
+
+      expect(scores.hitRate).toBe(1);
+      expect(scores.commissionRate).toBe(0);
+      // (20 + 0.5) / 21 and (0 + 0.5) / 21 give d' ~= 3.96. Asserting only that the
+      // value is finite would not detect a missing correction, because
+      // inverseNormalCDF clamps p to [0.0001, 0.9999] and never returns infinity.
+      expect(scores.dPrime!).toBeCloseTo(3.96, 1);
+    });
+
+    it("keeps a hit rate of zero, which means every target was missed", () => {
+      const { data } = withTrials([...trials(10, true, 0), ...trials(10, false, 0)]);
+      const scores = utils.scoring.calculateScores(data);
+
+      expect(scores.hitRate).toBe(0);
+      expect(scores.omissionRate).toBe(1);
+    });
+
+    it("reports a rate of null when the trials it describes do not exist", () => {
+      // A pure-target block: no non-target was ever shown, so no commission was
+      // ever possible. Reporting 0 would read as flawless inhibition.
+      const { data } = withTrials(trials(10, true, 5));
+      const scores = utils.scoring.calculateScores(data);
+
+      expect(scores.hitRate).toBeCloseTo(0.5, 10);
+      expect(scores.commissionRate).toBeNull();
+      expect(scores.totalNontargets).toBe(0);
+      expect(scores.dPrime).toBeNull();
+      expect(scores.beta).toBeNull();
+    });
+
+    it("ignores practice trials and other tasks", () => {
+      const { jsPsych, data } = withTrials(trials(4, true, 4));
+      data.push({
+        task: "continuous-performance-test",
+        phase: "practice",
+        part: "stimulus",
+        is_target: true,
+        responded: false,
+        rt: null,
+      });
+      data.push({
+        task: "some-other-task",
+        phase: "test",
+        part: "stimulus",
+        is_target: true,
+        responded: false,
+        rt: null,
+      });
+      const scores = utils.scoring.calculateScores(jsPsych.data.get());
+
+      expect(scores.totalTargets).toBe(4);
+      expect(scores.hitRate).toBe(1);
+    });
+
+    it("handles empty data without inventing zeros", () => {
       const jsPsych = initJsPsych();
       const scores = utils.scoring.calculateScores(jsPsych.data.get());
 
       expect(scores.hits).toBe(0);
       expect(scores.totalTargets).toBe(0);
-      expect(scores.hitRate).toBe(0);
-      expect(scores.omissionRate).toBe(0);
+      expect(scores.totalNontargets).toBe(0);
       expect(scores.commissions).toBe(0);
-      expect(scores.commissionRate).toBe(0);
+      expect(scores.hitRate).toBeNull();
+      expect(scores.omissionRate).toBeNull();
+      expect(scores.commissionRate).toBeNull();
       expect(scores.meanRT).toBeNull();
       expect(scores.rtStd).toBeNull();
       expect(scores.dPrime).toBeNull();
       expect(scores.beta).toBeNull();
     });
 
-    it("should have correct scoring structure", () => {
-      const jsPsych = initJsPsych();
-      const scores = utils.scoring.calculateScores(jsPsych.data.get());
+    it("scores each block separately for vigilance-decrement analysis", () => {
+      const { jsPsych } = withTrials([]);
+      const data = jsPsych.data.get();
+      const push = (block: number, rows: any[]) =>
+        rows.forEach((r) =>
+          data.push({
+            task: "continuous-performance-test",
+            phase: "test",
+            part: "stimulus",
+            block,
+            ...r,
+          })
+        );
+      push(1, [...trials(10, true, 9), ...trials(10, false, 1)]);
+      push(2, [...trials(10, true, 4), ...trials(10, false, 6)]);
 
-      expect(scores).toHaveProperty("hits");
-      expect(scores).toHaveProperty("totalTargets");
-      expect(scores).toHaveProperty("hitRate");
-      expect(scores).toHaveProperty("omissionRate");
-      expect(scores).toHaveProperty("commissions");
-      expect(scores).toHaveProperty("totalNontargets");
-      expect(scores).toHaveProperty("commissionRate");
-      expect(scores).toHaveProperty("meanRT");
-      expect(scores).toHaveProperty("rtStd");
-      expect(scores).toHaveProperty("dPrime");
-      expect(scores).toHaveProperty("beta");
+      const summary = utils.scoring.getSummary(data);
+      expect(summary.blockScores).toHaveLength(2);
+      expect(summary.blockScores![0].hitRate).toBeCloseTo(0.9, 10);
+      expect(summary.blockScores![1].hitRate).toBeCloseTo(0.4, 10);
+      // the decrement the README tells researchers to look for
+      expect(summary.blockScores![1].hitRate!).toBeLessThan(summary.blockScores![0].hitRate!);
+    });
+
+    it("scores each AX trial type separately", () => {
+      const { jsPsych } = withTrials([]);
+      const data = jsPsych.data.get();
+      const push = (type: string, isTarget: boolean, n: number, responded: number, rt: number) =>
+        Array.from({ length: n }, (_, i) =>
+          data.push({
+            task: "continuous-performance-test",
+            phase: "test",
+            part: "stimulus",
+            block: 1,
+            ax_trial_type: type,
+            is_target: isTarget,
+            responded: i < responded,
+            rt: i < responded ? rt : null,
+          })
+        );
+      push("ax", true, 10, 9, 300); // targets, mostly hit
+      push("bx", false, 10, 4, 500); // the classic context-maintenance error
+
+      const summary = utils.scoring.getSummary(data);
+      expect(summary.axScores).toBeDefined();
+      expect(summary.axScores!.ax.hitRate).toBeCloseTo(0.9, 10);
+      expect(summary.axScores!.bx.commissionRate).toBeCloseTo(0.4, 10);
+      // untouched types report nothing rather than a misleading zero
+      expect(summary.axScores!.ay.totalTargets).toBe(0);
+      expect(summary.axScores!.ay.hitRate).toBeNull();
+      expect(summary.axScores!.ay.commissionRate).toBeNull();
+    });
+
+    it("leaves d-prime null per AX type, which never holds both trial classes", () => {
+      const { jsPsych } = withTrials([]);
+      const data = jsPsych.data.get();
+      Array.from({ length: 6 }, (_, i) =>
+        data.push({
+          task: "continuous-performance-test",
+          phase: "test",
+          part: "stimulus",
+          block: 1,
+          ax_trial_type: "ax",
+          is_target: true,
+          responded: i < 3,
+          rt: i < 3 ? 300 : null,
+        })
+      );
+      const summary = utils.scoring.getSummary(data);
+      expect(summary.axScores!.ax.totalNontargets).toBe(0);
+      expect(summary.axScores!.ax.dPrime).toBeNull();
+      expect(summary.axScores!.ax.beta).toBeNull();
+      // but the overall summary still reports the rate it can compute
+      expect(summary.axScores!.ax.hitRate).toBeCloseTo(0.5, 10);
+    });
+
+    it("averages RT over every response of an AX type, not only hits", () => {
+      const { jsPsych } = withTrials([]);
+      const data = jsPsych.data.get();
+      [200, 400].forEach((rt) =>
+        data.push({
+          task: "continuous-performance-test",
+          phase: "test",
+          part: "stimulus",
+          block: 1,
+          ax_trial_type: "bx",
+          is_target: false,
+          responded: true,
+          rt,
+        })
+      );
+      const summary = utils.scoring.getSummary(data);
+      // these are false alarms, not hits; a hits-only average would be null here
+      expect(summary.axScores!.bx.meanRT).toBe(300);
+    });
+
+    it("omits blockScores when the run was a single block", () => {
+      const { data } = withTrials([...trials(4, true, 2), ...trials(4, false, 1)]);
+      expect(utils.scoring.getSummary(data).blockScores).toBeUndefined();
     });
   });
 
