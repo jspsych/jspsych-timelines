@@ -135,9 +135,9 @@ const task = jsPsychTimelineCPT.createTimeline(jsPsych, {
 | Field | Type | Description |
 |-------|------|-------------|
 | `task` | string | `"continuous-performance-test"` |
-| `task_version` | string | Package version |
-| `phase` | string | `"practice"`, `"test"`, or `"completion"` |
-| `part` | string | `"stimulus"`, `"cue"`, `"feedback"`, or `"rest"` |
+| `task_version` | string | Package version. Written on the rows that record a stimulus (`part` of `"stimulus"` or `"cue"`) and on the completion row; instruction, feedback and rest rows do not carry it |
+| `phase` | string | `"instructions"`, `"practice"`, `"test"`, or `"completion"` |
+| `part` | string | `"stimulus"`, `"cue"`, `"feedback"`, `"instruction"`, or `"rest"`. Absent on the `"instructions"` and `"completion"` rows |
 | `trial_number` | number | Position of this trial within its block (1-indexed) |
 | `stimulus_letter` | string | The letter shown |
 | `stimulus_type` | string | `"target"` or `"nontarget"` |
@@ -147,6 +147,23 @@ const task = jsPsychTimelineCPT.createTimeline(jsPsych, {
 | `correct` | boolean | Whether response was correct |
 | `isi` | number | ISI used on this trial (ms) |
 | `block` | number | Block number (1-indexed) |
+
+#### Rows a run emits
+
+Only `part: "stimulus"` rows are scored. Everything else is context.
+
+| `phase` | `part` | When |
+|---------|--------|------|
+| `instructions` | — | The mode introduction, once, if `showInstructions` |
+| `practice` | `instruction` | Practice preamble |
+| `practice` | `cue` | AX mode only: the cue half of a practice pair |
+| `practice` | `stimulus` | A practice stimulus (the probe, in AX mode) |
+| `practice` | `feedback` | Per-trial practice feedback |
+| `test` | `instruction` | Main-task preamble |
+| `test` | `cue` | AX mode only: the cue half of a scored pair |
+| `test` | `stimulus` | A scored stimulus — **the rows scoring reads** |
+| `test` | `rest` | Between blocks, when `numBlocks > 1` |
+| `completion` | — | The results screen |
 
 #### Additional AX mode fields
 
@@ -160,6 +177,25 @@ const task = jsPsychTimelineCPT.createTimeline(jsPsych, {
 ```javascript
 const scores = jsPsychTimelineCPT.utils.scoring.getSummary(jsPsych.data.get());
 ```
+
+`getSummary` returns the metrics below for the run as a whole, plus:
+
+| Field | Type | Present when |
+|-------|------|--------------|
+| `taskName` | string | Always — `"continuous-performance-test"` |
+| `version` | string | Always — the package version |
+| `blockScores` | array of metric objects, one per block in order | `numBlocks > 1`. This is where the vigilance decrement below is read from |
+| `axScores` | `{ ax, ay, bx, by }`, each a metric object | The run contains AX trials |
+
+`utils.scoring.calculateScores` returns the overall metrics alone, without these.
+
+#### Reading `axScores`
+
+Each AX trial type holds only one class of trial: `ax` trials are all targets, and
+`ay`, `bx` and `by` are all non-targets. So per type, `commissionRate` is `null` for
+`ax`, `hitRate` is `null` for the other three, and `dPrime` is `null` for all four —
+d-prime needs both classes and is reported at the top level instead. `meanRT` for a
+type averages every response of that type, not only hits.
 
 ### Available Metrics
 
@@ -183,8 +219,8 @@ const scores = jsPsychTimelineCPT.utils.scoring.getSummary(jsPsych.data.get());
 - **High commission rate**: Impulsivity / poor response inhibition
 - **Low d-prime**: Poor discriminability between targets and non-targets
 - **A `null` rate**: the trials it describes were never shown, which is not the same as a rate of 0
-- **Decreasing hit rate across blocks**: Vigilance decrement (sustained attention failure)
-- **In AX mode**: High BX errors suggest poor context maintenance
+- **Decreasing hit rate across blocks**: Vigilance decrement (sustained attention failure) — compare `blockScores[i].hitRate` across `i`, which requires `numBlocks > 1`
+- **In AX mode**: High BX errors suggest poor context maintenance — read `axScores.bx.commissionRate`
 
 ## Translation
 
