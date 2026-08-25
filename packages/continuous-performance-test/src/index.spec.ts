@@ -5,6 +5,7 @@ import htmlButtonResponse from "@jspsych/plugin-html-button-response";
 import { simulateTimeline, startTimeline } from "@jspsych/test-utils";
 import { initJsPsych } from "jspsych";
 
+import { version } from "../package.json";
 import { createTimeline, timelineUnits, utils } from "./index";
 
 jest.useFakeTimers();
@@ -912,7 +913,7 @@ describe("Continuous Performance Test", () => {
       const summary = utils.scoring.getSummary(jsPsych.data.get());
 
       expect(summary.taskName).toBe("continuous-performance-test");
-      expect(summary.version).toBe("0.0.1");
+      expect(summary.version).toBe(version);
     });
   });
 
@@ -1138,7 +1139,7 @@ describe("Continuous Performance Test", () => {
   describe("constants export", () => {
     it("should export task constants", () => {
       expect(utils.constants.TASK_NAME).toBe("continuous-performance-test");
-      expect(utils.constants.VERSION).toBe("0.0.1");
+      expect(utils.constants.VERSION).toBe(version);
       expect(utils.constants.DEFAULT_OPTIONS).toBeDefined();
     });
 

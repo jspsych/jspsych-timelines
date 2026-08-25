@@ -3,6 +3,7 @@ import "./styles.css";
 import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
 import { DataCollection, JsPsych } from "jspsych";
 
+import { version } from "../package.json";
 import { TextConfig, defaultText } from "./text";
 
 // -- TYPES --
@@ -148,7 +149,8 @@ const TASK_NAME = "continuous-performance-test";
 // creates, so the stylesheet can scope rules that target jsPsych-owned DOM
 // without reaching trials belonging to other tasks.
 const CSS_ROOT = "jspsych-continuous-performance-test";
-const VERSION = "0.0.1";
+// Read from package.json so it cannot drift from the published version.
+const VERSION = version;
 
 // Longest run of each stimulus class the sequence generators aim for. Standard and
 // AX mode make the responded-to stimulus the rare one; inhibition mode inverts that,
