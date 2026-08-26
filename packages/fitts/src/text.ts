@@ -20,11 +20,7 @@ export interface TextConfig {
   /** Task complete header */
   task_complete: string;
   /** Results summary */
-  result_summary: (
-    averageMT: number,
-    accuracy: number,
-    throughput: number | null
-  ) => string;
+  result_summary: (averageMT: number, accuracy: number, throughput: number | null) => string;
 }
 
 export const defaultText: TextConfig = {
@@ -34,7 +30,7 @@ export const defaultText: TextConfig = {
   orientation_message: `<p style="font-size: 24px;">Please rotate your device to <strong>landscape</strong> mode to continue.</p>`,
 
   instruction_intro: `
-    <div class="instructions">
+    <div class="fitts-instructions">
       <h2>Tapping Task</h2>
       <p>In this task, you will tap on targets as quickly as possible.</p>
       <p>A target bar will appear on either the left or right side of the screen.</p>
@@ -45,14 +41,14 @@ export const defaultText: TextConfig = {
   `,
 
   instruction_practice: `
-    <div class="instructions">
+    <div class="fitts-instructions">
       <h3>Practice</h3>
       <p>Let's try a few practice trials to get used to the task.</p>
     </div>
   `,
 
   instruction_task: `
-    <div class="instructions">
+    <div class="fitts-instructions">
       <h3>Main Task</h3>
       <p>Now you will complete the main task.</p>
       <p>Tap each target as quickly as you can.</p>
@@ -63,16 +59,16 @@ export const defaultText: TextConfig = {
 
   task_complete: "Task Complete",
 
-  result_summary: (
-    averageMT: number,
-    accuracy: number,
-    throughput: number | null
-  ) => `
-    <div class="instructions">
+  result_summary: (averageMT: number, accuracy: number, throughput: number | null) => `
+    <div class="fitts-instructions">
       <h3>Your Results</h3>
       <p><strong>Average movement time:</strong> ${averageMT.toFixed(0)}ms</p>
       <p><strong>Accuracy:</strong> ${accuracy.toFixed(1)}%</p>
-      ${throughput !== null ? `<p><strong>Throughput:</strong> ${throughput.toFixed(2)} bits/s</p>` : ""}
+      ${
+        throughput !== null
+          ? `<p><strong>Throughput:</strong> ${throughput.toFixed(2)} bits/s</p>`
+          : ""
+      }
     </div>
   `,
 };

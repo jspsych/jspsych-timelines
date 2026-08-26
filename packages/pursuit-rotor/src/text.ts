@@ -32,7 +32,7 @@ export const defaultText: TextConfig = {
   start_button: "Start",
 
   instruction_intro: `
-    <div class="instructions">
+    <div class="jspsych-pursuit-rotor-instructions">
       <h2>Pursuit Rotor Task</h2>
       <p>In this task, you will track a moving target with your cursor. The target
       moves in a circle, and your goal is to keep your cursor on the target as
@@ -41,7 +41,7 @@ export const defaultText: TextConfig = {
   `,
 
   instruction_task: `
-    <div class="instructions">
+    <div class="jspsych-pursuit-rotor-instructions">
       <h3>How It Works</h3>
       <ul>
         <li>A <strong>red circle</strong> will move around the screen</li>
@@ -54,14 +54,14 @@ export const defaultText: TextConfig = {
   `,
 
   instruction_practice: `
-    <div class="instructions">
+    <div class="jspsych-pursuit-rotor-instructions">
       <h3>Practice Trial</h3>
       <p>Let's try a short practice trial to get familiar with the task.</p>
     </div>
   `,
 
   instruction_test: `
-    <div class="instructions">
+    <div class="jspsych-pursuit-rotor-instructions">
       <h3>Main Task</h3>
       <p>Now you will complete the main trials. Try to keep your cursor on the
       target as much as possible throughout each trial.</p>
@@ -72,15 +72,17 @@ export const defaultText: TextConfig = {
     `<p>Keep your cursor on the target. Trial ${trialNum} of ${totalTrials}.</p>`,
 
   practice_complete: `
-    <div class="instructions">
+    <div class="jspsych-pursuit-rotor-instructions">
       <p>Practice complete! You're ready for the main task.</p>
     </div>
   `,
 
   practice_feedback: (percentOnTarget: number) => `
-    <div class="instructions">
+    <div class="jspsych-pursuit-rotor-instructions">
       <h3>Practice Results</h3>
-      <p>You kept your cursor on the target for <strong>${percentOnTarget.toFixed(1)}%</strong> of the time.</p>
+      <p>You kept your cursor on the target for <strong>${percentOnTarget.toFixed(
+        1
+      )}%</strong> of the time.</p>
     </div>
   `,
 
@@ -88,12 +90,14 @@ export const defaultText: TextConfig = {
 
   result_summary: (avgPercent: number, improvement: number | null) => {
     let html = `
-      <div class="instructions">
+      <div class="jspsych-pursuit-rotor-instructions">
         <p>Average time on target: <strong>${avgPercent.toFixed(1)}%</strong></p>
     `;
     if (improvement !== null) {
       const direction = improvement >= 0 ? "improved" : "decreased";
-      html += `<p>Your performance ${direction} by <strong>${Math.abs(improvement).toFixed(1)}%</strong> from first to last trial.</p>`;
+      html += `<p>Your performance ${direction} by <strong>${Math.abs(improvement).toFixed(
+        1
+      )}%</strong> from first to last trial.</p>`;
     }
     html += `</div>`;
     return html;

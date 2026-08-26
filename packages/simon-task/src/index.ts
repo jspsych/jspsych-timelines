@@ -1,7 +1,9 @@
 import "./styles.css";
-import { JsPsych, DataCollection } from "jspsych";
+
 import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
-import { defaultText, TextConfig } from "./text";
+import { DataCollection, JsPsych } from "jspsych";
+
+import { TextConfig, defaultText } from "./text";
 
 // -- TYPES --
 
@@ -104,6 +106,8 @@ interface ResolvedConfig {
 const TASK_NAME = "simon-task";
 const VERSION = "0.0.1";
 
+const CSS_ROOT = "jspsych-simon-task";
+
 const LEFT_BUTTON_INDEX = 0;
 const RIGHT_BUTTON_INDEX = 1;
 
@@ -161,10 +165,7 @@ function getRightFeature(features: [StimulusFeature, StimulusFeature]): Stimulus
  * Generates the stimulus HTML for a Simon trial.
  * Shows a colored circle at the specified lateral position.
  */
-function generateStimulusHtml(
-  color: string,
-  position: "left" | "right" | "center"
-): string {
+function generateStimulusHtml(color: string, position: "left" | "right" | "center"): string {
   let leftPercent: string;
   if (position === "left") {
     leftPercent = "25%";
@@ -175,7 +176,7 @@ function generateStimulusHtml(
   }
 
   return `
-    <div class="trial-content">
+    <div class="simon-trial-content">
       <div class="simon-container">
         <div class="simon-stimulus" style="left: ${leftPercent}; background-color: ${color};"></div>
       </div>
@@ -301,10 +302,7 @@ function generateTrialSequence(
  * Shuffles an array in place, then applies a constraint to limit
  * consecutive trials of the same congruency type.
  */
-function shuffleWithConstraint(
-  trials: TrialVariable[],
-  maxConsecutive: number
-): void {
+function shuffleWithConstraint(trials: TrialVariable[], maxConsecutive: number): void {
   // Fisher-Yates shuffle
   for (let i = trials.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -376,6 +374,7 @@ function createInstructionTrials(config: ResolvedConfig) {
   // Page 1: Introduction
   timeline.push({
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: config.text.instruction_intro,
     choices: [config.text.continue_button],
     data: {
@@ -388,6 +387,7 @@ function createInstructionTrials(config: ResolvedConfig) {
   // Page 2: How to respond
   timeline.push({
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: config.text.instruction_response(leftFeature.label, rightFeature.label),
     choices: [config.text.continue_button],
     data: {
@@ -400,7 +400,8 @@ function createInstructionTrials(config: ResolvedConfig) {
   // Page 3: Congruent example
   timeline.push({
     type: jsPsychHtmlButtonResponse,
-    stimulus: `<div class="instructions">
+    css_classes: [CSS_ROOT],
+    stimulus: `<div class="simon-instructions">
       ${config.text.instruction_congruent_example}
       ${generateStimulusHtml(leftFeature.value, "left")}
     </div>`,
@@ -415,7 +416,8 @@ function createInstructionTrials(config: ResolvedConfig) {
   // Page 4: Incongruent example
   timeline.push({
     type: jsPsychHtmlButtonResponse,
-    stimulus: `<div class="instructions">
+    css_classes: [CSS_ROOT],
+    stimulus: `<div class="simon-instructions">
       ${config.text.instruction_incongruent_example}
       ${generateStimulusHtml(leftFeature.value, "right")}
     </div>`,
@@ -430,6 +432,7 @@ function createInstructionTrials(config: ResolvedConfig) {
   // Page 5: Practice intro
   timeline.push({
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: config.text.instruction_practice_intro,
     choices: [config.text.continue_button],
     data: {
@@ -452,7 +455,8 @@ function createFixationTrial(config: ResolvedConfig) {
 
   return {
     type: jsPsychHtmlButtonResponse,
-    stimulus: `<div class="trial-content"><div class="simon-container"><div class="simon-fixation">${config.text.fixation}</div></div></div>`,
+    css_classes: [CSS_ROOT],
+    stimulus: `<div class="simon-trial-content"><div class="simon-container"><div class="simon-fixation">${config.text.fixation}</div></div></div>`,
     choices: [leftFeature.label, rightFeature.label],
     button_html: createDisabledButtonHtml,
     response_ends_trial: false,
@@ -479,6 +483,7 @@ function createStimulusTrial(
 
   return {
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: () => {
       const color = jsPsych.evaluateTimelineVariable("stimulus_color") as string;
       const side = jsPsych.evaluateTimelineVariable("stimulus_side") as "left" | "right" | "center";
@@ -515,6 +520,7 @@ function createFeedbackTrial(jsPsych: JsPsych, config: ResolvedConfig) {
 
   return {
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: () => {
       const lastTrial = jsPsych.data.get().last(1).values()[0];
       let feedbackText: string;
@@ -522,16 +528,16 @@ function createFeedbackTrial(jsPsych: JsPsych, config: ResolvedConfig) {
 
       if (lastTrial.response === null) {
         feedbackText = config.text.timeout_feedback;
-        feedbackClass = "feedback timeout";
+        feedbackClass = "simon-feedback simon-feedback-timeout";
       } else if (lastTrial.correct) {
         feedbackText = config.text.correct_feedback;
-        feedbackClass = "feedback correct";
+        feedbackClass = "simon-feedback simon-feedback-correct";
       } else {
         feedbackText = config.text.incorrect_feedback;
-        feedbackClass = "feedback incorrect";
+        feedbackClass = "simon-feedback simon-feedback-incorrect";
       }
 
-      return `<div class="trial-content"><div class="${feedbackClass}">${feedbackText}</div></div>`;
+      return `<div class="simon-trial-content"><div class="${feedbackClass}">${feedbackText}</div></div>`;
     },
     choices: [leftFeature.label, rightFeature.label],
     button_html: createDisabledButtonHtml,
@@ -553,7 +559,8 @@ function createItiTrial(config: ResolvedConfig) {
 
   return {
     type: jsPsychHtmlButtonResponse,
-    stimulus: `<div class="trial-content"></div>`,
+    css_classes: [CSS_ROOT],
+    stimulus: `<div class="simon-trial-content"></div>`,
     choices: [leftFeature.label, rightFeature.label],
     button_html: createDisabledButtonHtml,
     response_ends_trial: false,
@@ -571,7 +578,10 @@ function createItiTrial(config: ResolvedConfig) {
 function createRestScreen(config: ResolvedConfig, blockNumber: number) {
   return {
     type: jsPsychHtmlButtonResponse,
-    stimulus: `<div class="instructions"><p>${config.text.block_complete(blockNumber)}</p></div>`,
+    css_classes: [CSS_ROOT],
+    stimulus: `<div class="simon-instructions"><p>${config.text.block_complete(
+      blockNumber
+    )}</p></div>`,
     choices: [config.text.continue_button],
     data: {
       task: TASK_NAME,
@@ -587,6 +597,7 @@ function createRestScreen(config: ResolvedConfig, blockNumber: number) {
 function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
   return {
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: () => {
       const data = jsPsych.data.get();
       const scores = calculateScores(data);
@@ -612,7 +623,8 @@ function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
 function createTransitionTrial(message: string, buttonLabel: string) {
   return {
     type: jsPsychHtmlButtonResponse,
-    stimulus: `<div class="instructions"><p>${message}</p></div>`,
+    css_classes: [CSS_ROOT],
+    stimulus: `<div class="simon-instructions"><p>${message}</p></div>`,
     choices: [buttonLabel],
     data: {
       task: TASK_NAME,
@@ -653,11 +665,7 @@ function createPracticeBlock(jsPsych: JsPsych, config: ResolvedConfig) {
 /**
  * Creates a test block.
  */
-function createTestBlock(
-  jsPsych: JsPsych,
-  config: ResolvedConfig,
-  blockNumber: number
-) {
+function createTestBlock(jsPsych: JsPsych, config: ResolvedConfig, blockNumber: number) {
   const trialsPerBlock = Math.ceil(config.numTestTrials / config.numBlocks);
 
   const trialVariables = generateTrialSequence(
@@ -716,16 +724,12 @@ function calculateScores(data: DataCollection): ScoringResult {
 
   const correctTrials = testTrials.filter((t) => t.correct);
   const accuracy = correctTrials.length / testTrials.length;
-  const correctRTs = correctTrials
-    .filter((t) => t.rt !== null)
-    .map((t) => t.rt as number);
+  const correctRTs = correctTrials.filter((t) => t.rt !== null).map((t) => t.rt as number);
   const meanRT = mean(correctRTs);
 
   // By condition
   const congruentTrials = testTrials.filter((t) => t.congruence === "congruent");
-  const incongruentTrials = testTrials.filter(
-    (t) => t.congruence === "incongruent"
-  );
+  const incongruentTrials = testTrials.filter((t) => t.congruence === "incongruent");
   const neutralTrials = testTrials.filter((t) => t.congruence === "neutral");
 
   const congruentAccuracy =
@@ -734,8 +738,7 @@ function calculateScores(data: DataCollection): ScoringResult {
       : 0;
   const incongruentAccuracy =
     incongruentTrials.length > 0
-      ? incongruentTrials.filter((t) => t.correct).length /
-        incongruentTrials.length
+      ? incongruentTrials.filter((t) => t.correct).length / incongruentTrials.length
       : 0;
   const neutralAccuracy =
     neutralTrials.length > 0
@@ -743,40 +746,26 @@ function calculateScores(data: DataCollection): ScoringResult {
       : null;
 
   const congruentRT = mean(
-    congruentTrials
-      .filter((t) => t.correct && t.rt !== null)
-      .map((t) => t.rt as number)
+    congruentTrials.filter((t) => t.correct && t.rt !== null).map((t) => t.rt as number)
   );
   const incongruentRT = mean(
-    incongruentTrials
-      .filter((t) => t.correct && t.rt !== null)
-      .map((t) => t.rt as number)
+    incongruentTrials.filter((t) => t.correct && t.rt !== null).map((t) => t.rt as number)
   );
   const neutralRT =
     neutralTrials.length > 0
-      ? mean(
-          neutralTrials
-            .filter((t) => t.correct && t.rt !== null)
-            .map((t) => t.rt as number)
-        )
+      ? mean(neutralTrials.filter((t) => t.correct && t.rt !== null).map((t) => t.rt as number))
       : null;
 
   // Simon effect
   const simonEffectRT =
-    incongruentRT !== null && congruentRT !== null
-      ? incongruentRT - congruentRT
-      : null;
+    incongruentRT !== null && congruentRT !== null ? incongruentRT - congruentRT : null;
   const simonEffectAccuracy = congruentAccuracy - incongruentAccuracy;
 
   // Facilitation and interference (only meaningful with neutral)
   const facilitationRT =
-    neutralRT !== null && congruentRT !== null
-      ? neutralRT - congruentRT
-      : null;
+    neutralRT !== null && congruentRT !== null ? neutralRT - congruentRT : null;
   const interferenceRT =
-    neutralRT !== null && incongruentRT !== null
-      ? incongruentRT - neutralRT
-      : null;
+    neutralRT !== null && incongruentRT !== null ? incongruentRT - neutralRT : null;
 
   return {
     accuracy,
@@ -799,9 +788,7 @@ function calculateScores(data: DataCollection): ScoringResult {
 /**
  * Returns a summary of the Simon task performance.
  */
-function getSummary(
-  data: DataCollection
-): ScoringResult & { taskName: string; version: string } {
+function getSummary(data: DataCollection): ScoringResult & { taskName: string; version: string } {
   const scores = calculateScores(data);
   return {
     ...scores,
@@ -851,10 +838,7 @@ export function createTimeline(jsPsych: JsPsych, options: SimonTaskOptions = {})
   if (config.numPracticeTrials > 0) {
     timeline.push(createPracticeBlock(jsPsych, config));
     timeline.push(
-      createTransitionTrial(
-        config.text.practice_complete,
-        config.text.continue_button
-      )
+      createTransitionTrial(config.text.practice_complete, config.text.continue_button)
     );
   }
 

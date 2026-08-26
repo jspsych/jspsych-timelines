@@ -1,8 +1,10 @@
 import "./styles.css";
-import { JsPsych, DataCollection } from "jspsych";
+
 import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
 import jsPsychHtmlKeyboardResponse from "@jspsych/plugin-html-keyboard-response";
-import { defaultText, TextConfig } from "./text";
+import { DataCollection, JsPsych } from "jspsych";
+
+import { TextConfig, defaultText } from "./text";
 
 // -- TYPES --
 
@@ -94,6 +96,8 @@ interface ResolvedConfig {
 const TASK_NAME = "digit-span";
 const VERSION = "0.0.1";
 
+const CSS_ROOT = "jspsych-digit-span";
+
 const DEFAULT_OPTIONS = {
   mode: "forward" as DigitSpanMode,
   showInstructions: true,
@@ -161,26 +165,31 @@ function createResponseHtml(
   text: TextConfig,
   mode: "forward" | "backward"
 ): string {
-  const prompt =
-    mode === "forward" ? text.response_prompt : text.response_prompt_backward;
+  const prompt = mode === "forward" ? text.response_prompt : text.response_prompt_backward;
 
   return `
-    <div class="prompt">${prompt}</div>
-    <div class="display" id="digit-span-display">${currentResponse || "&nbsp;"}</div>
-    <div class="numpad-container">
-      <div class="numpad">
-        <button type="button" class="jspsych-btn digit-button" data-digit="1">1</button>
-        <button type="button" class="jspsych-btn digit-button" data-digit="2">2</button>
-        <button type="button" class="jspsych-btn digit-button" data-digit="3">3</button>
-        <button type="button" class="jspsych-btn digit-button" data-digit="4">4</button>
-        <button type="button" class="jspsych-btn digit-button" data-digit="5">5</button>
-        <button type="button" class="jspsych-btn digit-button" data-digit="6">6</button>
-        <button type="button" class="jspsych-btn digit-button" data-digit="7">7</button>
-        <button type="button" class="jspsych-btn digit-button" data-digit="8">8</button>
-        <button type="button" class="jspsych-btn digit-button" data-digit="9">9</button>
-        <button type="button" class="jspsych-btn clear-button" id="digit-span-clear">${text.clear_button}</button>
-        <button type="button" class="jspsych-btn digit-button" data-digit="0">0</button>
-        <button type="button" class="jspsych-btn done-button" id="digit-span-done">${text.done_button}</button>
+    <div class="jspsych-digit-span-prompt">${prompt}</div>
+    <div class="jspsych-digit-span-display" id="digit-span-display">${
+      currentResponse || "&nbsp;"
+    }</div>
+    <div class="jspsych-digit-span-numpad-container">
+      <div class="jspsych-digit-span-numpad">
+        <button type="button" class="jspsych-btn jspsych-digit-span-digit-button" data-digit="1">1</button>
+        <button type="button" class="jspsych-btn jspsych-digit-span-digit-button" data-digit="2">2</button>
+        <button type="button" class="jspsych-btn jspsych-digit-span-digit-button" data-digit="3">3</button>
+        <button type="button" class="jspsych-btn jspsych-digit-span-digit-button" data-digit="4">4</button>
+        <button type="button" class="jspsych-btn jspsych-digit-span-digit-button" data-digit="5">5</button>
+        <button type="button" class="jspsych-btn jspsych-digit-span-digit-button" data-digit="6">6</button>
+        <button type="button" class="jspsych-btn jspsych-digit-span-digit-button" data-digit="7">7</button>
+        <button type="button" class="jspsych-btn jspsych-digit-span-digit-button" data-digit="8">8</button>
+        <button type="button" class="jspsych-btn jspsych-digit-span-digit-button" data-digit="9">9</button>
+        <button type="button" class="jspsych-btn jspsych-digit-span-clear-button" id="digit-span-clear">${
+          text.clear_button
+        }</button>
+        <button type="button" class="jspsych-btn jspsych-digit-span-digit-button" data-digit="0">0</button>
+        <button type="button" class="jspsych-btn jspsych-digit-span-done-button" id="digit-span-done">${
+          text.done_button
+        }</button>
       </div>
     </div>
   `;
@@ -203,6 +212,7 @@ function createInstructionsWithPractice(
   // Intro page
   timeline.push({
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: mode === "forward" ? text.instruction_intro_forward : text.instruction_intro_backward,
     choices: [text.continue_button],
     data: {
@@ -216,7 +226,9 @@ function createInstructionsWithPractice(
   // Response explanation page
   timeline.push({
     type: jsPsychHtmlButtonResponse,
-    stimulus: mode === "forward" ? text.instruction_response_forward : text.instruction_example_backward,
+    css_classes: [CSS_ROOT],
+    stimulus:
+      mode === "forward" ? text.instruction_response_forward : text.instruction_example_backward,
     choices: [text.continue_button],
     data: {
       task: TASK_NAME,
@@ -231,6 +243,7 @@ function createInstructionsWithPractice(
     // Practice prompt
     timeline.push({
       type: jsPsychHtmlButtonResponse,
+      css_classes: [CSS_ROOT],
       stimulus: mode === "forward" ? text.instruction_try_forward : text.instruction_try_backward,
       choices: [text.continue_button],
       data: {
@@ -273,7 +286,8 @@ function createInstructionTrials(config: ResolvedConfig, mode: "forward" | "back
   return {
     timeline: pages.map((page) => ({
       type: jsPsychHtmlButtonResponse,
-      stimulus: `<div class="instructions" >${page}</div>`,
+      css_classes: [CSS_ROOT],
+      stimulus: `<div class="jspsych-digit-span-instructions" >${page}</div>`,
       choices: [config.text.continue_button],
       data: {
         task: TASK_NAME,
@@ -290,7 +304,8 @@ function createInstructionTrials(config: ResolvedConfig, mode: "forward" | "back
 function createReadyTrial(config: ResolvedConfig) {
   return {
     type: jsPsychHtmlKeyboardResponse,
-    stimulus: `<div class="ready" >${config.text.ready_prompt}</div>`,
+    css_classes: [CSS_ROOT],
+    stimulus: `<div class="jspsych-digit-span-ready" >${config.text.ready_prompt}</div>`,
     choices: "NO_KEYS",
     trial_duration: config.readyDuration,
     data: {
@@ -306,7 +321,8 @@ function createReadyTrial(config: ResolvedConfig) {
 function createDigitPresentationTrials(digits: number[], config: ResolvedConfig) {
   return digits.map((digit) => ({
     type: jsPsychHtmlKeyboardResponse,
-    stimulus: `<div class="stimulus" >${digit}</div>`,
+    css_classes: [CSS_ROOT],
+    stimulus: `<div class="jspsych-digit-span-stimulus" >${digit}</div>`,
     choices: "NO_KEYS",
     trial_duration: config.digitDuration,
     data: {
@@ -339,7 +355,7 @@ function createResponseTrial(
     stimulus: createResponseHtml("", config.text, mode),
     choices: [], // No standard buttons - we use custom interface
     trial_duration: null, // Untimed
-    css_classes: ["response-interface"],
+    css_classes: [CSS_ROOT],
     data: {
       task: TASK_NAME,
       task_version: VERSION,
@@ -357,7 +373,7 @@ function createResponseTrial(
       const startTime = performance.now();
 
       // Handle digit button clicks
-      document.querySelectorAll(".digit-button").forEach((button) => {
+      document.querySelectorAll(".jspsych-digit-span-digit-button").forEach((button) => {
         button.addEventListener("click", (e) => {
           const digit = (e.target as HTMLElement).getAttribute("data-digit");
           if (digit) {
@@ -401,6 +417,7 @@ function createResponseTrial(
 function createFeedbackTrial(jsPsych: JsPsych, config: ResolvedConfig) {
   return {
     type: jsPsychHtmlKeyboardResponse,
+    css_classes: [CSS_ROOT],
     stimulus: () => {
       const lastTrial = jsPsych.data.get().last(1).values()[0];
       let feedbackText: string;
@@ -408,10 +425,10 @@ function createFeedbackTrial(jsPsych: JsPsych, config: ResolvedConfig) {
 
       if (lastTrial.correct) {
         feedbackText = config.text.correct_feedback;
-        feedbackClass = "feedback correct";
+        feedbackClass = "jspsych-digit-span-feedback jspsych-digit-span-feedback-correct";
       } else {
         feedbackText = config.text.incorrect_feedback(lastTrial.correct_response);
-        feedbackClass = "feedback incorrect";
+        feedbackClass = "jspsych-digit-span-feedback jspsych-digit-span-feedback-incorrect";
       }
 
       return `<div class="${feedbackClass}" >${feedbackText}</div>`;
@@ -431,6 +448,7 @@ function createFeedbackTrial(jsPsych: JsPsych, config: ResolvedConfig) {
 function createItiTrial(config: ResolvedConfig) {
   return {
     type: jsPsychHtmlKeyboardResponse,
+    css_classes: [CSS_ROOT],
     stimulus: "",
     choices: "NO_KEYS",
     trial_duration: config.interTrialInterval,
@@ -447,7 +465,8 @@ function createItiTrial(config: ResolvedConfig) {
 function createTransitionTrial(message: string, buttonLabel: string) {
   return {
     type: jsPsychHtmlButtonResponse,
-    stimulus: `<div class="transition" ><p>${message}</p></div>`,
+    css_classes: [CSS_ROOT],
+    stimulus: `<div class="jspsych-digit-span-transition" ><p>${message}</p></div>`,
     choices: [buttonLabel],
     data: {
       task: TASK_NAME,
@@ -508,11 +527,7 @@ function createPracticeBlock(
 /**
  * Creates a test block with staircase adaptive span.
  */
-function createTestBlock(
-  jsPsych: JsPsych,
-  config: ResolvedConfig,
-  mode: "forward" | "backward"
-) {
+function createTestBlock(jsPsych: JsPsych, config: ResolvedConfig, mode: "forward" | "backward") {
   // We need to create trials dynamically based on staircase
   // Using a loop procedure with conditional function
 
@@ -523,6 +538,7 @@ function createTestBlock(
     timeline: [
       {
         type: jsPsychHtmlKeyboardResponse,
+        css_classes: [CSS_ROOT],
         stimulus: "",
         choices: "NO_KEYS",
         trial_duration: 0,
@@ -538,7 +554,8 @@ function createTestBlock(
       // Ready signal
       {
         type: jsPsychHtmlKeyboardResponse,
-        stimulus: `<div class="ready" >${config.text.ready_prompt}</div>`,
+        css_classes: [CSS_ROOT],
+        stimulus: `<div class="jspsych-digit-span-ready" >${config.text.ready_prompt}</div>`,
         choices: "NO_KEYS",
         trial_duration: config.readyDuration,
         data: {
@@ -551,15 +568,19 @@ function createTestBlock(
         timeline: [
           {
             type: jsPsychHtmlKeyboardResponse,
+            css_classes: [CSS_ROOT],
             stimulus: () => {
               // Get the setup trial data
-              const setupData = jsPsych.data.get().filter({ trial_number: trialNumber }).values()[0];
+              const setupData = jsPsych.data
+                .get()
+                .filter({ trial_number: trialNumber })
+                .values()[0];
               const digitIndex = jsPsych.data
                 .get()
                 .filter({ task: TASK_NAME, part: "digit_presentation", parent_trial: trialNumber })
                 .count();
               const digit = setupData.generated_digits[digitIndex];
-              return `<div class="stimulus" >${digit}</div>`;
+              return `<div class="jspsych-digit-span-stimulus" >${digit}</div>`;
             },
             choices: "NO_KEYS",
             trial_duration: config.digitDuration,
@@ -585,7 +606,7 @@ function createTestBlock(
         stimulus: () => createResponseHtml("", config.text, mode),
         choices: [],
         trial_duration: null,
-        css_classes: ["response-interface"],
+        css_classes: [CSS_ROOT],
         data: () => {
           const setupData = jsPsych.data.get().filter({ trial_number: trialNumber }).values()[0];
           const digits = setupData.generated_digits;
@@ -615,7 +636,7 @@ function createTestBlock(
           const correctDigits = mode === "forward" ? digits : [...digits].reverse();
           const correctResponseStr = correctDigits.join("");
 
-          document.querySelectorAll(".digit-button").forEach((button) => {
+          document.querySelectorAll(".jspsych-digit-span-digit-button").forEach((button) => {
             button.addEventListener("click", (e) => {
               const digit = (e.target as HTMLElement).getAttribute("data-digit");
               if (digit) {
@@ -649,7 +670,12 @@ function createTestBlock(
         },
         on_finish: (data: any) => {
           // Update span for next trial based on staircase
-          currentSpan = getNextSpanLength(currentSpan, data.correct, config.minSpan, config.maxSpan);
+          currentSpan = getNextSpanLength(
+            currentSpan,
+            data.correct,
+            config.minSpan,
+            config.maxSpan
+          );
         },
       },
       // Feedback (conditional)
@@ -657,6 +683,7 @@ function createTestBlock(
         timeline: [
           {
             type: jsPsychHtmlKeyboardResponse,
+            css_classes: [CSS_ROOT],
             stimulus: () => {
               const lastTrial = jsPsych.data.get().last(1).values()[0];
               let feedbackText: string;
@@ -664,10 +691,10 @@ function createTestBlock(
 
               if (lastTrial.correct) {
                 feedbackText = config.text.correct_feedback;
-                feedbackClass = "feedback correct";
+                feedbackClass = "jspsych-digit-span-feedback jspsych-digit-span-feedback-correct";
               } else {
                 feedbackText = config.text.incorrect_feedback(lastTrial.correct_response);
-                feedbackClass = "feedback incorrect";
+                feedbackClass = "jspsych-digit-span-feedback jspsych-digit-span-feedback-incorrect";
               }
 
               return `<div class="${feedbackClass}" >${feedbackText}</div>`;
@@ -685,6 +712,7 @@ function createTestBlock(
       // ITI
       {
         type: jsPsychHtmlKeyboardResponse,
+        css_classes: [CSS_ROOT],
         stimulus: "",
         choices: "NO_KEYS",
         trial_duration: config.interTrialInterval,
@@ -722,7 +750,8 @@ function calculateModeScores(data: DataCollection, mode: "forward" | "backward")
   }
 
   const correctTrials = testTrials.filter((t) => t.correct);
-  const maxSpan = correctTrials.length > 0 ? Math.max(...correctTrials.map((t) => t.span_length)) : 0;
+  const maxSpan =
+    correctTrials.length > 0 ? Math.max(...correctTrials.map((t) => t.span_length)) : 0;
   const totalCorrect = correctTrials.length;
   const meanSpan = mean(correctTrials.map((t) => t.span_length));
 
@@ -843,12 +872,17 @@ export function createTimeline(jsPsych: JsPsych, options: DigitSpanOptions = {})
 function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
   return {
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: () => {
       const data = jsPsych.data.get();
       const scores = calculateScores(data);
       let html = `<div style="max-width: 600px; margin: 0 auto;">`;
       html += `<h2>${config.text.task_complete}</h2>`;
-      html += config.text.result_summary(scores.forwardMaxSpan, scores.backwardMaxSpan, scores.forwardTotalCorrect + scores.backwardTotalCorrect);
+      html += config.text.result_summary(
+        scores.forwardMaxSpan,
+        scores.backwardMaxSpan,
+        scores.forwardTotalCorrect + scores.backwardTotalCorrect
+      );
       html += `</div>`;
       return html;
     },

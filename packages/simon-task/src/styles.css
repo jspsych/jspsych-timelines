@@ -1,20 +1,20 @@
 /* Simon Task Styles - Minimal, themeable */
 
 /* Instructions container */
-.instructions {
+.jspsych-simon-task .simon-instructions {
   max-width: 600px;
   margin: 0 auto;
   padding: 0 20px;
   text-align: left;
 }
 
-.instructions h2,
-.instructions h3 {
+.jspsych-simon-task .simon-instructions h2,
+.jspsych-simon-task .simon-instructions h3 {
   text-align: center;
 }
 
 /* Trial content container - fixed height prevents button movement */
-.trial-content {
+.jspsych-simon-task .simon-trial-content {
   min-height: 200px;
   display: flex;
   justify-content: center;
@@ -23,7 +23,7 @@
 }
 
 /* Simon stimulus container - relative positioning for lateral placement */
-.simon-container {
+.jspsych-simon-task .simon-container {
   position: relative;
   width: 80vw;
   max-width: 600px;
@@ -31,7 +31,7 @@
 }
 
 /* The colored stimulus circle */
-.simon-stimulus {
+.jspsych-simon-task .simon-stimulus {
   position: absolute;
   top: 50%;
   transform: translate(-50%, -50%);
@@ -41,7 +41,7 @@
 }
 
 /* Fixation cross */
-.simon-fixation {
+.jspsych-simon-task .simon-fixation {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -50,32 +50,32 @@
 }
 
 /* Feedback state modifiers */
-.feedback.correct {
+.jspsych-simon-task .simon-feedback-correct {
   color: green;
   font-size: 1.5em;
   font-weight: bold;
 }
 
-.feedback.incorrect {
+.jspsych-simon-task .simon-feedback-incorrect {
   color: red;
   font-size: 1.5em;
   font-weight: bold;
 }
 
-.feedback.timeout {
+.jspsych-simon-task .simon-feedback-timeout {
   color: orange;
   font-size: 1.5em;
   font-weight: bold;
 }
 
 /* Disabled buttons during non-response periods */
-.jspsych-btn:disabled {
+.jspsych-simon-task .jspsych-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
 /* Spread response buttons to left and right when there are two */
-#jspsych-html-button-response-btngroup:has(.jspsych-btn + .jspsych-btn) {
+.jspsych-simon-task #jspsych-html-button-response-btngroup:has(.jspsych-btn + .jspsych-btn) {
   display: flex;
   justify-content: space-between;
   width: 80vw;
@@ -83,7 +83,7 @@
   margin: 0 auto;
 }
 
-#jspsych-html-button-response-btngroup .jspsych-btn {
+.jspsych-simon-task #jspsych-html-button-response-btngroup .jspsych-btn {
   min-height: 52px;
   min-width: 100px;
   font-size: 18px;
@@ -91,7 +91,7 @@
 
 /* Mobile/touch device optimizations */
 @media (pointer: coarse) {
-  #jspsych-html-button-response-btngroup {
+  .jspsych-simon-task #jspsych-html-button-response-btngroup {
     position: fixed;
     bottom: 0;
     left: 0;
@@ -103,7 +103,7 @@
     justify-content: space-between;
   }
 
-  #jspsych-html-button-response-btngroup .jspsych-btn {
+  .jspsych-simon-task #jspsych-html-button-response-btngroup .jspsych-btn {
     min-height: 60px;
     min-width: 120px;
     font-size: 18px;
@@ -112,7 +112,7 @@
   }
 
   /* Add padding to content so it doesn't get hidden behind fixed buttons */
-  .jspsych-content {
+  .jspsych-simon-task {
     padding-bottom: 100px;
   }
 }

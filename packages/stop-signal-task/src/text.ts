@@ -4,33 +4,33 @@
  */
 export const defaultText = {
   // -- INSTRUCTION PAGES --
-  instruction_intro: `<div class="instructions">
+  instruction_intro: `<div class="sst-instructions">
     <h2>Stop Signal Task</h2>
     <p>In this task, you will see an arrow pointing left or right.</p>
     <p>Your job is to press the button matching the direction of the arrow as quickly as possible.</p>
   </div>`,
 
-  instruction_response: `<div class="instructions">
+  instruction_response: `<div class="sst-instructions">
     <h2>How to Respond</h2>
     <p>If the arrow points <strong>left</strong>, press the <strong>LEFT</strong> button.</p>
     <p>If the arrow points <strong>right</strong>, press the <strong>RIGHT</strong> button.</p>
     <p>Try to respond as quickly and accurately as possible.</p>
   </div>`,
 
-  instruction_stop_signal: `<div class="instructions">
+  instruction_stop_signal: `<div class="sst-instructions">
     <h2>Stop Signal</h2>
     <p>On some trials, the arrow will turn <strong style="color: #D32F2F;">red</strong> shortly after appearing.</p>
     <p>When this happens, try to <strong>stop yourself</strong> from pressing any button.</p>
     <p>It will not always be possible to stop. Just do your best.</p>
   </div>`,
 
-  instruction_strategy: `<div class="instructions">
+  instruction_strategy: `<div class="sst-instructions">
     <h2>Important</h2>
     <p>Do not wait for the stop signal to appear before responding.</p>
     <p>Always try to respond quickly on every trial, and stop if you see the signal.</p>
   </div>`,
 
-  instruction_practice_intro: `<div class="instructions">
+  instruction_practice_intro: `<div class="sst-instructions">
     <h2>Practice</h2>
     <p>Now you will do some practice trials.</p>
     <p>Remember: respond quickly to the arrow direction, but stop if the arrow turns red.</p>
@@ -63,7 +63,7 @@ export const defaultText = {
     meanGoRT: number | null,
     ssrt: number | null
   ) => {
-    let html = `<div class="instructions">`;
+    let html = `<div class="sst-instructions">`;
     html += `<p><strong>Go Accuracy:</strong> ${(goAccuracy * 100).toFixed(1)}%</p>`;
     html += `<p><strong>Stop Accuracy:</strong> ${(stopAccuracy * 100).toFixed(1)}%</p>`;
     if (meanGoRT !== null) {

@@ -38,7 +38,7 @@ export const defaultText: TextConfig = {
   start_button: "Start",
 
   instruction_intro: `
-    <div class="instructions">
+    <div class="jspsych-paired-associates-instructions">
       <h2>Paired Associates Task</h2>
       <p>In this task, you will learn pairs of words.</p>
       <p>First, you will see word pairs one at a time. Try to remember which words go together.</p>
@@ -47,7 +47,7 @@ export const defaultText: TextConfig = {
   `,
 
   instruction_study: `
-    <div class="instructions">
+    <div class="jspsych-paired-associates-instructions">
       <h3>Study Phase</h3>
       <p>You will now see word pairs. Try to remember which words are paired together.</p>
       <p>Pay attention - you will be tested on these pairs!</p>
@@ -55,7 +55,7 @@ export const defaultText: TextConfig = {
   `,
 
   instruction_test: `
-    <div class="instructions">
+    <div class="jspsych-paired-associates-instructions">
       <h3>Test Phase</h3>
       <p>Now you will be tested on the word pairs.</p>
       <p>For each word shown, select the word that was paired with it.</p>
@@ -87,29 +87,27 @@ export const defaultText: TextConfig = {
   `,
 
   round_complete: (round: number, correct: number, total: number) => `
-    <div class="instructions">
+    <div class="jspsych-paired-associates-instructions">
       <h3>Round ${round} Complete</h3>
       <p>You got <strong>${correct} out of ${total}</strong> correct.</p>
-      ${correct === total
-        ? "<p style='color: green;'>Perfect! You've learned all the pairs.</p>"
-        : "<p>Let's try again with the pairs you missed.</p>"
+      ${
+        correct === total
+          ? "<p style='color: green;'>Perfect! You've learned all the pairs.</p>"
+          : "<p>Let's try again with the pairs you missed.</p>"
       }
     </div>
   `,
 
   task_complete: "Task Complete",
 
-  result_summary: (
-    totalCorrect: number,
-    totalTrials: number,
-    roundsToLearn: number | null
-  ) => `
-    <div class="instructions">
+  result_summary: (totalCorrect: number, totalTrials: number, roundsToLearn: number | null) => `
+    <div class="jspsych-paired-associates-instructions">
       <h3>Your Results</h3>
       <p>Final accuracy: <strong>${totalCorrect} / ${totalTrials}</strong> pairs correct</p>
-      ${roundsToLearn !== null
-        ? `<p>Rounds to learn all pairs: <strong>${roundsToLearn}</strong></p>`
-        : "<p>Maximum rounds reached.</p>"
+      ${
+        roundsToLearn !== null
+          ? `<p>Rounds to learn all pairs: <strong>${roundsToLearn}</strong></p>`
+          : "<p>Maximum rounds reached.</p>"
       }
     </div>
   `,

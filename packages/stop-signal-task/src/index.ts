@@ -1,8 +1,10 @@
 import "./styles.css";
-import { JsPsych, DataCollection } from "jspsych";
-import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
+
 import jsPsychStopSignal from "@jspsych-contrib/plugin-stop-signal";
-import { defaultText, TextConfig } from "./text";
+import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
+import { DataCollection, JsPsych } from "jspsych";
+
+import { TextConfig, defaultText } from "./text";
 
 // -- TYPES --
 
@@ -101,6 +103,8 @@ interface ResolvedConfig {
 
 const TASK_NAME = "stop-signal-task";
 const VERSION = "0.0.1";
+
+const CSS_ROOT = "jspsych-stop-signal-task";
 
 const LEFT_BUTTON_INDEX = 0;
 const RIGHT_BUTTON_INDEX = 1;
@@ -253,8 +257,7 @@ function shuffleWithConstraint(
       }
     }
 
-    const maxForType =
-      trials[i].trial_type_sst === "stop" ? maxConsecutiveStop : maxConsecutiveGo;
+    const maxForType = trials[i].trial_type_sst === "stop" ? maxConsecutiveStop : maxConsecutiveGo;
 
     if (consecutiveCount > maxForType) {
       // Find a trial later in the array with a different type to swap
@@ -305,6 +308,7 @@ function createInstructionTrials(config: ResolvedConfig) {
   // Page 1: Introduction
   timeline.push({
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: config.text.instruction_intro,
     choices: [config.text.continue_button],
     data: {
@@ -317,6 +321,7 @@ function createInstructionTrials(config: ResolvedConfig) {
   // Page 2: How to respond
   timeline.push({
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: config.text.instruction_response,
     choices: [config.text.continue_button],
     data: {
@@ -329,6 +334,7 @@ function createInstructionTrials(config: ResolvedConfig) {
   // Page 3: Stop signal explanation
   timeline.push({
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: config.text.instruction_stop_signal,
     choices: [config.text.continue_button],
     data: {
@@ -341,6 +347,7 @@ function createInstructionTrials(config: ResolvedConfig) {
   // Page 4: Strategy advice
   timeline.push({
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: config.text.instruction_strategy,
     choices: [config.text.continue_button],
     data: {
@@ -353,6 +360,7 @@ function createInstructionTrials(config: ResolvedConfig) {
   // Page 5: Practice intro
   timeline.push({
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: config.text.instruction_practice_intro,
     choices: [config.text.continue_button],
     data: {
@@ -372,7 +380,8 @@ function createInstructionTrials(config: ResolvedConfig) {
 function createFixationTrial(config: ResolvedConfig) {
   return {
     type: jsPsychHtmlButtonResponse,
-    stimulus: `<div class="trial-content"><div class="sst-fixation">${config.text.fixation}</div></div>`,
+    css_classes: [CSS_ROOT],
+    stimulus: `<div class="sst-trial-content"><div class="sst-fixation">${config.text.fixation}</div></div>`,
     choices: [config.text.left_button, config.text.right_button],
     button_html: createDisabledButtonHtml,
     response_ends_trial: false,
@@ -418,6 +427,7 @@ function createStimulusTrial(
 
   return {
     type: jsPsychStopSignal,
+    css_classes: [CSS_ROOT],
     stimuli: () => {
       const direction = jsPsych.evaluateTimelineVariable("direction") as "left" | "right";
       const trialType = jsPsych.evaluateTimelineVariable("trial_type_sst") as "go" | "stop";
@@ -472,6 +482,7 @@ function createStimulusTrial(
 function createFeedbackTrial(jsPsych: JsPsych, config: ResolvedConfig) {
   return {
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: () => {
       const lastTrial = jsPsych.data.get().last(1).values()[0];
       let feedbackText: string;
@@ -480,25 +491,25 @@ function createFeedbackTrial(jsPsych: JsPsych, config: ResolvedConfig) {
       if (lastTrial.trial_type_sst === "stop") {
         if (lastTrial.correct) {
           feedbackText = config.text.successful_stop_feedback;
-          feedbackClass = "feedback stop-success";
+          feedbackClass = "sst-feedback sst-stop-success";
         } else {
           feedbackText = config.text.failed_stop_feedback;
-          feedbackClass = "feedback stop-fail";
+          feedbackClass = "sst-feedback sst-stop-fail";
         }
       } else {
         if (lastTrial.response === null) {
           feedbackText = config.text.timeout_go_feedback;
-          feedbackClass = "feedback timeout";
+          feedbackClass = "sst-feedback sst-feedback-timeout";
         } else if (lastTrial.correct) {
           feedbackText = config.text.correct_go_feedback;
-          feedbackClass = "feedback correct";
+          feedbackClass = "sst-feedback sst-feedback-correct";
         } else {
           feedbackText = config.text.incorrect_go_feedback;
-          feedbackClass = "feedback incorrect";
+          feedbackClass = "sst-feedback sst-feedback-incorrect";
         }
       }
 
-      return `<div class="trial-content"><div class="${feedbackClass}">${feedbackText}</div></div>`;
+      return `<div class="sst-trial-content"><div class="${feedbackClass}">${feedbackText}</div></div>`;
     },
     choices: [config.text.left_button, config.text.right_button],
     button_html: createDisabledButtonHtml,
@@ -517,7 +528,8 @@ function createFeedbackTrial(jsPsych: JsPsych, config: ResolvedConfig) {
 function createItiTrial(config: ResolvedConfig) {
   return {
     type: jsPsychHtmlButtonResponse,
-    stimulus: `<div class="trial-content"></div>`,
+    css_classes: [CSS_ROOT],
+    stimulus: `<div class="sst-trial-content"></div>`,
     choices: [config.text.left_button, config.text.right_button],
     button_html: createDisabledButtonHtml,
     response_ends_trial: false,
@@ -535,6 +547,7 @@ function createItiTrial(config: ResolvedConfig) {
 function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
   return {
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: () => {
       const data = jsPsych.data.get();
       const scores = calculateScores(data);
@@ -565,7 +578,8 @@ function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
 function createTransitionTrial(message: string, buttonLabel: string) {
   return {
     type: jsPsychHtmlButtonResponse,
-    stimulus: `<div class="instructions"><p>${message}</p></div>`,
+    css_classes: [CSS_ROOT],
+    stimulus: `<div class="sst-instructions"><p>${message}</p></div>`,
     choices: [buttonLabel],
     data: {
       task: TASK_NAME,
@@ -671,16 +685,12 @@ function calculateScores(data: DataCollection): ScoringResult {
   const stopAccuracy = stopTrials.length > 0 ? successfulStops.length / stopTrials.length : 0;
 
   // Mean go RT (correct go trials only)
-  const goRTs = correctGoTrials
-    .filter((t) => t.rt !== null)
-    .map((t) => t.rt as number);
+  const goRTs = correctGoTrials.filter((t) => t.rt !== null).map((t) => t.rt as number);
   const meanGoRT = mean(goRTs);
   const goRTStandardDeviation = standardDeviation(goRTs);
 
   // Mean SSD (from stop trials)
-  const ssds = stopTrials
-    .filter((t) => t.ssd !== null)
-    .map((t) => t.ssd as number);
+  const ssds = stopTrials.filter((t) => t.ssd !== null).map((t) => t.ssd as number);
   const meanSSD = mean(ssds);
 
   // Commission errors (responses on stop trials)
@@ -692,8 +702,7 @@ function calculateScores(data: DataCollection): ScoringResult {
   // SSRT estimation using integration method
   let ssrt: number | null = null;
   if (goRTs.length > 0 && stopTrials.length > 0 && meanSSD !== null) {
-    const failedStopProportion =
-      stopTrials.length > 0 ? commissionErrors / stopTrials.length : 0;
+    const failedStopProportion = stopTrials.length > 0 ? commissionErrors / stopTrials.length : 0;
 
     if (failedStopProportion > 0 && failedStopProportion < 1) {
       // Sort all go RTs (correct go trials)
@@ -723,9 +732,7 @@ function calculateScores(data: DataCollection): ScoringResult {
 /**
  * Returns a summary of the Stop Signal Task performance.
  */
-function getSummary(
-  data: DataCollection
-): ScoringResult & { taskName: string; version: string } {
+function getSummary(data: DataCollection): ScoringResult & { taskName: string; version: string } {
   const scores = calculateScores(data);
   return {
     ...scores,
@@ -774,10 +781,7 @@ export function createTimeline(jsPsych: JsPsych, options: StopSignalTaskOptions 
   if (config.numPracticeTrials > 0) {
     timeline.push(createPracticeBlock(jsPsych, config));
     timeline.push(
-      createTransitionTrial(
-        config.text.practice_complete,
-        config.text.continue_button
-      )
+      createTransitionTrial(config.text.practice_complete, config.text.continue_button)
     );
   }
 

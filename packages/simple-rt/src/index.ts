@@ -1,7 +1,9 @@
 import "./styles.css";
-import { JsPsych, DataCollection } from "jspsych";
+
 import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
-import { defaultText, TextConfig } from "./text";
+import { DataCollection, JsPsych } from "jspsych";
+
+import { TextConfig, defaultText } from "./text";
 
 // -- TYPES --
 
@@ -86,6 +88,8 @@ interface ResolvedConfig {
 const TASK_NAME = "simple-rt";
 const VERSION = "0.0.1";
 
+const CSS_ROOT = "jspsych-simple-rt";
+
 const DEFAULT_OPTIONS = {
   showInstructions: true,
   numTrials: 20,
@@ -123,7 +127,7 @@ function generateForeperiod(min: number, max: number): number {
  */
 function createStimulusHTML(color: string, size: number): string {
   return `
-    <div class="trial-content">
+    <div class="jspsych-simple-rt-trial-content">
       <div style="
         width: ${size}px;
         height: ${size}px;
@@ -138,7 +142,7 @@ function createStimulusHTML(color: string, size: number): string {
  * Creates HTML for the fixation cross.
  */
 function createFixationHTML(): string {
-  return `<div class="trial-content"><p style="font-size: 48px; margin: 0;">+</p></div>`;
+  return `<div class="jspsych-simple-rt-trial-content"><p style="font-size: 48px; margin: 0;">+</p></div>`;
 }
 
 /**
@@ -157,10 +161,7 @@ function calculateStd(values: number[]): number | null {
 /**
  * Creates instruction trials.
  */
-function createInstructionTrials(
-  config: ResolvedConfig,
-  part: "intro" | "task" | "practice"
-) {
+function createInstructionTrials(config: ResolvedConfig, part: "intro" | "task" | "practice") {
   let stimulus: string;
   let buttonLabel: string;
 
@@ -199,6 +200,7 @@ function createInstructionTrials(
 
   return {
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: stimulus,
     choices: [buttonLabel],
     data,
@@ -220,6 +222,7 @@ function createSimpleRTTrial(
   // Fixation / foreperiod - button is active to detect anticipation
   timeline.push({
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: createFixationHTML(),
     choices: [config.text.respond_button],
     trial_duration: foreperiod,
@@ -245,6 +248,7 @@ function createSimpleRTTrial(
     timeline: [
       {
         type: jsPsychHtmlButtonResponse,
+        css_classes: [CSS_ROOT],
         stimulus: createStimulusHTML(config.stimulusColor, config.stimulusSize),
         choices: [config.text.respond_button],
         trial_duration: config.responseTimeout,
@@ -282,6 +286,7 @@ function createSimpleRTTrial(
   if (isPractice) {
     timeline.push({
       type: jsPsychHtmlButtonResponse,
+      css_classes: [CSS_ROOT],
       stimulus: () => {
         const trials = jsPsych.data.get().last(2).values();
         const foreperiodTrial = trials.find((t: any) => t.trial_type === "foreperiod");
@@ -290,15 +295,15 @@ function createSimpleRTTrial(
         );
 
         if (foreperiodTrial?.anticipated) {
-          return `<div class="trial-content"><p class="feedback timeout">${config.text.feedback_anticipated}</p></div>`;
+          return `<div class="jspsych-simple-rt-trial-content"><p class="jspsych-simple-rt-feedback jspsych-simple-rt-feedback-timeout">${config.text.feedback_anticipated}</p></div>`;
         }
         if (!responseTrial || responseTrial.response === null) {
-          return `<div class="trial-content"><p class="feedback timeout">${config.text.feedback_timeout}</p></div>`;
+          return `<div class="jspsych-simple-rt-trial-content"><p class="jspsych-simple-rt-feedback jspsych-simple-rt-feedback-timeout">${config.text.feedback_timeout}</p></div>`;
         }
         if (responseTrial.anticipated) {
-          return `<div class="trial-content"><p class="feedback timeout">${config.text.feedback_anticipated}</p></div>`;
+          return `<div class="jspsych-simple-rt-trial-content"><p class="jspsych-simple-rt-feedback jspsych-simple-rt-feedback-timeout">${config.text.feedback_anticipated}</p></div>`;
         }
-        return `<div class="trial-content"><p class="feedback correct">${config.text.feedback_correct}</p></div>`;
+        return `<div class="jspsych-simple-rt-trial-content"><p class="jspsych-simple-rt-feedback jspsych-simple-rt-feedback-correct">${config.text.feedback_correct}</p></div>`;
       },
       choices: [config.text.respond_button],
       button_html: createDisabledButtonHtml,
@@ -315,7 +320,8 @@ function createSimpleRTTrial(
   // ITI
   timeline.push({
     type: jsPsychHtmlButtonResponse,
-    stimulus: `<div class="trial-content"></div>`,
+    css_classes: [CSS_ROOT],
+    stimulus: `<div class="jspsych-simple-rt-trial-content"></div>`,
     choices: [config.text.respond_button],
     button_html: createDisabledButtonHtml,
     response_ends_trial: false,
@@ -354,6 +360,7 @@ function createTrialBlock(
 function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
   return {
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: () => {
       const data = jsPsych.data.get();
       const scores = calculateScores(data);
@@ -396,22 +403,15 @@ function calculateScores(data: DataCollection): ScoringResult {
   }
 
   // Valid trials: responded and not anticipated
-  const validTrials = responseTrials.filter(
-    (t) => t.rt !== null && !t.anticipated
-  );
+  const validTrials = responseTrials.filter((t) => t.rt !== null && !t.anticipated);
   const validRTs = validTrials.map((t) => t.rt as number);
 
-  const meanRT =
-    validRTs.length > 0
-      ? validRTs.reduce((a, b) => a + b, 0) / validRTs.length
-      : null;
+  const meanRT = validRTs.length > 0 ? validRTs.reduce((a, b) => a + b, 0) / validRTs.length : null;
   const rtStd = calculateStd(validRTs);
 
   // Accuracy: percentage of valid responses
   const accuracy =
-    responseTrials.length > 0
-      ? (validTrials.length / responseTrials.length) * 100
-      : 0;
+    responseTrials.length > 0 ? (validTrials.length / responseTrials.length) * 100 : 0;
 
   // Anticipated and timeout counts
   const anticipatedResponses = responseTrials.filter((t) => t.anticipated).length;
@@ -431,9 +431,7 @@ function calculateScores(data: DataCollection): ScoringResult {
 /**
  * Returns a summary of the Simple RT task performance.
  */
-function getSummary(
-  data: DataCollection
-): ScoringResult & { taskName: string; version: string } {
+function getSummary(data: DataCollection): ScoringResult & { taskName: string; version: string } {
   const scores = calculateScores(data);
   return {
     ...scores,
@@ -461,10 +459,7 @@ function getSummary(
  * jsPsych.run([simpleRTTimeline]);
  * ```
  */
-export function createTimeline(
-  jsPsych: JsPsych,
-  options: SimpleRTOptions = {}
-) {
+export function createTimeline(jsPsych: JsPsych, options: SimpleRTOptions = {}) {
   // Merge text with defaults
   const text: TextConfig = { ...defaultText, ...options.text };
 

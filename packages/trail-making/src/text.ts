@@ -5,7 +5,7 @@
 export const defaultText = {
   // -- INSTRUCTION PAGES --
   instruction_intro: `
-    <div class="instructions">
+    <div class="jspsych-trail-making-instructions">
       <h2>Trail Making Test</h2>
       <p>In this task, you will connect circles in order as quickly as possible.</p>
       <p>Click or tap on each circle in the correct sequence.</p>
@@ -13,7 +13,7 @@ export const defaultText = {
   `,
 
   instruction_part_a: `
-    <div class="instructions">
+    <div class="jspsych-trail-making-instructions">
       <h2>Part A: Numbers</h2>
       <p>Connect the circles in <strong>numerical order</strong>:</p>
       <p style="font-size: 1.2em; text-align: center;"><strong>1 → 2 → 3 → 4 → 5 ...</strong></p>
@@ -22,7 +22,7 @@ export const defaultText = {
   `,
 
   instruction_part_b: `
-    <div class="instructions">
+    <div class="jspsych-trail-making-instructions">
       <h2>Part B: Numbers and Letters</h2>
       <p>Connect the circles <strong>alternating between numbers and letters</strong>:</p>
       <p style="font-size: 1.2em; text-align: center;"><strong>1 → A → 2 → B → 3 → C ...</strong></p>
@@ -31,7 +31,7 @@ export const defaultText = {
   `,
 
   instruction_practice: `
-    <div class="instructions">
+    <div class="jspsych-trail-making-instructions">
       <h2>Practice</h2>
       <p>Let's do a practice round first.</p>
       <p>If you make a mistake, the circles will flash red. Keep trying until you complete the sequence.</p>
@@ -39,7 +39,7 @@ export const defaultText = {
   `,
 
   instruction_speed: `
-    <div class="instructions">
+    <div class="jspsych-trail-making-instructions">
       <h2>Go as fast as you can!</h2>
       <p>Try to complete the trail as quickly as possible while still being accurate.</p>
       <p>Your time will be recorded.</p>
@@ -67,8 +67,12 @@ export const defaultText = {
     `<p><strong>Part A:</strong> ${(time / 1000).toFixed(1)} seconds, ${errors} errors</p>`,
   result_part_b: (time: number, errors: number) =>
     `<p><strong>Part B:</strong> ${(time / 1000).toFixed(1)} seconds, ${errors} errors</p>`,
-  result_summary: (partATime: number | null, partBTime: number | null, differenceScore: number | null) => {
-    let html = `<div class="instructions">`;
+  result_summary: (
+    partATime: number | null,
+    partBTime: number | null,
+    differenceScore: number | null
+  ) => {
+    let html = `<div class="jspsych-trail-making-instructions">`;
     if (partATime !== null) {
       html += `<p><strong>Part A Time:</strong> ${(partATime / 1000).toFixed(1)} seconds</p>`;
     }
@@ -76,7 +80,9 @@ export const defaultText = {
       html += `<p><strong>Part B Time:</strong> ${(partBTime / 1000).toFixed(1)} seconds</p>`;
     }
     if (differenceScore !== null) {
-      html += `<p><strong>Switching Cost:</strong> ${(differenceScore / 1000).toFixed(1)} seconds</p>`;
+      html += `<p><strong>Switching Cost:</strong> ${(differenceScore / 1000).toFixed(
+        1
+      )} seconds</p>`;
     }
     html += `</div>`;
     return html;

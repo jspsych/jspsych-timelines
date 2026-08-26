@@ -33,7 +33,7 @@ export const defaultText: TextConfig = {
   respond_button: "RESPOND",
 
   instruction_intro: `
-    <div class="instructions">
+    <div class="jspsych-simple-rt-instructions">
       <h2>Simple Reaction Time</h2>
       <p>In this task, you will respond as quickly as possible when you see a circle appear on the screen.</p>
       <p>Press the button as soon as you see the circle. Try to be as fast as you can!</p>
@@ -42,7 +42,7 @@ export const defaultText: TextConfig = {
   `,
 
   instruction_task: `
-    <div class="instructions">
+    <div class="jspsych-simple-rt-instructions">
       <h3>Get Ready</h3>
       <p>Press the button as quickly as you can when the circle appears.</p>
       <p>Wait for the circle - don't press too early!</p>
@@ -50,7 +50,7 @@ export const defaultText: TextConfig = {
   `,
 
   instruction_practice: `
-    <div class="instructions">
+    <div class="jspsych-simple-rt-instructions">
       <h3>Practice</h3>
       <p>Let's try a few practice trials. You will receive feedback.</p>
     </div>
@@ -63,9 +63,13 @@ export const defaultText: TextConfig = {
   task_complete: "Task Complete",
 
   result_summary: (meanRT: number | null, accuracy: number) => `
-    <div class="instructions">
+    <div class="jspsych-simple-rt-instructions">
       <h3>Your Results</h3>
-      ${meanRT !== null ? `<p><strong>Average reaction time:</strong> ${meanRT.toFixed(0)} ms</p>` : ""}
+      ${
+        meanRT !== null
+          ? `<p><strong>Average reaction time:</strong> ${meanRT.toFixed(0)} ms</p>`
+          : ""
+      }
       <p><strong>Valid responses:</strong> ${accuracy.toFixed(1)}%</p>
     </div>
   `,

@@ -1,20 +1,20 @@
 /* Iowa Gambling Task Styles */
 
 /* Instructions container */
-.instructions {
+.jspsych-iowa-gambling .igt-instructions {
   max-width: 600px;
   margin: 0 auto;
   padding: 0 20px;
   text-align: left;
 }
 
-.instructions h2,
-.instructions h3 {
+.jspsych-iowa-gambling .igt-instructions h2,
+.jspsych-iowa-gambling .igt-instructions h3 {
   text-align: center;
 }
 
 /* Container */
-.igt-container {
+.jspsych-iowa-gambling .igt-container {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -23,7 +23,7 @@
 }
 
 /* Decks row */
-.igt-decks {
+.jspsych-iowa-gambling .igt-decks {
   display: flex;
   justify-content: center;
   gap: 15px;
@@ -31,7 +31,7 @@
 }
 
 /* Individual deck */
-.igt-deck {
+.jspsych-iowa-gambling .igt-deck {
   width: 80px;
   height: 120px;
   border: 3px solid #333;
@@ -49,22 +49,22 @@
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-.igt-deck:hover {
+.jspsych-iowa-gambling .igt-deck:hover {
   transform: scale(1.05);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-.igt-deck:active {
+.jspsych-iowa-gambling .igt-deck:active {
   transform: scale(0.98);
 }
 
 /* Deck label */
-.igt-deck-label {
+.jspsych-iowa-gambling .igt-deck-label {
   font-size: 28px;
 }
 
 /* Score display */
-.igt-score-display {
+.jspsych-iowa-gambling .igt-score-display {
   display: flex;
   gap: 30px;
   font-size: 18px;
@@ -73,64 +73,64 @@
   border-radius: 8px;
 }
 
-.igt-score-item {
+.jspsych-iowa-gambling .igt-score-item {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.igt-score-label {
+.jspsych-iowa-gambling .igt-score-label {
   font-size: 14px;
   color: #666;
 }
 
-.igt-score-value {
+.jspsych-iowa-gambling .igt-score-value {
   font-size: 24px;
   font-weight: bold;
 }
 
-.igt-score-value.positive {
+.jspsych-iowa-gambling .igt-score-value.igt-positive {
   color: #43a047;
 }
 
-.igt-score-value.negative {
+.jspsych-iowa-gambling .igt-score-value.igt-negative {
   color: #e53935;
 }
 
 /* Prompt */
-.igt-prompt {
+.jspsych-iowa-gambling .igt-prompt {
   font-size: 16px;
   color: #666;
   margin: 0;
 }
 
 /* Trial counter */
-.igt-trial-counter {
+.jspsych-iowa-gambling .igt-trial-counter {
   font-size: 14px;
   color: #999;
 }
 
 /* Feedback */
-.igt-feedback {
+.jspsych-iowa-gambling .igt-feedback {
   text-align: center;
   padding: 20px;
 }
 
-.igt-feedback-win {
+.jspsych-iowa-gambling .igt-feedback-win {
   font-size: 32px;
   font-weight: bold;
   color: #43a047;
   margin-bottom: 10px;
 }
 
-.igt-feedback-loss {
+.jspsych-iowa-gambling .igt-feedback-loss {
   font-size: 28px;
   font-weight: bold;
   color: #e53935;
   margin-bottom: 10px;
 }
 
-.igt-feedback-net {
+.jspsych-iowa-gambling .igt-feedback-net {
   font-size: 24px;
   font-weight: bold;
   margin-top: 15px;
@@ -138,21 +138,21 @@
   border-top: 1px solid #ddd;
 }
 
-.igt-feedback-net.positive {
+.jspsych-iowa-gambling .igt-feedback-net.igt-positive {
   color: #43a047;
 }
 
-.igt-feedback-net.negative {
+.jspsych-iowa-gambling .igt-feedback-net.igt-negative {
   color: #e53935;
 }
 
 /* Completion screen */
-.igt-completion {
+.jspsych-iowa-gambling .igt-completion {
   text-align: center;
   padding: 40px;
 }
 
-.igt-final-score {
+.jspsych-iowa-gambling .igt-final-score {
   font-size: 36px;
   font-weight: bold;
   margin: 20px 0;
@@ -160,23 +160,23 @@
 
 /* Mobile/touch device optimizations */
 @media (pointer: coarse) {
-  .igt-deck {
+  .jspsych-iowa-gambling .igt-deck {
     width: 90px;
     height: 130px;
   }
 
-  .igt-score-display {
+  .jspsych-iowa-gambling .igt-score-display {
     gap: 15px;
     padding: 8px 12px;
     font-size: 16px;
   }
 
-  .igt-container {
+  .jspsych-iowa-gambling .igt-container {
     gap: 15px;
     padding: 10px;
   }
 
-  #jspsych-html-button-response-btngroup {
+  .jspsych-iowa-gambling #jspsych-html-button-response-btngroup {
     position: fixed;
     bottom: 0;
     left: 0;
@@ -188,7 +188,7 @@
     justify-content: center;
   }
 
-  #jspsych-html-button-response-btngroup .jspsych-btn {
+  .jspsych-iowa-gambling #jspsych-html-button-response-btngroup .jspsych-btn {
     min-height: 60px;
     min-width: 120px;
     font-size: 18px;
@@ -196,7 +196,7 @@
     max-width: 200px;
   }
 
-  .jspsych-content {
+  .jspsych-iowa-gambling {
     padding-bottom: 100px;
   }
 }

@@ -1,8 +1,10 @@
 import "./styles.css";
-import { JsPsych, DataCollection } from "jspsych";
-import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
+
 import jsPsychTrailMaking from "@jspsych-contrib/plugin-trail-making";
-import { defaultText, TextConfig } from "./text";
+import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
+import { DataCollection, JsPsych } from "jspsych";
+
+import { TextConfig, defaultText } from "./text";
 
 // -- TYPES --
 
@@ -100,6 +102,8 @@ interface ResolvedConfig {
 const TASK_NAME = "trail-making";
 const VERSION = "0.0.1";
 
+const CSS_ROOT = "jspsych-trail-making";
+
 const DEFAULT_OPTIONS = {
   showInstructions: true,
   showPractice: true,
@@ -134,6 +138,7 @@ function createInstructionTrials(config: ResolvedConfig, part: "intro" | "A" | "
   if (part === "intro") {
     timeline.push({
       type: jsPsychHtmlButtonResponse,
+      css_classes: [CSS_ROOT],
       stimulus: config.text.instruction_intro,
       choices: [config.text.continue_button],
       data: {
@@ -145,6 +150,7 @@ function createInstructionTrials(config: ResolvedConfig, part: "intro" | "A" | "
   } else if (part === "A") {
     timeline.push({
       type: jsPsychHtmlButtonResponse,
+      css_classes: [CSS_ROOT],
       stimulus: config.text.instruction_part_a,
       choices: [config.text.continue_button],
       data: {
@@ -156,6 +162,7 @@ function createInstructionTrials(config: ResolvedConfig, part: "intro" | "A" | "
   } else if (part === "B") {
     timeline.push({
       type: jsPsychHtmlButtonResponse,
+      css_classes: [CSS_ROOT],
       stimulus: config.text.instruction_part_b,
       choices: [config.text.continue_button],
       data: {
@@ -175,6 +182,7 @@ function createInstructionTrials(config: ResolvedConfig, part: "intro" | "A" | "
 function createPracticeInstructions(config: ResolvedConfig) {
   return {
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: config.text.instruction_practice,
     choices: [config.text.continue_button],
     data: {
@@ -191,6 +199,7 @@ function createPracticeInstructions(config: ResolvedConfig) {
 function createSpeedReminder(config: ResolvedConfig) {
   return {
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: config.text.instruction_speed,
     choices: [config.text.start_button],
     data: {
@@ -204,11 +213,7 @@ function createSpeedReminder(config: ResolvedConfig) {
 /**
  * Creates a trail-making trial using the plugin.
  */
-function createTrailTrial(
-  config: ResolvedConfig,
-  part: "A" | "B",
-  phase: "practice" | "test"
-) {
+function createTrailTrial(config: ResolvedConfig, part: "A" | "B", phase: "practice" | "test") {
   const isPractice = phase === "practice";
   const testType = part === "A" ? "A" : "B";
   const numTargets = isPractice
@@ -220,6 +225,7 @@ function createTrailTrial(
 
   return {
     type: jsPsychTrailMaking,
+    css_classes: [CSS_ROOT],
     test_type: testType,
     num_targets: numTargets,
     canvas_width: config.canvasWidth,
@@ -249,6 +255,7 @@ function createTrailTrial(
 function createTransitionTrial(message: string, buttonLabel: string) {
   return {
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: `<div style="max-width: 600px; margin: 0 auto;"><p>${message}</p></div>`,
     choices: [buttonLabel],
     data: {
@@ -262,12 +269,10 @@ function createTransitionTrial(message: string, buttonLabel: string) {
 /**
  * Creates a completion screen showing results.
  */
-function createCompletionTrial(
-  jsPsych: JsPsych,
-  config: ResolvedConfig
-) {
+function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
   return {
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: () => {
       const data = jsPsych.data.get();
       const scores = calculateScores(data);
@@ -297,9 +302,7 @@ function createCompletionTrial(
  * Calculates scoring metrics from the trail making task data.
  */
 function calculateScores(data: DataCollection): ScoringResult {
-  const testTrials = data
-    .filter({ task: TASK_NAME, phase: "test" })
-    .values() as TrialData[];
+  const testTrials = data.filter({ task: TASK_NAME, phase: "test" }).values() as TrialData[];
 
   const partATrials = testTrials.filter((t) => t.part === "A");
   const partBTrials = testTrials.filter((t) => t.part === "B");
@@ -439,10 +442,7 @@ export function createTimeline(jsPsych: JsPsych, options: TrailMakingOptions = {
       timeline.push(createPracticeInstructions(config));
       timeline.push(createTrailTrial(config, "A", "practice"));
       timeline.push(
-        createTransitionTrial(
-          config.text.practice_complete,
-          config.text.continue_button
-        )
+        createTransitionTrial(config.text.practice_complete, config.text.continue_button)
       );
     }
 
@@ -451,10 +451,7 @@ export function createTimeline(jsPsych: JsPsych, options: TrailMakingOptions = {
 
     if (!config.skipPartB) {
       timeline.push(
-        createTransitionTrial(
-          config.text.part_a_complete,
-          config.text.continue_button
-        )
+        createTransitionTrial(config.text.part_a_complete, config.text.continue_button)
       );
     }
   }
@@ -469,10 +466,7 @@ export function createTimeline(jsPsych: JsPsych, options: TrailMakingOptions = {
       timeline.push(createPracticeInstructions(config));
       timeline.push(createTrailTrial(config, "B", "practice"));
       timeline.push(
-        createTransitionTrial(
-          config.text.practice_complete,
-          config.text.continue_button
-        )
+        createTransitionTrial(config.text.practice_complete, config.text.continue_button)
       );
     }
 

@@ -1,34 +1,34 @@
 /* Paired Associates Task Styles */
 
 /* Instructions container */
-.instructions {
+.jspsych-paired-associates .jspsych-paired-associates-instructions {
   max-width: 600px;
   margin: 0 auto;
   padding: 0 20px;
   text-align: left;
 }
 
-.instructions h2,
-.instructions h3 {
+.jspsych-paired-associates .jspsych-paired-associates-instructions h2,
+.jspsych-paired-associates .jspsych-paired-associates-instructions h3 {
   text-align: center;
 }
 
 /* Feedback state modifiers */
-.feedback.correct {
+.jspsych-paired-associates .jspsych-paired-associates-feedback-correct {
   color: green;
 }
 
-.feedback.incorrect {
+.jspsych-paired-associates .jspsych-paired-associates-feedback-incorrect {
   color: red;
 }
 
-.feedback.timeout {
+.jspsych-paired-associates .jspsych-paired-associates-feedback-timeout {
   color: orange;
 }
 
 /* Mobile/touch device optimizations */
 @media (pointer: coarse) {
-  #jspsych-html-button-response-btngroup {
+  .jspsych-paired-associates #jspsych-html-button-response-btngroup {
     position: fixed;
     bottom: 0;
     left: 0;
@@ -40,7 +40,7 @@
     justify-content: center;
   }
 
-  #jspsych-html-button-response-btngroup .jspsych-btn {
+  .jspsych-paired-associates #jspsych-html-button-response-btngroup .jspsych-btn {
     min-height: 60px;
     min-width: 120px;
     font-size: 18px;
@@ -48,7 +48,7 @@
     max-width: 200px;
   }
 
-  .jspsych-content {
+  .jspsych-paired-associates {
     padding-bottom: 100px;
   }
 }

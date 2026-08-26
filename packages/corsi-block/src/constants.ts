@@ -8,7 +8,9 @@ import { BlockPosition, CorsiBlockConfig } from "./types";
 
 /**
  * root class for the Corsi Block task container, to be
- * used in `css_classes` for all trials
+ * used in `css_classes` for all trials. intentionally
+ * does not use jspsych-corsi-block as the root class,
+ * because that is reserved for the bespoke plugin
  */
 export const CSS_ROOT_CLASS = "jspsych-corsi-block-container";
 

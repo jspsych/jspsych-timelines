@@ -1,8 +1,10 @@
 import "./styles.css";
-import { JsPsych, DataCollection } from "jspsych";
+
 import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
 import jsPsychHtmlKeyboardResponse from "@jspsych/plugin-html-keyboard-response";
-import { defaultText, TextConfig } from "./text";
+import { DataCollection, JsPsych } from "jspsych";
+
+import { TextConfig, defaultText } from "./text";
 
 // -- TYPES --
 
@@ -84,6 +86,8 @@ interface ResolvedConfig {
 const TASK_NAME = "paired-associates";
 const VERSION = "0.0.1";
 
+const CSS_ROOT = "jspsych-paired-associates";
+
 // Default word pairs - unrelated concrete nouns
 const DEFAULT_WORD_PAIRS: WordPair[] = [
   { cue: "APPLE", target: "RIVER" },
@@ -143,10 +147,7 @@ function generateOptions(
 /**
  * Creates instruction trials.
  */
-function createInstructionTrials(
-  config: ResolvedConfig,
-  section: "intro" | "study" | "test"
-) {
+function createInstructionTrials(config: ResolvedConfig, section: "intro" | "study" | "test") {
   const timeline: any[] = [];
 
   let stimulus: string;
@@ -172,6 +173,7 @@ function createInstructionTrials(
 
   timeline.push({
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: stimulus,
     choices: [buttonLabel],
     data: {
@@ -197,6 +199,7 @@ function createStudyTrial(
   // Show the pair
   timeline.push({
     type: jsPsychHtmlKeyboardResponse,
+    css_classes: [CSS_ROOT],
     stimulus: config.text.study_pair(pair.cue, pair.target),
     choices: "NO_KEYS",
     trial_duration: config.studyDuration,
@@ -215,6 +218,7 @@ function createStudyTrial(
   // ISI
   timeline.push({
     type: jsPsychHtmlKeyboardResponse,
+    css_classes: [CSS_ROOT],
     stimulus: "",
     choices: "NO_KEYS",
     trial_duration: config.isi,
@@ -245,6 +249,7 @@ function createTestTrial(
   // Test trial
   timeline.push({
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: config.text.test_cue(pair.cue),
     choices: options,
     data: {
@@ -272,6 +277,7 @@ function createTestTrial(
   if (config.showFeedback) {
     timeline.push({
       type: jsPsychHtmlButtonResponse,
+      css_classes: [CSS_ROOT],
       stimulus: () => {
         const lastData = jsPsych.data.getLastTrialData().values()[0];
         return lastData.correct
@@ -296,6 +302,7 @@ function createTestTrial(
 function createRoundSummary(jsPsych: JsPsych, config: ResolvedConfig, round: number) {
   return {
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: () => {
       const roundTrials = jsPsych.data
         .get()
@@ -319,11 +326,7 @@ function createRoundSummary(jsPsych: JsPsych, config: ResolvedConfig, round: num
 /**
  * Creates a study phase for all pairs.
  */
-function createStudyPhase(
-  config: ResolvedConfig,
-  pairs: WordPair[],
-  round: number
-) {
+function createStudyPhase(config: ResolvedConfig, pairs: WordPair[], round: number) {
   const shuffledPairs = shuffleArray(pairs);
   const timeline: any[] = [];
 
@@ -360,6 +363,7 @@ function createTestPhase(
 function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
   return {
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: () => {
       const data = jsPsych.data.get();
       const scores = calculateScores(data);
@@ -436,9 +440,8 @@ function calculateScores(data: DataCollection): ScoringResult {
   const correctRTs = testTrials
     .filter((t) => t.correct && t.rt !== undefined)
     .map((t) => t.rt as number);
-  const averageRTCorrect = correctRTs.length > 0
-    ? correctRTs.reduce((a, b) => a + b, 0) / correctRTs.length
-    : null;
+  const averageRTCorrect =
+    correctRTs.length > 0 ? correctRTs.reduce((a, b) => a + b, 0) / correctRTs.length : null;
 
   return {
     finalRoundCorrect,
@@ -454,9 +457,7 @@ function calculateScores(data: DataCollection): ScoringResult {
 /**
  * Returns a summary of the Paired Associates task performance.
  */
-function getSummary(
-  data: DataCollection
-): ScoringResult & { taskName: string; version: string } {
+function getSummary(data: DataCollection): ScoringResult & { taskName: string; version: string } {
   const scores = calculateScores(data);
   return {
     ...scores,
@@ -484,10 +485,7 @@ function getSummary(
  * jsPsych.run([paTimeline]);
  * ```
  */
-export function createTimeline(
-  jsPsych: JsPsych,
-  options: PairedAssociatesOptions = {}
-) {
+export function createTimeline(jsPsych: JsPsych, options: PairedAssociatesOptions = {}) {
   // Merge text with defaults
   const text: TextConfig = { ...defaultText, ...options.text };
 

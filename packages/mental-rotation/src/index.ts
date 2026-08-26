@@ -1,7 +1,9 @@
 import "./styles.css";
-import { JsPsych, DataCollection } from "jspsych";
+
 import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
-import { defaultText, TextConfig } from "./text";
+import { DataCollection, JsPsych } from "jspsych";
+
+import { TextConfig, defaultText } from "./text";
 
 // -- TYPES --
 
@@ -75,6 +77,8 @@ interface ResolvedConfig {
 
 const TASK_NAME = "mental-rotation";
 const VERSION = "0.0.1";
+
+const CSS_ROOT = "jspsych-mental-rotation";
 
 const DEFAULT_OPTIONS = {
   showInstructions: true,
@@ -237,20 +241,14 @@ interface TrialSpec {
 /**
  * Generates trial specifications for the task
  */
-function generateTrials(
-  numSame: number,
-  numDifferent: number,
-  gridSize: number
-): TrialSpec[] {
+function generateTrials(numSame: number, numDifferent: number, gridSize: number): TrialSpec[] {
   const trials: TrialSpec[] = [];
 
   // Generate "same" trials
   for (let i = 0; i < numSame; i++) {
     const studyMatrix = generateMatrix(gridSize);
     const direction: "left" | "right" = Math.random() < 0.5 ? "left" : "right";
-    const testMatrix = direction === "left"
-      ? rotateLeft(studyMatrix)
-      : rotateRight(studyMatrix);
+    const testMatrix = direction === "left" ? rotateLeft(studyMatrix) : rotateRight(studyMatrix);
 
     trials.push({
       condition: "same",
@@ -266,9 +264,8 @@ function generateTrials(
     const direction: "left" | "right" = Math.random() < 0.5 ? "left" : "right";
     const differentMatrix = generateDifferentMatrix(studyMatrix, gridSize);
     // Rotate the different matrix to make it look like a rotated version
-    const testMatrix = direction === "left"
-      ? rotateLeft(differentMatrix)
-      : rotateRight(differentMatrix);
+    const testMatrix =
+      direction === "left" ? rotateLeft(differentMatrix) : rotateRight(differentMatrix);
 
     trials.push({
       condition: "different",
@@ -301,6 +298,7 @@ function createInstructionTrials(
   if (section === "intro") {
     timeline.push({
       type: jsPsychHtmlButtonResponse,
+      css_classes: [CSS_ROOT],
       stimulus: config.text.instruction_intro,
       choices: [config.text.continue_button],
       data: {
@@ -311,6 +309,7 @@ function createInstructionTrials(
   } else if (section === "task") {
     timeline.push({
       type: jsPsychHtmlButtonResponse,
+      css_classes: [CSS_ROOT],
       stimulus: config.text.instruction_task,
       choices: [config.text.continue_button],
       data: {
@@ -321,6 +320,7 @@ function createInstructionTrials(
   } else if (section === "practice") {
     timeline.push({
       type: jsPsychHtmlButtonResponse,
+      css_classes: [CSS_ROOT],
       stimulus: config.text.instruction_practice,
       choices: [config.text.start_button],
       data: {
@@ -331,6 +331,7 @@ function createInstructionTrials(
   } else if (section === "test") {
     timeline.push({
       type: jsPsychHtmlButtonResponse,
+      css_classes: [CSS_ROOT],
       stimulus: config.text.instruction_test,
       choices: [config.text.start_button],
       data: {
@@ -359,6 +360,7 @@ function createRotationTrial(
   // Study phase - show original matrix
   timeline.push({
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: () => {
       let html = `<div style="max-width: 600px; margin: 0 auto;">`;
       html += config.text.study_prompt;
@@ -382,6 +384,7 @@ function createRotationTrial(
   // Test phase - show rotated/different matrix
   timeline.push({
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: () => {
       let html = `<div style="max-width: 600px; margin: 0 auto;">`;
       html += config.text.test_prompt(trial.direction);
@@ -415,11 +418,10 @@ function createRotationTrial(
   if (showFeedback) {
     timeline.push({
       type: jsPsychHtmlButtonResponse,
+      css_classes: [CSS_ROOT],
       stimulus: () => {
         const lastData = jsPsych.data.getLastTrialData().values()[0];
-        return lastData.correct
-          ? config.text.feedback_correct
-          : config.text.feedback_incorrect;
+        return lastData.correct ? config.text.feedback_correct : config.text.feedback_incorrect;
       },
       choices: [],
       trial_duration: config.feedbackDuration,
@@ -439,6 +441,7 @@ function createRotationTrial(
 function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
   return {
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: () => {
       const data = jsPsych.data.get();
       const scores = calculateScores(data);
@@ -485,23 +488,18 @@ function calculateScores(data: DataCollection): ScoringResult {
 
   const sameTrials = testTrials.filter((t) => t.condition === "same");
   const sameCorrect = sameTrials.filter((t) => t.correct).length;
-  const sameAccuracy = sameTrials.length > 0
-    ? (sameCorrect / sameTrials.length) * 100
-    : 0;
+  const sameAccuracy = sameTrials.length > 0 ? (sameCorrect / sameTrials.length) * 100 : 0;
 
   const diffTrials = testTrials.filter((t) => t.condition === "different");
   const diffCorrect = diffTrials.filter((t) => t.correct).length;
-  const differentAccuracy = diffTrials.length > 0
-    ? (diffCorrect / diffTrials.length) * 100
-    : 0;
+  const differentAccuracy = diffTrials.length > 0 ? (diffCorrect / diffTrials.length) * 100 : 0;
 
   const rts = testTrials.map((t) => t.rt);
   const averageRT = rts.reduce((a, b) => a + b, 0) / rts.length;
 
   const correctRTs = testTrials.filter((t) => t.correct).map((t) => t.rt);
-  const averageRTCorrect = correctRTs.length > 0
-    ? correctRTs.reduce((a, b) => a + b, 0) / correctRTs.length
-    : null;
+  const averageRTCorrect =
+    correctRTs.length > 0 ? correctRTs.reduce((a, b) => a + b, 0) / correctRTs.length : null;
 
   return {
     accuracy,
@@ -517,9 +515,7 @@ function calculateScores(data: DataCollection): ScoringResult {
 /**
  * Returns a summary of the Mental Rotation task performance.
  */
-function getSummary(
-  data: DataCollection
-): ScoringResult & { taskName: string; version: string } {
+function getSummary(data: DataCollection): ScoringResult & { taskName: string; version: string } {
   const scores = calculateScores(data);
   return {
     ...scores,
@@ -554,10 +550,7 @@ function getSummary(
  *   trialsPerCondition: 15,
  * });
  */
-export function createTimeline(
-  jsPsych: JsPsych,
-  options: MentalRotationOptions = {}
-) {
+export function createTimeline(jsPsych: JsPsych, options: MentalRotationOptions = {}) {
   // Merge text with defaults
   const text: TextConfig = { ...defaultText, ...options.text };
 
@@ -589,14 +582,7 @@ export function createTimeline(
 
     practiceTrials.forEach((trial, i) => {
       timeline.push(
-        createRotationTrial(
-          jsPsych,
-          config,
-          trial,
-          "practice",
-          i + 1,
-          config.showPracticeFeedback
-        )
+        createRotationTrial(jsPsych, config, trial, "practice", i + 1, config.showPracticeFeedback)
       );
     });
   }
@@ -613,9 +599,7 @@ export function createTimeline(
   );
 
   testTrials.forEach((trial, i) => {
-    timeline.push(
-      createRotationTrial(jsPsych, config, trial, "test", i + 1, false)
-    );
+    timeline.push(createRotationTrial(jsPsych, config, trial, "test", i + 1, false));
   });
 
   // Completion screen

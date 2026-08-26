@@ -1,9 +1,11 @@
 import "./styles.css";
-import { JsPsych, DataCollection } from "jspsych";
+
 import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
 import jsPsychHtmlKeyboardResponse from "@jspsych/plugin-html-keyboard-response";
 import jsPsychInstructions from "@jspsych/plugin-instructions";
-import { defaultText, TextConfig } from "./text";
+import { DataCollection, JsPsych } from "jspsych";
+
+import { TextConfig, defaultText } from "./text";
 
 // -- TYPES --
 
@@ -88,6 +90,8 @@ interface ResolvedConfig {
 
 const TASK_NAME = "operation-span";
 const VERSION = "0.0.1";
+
+const CSS_ROOT = "jspsych-operation-span";
 
 // Letters used for memory task (consonants only, no vowels)
 const DEFAULT_LETTERS = ["F", "H", "J", "K", "L", "N", "P", "Q", "R", "S", "T", "Y"];
@@ -178,11 +182,17 @@ function generateRecallGridHtml(
     return `<button class="ospan-recall-btn" data-letter="${letter}" ${disabledAttr}>${letter}</button>`;
   }).join("");
 
-  const responseDisplay = selectedLetters.length > 0
-    ? selectedLetters.map((l) =>
-        `<span class="ospan-response-letter ${l === "_" ? "blank" : ""}">${l === "_" ? "?" : l}</span>`
-      ).join("")
-    : '<span style="color: #999;">Click letters above</span>';
+  const responseDisplay =
+    selectedLetters.length > 0
+      ? selectedLetters
+          .map(
+            (l) =>
+              `<span class="ospan-response-letter ${l === "_" ? "blank" : ""}">${
+                l === "_" ? "?" : l
+              }</span>`
+          )
+          .join("")
+      : '<span style="color: #999;">Click letters above</span>';
 
   return `
     <div class="ospan-recall-container">
@@ -194,9 +204,9 @@ function generateRecallGridHtml(
         ${responseDisplay}
       </div>
       <div class="ospan-controls">
-        <button class="ospan-control-btn clear">${config.text.clear_button}</button>
-        <button class="ospan-control-btn blank">${config.text.blank_button}</button>
-        <button class="ospan-control-btn done">${config.text.done_button}</button>
+        <button class="ospan-control-btn ospan-clear">${config.text.clear_button}</button>
+        <button class="ospan-control-btn ospan-blank">${config.text.blank_button}</button>
+        <button class="ospan-control-btn ospan-done">${config.text.done_button}</button>
       </div>
     </div>
   `;
@@ -210,6 +220,7 @@ function generateRecallGridHtml(
 function createInstructionTrials(config: ResolvedConfig) {
   return {
     type: jsPsychInstructions,
+    css_classes: [CSS_ROOT],
     pages: config.text.instruction_pages,
     show_clickable_nav: true,
     button_label_next: config.text.continue_button,
@@ -232,6 +243,7 @@ function createMathTrial(
 ) {
   return {
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: `
       <div class="ospan-container">
         <div class="ospan-math">${problem.text}</div>
@@ -269,6 +281,7 @@ function createMathFeedbackTrial(
 ) {
   return {
     type: jsPsychHtmlKeyboardResponse,
+    css_classes: [CSS_ROOT],
     stimulus: () => {
       const result = getResult();
       let feedbackText: string;
@@ -276,13 +289,13 @@ function createMathFeedbackTrial(
 
       if (result.response === null) {
         feedbackText = config.text.timeout_feedback;
-        feedbackClass = "incorrect";
+        feedbackClass = "ospan-feedback-incorrect";
       } else if (result.correct) {
         feedbackText = config.text.correct_feedback;
-        feedbackClass = "correct";
+        feedbackClass = "ospan-feedback-correct";
       } else {
         feedbackText = config.text.incorrect_feedback;
-        feedbackClass = "incorrect";
+        feedbackClass = "ospan-feedback-incorrect";
       }
 
       return `<div class="ospan-feedback ${feedbackClass}">${feedbackText}</div>`;
@@ -303,6 +316,7 @@ function createMathFeedbackTrial(
 function createLetterTrial(config: ResolvedConfig, letter: string) {
   return {
     type: jsPsychHtmlKeyboardResponse,
+    css_classes: [CSS_ROOT],
     stimulus: `
       <div class="ospan-container">
         <div class="ospan-letter">${letter}</div>
@@ -325,6 +339,7 @@ function createLetterTrial(config: ResolvedConfig, letter: string) {
 function createIsiTrial(config: ResolvedConfig) {
   return {
     type: jsPsychHtmlKeyboardResponse,
+    css_classes: [CSS_ROOT],
     stimulus: "",
     choices: "NO_KEYS",
     trial_duration: config.isi,
@@ -351,6 +366,7 @@ function createRecallTrial(
 
   return {
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: () => generateRecallGridHtml(config, selectedLetters, []),
     choices: [], // No choices - we handle clicks manually
     button_html: () => "", // No buttons
@@ -372,11 +388,17 @@ function createRecallTrial(
       const updateDisplay = () => {
         const displayArea = container.querySelector(".ospan-response-display");
         if (displayArea) {
-          displayArea.innerHTML = selectedLetters.length > 0
-            ? selectedLetters.map((l) =>
-                `<span class="ospan-response-letter ${l === "_" ? "blank" : ""}">${l === "_" ? "?" : l}</span>`
-              ).join("")
-            : '<span style="color: #999;">Click letters above</span>';
+          displayArea.innerHTML =
+            selectedLetters.length > 0
+              ? selectedLetters
+                  .map(
+                    (l) =>
+                      `<span class="ospan-response-letter ${l === "_" ? "blank" : ""}">${
+                        l === "_" ? "?" : l
+                      }</span>`
+                  )
+                  .join("")
+              : '<span style="color: #999;">Click letters above</span>';
         }
       };
 
@@ -392,13 +414,13 @@ function createRecallTrial(
       });
 
       // Clear button
-      container.querySelector(".ospan-control-btn.clear")?.addEventListener("click", () => {
+      container.querySelector(".ospan-control-btn.ospan-clear")?.addEventListener("click", () => {
         selectedLetters = [];
         updateDisplay();
       });
 
       // Blank button
-      container.querySelector(".ospan-control-btn.blank")?.addEventListener("click", () => {
+      container.querySelector(".ospan-control-btn.ospan-blank")?.addEventListener("click", () => {
         if (selectedLetters.length < targetLetters.length) {
           selectedLetters.push("_");
           updateDisplay();
@@ -406,7 +428,7 @@ function createRecallTrial(
       });
 
       // Done button
-      container.querySelector(".ospan-control-btn.done")?.addEventListener("click", () => {
+      container.querySelector(".ospan-control-btn.ospan-done")?.addEventListener("click", () => {
         jsPsych.finishTrial({
           recalled_letters: selectedLetters,
         });
@@ -447,6 +469,7 @@ function createRecallTrial(
 function createRecallFeedbackTrial(jsPsych: JsPsych, config: ResolvedConfig) {
   return {
     type: jsPsychHtmlKeyboardResponse,
+    css_classes: [CSS_ROOT],
     stimulus: () => {
       const lastTrial = jsPsych.data.get().filter({ part: "recall" }).last(1).values()[0];
       const lettersCorrect = lastTrial?.letters_correct || 0;
@@ -488,7 +511,9 @@ function createOspanTrial(
   const targetLetters = sampleWithoutReplacement(DEFAULT_LETTERS, setSize);
 
   // Generate math problems
-  const mathProblems = Array(setSize).fill(null).map(() => generateMathProblem());
+  const mathProblems = Array(setSize)
+    .fill(null)
+    .map(() => generateMathProblem());
 
   // Store math results
   const mathResults: MathProblemResult[] = [];
@@ -498,6 +523,7 @@ function createOspanTrial(
   // Set size announcement
   timeline.push({
     type: jsPsychHtmlKeyboardResponse,
+    css_classes: [CSS_ROOT],
     stimulus: `<div class="ospan-announcement">${config.text.set_size_announcement(setSize)}</div>`,
     choices: "NO_KEYS",
     trial_duration: 1500,
@@ -570,6 +596,7 @@ function createTrialBlock(jsPsych: JsPsych, config: ResolvedConfig) {
 function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
   return {
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: () => {
       const data = jsPsych.data.get();
       const scores = calculateScores(data);

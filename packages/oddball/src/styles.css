@@ -1,7 +1,7 @@
 /* Oddball Task Styles */
 
 /* Trial content container - fixed height prevents button movement */
-.trial-content {
+.jspsych-oddball .jspsych-oddball-trial-content {
   min-height: 200px;
   display: flex;
   justify-content: center;
@@ -9,40 +9,40 @@
 }
 
 /* Instructions container */
-.instructions {
+.jspsych-oddball .jspsych-oddball-instructions {
   max-width: 600px;
   margin: 0 auto;
   padding: 0 20px;
   text-align: left;
 }
 
-.instructions h2,
-.instructions h3 {
+.jspsych-oddball .jspsych-oddball-instructions h2,
+.jspsych-oddball .jspsych-oddball-instructions h3 {
   text-align: center;
 }
 
 /* Feedback state modifiers */
-.feedback.correct {
+.jspsych-oddball .jspsych-oddball-feedback-correct {
   color: green;
 }
 
-.feedback.incorrect {
+.jspsych-oddball .jspsych-oddball-feedback-incorrect {
   color: red;
 }
 
-.feedback.timeout {
+.jspsych-oddball .jspsych-oddball-feedback-timeout {
   color: orange;
 }
 
 /* Disabled buttons during non-response periods */
-.jspsych-btn:disabled {
+.jspsych-oddball .jspsych-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
 /* Mobile/touch device optimizations */
 @media (pointer: coarse) {
-  #jspsych-html-button-response-btngroup {
+  .jspsych-oddball #jspsych-html-button-response-btngroup {
     position: fixed;
     bottom: 0;
     left: 0;
@@ -54,7 +54,7 @@
     justify-content: center;
   }
 
-  #jspsych-html-button-response-btngroup .jspsych-btn {
+  .jspsych-oddball #jspsych-html-button-response-btngroup .jspsych-btn {
     min-height: 60px;
     min-width: 120px;
     font-size: 18px;
@@ -62,7 +62,7 @@
     max-width: 200px;
   }
 
-  .jspsych-content {
+  .jspsych-oddball {
     padding-bottom: 100px;
   }
 }

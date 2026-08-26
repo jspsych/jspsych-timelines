@@ -1,9 +1,11 @@
 import "./styles.css";
-import { JsPsych, DataCollection } from "jspsych";
+
 import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
 import jsPsychHtmlKeyboardResponse from "@jspsych/plugin-html-keyboard-response";
 import jsPsychInstructions from "@jspsych/plugin-instructions";
-import { defaultText, TextConfig } from "./text";
+import { DataCollection, JsPsych } from "jspsych";
+
+import { TextConfig, defaultText } from "./text";
 
 // -- TYPES --
 
@@ -76,6 +78,8 @@ interface ResolvedConfig {
 const TASK_NAME = "iowa-gambling";
 const VERSION = "0.0.1";
 
+const CSS_ROOT = "jspsych-iowa-gambling";
+
 const DEFAULT_OPTIONS = {
   showInstructions: true,
   numTrials: 100,
@@ -98,27 +102,19 @@ const DECK_REWARDS = {
 // Penalty schedules (40-card cycles) based on Bechara et al. (1994)
 const PENALTY_SCHEDULES = {
   A: [
-    0, 0, 150, 0, 300, 0, 200, 0, 250, 350,
-    0, 350, 0, 250, 200, 0, 300, 150, 0, 0,
-    0, 300, 0, 350, 0, 200, 250, 150, 0, 0,
-    350, 200, 250, 0, 0, 0, 150, 300, 0, 0,
+    0, 0, 150, 0, 300, 0, 200, 0, 250, 350, 0, 350, 0, 250, 200, 0, 300, 150, 0, 0, 0, 300, 0, 350,
+    0, 200, 250, 150, 0, 0, 350, 200, 250, 0, 0, 0, 150, 300, 0, 0,
   ],
   B: [
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 1250,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 1250,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 1250,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 1250,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 1250, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1250, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    1250, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1250,
   ],
   C: [
-    0, 0, 50, 0, 50, 0, 50, 0, 50, 50,
-    0, 25, 75, 0, 0, 0, 25, 75, 0, 50,
-    0, 0, 0, 50, 25, 50, 0, 0, 75, 50,
-    0, 0, 0, 25, 25, 0, 75, 0, 0, 50,
+    0, 0, 50, 0, 50, 0, 50, 0, 50, 50, 0, 25, 75, 0, 0, 0, 25, 75, 0, 50, 0, 0, 0, 50, 25, 50, 0, 0,
+    75, 50, 0, 0, 0, 25, 25, 0, 75, 0, 0, 50,
   ],
   D: [
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 250,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 250,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 250,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 250, 0, 0, 0, 0, 0, 0, 0, 0, 0, 250, 0, 0, 0, 0, 0, 0, 0, 0, 0, 250,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 250,
   ],
 };
@@ -183,12 +179,18 @@ function generateFeedbackHtml(
 
   const lossHtml =
     lossAmount > 0
-      ? `<div class="igt-feedback-loss">${config.text.loss_message(lossAmount, config.currencySymbol)}</div>`
+      ? `<div class="igt-feedback-loss">${config.text.loss_message(
+          lossAmount,
+          config.currencySymbol
+        )}</div>`
       : `<div class="igt-feedback-loss" style="color: #666;">${config.text.no_loss_message}</div>`;
 
   return `
     <div class="igt-feedback">
-      <div class="igt-feedback-win">${config.text.win_message(winAmount, config.currencySymbol)}</div>
+      <div class="igt-feedback-win">${config.text.win_message(
+        winAmount,
+        config.currencySymbol
+      )}</div>
       ${lossHtml}
       <div class="igt-feedback-net ${netClass}">${netMessage}</div>
     </div>
@@ -203,6 +205,7 @@ function generateFeedbackHtml(
 function createInstructionTrials(config: ResolvedConfig) {
   return {
     type: jsPsychInstructions,
+    css_classes: [CSS_ROOT],
     pages: config.text.instruction_pages,
     show_clickable_nav: true,
     button_label_next: config.text.continue_button,
@@ -233,6 +236,7 @@ function createTrialBlock(jsPsych: JsPsych, config: ResolvedConfig) {
   // Deck selection trial
   trialTimeline.push({
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: () => {
       return generateDecksHtml(config, state.totalScore, state.trialNumber + 1);
     },
@@ -284,6 +288,7 @@ function createTrialBlock(jsPsych: JsPsych, config: ResolvedConfig) {
   // Feedback trial
   trialTimeline.push({
     type: jsPsychHtmlKeyboardResponse,
+    css_classes: [CSS_ROOT],
     stimulus: () => {
       return generateFeedbackHtml(config, state.lastWin, state.lastLoss);
     },
@@ -304,6 +309,7 @@ function createTrialBlock(jsPsych: JsPsych, config: ResolvedConfig) {
   // ITI
   trialTimeline.push({
     type: jsPsychHtmlKeyboardResponse,
+    css_classes: [CSS_ROOT],
     stimulus: "",
     choices: "NO_KEYS",
     trial_duration: config.interTrialInterval,
@@ -331,12 +337,17 @@ function createTrialBlock(jsPsych: JsPsych, config: ResolvedConfig) {
 function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
   return {
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: () => {
       const data = jsPsych.data.get();
       const scores = calculateScores(data, config.startingLoan);
       let html = `<div style="max-width: 600px; margin: 0 auto;">`;
       html += `<h2>${config.text.task_complete}</h2>`;
-      html += config.text.result_summary(scores.finalScore, scores.netScore, scores.advantageousSelections);
+      html += config.text.result_summary(
+        scores.finalScore,
+        scores.netScore,
+        scores.advantageousSelections
+      );
       html += `</div>`;
       return html;
     },
@@ -395,10 +406,12 @@ function calculateScores(data: DataCollection, startingLoan: number = 2000): Sco
   for (let block = 0; block < 5; block++) {
     const blockTrials = trials.slice(block * 20, (block + 1) * 20);
     if (blockTrials.length > 0) {
-      const blockAdvantage =
-        blockTrials.filter((t) => t.deck_selected === "C" || t.deck_selected === "D").length;
-      const blockDisadvantage =
-        blockTrials.filter((t) => t.deck_selected === "A" || t.deck_selected === "B").length;
+      const blockAdvantage = blockTrials.filter(
+        (t) => t.deck_selected === "C" || t.deck_selected === "D"
+      ).length;
+      const blockDisadvantage = blockTrials.filter(
+        (t) => t.deck_selected === "A" || t.deck_selected === "B"
+      ).length;
       netScoreByBlock.push(blockAdvantage - blockDisadvantage);
     }
   }

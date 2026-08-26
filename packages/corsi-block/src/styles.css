@@ -5,23 +5,23 @@
  */
 
 /* Instructions container */
-.jspsych-corsi-block-instructions {
+.jspsych-corsi-block-container .jspsych-corsi-block-instructions {
   max-width: 600px;
   margin: 0 auto;
   padding: 0 20px;
   text-align: left;
 }
 
-.jspsych-corsi-block-instructions h2 {
+.jspsych-corsi-block-container .jspsych-corsi-block-instructions h2 {
   text-align: center;
 }
 
 /* Feedback state modifiers */
-.jspsych-corsi-block-feedback-correct {
+.jspsych-corsi-block-container .jspsych-corsi-block-feedback-correct {
   color: green;
 }
 
-.jspsych-corsi-block-feedback-incorrect {
+.jspsych-corsi-block-container .jspsych-corsi-block-feedback-incorrect {
   color: red;
 }
 

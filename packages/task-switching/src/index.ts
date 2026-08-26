@@ -1,7 +1,9 @@
 import "./styles.css";
-import { JsPsych, DataCollection } from "jspsych";
+
 import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
-import { defaultText, TextConfig } from "./text";
+import { DataCollection, JsPsych } from "jspsych";
+
+import { TextConfig, defaultText } from "./text";
 
 // -- TYPES --
 
@@ -112,6 +114,8 @@ interface ResolvedConfig {
 const TASK_NAME = "task-switching";
 const VERSION = "0.0.1";
 
+const CSS_ROOT = "jspsych-task-switching";
+
 const DEFAULT_STIMULI = [1, 2, 3, 4, 6, 7, 8, 9];
 
 const DEFAULT_OPTIONS = {
@@ -141,11 +145,7 @@ function mean(arr: number[]): number | null {
 /**
  * Determines the correct response label for a given digit and task.
  */
-function getCorrectResponse(
-  digit: number,
-  task: "magnitude" | "parity",
-  text: TextConfig
-): string {
+function getCorrectResponse(digit: number, task: "magnitude" | "parity", text: TextConfig): string {
   if (task === "magnitude") {
     return digit < 5 ? text.button_low : text.button_high;
   } else {
@@ -346,6 +346,7 @@ function createInstructionTrials(config: ResolvedConfig) {
   // Page 1: Introduction
   timeline.push({
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: config.text.instruction_intro,
     choices: [config.text.continue_button],
     data: {
@@ -358,6 +359,7 @@ function createInstructionTrials(config: ResolvedConfig) {
   // Page 2: Magnitude task
   timeline.push({
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: config.text.instruction_magnitude,
     choices: [config.text.continue_button],
     data: {
@@ -370,6 +372,7 @@ function createInstructionTrials(config: ResolvedConfig) {
   // Page 3: Parity task
   timeline.push({
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: config.text.instruction_parity,
     choices: [config.text.continue_button],
     data: {
@@ -382,6 +385,7 @@ function createInstructionTrials(config: ResolvedConfig) {
   // Page 4: Practice intro
   timeline.push({
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: config.text.instruction_practice,
     choices: [config.text.start_button],
     data: {
@@ -397,13 +401,11 @@ function createInstructionTrials(config: ResolvedConfig) {
 /**
  * Creates a fixation trial with neutral disabled buttons (no task hint).
  */
-function createFixationTrial(
-  jsPsych: JsPsych,
-  config: ResolvedConfig
-) {
+function createFixationTrial(jsPsych: JsPsych, config: ResolvedConfig) {
   return {
     type: jsPsychHtmlButtonResponse,
-    stimulus: `<div class="trial-content"><div class="ts-fixation">${config.text.fixation}</div></div>`,
+    css_classes: [CSS_ROOT],
+    stimulus: `<div class="ts-trial-content"><div class="ts-fixation">${config.text.fixation}</div></div>`,
     choices: ["—", "—"],
     button_html: createDisabledButtonHtml,
     response_ends_trial: false,
@@ -419,19 +421,21 @@ function createFixationTrial(
  * Creates a cue trial (cued mode only).
  * Shows the task cue with disabled buttons.
  */
-function createCueTrial(
-  jsPsych: JsPsych,
-  config: ResolvedConfig
-) {
+function createCueTrial(jsPsych: JsPsych, config: ResolvedConfig) {
   return {
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: () => {
-      const currentTask = jsPsych.evaluateTimelineVariable("current_task") as "magnitude" | "parity";
+      const currentTask = jsPsych.evaluateTimelineVariable("current_task") as
+        | "magnitude"
+        | "parity";
       const cueText = getCueText(currentTask, config.text);
-      return `<div class="trial-content"><div class="ts-cue">${cueText}</div></div>`;
+      return `<div class="ts-trial-content"><div class="ts-cue">${cueText}</div></div>`;
     },
     choices: () => {
-      const currentTask = jsPsych.evaluateTimelineVariable("current_task") as "magnitude" | "parity";
+      const currentTask = jsPsych.evaluateTimelineVariable("current_task") as
+        | "magnitude"
+        | "parity";
       return getButtonLabels(currentTask, config.text);
     },
     button_html: createDisabledButtonHtml,
@@ -457,12 +461,15 @@ function createCuedStimulusTrial(
 
   return {
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: () => {
       const digit = jsPsych.evaluateTimelineVariable("stimulus_number") as number;
-      return `<div class="trial-content"><div class="ts-stimulus">${digit}</div></div>`;
+      return `<div class="ts-trial-content"><div class="ts-stimulus">${digit}</div></div>`;
     },
     choices: () => {
-      const currentTask = jsPsych.evaluateTimelineVariable("current_task") as "magnitude" | "parity";
+      const currentTask = jsPsych.evaluateTimelineVariable("current_task") as
+        | "magnitude"
+        | "parity";
       return getButtonLabels(currentTask, config.text);
     },
     button_html: createButtonHtml,
@@ -507,14 +514,19 @@ function createAlternatingStimulusTrial(
 
   return {
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: () => {
       const digit = jsPsych.evaluateTimelineVariable("stimulus_number") as number;
-      const currentTask = jsPsych.evaluateTimelineVariable("current_task") as "magnitude" | "parity";
+      const currentTask = jsPsych.evaluateTimelineVariable("current_task") as
+        | "magnitude"
+        | "parity";
       const taskLabel = getCueText(currentTask, config.text);
-      return `<div class="trial-content"><div><div class="ts-task-label">${taskLabel}</div><div class="ts-stimulus">${digit}</div></div></div>`;
+      return `<div class="ts-trial-content"><div><div class="ts-task-label">${taskLabel}</div><div class="ts-stimulus">${digit}</div></div></div>`;
     },
     choices: () => {
-      const currentTask = jsPsych.evaluateTimelineVariable("current_task") as "magnitude" | "parity";
+      const currentTask = jsPsych.evaluateTimelineVariable("current_task") as
+        | "magnitude"
+        | "parity";
       return getButtonLabels(currentTask, config.text);
     },
     button_html: createButtonHtml,
@@ -548,12 +560,10 @@ function createAlternatingStimulusTrial(
 /**
  * Creates a feedback trial.
  */
-function createFeedbackTrial(
-  jsPsych: JsPsych,
-  config: ResolvedConfig
-) {
+function createFeedbackTrial(jsPsych: JsPsych, config: ResolvedConfig) {
   return {
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: () => {
       const lastTrial = jsPsych.data.get().last(1).values()[0];
       let feedbackText: string;
@@ -561,19 +571,21 @@ function createFeedbackTrial(
 
       if (lastTrial.response === null) {
         feedbackText = config.text.feedback_timeout;
-        feedbackClass = "feedback timeout";
+        feedbackClass = "ts-feedback ts-feedback-timeout";
       } else if (lastTrial.correct) {
         feedbackText = config.text.feedback_correct;
-        feedbackClass = "feedback correct";
+        feedbackClass = "ts-feedback ts-feedback-correct";
       } else {
         feedbackText = config.text.feedback_incorrect;
-        feedbackClass = "feedback incorrect";
+        feedbackClass = "ts-feedback ts-feedback-incorrect";
       }
 
-      return `<div class="trial-content"><div class="${feedbackClass}">${feedbackText}</div></div>`;
+      return `<div class="ts-trial-content"><div class="${feedbackClass}">${feedbackText}</div></div>`;
     },
     choices: () => {
-      const currentTask = jsPsych.evaluateTimelineVariable("current_task") as "magnitude" | "parity";
+      const currentTask = jsPsych.evaluateTimelineVariable("current_task") as
+        | "magnitude"
+        | "parity";
       return getButtonLabels(currentTask, config.text);
     },
     button_html: createDisabledButtonHtml,
@@ -589,15 +601,15 @@ function createFeedbackTrial(
 /**
  * Creates an ITI (inter-trial interval) trial.
  */
-function createItiTrial(
-  jsPsych: JsPsych,
-  config: ResolvedConfig
-) {
+function createItiTrial(jsPsych: JsPsych, config: ResolvedConfig) {
   return {
     type: jsPsychHtmlButtonResponse,
-    stimulus: `<div class="trial-content"></div>`,
+    css_classes: [CSS_ROOT],
+    stimulus: `<div class="ts-trial-content"></div>`,
     choices: () => {
-      const currentTask = jsPsych.evaluateTimelineVariable("current_task") as "magnitude" | "parity";
+      const currentTask = jsPsych.evaluateTimelineVariable("current_task") as
+        | "magnitude"
+        | "parity";
       return getButtonLabels(currentTask, config.text);
     },
     button_html: createDisabledButtonHtml,
@@ -616,7 +628,8 @@ function createItiTrial(
 function createRestScreen(config: ResolvedConfig, blockNumber: number) {
   return {
     type: jsPsychHtmlButtonResponse,
-    stimulus: `<div class="instructions"><p>${config.text.rest_message(blockNumber)}</p></div>`,
+    css_classes: [CSS_ROOT],
+    stimulus: `<div class="ts-instructions"><p>${config.text.rest_message(blockNumber)}</p></div>`,
     choices: [config.text.continue_button],
     data: {
       task: TASK_NAME,
@@ -632,7 +645,8 @@ function createRestScreen(config: ResolvedConfig, blockNumber: number) {
 function createTransitionTrial(message: string, buttonLabel: string) {
   return {
     type: jsPsychHtmlButtonResponse,
-    stimulus: `<div class="instructions"><p>${message}</p></div>`,
+    css_classes: [CSS_ROOT],
+    stimulus: `<div class="ts-instructions"><p>${message}</p></div>`,
     choices: [buttonLabel],
     data: {
       task: TASK_NAME,
@@ -647,6 +661,7 @@ function createTransitionTrial(message: string, buttonLabel: string) {
 function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
   return {
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: () => {
       const data = jsPsych.data.get();
       const scores = calculateScores(data);
@@ -672,8 +687,18 @@ function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
 function createPracticeBlock(jsPsych: JsPsych, config: ResolvedConfig) {
   const trialVariables =
     config.mode === "cued"
-      ? generateCuedSequence(config.numPracticeTrials, config.proportionSwitch, config.stimuli, config.text)
-      : generateAlternatingSequence(config.numPracticeTrials, config.runLength, config.stimuli, config.text);
+      ? generateCuedSequence(
+          config.numPracticeTrials,
+          config.proportionSwitch,
+          config.stimuli,
+          config.text
+        )
+      : generateAlternatingSequence(
+          config.numPracticeTrials,
+          config.runLength,
+          config.stimuli,
+          config.text
+        );
 
   const trialTimeline: any[] = [createFixationTrial(jsPsych, config)];
 
@@ -696,11 +721,7 @@ function createPracticeBlock(jsPsych: JsPsych, config: ResolvedConfig) {
 /**
  * Creates a test block.
  */
-function createTestBlock(
-  jsPsych: JsPsych,
-  config: ResolvedConfig,
-  blockNumber: number
-) {
+function createTestBlock(jsPsych: JsPsych, config: ResolvedConfig, blockNumber: number) {
   const trialsPerBlock = Math.ceil(config.numTrials / config.numBlocks);
 
   const trialVariables =
@@ -756,9 +777,7 @@ function calculateScores(data: DataCollection): ScoringResult {
 
   const correctTrials = testTrials.filter((t) => t.correct);
   const accuracy = correctTrials.length / testTrials.length;
-  const correctRTs = correctTrials
-    .filter((t) => t.rt !== null)
-    .map((t) => t.rt as number);
+  const correctRTs = correctTrials.filter((t) => t.rt !== null).map((t) => t.rt as number);
   const meanRT = mean(correctRTs);
 
   // By switch type (excluding "first" trials)
@@ -775,18 +794,13 @@ function calculateScores(data: DataCollection): ScoringResult {
       : 0;
 
   const switchRT = mean(
-    switchTrials
-      .filter((t) => t.correct && t.rt !== null)
-      .map((t) => t.rt as number)
+    switchTrials.filter((t) => t.correct && t.rt !== null).map((t) => t.rt as number)
   );
   const repeatRT = mean(
-    repeatTrials
-      .filter((t) => t.correct && t.rt !== null)
-      .map((t) => t.rt as number)
+    repeatTrials.filter((t) => t.correct && t.rt !== null).map((t) => t.rt as number)
   );
 
-  const switchCostRT =
-    switchRT !== null && repeatRT !== null ? switchRT - repeatRT : null;
+  const switchCostRT = switchRT !== null && repeatRT !== null ? switchRT - repeatRT : null;
   const switchCostAccuracy = repeatAccuracy - switchAccuracy;
 
   // By task type
@@ -803,14 +817,10 @@ function calculateScores(data: DataCollection): ScoringResult {
       : 0;
 
   const magnitudeRT = mean(
-    magnitudeTrials
-      .filter((t) => t.correct && t.rt !== null)
-      .map((t) => t.rt as number)
+    magnitudeTrials.filter((t) => t.correct && t.rt !== null).map((t) => t.rt as number)
   );
   const parityRT = mean(
-    parityTrials
-      .filter((t) => t.correct && t.rt !== null)
-      .map((t) => t.rt as number)
+    parityTrials.filter((t) => t.correct && t.rt !== null).map((t) => t.rt as number)
   );
 
   // Per-block breakdown
@@ -858,8 +868,7 @@ function calculateScores(data: DataCollection): ScoringResult {
           blockRepeat.length > 0
             ? blockRepeat.filter((t) => t.correct).length / blockRepeat.length
             : 0,
-        switchCostRT:
-          bSwitchRT !== null && bRepeatRT !== null ? bSwitchRT - bRepeatRT : null,
+        switchCostRT: bSwitchRT !== null && bRepeatRT !== null ? bSwitchRT - bRepeatRT : null,
       };
     });
   }
@@ -870,9 +879,7 @@ function calculateScores(data: DataCollection): ScoringResult {
 /**
  * Returns a summary of the Task Switching performance.
  */
-function getSummary(
-  data: DataCollection
-): ScoringResult & { taskName: string; version: string } {
+function getSummary(data: DataCollection): ScoringResult & { taskName: string; version: string } {
   const scores = calculateScores(data);
   return {
     ...scores,
@@ -923,6 +930,7 @@ export function createTimeline(jsPsych: JsPsych, options: TaskSwitchingOptions =
     timeline.push(createPracticeBlock(jsPsych, config));
     timeline.push({
       type: jsPsychHtmlButtonResponse,
+      css_classes: [CSS_ROOT],
       stimulus: config.text.instruction_task,
       choices: [config.text.start_button],
       data: {

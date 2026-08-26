@@ -21,13 +21,13 @@ export const defaultText = {
   button_even: "EVEN",
 
   // -- INSTRUCTION PAGES --
-  instruction_intro: `<div class="instructions">
+  instruction_intro: `<div class="ts-instructions">
     <h2>Task Switching</h2>
     <p>In this task, you will see single digits (1-9, excluding 5).</p>
     <p>On each trial, you will classify the digit on one of two dimensions depending on a cue.</p>
   </div>`,
 
-  instruction_magnitude: `<div class="instructions">
+  instruction_magnitude: `<div class="ts-instructions">
     <h2>Size Task</h2>
     <p>When the cue says <strong>SIZE</strong>, judge whether the digit is:</p>
     <ul>
@@ -36,7 +36,7 @@ export const defaultText = {
     </ul>
   </div>`,
 
-  instruction_parity: `<div class="instructions">
+  instruction_parity: `<div class="ts-instructions">
     <h2>Odd/Even Task</h2>
     <p>When the cue says <strong>ODD/EVEN</strong>, judge whether the digit is:</p>
     <ul>
@@ -45,13 +45,13 @@ export const defaultText = {
     </ul>
   </div>`,
 
-  instruction_practice: `<div class="instructions">
+  instruction_practice: `<div class="ts-instructions">
     <h2>Practice</h2>
     <p>Now you will do some practice trials with feedback.</p>
     <p>Try to respond as quickly and accurately as possible.</p>
   </div>`,
 
-  instruction_task: `<div class="instructions">
+  instruction_task: `<div class="ts-instructions">
     <p>Practice is complete. Now you will begin the main task.</p>
     <p>There will be no feedback. Respond as quickly and accurately as possible.</p>
   </div>`,
@@ -63,12 +63,8 @@ export const defaultText = {
 
   // -- COMPLETION --
   task_complete: "Task Complete",
-  result_summary: (
-    accuracy: number,
-    switchCostRT: number | null,
-    meanRT: number | null
-  ) => {
-    let html = `<div class="instructions">`;
+  result_summary: (accuracy: number, switchCostRT: number | null, meanRT: number | null) => {
+    let html = `<div class="ts-instructions">`;
     html += `<p><strong>Overall Accuracy:</strong> ${(accuracy * 100).toFixed(1)}%</p>`;
     if (switchCostRT !== null) {
       html += `<p><strong>Switch Cost (RT):</strong> ${switchCostRT.toFixed(0)} ms</p>`;

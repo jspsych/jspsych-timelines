@@ -1,37 +1,37 @@
 /* Digit Span Task Styles - Minimal, themeable */
 
 /* Instructions container */
-.instructions {
+.jspsych-digit-span .jspsych-digit-span-instructions {
   max-width: 600px;
   margin: 0 auto;
   padding: 0 20px;
   text-align: left;
 }
 
-.instructions h2,
-.instructions h3 {
+.jspsych-digit-span .jspsych-digit-span-instructions h2,
+.jspsych-digit-span .jspsych-digit-span-instructions h3 {
   text-align: center;
 }
 
 /* Ready signal */
-.ready {
+.jspsych-digit-span .jspsych-digit-span-ready {
   font-size: 2em;
 }
 
 /* Digit stimulus display */
-.stimulus {
+.jspsych-digit-span .jspsych-digit-span-stimulus {
   font-size: 4em;
 }
 
 /* Number pad grid */
-.numpad {
+.jspsych-digit-span .jspsych-digit-span-numpad {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 4px;
   max-width: 300px;
 }
 
-.numpad .jspsych-btn {
+.jspsych-digit-span .jspsych-digit-span-numpad .jspsych-btn {
   min-height: 52px;
   min-width: 52px;
   font-size: 20px;
@@ -39,7 +39,7 @@
 }
 
 /* Response display */
-.display {
+.jspsych-digit-span .jspsych-digit-span-display {
   min-height: 50px;
   padding: 10px 20px;
   min-width: 200px;
@@ -49,23 +49,23 @@
 }
 
 /* Feedback state modifiers */
-.feedback.correct {
+.jspsych-digit-span .jspsych-digit-span-feedback-correct {
   color: green;
 }
 
-.feedback.incorrect {
+.jspsych-digit-span .jspsych-digit-span-feedback-incorrect {
   color: red;
 }
 
 /* Hide jsPsych default button container for custom response interface */
-.response-interface #jspsych-html-button-response-btngroup {
+.jspsych-digit-span .jspsych-digit-span-response-interface #jspsych-html-button-response-btngroup {
   display: none;
 }
 
 /* Mobile/touch device optimizations */
 @media (pointer: coarse) {
   /* Numpad fixed to bottom */
-  .numpad-container {
+  .jspsych-digit-span .jspsych-digit-span-numpad-container {
     position: fixed;
     bottom: 0;
     left: 0;
@@ -74,18 +74,18 @@
     background: inherit;
   }
 
-  .numpad {
+  .jspsych-digit-span .jspsych-digit-span-numpad {
     max-width: 100%;
     gap: 4px;
   }
 
-  .numpad .jspsych-btn {
+  .jspsych-digit-span .jspsych-digit-span-numpad .jspsych-btn {
     min-height: 56px;
     font-size: 22px;
   }
 
   /* Standard button response (for instruction screens) */
-  #jspsych-html-button-response-btngroup {
+  .jspsych-digit-span #jspsych-html-button-response-btngroup {
     position: fixed;
     bottom: 0;
     left: 0;
@@ -97,7 +97,7 @@
     justify-content: center;
   }
 
-  #jspsych-html-button-response-btngroup .jspsych-btn {
+  .jspsych-digit-span #jspsych-html-button-response-btngroup .jspsych-btn {
     min-height: 60px;
     min-width: 120px;
     font-size: 18px;

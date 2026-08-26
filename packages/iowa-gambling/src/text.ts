@@ -5,23 +5,23 @@
 export const defaultText = {
   // -- INSTRUCTION PAGES --
   instruction_pages: [
-    `<div class="instructions">
+    `<div class="igt-instructions">
       <h2>Card Game</h2>
       <p>In this game, you will be selecting cards from four different decks.</p>
       <p>Each time you select a card, you will win some money. But sometimes you will also lose money.</p>
     </div>`,
-    `<div class="instructions">
+    `<div class="igt-instructions">
       <h2>Your Goal</h2>
       <p>Your goal is to win as much money as possible and avoid losing money.</p>
       <p>You will start with a loan. Try to make as much money as you can!</p>
     </div>`,
-    `<div class="instructions">
+    `<div class="igt-instructions">
       <h2>How to Play</h2>
       <p>Tap on any deck to select a card from it.</p>
       <p>You can select cards from any deck, in any order you wish.</p>
       <p>Some decks are better than others, but you will need to discover this on your own.</p>
     </div>`,
-    `<div class="instructions">
+    `<div class="igt-instructions">
       <h2>Ready?</h2>
       <p>You will play for 100 rounds.</p>
       <p>Good luck!</p>
@@ -53,7 +53,7 @@ export const defaultText = {
   task_complete_score: (finalScore: number, symbol: string) =>
     `Game over! Your final score: ${symbol}${finalScore}`,
   result_summary: (finalScore: number, netScore: number, advantageousSelections: number) => `
-    <div class="instructions">
+    <div class="igt-instructions">
       <h3>Your Results</h3>
       <p><strong>Final score:</strong> $${finalScore}</p>
       <p><strong>Net score:</strong> ${netScore >= 0 ? "+" : ""}$${netScore}</p>

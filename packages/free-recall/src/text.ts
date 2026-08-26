@@ -43,7 +43,7 @@ export const defaultText: TextConfig = {
   done_button: "Done",
 
   instruction_intro: `
-    <div class="instructions">
+    <div class="jspsych-free-recall-instructions">
       <h2>Free Recall Task</h2>
       <p>In this task, you will see a list of words presented one at a time.</p>
       <p>Try to remember as many words as you can.</p>
@@ -53,7 +53,7 @@ export const defaultText: TextConfig = {
   `,
 
   instruction_study: `
-    <div class="instructions">
+    <div class="jspsych-free-recall-instructions">
       <h3>Study Phase</h3>
       <p>Watch carefully! Words will appear one at a time.</p>
       <p>Try to remember each word.</p>
@@ -61,7 +61,7 @@ export const defaultText: TextConfig = {
   `,
 
   instruction_recall: `
-    <div class="instructions">
+    <div class="jspsych-free-recall-instructions">
       <h3>Recall Phase</h3>
       <p>Type each word you remember, one at a time.</p>
       <p>Press <strong>Add</strong> after each word (or press Enter).</p>
@@ -85,12 +85,20 @@ export const defaultText: TextConfig = {
     intrusions: number,
     repetitions: number
   ) => `
-    <div class="instructions">
+    <div class="jspsych-free-recall-instructions">
       <h3>Your Results</h3>
       <p><strong>Words recalled:</strong> ${correctRecalls} out of ${totalWords}</p>
       <p><strong>Recall rate:</strong> ${((correctRecalls / totalWords) * 100).toFixed(1)}%</p>
-      ${intrusions > 0 ? `<p><strong>Intrusions:</strong> ${intrusions} (words not on the list)</p>` : ""}
-      ${repetitions > 0 ? `<p><strong>Repetitions:</strong> ${repetitions} (words recalled more than once)</p>` : ""}
+      ${
+        intrusions > 0
+          ? `<p><strong>Intrusions:</strong> ${intrusions} (words not on the list)</p>`
+          : ""
+      }
+      ${
+        repetitions > 0
+          ? `<p><strong>Repetitions:</strong> ${repetitions} (words recalled more than once)</p>`
+          : ""
+      }
     </div>
   `,
 };

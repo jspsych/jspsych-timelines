@@ -1,7 +1,9 @@
 import "./styles.css";
-import { JsPsych, DataCollection } from "jspsych";
+
 import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
-import { defaultText, TextConfig } from "./text";
+import { DataCollection, JsPsych } from "jspsych";
+
+import { TextConfig, defaultText } from "./text";
 
 // -- TYPES --
 
@@ -89,28 +91,94 @@ interface ResolvedConfig {
 const TASK_NAME = "lexical-decision";
 const VERSION = "0.0.1";
 
+const CSS_ROOT = "jspsych-lexical-decision";
+
 // Default word list - common English words
 const DEFAULT_WORDS = [
-  "APPLE", "BRAIN", "CHAIR", "DANCE", "EAGLE",
-  "FLOOR", "GRAPE", "HORSE", "IVORY", "JUICE",
-  "KNIFE", "LEMON", "MONEY", "NORTH", "OCEAN",
-  "PIANO", "QUEEN", "RIVER", "STONE", "TIGER",
-  "URBAN", "VOICE", "WHEAT", "YOUTH", "ZEBRA",
-  "BEACH", "CLOUD", "DREAM", "EARTH", "FLAME",
-  "GIANT", "HEART", "IMAGE", "JEWEL", "KNEEL",
-  "LIGHT", "MUSIC", "NIGHT", "OPERA", "PEACE",
+  "APPLE",
+  "BRAIN",
+  "CHAIR",
+  "DANCE",
+  "EAGLE",
+  "FLOOR",
+  "GRAPE",
+  "HORSE",
+  "IVORY",
+  "JUICE",
+  "KNIFE",
+  "LEMON",
+  "MONEY",
+  "NORTH",
+  "OCEAN",
+  "PIANO",
+  "QUEEN",
+  "RIVER",
+  "STONE",
+  "TIGER",
+  "URBAN",
+  "VOICE",
+  "WHEAT",
+  "YOUTH",
+  "ZEBRA",
+  "BEACH",
+  "CLOUD",
+  "DREAM",
+  "EARTH",
+  "FLAME",
+  "GIANT",
+  "HEART",
+  "IMAGE",
+  "JEWEL",
+  "KNEEL",
+  "LIGHT",
+  "MUSIC",
+  "NIGHT",
+  "OPERA",
+  "PEACE",
 ];
 
 // Default nonword list - created by modifying real words
 const DEFAULT_NONWORDS = [
-  "ABBLE", "BRANE", "CHAID", "DENCE", "EADLE",
-  "FLOIR", "GRABE", "HARSE", "IVARY", "JUECE",
-  "KNIGE", "LEMUN", "MANEY", "NARTH", "OCEON",
-  "PIENO", "QUEAN", "REVER", "STANE", "TEGER",
-  "URBEN", "VOIKE", "WHELT", "YOOTH", "ZIBRA",
-  "BEECH", "CLOID", "DREEM", "EURTH", "FLOME",
-  "GEANT", "HEERT", "IMOGE", "JOWEL", "KNEIL",
-  "LEGHT", "MESIC", "NEGHT", "OPARA", "PEECE",
+  "ABBLE",
+  "BRANE",
+  "CHAID",
+  "DENCE",
+  "EADLE",
+  "FLOIR",
+  "GRABE",
+  "HARSE",
+  "IVARY",
+  "JUECE",
+  "KNIGE",
+  "LEMUN",
+  "MANEY",
+  "NARTH",
+  "OCEON",
+  "PIENO",
+  "QUEAN",
+  "REVER",
+  "STANE",
+  "TEGER",
+  "URBEN",
+  "VOIKE",
+  "WHELT",
+  "YOOTH",
+  "ZIBRA",
+  "BEECH",
+  "CLOID",
+  "DREEM",
+  "EURTH",
+  "FLOME",
+  "GEANT",
+  "HEERT",
+  "IMOGE",
+  "JOWEL",
+  "KNEIL",
+  "LEGHT",
+  "MESIC",
+  "NEGHT",
+  "OPARA",
+  "PEECE",
 ];
 
 const DEFAULT_OPTIONS = {
@@ -182,21 +250,18 @@ function inverseNormalCDF(p: number): number | null {
 
   // Rational approximation for central region
   const a = [
-    -3.969683028665376e1, 2.209460984245205e2, -2.759285104469687e2,
-    1.383577518672690e2, -3.066479806614716e1, 2.506628277459239e0,
+    -3.969683028665376e1, 2.209460984245205e2, -2.759285104469687e2, 1.38357751867269e2,
+    -3.066479806614716e1, 2.506628277459239,
   ];
   const b = [
-    -5.447609879822406e1, 1.615858368580409e2, -1.556989798598866e2,
-    6.680131188771972e1, -1.328068155288572e1,
+    -5.447609879822406e1, 1.615858368580409e2, -1.556989798598866e2, 6.680131188771972e1,
+    -1.328068155288572e1,
   ];
   const c = [
-    -7.784894002430293e-3, -3.223964580411365e-1, -2.400758277161838e0,
-    -2.549732539343734e0, 4.374664141464968e0, 2.938163982698783e0,
+    -7.784894002430293e-3, -3.223964580411365e-1, -2.400758277161838, -2.549732539343734,
+    4.374664141464968, 2.938163982698783,
   ];
-  const d = [
-    7.784695709041462e-3, 3.224671290700398e-1, 2.445134137142996e0,
-    3.754408661907416e0,
-  ];
+  const d = [7.784695709041462e-3, 3.224671290700398e-1, 2.445134137142996, 3.754408661907416];
 
   const pLow = 0.02425;
   const pHigh = 1 - pLow;
@@ -265,6 +330,7 @@ function createInstructionTrials(
   if (section === "intro") {
     timeline.push({
       type: jsPsychHtmlButtonResponse,
+      css_classes: [CSS_ROOT],
       stimulus: config.text.instruction_intro,
       choices: [config.text.continue_button],
       data: {
@@ -275,6 +341,7 @@ function createInstructionTrials(
   } else if (section === "task") {
     timeline.push({
       type: jsPsychHtmlButtonResponse,
+      css_classes: [CSS_ROOT],
       stimulus: config.text.instruction_task,
       choices: [config.text.continue_button],
       data: {
@@ -285,6 +352,7 @@ function createInstructionTrials(
   } else if (section === "practice") {
     timeline.push({
       type: jsPsychHtmlButtonResponse,
+      css_classes: [CSS_ROOT],
       stimulus: config.text.instruction_practice,
       choices: [config.text.start_button],
       data: {
@@ -295,6 +363,7 @@ function createInstructionTrials(
   } else if (section === "test") {
     timeline.push({
       type: jsPsychHtmlButtonResponse,
+      css_classes: [CSS_ROOT],
       stimulus: config.text.instruction_test,
       choices: [config.text.start_button],
       data: {
@@ -323,7 +392,8 @@ function createLexicalTrial(
   // Fixation cross
   timeline.push({
     type: jsPsychHtmlButtonResponse,
-    stimulus: `<div class="trial-content">${config.text.fixation}</div>`,
+    css_classes: [CSS_ROOT],
+    stimulus: `<div class="jspsych-lexical-decision-trial-content">${config.text.fixation}</div>`,
     choices: [config.text.word_button, config.text.nonword_button],
     button_html: createDisabledButtonHtml,
     response_ends_trial: false,
@@ -337,7 +407,8 @@ function createLexicalTrial(
   // Stimulus presentation with response
   timeline.push({
     type: jsPsychHtmlButtonResponse,
-    stimulus: `<div class="trial-content"><p style="font-size: 48px; font-family: monospace; letter-spacing: 4px;">${trial.stimulus}</p></div>`,
+    css_classes: [CSS_ROOT],
+    stimulus: `<div class="jspsych-lexical-decision-trial-content"><p style="font-size: 48px; font-family: monospace; letter-spacing: 4px;">${trial.stimulus}</p></div>`,
     choices: [config.text.word_button, config.text.nonword_button],
     trial_duration: config.responseTimeout,
     data: {
@@ -373,14 +444,15 @@ function createLexicalTrial(
   if (showFeedback) {
     timeline.push({
       type: jsPsychHtmlButtonResponse,
+      css_classes: [CSS_ROOT],
       stimulus: () => {
         const lastData = jsPsych.data.getLastTrialData().values()[0];
         if (lastData.timeout) {
-          return `<div class="trial-content"><p class="feedback timeout">${config.text.feedback_timeout}</p></div>`;
+          return `<div class="jspsych-lexical-decision-trial-content"><p class="jspsych-lexical-decision-feedback jspsych-lexical-decision-feedback-timeout">${config.text.feedback_timeout}</p></div>`;
         }
         return lastData.correct
-          ? `<div class="trial-content"><p class="feedback correct">${config.text.feedback_correct}</p></div>`
-          : `<div class="trial-content"><p class="feedback incorrect">${config.text.feedback_incorrect}</p></div>`;
+          ? `<div class="jspsych-lexical-decision-trial-content"><p class="jspsych-lexical-decision-feedback jspsych-lexical-decision-feedback-correct">${config.text.feedback_correct}</p></div>`
+          : `<div class="jspsych-lexical-decision-trial-content"><p class="jspsych-lexical-decision-feedback jspsych-lexical-decision-feedback-incorrect">${config.text.feedback_incorrect}</p></div>`;
       },
       choices: [config.text.word_button, config.text.nonword_button],
       button_html: createDisabledButtonHtml,
@@ -402,16 +474,14 @@ function createLexicalTrial(
 function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
   return {
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: () => {
       const data = jsPsych.data.get();
       const scores = calculateScores(data);
 
       let html = `<div style="max-width: 600px; margin: 0 auto;">`;
       html += `<h2>${config.text.task_complete}</h2>`;
-      html += config.text.result_summary(
-        scores.accuracy,
-        scores.averageRT ?? 0
-      );
+      html += config.text.result_summary(scores.accuracy, scores.averageRT ?? 0);
       html += `</div>`;
       return html;
     },
@@ -452,58 +522,40 @@ function calculateScores(data: DataCollection): ScoringResult {
   const nonTimeoutTrials = testTrials.filter((t) => !t.timeout);
   const numTimeouts = testTrials.filter((t) => t.timeout).length;
   const numCorrect = nonTimeoutTrials.filter((t) => t.correct).length;
-  const accuracy =
-    nonTimeoutTrials.length > 0
-      ? (numCorrect / nonTimeoutTrials.length) * 100
-      : 0;
+  const accuracy = nonTimeoutTrials.length > 0 ? (numCorrect / nonTimeoutTrials.length) * 100 : 0;
 
   // Word accuracy (hit rate)
   const wordTrials = nonTimeoutTrials.filter((t) => t.stimulus_type === "word");
   const wordCorrect = wordTrials.filter((t) => t.correct).length;
-  const wordAccuracy =
-    wordTrials.length > 0 ? (wordCorrect / wordTrials.length) * 100 : 0;
+  const wordAccuracy = wordTrials.length > 0 ? (wordCorrect / wordTrials.length) * 100 : 0;
   const hitRate = wordTrials.length > 0 ? wordCorrect / wordTrials.length : 0;
 
   // Nonword accuracy (correct rejection rate)
-  const nonwordTrials = nonTimeoutTrials.filter(
-    (t) => t.stimulus_type === "nonword"
-  );
+  const nonwordTrials = nonTimeoutTrials.filter((t) => t.stimulus_type === "nonword");
   const nonwordCorrect = nonwordTrials.filter((t) => t.correct).length;
   const nonwordAccuracy =
     nonwordTrials.length > 0 ? (nonwordCorrect / nonwordTrials.length) * 100 : 0;
 
   // False alarm rate = saying "word" to nonwords
-  const falseAlarms = nonwordTrials.filter(
-    (t) => t.response === "word"
-  ).length;
-  const falseAlarmRate =
-    nonwordTrials.length > 0 ? falseAlarms / nonwordTrials.length : 0;
+  const falseAlarms = nonwordTrials.filter((t) => t.response === "word").length;
+  const falseAlarmRate = nonwordTrials.length > 0 ? falseAlarms / nonwordTrials.length : 0;
 
   // d-prime
   const dPrime = calculateDPrime(hitRate, falseAlarmRate);
 
   // Response times
-  const allRTs = nonTimeoutTrials
-    .filter((t) => t.rt !== null)
-    .map((t) => t.rt as number);
-  const averageRT =
-    allRTs.length > 0 ? allRTs.reduce((a, b) => a + b, 0) / allRTs.length : null;
+  const allRTs = nonTimeoutTrials.filter((t) => t.rt !== null).map((t) => t.rt as number);
+  const averageRT = allRTs.length > 0 ? allRTs.reduce((a, b) => a + b, 0) / allRTs.length : null;
 
-  const wordRTs = wordTrials
-    .filter((t) => t.correct && t.rt !== null)
-    .map((t) => t.rt as number);
+  const wordRTs = wordTrials.filter((t) => t.correct && t.rt !== null).map((t) => t.rt as number);
   const averageRTWord =
-    wordRTs.length > 0
-      ? wordRTs.reduce((a, b) => a + b, 0) / wordRTs.length
-      : null;
+    wordRTs.length > 0 ? wordRTs.reduce((a, b) => a + b, 0) / wordRTs.length : null;
 
   const nonwordRTs = nonwordTrials
     .filter((t) => t.correct && t.rt !== null)
     .map((t) => t.rt as number);
   const averageRTNonword =
-    nonwordRTs.length > 0
-      ? nonwordRTs.reduce((a, b) => a + b, 0) / nonwordRTs.length
-      : null;
+    nonwordRTs.length > 0 ? nonwordRTs.reduce((a, b) => a + b, 0) / nonwordRTs.length : null;
 
   return {
     accuracy,
@@ -522,9 +574,7 @@ function calculateScores(data: DataCollection): ScoringResult {
 /**
  * Returns a summary of the Lexical Decision task performance.
  */
-function getSummary(
-  data: DataCollection
-): ScoringResult & { taskName: string; version: string } {
+function getSummary(data: DataCollection): ScoringResult & { taskName: string; version: string } {
   const scores = calculateScores(data);
   return {
     ...scores,
@@ -562,10 +612,7 @@ function getSummary(
  *   numNonwordTrials: 3,
  * });
  */
-export function createTimeline(
-  jsPsych: JsPsych,
-  options: LexicalDecisionOptions = {}
-) {
+export function createTimeline(jsPsych: JsPsych, options: LexicalDecisionOptions = {}) {
   // Merge text with defaults
   const text: TextConfig = { ...defaultText, ...options.text };
 
@@ -598,14 +645,7 @@ export function createTimeline(
 
     practiceTrials.forEach((trial, i) => {
       timeline.push(
-        createLexicalTrial(
-          jsPsych,
-          config,
-          trial,
-          "practice",
-          i + 1,
-          config.showPracticeFeedback
-        )
+        createLexicalTrial(jsPsych, config, trial, "practice", i + 1, config.showPracticeFeedback)
       );
     });
   }
@@ -623,9 +663,7 @@ export function createTimeline(
   );
 
   testTrials.forEach((trial, i) => {
-    timeline.push(
-      createLexicalTrial(jsPsych, config, trial, "test", i + 1, false)
-    );
+    timeline.push(createLexicalTrial(jsPsych, config, trial, "test", i + 1, false));
   });
 
   // Completion screen

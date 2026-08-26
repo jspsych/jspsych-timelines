@@ -1,34 +1,34 @@
 /* Mental Rotation Task Styles */
 
 /* Instructions container */
-.instructions {
+.jspsych-mental-rotation .jspsych-mental-rotation-instructions {
   max-width: 600px;
   margin: 0 auto;
   padding: 0 20px;
   text-align: left;
 }
 
-.instructions h2,
-.instructions h3 {
+.jspsych-mental-rotation .jspsych-mental-rotation-instructions h2,
+.jspsych-mental-rotation .jspsych-mental-rotation-instructions h3 {
   text-align: center;
 }
 
 /* Feedback state modifiers */
-.feedback.correct {
+.jspsych-mental-rotation .jspsych-mental-rotation-feedback-correct {
   color: green;
 }
 
-.feedback.incorrect {
+.jspsych-mental-rotation .jspsych-mental-rotation-feedback-incorrect {
   color: red;
 }
 
-.feedback.timeout {
+.jspsych-mental-rotation .jspsych-mental-rotation-feedback-timeout {
   color: orange;
 }
 
 /* Mobile/touch device optimizations */
 @media (pointer: coarse) {
-  #jspsych-html-button-response-btngroup {
+  .jspsych-mental-rotation #jspsych-html-button-response-btngroup {
     position: fixed;
     bottom: 0;
     left: 0;
@@ -40,7 +40,7 @@
     justify-content: center;
   }
 
-  #jspsych-html-button-response-btngroup .jspsych-btn {
+  .jspsych-mental-rotation #jspsych-html-button-response-btngroup .jspsych-btn {
     min-height: 60px;
     min-width: 120px;
     font-size: 18px;
@@ -48,7 +48,7 @@
     max-width: 200px;
   }
 
-  .jspsych-content {
+  .jspsych-mental-rotation {
     padding-bottom: 100px;
   }
 }

@@ -1,7 +1,9 @@
 import "./styles.css";
-import { JsPsych, DataCollection } from "jspsych";
+
 import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
-import { defaultText, TextConfig } from "./text";
+import { DataCollection, JsPsych } from "jspsych";
+
+import { TextConfig, defaultText } from "./text";
 
 // -- TYPES --
 
@@ -96,6 +98,8 @@ interface ResolvedConfig {
 
 const TASK_NAME = "global-local";
 const VERSION = "0.0.1";
+
+const CSS_ROOT = "jspsych-global-local";
 
 const DEFAULT_OPTIONS = {
   showInstructions: true,
@@ -197,8 +201,16 @@ function generateTrials(numTrials: number): TrialSpec[] {
   // Create balanced trial types
   const congruentH: TrialSpec = { globalLetter: "H", localLetter: "H", congruency: "congruent" };
   const congruentS: TrialSpec = { globalLetter: "S", localLetter: "S", congruency: "congruent" };
-  const incongruentHS: TrialSpec = { globalLetter: "H", localLetter: "S", congruency: "incongruent" };
-  const incongruentSH: TrialSpec = { globalLetter: "S", localLetter: "H", congruency: "incongruent" };
+  const incongruentHS: TrialSpec = {
+    globalLetter: "H",
+    localLetter: "S",
+    congruency: "incongruent",
+  };
+  const incongruentSH: TrialSpec = {
+    globalLetter: "S",
+    localLetter: "H",
+    congruency: "incongruent",
+  };
 
   const trialTypes = [congruentH, congruentS, incongruentHS, incongruentSH];
   const trialsPerType = Math.floor(numTrials / 4);
@@ -255,6 +267,7 @@ function createInstructionTrials(
 
   timeline.push({
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: stimulus,
     choices: [buttonLabel],
     data: {
@@ -285,7 +298,8 @@ function createGlobalLocalTrial(
   // Fixation cross
   timeline.push({
     type: jsPsychHtmlButtonResponse,
-    stimulus: `<div class="trial-content"><p style="font-size: 48px;">+</p></div>`,
+    css_classes: [CSS_ROOT],
+    stimulus: `<div class="jspsych-global-local-trial-content"><p style="font-size: 48px;">+</p></div>`,
     choices: [config.text.letter_h_button, config.text.letter_s_button],
     button_html: createDisabledButtonHtml,
     response_ends_trial: false,
@@ -299,6 +313,7 @@ function createGlobalLocalTrial(
   // Stimulus presentation
   timeline.push({
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: () => {
       const navon = createNavonFigure(
         trial.globalLetter,
@@ -308,7 +323,7 @@ function createGlobalLocalTrial(
       );
       const cue = block === "global" ? "LARGE letter" : "SMALL letters";
       return `
-        <div class="trial-content" style="flex-direction: column;">
+        <div class="jspsych-global-local-trial-content" style="flex-direction: column;">
           <div style="margin-bottom: 20px; font-size: 16px; color: #666;">
             Focus on the <strong>${cue}</strong>
           </div>
@@ -354,14 +369,15 @@ function createGlobalLocalTrial(
   if (showFeedback) {
     timeline.push({
       type: jsPsychHtmlButtonResponse,
+      css_classes: [CSS_ROOT],
       stimulus: () => {
         const lastData = jsPsych.data.getLastTrialData().values()[0];
         if (lastData.timeout) {
-          return `<div class="trial-content"><p class="feedback timeout">${config.text.feedback_timeout}</p></div>`;
+          return `<div class="jspsych-global-local-trial-content"><p class="jspsych-global-local-feedback jspsych-global-local-feedback-timeout">${config.text.feedback_timeout}</p></div>`;
         }
         return lastData.correct
-          ? `<div class="trial-content"><p class="feedback correct">${config.text.feedback_correct}</p></div>`
-          : `<div class="trial-content"><p class="feedback incorrect">${config.text.feedback_incorrect}</p></div>`;
+          ? `<div class="jspsych-global-local-trial-content"><p class="jspsych-global-local-feedback jspsych-global-local-feedback-correct">${config.text.feedback_correct}</p></div>`
+          : `<div class="jspsych-global-local-trial-content"><p class="jspsych-global-local-feedback jspsych-global-local-feedback-incorrect">${config.text.feedback_incorrect}</p></div>`;
       },
       choices: [config.text.letter_h_button, config.text.letter_s_button],
       button_html: createDisabledButtonHtml,
@@ -394,15 +410,7 @@ function createBlock(
 
   trials.forEach((trial, i) => {
     timeline.push(
-      createGlobalLocalTrial(
-        jsPsych,
-        config,
-        trial,
-        blockType,
-        phase,
-        i + 1,
-        showFeedback
-      )
+      createGlobalLocalTrial(jsPsych, config, trial, blockType, phase, i + 1, showFeedback)
     );
   });
 
@@ -415,6 +423,7 @@ function createBlock(
 function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
   return {
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: () => {
       const data = jsPsych.data.get();
       const scores = calculateScores(data);
@@ -476,19 +485,19 @@ function calculateScores(data: DataCollection): ScoringResult {
   const globalRTs = globalTrials.filter((t) => t.correct).map((t) => t.rt as number);
   const localRTs = localTrials.filter((t) => t.correct).map((t) => t.rt as number);
 
-  const globalRT = globalRTs.length > 0
-    ? globalRTs.reduce((a, b) => a + b, 0) / globalRTs.length
-    : null;
-  const localRT = localRTs.length > 0
-    ? localRTs.reduce((a, b) => a + b, 0) / localRTs.length
-    : null;
+  const globalRT =
+    globalRTs.length > 0 ? globalRTs.reduce((a, b) => a + b, 0) / globalRTs.length : null;
+  const localRT =
+    localRTs.length > 0 ? localRTs.reduce((a, b) => a + b, 0) / localRTs.length : null;
 
-  const globalAccuracy = globalTrials.length > 0
-    ? (globalTrials.filter((t) => t.correct).length / globalTrials.length) * 100
-    : 0;
-  const localAccuracy = localTrials.length > 0
-    ? (localTrials.filter((t) => t.correct).length / localTrials.length) * 100
-    : 0;
+  const globalAccuracy =
+    globalTrials.length > 0
+      ? (globalTrials.filter((t) => t.correct).length / globalTrials.length) * 100
+      : 0;
+  const localAccuracy =
+    localTrials.length > 0
+      ? (localTrials.filter((t) => t.correct).length / localTrials.length) * 100
+      : 0;
 
   // By congruency
   const congruentTrials = nonTimeoutTrials.filter((t) => t.congruency === "congruent");
@@ -497,28 +506,29 @@ function calculateScores(data: DataCollection): ScoringResult {
   const congruentRTs = congruentTrials.filter((t) => t.correct).map((t) => t.rt as number);
   const incongruentRTs = incongruentTrials.filter((t) => t.correct).map((t) => t.rt as number);
 
-  const congruentRT = congruentRTs.length > 0
-    ? congruentRTs.reduce((a, b) => a + b, 0) / congruentRTs.length
-    : null;
-  const incongruentRT = incongruentRTs.length > 0
-    ? incongruentRTs.reduce((a, b) => a + b, 0) / incongruentRTs.length
-    : null;
-
-  const interferenceEffect =
-    congruentRT !== null && incongruentRT !== null
-      ? incongruentRT - congruentRT
+  const congruentRT =
+    congruentRTs.length > 0 ? congruentRTs.reduce((a, b) => a + b, 0) / congruentRTs.length : null;
+  const incongruentRT =
+    incongruentRTs.length > 0
+      ? incongruentRTs.reduce((a, b) => a + b, 0) / incongruentRTs.length
       : null;
 
-  const congruentAccuracy = congruentTrials.length > 0
-    ? (congruentTrials.filter((t) => t.correct).length / congruentTrials.length) * 100
-    : 0;
-  const incongruentAccuracy = incongruentTrials.length > 0
-    ? (incongruentTrials.filter((t) => t.correct).length / incongruentTrials.length) * 100
-    : 0;
+  const interferenceEffect =
+    congruentRT !== null && incongruentRT !== null ? incongruentRT - congruentRT : null;
 
-  const overallAccuracy = nonTimeoutTrials.length > 0
-    ? (nonTimeoutTrials.filter((t) => t.correct).length / nonTimeoutTrials.length) * 100
-    : 0;
+  const congruentAccuracy =
+    congruentTrials.length > 0
+      ? (congruentTrials.filter((t) => t.correct).length / congruentTrials.length) * 100
+      : 0;
+  const incongruentAccuracy =
+    incongruentTrials.length > 0
+      ? (incongruentTrials.filter((t) => t.correct).length / incongruentTrials.length) * 100
+      : 0;
+
+  const overallAccuracy =
+    nonTimeoutTrials.length > 0
+      ? (nonTimeoutTrials.filter((t) => t.correct).length / nonTimeoutTrials.length) * 100
+      : 0;
 
   return {
     globalRT,
@@ -538,9 +548,7 @@ function calculateScores(data: DataCollection): ScoringResult {
 /**
  * Returns a summary of the Global-Local task performance.
  */
-function getSummary(
-  data: DataCollection
-): ScoringResult & { taskName: string; version: string } {
+function getSummary(data: DataCollection): ScoringResult & { taskName: string; version: string } {
   const scores = calculateScores(data);
   return {
     ...scores,
@@ -568,10 +576,7 @@ function getSummary(
  * jsPsych.run([glTimeline]);
  * ```
  */
-export function createTimeline(
-  jsPsych: JsPsych,
-  options: GlobalLocalOptions = {}
-) {
+export function createTimeline(jsPsych: JsPsych, options: GlobalLocalOptions = {}) {
   // Merge text with defaults
   const text: TextConfig = { ...defaultText, ...options.text };
 

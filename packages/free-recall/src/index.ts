@@ -1,9 +1,11 @@
 import "./styles.css";
-import { JsPsych, DataCollection } from "jspsych";
+
+import jsPsychFreeRecallResponse from "@jspsych-contrib/plugin-free-recall-response";
 import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
 import jsPsychHtmlKeyboardResponse from "@jspsych/plugin-html-keyboard-response";
-import jsPsychFreeRecallResponse from "@jspsych-contrib/plugin-free-recall-response";
-import { defaultText, TextConfig } from "./text";
+import { DataCollection, JsPsych } from "jspsych";
+
+import { TextConfig, defaultText } from "./text";
 
 // -- TYPES --
 
@@ -85,6 +87,8 @@ interface ResolvedConfig {
 const TASK_NAME = "free-recall";
 const VERSION = "0.0.1";
 
+const CSS_ROOT = "jspsych-free-recall";
+
 // Default word list - common concrete nouns
 const DEFAULT_WORDS = [
   "APPLE",
@@ -139,10 +143,7 @@ function normalizeWord(word: string): string {
 /**
  * Creates instruction trials.
  */
-function createInstructionTrials(
-  config: ResolvedConfig,
-  part: "intro" | "study" | "recall"
-) {
+function createInstructionTrials(config: ResolvedConfig, part: "intro" | "study" | "recall") {
   let stimulus: string;
   let buttonLabel: string;
 
@@ -182,6 +183,7 @@ function createInstructionTrials(
 
   return {
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: stimulus,
     choices: [buttonLabel],
     data,
@@ -191,16 +193,13 @@ function createInstructionTrials(
 /**
  * Creates a study trial for a single word.
  */
-function createStudyTrial(
-  config: ResolvedConfig,
-  word: string,
-  wordIndex: number
-) {
+function createStudyTrial(config: ResolvedConfig, word: string, wordIndex: number) {
   const timeline: any[] = [];
 
   // Word presentation
   timeline.push({
     type: jsPsychHtmlKeyboardResponse,
+    css_classes: [CSS_ROOT],
     stimulus: `
       <div style="text-align: center;">
         <p style="font-size: 18px; color: #666; margin-bottom: 20px;">${config.text.study_prompt}</p>
@@ -222,6 +221,7 @@ function createStudyTrial(
   // ISI
   timeline.push({
     type: jsPsychHtmlKeyboardResponse,
+    css_classes: [CSS_ROOT],
     stimulus: "",
     choices: "NO_KEYS",
     trial_duration: config.isi,
@@ -257,6 +257,7 @@ function createRecallPhase(jsPsych: JsPsych, config: ResolvedConfig, words: stri
   // Delay before recall
   timeline.push({
     type: jsPsychHtmlKeyboardResponse,
+    css_classes: [CSS_ROOT],
     stimulus: `<p style="font-size: 24px;">Get ready to recall...</p>`,
     choices: "NO_KEYS",
     trial_duration: config.recallDelay,
@@ -270,6 +271,7 @@ function createRecallPhase(jsPsych: JsPsych, config: ResolvedConfig, words: stri
   // Recall trial using custom plugin
   timeline.push({
     type: jsPsychFreeRecallResponse,
+    css_classes: [CSS_ROOT],
     prompt: config.text.recall_prompt,
     add_button_label: config.text.add_button,
     done_button_label: config.text.done_button,
@@ -293,6 +295,7 @@ function createRecallPhase(jsPsych: JsPsych, config: ResolvedConfig, words: stri
 function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
   return {
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: () => {
       const data = jsPsych.data.get();
       const scores = calculateScores(data, config.words);
@@ -389,23 +392,16 @@ function calculateScores(data: DataCollection, wordList?: string[]): ScoringResu
   const repetitions = processed.filter((r) => r.is_repetition).length;
 
   // Get recalled words and intrusion words
-  const recalledWords = processed
-    .filter((r) => r.is_correct)
-    .map((r) => normalizeWord(r.word));
-  const intrusionWords = processed
-    .filter((r) => r.is_intrusion)
-    .map((r) => r.word);
+  const recalledWords = processed.filter((r) => r.is_correct).map((r) => normalizeWord(r.word));
+  const intrusionWords = processed.filter((r) => r.is_intrusion).map((r) => r.word);
 
   // Calculate serial positions of recalled words
   const normalizedWordList = wordList.map(normalizeWord);
-  const serialPositions = recalledWords.map(
-    (word) => normalizedWordList.indexOf(word) + 1
-  );
+  const serialPositions = recalledWords.map((word) => normalizedWordList.indexOf(word) + 1);
 
   // Calculate average RT (time between adding each word)
   const rts = processed.map((r) => r.rt);
-  const averageRecallRT =
-    rts.length > 0 ? rts.reduce((a, b) => a + b, 0) / rts.length : null;
+  const averageRecallRT = rts.length > 0 ? rts.reduce((a, b) => a + b, 0) / rts.length : null;
 
   // Calculate recall rate
   const recallRate = totalWords > 0 ? correctRecalls / totalWords : 0;
@@ -458,10 +454,7 @@ function getSummary(
  * jsPsych.run([freeRecallTimeline]);
  * ```
  */
-export function createTimeline(
-  jsPsych: JsPsych,
-  options: FreeRecallOptions = {}
-) {
+export function createTimeline(jsPsych: JsPsych, options: FreeRecallOptions = {}) {
   // Merge text with defaults
   const text: TextConfig = { ...defaultText, ...options.text };
 

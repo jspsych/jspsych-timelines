@@ -1,8 +1,10 @@
 import "./styles.css";
-import { JsPsych, DataCollection } from "jspsych";
-import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
+
 import jsPsychTowerOfLondon from "@jspsych-contrib/plugin-tower-of-london";
-import { defaultText, TextConfig } from "./text";
+import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
+import { DataCollection, JsPsych } from "jspsych";
+
+import { TextConfig, defaultText } from "./text";
 
 // -- TYPES --
 
@@ -112,6 +114,8 @@ interface ResolvedConfig {
 
 const TASK_NAME = "tower-of-london";
 const VERSION = "0.0.1";
+
+const CSS_ROOT = "jspsych-tower-of-london";
 
 // Standard TOL puzzles with increasing difficulty
 // Krikorian, Bartok & Gay (1994) standard Tower of London problems.
@@ -230,12 +234,16 @@ function mean(arr: number[]): number | null {
 /**
  * Creates instruction trials for the Tower of London task.
  */
-function createInstructionTrials(config: ResolvedConfig, part: "intro" | "task" | "practice" | "test") {
+function createInstructionTrials(
+  config: ResolvedConfig,
+  part: "intro" | "task" | "practice" | "test"
+) {
   const timeline: any[] = [];
 
   if (part === "intro") {
     timeline.push({
       type: jsPsychHtmlButtonResponse,
+      css_classes: [CSS_ROOT],
       stimulus: config.text.instruction_intro,
       choices: [config.text.continue_button],
       data: {
@@ -246,6 +254,7 @@ function createInstructionTrials(config: ResolvedConfig, part: "intro" | "task" 
   } else if (part === "task") {
     timeline.push({
       type: jsPsychHtmlButtonResponse,
+      css_classes: [CSS_ROOT],
       stimulus: config.text.instruction_task,
       choices: [config.text.continue_button],
       data: {
@@ -256,6 +265,7 @@ function createInstructionTrials(config: ResolvedConfig, part: "intro" | "task" 
   } else if (part === "practice") {
     timeline.push({
       type: jsPsychHtmlButtonResponse,
+      css_classes: [CSS_ROOT],
       stimulus: config.text.instruction_practice,
       choices: [config.text.start_button],
       data: {
@@ -267,6 +277,7 @@ function createInstructionTrials(config: ResolvedConfig, part: "intro" | "task" 
   } else if (part === "test") {
     timeline.push({
       type: jsPsychHtmlButtonResponse,
+      css_classes: [CSS_ROOT],
       stimulus: config.text.instruction_test,
       choices: [config.text.start_button],
       data: {
@@ -291,6 +302,7 @@ function createPuzzleTrial(
 ) {
   return {
     type: jsPsychTowerOfLondon,
+    css_classes: [CSS_ROOT],
     start_state: puzzle.start_state,
     goal_state: puzzle.goal_state,
     optimal_moves: puzzle.optimal_moves,
@@ -318,6 +330,7 @@ function createPuzzleTrial(
 function createPracticeFeedback(jsPsych: JsPsych, config: ResolvedConfig) {
   return {
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: () => {
       const data = jsPsych.data.getLastTrialData().values()[0];
       if (data.solved) {
@@ -344,6 +357,7 @@ function createPracticeFeedback(jsPsych: JsPsych, config: ResolvedConfig) {
 function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
   return {
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: () => {
       const data = jsPsych.data.get();
       const scores = calculateScores(data);
@@ -373,9 +387,7 @@ function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
  * Calculates scoring metrics from the Tower of London task data.
  */
 function calculateScores(data: DataCollection): ScoringResult {
-  const testTrials = data
-    .filter({ task: TASK_NAME, phase: "test" })
-    .values() as TrialData[];
+  const testTrials = data.filter({ task: TASK_NAME, phase: "test" }).values() as TrialData[];
 
   const solved = testTrials.filter((t) => t.solved);
   const puzzlesSolved = solved.length;

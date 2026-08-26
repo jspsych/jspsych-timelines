@@ -1,8 +1,10 @@
 import "./styles.css";
-import { JsPsych, DataCollection } from "jspsych";
+
 import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
 import jsPsychHtmlKeyboardResponse from "@jspsych/plugin-html-keyboard-response";
-import { defaultText, TextConfig } from "./text";
+import { DataCollection, JsPsych } from "jspsych";
+
+import { TextConfig, defaultText } from "./text";
 
 // -- TYPES --
 
@@ -84,6 +86,8 @@ interface ResolvedConfig {
 const TASK_NAME = "flanker";
 const VERSION = "0.0.1";
 
+const CSS_ROOT = "jspsych-flanker";
+
 const LEFT_ARROW_SVG = `<svg xmlns="http://www.w3.org/2000/svg" height="48" width="48" viewBox="0 0 48 48"><path fill="black" d="M24 40 8 24 24 8l2.1 2.1-12.4 12.4H40v3H13.7l12.4 12.4Z"/></svg>`;
 const RIGHT_ARROW_SVG = `<svg xmlns="http://www.w3.org/2000/svg" height="48" width="48" viewBox="0 0 48 48"><path fill="black" d="m24 40-2.1-2.15L34.25 25.5H8v-3h26.25L21.9 10.15 24 8l16 16Z"/></svg>`;
 const NEUTRAL_STIMULUS = `<svg xmlns="http://www.w3.org/2000/svg" height="48" width="48" viewBox="0 0 48 48"><rect fill="black" x="8" y="22.5" width="32" height="3"/></svg>`;
@@ -132,8 +136,8 @@ function generateStimulusHtml(
   }
 
   return `
-    <div class="trial-content">
-      <div class="stimulus-container">
+    <div class="jspsych-flanker-trial-content">
+      <div class="jspsych-flanker-stimulus-container">
         <span>${flankerHtml}</span>
         <span>${flankerHtml}</span>
         <span>${targetHtml}</span>
@@ -149,8 +153,14 @@ function generateStimulusHtml(
  */
 function generateTrialVariables(
   includeNeutral: boolean
-): Array<{ target_direction: "left" | "right"; congruence: "congruent" | "incongruent" | "neutral" }> {
-  const conditions: Array<{ target_direction: "left" | "right"; congruence: "congruent" | "incongruent" | "neutral" }> = [
+): Array<{
+  target_direction: "left" | "right";
+  congruence: "congruent" | "incongruent" | "neutral";
+}> {
+  const conditions: Array<{
+    target_direction: "left" | "right";
+    congruence: "congruent" | "incongruent" | "neutral";
+  }> = [
     { target_direction: "left", congruence: "congruent" },
     { target_direction: "left", congruence: "incongruent" },
     { target_direction: "right", congruence: "congruent" },
@@ -199,8 +209,9 @@ function createInteractiveInstructionTrial(
 
   const instructionTrial = {
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: `
-      <div class="instructions">
+      <div class="jspsych-flanker-instructions">
         ${prompt}
         <div style="margin: 20px 0;">${stimulus}</div>
       </div>
@@ -225,11 +236,12 @@ function createInteractiveInstructionTrial(
 
   const successFeedback = {
     type: jsPsychHtmlKeyboardResponse,
+    css_classes: [CSS_ROOT],
     stimulus: `
-      <div class="instructions">
+      <div class="jspsych-flanker-instructions">
         ${prompt}
         <div style="margin: 20px 0;">${stimulus}</div>
-        <p class="feedback correct">${config.text.instruction_success}</p>
+        <p class="jspsych-flanker-feedback jspsych-flanker-feedback-correct">${config.text.instruction_success}</p>
       </div>
     `,
     choices: "NO_KEYS",
@@ -242,11 +254,12 @@ function createInteractiveInstructionTrial(
 
   const failureFeedback = {
     type: jsPsychHtmlKeyboardResponse,
+    css_classes: [CSS_ROOT],
     stimulus: `
-      <div class="instructions">
+      <div class="jspsych-flanker-instructions">
         ${prompt}
         <div style="margin: 20px 0;">${stimulus}</div>
-        <p class="feedback incorrect">${config.text.instruction_failure}</p>
+        <p class="jspsych-flanker-feedback jspsych-flanker-feedback-incorrect">${config.text.instruction_failure}</p>
       </div>
     `,
     choices: "NO_KEYS",
@@ -271,6 +284,7 @@ function createInstructionTrials(config: ResolvedConfig) {
   // Page 1: Introduction (static)
   timeline.push({
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: config.text.instruction_intro,
     choices: [config.text.continue_button],
     data: {
@@ -282,6 +296,7 @@ function createInstructionTrials(config: ResolvedConfig) {
   // Page 2: How to respond (static)
   timeline.push({
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: config.text.instruction_response(
       config.text.left_button,
       config.text.right_button,
@@ -328,6 +343,7 @@ function createInstructionTrials(config: ResolvedConfig) {
   // Page 6: Practice intro (static)
   timeline.push({
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: config.text.instruction_practice_intro,
     choices: [config.text.continue_button],
     data: {
@@ -346,7 +362,8 @@ function createInstructionTrials(config: ResolvedConfig) {
 function createFixationTrial(config: ResolvedConfig) {
   return {
     type: jsPsychHtmlButtonResponse,
-    stimulus: `<div class="trial-content"><div class="fixation">${config.text.fixation}</div></div>`,
+    css_classes: [CSS_ROOT],
+    stimulus: `<div class="jspsych-flanker-trial-content"><div class="jspsych-flanker-fixation">${config.text.fixation}</div></div>`,
     choices: [config.text.left_button, config.text.right_button],
     button_html: createDisabledButtonHtml,
     response_ends_trial: false,
@@ -371,9 +388,15 @@ function createStimulusTrial(
 
   return {
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: () => {
-      const targetDirection = jsPsych.evaluateTimelineVariable("target_direction") as "left" | "right";
-      const congruence = jsPsych.evaluateTimelineVariable("congruence") as "congruent" | "incongruent" | "neutral";
+      const targetDirection = jsPsych.evaluateTimelineVariable("target_direction") as
+        | "left"
+        | "right";
+      const congruence = jsPsych.evaluateTimelineVariable("congruence") as
+        | "congruent"
+        | "incongruent"
+        | "neutral";
       return generateStimulusHtml(targetDirection, congruence);
     },
     choices: [config.text.left_button, config.text.right_button],
@@ -388,7 +411,9 @@ function createStimulusTrial(
       target_direction: () => jsPsych.evaluateTimelineVariable("target_direction"),
       congruence: () => jsPsych.evaluateTimelineVariable("congruence"),
       correct_response: () => {
-        const targetDirection = jsPsych.evaluateTimelineVariable("target_direction") as "left" | "right";
+        const targetDirection = jsPsych.evaluateTimelineVariable("target_direction") as
+          | "left"
+          | "right";
         return targetDirection === "left" ? LEFT_BUTTON_INDEX : RIGHT_BUTTON_INDEX;
       },
       part: "stimulus",
@@ -406,6 +431,7 @@ function createStimulusTrial(
 function createFeedbackTrial(jsPsych: JsPsych, config: ResolvedConfig) {
   return {
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: () => {
       const lastTrial = jsPsych.data.get().last(1).values()[0];
       let feedbackText: string;
@@ -413,16 +439,16 @@ function createFeedbackTrial(jsPsych: JsPsych, config: ResolvedConfig) {
 
       if (lastTrial.response === null) {
         feedbackText = config.text.timeout_feedback;
-        feedbackClass = "feedback timeout";
+        feedbackClass = "jspsych-flanker-feedback jspsych-flanker-feedback-timeout";
       } else if (lastTrial.correct) {
         feedbackText = config.text.correct_feedback;
-        feedbackClass = "feedback correct";
+        feedbackClass = "jspsych-flanker-feedback jspsych-flanker-feedback-correct";
       } else {
         feedbackText = config.text.incorrect_feedback;
-        feedbackClass = "feedback incorrect";
+        feedbackClass = "jspsych-flanker-feedback jspsych-flanker-feedback-incorrect";
       }
 
-      return `<div class="trial-content"><div class="${feedbackClass}">${feedbackText}</div></div>`;
+      return `<div class="jspsych-flanker-trial-content"><div class="${feedbackClass}">${feedbackText}</div></div>`;
     },
     choices: [config.text.left_button, config.text.right_button],
     button_html: createDisabledButtonHtml,
@@ -442,7 +468,8 @@ function createFeedbackTrial(jsPsych: JsPsych, config: ResolvedConfig) {
 function createItiTrial(config: ResolvedConfig) {
   return {
     type: jsPsychHtmlButtonResponse,
-    stimulus: `<div class="trial-content"></div>`,
+    css_classes: [CSS_ROOT],
+    stimulus: `<div class="jspsych-flanker-trial-content"></div>`,
     choices: [config.text.left_button, config.text.right_button],
     button_html: createDisabledButtonHtml,
     response_ends_trial: false,
@@ -460,6 +487,7 @@ function createItiTrial(config: ResolvedConfig) {
 function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
   return {
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: () => {
       const data = jsPsych.data.get();
       const scores = calculateScores(data);
@@ -485,7 +513,8 @@ function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
 function createTransitionTrial(message: string, buttonLabel: string) {
   return {
     type: jsPsychHtmlButtonResponse,
-    stimulus: `<div class="transition"><p>${message}</p></div>`,
+    css_classes: [CSS_ROOT],
+    stimulus: `<div class="jspsych-flanker-transition"><p>${message}</p></div>`,
     choices: [buttonLabel],
     data: {
       task: TASK_NAME,
@@ -590,15 +619,18 @@ function calculateScores(data: DataCollection): ScoringResult {
   const incongruentTrials = testTrials.filter((t) => t.congruence === "incongruent");
   const neutralTrials = testTrials.filter((t) => t.congruence === "neutral");
 
-  const congruentAccuracy = congruentTrials.length > 0
-    ? congruentTrials.filter((t) => t.correct).length / congruentTrials.length
-    : 0;
-  const incongruentAccuracy = incongruentTrials.length > 0
-    ? incongruentTrials.filter((t) => t.correct).length / incongruentTrials.length
-    : 0;
-  const neutralAccuracy = neutralTrials.length > 0
-    ? neutralTrials.filter((t) => t.correct).length / neutralTrials.length
-    : null;
+  const congruentAccuracy =
+    congruentTrials.length > 0
+      ? congruentTrials.filter((t) => t.correct).length / congruentTrials.length
+      : 0;
+  const incongruentAccuracy =
+    incongruentTrials.length > 0
+      ? incongruentTrials.filter((t) => t.correct).length / incongruentTrials.length
+      : 0;
+  const neutralAccuracy =
+    neutralTrials.length > 0
+      ? neutralTrials.filter((t) => t.correct).length / neutralTrials.length
+      : null;
 
   const congruentRT = mean(
     congruentTrials.filter((t) => t.correct && t.rt !== null).map((t) => t.rt as number)
@@ -606,9 +638,10 @@ function calculateScores(data: DataCollection): ScoringResult {
   const incongruentRT = mean(
     incongruentTrials.filter((t) => t.correct && t.rt !== null).map((t) => t.rt as number)
   );
-  const neutralRT = neutralTrials.length > 0
-    ? mean(neutralTrials.filter((t) => t.correct && t.rt !== null).map((t) => t.rt as number))
-    : null;
+  const neutralRT =
+    neutralTrials.length > 0
+      ? mean(neutralTrials.filter((t) => t.correct && t.rt !== null).map((t) => t.rt as number))
+      : null;
 
   // Flanker effect
   const flankerEffectRT =
@@ -695,10 +728,7 @@ export function createTimeline(jsPsych: JsPsych, options: FlankerOptions = {}) {
   if (config.numPracticeTrials > 0) {
     timeline.push(createPracticeBlock(jsPsych, config));
     timeline.push(
-      createTransitionTrial(
-        config.text.practice_complete,
-        config.text.continue_button
-      )
+      createTransitionTrial(config.text.practice_complete, config.text.continue_button)
     );
   }
 
@@ -706,10 +736,7 @@ export function createTimeline(jsPsych: JsPsych, options: FlankerOptions = {}) {
   for (let block = 1; block <= config.numBlocks; block++) {
     if (block > 1) {
       timeline.push(
-        createTransitionTrial(
-          config.text.block_complete(block - 1),
-          config.text.continue_button
-        )
+        createTransitionTrial(config.text.block_complete(block - 1), config.text.continue_button)
       );
     }
     timeline.push(createTestBlock(jsPsych, config, block));

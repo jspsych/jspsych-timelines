@@ -1,8 +1,10 @@
 import "./styles.css";
-import { JsPsych, DataCollection } from "jspsych";
-import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
+
 import jsPsychDeviceOrientation from "@jspsych-contrib/plugin-device-orientation";
-import { defaultText, TextConfig } from "./text";
+import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
+import { DataCollection, JsPsych } from "jspsych";
+
+import { TextConfig, defaultText } from "./text";
 
 // -- TYPES --
 
@@ -94,6 +96,8 @@ interface ResolvedConfig {
 const TASK_NAME = "plus-minus";
 const VERSION = "0.0.1";
 
+const CSS_ROOT = "jspsych-plus-minus";
+
 const DEFAULT_OPTIONS = {
   showInstructions: true,
   requirePortrait: true,
@@ -137,18 +141,18 @@ function createNumberPadHTML(stimulus: number): string {
       <div class="pm-stimulus">${stimulus}</div>
       <div id="response-display" class="pm-response-display">&nbsp;</div>
       <div class="pm-numpad">
-        <button type="button" class="numpad-btn" data-value="1">1</button>
-        <button type="button" class="numpad-btn" data-value="2">2</button>
-        <button type="button" class="numpad-btn" data-value="3">3</button>
-        <button type="button" class="numpad-btn" data-value="4">4</button>
-        <button type="button" class="numpad-btn" data-value="5">5</button>
-        <button type="button" class="numpad-btn" data-value="6">6</button>
-        <button type="button" class="numpad-btn" data-value="7">7</button>
-        <button type="button" class="numpad-btn" data-value="8">8</button>
-        <button type="button" class="numpad-btn" data-value="9">9</button>
-        <button type="button" class="numpad-btn numpad-btn-clear" data-value="clear">Clear</button>
-        <button type="button" class="numpad-btn" data-value="0">0</button>
-        <button type="button" class="numpad-btn numpad-btn-submit" data-value="submit">OK</button>
+        <button type="button" class="pm-numpad-btn" data-value="1">1</button>
+        <button type="button" class="pm-numpad-btn" data-value="2">2</button>
+        <button type="button" class="pm-numpad-btn" data-value="3">3</button>
+        <button type="button" class="pm-numpad-btn" data-value="4">4</button>
+        <button type="button" class="pm-numpad-btn" data-value="5">5</button>
+        <button type="button" class="pm-numpad-btn" data-value="6">6</button>
+        <button type="button" class="pm-numpad-btn" data-value="7">7</button>
+        <button type="button" class="pm-numpad-btn" data-value="8">8</button>
+        <button type="button" class="pm-numpad-btn" data-value="9">9</button>
+        <button type="button" class="pm-numpad-btn pm-numpad-btn-clear" data-value="clear">Clear</button>
+        <button type="button" class="pm-numpad-btn" data-value="0">0</button>
+        <button type="button" class="pm-numpad-btn pm-numpad-btn-submit" data-value="submit">OK</button>
       </div>
     </div>
   `;
@@ -196,6 +200,7 @@ function createInstructionTrials(
 
   timeline.push({
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: stimulus,
     choices: [buttonLabel],
     data: {
@@ -220,15 +225,14 @@ function createArithmeticTrial(
   trialIndex: number,
   showFeedback: boolean
 ) {
-  const correctAnswer = operation === "add"
-    ? stimulus + config.operand
-    : stimulus - config.operand;
+  const correctAnswer = operation === "add" ? stimulus + config.operand : stimulus - config.operand;
 
   const timeline: any[] = [];
 
   // Main trial with number pad
   timeline.push({
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: createNumberPadHTML(stimulus),
     choices: [], // No standard buttons - we use custom handling
     data: {
@@ -245,7 +249,7 @@ function createArithmeticTrial(
     on_load: () => {
       let currentResponse = "";
       const display = document.getElementById("response-display");
-      const buttons = document.querySelectorAll(".numpad-btn");
+      const buttons = document.querySelectorAll(".pm-numpad-btn");
       const startTime = performance.now();
 
       buttons.forEach((btn) => {
@@ -285,11 +289,10 @@ function createArithmeticTrial(
   if (showFeedback) {
     timeline.push({
       type: jsPsychHtmlButtonResponse,
+      css_classes: [CSS_ROOT],
       stimulus: () => {
         const lastData = jsPsych.data.getLastTrialData().values()[0];
-        return lastData.correct
-          ? config.text.feedback_correct
-          : config.text.feedback_incorrect;
+        return lastData.correct ? config.text.feedback_correct : config.text.feedback_incorrect;
       },
       choices: [],
       trial_duration: config.feedbackDuration,
@@ -331,16 +334,7 @@ function createBlock(
     }
 
     timeline.push(
-      createArithmeticTrial(
-        jsPsych,
-        config,
-        num,
-        operation,
-        blockType,
-        phase,
-        i + 1,
-        showFeedback
-      )
+      createArithmeticTrial(jsPsych, config, num, operation, blockType, phase, i + 1, showFeedback)
     );
   });
 
@@ -350,7 +344,11 @@ function createBlock(
 /**
  * Creates a block summary screen.
  */
-function createBlockSummary(jsPsych: JsPsych, config: ResolvedConfig, blockType: "add" | "subtract" | "alternate") {
+function createBlockSummary(
+  jsPsych: JsPsych,
+  config: ResolvedConfig,
+  blockType: "add" | "subtract" | "alternate"
+) {
   const blockNames = {
     add: "Addition Block",
     subtract: "Subtraction Block",
@@ -359,6 +357,7 @@ function createBlockSummary(jsPsych: JsPsych, config: ResolvedConfig, blockType:
 
   return {
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: () => {
       const blockTrials = jsPsych.data
         .get()
@@ -384,6 +383,7 @@ function createBlockSummary(jsPsych: JsPsych, config: ResolvedConfig, blockType:
 function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
   return {
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: () => {
       const data = jsPsych.data.get();
       const scores = calculateScores(data);
@@ -443,9 +443,8 @@ function calculateScores(data: DataCollection): ScoringResult {
   const allTrials = data
     .filter({ task: TASK_NAME, phase: "test", part: "response" })
     .values() as TrialData[];
-  const overallAccuracy = allTrials.length > 0
-    ? (allTrials.filter((t) => t.correct).length / allTrials.length) * 100
-    : 0;
+  const overallAccuracy =
+    allTrials.length > 0 ? (allTrials.filter((t) => t.correct).length / allTrials.length) * 100 : 0;
 
   return {
     addBlockTime: addData.total_time,
@@ -463,9 +462,7 @@ function calculateScores(data: DataCollection): ScoringResult {
 /**
  * Returns a summary of the Plus-Minus task performance.
  */
-function getSummary(
-  data: DataCollection
-): ScoringResult & { taskName: string; version: string } {
+function getSummary(data: DataCollection): ScoringResult & { taskName: string; version: string } {
   const scores = calculateScores(data);
   return {
     ...scores,
@@ -493,10 +490,7 @@ function getSummary(
  * jsPsych.run([pmTimeline]);
  * ```
  */
-export function createTimeline(
-  jsPsych: JsPsych,
-  options: PlusMinusOptions = {}
-) {
+export function createTimeline(jsPsych: JsPsych, options: PlusMinusOptions = {}) {
   // Merge text with defaults
   const text: TextConfig = { ...defaultText, ...options.text };
 
@@ -512,6 +506,7 @@ export function createTimeline(
   if (config.requirePortrait) {
     timeline.push({
       type: jsPsychDeviceOrientation,
+      css_classes: [CSS_ROOT],
       orientation: "portrait",
       message: config.text.orientation_message,
     });

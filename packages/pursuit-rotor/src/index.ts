@@ -1,8 +1,10 @@
 import "./styles.css";
-import { JsPsych, DataCollection } from "jspsych";
-import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
+
 import jsPsychPursuitRotor from "@jspsych-contrib/plugin-pursuit-rotor";
-import { defaultText, TextConfig } from "./text";
+import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
+import { DataCollection, JsPsych } from "jspsych";
+
+import { TextConfig, defaultText } from "./text";
 
 // -- TYPES --
 
@@ -94,6 +96,8 @@ interface ResolvedConfig {
 const TASK_NAME = "pursuit-rotor";
 const VERSION = "0.0.1";
 
+const CSS_ROOT = "jspsych-pursuit-rotor";
+
 const DEFAULT_OPTIONS = {
   showInstructions: true,
   showPractice: true,
@@ -136,12 +140,16 @@ function linearRegression(y: number[]): { slope: number; intercept: number } | n
 /**
  * Creates instruction trials for the Pursuit Rotor task.
  */
-function createInstructionTrials(config: ResolvedConfig, part: "intro" | "task" | "practice" | "test") {
+function createInstructionTrials(
+  config: ResolvedConfig,
+  part: "intro" | "task" | "practice" | "test"
+) {
   const timeline: any[] = [];
 
   if (part === "intro") {
     timeline.push({
       type: jsPsychHtmlButtonResponse,
+      css_classes: [CSS_ROOT],
       stimulus: config.text.instruction_intro,
       choices: [config.text.continue_button],
       data: {
@@ -153,6 +161,7 @@ function createInstructionTrials(config: ResolvedConfig, part: "intro" | "task" 
   } else if (part === "task") {
     timeline.push({
       type: jsPsychHtmlButtonResponse,
+      css_classes: [CSS_ROOT],
       stimulus: config.text.instruction_task,
       choices: [config.text.continue_button],
       data: {
@@ -164,6 +173,7 @@ function createInstructionTrials(config: ResolvedConfig, part: "intro" | "task" 
   } else if (part === "practice") {
     timeline.push({
       type: jsPsychHtmlButtonResponse,
+      css_classes: [CSS_ROOT],
       stimulus: config.text.instruction_practice,
       choices: [config.text.start_button],
       data: {
@@ -175,6 +185,7 @@ function createInstructionTrials(config: ResolvedConfig, part: "intro" | "task" 
   } else if (part === "test") {
     timeline.push({
       type: jsPsychHtmlButtonResponse,
+      css_classes: [CSS_ROOT],
       stimulus: config.text.instruction_test,
       choices: [config.text.start_button],
       data: {
@@ -201,6 +212,7 @@ function createRotorTrial(
 
   return {
     type: jsPsychPursuitRotor,
+    css_classes: [CSS_ROOT],
     trial_duration: duration,
     path_radius: config.pathRadius,
     target_radius: config.targetRadius,
@@ -225,6 +237,7 @@ function createRotorTrial(
 function createPracticeFeedback(jsPsych: JsPsych, config: ResolvedConfig) {
   return {
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: () => {
       const data = jsPsych.data.getLastTrialData().values()[0];
       return config.text.practice_feedback(data.percent_on_target);
@@ -244,6 +257,7 @@ function createPracticeFeedback(jsPsych: JsPsych, config: ResolvedConfig) {
 function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
   return {
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: () => {
       const data = jsPsych.data.get();
       const scores = calculateScores(data);
@@ -269,16 +283,12 @@ function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
  * Calculates scoring metrics from the Pursuit Rotor task data.
  */
 function calculateScores(data: DataCollection): ScoringResult {
-  const testTrials = data
-    .filter({ task: TASK_NAME, phase: "test" })
-    .values() as TrialData[];
+  const testTrials = data.filter({ task: TASK_NAME, phase: "test" }).values() as TrialData[];
 
   const trialPerformance = testTrials.map((t) => t.percent_on_target);
   const timeOnTargets = testTrials.map((t) => t.time_on_target);
   const trialDurations = testTrials.map((t) => t.trial_duration);
-  const deviations = testTrials
-    .map((t) => t.mean_deviation)
-    .filter((d): d is number => d !== null);
+  const deviations = testTrials.map((t) => t.mean_deviation).filter((d): d is number => d !== null);
 
   const averagePercentOnTarget = mean(trialPerformance) ?? 0;
   const averageMeanDeviation = mean(deviations);
@@ -288,8 +298,7 @@ function calculateScores(data: DataCollection): ScoringResult {
   // Calculate improvement (last - first)
   let improvement: number | null = null;
   if (trialPerformance.length >= 2) {
-    improvement =
-      trialPerformance[trialPerformance.length - 1] - trialPerformance[0];
+    improvement = trialPerformance[trialPerformance.length - 1] - trialPerformance[0];
   }
 
   // Calculate learning slope

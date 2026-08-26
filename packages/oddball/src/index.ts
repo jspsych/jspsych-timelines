@@ -1,7 +1,9 @@
 import "./styles.css";
-import { JsPsych, DataCollection } from "jspsych";
+
 import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
-import { defaultText, TextConfig } from "./text";
+import { DataCollection, JsPsych } from "jspsych";
+
+import { TextConfig, defaultText } from "./text";
 
 // -- TYPES --
 
@@ -93,6 +95,8 @@ interface ResolvedConfig {
 const TASK_NAME = "oddball";
 const VERSION = "0.0.1";
 
+const CSS_ROOT = "jspsych-oddball";
+
 const DEFAULT_OPTIONS = {
   showInstructions: true,
   numTrials: 100,
@@ -153,7 +157,7 @@ function createDisabledButtonHtml(choice: string): string {
  */
 function createStimulusHTML(color: string, size: number): string {
   return `
-    <div class="trial-content">
+    <div class="jspsych-oddball-trial-content">
       <div style="
         width: ${size}px;
         height: ${size}px;
@@ -211,9 +215,9 @@ function inverseNormalCDF(p: number): number {
   const a1 = -3.969683028665376e1;
   const a2 = 2.209460984245205e2;
   const a3 = -2.759285104469687e2;
-  const a4 = 1.383577518672690e2;
+  const a4 = 1.38357751867269e2;
   const a5 = -3.066479806614716e1;
-  const a6 = 2.506628277459239e0;
+  const a6 = 2.506628277459239;
 
   const b1 = -5.447609879822406e1;
   const b2 = 1.615858368580409e2;
@@ -223,15 +227,15 @@ function inverseNormalCDF(p: number): number {
 
   const c1 = -7.784894002430293e-3;
   const c2 = -3.223964580411365e-1;
-  const c3 = -2.400758277161838e0;
-  const c4 = -2.549732539343734e0;
-  const c5 = 4.374664141464968e0;
-  const c6 = 2.938163982698783e0;
+  const c3 = -2.400758277161838;
+  const c4 = -2.549732539343734;
+  const c5 = 4.374664141464968;
+  const c6 = 2.938163982698783;
 
   const d1 = 7.784695709041462e-3;
   const d2 = 3.224671290700398e-1;
-  const d3 = 2.445134137142996e0;
-  const d4 = 3.754408661907416e0;
+  const d3 = 2.445134137142996;
+  const d4 = 3.754408661907416;
 
   const pLow = 0.02425;
   const pHigh = 1 - pLow;
@@ -265,10 +269,7 @@ function inverseNormalCDF(p: number): number {
 /**
  * Creates instruction trials.
  */
-function createInstructionTrials(
-  config: ResolvedConfig,
-  part: "intro" | "practice" | "main"
-) {
+function createInstructionTrials(config: ResolvedConfig, part: "intro" | "practice" | "main") {
   let stimulus: string;
   let buttonLabel: string;
 
@@ -307,6 +308,7 @@ function createInstructionTrials(
 
   return {
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: stimulus,
     choices: [buttonLabel],
     data,
@@ -328,7 +330,8 @@ function createOddballTrial(
   // Fixation cross / ISI
   timeline.push({
     type: jsPsychHtmlButtonResponse,
-    stimulus: `<div class="trial-content"><p style="font-size: 48px;">+</p></div>`,
+    css_classes: [CSS_ROOT],
+    stimulus: `<div class="jspsych-oddball-trial-content"><p style="font-size: 48px;">+</p></div>`,
     choices: [config.text.respond_button],
     button_html: createDisabledButtonHtml,
     response_ends_trial: false,
@@ -347,6 +350,7 @@ function createOddballTrial(
 
   timeline.push({
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: stimulusHTML,
     choices: [config.text.respond_button],
     trial_duration: config.stimulusDuration + config.responseTimeout,
@@ -374,19 +378,20 @@ function createOddballTrial(
   if (isPractice) {
     timeline.push({
       type: jsPsychHtmlButtonResponse,
+      css_classes: [CSS_ROOT],
       stimulus: () => {
         const lastData = jsPsych.data.getLastTrialData().values()[0];
         const responded = lastData.responded;
         const isTargetTrial = lastData.stimulus_type === "target";
 
         if (isTargetTrial && responded) {
-          return `<div class="trial-content"><p class="feedback correct">${config.text.feedback_hit}</p></div>`;
+          return `<div class="jspsych-oddball-trial-content"><p class="jspsych-oddball-feedback jspsych-oddball-feedback-correct">${config.text.feedback_hit}</p></div>`;
         } else if (isTargetTrial && !responded) {
-          return `<div class="trial-content"><p class="feedback incorrect">${config.text.feedback_miss}</p></div>`;
+          return `<div class="jspsych-oddball-trial-content"><p class="jspsych-oddball-feedback jspsych-oddball-feedback-incorrect">${config.text.feedback_miss}</p></div>`;
         } else if (!isTargetTrial && responded) {
-          return `<div class="trial-content"><p class="feedback incorrect">${config.text.feedback_false_alarm}</p></div>`;
+          return `<div class="jspsych-oddball-trial-content"><p class="jspsych-oddball-feedback jspsych-oddball-feedback-incorrect">${config.text.feedback_false_alarm}</p></div>`;
         } else {
-          return `<div class="trial-content"><p class="feedback correct">${config.text.feedback_correct_rejection}</p></div>`;
+          return `<div class="jspsych-oddball-trial-content"><p class="jspsych-oddball-feedback jspsych-oddball-feedback-correct">${config.text.feedback_correct_rejection}</p></div>`;
         }
       },
       choices: [config.text.respond_button],
@@ -417,9 +422,7 @@ function createOddballBlock(
   const timeline: any[] = [];
 
   sequence.forEach((stimulusType, index) => {
-    timeline.push(
-      createOddballTrial(jsPsych, config, stimulusType, index + 1, isPractice)
-    );
+    timeline.push(createOddballTrial(jsPsych, config, stimulusType, index + 1, isPractice));
   });
 
   return { timeline };
@@ -431,6 +434,7 @@ function createOddballBlock(
 function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
   return {
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: () => {
       const data = jsPsych.data.get();
       const scores = calculateScores(data);
@@ -502,9 +506,8 @@ function calculateScores(data: DataCollection): ScoringResult {
   const hitRTs = targetTrials
     .filter((t) => t.responded && t.rt !== null)
     .map((t) => t.rt as number);
-  const averageRTHits = hitRTs.length > 0
-    ? hitRTs.reduce((a, b) => a + b, 0) / hitRTs.length
-    : null;
+  const averageRTHits =
+    hitRTs.length > 0 ? hitRTs.reduce((a, b) => a + b, 0) / hitRTs.length : null;
 
   // Total accuracy
   const totalCorrect = hits + correctRejections;
@@ -528,9 +531,7 @@ function calculateScores(data: DataCollection): ScoringResult {
 /**
  * Returns a summary of the Oddball task performance.
  */
-function getSummary(
-  data: DataCollection
-): ScoringResult & { taskName: string; version: string } {
+function getSummary(data: DataCollection): ScoringResult & { taskName: string; version: string } {
   const scores = calculateScores(data);
   return {
     ...scores,
@@ -559,10 +560,7 @@ function getSummary(
  * jsPsych.run([oddballTimeline]);
  * ```
  */
-export function createTimeline(
-  jsPsych: JsPsych,
-  options: OddballOptions = {}
-) {
+export function createTimeline(jsPsych: JsPsych, options: OddballOptions = {}) {
   // Merge text with defaults
   const text: TextConfig = { ...defaultText, ...options.text };
 
@@ -584,9 +582,7 @@ export function createTimeline(
     if (config.showInstructions) {
       timeline.push(createInstructionTrials(config, "practice"));
     }
-    timeline.push(
-      createOddballBlock(jsPsych, config, config.numPracticeTrials, true)
-    );
+    timeline.push(createOddballBlock(jsPsych, config, config.numPracticeTrials, true));
   }
 
   // Main task

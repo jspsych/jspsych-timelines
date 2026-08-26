@@ -1,20 +1,20 @@
 /* Operation Span Task Styles */
 
 /* Instructions container */
-.instructions {
+.jspsych-operation-span .ospan-instructions {
   max-width: 600px;
   margin: 0 auto;
   padding: 0 20px;
   text-align: left;
 }
 
-.instructions h2,
-.instructions h3 {
+.jspsych-operation-span .ospan-instructions h2,
+.jspsych-operation-span .ospan-instructions h3 {
   text-align: center;
 }
 
 /* Container */
-.ospan-container {
+.jspsych-operation-span .ospan-container {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -23,7 +23,7 @@
 }
 
 /* Math problem display */
-.ospan-math {
+.jspsych-operation-span .ospan-math {
   font-size: 32px;
   font-weight: bold;
   padding: 30px;
@@ -33,14 +33,14 @@
   text-align: center;
 }
 
-.ospan-math-prompt {
+.jspsych-operation-span .ospan-math-prompt {
   font-size: 18px;
   color: #666;
   margin-top: 15px;
 }
 
 /* Letter display */
-.ospan-letter {
+.jspsych-operation-span .ospan-letter {
   font-size: 72px;
   font-weight: bold;
   padding: 40px 60px;
@@ -50,20 +50,20 @@
 }
 
 /* Recall grid */
-.ospan-recall-container {
+.jspsych-operation-span .ospan-recall-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 20px;
 }
 
-.ospan-recall-grid {
+.jspsych-operation-span .ospan-recall-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 8px;
 }
 
-.ospan-recall-btn {
+.jspsych-operation-span .ospan-recall-btn {
   width: 60px;
   height: 60px;
   font-size: 24px;
@@ -75,25 +75,25 @@
   transition: all 0.1s;
 }
 
-.ospan-recall-btn:hover:not(:disabled) {
+.jspsych-operation-span .ospan-recall-btn:hover:not(:disabled) {
   background: #e3f2fd;
   transform: scale(1.05);
 }
 
-.ospan-recall-btn:disabled {
+.jspsych-operation-span .ospan-recall-btn:disabled {
   background: #ccc;
   color: #666;
   cursor: not-allowed;
 }
 
-.ospan-recall-btn.selected {
+.jspsych-operation-span .ospan-recall-btn.ospan-selected {
   background: #1565c0;
   color: white;
   border-color: #1565c0;
 }
 
 /* Response display */
-.ospan-response-display {
+.jspsych-operation-span .ospan-response-display {
   display: flex;
   gap: 10px;
   min-height: 50px;
@@ -105,7 +105,7 @@
   align-items: center;
 }
 
-.ospan-response-letter {
+.jspsych-operation-span .ospan-response-letter {
   font-size: 28px;
   font-weight: bold;
   padding: 5px 10px;
@@ -114,18 +114,18 @@
   border: 1px solid #ddd;
 }
 
-.ospan-response-letter.blank {
+.jspsych-operation-span .ospan-response-letter.ospan-blank {
   color: #999;
 }
 
 /* Control buttons */
-.ospan-controls {
+.jspsych-operation-span .ospan-controls {
   display: flex;
   gap: 10px;
   margin-top: 10px;
 }
 
-.ospan-control-btn {
+.jspsych-operation-span .ospan-control-btn {
   padding: 10px 20px;
   font-size: 16px;
   border: 2px solid #333;
@@ -134,52 +134,52 @@
   transition: all 0.1s;
 }
 
-.ospan-control-btn.clear {
+.jspsych-operation-span .ospan-control-btn.ospan-clear {
   background: #ffebee;
   border-color: #c62828;
   color: #c62828;
 }
 
-.ospan-control-btn.blank {
+.jspsych-operation-span .ospan-control-btn.ospan-blank {
   background: #fff3e0;
   border-color: #ef6c00;
   color: #ef6c00;
 }
 
-.ospan-control-btn.done {
+.jspsych-operation-span .ospan-control-btn.ospan-done {
   background: #e8f5e9;
   border-color: #2e7d32;
   color: #2e7d32;
 }
 
-.ospan-control-btn:hover {
+.jspsych-operation-span .ospan-control-btn:hover {
   transform: scale(1.05);
 }
 
 /* Prompt */
-.ospan-prompt {
+.jspsych-operation-span .ospan-prompt {
   font-size: 18px;
   color: #666;
   margin: 0;
 }
 
 /* Feedback */
-.ospan-feedback {
+.jspsych-operation-span .ospan-feedback {
   font-size: 24px;
   font-weight: bold;
   padding: 20px;
 }
 
-.ospan-feedback.correct {
+.jspsych-operation-span .ospan-feedback.ospan-feedback-correct {
   color: #2e7d32;
 }
 
-.ospan-feedback.incorrect {
+.jspsych-operation-span .ospan-feedback.ospan-feedback-incorrect {
   color: #c62828;
 }
 
 /* Set size announcement */
-.ospan-announcement {
+.jspsych-operation-span .ospan-announcement {
   font-size: 28px;
   font-weight: bold;
   padding: 40px;
@@ -187,24 +187,24 @@
 }
 
 /* Trial results */
-.ospan-results {
+.jspsych-operation-span .ospan-results {
   text-align: center;
   padding: 20px;
 }
 
-.ospan-results-letters {
+.jspsych-operation-span .ospan-results-letters {
   font-size: 20px;
   margin: 10px 0;
 }
 
-.ospan-results-math {
+.jspsych-operation-span .ospan-results-math {
   font-size: 16px;
   color: #666;
 }
 
 /* Mobile/touch device optimizations */
 @media (pointer: coarse) {
-  .ospan-recall-container {
+  .jspsych-operation-span .ospan-recall-container {
     position: fixed;
     bottom: 0;
     left: 0;
@@ -213,32 +213,32 @@
     background: inherit;
   }
 
-  .ospan-recall-grid {
+  .jspsych-operation-span .ospan-recall-grid {
     max-width: 100%;
     gap: 12px;
   }
 
-  .ospan-recall-btn {
+  .jspsych-operation-span .ospan-recall-btn {
     min-height: 60px;
     font-size: 20px;
   }
 
-  .ospan-control-btn {
+  .jspsych-operation-span .ospan-control-btn {
     min-height: 48px;
     font-size: 18px;
     padding: 10px 16px;
   }
 
-  .ospan-math {
+  .jspsych-operation-span .ospan-math {
     min-width: auto;
     width: 90%;
   }
 
-  .ospan-letter {
+  .jspsych-operation-span .ospan-letter {
     padding: 30px 40px;
   }
 
-  #jspsych-html-button-response-btngroup {
+  .jspsych-operation-span #jspsych-html-button-response-btngroup {
     position: fixed;
     bottom: 0;
     left: 0;
@@ -250,7 +250,7 @@
     justify-content: center;
   }
 
-  #jspsych-html-button-response-btngroup .jspsych-btn {
+  .jspsych-operation-span #jspsych-html-button-response-btngroup .jspsych-btn {
     min-height: 60px;
     min-width: 120px;
     font-size: 18px;
@@ -258,7 +258,7 @@
     max-width: 200px;
   }
 
-  .jspsych-content {
+  .jspsych-operation-span {
     padding-bottom: 250px;
   }
 }

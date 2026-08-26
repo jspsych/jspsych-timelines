@@ -37,7 +37,7 @@ export const defaultText: TextConfig = {
   start_button: "Start",
 
   instruction_intro: `
-    <div class="instructions">
+    <div class="pm-instructions">
       <h2>Plus-Minus Task</h2>
       <p>In this task, you will see numbers and perform simple arithmetic.</p>
       <p>You will complete three blocks:</p>
@@ -51,7 +51,7 @@ export const defaultText: TextConfig = {
   `,
 
   instruction_add: `
-    <div class="instructions">
+    <div class="pm-instructions">
       <h3>Addition Block</h3>
       <p>You will see a number on the screen. <strong>Add 3</strong> to it and type your answer.</p>
       <p>Work as quickly and accurately as possible.</p>
@@ -59,7 +59,7 @@ export const defaultText: TextConfig = {
   `,
 
   instruction_subtract: `
-    <div class="instructions">
+    <div class="pm-instructions">
       <h3>Subtraction Block</h3>
       <p>You will see a number on the screen. <strong>Subtract 3</strong> from it and type your answer.</p>
       <p>Work as quickly and accurately as possible.</p>
@@ -67,7 +67,7 @@ export const defaultText: TextConfig = {
   `,
 
   instruction_alternate: `
-    <div class="instructions">
+    <div class="pm-instructions">
       <h3>Alternating Block</h3>
       <p>Now you will <strong>alternate</strong> between adding and subtracting 3.</p>
       <p><strong>Add 3</strong> to the first number, <strong>subtract 3</strong> from the second, <strong>add 3</strong> to the third, and so on.</p>
@@ -77,7 +77,7 @@ export const defaultText: TextConfig = {
   `,
 
   instruction_practice: `
-    <div class="instructions">
+    <div class="pm-instructions">
       <h3>Practice</h3>
       <p>Let's try a few practice trials first.</p>
     </div>
@@ -88,7 +88,7 @@ export const defaultText: TextConfig = {
   feedback_incorrect: `<p style="font-size: 24px; color: red;"><strong>Incorrect</strong></p>`,
 
   block_complete: (blockName: string, time: number) => `
-    <div class="instructions">
+    <div class="pm-instructions">
       <h3>${blockName} Complete</h3>
       <p>Time: <strong>${(time / 1000).toFixed(2)} seconds</strong></p>
     </div>
@@ -97,7 +97,7 @@ export const defaultText: TextConfig = {
   task_complete: "Task Complete",
 
   result_summary: (addTime: number, subTime: number, altTime: number, switchCost: number) => `
-    <div class="instructions">
+    <div class="pm-instructions">
       <h3>Your Results</h3>
       <p>Addition block: <strong>${(addTime / 1000).toFixed(2)}s</strong></p>
       <p>Subtraction block: <strong>${(subTime / 1000).toFixed(2)}s</strong></p>

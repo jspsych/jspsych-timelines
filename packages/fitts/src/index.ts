@@ -1,9 +1,11 @@
 import "./styles.css";
-import { JsPsych, DataCollection } from "jspsych";
+
+import jsPsychDeviceOrientation from "@jspsych-contrib/plugin-device-orientation";
 import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
 import jsPsychHtmlKeyboardResponse from "@jspsych/plugin-html-keyboard-response";
-import jsPsychDeviceOrientation from "@jspsych-contrib/plugin-device-orientation";
-import { defaultText, TextConfig } from "./text";
+import { DataCollection, JsPsych } from "jspsych";
+
+import { TextConfig, defaultText } from "./text";
 
 // -- TYPES --
 
@@ -90,14 +92,16 @@ interface ResolvedConfig {
 const TASK_NAME = "fitts";
 const VERSION = "0.0.1";
 
+const CSS_ROOT = "jspsych-fitts";
+
 // Default conditions covering range of IDs
 const DEFAULT_CONDITIONS: FittsCondition[] = [
-  { width: 60, distance: 200 },   // ID ~2.0
-  { width: 40, distance: 200 },   // ID ~2.6
-  { width: 60, distance: 400 },   // ID ~3.0
-  { width: 30, distance: 200 },   // ID ~3.0
-  { width: 40, distance: 400 },   // ID ~3.6
-  { width: 30, distance: 400 },   // ID ~4.0
+  { width: 60, distance: 200 }, // ID ~2.0
+  { width: 40, distance: 200 }, // ID ~2.6
+  { width: 60, distance: 400 }, // ID ~3.0
+  { width: 30, distance: 200 }, // ID ~3.0
+  { width: 40, distance: 400 }, // ID ~3.6
+  { width: 30, distance: 400 }, // ID ~4.0
 ];
 
 const DEFAULT_OPTIONS = {
@@ -192,10 +196,7 @@ function createFittsHTML(
 /**
  * Creates instruction trials.
  */
-function createInstructionTrials(
-  config: ResolvedConfig,
-  part: "intro" | "practice" | "main"
-) {
+function createInstructionTrials(config: ResolvedConfig, part: "intro" | "practice" | "main") {
   let stimulus: string;
   let buttonLabel: string;
 
@@ -235,6 +236,7 @@ function createInstructionTrials(
 
   return {
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: stimulus,
     choices: [buttonLabel],
     data,
@@ -255,6 +257,7 @@ function createFittsTrial(
 
   return {
     type: jsPsychHtmlKeyboardResponse,
+    css_classes: [CSS_ROOT],
     stimulus: () => createFittsHTML(config, condition.width, condition.distance, "left"),
     choices: "NO_KEYS",
     trial_duration: null,
@@ -355,9 +358,7 @@ function createFittsBlock(
   const shuffledTrials = shuffleArray(allTrials);
 
   shuffledTrials.forEach((trial, index) => {
-    timeline.push(
-      createFittsTrial(jsPsych, config, trial.condition, index + 1, isPractice)
-    );
+    timeline.push(createFittsTrial(jsPsych, config, trial.condition, index + 1, isPractice));
   });
 
   return { timeline };
@@ -369,17 +370,14 @@ function createFittsBlock(
 function createCompletionTrial(jsPsych: JsPsych, config: ResolvedConfig) {
   return {
     type: jsPsychHtmlButtonResponse,
+    css_classes: [CSS_ROOT],
     stimulus: () => {
       const data = jsPsych.data.get();
       const scores = calculateScores(data);
 
       let html = `<div style="max-width: 600px; margin: 0 auto;">`;
       html += `<h2>${config.text.task_complete}</h2>`;
-      html += config.text.result_summary(
-        scores.averageMT,
-        scores.accuracy,
-        scores.throughput
-      );
+      html += config.text.result_summary(scores.averageMT, scores.accuracy, scores.throughput);
       html += `</div>`;
       return html;
     },
@@ -457,14 +455,10 @@ function calculateScores(data: DataCollection): ScoringResult {
   });
 
   // Average MT
-  const averageMT =
-    allMTs.length > 0 ? allMTs.reduce((a, b) => a + b, 0) / allMTs.length : 0;
+  const averageMT = allMTs.length > 0 ? allMTs.reduce((a, b) => a + b, 0) / allMTs.length : 0;
 
   // Overall accuracy
-  const accuracy =
-    totalTaps + totalErrors > 0
-      ? (totalTaps / (totalTaps + totalErrors)) * 100
-      : 0;
+  const accuracy = totalTaps + totalErrors > 0 ? (totalTaps / (totalTaps + totalErrors)) * 100 : 0;
 
   // Calculate throughput (bits/s) using effective ID
   // Throughput = ID_e / MT where ID_e = log2(D/W_e + 1) and W_e = 4.133 * SD_x
@@ -485,14 +479,8 @@ function calculateScores(data: DataCollection): ScoringResult {
     width: cond.width,
     distance: cond.distance,
     indexOfDifficulty: cond.id,
-    averageMT:
-      cond.mts.length > 0
-        ? cond.mts.reduce((a, b) => a + b, 0) / cond.mts.length
-        : 0,
-    accuracy:
-      cond.taps + cond.errors > 0
-        ? (cond.taps / (cond.taps + cond.errors)) * 100
-        : 0,
+    averageMT: cond.mts.length > 0 ? cond.mts.reduce((a, b) => a + b, 0) / cond.mts.length : 0,
+    accuracy: cond.taps + cond.errors > 0 ? (cond.taps / (cond.taps + cond.errors)) * 100 : 0,
   }));
 
   return {
@@ -508,9 +496,7 @@ function calculateScores(data: DataCollection): ScoringResult {
 /**
  * Returns a summary of the Fitts task performance.
  */
-function getSummary(
-  data: DataCollection
-): ScoringResult & { taskName: string; version: string } {
+function getSummary(data: DataCollection): ScoringResult & { taskName: string; version: string } {
   const scores = calculateScores(data);
   return {
     ...scores,
@@ -538,10 +524,7 @@ function getSummary(
  * jsPsych.run([fittsTimeline]);
  * ```
  */
-export function createTimeline(
-  jsPsych: JsPsych,
-  options: FittsOptions = {}
-) {
+export function createTimeline(jsPsych: JsPsych, options: FittsOptions = {}) {
   // Merge text with defaults
   const text: TextConfig = { ...defaultText, ...options.text };
 
@@ -557,6 +540,7 @@ export function createTimeline(
   if (config.requireLandscape) {
     timeline.push({
       type: jsPsychDeviceOrientation,
+      css_classes: [CSS_ROOT],
       orientation: "landscape",
       message: config.text.orientation_message,
     });
@@ -574,9 +558,7 @@ export function createTimeline(
     }
     // Use subset of conditions for practice
     const practiceConditions = config.conditions.slice(0, config.numPracticeConditions);
-    timeline.push(
-      createFittsBlock(jsPsych, config, practiceConditions, 1, true)
-    );
+    timeline.push(createFittsBlock(jsPsych, config, practiceConditions, 1, true));
   }
 
   // Main task
@@ -584,13 +566,7 @@ export function createTimeline(
     timeline.push(createInstructionTrials(config, "main"));
   }
   timeline.push(
-    createFittsBlock(
-      jsPsych,
-      config,
-      config.conditions,
-      config.repetitionsPerCondition,
-      false
-    )
+    createFittsBlock(jsPsych, config, config.conditions, config.repetitionsPerCondition, false)
   );
 
   // Completion screen
