@@ -42,7 +42,7 @@ export interface TrialData {
   task_version: string;
   phase: string;
   part: string;
-  trial_index: number;
+  trial_number: number;
   stimulus_type: "standard" | "target";
   responded: boolean;
   rt: number | null;
@@ -361,7 +361,7 @@ function createOddballTrial(
       task_version: VERSION,
       phase: isPractice ? "practice" : "test",
       part: "response",
-      trial_index: trialIndex,
+      trial_number: trialIndex,
       stimulus_type: stimulusType,
     },
     on_finish: (data: any) => {

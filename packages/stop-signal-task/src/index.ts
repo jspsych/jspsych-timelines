@@ -54,7 +54,7 @@ export interface TrialData {
   task: string;
   task_version: string;
   phase: "practice" | "test";
-  trial_index: number;
+  trial_number: number;
   direction: "left" | "right";
   trial_type_sst: "go" | "stop";
   ssd: number | null;
@@ -456,7 +456,7 @@ function createStimulusTrial(
       task: TASK_NAME,
       task_version: VERSION,
       phase: phase,
-      trial_index: () => ++trialCounter,
+      trial_number: () => ++trialCounter,
       direction: () => jsPsych.evaluateTimelineVariable("direction"),
       trial_type_sst: () => jsPsych.evaluateTimelineVariable("trial_type_sst"),
       correct_response: () => jsPsych.evaluateTimelineVariable("correct_response"),

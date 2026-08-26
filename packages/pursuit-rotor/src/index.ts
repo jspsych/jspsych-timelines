@@ -42,7 +42,7 @@ export interface TrialData {
   task: string;
   task_version: string;
   phase: "practice" | "test";
-  trial_index: number;
+  trial_number: number;
   time_on_target: number;
   percent_on_target: number;
   mean_deviation: number | null;
@@ -227,7 +227,7 @@ function createRotorTrial(
       task: TASK_NAME,
       task_version: VERSION,
       phase: phase,
-      trial_index: trialIndex,
+      trial_number: trialIndex,
     },
   };
 }

@@ -39,8 +39,8 @@ export interface TrialData {
   task: string;
   task_version: string;
   phase: "practice" | "test";
-  trial_index: number;
-  stimulus: string;
+  trial_number: number;
+  stimulus_text: string;
   stimulus_type: "word" | "nonword";
   response: "word" | "nonword" | null;
   correct: boolean;
@@ -417,8 +417,8 @@ function createLexicalTrial(
       task_version: VERSION,
       part: "response",
       phase: phase,
-      trial_index: trialIndex,
-      stimulus: trial.stimulus,
+      trial_number: trialIndex,
+      stimulus_text: trial.stimulus,
       stimulus_type: trial.type,
     },
     on_finish: (data: any) => {

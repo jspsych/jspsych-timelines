@@ -42,7 +42,7 @@ export interface TrialData {
   task_version: string;
   phase: "practice" | "test";
   block: "global" | "local";
-  trial_index: number;
+  trial_number: number;
   global_letter: "H" | "S";
   local_letter: "H" | "S";
   congruency: "congruent" | "incongruent";
@@ -340,7 +340,7 @@ function createGlobalLocalTrial(
       part: "response",
       phase: phase,
       block: block,
-      trial_index: trialIndex,
+      trial_number: trialIndex,
       global_letter: trial.globalLetter,
       local_letter: trial.localLetter,
       congruency: trial.congruency,

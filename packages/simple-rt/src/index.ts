@@ -42,7 +42,7 @@ export interface TrialData {
   task_version: string;
   phase: string;
   part: string;
-  trial_index: number;
+  trial_number: number;
   foreperiod: number;
   response: "respond" | null;
   correct: boolean;
@@ -259,7 +259,7 @@ function createSimpleRTTrial(
           task_version: VERSION,
           phase: isPractice ? "practice" : "test",
           part: "response",
-          trial_index: trialIndex,
+          trial_number: trialIndex,
           foreperiod: foreperiod,
         },
         on_finish: (data: any) => {

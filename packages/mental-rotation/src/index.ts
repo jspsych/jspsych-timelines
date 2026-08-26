@@ -33,7 +33,7 @@ export interface TrialData {
   task: string;
   task_version: string;
   phase: "practice" | "test";
-  trial_index: number;
+  trial_number: number;
   condition: "same" | "different";
   rotation_direction: "left" | "right";
   study_matrix: number[][];
@@ -374,7 +374,7 @@ function createRotationTrial(
       task: TASK_NAME,
       part: "study",
       phase: phase,
-      trial_index: trialIndex,
+      trial_number: trialIndex,
     },
     on_finish: (data: any) => {
       // Store study RT for later
@@ -399,7 +399,7 @@ function createRotationTrial(
       task_version: VERSION,
       part: "response",
       phase: phase,
-      trial_index: trialIndex,
+      trial_number: trialIndex,
       condition: trial.condition,
       rotation_direction: trial.direction,
       study_matrix: trial.studyMatrix,

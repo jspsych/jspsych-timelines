@@ -39,8 +39,8 @@ export interface TrialData {
   task_version: string;
   phase: "practice" | "test";
   block: "add" | "subtract" | "alternate";
-  trial_index: number;
-  stimulus: number;
+  trial_number: number;
+  stimulus_number: number;
   operation: "add" | "subtract";
   correct_answer: number;
   response: number | null;
@@ -242,8 +242,8 @@ function createArithmeticTrial(
       part: "response",
       phase: phase,
       block: block,
-      trial_index: trialIndex,
-      stimulus: stimulus,
+      trial_number: trialIndex,
+      stimulus_number: stimulus,
       operation: operation,
       correct_answer: correctAnswer,
     },

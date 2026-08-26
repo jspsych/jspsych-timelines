@@ -42,7 +42,7 @@ export interface TrialData {
   task_version: string;
   phase: "study" | "test";
   round: number;
-  trial_index: number;
+  trial_number: number;
   cue: string;
   target: string;
   response?: string;
@@ -210,7 +210,7 @@ function createStudyTrial(
       part: "study",
       phase: "study",
       round: round,
-      trial_index: trialIndex,
+      trial_number: trialIndex,
       cue: pair.cue,
       target: pair.target,
     },
@@ -259,7 +259,7 @@ function createTestTrial(
       part: "response",
       phase: "test",
       round: round,
-      trial_index: trialIndex,
+      trial_number: trialIndex,
       cue: pair.cue,
       target: pair.target,
       options: options,
