@@ -1,4 +1,6 @@
 import { JsPsych, initJsPsych } from "jspsych";
+
+import { version } from "../package.json";
 import { createTimeline, timelineUnits, utils } from ".";
 
 describe("Trail Making Task", () => {
@@ -222,14 +224,14 @@ describe("Trail Making Task", () => {
       const summary = utils.scoring.getSummary(jsPsych.data.get());
 
       expect(summary.taskName).toBe("trail-making");
-      expect(summary.version).toBeDefined();
+      expect(summary.version).toBe(version);
     });
   });
 
   describe("utils.constants", () => {
     it("should export task constants", () => {
       expect(utils.constants.TASK_NAME).toBe("trail-making");
-      expect(utils.constants.VERSION).toBeDefined();
+      expect(utils.constants.VERSION).toBe(version);
     });
 
     it("should export default options", () => {

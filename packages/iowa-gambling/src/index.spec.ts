@@ -1,4 +1,6 @@
 import { JsPsych, initJsPsych } from "jspsych";
+
+import { version } from "../package.json";
 import { createTimeline, timelineUnits, utils } from ".";
 
 describe("Iowa Gambling Task", () => {
@@ -124,28 +126,32 @@ describe("Iowa Gambling Task", () => {
       const dataCollection = jsPsych.data.get();
       dataCollection.push({
         task: "iowa-gambling",
-        phase: "test", part: "selection",
+        phase: "test",
+        part: "selection",
         deck_selected: "A",
         total_score: 2100,
         rt: 500,
       });
       dataCollection.push({
         task: "iowa-gambling",
-        phase: "test", part: "selection",
+        phase: "test",
+        part: "selection",
         deck_selected: "A",
         total_score: 2200,
         rt: 600,
       });
       dataCollection.push({
         task: "iowa-gambling",
-        phase: "test", part: "selection",
+        phase: "test",
+        part: "selection",
         deck_selected: "C",
         total_score: 2250,
         rt: 550,
       });
       dataCollection.push({
         task: "iowa-gambling",
-        phase: "test", part: "selection",
+        phase: "test",
+        part: "selection",
         deck_selected: "D",
         total_score: 2300,
         rt: 480,
@@ -164,21 +170,24 @@ describe("Iowa Gambling Task", () => {
       // 3 disadvantageous (A, B)
       dataCollection.push({
         task: "iowa-gambling",
-        phase: "test", part: "selection",
+        phase: "test",
+        part: "selection",
         deck_selected: "A",
         total_score: 2100,
         rt: 500,
       });
       dataCollection.push({
         task: "iowa-gambling",
-        phase: "test", part: "selection",
+        phase: "test",
+        part: "selection",
         deck_selected: "B",
         total_score: 2200,
         rt: 500,
       });
       dataCollection.push({
         task: "iowa-gambling",
-        phase: "test", part: "selection",
+        phase: "test",
+        part: "selection",
         deck_selected: "A",
         total_score: 2300,
         rt: 500,
@@ -186,14 +195,16 @@ describe("Iowa Gambling Task", () => {
       // 2 advantageous (C, D)
       dataCollection.push({
         task: "iowa-gambling",
-        phase: "test", part: "selection",
+        phase: "test",
+        part: "selection",
         deck_selected: "C",
         total_score: 2350,
         rt: 500,
       });
       dataCollection.push({
         task: "iowa-gambling",
-        phase: "test", part: "selection",
+        phase: "test",
+        part: "selection",
         deck_selected: "D",
         total_score: 2400,
         rt: 500,
@@ -209,7 +220,8 @@ describe("Iowa Gambling Task", () => {
       const dataCollection = jsPsych.data.get();
       dataCollection.push({
         task: "iowa-gambling",
-        phase: "test", part: "selection",
+        phase: "test",
+        part: "selection",
         deck_selected: "C",
         total_score: 2500,
         rt: 500,
@@ -227,7 +239,8 @@ describe("Iowa Gambling Task", () => {
       for (let i = 0; i < 15; i++) {
         dataCollection.push({
           task: "iowa-gambling",
-          phase: "test", part: "selection",
+          phase: "test",
+          part: "selection",
           deck_selected: i % 2 === 0 ? "C" : "D",
           total_score: 2000 + i * 50,
           rt: 500,
@@ -236,7 +249,8 @@ describe("Iowa Gambling Task", () => {
       for (let i = 0; i < 5; i++) {
         dataCollection.push({
           task: "iowa-gambling",
-          phase: "test", part: "selection",
+          phase: "test",
+          part: "selection",
           deck_selected: "A",
           total_score: 2000 + i * 100,
           rt: 500,
@@ -253,14 +267,16 @@ describe("Iowa Gambling Task", () => {
       const dataCollection = jsPsych.data.get();
       dataCollection.push({
         task: "iowa-gambling",
-        phase: "test", part: "selection",
+        phase: "test",
+        part: "selection",
         deck_selected: "A",
         total_score: 2100,
         rt: 400,
       });
       dataCollection.push({
         task: "iowa-gambling",
-        phase: "test", part: "selection",
+        phase: "test",
+        part: "selection",
         deck_selected: "B",
         total_score: 2200,
         rt: 600,
@@ -275,14 +291,14 @@ describe("Iowa Gambling Task", () => {
       const summary = utils.scoring.getSummary(jsPsych.data.get());
 
       expect(summary.taskName).toBe("iowa-gambling");
-      expect(summary.version).toBeDefined();
+      expect(summary.version).toBe(version);
     });
   });
 
   describe("utils.constants", () => {
     it("should export task constants", () => {
       expect(utils.constants.TASK_NAME).toBe("iowa-gambling");
-      expect(utils.constants.VERSION).toBeDefined();
+      expect(utils.constants.VERSION).toBe(version);
     });
 
     it("should export default options", () => {

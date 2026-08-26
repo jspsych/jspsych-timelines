@@ -1,6 +1,8 @@
-import { initJsPsych } from "jspsych";
 import { startTimeline } from "@jspsych/test-utils";
-import { createTimeline, utils, timelineUnits } from "./index";
+import { initJsPsych } from "jspsych";
+
+import { version } from "../package.json";
+import { createTimeline, timelineUnits, utils } from "./index";
 
 jest.useFakeTimers();
 
@@ -24,18 +26,14 @@ describe("Fitts Timeline", () => {
       const jsPsych = initJsPsych();
       const withInstructions = createTimeline(jsPsych, { showInstructions: true });
       const withoutInstructions = createTimeline(jsPsych, { showInstructions: false });
-      expect(withoutInstructions.timeline.length).toBeLessThan(
-        withInstructions.timeline.length
-      );
+      expect(withoutInstructions.timeline.length).toBeLessThan(withInstructions.timeline.length);
     });
 
     it("should skip practice when showPractice is false", () => {
       const jsPsych = initJsPsych();
       const withPractice = createTimeline(jsPsych, { showPractice: true });
       const withoutPractice = createTimeline(jsPsych, { showPractice: false });
-      expect(withoutPractice.timeline.length).toBeLessThan(
-        withPractice.timeline.length
-      );
+      expect(withoutPractice.timeline.length).toBeLessThan(withPractice.timeline.length);
     });
 
     it("should include landscape orientation trial by default", () => {
@@ -49,9 +47,7 @@ describe("Fitts Timeline", () => {
       const jsPsych = initJsPsych();
       const withLandscape = createTimeline(jsPsych, { requireLandscape: true });
       const withoutLandscape = createTimeline(jsPsych, { requireLandscape: false });
-      expect(withoutLandscape.timeline.length).toBeLessThan(
-        withLandscape.timeline.length
-      );
+      expect(withoutLandscape.timeline.length).toBeLessThan(withLandscape.timeline.length);
     });
   });
 
@@ -100,14 +96,14 @@ describe("Fitts Timeline", () => {
       const summary = utils.scoring.getSummary(jsPsych.data.get());
 
       expect(summary.taskName).toBe("fitts");
-      expect(summary.version).toBe("0.0.1");
+      expect(summary.version).toBe(version);
     });
   });
 
   describe("utils.constants", () => {
     it("should export task constants", () => {
       expect(utils.constants.TASK_NAME).toBe("fitts");
-      expect(utils.constants.VERSION).toBe("0.0.1");
+      expect(utils.constants.VERSION).toBe(version);
       expect(utils.constants.DEFAULT_OPTIONS).toBeDefined();
       expect(utils.constants.DEFAULT_CONDITIONS).toBeDefined();
     });
@@ -351,13 +347,7 @@ describe("Fitts Timeline", () => {
         { width: 60, distance: 200 },
         { width: 40, distance: 200 },
       ];
-      const block = timelineUnits.createFittsBlock(
-        jsPsych,
-        config,
-        conditions,
-        2,
-        false
-      );
+      const block = timelineUnits.createFittsBlock(jsPsych, config, conditions, 2, false);
       // 2 conditions * 2 repetitions = 4 trials
       expect(block.timeline.length).toBe(4);
     });

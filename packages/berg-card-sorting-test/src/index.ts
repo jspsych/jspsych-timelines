@@ -99,7 +99,6 @@ const TASK_NAME = "berg-card-sorting-test";
 // builds. Each rule in styles.css is scoped under it, so nothing this package
 // styles reaches another task in a composed battery.
 const CSS_ROOT = "jspsych-berg-card-sorting-test";
-// Read from package.json so it cannot drift from the published version.
 const VERSION = version;
 
 /**

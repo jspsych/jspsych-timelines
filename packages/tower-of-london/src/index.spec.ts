@@ -1,6 +1,8 @@
-import { initJsPsych } from "jspsych";
 import { startTimeline } from "@jspsych/test-utils";
-import { createTimeline, utils, timelineUnits } from "./index";
+import { initJsPsych } from "jspsych";
+
+import { version } from "../package.json";
+import { createTimeline, timelineUnits, utils } from "./index";
 
 jest.useFakeTimers();
 
@@ -46,9 +48,7 @@ describe("Tower of London Timeline", () => {
       const jsPsych = initJsPsych();
       const withInstructions = createTimeline(jsPsych, { showInstructions: true });
       const withoutInstructions = createTimeline(jsPsych, { showInstructions: false });
-      expect(withoutInstructions.timeline.length).toBeLessThan(
-        withInstructions.timeline.length
-      );
+      expect(withoutInstructions.timeline.length).toBeLessThan(withInstructions.timeline.length);
     });
 
     it("should skip practice when showPractice is false", () => {
@@ -145,14 +145,14 @@ describe("Tower of London Timeline", () => {
       const summary = utils.scoring.getSummary(jsPsych.data.get());
 
       expect(summary.taskName).toBe("tower-of-london");
-      expect(summary.version).toBe("0.0.1");
+      expect(summary.version).toBe(version);
     });
   });
 
   describe("utils.constants", () => {
     it("should export task constants", () => {
       expect(utils.constants.TASK_NAME).toBe("tower-of-london");
-      expect(utils.constants.VERSION).toBe("0.0.1");
+      expect(utils.constants.VERSION).toBe(version);
       expect(utils.constants.DEFAULT_PUZZLES).toBeDefined();
       expect(utils.constants.DEFAULT_PUZZLES.length).toBe(12);
       expect(utils.constants.DEFAULT_PRACTICE_PUZZLE).toBeDefined();

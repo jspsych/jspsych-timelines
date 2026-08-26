@@ -4,6 +4,7 @@ import jsPsychTowerOfLondon from "@jspsych-contrib/plugin-tower-of-london";
 import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
 import { DataCollection, JsPsych } from "jspsych";
 
+import { version } from "../package.json";
 import { TextConfig, defaultText } from "./text";
 
 // -- TYPES --
@@ -113,7 +114,7 @@ interface ResolvedConfig {
 // -- CONSTANTS --
 
 const TASK_NAME = "tower-of-london";
-const VERSION = "0.0.1";
+const VERSION = version;
 
 const CSS_ROOT = "jspsych-tower-of-london";
 

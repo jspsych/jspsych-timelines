@@ -1,4 +1,6 @@
 import { JsPsych, initJsPsych } from "jspsych";
+
+import { version } from "../package.json";
 import { createTimeline, timelineUnits, utils } from ".";
 
 describe("Flanker Task", () => {
@@ -25,8 +27,14 @@ describe("Flanker Task", () => {
     });
 
     it("should create timeline without practice when numPracticeTrials is 0", () => {
-      const withPractice = createTimeline(jsPsych, { numPracticeTrials: 12, showInstructions: false });
-      const withoutPractice = createTimeline(jsPsych, { numPracticeTrials: 0, showInstructions: false });
+      const withPractice = createTimeline(jsPsych, {
+        numPracticeTrials: 12,
+        showInstructions: false,
+      });
+      const withoutPractice = createTimeline(jsPsych, {
+        numPracticeTrials: 0,
+        showInstructions: false,
+      });
 
       expect(withoutPractice.timeline.length).toBeLessThan(withPractice.timeline.length);
     });
@@ -35,12 +43,12 @@ describe("Flanker Task", () => {
       const singleBlock = createTimeline(jsPsych, {
         numBlocks: 1,
         showInstructions: false,
-        numPracticeTrials: 0
+        numPracticeTrials: 0,
       });
       const multipleBlocks = createTimeline(jsPsych, {
         numBlocks: 3,
         showInstructions: false,
-        numPracticeTrials: 0
+        numPracticeTrials: 0,
       });
 
       // Multiple blocks should have more timeline items (blocks + transition screens)
@@ -122,9 +130,7 @@ describe("Flanker Task", () => {
       const timeline = createTimeline(jsPsych, config);
 
       const testBlock = timeline.timeline[0] as any;
-      const hasNeutral = testBlock.timeline_variables.some(
-        (v: any) => v.congruence === "neutral"
-      );
+      const hasNeutral = testBlock.timeline_variables.some((v: any) => v.congruence === "neutral");
 
       expect(hasNeutral).toBe(false);
       expect(testBlock.timeline_variables.length).toBe(4); // 2 congruent + 2 incongruent
@@ -140,9 +146,7 @@ describe("Flanker Task", () => {
       const timeline = createTimeline(jsPsych, config);
 
       const testBlock = timeline.timeline[0] as any;
-      const hasNeutral = testBlock.timeline_variables.some(
-        (v: any) => v.congruence === "neutral"
-      );
+      const hasNeutral = testBlock.timeline_variables.some((v: any) => v.congruence === "neutral");
 
       expect(hasNeutral).toBe(true);
       expect(testBlock.timeline_variables.length).toBe(6); // 2 congruent + 2 incongruent + 2 neutral
@@ -397,7 +401,7 @@ describe("Flanker Task", () => {
 
       expect(Array.isArray(variables)).toBe(true);
       expect(variables.length).toBe(6); // 2 congruent + 2 incongruent + 2 neutral
-      expect(variables.some(v => v.congruence === "neutral")).toBe(true);
+      expect(variables.some((v) => v.congruence === "neutral")).toBe(true);
     });
 
     it("should generate trial variables without neutral trials", () => {
@@ -405,7 +409,7 @@ describe("Flanker Task", () => {
 
       expect(Array.isArray(variables)).toBe(true);
       expect(variables.length).toBe(4); // 2 congruent + 2 incongruent
-      expect(variables.some(v => v.congruence === "neutral")).toBe(false);
+      expect(variables.some((v) => v.congruence === "neutral")).toBe(false);
     });
 
     it("should export SVG constants", () => {
@@ -519,7 +523,7 @@ describe("Flanker Task", () => {
   describe("utils.constants", () => {
     it("should export task constants", () => {
       expect(utils.constants.TASK_NAME).toBe("flanker");
-      expect(utils.constants.VERSION).toBeDefined();
+      expect(utils.constants.VERSION).toBe(version);
       expect(utils.constants.DEFAULT_OPTIONS).toBeDefined();
     });
 

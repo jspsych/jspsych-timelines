@@ -1,4 +1,6 @@
 import { JsPsych, initJsPsych } from "jspsych";
+
+import { version } from "../package.json";
 import { createTimeline, timelineUnits, utils } from ".";
 
 describe("Digit Span Task", () => {
@@ -100,7 +102,11 @@ describe("Digit Span Task", () => {
     };
 
     it("should create interactive instructions for forward mode", () => {
-      const instructions = timelineUnits.createInstructionsWithPractice(jsPsych, mockConfig, "forward");
+      const instructions = timelineUnits.createInstructionsWithPractice(
+        jsPsych,
+        mockConfig,
+        "forward"
+      );
 
       expect(instructions).toHaveProperty("timeline");
       expect(Array.isArray(instructions.timeline)).toBe(true);
@@ -108,7 +114,11 @@ describe("Digit Span Task", () => {
     });
 
     it("should create interactive instructions for backward mode", () => {
-      const instructions = timelineUnits.createInstructionsWithPractice(jsPsych, mockConfig, "backward");
+      const instructions = timelineUnits.createInstructionsWithPractice(
+        jsPsych,
+        mockConfig,
+        "backward"
+      );
 
       expect(instructions).toHaveProperty("timeline");
       expect(Array.isArray(instructions.timeline)).toBe(true);
@@ -347,7 +357,7 @@ describe("Digit Span Task", () => {
   describe("utils.constants", () => {
     it("should export task constants", () => {
       expect(utils.constants.TASK_NAME).toBe("digit-span");
-      expect(utils.constants.VERSION).toBeDefined();
+      expect(utils.constants.VERSION).toBe(version);
       expect(utils.constants.DEFAULT_OPTIONS).toBeDefined();
     });
 

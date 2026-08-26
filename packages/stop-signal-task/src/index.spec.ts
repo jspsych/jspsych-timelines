@@ -1,6 +1,8 @@
-import { initJsPsych } from "jspsych";
 import { startTimeline } from "@jspsych/test-utils";
-import { createTimeline, utils, timelineUnits } from "./index";
+import { initJsPsych } from "jspsych";
+
+import { version } from "../package.json";
+import { createTimeline, timelineUnits, utils } from "./index";
 
 jest.useFakeTimers();
 
@@ -44,9 +46,7 @@ describe("Stop Signal Task", () => {
       const withoutInstructions = createTimeline(jsPsych, {
         showInstructions: false,
       });
-      expect(withoutInstructions.timeline.length).toBeLessThan(
-        withInstructions.timeline.length
-      );
+      expect(withoutInstructions.timeline.length).toBeLessThan(withInstructions.timeline.length);
     });
   });
 
@@ -61,9 +61,7 @@ describe("Stop Signal Task", () => {
         numPracticeTrials: 0,
         showInstructions: false,
       });
-      expect(withoutPractice.timeline.length).toBeLessThan(
-        withPractice.timeline.length
-      );
+      expect(withoutPractice.timeline.length).toBeLessThan(withPractice.timeline.length);
     });
   });
 
@@ -98,19 +96,11 @@ describe("Stop Signal Task", () => {
 
     it("should respect maxConsecutiveStop constraint", () => {
       const maxConsecutiveStop = 3;
-      const sequence = utils.stimuli.generateTrialSequence(
-        100,
-        0.25,
-        maxConsecutiveStop,
-        100
-      );
+      const sequence = utils.stimuli.generateTrialSequence(100, 0.25, maxConsecutiveStop, 100);
 
       let consecutiveCount = 1;
       for (let i = 1; i < sequence.length; i++) {
-        if (
-          sequence[i].trial_type_sst === "stop" &&
-          sequence[i - 1].trial_type_sst === "stop"
-        ) {
+        if (sequence[i].trial_type_sst === "stop" && sequence[i - 1].trial_type_sst === "stop") {
           consecutiveCount++;
           expect(consecutiveCount).toBeLessThanOrEqual(maxConsecutiveStop);
         } else if (sequence[i].trial_type_sst === "stop") {
@@ -123,19 +113,11 @@ describe("Stop Signal Task", () => {
 
     it("should respect maxConsecutiveGo constraint", () => {
       const maxConsecutiveGo = 5;
-      const sequence = utils.stimuli.generateTrialSequence(
-        100,
-        0.25,
-        100,
-        maxConsecutiveGo
-      );
+      const sequence = utils.stimuli.generateTrialSequence(100, 0.25, 100, maxConsecutiveGo);
 
       let consecutiveCount = 1;
       for (let i = 1; i < sequence.length; i++) {
-        if (
-          sequence[i].trial_type_sst === "go" &&
-          sequence[i - 1].trial_type_sst === "go"
-        ) {
+        if (sequence[i].trial_type_sst === "go" && sequence[i - 1].trial_type_sst === "go") {
           consecutiveCount++;
           expect(consecutiveCount).toBeLessThanOrEqual(maxConsecutiveGo);
         } else if (sequence[i].trial_type_sst === "go") {
@@ -305,7 +287,7 @@ describe("Stop Signal Task", () => {
       const summary = utils.scoring.getSummary(jsPsych.data.get());
 
       expect(summary.taskName).toBe("stop-signal-task");
-      expect(summary.version).toBe("0.0.1");
+      expect(summary.version).toBe(version);
     });
   });
 
@@ -341,7 +323,7 @@ describe("Stop Signal Task", () => {
   describe("constants export", () => {
     it("should export task constants", () => {
       expect(utils.constants.TASK_NAME).toBe("stop-signal-task");
-      expect(utils.constants.VERSION).toBe("0.0.1");
+      expect(utils.constants.VERSION).toBe(version);
       expect(utils.constants.DEFAULT_OPTIONS).toBeDefined();
     });
 

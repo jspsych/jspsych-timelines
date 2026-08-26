@@ -4,6 +4,7 @@ import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
 import jsPsychHtmlKeyboardResponse from "@jspsych/plugin-html-keyboard-response";
 import { DataCollection, JsPsych } from "jspsych";
 
+import { version } from "../package.json";
 import { TextConfig, defaultText } from "./text";
 
 // -- TYPES --
@@ -84,7 +85,7 @@ interface ResolvedConfig {
 // -- CONSTANTS --
 
 const TASK_NAME = "flanker";
-const VERSION = "0.0.1";
+const VERSION = version;
 
 const CSS_ROOT = "jspsych-flanker";
 
@@ -151,9 +152,7 @@ function generateStimulusHtml(
 /**
  * Generates trial variables for the flanker task.
  */
-function generateTrialVariables(
-  includeNeutral: boolean
-): Array<{
+function generateTrialVariables(includeNeutral: boolean): Array<{
   target_direction: "left" | "right";
   congruence: "congruent" | "incongruent" | "neutral";
 }> {

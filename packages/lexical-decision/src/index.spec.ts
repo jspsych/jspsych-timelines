@@ -1,6 +1,8 @@
-import { initJsPsych } from "jspsych";
 import { startTimeline } from "@jspsych/test-utils";
-import { createTimeline, utils, timelineUnits } from "./index";
+import { initJsPsych } from "jspsych";
+
+import { version } from "../package.json";
+import { createTimeline, timelineUnits, utils } from "./index";
 
 jest.useFakeTimers();
 
@@ -24,9 +26,7 @@ describe("Lexical Decision Timeline", () => {
       const jsPsych = initJsPsych();
       const withInstructions = createTimeline(jsPsych, { showInstructions: true });
       const withoutInstructions = createTimeline(jsPsych, { showInstructions: false });
-      expect(withoutInstructions.timeline.length).toBeLessThan(
-        withInstructions.timeline.length
-      );
+      expect(withoutInstructions.timeline.length).toBeLessThan(withInstructions.timeline.length);
     });
 
     it("should skip practice when showPractice is false", () => {
@@ -102,14 +102,14 @@ describe("Lexical Decision Timeline", () => {
       const summary = utils.scoring.getSummary(jsPsych.data.get());
 
       expect(summary.taskName).toBe("lexical-decision");
-      expect(summary.version).toBe("0.0.1");
+      expect(summary.version).toBe(version);
     });
   });
 
   describe("utils.constants", () => {
     it("should export task constants", () => {
       expect(utils.constants.TASK_NAME).toBe("lexical-decision");
-      expect(utils.constants.VERSION).toBe("0.0.1");
+      expect(utils.constants.VERSION).toBe(version);
       expect(utils.constants.DEFAULT_OPTIONS).toBeDefined();
     });
 
@@ -165,12 +165,8 @@ describe("Lexical Decision Timeline", () => {
       const nonwords = ["CAF", "DOK"];
       const trials = timelineUnits.generateTrials(words, nonwords, 2, 2);
 
-      const wordStimuli = trials
-        .filter((t) => t.type === "word")
-        .map((t) => t.stimulus);
-      const nonwordStimuli = trials
-        .filter((t) => t.type === "nonword")
-        .map((t) => t.stimulus);
+      const wordStimuli = trials.filter((t) => t.type === "word").map((t) => t.stimulus);
+      const nonwordStimuli = trials.filter((t) => t.type === "nonword").map((t) => t.stimulus);
 
       wordStimuli.forEach((s) => expect(words).toContain(s));
       nonwordStimuli.forEach((s) => expect(nonwords).toContain(s));
@@ -287,9 +283,7 @@ describe("Lexical Decision Timeline", () => {
     });
 
     it("should have same number of words and nonwords", () => {
-      expect(utils.constants.DEFAULT_WORDS.length).toBe(
-        utils.constants.DEFAULT_NONWORDS.length
-      );
+      expect(utils.constants.DEFAULT_WORDS.length).toBe(utils.constants.DEFAULT_NONWORDS.length);
     });
   });
 });

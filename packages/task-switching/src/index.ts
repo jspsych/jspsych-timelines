@@ -3,6 +3,7 @@ import "./styles.css";
 import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
 import { DataCollection, JsPsych } from "jspsych";
 
+import { version } from "../package.json";
 import { TextConfig, defaultText } from "./text";
 
 // -- TYPES --
@@ -112,7 +113,7 @@ interface ResolvedConfig {
 // -- CONSTANTS --
 
 const TASK_NAME = "task-switching";
-const VERSION = "0.0.1";
+const VERSION = version;
 
 const CSS_ROOT = "jspsych-task-switching";
 

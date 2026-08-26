@@ -1,6 +1,8 @@
-import { initJsPsych } from "jspsych";
 import { startTimeline } from "@jspsych/test-utils";
-import { createTimeline, utils, timelineUnits } from "./index";
+import { initJsPsych } from "jspsych";
+
+import { version } from "../package.json";
+import { createTimeline, timelineUnits, utils } from "./index";
 
 jest.useFakeTimers();
 
@@ -44,9 +46,7 @@ describe("Simon Task", () => {
       const withoutInstructions = createTimeline(jsPsych, {
         showInstructions: false,
       });
-      expect(withoutInstructions.timeline.length).toBeLessThan(
-        withInstructions.timeline.length
-      );
+      expect(withoutInstructions.timeline.length).toBeLessThan(withInstructions.timeline.length);
     });
   });
 
@@ -61,9 +61,7 @@ describe("Simon Task", () => {
         numPracticeTrials: 0,
         showInstructions: false,
       });
-      expect(withoutPractice.timeline.length).toBeLessThan(
-        withPractice.timeline.length
-      );
+      expect(withoutPractice.timeline.length).toBeLessThan(withPractice.timeline.length);
     });
   });
 
@@ -76,9 +74,7 @@ describe("Simon Task", () => {
       // 2 features x 2 conditions (congruent, incongruent) = 4
       expect(conditions.length).toBe(4);
       const congruent = conditions.filter((c) => c.congruence === "congruent");
-      const incongruent = conditions.filter(
-        (c) => c.congruence === "incongruent"
-      );
+      const incongruent = conditions.filter((c) => c.congruence === "incongruent");
       expect(congruent.length).toBe(2);
       expect(incongruent.length).toBe(2);
     });
@@ -133,18 +129,12 @@ describe("Simon Task", () => {
         utils.constants.DEFAULT_STIMULUS_FEATURES,
         false
       );
-      const incongruent = conditions.filter(
-        (c) => c.congruence === "incongruent"
-      );
+      const incongruent = conditions.filter((c) => c.congruence === "incongruent");
 
-      const redIncongruent = incongruent.find(
-        (c) => c.stimulus_label === "RED"
-      );
+      const redIncongruent = incongruent.find((c) => c.stimulus_label === "RED");
       expect(redIncongruent!.stimulus_side).toBe("right");
 
-      const blueIncongruent = incongruent.find(
-        (c) => c.stimulus_label === "BLUE"
-      );
+      const blueIncongruent = incongruent.find((c) => c.stimulus_label === "BLUE");
       expect(blueIncongruent!.stimulus_side).toBe("left");
     });
 
@@ -193,9 +183,7 @@ describe("Simon Task", () => {
         100
       );
       const congruent = sequence.filter((t) => t.congruence === "congruent");
-      const incongruent = sequence.filter(
-        (t) => t.congruence === "incongruent"
-      );
+      const incongruent = sequence.filter((t) => t.congruence === "incongruent");
       const neutral = sequence.filter((t) => t.congruence === "neutral");
 
       expect(congruent.length).toBeGreaterThan(0);
@@ -275,7 +263,7 @@ describe("Simon Task", () => {
       const summary = utils.scoring.getSummary(jsPsych.data.get());
 
       expect(summary.taskName).toBe("simon-task");
-      expect(summary.version).toBe("0.0.1");
+      expect(summary.version).toBe(version);
     });
   });
 
@@ -337,7 +325,7 @@ describe("Simon Task", () => {
   describe("constants export", () => {
     it("should export task constants", () => {
       expect(utils.constants.TASK_NAME).toBe("simon-task");
-      expect(utils.constants.VERSION).toBe("0.0.1");
+      expect(utils.constants.VERSION).toBe(version);
       expect(utils.constants.DEFAULT_OPTIONS).toBeDefined();
       expect(utils.constants.DEFAULT_STIMULUS_FEATURES).toBeDefined();
     });

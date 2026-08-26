@@ -5,6 +5,7 @@ import jsPsychHtmlKeyboardResponse from "@jspsych/plugin-html-keyboard-response"
 import jsPsychInstructions from "@jspsych/plugin-instructions";
 import { DataCollection, JsPsych } from "jspsych";
 
+import { version } from "../package.json";
 import { TextConfig, defaultText } from "./text";
 
 // -- TYPES --
@@ -76,7 +77,7 @@ interface ResolvedConfig {
 // -- CONSTANTS --
 
 const TASK_NAME = "iowa-gambling";
-const VERSION = "0.0.1";
+const VERSION = version;
 
 const CSS_ROOT = "jspsych-iowa-gambling";
 

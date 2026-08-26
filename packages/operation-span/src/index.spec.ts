@@ -1,4 +1,6 @@
 import { JsPsych, initJsPsych } from "jspsych";
+
+import { version } from "../package.json";
 import { createTimeline, timelineUnits, utils } from ".";
 
 describe("Operation Span Task", () => {
@@ -67,9 +69,7 @@ describe("Operation Span Task", () => {
 
     it("should only include consonants in default letters", () => {
       const vowels = ["A", "E", "I", "O", "U"];
-      const hasVowel = utils.stimuli.DEFAULT_LETTERS.some((l) =>
-        vowels.includes(l)
-      );
+      const hasVowel = utils.stimuli.DEFAULT_LETTERS.some((l) => vowels.includes(l));
       expect(hasVowel).toBe(false);
     });
 
@@ -250,14 +250,14 @@ describe("Operation Span Task", () => {
       const summary = utils.scoring.getSummary(jsPsych.data.get());
 
       expect(summary.taskName).toBe("operation-span");
-      expect(summary.version).toBeDefined();
+      expect(summary.version).toBe(version);
     });
   });
 
   describe("utils.constants", () => {
     it("should export task constants", () => {
       expect(utils.constants.TASK_NAME).toBe("operation-span");
-      expect(utils.constants.VERSION).toBeDefined();
+      expect(utils.constants.VERSION).toBe(version);
     });
 
     it("should export default options", () => {

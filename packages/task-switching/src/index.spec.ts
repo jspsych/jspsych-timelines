@@ -1,6 +1,8 @@
-import { initJsPsych } from "jspsych";
 import { startTimeline } from "@jspsych/test-utils";
-import { createTimeline, utils, timelineUnits } from "./index";
+import { initJsPsych } from "jspsych";
+
+import { version } from "../package.json";
+import { createTimeline, timelineUnits, utils } from "./index";
 
 jest.useFakeTimers();
 
@@ -57,9 +59,7 @@ describe("Task Switching", () => {
       const withoutInstructions = createTimeline(jsPsych, {
         showInstructions: false,
       });
-      expect(withoutInstructions.timeline.length).toBeLessThan(
-        withInstructions.timeline.length
-      );
+      expect(withoutInstructions.timeline.length).toBeLessThan(withInstructions.timeline.length);
     });
   });
 
@@ -74,9 +74,7 @@ describe("Task Switching", () => {
         showPractice: false,
         showInstructions: false,
       });
-      expect(withoutPractice.timeline.length).toBeLessThan(
-        withPractice.timeline.length
-      );
+      expect(withoutPractice.timeline.length).toBeLessThan(withPractice.timeline.length);
     });
 
     it("should skip practice when numPracticeTrials is 0", () => {
@@ -89,9 +87,7 @@ describe("Task Switching", () => {
         numPracticeTrials: 0,
         showInstructions: false,
       });
-      expect(withoutPractice.timeline.length).toBeLessThan(
-        withPractice.timeline.length
-      );
+      expect(withoutPractice.timeline.length).toBeLessThan(withPractice.timeline.length);
     });
   });
 
@@ -333,7 +329,7 @@ describe("Task Switching", () => {
       const summary = utils.scoring.getSummary(jsPsych.data.get());
 
       expect(summary.taskName).toBe("task-switching");
-      expect(summary.version).toBe("0.0.1");
+      expect(summary.version).toBe(version);
     });
   });
 
@@ -409,7 +405,7 @@ describe("Task Switching", () => {
   describe("constants export", () => {
     it("should export task constants", () => {
       expect(utils.constants.TASK_NAME).toBe("task-switching");
-      expect(utils.constants.VERSION).toBe("0.0.1");
+      expect(utils.constants.VERSION).toBe(version);
       expect(utils.constants.DEFAULT_OPTIONS).toBeDefined();
       expect(utils.constants.DEFAULT_STIMULI).toBeDefined();
     });
