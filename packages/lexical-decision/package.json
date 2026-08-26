@@ -44,7 +44,6 @@
         "jspsych": ">=8.0.0"
     },
     "dependencies": {
-        "@jspsych/plugin-html-button-response": "^2.1.0",
-        "@jspsych/plugin-html-keyboard-response": "^2.1.0"
+        "@jspsych/plugin-html-button-response": "^2.1.0"
     }
 }
