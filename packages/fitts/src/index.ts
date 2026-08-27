@@ -116,6 +116,82 @@ const DEFAULT_OPTIONS = {
   targetColor: "#4A90D9",
 };
 
+// -- CONFIGURATION --
+
+/**
+ * Merges caller options over the defaults and rejects configurations that would
+ * silently produce a degenerate dataset, failing loudly at construction rather
+ * than at analysis.
+ */
+function resolveConfig(options: FittsOptions = {}): ResolvedConfig {
+  const text: TextConfig = { ...defaultText, ...options.text };
+  const config: ResolvedConfig = { ...DEFAULT_OPTIONS, ...options, text };
+
+  if (!Array.isArray(config.conditions) || config.conditions.length === 0) {
+    throw new Error(`[${TASK_NAME}] conditions must be a non-empty array of {width, distance}`);
+  }
+
+  // A non-positive width or distance drives calculateID to +/-Infinity, which
+  // propagates into index_of_difficulty, throughput, and the results screen.
+  config.conditions.forEach((condition, index) => {
+    if (!condition || typeof condition !== "object") {
+      throw new Error(
+        `[${TASK_NAME}] conditions[${index}] must be an object with width and distance`
+      );
+    }
+    if (!Number.isFinite(condition.width) || condition.width <= 0) {
+      throw new Error(
+        `[${TASK_NAME}] conditions[${index}].width must be a number > 0, got ${condition.width}`
+      );
+    }
+    if (!Number.isFinite(condition.distance) || condition.distance <= 0) {
+      throw new Error(
+        `[${TASK_NAME}] conditions[${index}].distance must be a number > 0, got ${condition.distance}`
+      );
+    }
+  });
+
+  if (!Number.isInteger(config.tapsPerCondition) || config.tapsPerCondition < 2) {
+    throw new Error(
+      `[${TASK_NAME}] tapsPerCondition must be an integer >= 2, got ${config.tapsPerCondition}`
+    );
+  }
+
+  // Zero repetitions leaves the scored block empty while practice still runs, so
+  // the run looks complete and calculateScores returns all zeros.
+  if (!Number.isInteger(config.repetitionsPerCondition) || config.repetitionsPerCondition < 1) {
+    throw new Error(
+      `[${TASK_NAME}] repetitionsPerCondition must be an integer >= 1, ` +
+        `got ${config.repetitionsPerCondition}`
+    );
+  }
+
+  if (config.showPractice) {
+    if (!Number.isInteger(config.numPracticeConditions) || config.numPracticeConditions < 1) {
+      throw new Error(
+        `[${TASK_NAME}] numPracticeConditions must be an integer >= 1 when ` +
+          `showPractice is true, got ${config.numPracticeConditions}`
+      );
+    }
+  }
+
+  if (typeof config.targetColor !== "string" || config.targetColor.trim() === "") {
+    throw new Error(
+      `[${TASK_NAME}] targetColor must be a non-empty CSS color string, ` +
+        `got ${config.targetColor}`
+    );
+  }
+  // targetColor is interpolated into a style="" attribute; a quote or angle
+  // bracket closes the attribute and corrupts the surrounding markup.
+  if (/["'<>\\]/.test(config.targetColor)) {
+    throw new Error(
+      `[${TASK_NAME}] targetColor must not contain quotes, angle brackets or ` +
+        `backslashes, got ${config.targetColor}`
+    );
+  }
+
+  return config;
+}
 // -- UTILITY FUNCTIONS --
 
 /**
@@ -526,14 +602,7 @@ function getSummary(data: DataCollection): ScoringResult & { taskName: string; v
  * ```
  */
 export function createTimeline(jsPsych: JsPsych, options: FittsOptions = {}) {
-  // Merge text with defaults
-  const text: TextConfig = { ...defaultText, ...options.text };
-
-  const config: ResolvedConfig = {
-    ...DEFAULT_OPTIONS,
-    ...options,
-    text,
-  };
+  const config = resolveConfig(options);
 
   const timeline: any[] = [];
 

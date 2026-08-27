@@ -51,6 +51,104 @@ describe("Fitts Timeline", () => {
     });
   });
 
+  describe("parameter validation", () => {
+    const build = (options: any) => () => createTimeline(initJsPsych(), options);
+
+    it("should accept the default configuration", () => {
+      expect(build({})).not.toThrow();
+    });
+
+    it.each([
+      ["empty conditions array", { conditions: [] }, /conditions must be a non-empty array/],
+      ["non-array conditions", { conditions: null }, /conditions must be a non-empty array/],
+      [
+        "zero width",
+        { conditions: [{ width: 0, distance: 200 }] },
+        /conditions\[0\]\.width must be a number > 0, got 0/,
+      ],
+      [
+        "negative width",
+        { conditions: [{ width: -60, distance: 200 }] },
+        /conditions\[0\]\.width must be a number > 0, got -60/,
+      ],
+      [
+        "zero distance",
+        { conditions: [{ width: 60, distance: 0 }] },
+        /conditions\[0\]\.distance must be a number > 0, got 0/,
+      ],
+      [
+        "a bad condition after a good one",
+        {
+          conditions: [
+            { width: 60, distance: 200 },
+            { width: 60, distance: -1 },
+          ],
+        },
+        /conditions\[1\]\.distance must be a number > 0, got -1/,
+      ],
+      ["zero taps", { tapsPerCondition: 0 }, /tapsPerCondition must be an integer >= 2, got 0/],
+      ["one tap", { tapsPerCondition: 1 }, /tapsPerCondition must be an integer >= 2, got 1/],
+      [
+        "negative taps",
+        { tapsPerCondition: -5 },
+        /tapsPerCondition must be an integer >= 2, got -5/,
+      ],
+      [
+        "fractional taps",
+        { tapsPerCondition: 2.5 },
+        /tapsPerCondition must be an integer >= 2, got 2.5/,
+      ],
+      [
+        "zero repetitions",
+        { repetitionsPerCondition: 0 },
+        /repetitionsPerCondition must be an integer >= 1, got 0/,
+      ],
+      [
+        "fractional repetitions",
+        { repetitionsPerCondition: 1.5 },
+        /repetitionsPerCondition must be an integer >= 1, got 1.5/,
+      ],
+      [
+        "zero practice conditions while practice is on",
+        { showPractice: true, numPracticeConditions: 0 },
+        /numPracticeConditions must be an integer >= 1 when showPractice is true, got 0/,
+      ],
+      [
+        "empty targetColor",
+        { targetColor: "   " },
+        /targetColor must be a non-empty CSS color string/,
+      ],
+      [
+        "targetColor that breaks out of the style attribute",
+        { targetColor: 'red" onclick="alert(1)' },
+        /targetColor must not contain quotes, angle brackets or backslashes/,
+      ],
+    ])("should reject %s", (_label, options, message) => {
+      expect(build(options)).toThrow(message);
+    });
+
+    it("should name the task in every validation message", () => {
+      expect(build({ tapsPerCondition: 0 })).toThrow(/^\[fitts\]/);
+    });
+
+    it("should ignore numPracticeConditions when practice is disabled", () => {
+      expect(build({ showPractice: false, numPracticeConditions: 0 })).not.toThrow();
+    });
+
+    it("should allow a negative index of difficulty", () => {
+      // width > 2 * distance is a valid floor-effect baseline condition, not an error.
+      expect(build({ conditions: [{ width: 500, distance: 100 }] })).not.toThrow();
+    });
+
+    it("should allow numPracticeConditions above the number of conditions", () => {
+      expect(build({ numPracticeConditions: 99 })).not.toThrow();
+    });
+
+    it("should accept CSS color forms that contain punctuation", () => {
+      expect(build({ targetColor: "rgb(74, 144, 217)" })).not.toThrow();
+      expect(build({ targetColor: "var(--fitts-target)" })).not.toThrow();
+    });
+  });
   describe("timeline execution", () => {
     it("should display introduction instructions", async () => {
       const jsPsych = initJsPsych();
