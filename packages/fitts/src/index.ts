@@ -54,12 +54,21 @@ export interface TrialData {
   index_of_difficulty: number;
   taps_completed: number;
   total_time: number;
+  /**
+   * One entry per target-to-target movement, so `taps_completed - 1` of them.
+   * The interval before the first tap is initiation_time, not a movement.
+   */
   movement_times: number[];
   /** Taps that missed the active target */
   errors: number;
   /** Percentage of taps that hit the active target */
   accuracy: number;
-  /** Horizontal endpoint of each successful tap, for the effective-width correction */
+  /** Time from stimulus onset to the first tap (a reaction time, not a movement) */
+  initiation_time: number;
+  /**
+   * Horizontal endpoint of each recorded movement, for the effective-width
+   * correction. Index-aligned with movement_times.
+   */
   tap_positions: number[];
 }
 
@@ -383,6 +392,7 @@ function createFittsTrial(
       let currentTarget: "left" | "right" = "left";
       let tapCount = 0;
       let errorCount = 0;
+      let initiationTime = 0;
       let lastTapTime = performance.now();
       const startTime = performance.now();
 
@@ -413,8 +423,14 @@ function createFittsTrial(
           return;
         }
 
-        movementTimes.push(now - lastTapTime);
-        tapPositions.push(endpointOf(event));
+        if (tapCount === 0) {
+          // Onset to first tap covers reading the display and reaching for it, and
+          // no amplitude applies to it: there is no target to have moved from.
+          initiationTime = now - startTime;
+        } else {
+          movementTimes.push(now - lastTapTime);
+          tapPositions.push(endpointOf(event));
+        }
         lastTapTime = now;
         tapCount++;
 
@@ -425,6 +441,7 @@ function createFittsTrial(
           jsPsych.finishTrial({
             taps_completed: tapCount,
             total_time: now - startTime,
+            initiation_time: initiationTime,
             movement_times: movementTimes,
             tap_positions: tapPositions,
             errors: errorCount,

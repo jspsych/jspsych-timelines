@@ -566,14 +566,51 @@ describe("Fitts Timeline", () => {
       expect(t.result().accuracy).toBe(50);
     });
 
-    it("records one endpoint per successful tap", () => {
+    it("records one movement per target-to-target tap, not per tap", () => {
       const t = buildTrial(3);
       t.missGap();
       t.hit();
       t.hit();
       t.hit();
-      expect(t.result().tap_positions).toHaveLength(3);
-      expect(t.result().movement_times).toHaveLength(3);
+      // Three taps yield two movements; the first tap has no target to move from.
+      expect(t.result().taps_completed).toBe(3);
+      expect(t.result().movement_times).toHaveLength(2);
+      expect(t.result().tap_positions).toHaveLength(2);
+    });
+
+    it("records the interval before the first tap as initiation_time", () => {
+      // A participant who takes 200ms to orient, then taps every 50ms. Before this
+      // was separated out, the 200ms landed in movement_times and doubled the mean.
+      const clock = jest.spyOn(performance, "now");
+      clock.mockReturnValue(0); // on_load reads the clock twice
+      const t = buildTrial(3);
+      try {
+        clock.mockReturnValue(200);
+        t.hit();
+        clock.mockReturnValue(250);
+        t.hit();
+        clock.mockReturnValue(300);
+        t.hit();
+      } finally {
+        clock.mockRestore();
+      }
+
+      const r = t.result();
+      expect(r.initiation_time).toBe(200);
+      expect(r.movement_times).toEqual([50, 50]);
+      expect(r.total_time).toBe(300);
+    });
+
+    it("keeps movement_times and tap_positions index-aligned", () => {
+      const t = buildTrial(4);
+      t.hit();
+      t.hit();
+      t.missGap();
+      t.hit();
+      t.hit();
+      const r = t.result();
+      expect(r.movement_times).toHaveLength(r.tap_positions.length);
+      expect(r.movement_times).toHaveLength(r.taps_completed - 1);
     });
 
     it("still records misses when the inactive bar is invisible", () => {
