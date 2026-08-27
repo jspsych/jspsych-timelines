@@ -258,11 +258,26 @@ describe("Fitts Timeline", () => {
   });
 
   describe("index of difficulty calculation", () => {
-    it("should calculate ID correctly", () => {
-      // ID = log2(2D/W)
-      // D=200, W=50 -> ID = log2(400/50) = log2(8) = 3
-      const id = timelineUnits.calculateID(200, 50);
-      expect(id).toBe(3);
+    it("should calculate ID from the centre-to-centre amplitude", () => {
+      // Shannon: ID = log2(A/W + 1), A = distance + width.
+      // gap=300, W=50 -> A=350 -> log2(350/50 + 1) = log2(8) = 3
+      expect(timelineUnits.calculateID(300, 50)).toBe(3);
+      expect(timelineUnits.calculateID(200, 50)).toBeCloseTo(Math.log2(6), 10);
+    });
+
+    it("should not treat the inter-edge gap as the amplitude", () => {
+      // The bars are `distance` apart at their inner edges, so the participant
+      // travels distance + width. Using the gap alone understates every ID.
+      expect(timelineUnits.calculateID(200, 50)).not.toBeCloseTo(Math.log2(200 / 50 + 1), 6);
+    });
+
+    it("should use the Shannon formulation, not log2(2D/W)", () => {
+      expect(timelineUnits.calculateID(200, 50)).not.toBeCloseTo(Math.log2((2 * 200) / 50), 6);
+    });
+
+    it("should stay finite for a target wider than the amplitude", () => {
+      // Shannon cannot go negative, unlike log2(2D/W).
+      expect(timelineUnits.calculateID(100, 500)).toBeGreaterThan(0);
     });
 
     it("should increase ID with distance", () => {
@@ -461,7 +476,8 @@ describe("Fitts Timeline", () => {
         1,
         false
       );
-      expect(trial.data.index_of_difficulty).toBe(3); // log2(400/50) = 3
+      // log2((200 + 50)/50 + 1) = log2(6)
+      expect(trial.data.index_of_difficulty).toBeCloseTo(Math.log2(6), 10);
     });
   });
 

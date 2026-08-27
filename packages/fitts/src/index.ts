@@ -116,12 +116,12 @@ const CSS_ROOT = "jspsych-fitts";
 
 // Default conditions covering range of IDs
 const DEFAULT_CONDITIONS: FittsCondition[] = [
-  { width: 60, distance: 200 }, // ID ~2.0
-  { width: 40, distance: 200 }, // ID ~2.6
-  { width: 60, distance: 400 }, // ID ~3.0
-  { width: 30, distance: 200 }, // ID ~3.0
-  { width: 40, distance: 400 }, // ID ~3.6
-  { width: 30, distance: 400 }, // ID ~4.0
+  { width: 60, distance: 200 }, // ID 2.42
+  { width: 40, distance: 200 }, // ID 2.81
+  { width: 60, distance: 400 }, // ID 3.12
+  { width: 30, distance: 200 }, // ID 3.12
+  { width: 40, distance: 400 }, // ID 3.58
+  { width: 30, distance: 400 }, // ID 3.94
 ];
 
 const DEFAULT_OPTIONS = {
@@ -238,11 +238,16 @@ function shuffleArray<T>(arr: T[]): T[] {
 }
 
 /**
- * Calculates Fitts' Index of Difficulty.
- * ID = log2(2 * D / W) where D = distance, W = target width
+ * Calculates Fitts' Index of Difficulty using the Shannon formulation.
+ *
+ * ID = log2(A / W + 1), where W is the target width and A is the movement
+ * amplitude. `distance` is the gap between the bars' inner edges, so the
+ * centre-to-centre amplitude the participant actually travels is
+ * `distance + width`.
  */
 function calculateID(distance: number, width: number): number {
-  return Math.log2((2 * distance) / width);
+  const amplitude = distance + width;
+  return Math.log2(amplitude / width + 1);
 }
 
 /**
@@ -588,9 +593,9 @@ function calculateScores(data: DataCollection): ScoringResult {
   // Overall accuracy
   const accuracy = totalTaps + totalErrors > 0 ? (totalTaps / (totalTaps + totalErrors)) * 100 : 0;
 
-  // Calculate throughput (bits/s) using effective ID
-  // Throughput = ID_e / MT where ID_e = log2(D/W_e + 1) and W_e = 4.133 * SD_x
-  // For simplicity, we use the nominal ID and average MT
+  // Throughput (bits/s) = ID / MT. The effective form substitutes W_e = 4.133 *
+  // SD of the endpoints in tap_positions; this uses the nominal ID and the mean
+  // movement time instead, averaged across conditions.
   let throughput: number | null = null;
   if (conditionMap.size > 0 && averageMT > 0) {
     // Calculate average ID across conditions
