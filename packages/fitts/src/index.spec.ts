@@ -114,6 +114,21 @@ describe("Fitts Timeline", () => {
         /numPracticeConditions must be an integer >= 1 when showPractice is true, got 0/,
       ],
       [
+        "NaN opacity",
+        { inactiveTargetOpacity: NaN },
+        /inactiveTargetOpacity must be a number between 0 and 1, got NaN/,
+      ],
+      [
+        "opacity above 1",
+        { inactiveTargetOpacity: 1.5 },
+        /inactiveTargetOpacity must be a number between 0 and 1, got 1.5/,
+      ],
+      [
+        "negative opacity",
+        { inactiveTargetOpacity: -0.2 },
+        /inactiveTargetOpacity must be a number between 0 and 1, got -0.2/,
+      ],
+      [
         "empty targetColor",
         { targetColor: "   " },
         /targetColor must be a non-empty CSS color string/,
@@ -142,6 +157,11 @@ describe("Fitts Timeline", () => {
 
     it("should allow numPracticeConditions above the number of conditions", () => {
       expect(build({ numPracticeConditions: 99 })).not.toThrow();
+    });
+
+    it("should accept the full opacity range including the endpoints", () => {
+      expect(build({ inactiveTargetOpacity: 0 })).not.toThrow();
+      expect(build({ inactiveTargetOpacity: 1 })).not.toThrow();
     });
 
     it("should accept CSS color forms that contain punctuation", () => {
@@ -278,19 +298,30 @@ describe("Fitts Timeline", () => {
       expect(html).toContain("width: 80px");
     });
 
-    it("should show only the active target", () => {
+    it("should highlight only the active target", () => {
       const config = {
         ...utils.constants.DEFAULT_OPTIONS,
         text: utils.text,
       };
       const htmlLeft = timelineUnits.createFittsHTML(config, 60, 200, "left");
-      // Left target visible, right hidden
-      expect(htmlLeft).toMatch(/fitts-left.*display: block/s);
-      expect(htmlLeft).toMatch(/fitts-right.*display: none/s);
+      // Both bars are rendered; only the active one is fully opaque.
+      expect(htmlLeft).toMatch(/fitts-left.*opacity: 1;/s);
+      expect(htmlLeft).toMatch(/fitts-right.*opacity: 0\.35;/s);
 
       const htmlRight = timelineUnits.createFittsHTML(config, 60, 200, "right");
-      expect(htmlRight).toMatch(/fitts-left.*display: none/s);
-      expect(htmlRight).toMatch(/fitts-right.*display: block/s);
+      expect(htmlRight).toMatch(/fitts-left.*opacity: 0\.35;/s);
+      expect(htmlRight).toMatch(/fitts-right.*opacity: 1;/s);
+    });
+
+    it("should apply inactiveTargetOpacity to the non-active bar", () => {
+      const config = {
+        ...utils.constants.DEFAULT_OPTIONS,
+        inactiveTargetOpacity: 0,
+        text: utils.text,
+      };
+      const html = timelineUnits.createFittsHTML(config, 60, 200, "left");
+      expect(html).toMatch(/fitts-left.*opacity: 1;/s);
+      expect(html).toMatch(/fitts-right.*opacity: 0;/s);
     });
 
     it("should use target color from config", () => {
@@ -431,6 +462,148 @@ describe("Fitts Timeline", () => {
         false
       );
       expect(trial.data.index_of_difficulty).toBe(3); // log2(400/50) = 3
+    });
+  });
+
+  describe("tap recording", () => {
+    const buildTrial = (tapsPerCondition: number, overrides: any = {}) => {
+      const jsPsych = initJsPsych();
+      const config = {
+        ...utils.constants.DEFAULT_OPTIONS,
+        tapsPerCondition,
+        ...overrides,
+        text: utils.text,
+      };
+      const trial: any = timelineUnits.createFittsTrial(
+        jsPsych,
+        config,
+        { width: 60, distance: 200 },
+        1,
+        false
+      );
+      const root = document.createElement("div");
+      root.innerHTML = trial.stimulus();
+      jsPsych.getDisplayElement = () => root as any;
+      let finished: any = null;
+      jsPsych.finishTrial = ((d: any) => {
+        finished = d;
+      }) as any;
+      trial.on_load();
+
+      const bars = () => Array.from(root.querySelectorAll(".fitts-target")) as HTMLElement[];
+      const bar = (side: string) => bars().find((e) => e.dataset.target === side)!;
+      // The sequence is deterministic: it starts on the left and flips on each hit,
+      // so the helpers track it directly rather than inferring it from opacity.
+      let side: "left" | "right" = "left";
+      const active = () => bar(side);
+      const inactive = () => bar(side === "left" ? "right" : "left");
+      // Reads the rendered highlight, for asserting the DOM actually follows along.
+      const highlighted = () => bars().find((e) => e.style.opacity === "1")!;
+      const click = (el: Element) => el.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+
+      return {
+        root,
+        active,
+        inactive,
+        highlighted,
+        bar,
+        hit: () => {
+          click(active());
+          side = side === "left" ? "right" : "left";
+        },
+        missInactiveBar: () => click(inactive()),
+        missGap: () => click(root.querySelector(".fitts-container")!),
+        result: () => finished,
+      };
+    };
+
+    it("records a clean run as fully accurate", () => {
+      const t = buildTrial(3);
+      t.hit();
+      t.hit();
+      t.hit();
+      expect(t.result()).not.toBeNull();
+      expect(t.result().taps_completed).toBe(3);
+      expect(t.result().errors).toBe(0);
+      expect(t.result().accuracy).toBe(100);
+    });
+
+    it("counts a tap on the inactive bar as an error", () => {
+      const t = buildTrial(2);
+      t.missInactiveBar();
+      t.hit();
+      t.hit();
+      expect(t.result().errors).toBe(1);
+      expect(t.result().taps_completed).toBe(2);
+    });
+
+    it("counts a tap on the gap between bars as an error", () => {
+      const t = buildTrial(2);
+      t.missGap();
+      t.missGap();
+      t.hit();
+      t.hit();
+      expect(t.result().errors).toBe(2);
+    });
+
+    it("does not advance the target on a miss", () => {
+      const t = buildTrial(4);
+      const before = t.highlighted().dataset.target;
+      t.missInactiveBar();
+      expect(t.highlighted().dataset.target).toBe(before);
+      t.hit();
+      expect(t.highlighted().dataset.target).not.toBe(before);
+    });
+
+    it("computes accuracy from hits and misses", () => {
+      const t = buildTrial(2);
+      t.missGap();
+      t.hit();
+      t.missGap();
+      t.hit();
+      expect(t.result().taps_completed).toBe(2);
+      expect(t.result().errors).toBe(2);
+      expect(t.result().accuracy).toBe(50);
+    });
+
+    it("records one endpoint per successful tap", () => {
+      const t = buildTrial(3);
+      t.missGap();
+      t.hit();
+      t.hit();
+      t.hit();
+      expect(t.result().tap_positions).toHaveLength(3);
+      expect(t.result().movement_times).toHaveLength(3);
+    });
+
+    it("still records misses when the inactive bar is invisible", () => {
+      const t = buildTrial(2, { inactiveTargetOpacity: 0 });
+      t.missInactiveBar();
+      t.missGap();
+      t.hit();
+      t.hit();
+      expect(t.result().errors).toBe(2);
+      expect(t.result().accuracy).toBe(50);
+    });
+
+    it("keeps applying inactiveTargetOpacity to whichever bar is dimmed", () => {
+      const t = buildTrial(4, { inactiveTargetOpacity: 0.1 });
+      // Each bar is dimmed by its own assignment, so check both in turn.
+      t.hit(); // active moves right, left bar dims
+      expect(t.bar("left").style.opacity).toBe("0.1");
+      expect(t.bar("right").style.opacity).toBe("1");
+      t.hit(); // active moves back left, right bar dims
+      expect(t.bar("right").style.opacity).toBe("0.1");
+      expect(t.bar("left").style.opacity).toBe("1");
+    });
+
+    it("alternates the highlighted target as taps land", () => {
+      const t = buildTrial(3);
+      expect(t.highlighted().dataset.target).toBe("left");
+      t.hit();
+      expect(t.highlighted().dataset.target).toBe("right");
+      t.hit();
+      expect(t.highlighted().dataset.target).toBe("left");
     });
   });
 

@@ -34,6 +34,11 @@ export interface FittsOptions {
   numPracticeConditions?: number;
   /** Target color (default: "#4A90D9" - blue) */
   targetColor?: string;
+  /**
+   * Opacity of the target that is not currently active, 0 to 1 (default: 0.35).
+   * Set to 0 to hide the inactive target.
+   */
+  inactiveTargetOpacity?: number;
   /** Custom text strings for translation */
   text?: Partial<TextConfig>;
 }
@@ -50,8 +55,12 @@ export interface TrialData {
   taps_completed: number;
   total_time: number;
   movement_times: number[];
+  /** Taps that missed the active target */
   errors: number;
+  /** Percentage of taps that hit the active target */
   accuracy: number;
+  /** Horizontal endpoint of each successful tap, for the effective-width correction */
+  tap_positions: number[];
 }
 
 export interface ScoringResult {
@@ -85,6 +94,7 @@ interface ResolvedConfig {
   showPractice: boolean;
   numPracticeConditions: number;
   targetColor: string;
+  inactiveTargetOpacity: number;
   text: TextConfig;
 }
 
@@ -114,6 +124,7 @@ const DEFAULT_OPTIONS = {
   showPractice: true,
   numPracticeConditions: 2,
   targetColor: "#4A90D9",
+  inactiveTargetOpacity: 0.35,
 };
 
 // -- CONFIGURATION --
@@ -175,6 +186,17 @@ function resolveConfig(options: FittsOptions = {}): ResolvedConfig {
     }
   }
 
+  if (
+    !Number.isFinite(config.inactiveTargetOpacity) ||
+    config.inactiveTargetOpacity < 0 ||
+    config.inactiveTargetOpacity > 1
+  ) {
+    throw new Error(
+      `[${TASK_NAME}] inactiveTargetOpacity must be a number between 0 and 1, ` +
+        `got ${config.inactiveTargetOpacity}`
+    );
+  }
+
   if (typeof config.targetColor !== "string" || config.targetColor.trim() === "") {
     throw new Error(
       `[${TASK_NAME}] targetColor must be a non-empty CSS color string, ` +
@@ -230,8 +252,10 @@ function createFittsHTML(
   // Center this by using calc() for positioning
   const totalWidth = width * 2 + distance;
 
-  const leftDisplay = activeTarget === "left" ? "block" : "none";
-  const rightDisplay = activeTarget === "right" ? "block" : "none";
+  // Both bars stay visible so the participant can aim at the next one; only the
+  // active bar is fully opaque. A tap that lands anywhere else counts as an error.
+  const leftOpacity = activeTarget === "left" ? 1 : config.inactiveTargetOpacity;
+  const rightOpacity = activeTarget === "right" ? 1 : config.inactiveTargetOpacity;
 
   return `
     <div class="fitts-container" style="
@@ -245,7 +269,7 @@ function createFittsHTML(
       -webkit-user-select: none;
     ">
       <div class="fitts-target fitts-left" data-target="left" style="
-        display: ${leftDisplay};
+        opacity: ${leftOpacity};
         position: absolute;
         left: 0;
         top: 0;
@@ -255,7 +279,7 @@ function createFittsHTML(
         cursor: pointer;
       "></div>
       <div class="fitts-target fitts-right" data-target="right" style="
-        display: ${rightDisplay};
+        opacity: ${rightOpacity};
         position: absolute;
         right: 0;
         top: 0;
@@ -351,62 +375,72 @@ function createFittsTrial(
     },
     on_load: () => {
       const displayElement = jsPsych.getDisplayElement();
+      const container = displayElement.querySelector(".fitts-container") as HTMLElement;
       const leftTarget = displayElement.querySelector(".fitts-left") as HTMLElement;
       const rightTarget = displayElement.querySelector(".fitts-right") as HTMLElement;
       const movementTimes: number[] = [];
+      const tapPositions: number[] = [];
       let currentTarget: "left" | "right" = "left";
       let tapCount = 0;
+      let errorCount = 0;
       let lastTapTime = performance.now();
       const startTime = performance.now();
 
-      const updateTargetVisibility = () => {
-        leftTarget.style.display = currentTarget === "left" ? "block" : "none";
-        rightTarget.style.display = currentTarget === "right" ? "block" : "none";
+      const updateTargetHighlight = () => {
+        leftTarget.style.opacity =
+          currentTarget === "left" ? "1" : String(config.inactiveTargetOpacity);
+        rightTarget.style.opacity =
+          currentTarget === "right" ? "1" : String(config.inactiveTargetOpacity);
+      };
+
+      // The endpoint is only recorded for analysis; hit detection is DOM-based so
+      // it does not depend on layout being measurable.
+      const endpointOf = (event: Event): number => {
+        const touch = (event as TouchEvent).changedTouches?.[0];
+        return touch ? touch.clientX : (event as MouseEvent).clientX ?? 0;
       };
 
       const handleTap = (event: Event) => {
-        const target = event.currentTarget as HTMLElement;
-        const tappedSide = target.dataset.target as "left" | "right";
         const now = performance.now();
+        const hitTarget = (event.target as HTMLElement | null)?.closest?.(
+          ".fitts-target"
+        ) as HTMLElement | null;
+        const tappedSide = hitTarget?.dataset.target;
 
-        // Only the visible target can be tapped
-        if (tappedSide === currentTarget) {
-          // Record movement time
-          const mt = now - lastTapTime;
-          movementTimes.push(mt);
-          lastTapTime = now;
-          tapCount++;
+        if (tappedSide !== currentTarget) {
+          // Landed on the inactive bar or on the gap between them.
+          errorCount++;
+          return;
+        }
 
-          // Switch target
-          currentTarget = currentTarget === "left" ? "right" : "left";
-          updateTargetVisibility();
+        movementTimes.push(now - lastTapTime);
+        tapPositions.push(endpointOf(event));
+        lastTapTime = now;
+        tapCount++;
 
-          if (tapCount >= config.tapsPerCondition) {
-            // Trial complete
-            const totalTime = now - startTime;
-            jsPsych.finishTrial({
-              taps_completed: tapCount,
-              total_time: totalTime,
-              movement_times: movementTimes,
-              errors: 0, // No errors possible with single visible target
-              accuracy: 100,
-            });
-          }
+        currentTarget = currentTarget === "left" ? "right" : "left";
+        updateTargetHighlight();
+
+        if (tapCount >= config.tapsPerCondition) {
+          jsPsych.finishTrial({
+            taps_completed: tapCount,
+            total_time: now - startTime,
+            movement_times: movementTimes,
+            tap_positions: tapPositions,
+            errors: errorCount,
+            accuracy: (tapCount / (tapCount + errorCount)) * 100,
+          });
         }
       };
 
-      leftTarget.addEventListener("click", handleTap);
-      leftTarget.addEventListener("touchend", (e) => {
-        e.preventDefault();
-        handleTap(e);
-      });
-      rightTarget.addEventListener("click", handleTap);
-      rightTarget.addEventListener("touchend", (e) => {
+      // Bound to the container, not the bars, so a tap that misses is still seen.
+      container.addEventListener("click", handleTap);
+      container.addEventListener("touchend", (e) => {
         e.preventDefault();
         handleTap(e);
       });
 
-      updateTargetVisibility();
+      updateTargetHighlight();
     },
   };
 }
