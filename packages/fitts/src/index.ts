@@ -48,7 +48,10 @@ export interface TrialData {
   task_version: string;
   phase: string;
   part?: string;
+  /** Index into the configured `conditions` array */
   condition_index: number;
+  /** Position of this trial within its block, 1-indexed */
+  trial_number: number;
   target_width: number;
   target_distance: number;
   index_of_difficulty: number;
@@ -366,6 +369,7 @@ function createFittsTrial(
   config: ResolvedConfig,
   condition: FittsCondition,
   conditionIndex: number,
+  trialNumber: number,
   isPractice: boolean
 ) {
   const id = calculateID(condition.distance, condition.width);
@@ -383,6 +387,7 @@ function createFittsTrial(
       phase: isPractice ? "practice" : "test",
       part: "response",
       condition_index: conditionIndex,
+      trial_number: trialNumber,
       target_width: condition.width,
       target_distance: condition.distance,
       index_of_difficulty: id,
@@ -479,19 +484,32 @@ function createFittsBlock(
 ) {
   const timeline: any[] = [];
 
-  // Create all condition-repetition combinations
-  const allTrials: Array<{ condition: FittsCondition; rep: number }> = [];
+  // Each entry keeps the index of the condition it came from, so the shuffle
+  // does not destroy which condition a trial belongs to.
+  const allTrials: Array<{
+    condition: FittsCondition;
+    conditionIndex: number;
+    rep: number;
+  }> = [];
   for (let rep = 0; rep < repetitions; rep++) {
-    conditions.forEach((condition) => {
-      allTrials.push({ condition, rep });
+    conditions.forEach((condition, conditionIndex) => {
+      allTrials.push({ condition, conditionIndex, rep });
     });
   }
 
-  // Shuffle trials
   const shuffledTrials = shuffleArray(allTrials);
 
   shuffledTrials.forEach((trial, index) => {
-    timeline.push(createFittsTrial(jsPsych, config, trial.condition, index + 1, isPractice));
+    timeline.push(
+      createFittsTrial(
+        jsPsych,
+        config,
+        trial.condition,
+        trial.conditionIndex,
+        index + 1,
+        isPractice
+      )
+    );
   });
 
   return { timeline };

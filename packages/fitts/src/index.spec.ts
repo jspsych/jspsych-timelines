@@ -455,12 +455,15 @@ describe("Fitts Timeline", () => {
         jsPsych,
         config,
         { width: 60, distance: 200 },
+        0,
         1,
         false
       );
       expect(trial).toBeDefined();
       expect(trial.data.target_width).toBe(60);
       expect(trial.data.target_distance).toBe(200);
+      expect(trial.data.condition_index).toBe(0);
+      expect(trial.data.trial_number).toBe(1);
     });
 
     it("should calculate ID for trial", () => {
@@ -473,6 +476,7 @@ describe("Fitts Timeline", () => {
         jsPsych,
         config,
         { width: 50, distance: 200 },
+        0,
         1,
         false
       );
@@ -494,6 +498,7 @@ describe("Fitts Timeline", () => {
         jsPsych,
         config,
         { width: 60, distance: 200 },
+        0,
         1,
         false
       );
@@ -674,6 +679,34 @@ describe("Fitts Timeline", () => {
       const block = timelineUnits.createFittsBlock(jsPsych, config, conditions, 2, false);
       // 2 conditions * 2 repetitions = 4 trials
       expect(block.timeline.length).toBe(4);
+    });
+
+    it("numbers trials by position and indexes conditions by identity", () => {
+      const jsPsych = initJsPsych();
+      const config = { ...utils.constants.DEFAULT_OPTIONS, text: utils.text };
+      const conditions = [
+        { width: 60, distance: 200 },
+        { width: 40, distance: 200 },
+        { width: 30, distance: 400 },
+      ];
+      const block: any = timelineUnits.createFittsBlock(jsPsych, config, conditions, 2, false);
+      const rows = block.timeline.map((t: any) => t.data);
+
+      // trial_number is the position in the block: 1..n, contiguous, no repeats.
+      expect(rows.map((r: any) => r.trial_number)).toEqual([1, 2, 3, 4, 5, 6]);
+
+      // condition_index survives the shuffle and still identifies the condition.
+      for (const r of rows) {
+        expect(conditions[r.condition_index]).toEqual({
+          width: r.target_width,
+          distance: r.target_distance,
+        });
+      }
+      // Every condition appears exactly twice, whatever order they landed in.
+      const counts = new Map<number, number>();
+      for (const r of rows) counts.set(r.condition_index, (counts.get(r.condition_index) ?? 0) + 1);
+      expect([...counts.keys()].sort()).toEqual([0, 1, 2]);
+      expect([...counts.values()]).toEqual([2, 2, 2]);
     });
   });
 });
