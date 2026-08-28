@@ -17,8 +17,6 @@ export interface TextConfig {
   instruction_practice: string;
   /** Main task instruction */
   instruction_task: string;
-  /** Ready prompt before each trial */
-  ready_prompt: string;
   /** Task complete header */
   task_complete: string;
   /** Results summary */
@@ -58,8 +56,6 @@ export const defaultText: TextConfig = {
       <p>Tap each target as quickly as you can.</p>
     </div>
   `,
-
-  ready_prompt: "Tap to start",
 
   task_complete: "Task Complete",
 

@@ -13,19 +13,6 @@
   text-align: center;
 }
 
-/* Feedback state modifiers */
-.jspsych-fitts .fitts-feedback-correct {
-  color: green;
-}
-
-.jspsych-fitts .fitts-feedback-incorrect {
-  color: red;
-}
-
-.jspsych-fitts .fitts-feedback-timeout {
-  color: orange;
-}
-
 /* Mobile/touch device optimizations */
 @media (pointer: coarse) {
   .jspsych-fitts #jspsych-html-button-response-btngroup {

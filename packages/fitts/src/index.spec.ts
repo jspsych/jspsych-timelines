@@ -497,16 +497,26 @@ describe("Fitts Timeline", () => {
   });
 
   describe("default text", () => {
-    it("should have all required text fields", () => {
-      expect(utils.text.continue_button).toBeDefined();
-      expect(utils.text.start_button).toBeDefined();
-      expect(utils.text.orientation_message).toBeDefined();
-      expect(utils.text.instruction_intro).toBeDefined();
-      expect(utils.text.instruction_practice).toBeDefined();
-      expect(utils.text.instruction_task).toBeDefined();
-      expect(utils.text.ready_prompt).toBeDefined();
-      expect(utils.text.task_complete).toBeDefined();
+    it("should give every text field a usable default", () => {
+      // toBeDefined() passes for "" and for a key nothing reads, which is how a
+      // dead key survived here. Assert the defaults are actually usable instead.
+      for (const [key, value] of Object.entries(utils.text)) {
+        if (typeof value === "function") continue;
+        expect(typeof value).toBe("string");
+        expect(`${key}: ${(value as string).trim()}`).not.toBe(`${key}: `);
+      }
       expect(typeof utils.text.result_summary).toBe("function");
+    });
+
+    it("should render a result summary from its arguments", () => {
+      const html = utils.text.result_summary(412.5, 87.5, 3.21);
+      expect(html).toContain("413");
+      expect(html).toContain("87.5");
+      expect(html).toContain("3.21");
+    });
+
+    it("should omit throughput from the summary when it is null", () => {
+      expect(utils.text.result_summary(412.5, 87.5, null)).not.toContain("bits");
     });
   });
 
