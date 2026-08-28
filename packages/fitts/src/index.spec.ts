@@ -318,8 +318,18 @@ describe("Fitts Timeline", () => {
       expect(typeof timelineUnits.createFittsTrial).toBe("function");
       expect(typeof timelineUnits.createFittsBlock).toBe("function");
       expect(typeof timelineUnits.createCompletionTrial).toBe("function");
-      expect(typeof timelineUnits.calculateID).toBe("function");
-      expect(typeof timelineUnits.createFittsHTML).toBe("function");
+      // Helpers live on utils; timelineUnits holds only things that go in a timeline.
+      expect(Object.keys(timelineUnits).sort()).toEqual([
+        "createCompletionTrial",
+        "createFittsBlock",
+        "createFittsTrial",
+        "createInstructionTrials",
+      ]);
+    });
+
+    it("should expose the helpers on utils", () => {
+      expect(typeof utils.scoring.calculateID).toBe("function");
+      expect(typeof utils.display.createFittsHTML).toBe("function");
     });
   });
 
@@ -327,34 +337,34 @@ describe("Fitts Timeline", () => {
     it("should calculate ID from the centre-to-centre amplitude", () => {
       // Shannon: ID = log2(A/W + 1), A = distance + width.
       // gap=300, W=50 -> A=350 -> log2(350/50 + 1) = log2(8) = 3
-      expect(timelineUnits.calculateID(300, 50)).toBe(3);
-      expect(timelineUnits.calculateID(200, 50)).toBeCloseTo(Math.log2(6), 10);
+      expect(utils.scoring.calculateID(300, 50)).toBe(3);
+      expect(utils.scoring.calculateID(200, 50)).toBeCloseTo(Math.log2(6), 10);
     });
 
     it("should not treat the inter-edge gap as the amplitude", () => {
       // The bars are `distance` apart at their inner edges, so the participant
       // travels distance + width. Using the gap alone understates every ID.
-      expect(timelineUnits.calculateID(200, 50)).not.toBeCloseTo(Math.log2(200 / 50 + 1), 6);
+      expect(utils.scoring.calculateID(200, 50)).not.toBeCloseTo(Math.log2(200 / 50 + 1), 6);
     });
 
     it("should use the Shannon formulation, not log2(2D/W)", () => {
-      expect(timelineUnits.calculateID(200, 50)).not.toBeCloseTo(Math.log2((2 * 200) / 50), 6);
+      expect(utils.scoring.calculateID(200, 50)).not.toBeCloseTo(Math.log2((2 * 200) / 50), 6);
     });
 
     it("should stay finite for a target wider than the amplitude", () => {
       // Shannon cannot go negative, unlike log2(2D/W).
-      expect(timelineUnits.calculateID(100, 500)).toBeGreaterThan(0);
+      expect(utils.scoring.calculateID(100, 500)).toBeGreaterThan(0);
     });
 
     it("should increase ID with distance", () => {
-      const id1 = timelineUnits.calculateID(100, 50);
-      const id2 = timelineUnits.calculateID(200, 50);
+      const id1 = utils.scoring.calculateID(100, 50);
+      const id2 = utils.scoring.calculateID(200, 50);
       expect(id2).toBeGreaterThan(id1);
     });
 
     it("should increase ID with smaller width", () => {
-      const id1 = timelineUnits.calculateID(200, 60);
-      const id2 = timelineUnits.calculateID(200, 30);
+      const id1 = utils.scoring.calculateID(200, 60);
+      const id2 = utils.scoring.calculateID(200, 30);
       expect(id2).toBeGreaterThan(id1);
     });
   });
@@ -365,7 +375,7 @@ describe("Fitts Timeline", () => {
         ...utils.constants.DEFAULT_OPTIONS,
         text: utils.text,
       };
-      const html = timelineUnits.createFittsHTML(config, 60, 200, "left");
+      const html = utils.display.createFittsHTML(config, 60, 200, "left");
       expect(html).toContain("fitts-left");
       expect(html).toContain("fitts-right");
     });
@@ -375,7 +385,7 @@ describe("Fitts Timeline", () => {
         ...utils.constants.DEFAULT_OPTIONS,
         text: utils.text,
       };
-      const html = timelineUnits.createFittsHTML(config, 80, 200, "left");
+      const html = utils.display.createFittsHTML(config, 80, 200, "left");
       expect(html).toContain("width: 80px");
     });
 
@@ -384,12 +394,12 @@ describe("Fitts Timeline", () => {
         ...utils.constants.DEFAULT_OPTIONS,
         text: utils.text,
       };
-      const htmlLeft = timelineUnits.createFittsHTML(config, 60, 200, "left");
+      const htmlLeft = utils.display.createFittsHTML(config, 60, 200, "left");
       // Both bars are rendered; only the active one is fully opaque.
       expect(htmlLeft).toMatch(/fitts-left.*opacity: 1;/s);
       expect(htmlLeft).toMatch(/fitts-right.*opacity: 0\.35;/s);
 
-      const htmlRight = timelineUnits.createFittsHTML(config, 60, 200, "right");
+      const htmlRight = utils.display.createFittsHTML(config, 60, 200, "right");
       expect(htmlRight).toMatch(/fitts-left.*opacity: 0\.35;/s);
       expect(htmlRight).toMatch(/fitts-right.*opacity: 1;/s);
     });
@@ -400,7 +410,7 @@ describe("Fitts Timeline", () => {
         inactiveTargetOpacity: 0,
         text: utils.text,
       };
-      const html = timelineUnits.createFittsHTML(config, 60, 200, "left");
+      const html = utils.display.createFittsHTML(config, 60, 200, "left");
       expect(html).toMatch(/fitts-left.*opacity: 1;/s);
       expect(html).toMatch(/fitts-right.*opacity: 0;/s);
     });
@@ -411,7 +421,7 @@ describe("Fitts Timeline", () => {
         targetColor: "#FF0000",
         text: utils.text,
       };
-      const html = timelineUnits.createFittsHTML(config, 60, 200, "left");
+      const html = utils.display.createFittsHTML(config, 60, 200, "left");
       expect(html).toContain("#FF0000");
     });
   });

@@ -741,8 +741,6 @@ export const timelineUnits = {
   createFittsTrial,
   createFittsBlock,
   createCompletionTrial,
-  calculateID,
-  createFittsHTML,
 };
 
 /**
@@ -752,6 +750,10 @@ export const utils = {
   scoring: {
     calculateScores,
     getSummary,
+    calculateID,
+  },
+  display: {
+    createFittsHTML,
   },
   constants: {
     TASK_NAME,
