@@ -9,6 +9,8 @@ export interface TextConfig {
   start_button: string;
   /** Message shown when device needs to be rotated to landscape */
   orientation_message: string;
+  /** Label on the button that skips the orientation check */
+  orientation_skip_button: string;
   /** Introduction instruction */
   instruction_intro: string;
   /** Practice instruction */
@@ -28,6 +30,8 @@ export const defaultText: TextConfig = {
   start_button: "Start",
 
   orientation_message: `<p style="font-size: 24px;">Please rotate your device to <strong>landscape</strong> mode to continue.</p>`,
+
+  orientation_skip_button: "Continue anyway",
 
   instruction_intro: `
     <div class="fitts-instructions">

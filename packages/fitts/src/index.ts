@@ -22,6 +22,8 @@ export interface FittsOptions {
   showInstructions?: boolean;
   /** Require landscape orientation on mobile devices (default: true) */
   requireLandscape?: boolean;
+  /** Allow the participant to skip the orientation check (default: false) */
+  allowOrientationSkip?: boolean;
   /** Conditions to test - array of {width, distance} (default: built-in set) */
   conditions?: FittsCondition[];
   /** Number of taps per condition (default: 10) */
@@ -100,6 +102,7 @@ export interface ScoringResult {
 interface ResolvedConfig {
   showInstructions: boolean;
   requireLandscape: boolean;
+  allowOrientationSkip: boolean;
   conditions: FittsCondition[];
   tapsPerCondition: number;
   repetitionsPerCondition: number;
@@ -130,6 +133,7 @@ const DEFAULT_CONDITIONS: FittsCondition[] = [
 const DEFAULT_OPTIONS = {
   showInstructions: true,
   requireLandscape: true,
+  allowOrientationSkip: false,
   conditions: DEFAULT_CONDITIONS,
   tapsPerCondition: 10,
   repetitionsPerCondition: 2,
@@ -689,6 +693,8 @@ export function createTimeline(jsPsych: JsPsych, options: FittsOptions = {}) {
       css_classes: [CSS_ROOT],
       orientation: "landscape",
       message: config.text.orientation_message,
+      allow_skip: config.allowOrientationSkip,
+      skip_button_label: config.text.orientation_skip_button,
       data: {
         task: TASK_NAME,
         task_version: VERSION,

@@ -197,6 +197,28 @@ describe("Fitts Timeline", () => {
       expect(without.find((t) => t.data?.part === "orientation")).toBeUndefined();
     });
 
+    it("forwards the skip options to the orientation plugin", () => {
+      const orientation = build({}).find((t: any) => t.data?.part === "orientation");
+      // Off by default, matching the plugin's own default.
+      expect(orientation.allow_skip).toBe(false);
+      // Matching the text object proves the wiring; a non-empty string proves the
+      // default is usable, since a skip button with no label cannot be pressed.
+      expect(orientation.skip_button_label).toBe(utils.text.orientation_skip_button);
+      expect(typeof orientation.skip_button_label).toBe("string");
+      expect(orientation.skip_button_label.trim().length).toBeGreaterThan(0);
+    });
+
+    it("lets the skip button be enabled and relabelled", () => {
+      const [orientation] = allTrials(
+        createTimeline(initJsPsych(), {
+          allowOrientationSkip: true,
+          text: { orientation_skip_button: "Passer" },
+        })
+      );
+      expect(orientation.allow_skip).toBe(true);
+      expect(orientation.skip_button_label).toBe("Passer");
+    });
+
     it("emits only the documented phase and part values", () => {
       const trials = build({});
       const phases = new Set(trials.map((t) => t.data.phase));
