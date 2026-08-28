@@ -529,27 +529,36 @@ function createPracticeBlock(
  * Creates a test block with staircase adaptive span.
  */
 function createTestBlock(jsPsych: JsPsych, config: ResolvedConfig, mode: "forward" | "backward") {
-  // We need to create trials dynamically based on staircase
-  // Using a loop procedure with conditional function
-
+  // state for current trial, written in here as opposed to in data object
+  // (would collide with other trial/task data collection)
   let currentSpan = config.startingSpan;
   let trialNumber = 0;
+  let currentDigits: number[] = [];
+  let digitIndex = 0;
+  let correctResponse = "";
 
   const trialProcedure = {
     timeline: [
+      // Zero-duration setup trial. `on_timeline_start` fires only once for the
+      // whole loop, so per-iteration generation needs a trial of its own.
       {
         type: jsPsychHtmlKeyboardResponse,
         css_classes: [CSS_ROOT],
         stimulus: "",
         choices: "NO_KEYS",
         trial_duration: 0,
-        on_finish: (data: any) => {
-          // Generate digits for this trial
+        data: {
+          task: TASK_NAME,
+          part: "trial_setup",
+          mode: mode,
+        },
+        on_finish: () => {
           trialNumber++;
-          const digits = generateDigitSequence(currentSpan);
-          data.generated_digits = digits;
-          data.current_span = currentSpan;
-          data.trial_number = trialNumber;
+          currentDigits = generateDigitSequence(currentSpan);
+          digitIndex = 0;
+          correctResponse = (
+            mode === "forward" ? currentDigits : [...currentDigits].reverse()
+          ).join("");
         },
       },
       // Ready signal
@@ -564,42 +573,30 @@ function createTestBlock(jsPsych: JsPsych, config: ResolvedConfig, mode: "forwar
           part: "ready",
         },
       },
-      // Digit presentation - we need to use a nested timeline for this
+      // Digit presentation - one trial per digit, looped over the sequence
       {
         timeline: [
           {
             type: jsPsychHtmlKeyboardResponse,
             css_classes: [CSS_ROOT],
-            stimulus: () => {
-              // Get the setup trial data
-              const setupData = jsPsych.data
-                .get()
-                .filter({ trial_number: trialNumber })
-                .values()[0];
-              const digitIndex = jsPsych.data
-                .get()
-                .filter({ task: TASK_NAME, part: "digit_presentation", parent_trial: trialNumber })
-                .count();
-              const digit = setupData.generated_digits[digitIndex];
-              return `<div class="jspsych-digit-span-stimulus" >${digit}</div>`;
-            },
+            stimulus: () =>
+              `<div class="jspsych-digit-span-stimulus" >${currentDigits[digitIndex]}</div>`,
             choices: "NO_KEYS",
             trial_duration: config.digitDuration,
+            // Evaluated during processResult, which runs before on_finish, so
+            // digitIndex still points at the digit this trial showed.
             data: () => ({
               task: TASK_NAME,
               part: "digit_presentation",
+              mode: mode,
               parent_trial: trialNumber,
             }),
+            on_finish: () => {
+              digitIndex++;
+            },
           },
         ],
-        loop_function: () => {
-          const setupData = jsPsych.data.get().filter({ trial_number: trialNumber }).values()[0];
-          const presentedCount = jsPsych.data
-            .get()
-            .filter({ task: TASK_NAME, part: "digit_presentation", parent_trial: trialNumber })
-            .count();
-          return presentedCount < setupData.generated_digits.length;
-        },
+        loop_function: () => digitIndex < currentDigits.length,
       },
       // Response collection
       {
@@ -608,34 +605,21 @@ function createTestBlock(jsPsych: JsPsych, config: ResolvedConfig, mode: "forwar
         choices: [],
         trial_duration: null,
         css_classes: [CSS_ROOT],
-        data: () => {
-          const setupData = jsPsych.data.get().filter({ trial_number: trialNumber }).values()[0];
-          const digits = setupData.generated_digits;
-          const correctDigits = mode === "forward" ? digits : [...digits].reverse();
-          const correctResponse = correctDigits.join("");
-
-          return {
-            task: TASK_NAME,
-            task_version: VERSION,
-            phase: "test",
-            mode: mode,
-            trial: trialNumber,
-            span_length: currentSpan,
-            presented_digits: formatDigitSequence(digits),
-            correct_response: correctResponse,
-            part: "response",
-          };
-        },
+        data: () => ({
+          task: TASK_NAME,
+          task_version: VERSION,
+          phase: "test",
+          mode: mode,
+          trial: trialNumber,
+          span_length: currentSpan,
+          presented_digits: formatDigitSequence(currentDigits),
+          correct_response: correctResponse,
+          part: "response",
+        }),
         on_load: () => {
           let currentResponse = "";
           const display = document.getElementById("digit-span-display");
           const startTime = performance.now();
-
-          // Get correct response for validation
-          const setupData = jsPsych.data.get().filter({ trial_number: trialNumber }).values()[0];
-          const digits = setupData.generated_digits;
-          const correctDigits = mode === "forward" ? digits : [...digits].reverse();
-          const correctResponseStr = correctDigits.join("");
 
           document.querySelectorAll(".jspsych-digit-span-digit-button").forEach((button) => {
             button.addEventListener("click", (e) => {
@@ -664,7 +648,7 @@ function createTestBlock(jsPsych: JsPsych, config: ResolvedConfig, mode: "forwar
               jsPsych.finishTrial({
                 response: currentResponse,
                 rt: rt,
-                correct: currentResponse === correctResponseStr,
+                correct: currentResponse === correctResponse,
               });
             });
           }

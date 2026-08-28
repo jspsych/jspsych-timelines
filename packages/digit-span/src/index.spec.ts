@@ -220,6 +220,103 @@ describe("Digit Span Task", () => {
     });
   });
 
+  describe("test block state isolation", () => {
+    const config = {
+      mode: "forward" as const,
+      showInstructions: false,
+      showFeedback: false,
+      numPracticeTrials: 0,
+      numTestTrials: 3,
+      startingSpan: 4,
+      minSpan: 2,
+      maxSpan: 10,
+      practiceSpan: 3,
+      readyDuration: 1,
+      digitDuration: 1,
+      feedbackDuration: 1,
+      interTrialInterval: 1,
+      text: utils.text,
+    };
+
+    /**
+     * Steps one trial of a test block through its own callbacks, returning the
+     * digits it painted and the row it recorded. The block keeps per-trial state
+     * in a closure, so driving the callbacks in order is equivalent to running it.
+     */
+    function stepTrial(block: any) {
+      const [setup, , digitLoop, response] = block.timeline;
+      setup.on_finish();
+
+      const digitTrial = digitLoop.timeline[0];
+      const shown: string[] = [];
+      do {
+        const html = digitTrial.stimulus();
+        shown.push(html.replace(/<[^>]*>/g, "").trim());
+        digitTrial.on_finish();
+      } while (digitLoop.loop_function());
+
+      return { shown, row: response.data() };
+    }
+
+    it("should not read another task's rows when building a trial", () => {
+      jsPsych.data.get().push({ task: "some-other-task", trial_number: 1 });
+      jsPsych.data.get().push({ task: "some-other-task", trial_number: 2 });
+
+      const block = timelineUnits.createTestBlock(jsPsych, config, "forward");
+      const { shown, row } = stepTrial(block);
+
+      expect(shown).not.toContain("undefined");
+      expect(shown).toHaveLength(config.startingSpan);
+      expect(row.presented_digits).toBe(shown.join("-"));
+    });
+
+    it("should present a full sequence on every trial of a block", () => {
+      const block = timelineUnits.createTestBlock(jsPsych, config, "forward");
+
+      for (let i = 1; i <= 3; i++) {
+        const { shown, row } = stepTrial(block);
+        expect(shown).not.toContain("undefined");
+        expect(shown).toHaveLength(row.span_length);
+        expect(row.trial).toBe(i);
+      }
+    });
+
+    it("should give the backward block its own sequences, not the forward block's", () => {
+      const forward = timelineUnits.createTestBlock(jsPsych, config, "forward");
+      const forwardDigits = [stepTrial(forward), stepTrial(forward)].map((t) => t.shown.join("-"));
+
+      const backward = timelineUnits.createTestBlock(jsPsych, config, "backward");
+      const backwardTrials = [stepTrial(backward), stepTrial(backward)];
+
+      for (const { shown, row } of backwardTrials) {
+        expect(shown).not.toContain("undefined");
+        expect(shown).toHaveLength(row.span_length);
+        // digits are drawn without replacement, so a repeat of the forward
+        // sequence would mean the block read the wrong rows, not chance
+        expect(forwardDigits).not.toContain(shown.join("-"));
+      }
+    });
+
+    it("should reverse the presented digits for the backward block", () => {
+      const block = timelineUnits.createTestBlock(jsPsych, config, "backward");
+      const { shown, row } = stepTrial(block);
+
+      expect(row.correct_response).toBe([...shown].reverse().join(""));
+      expect(row.mode).toBe("backward");
+    });
+
+    it("should tag every recorded row with the task", () => {
+      const block = timelineUnits.createTestBlock(jsPsych, config, "forward");
+      const [setup, ready, digitLoop, response] = block.timeline as any[];
+      setup.on_finish();
+
+      const resolve = (d: any) => (typeof d === "function" ? d() : d);
+      for (const trial of [setup, ready, digitLoop.timeline[0], response]) {
+        expect(resolve(trial.data).task).toBe(utils.constants.TASK_NAME);
+      }
+    });
+  });
+
   describe("utils.digits", () => {
     it("should generate digit sequence of correct length", () => {
       const sequence = utils.digits.generateDigitSequence(5);
