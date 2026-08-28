@@ -169,6 +169,50 @@ describe("Fitts Timeline", () => {
       expect(build({ targetColor: "var(--fitts-target)" })).not.toThrow();
     });
   });
+  describe("recorded data fields", () => {
+    // Walks nested blocks so a trial cannot hide from the invariant.
+    const allTrials = (node: any): any[] =>
+      node.timeline ? node.timeline.flatMap(allTrials) : [node];
+
+    const build = (options: any = {}) => allTrials(createTimeline(initJsPsych(), options));
+
+    it("tags every trial with the task and its version", () => {
+      const trials = build({});
+      expect(trials.length).toBeGreaterThan(3);
+      for (const t of trials) {
+        expect(t.data).toBeDefined();
+        expect(t.data.task).toBe("fitts");
+        expect(t.data.task_version).toBe(version);
+      }
+    });
+
+    it("tags the orientation check, which records nothing of its own", () => {
+      const withCheck = build({ requireLandscape: true });
+      const orientation = withCheck.find((t) => t.data?.part === "orientation");
+      expect(orientation).toBeDefined();
+      expect(orientation.data.task).toBe("fitts");
+      expect(orientation.data.phase).toBe("instructions");
+
+      const without = build({ requireLandscape: false });
+      expect(without.find((t) => t.data?.part === "orientation")).toBeUndefined();
+    });
+
+    it("emits only the documented phase and part values", () => {
+      const trials = build({});
+      const phases = new Set(trials.map((t) => t.data.phase));
+      const parts = new Set(trials.map((t) => t.data.part).filter(Boolean));
+      expect([...phases].sort()).toEqual(["completion", "instructions", "practice", "test"]);
+      expect([...parts].sort()).toEqual(["instruction", "orientation", "response"]);
+    });
+
+    it("gives every instruction screen a part", () => {
+      const instructions = build({}).filter((t) => t.data.part === "instruction");
+      // intro, practice and main
+      expect(instructions).toHaveLength(3);
+      expect(instructions.map((t) => t.data.phase)).toEqual(["instructions", "practice", "test"]);
+    });
+  });
+
   describe("timeline execution", () => {
     it("should display introduction instructions", async () => {
       const jsPsych = initJsPsych();

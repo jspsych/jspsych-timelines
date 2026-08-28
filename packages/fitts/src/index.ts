@@ -336,7 +336,11 @@ function createInstructionTrials(config: ResolvedConfig, part: "intro" | "practi
       buttonLabel = config.text.continue_button;
   }
 
-  const data: Record<string, any> = { task: TASK_NAME };
+  const data: Record<string, any> = {
+    task: TASK_NAME,
+    task_version: VERSION,
+    part: "instruction",
+  };
 
   switch (part) {
     case "intro":
@@ -344,11 +348,9 @@ function createInstructionTrials(config: ResolvedConfig, part: "intro" | "practi
       break;
     case "practice":
       data.phase = "practice";
-      data.part = "instruction";
       break;
     case "main":
       data.phase = "test";
-      data.part = "instruction";
       break;
   }
 
@@ -687,6 +689,12 @@ export function createTimeline(jsPsych: JsPsych, options: FittsOptions = {}) {
       css_classes: [CSS_ROOT],
       orientation: "landscape",
       message: config.text.orientation_message,
+      data: {
+        task: TASK_NAME,
+        task_version: VERSION,
+        phase: "instructions",
+        part: "orientation",
+      },
     });
   }
 
