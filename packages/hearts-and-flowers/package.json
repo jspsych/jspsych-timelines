@@ -26,6 +26,9 @@
         "url": "https://github.com/jspsych/jspsych-timelines/issues"
     },
     "homepage": "https://github.com/jspsych/jspsych-timelines/packages/hearts-and-flowers/README.md",
+    "peerDependencies": {
+        "jspsych": ">=8.0.0"
+    },
     "devDependencies": {
         "@jspsych/config": "^3.2.2",
         "jspsych": "^8.0.0",
@@ -34,7 +37,6 @@
     },
     "dependencies": {
         "@jspsych/plugin-html-button-response": "^2.1.0",
-        "@jspsych/plugin-html-keyboard-response": "^2.1.0",
-        "http-server": "^14.1.1"
+        "@jspsych/plugin-html-keyboard-response": "^2.1.0"
     }
 }

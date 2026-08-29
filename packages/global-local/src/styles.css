@@ -1,0 +1,68 @@
+/* Global-Local Task Styles */
+
+/* Trial content container - fixed height prevents button movement */
+.jspsych-global-local .jspsych-global-local-trial-content {
+  min-height: 260px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Instructions container */
+.jspsych-global-local .jspsych-global-local-instructions {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0 20px;
+  text-align: left;
+}
+
+.jspsych-global-local .jspsych-global-local-instructions h2,
+.jspsych-global-local .jspsych-global-local-instructions h3 {
+  text-align: center;
+}
+
+/* Feedback state modifiers */
+.jspsych-global-local .jspsych-global-local-feedback-correct {
+  color: green;
+}
+
+.jspsych-global-local .jspsych-global-local-feedback-incorrect {
+  color: red;
+}
+
+.jspsych-global-local .jspsych-global-local-feedback-timeout {
+  color: orange;
+}
+
+/* Disabled buttons during non-response periods */
+.jspsych-global-local .jspsych-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Mobile/touch device optimizations */
+@media (pointer: coarse) {
+  .jspsych-global-local #jspsych-html-button-response-btngroup {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 16px;
+    background: inherit;
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+  }
+
+  .jspsych-global-local #jspsych-html-button-response-btngroup .jspsych-btn {
+    min-height: 60px;
+    min-width: 120px;
+    font-size: 18px;
+    flex: 1;
+    max-width: 200px;
+  }
+
+  .jspsych-global-local {
+    padding-bottom: 100px;
+  }
+}

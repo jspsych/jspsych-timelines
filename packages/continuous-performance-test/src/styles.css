@@ -1,0 +1,52 @@
+/* Continuous Performance Test Styles */
+
+/* Trial content container - fixed height prevents layout shifts */
+.cpt-trial-content {
+  min-height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Stimulus letter display */
+.cpt-stimulus {
+  font-size: 72px;
+  font-family: monospace;
+  font-weight: bold;
+}
+
+/* Fixation cross */
+.cpt-fixation {
+  font-size: 48px;
+}
+
+/* Instructions, rest and results copy */
+.cpt-instructions {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0 20px;
+  text-align: left;
+}
+
+.cpt-instructions h2,
+.cpt-instructions h3 {
+  text-align: center;
+}
+
+/* Practice feedback. The shipped feedback strings carry their own inline colour,
+ * so these apply to a text object that supplies unstyled markup. */
+.cpt-feedback-correct {
+  color: green;
+}
+
+.cpt-feedback-incorrect {
+  color: red;
+}
+
+/* Large respond button. Scoped under the timeline root so it cannot resize
+ * buttons belonging to other tasks in a composed battery. */
+.jspsych-continuous-performance-test .jspsych-btn {
+  min-height: 60px;
+  min-width: 150px;
+  font-size: 20px;
+}

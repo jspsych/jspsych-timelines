@@ -1,0 +1,54 @@
+/* Free Recall Task Styles */
+
+/* Instructions container */
+.jspsych-free-recall .jspsych-free-recall-instructions {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0 20px;
+  text-align: left;
+}
+
+.jspsych-free-recall .jspsych-free-recall-instructions h2,
+.jspsych-free-recall .jspsych-free-recall-instructions h3 {
+  text-align: center;
+}
+
+/* Feedback state modifiers */
+.jspsych-free-recall .jspsych-free-recall-feedback-correct {
+  color: green;
+}
+
+.jspsych-free-recall .jspsych-free-recall-feedback-incorrect {
+  color: red;
+}
+
+.jspsych-free-recall .jspsych-free-recall-feedback-timeout {
+  color: orange;
+}
+
+/* Mobile/touch device optimizations */
+@media (pointer: coarse) {
+  .jspsych-free-recall #jspsych-html-button-response-btngroup {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 16px;
+    background: inherit;
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+  }
+
+  .jspsych-free-recall #jspsych-html-button-response-btngroup .jspsych-btn {
+    min-height: 60px;
+    min-width: 120px;
+    font-size: 18px;
+    flex: 1;
+    max-width: 200px;
+  }
+
+  .jspsych-free-recall {
+    padding-bottom: 100px;
+  }
+}

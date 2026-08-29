@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Berg Card Sorting Test (BCST)</title>
+    <script src="https://unpkg.com/jspsych@8"></script>
+    <script src="../dist/index.browser.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css" />
+  </head>
+  <body></body>
+  <script>
+    const jsPsych = initJsPsych({
+      on_finish: function () {
+        // Calculate and display scores
+        const scores = jsPsychTimelineBergCardSortingTest.utils.scoring.getSummary(
+          jsPsych.data.get()
+        );
+        console.log("BCST Results:", scores);
+
+        // Display summary
+        jsPsych.data.displayData();
+      },
+    });
+
+    const timeline = jsPsychTimelineBergCardSortingTest.createTimeline(jsPsych, {
+      showInstructions: true,
+      showFeedback: true,
+      numCategories: 6,
+      runLength: 10,
+    });
+
+    jsPsych.run([timeline]);
+  </script>
+</html>

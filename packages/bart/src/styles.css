@@ -1,0 +1,70 @@
+/* BART Task Styles - Minimal, themeable
+ *
+ * Every rule below is namespaced to this timeline. Class names are prefixed
+ * `jspsych-bart-`, and rules that target DOM owned by jsPsych core or by
+ * @jspsych-contrib/plugin-bart are scoped under `.jspsych-bart`, which the
+ * timeline adds to the display element via `css_classes` for the duration of
+ * its own trials only. Nothing here leaks into other tasks composed into the
+ * same experiment.
+ */
+
+/* Instructions container */
+.jspsych-bart-instructions,
+.jspsych-bart-instructions-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0 20px;
+  text-align: left;
+}
+
+.jspsych-bart-instructions-title {
+  text-align: center;
+}
+
+/* Mobile/touch device optimizations */
+@media (pointer: coarse) {
+  /* plugin-bart's button container. Owned by the plugin, overridden here only
+     while a BART trial is on screen. */
+  .jspsych-bart #jspsych-bart-button-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 16px;
+    background: inherit;
+  }
+
+  .jspsych-bart #jspsych-bart-button-container button {
+    min-height: 60px;
+    min-width: 120px;
+    font-size: 18px;
+  }
+
+  /* Standard button response (instruction, break and results screens) */
+  .jspsych-bart #jspsych-html-button-response-btngroup {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 16px;
+    background: inherit;
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+  }
+
+  .jspsych-bart #jspsych-html-button-response-btngroup .jspsych-btn {
+    min-height: 60px;
+    min-width: 120px;
+    font-size: 18px;
+    flex: 1;
+    max-width: 200px;
+  }
+
+  /* Keep content clear of the fixed buttons above. `.jspsych-bart` is applied to
+     the display element, which is the same element that carries
+     `.jspsych-content`, so this affects BART trials only. */
+  .jspsych-bart {
+    padding-bottom: 100px;
+  }
+}

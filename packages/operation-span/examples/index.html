@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Operation Span Task</title>
+    <script src="https://unpkg.com/jspsych@8"></script>
+    <script src="../dist/index.browser.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css" />
+  </head>
+  <body></body>
+  <script>
+    const jsPsych = initJsPsych({
+      on_finish: function () {
+        // Calculate and display scores
+        const scores = jsPsychTimelineOperationSpan.utils.scoring.getSummary(
+          jsPsych.data.get()
+        );
+        console.log("Operation Span Results:", scores);
+
+        // Display summary
+        jsPsych.data.displayData();
+      },
+    });
+
+    const timeline = jsPsychTimelineOperationSpan.createTimeline(jsPsych, {
+      showInstructions: true,
+      setSizes: [3, 4, 5],
+      trialsPerSetSize: 2,
+    });
+
+    jsPsych.run([timeline]);
+  </script>
+</html>

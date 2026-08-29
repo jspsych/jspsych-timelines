@@ -1,0 +1,53 @@
+{
+    "name": "@jspsych-timelines/berg-card-sorting-test",
+    "version": "0.0.1",
+    "description": "Berg Card Sorting Test (Wisconsin Card Sort variant) for measuring cognitive flexibility and set-shifting.",
+    "type": "module",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "unpkg": "dist/index.browser.js",
+    "scripts": {
+        "build": "tsup src/index.ts --format esm,iife,cjs --sourcemap --dts --treeshake --clean --global-name jsPsychTimelineBergCardSortingTest --inject-style && node -e \"require('fs').renameSync('dist/index.global.js','dist/index.browser.js')\" && node -e \"require('fs').renameSync('dist/index.global.js.map','dist/index.browser.js.map')\"",
+        "test": "jest"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/jspsych/jspsych-timelines.git",
+        "directory": "packages/berg-card-sorting-test"
+    },
+    "keywords": [
+        "jsPsych",
+        "berg-card-sorting-test",
+        "bcst",
+        "wcst",
+        "card sorting",
+        "executive function",
+        "cognitive flexibility",
+        "set-shifting",
+        "perseveration"
+    ],
+    "author": {
+        "name": "Josh de Leeuw",
+        "url": "https://github.com/jodeleeuw"
+    },
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/jspsych/jspsych-timelines/issues"
+    },
+    "homepage": "https://github.com/jspsych/jspsych-timelines/tree/main/packages/berg-card-sorting-test#readme",
+    "peerDependencies": {
+        "jspsych": ">=8.0.0"
+    },
+    "devDependencies": {
+        "@jspsych/config": "^3.2.2",
+        "identity-obj-proxy": "^3.0.0",
+        "jspsych": "^8.0.0",
+        "tsup": "^6.7.0",
+        "typescript": "^5.0.2"
+    },
+    "dependencies": {
+        "@jspsych/plugin-html-button-response": "^2.1.0",
+        "@jspsych/plugin-html-keyboard-response": "^2.1.0",
+        "@jspsych/plugin-instructions": "^2.1.0"
+    }
+}
