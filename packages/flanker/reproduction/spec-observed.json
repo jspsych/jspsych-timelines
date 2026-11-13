@@ -1,0 +1,3003 @@
+{
+ "spec": "specs/flanker/spec.yaml (jspsych-timelines-paper, vocabulary 2026-11-13-std-final)",
+ "options": [
+  {
+   "name": "cue_target_interval_ms",
+   "default": {
+    "value": {
+     "warning cue": 0
+    },
+    "basis": "components"
+   },
+   "components": [
+    {
+     "variation": "warning_cue",
+     "role": "warning cue",
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S012",
+       "raw": "none",
+       "value": 0,
+       "ok": true,
+       "note": "No cue; condition_proportions omitted (cue rate 0 not expressible as a trial-type proportion without inventing keys)."
+      },
+      {
+       "source": "S004",
+       "raw": "none",
+       "value": 0,
+       "ok": true,
+       "note": "No cue; condition_proportions omitted (cue rate 0 not expressible as a trial-type proportion without inventing keys)."
+      },
+      {
+       "source": "S068",
+       "raw": "{proportion_cued: 0.5, cue_target_interval_ms: 500, cue_form: 'two circles above/below fixation, 250 ms'}",
+       "value": 500,
+       "ok": true,
+       "note": "Cue is orthogonal to congruency, so cued/uncued keys sit awkwardly in condition_proportions; 250 ms cue duration has no target option here; stimulus_set role-map value shape is free text."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "feedback_duration_ms",
+   "default": {
+    "value": 400,
+    "raw": 400,
+    "basis": "anchor",
+    "source": "S019",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "feedback_duration_ms",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S012",
+       "raw": 1000,
+       "value": 1000,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S019",
+       "raw": 400,
+       "value": 400,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S047",
+       "raw": 250,
+       "value": 250,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S119",
+       "raw": 2000,
+       "value": 2000,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S060",
+       "raw": 1000,
+       "value": 1000,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S008",
+       "raw": "min 1000 then keypress",
+       "value": null,
+       "ok": false,
+       "note": "Minimum 1000 ms then self-paced dismissal; no typed form for min-then-keypress duration."
+      },
+      {
+       "source": "S104",
+       "raw": 350,
+       "value": 350,
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "fixation_duration_ms",
+   "default": {
+    "value": 500,
+    "raw": 500,
+    "basis": "anchor",
+    "source": "S019",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "fixation_duration_ms",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S012",
+       "raw": 500,
+       "value": 500,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S019",
+       "raw": 500,
+       "value": 500,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S004",
+       "raw": 500,
+       "value": 500,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S060",
+       "raw": 500,
+       "value": 500,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S119",
+       "raw": 500,
+       "value": 500,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S069",
+       "raw": 500,
+       "value": 500,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S047",
+       "raw": 250,
+       "value": 250,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S111",
+       "raw": 2000,
+       "value": 2000,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S008",
+       "raw": "{min_ms: 500, max_ms: 950, step_ms: 50}",
+       "value": {
+        "min": 500,
+        "max": 950,
+        "step": 50
+       },
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S068",
+       "raw": "{min_ms: 1100, max_ms: 2600, step_ms: 100}",
+       "value": {
+        "min": 1100,
+        "max": 2600,
+        "step": 100
+       },
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "iti_ms",
+   "default": {
+    "value": 1000,
+    "raw": 1000,
+    "basis": "anchor",
+    "source": "S019",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "inter_trial_interval_ms",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S012",
+       "raw": 500,
+       "value": 500,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S060",
+       "raw": 500,
+       "value": 500,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S119",
+       "raw": 750,
+       "value": 750,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S007",
+       "raw": 750,
+       "value": 750,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S019",
+       "raw": 1000,
+       "value": 1000,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S004",
+       "raw": 1500,
+       "value": 1500,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S111",
+       "raw": "{fixed_trial_duration_ms: 5000}",
+       "value": null,
+       "ok": false,
+       "note": "Fixed 5000 ms trial incl. 2000 ms fixation (RT + interval = 3 s); ITI not separable from response window without inventing; consider a trial_duration_ms option."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "response_window_ms",
+   "default": {
+    "value": 800,
+    "raw": 800,
+    "basis": "anchor",
+    "source": "S019",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "response_deadline_ms",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S007",
+       "raw": "none",
+       "value": null,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S008",
+       "raw": "none",
+       "value": null,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S019",
+       "raw": 800,
+       "value": 800,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S012",
+       "raw": 1500,
+       "value": 1500,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S004",
+       "raw": 1500,
+       "value": 1500,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S119",
+       "raw": 1500,
+       "value": 1500,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S047",
+       "raw": 1000,
+       "value": 1000,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S060",
+       "raw": 2000,
+       "value": 2000,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S111",
+       "raw": 3000,
+       "value": 3000,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S104",
+       "raw": 2500,
+       "value": 2500,
+       "ok": true,
+       "note": null
+      }
+     ]
+    },
+    {
+     "variation": "deadline_rule",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S012",
+       "raw": "fixed",
+       "value": null,
+       "ok": true,
+       "note": "Category only, no number; the value is in response_deadline_ms."
+      },
+      {
+       "source": "S004",
+       "raw": "fixed",
+       "value": null,
+       "ok": true,
+       "note": "Category only, no number; the value is in response_deadline_ms."
+      },
+      {
+       "source": "S104",
+       "raw": "individualized from practice mean RT (-1 SD speed / +1 SD both / +3 SD accuracy)",
+       "value": null,
+       "ok": false,
+       "note": "Per-participant deadline derived from practice RT, differing by instruction; propose vocabulary value: response_window rule or adaptive procedure rt_based (not a trial-wise staircase)."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "soa_ms",
+   "default": {
+    "value": 0,
+    "raw": 0,
+    "basis": "anchor",
+    "source": "S019",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "flanker_target_soa_ms",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S004",
+       "raw": 0,
+       "value": 0,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S019",
+       "raw": 0,
+       "value": 0,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S060",
+       "raw": -150,
+       "value": -150,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S060",
+       "raw": 150,
+       "value": 150,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S132",
+       "raw": "flankers precede target (Kopp variant)",
+       "value": null,
+       "ok": false,
+       "note": "Direction only; SOA magnitude not given."
+      },
+      {
+       "source": "S061",
+       "raw": -250,
+       "value": -250,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S061",
+       "raw": 250,
+       "value": 250,
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "stimulus_duration_ms",
+   "default": {
+    "value": null,
+    "raw": "until_response",
+    "basis": "anchor",
+    "source": "S019",
+    "needs_translation": true
+   },
+   "components": [
+    {
+     "variation": "stimulus_duration_ms",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S007",
+       "raw": "until_response",
+       "value": null,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S008",
+       "raw": "until_response",
+       "value": null,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S068",
+       "raw": "until_response",
+       "value": null,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S019",
+       "raw": "until_response",
+       "value": null,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S012",
+       "raw": 1500,
+       "value": 1500,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S004",
+       "raw": 1000,
+       "value": 1000,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S111",
+       "raw": 2000,
+       "value": 2000,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S119",
+       "raw": 150,
+       "value": 150,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S005",
+       "raw": 200,
+       "value": 200,
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "stimulus_color",
+   "default": {
+    "value": "white on black",
+    "raw": "white on black",
+    "basis": "anchor",
+    "source": "S019",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "display_colours",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S019",
+       "raw": "white on black",
+       "value": "white on black",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S004",
+       "raw": "white on black",
+       "value": "white on black",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S060",
+       "raw": "black on grey",
+       "value": "black on grey",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S119",
+       "raw": "black on grey",
+       "value": "black on grey",
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "stimulus_layout",
+   "default": {
+    "value": {
+     "flanker_spacing": "{gap: 2, unit: px}",
+     "array_position": "centre_at_fixation"
+    },
+    "basis": "components"
+   },
+   "components": [
+    {
+     "variation": "flanker_spacing",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S019",
+       "raw": "{gap: 2, unit: px}",
+       "value": "{gap: 2, unit: px}",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S012",
+       "raw": "adjacent",
+       "value": "adjacent",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S004",
+       "raw": "[0.23, 0.91, 1.59, 2.95, 4.31, 5.67] deg edge-to-edge",
+       "value": "[0.23, 0.91, 1.59, 2.95, 4.31, 5.67] deg edge-to-edge",
+       "ok": true,
+       "note": null
+      }
+     ]
+    },
+    {
+     "variation": "array_position",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S012",
+       "raw": "centre_at_fixation",
+       "value": "centre_at_fixation",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S068",
+       "raw": "centre_at_fixation",
+       "value": "centre_at_fixation",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S015",
+       "raw": "above_fixation",
+       "value": "above_fixation",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S132",
+       "raw": "vertical (flankers above/below target)",
+       "value": "vertical (flankers above/below target)",
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "stimulus_set",
+   "default": {
+    "value": "arrows",
+    "raw": "arrows",
+    "basis": "anchor",
+    "source": "S019",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "stimulus_set",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S019",
+       "raw": "arrows",
+       "value": "arrows",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S016",
+       "raw": "arrows",
+       "value": "arrows",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S039",
+       "raw": "arrows",
+       "value": "arrows",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S047",
+       "raw": "arrows",
+       "value": "arrows",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S056",
+       "raw": "arrows",
+       "value": "arrows",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S068",
+       "raw": "arrows",
+       "value": "arrows",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S111",
+       "raw": "arrows",
+       "value": "arrows",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S004",
+       "raw": "arrows",
+       "value": "arrows",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S012",
+       "raw": "letters f/h",
+       "value": "letters f/h",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S015",
+       "raw": "letters X,C / V,B",
+       "value": "letters X,C / V,B",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S060",
+       "raw": "letters H/S",
+       "value": "letters H/S",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S119",
+       "raw": "letters S/H",
+       "value": "letters S/H",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S069",
+       "raw": "pictures (neutral target, valenced distractor pictures; location task)",
+       "value": "pictures (neutral target, valenced distractor pictures; location task)",
+       "ok": true,
+       "note": null
+      }
+     ]
+    },
+    {
+     "variation": "flankers_per_side",
+     "role": "flanker",
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S012",
+       "raw": 2,
+       "value": 2,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S019",
+       "raw": 2,
+       "value": 2,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S068",
+       "raw": 2,
+       "value": 2,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S060",
+       "raw": 2,
+       "value": 2,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S004",
+       "raw": 1,
+       "value": 1,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S119",
+       "raw": 1,
+       "value": 1,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S047",
+       "raw": "[2, 3] mixed",
+       "value": {
+        "flanker": {
+         "per_side": [
+          2,
+          3
+         ]
+        }
+       },
+       "ok": true,
+       "note": "5 or 7 arrows mixed; structure of per-role stimulus_set value is not defined in the vocabulary."
+      }
+     ]
+    },
+    {
+     "variation": "neutral_flanker_form",
+     "role": "neutral flanker",
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S007",
+       "raw": "straight_lines",
+       "value": "straight_lines",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S019",
+       "raw": "dashes",
+       "value": "dashes",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S019",
+       "raw": "blank",
+       "value": "blank",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S111",
+       "raw": "squares",
+       "value": "squares",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S132",
+       "raw": "plus signs / diamonds / vertical arrows",
+       "value": "plus signs / diamonds / vertical arrows",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S104",
+       "raw": "unmapped letter (S)",
+       "value": "unmapped letter (S)",
+       "ok": true,
+       "note": null
+      }
+     ]
+    },
+    {
+     "variation": "warning_cue",
+     "role": "warning cue",
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S012",
+       "raw": "none",
+       "value": {
+        "cue": "none"
+       },
+       "ok": true,
+       "note": "No cue; condition_proportions omitted (cue rate 0 not expressible as a trial-type proportion without inventing keys)."
+      },
+      {
+       "source": "S004",
+       "raw": "none",
+       "value": {
+        "cue": "none"
+       },
+       "ok": true,
+       "note": "No cue; condition_proportions omitted (cue rate 0 not expressible as a trial-type proportion without inventing keys)."
+      },
+      {
+       "source": "S068",
+       "raw": "{proportion_cued: 0.5, cue_target_interval_ms: 500, cue_form: 'two circles above/below fixation, 250 ms'}",
+       "value": {
+        "cue": "two circles above/below fixation"
+       },
+       "ok": true,
+       "note": "Cue is orthogonal to congruency, so cued/uncued keys sit awkwardly in condition_proportions; 250 ms cue duration has no target option here; stimulus_set role-map value shape is free text."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "stimulus_size",
+   "default": {
+    "value": {
+     "value": 40,
+     "unit": "px"
+    },
+    "raw": "{value: 40, unit: px}",
+    "basis": "anchor",
+    "source": "S019",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "stimulus_size",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S019",
+       "raw": "{value: 40, unit: px}",
+       "value": {
+        "value": 40,
+        "unit": "px"
+       },
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S134",
+       "raw": "{value: 50, unit: px}",
+       "value": {
+        "value": 50,
+        "unit": "px"
+       },
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S068",
+       "raw": "{value: 50, unit: px}",
+       "value": {
+        "value": 50,
+        "unit": "px"
+       },
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S004",
+       "raw": "{value: 1.09, unit: deg}",
+       "value": {
+        "value": 1.09,
+        "unit": "deg"
+       },
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S056",
+       "raw": "{value: 0.1, unit: screen_height_fraction}",
+       "value": {
+        "value": 0.1,
+        "unit": "screen_height_fraction"
+       },
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "targets_per_response",
+   "default": {
+    "value": 1,
+    "raw": 1,
+    "basis": "fill",
+    "frequency": "2/3",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "targets_per_response",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S012",
+       "raw": 1,
+       "value": 1,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S119",
+       "raw": 1,
+       "value": 1,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S015",
+       "raw": 2,
+       "value": 2,
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "concurrent_task",
+   "default": {
+    "value": "none",
+    "raw": "pure_flanker",
+    "basis": "fill",
+    "frequency": "2/4",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "task_interleaving",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S012",
+       "raw": "pure_flanker",
+       "value": "none",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S068",
+       "raw": "pure_flanker",
+       "value": "none",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S060",
+       "raw": "alternating_trials_with_simon",
+       "value": "interleaved_trials",
+       "ok": true,
+       "note": "Other task is Simon; task identity not recorded in the enum."
+      },
+      {
+       "source": "S119",
+       "raw": "alternating_blocks_with_simon",
+       "value": "alternating_blocks",
+       "ok": true,
+       "note": "Other task is Simon; task identity not recorded in the enum."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "condition_proportions",
+   "default": {
+    "value": {
+     "congruent": 0.25,
+     "incongruent": 0.25,
+     "neutral_dash": 0.25,
+     "neutral_empty": 0.25
+    },
+    "raw": "congruent 0.25, incongruent 0.25, neutral-dash 0.25, neutral-empty 0.25",
+    "basis": "anchor",
+    "source": "S019",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "condition_proportions",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S012",
+       "raw": "congruent 0.5, incongruent 0.5",
+       "value": {
+        "congruent": 0.5,
+        "incongruent": 0.5
+       },
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S055",
+       "raw": "congruent 0.5, incongruent 0.5",
+       "value": {
+        "congruent": 0.5,
+        "incongruent": 0.5
+       },
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S019",
+       "raw": "congruent 0.25, incongruent 0.25, neutral-dash 0.25, neutral-empty 0.25",
+       "value": {
+        "congruent": 0.25,
+        "incongruent": 0.25,
+        "neutral_dash": 0.25,
+        "neutral_empty": 0.25
+       },
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S007",
+       "raw": "congruent 0.33, incongruent 0.33, neutral 0.33",
+       "value": {
+        "congruent": 0.33,
+        "incongruent": 0.33,
+        "neutral": 0.33
+       },
+       "ok": true,
+       "note": "Reported as 0.33 each (equal thirds; 240 trials per condition)."
+      },
+      {
+       "source": "S111",
+       "raw": "congruent 0.25, incongruent 0.25, neutral 0.25, nogo 0.25",
+       "value": {
+        "congruent": 0.25,
+        "incongruent": 0.25,
+        "neutral": 0.25,
+        "nogo": 0.25
+       },
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S068",
+       "raw": "congruent ~0.5 (random per trial)",
+       "value": {
+        "congruent": 0.5,
+        "incongruent": 0.5
+       },
+       "ok": true,
+       "note": "Approximate; each trial randomly congruent/incongruent, realized proportions vary slightly."
+      },
+      {
+       "source": "S061",
+       "raw": "item-specific: MC items 75% congruent, MI items 25% congruent",
+       "value": null,
+       "ok": false,
+       "note": "Proportion depends on item set (MC vs MI), not a single trial-type map."
+      }
+     ]
+    },
+    {
+     "variation": "warning_cue",
+     "role": "warning cue",
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S012",
+       "raw": "none",
+       "value": null,
+       "ok": true,
+       "note": "No cue; condition_proportions omitted (cue rate 0 not expressible as a trial-type proportion without inventing keys)."
+      },
+      {
+       "source": "S004",
+       "raw": "none",
+       "value": null,
+       "ok": true,
+       "note": "No cue; condition_proportions omitted (cue rate 0 not expressible as a trial-type proportion without inventing keys)."
+      },
+      {
+       "source": "S068",
+       "raw": "{proportion_cued: 0.5, cue_target_interval_ms: 500, cue_form: 'two circles above/below fixation, 250 ms'}",
+       "value": {
+        "cued": 0.5,
+        "uncued": 0.5
+       },
+       "ok": true,
+       "note": "Cue is orthogonal to congruency, so cued/uncued keys sit awkwardly in condition_proportions; 250 ms cue duration has no target option here; stimulus_set role-map value shape is free text."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "condition_set",
+   "default": {
+    "value": [
+     "congruent",
+     "incongruent",
+     "neutral"
+    ],
+    "raw": "[congruent, incongruent, neutral]",
+    "basis": "anchor",
+    "source": "S019",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "flanker_condition_set",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S012",
+       "raw": "[congruent, incongruent]",
+       "value": [
+        "congruent",
+        "incongruent"
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S004",
+       "raw": "[congruent, incongruent]",
+       "value": [
+        "congruent",
+        "incongruent"
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S068",
+       "raw": "[congruent, incongruent]",
+       "value": [
+        "congruent",
+        "incongruent"
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S007",
+       "raw": "[congruent, incongruent, neutral]",
+       "value": [
+        "congruent",
+        "incongruent",
+        "neutral"
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S019",
+       "raw": "[congruent, incongruent, neutral]",
+       "value": [
+        "congruent",
+        "incongruent",
+        "neutral"
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S111",
+       "raw": "[congruent, incongruent, neutral, nogo]",
+       "value": [
+        "congruent",
+        "incongruent",
+        "neutral",
+        "nogo"
+       ],
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "n_blocks",
+   "default": {
+    "value": 10,
+    "raw": 10,
+    "basis": "fill",
+    "frequency": "3/7",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "num_test_blocks",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S012",
+       "raw": 1,
+       "value": 1,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S008",
+       "raw": 2,
+       "value": 2,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S004",
+       "raw": 4,
+       "value": 4,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S047",
+       "raw": 10,
+       "value": 10,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S056",
+       "raw": 10,
+       "value": 10,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S068",
+       "raw": 10,
+       "value": 10,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S060",
+       "raw": 12,
+       "value": 12,
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "n_test_trials",
+   "default": {
+    "value": 160,
+    "raw": 160,
+    "basis": "anchor",
+    "source": "S019",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "num_test_trials",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S012",
+       "raw": 100,
+       "value": 100,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S019",
+       "raw": 160,
+       "value": 160,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S015",
+       "raw": 50,
+       "value": 50,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S047",
+       "raw": 800,
+       "value": 800,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S055",
+       "raw": 420,
+       "value": 420,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S056",
+       "raw": 480,
+       "value": 480,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S068",
+       "raw": 320,
+       "value": 320,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S111",
+       "raw": 72,
+       "value": 72,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S004",
+       "raw": 384,
+       "value": 384,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S119",
+       "raw": 448,
+       "value": 448,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S008",
+       "raw": 320,
+       "value": 320,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S007",
+       "raw": 720,
+       "value": 720,
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "trial_order",
+   "default": {
+    "value": "shuffled_list",
+    "raw": "shuffled_balanced_list",
+    "basis": "anchor",
+    "source": "S019",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "trial_order",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S019",
+       "raw": "shuffled_balanced_list",
+       "value": "shuffled_list",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S119",
+       "raw": "shuffled_balanced_list",
+       "value": "shuffled_list",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S068",
+       "raw": "independent_random_per_trial",
+       "value": "random",
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "response_device",
+   "default": {
+    "value": null,
+    "raw": "auto (keyboard, mouse or touch targets)",
+    "basis": "anchor",
+    "source": "S019",
+    "needs_translation": true
+   },
+   "components": [
+    {
+     "variation": "response_device",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S012",
+       "raw": "keyboard",
+       "value": "keyboard",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S004",
+       "raw": "keyboard",
+       "value": "keyboard",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S008",
+       "raw": "touchscreen",
+       "value": "touch",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S005",
+       "raw": "mouse_buttons",
+       "value": "mouse",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S019",
+       "raw": "auto (keyboard, mouse or touch targets)",
+       "value": null,
+       "ok": false,
+       "note": "Device chosen at runtime among three; enum takes one value (needs list or 'auto')."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "response_hand",
+   "default": {
+    "value": "two_hands_index_fingers",
+    "raw": "two_hands_index_fingers",
+    "basis": "fill",
+    "frequency": "2/3",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "response_hands",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S060",
+       "raw": "two_hands_index_fingers",
+       "value": "two_hands_index_fingers",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S119",
+       "raw": "two_hands_index_fingers",
+       "value": "two_hands_index_fingers",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S039",
+       "raw": "one_hand_dominant",
+       "value": "one_hand_dominant",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S028",
+       "raw": "one-handed vs two-handed (coded across 45 studies)",
+       "value": "one-handed vs two-handed (coded across 45 studies)",
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "response_keys",
+   "default": {
+    "value": [
+     "ArrowLeft",
+     "ArrowRight"
+    ],
+    "raw": "[ArrowLeft, ArrowRight]",
+    "basis": "fill",
+    "frequency": "2/11",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "response_keys",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S012",
+       "raw": "[f, h]",
+       "value": [
+        "f",
+        "h"
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S015",
+       "raw": "[a, l]",
+       "value": [
+        "a",
+        "l"
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S135",
+       "raw": "[left shift, right shift]",
+       "value": [
+        "left shift",
+        "right shift"
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S039",
+       "raw": "[ArrowLeft, ArrowRight]",
+       "value": [
+        "ArrowLeft",
+        "ArrowRight"
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S111",
+       "raw": "[ArrowLeft, ArrowRight]",
+       "value": [
+        "ArrowLeft",
+        "ArrowRight"
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S056",
+       "raw": "[w, p]",
+       "value": [
+        "w",
+        "p"
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S055",
+       "raw": "[w, p]",
+       "value": [
+        "w",
+        "p"
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S060",
+       "raw": "[q, p]",
+       "value": [
+        "q",
+        "p"
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S068",
+       "raw": "[q, p]",
+       "value": [
+        "q",
+        "p"
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S004",
+       "raw": "[x, .]",
+       "value": [
+        "x",
+        "."
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S008",
+       "raw": "[s, l]",
+       "value": [
+        "s",
+        "l"
+       ],
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "response_mapping_counterbalancing",
+   "default": {
+    "value": "fixed",
+    "raw": "fixed",
+    "basis": "fill",
+    "frequency": "2/4",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "sr_mapping_assignment",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S012",
+       "raw": "fixed",
+       "value": "fixed",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S015",
+       "raw": "fixed",
+       "value": "fixed",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S060",
+       "raw": "random_per_participant",
+       "value": "random_per_participant",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S119",
+       "raw": "random_per_participant",
+       "value": "random_per_participant",
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "attention_checks",
+   "default": {
+    "value": "none",
+    "raw": "none",
+    "basis": "fill",
+    "frequency": "2/3",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "attention_checks",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S068",
+       "raw": "none",
+       "value": "none",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S012",
+       "raw": "none",
+       "value": "none",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S111",
+       "raw": "arrow-key vigilance probes before the task",
+       "value": "instructed_items",
+       "ok": true,
+       "note": "Probes prompt a specific arrow-key press (closest to instructed items); placement before task not expressible."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "device_eligibility",
+   "default": {
+    "value": null,
+    "raw": "[fullscreen]",
+    "basis": "fill",
+    "frequency": "1/3",
+    "needs_translation": true
+   },
+   "components": [
+    {
+     "variation": "device_eligibility_checks",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S013",
+       "raw": "[fullscreen]",
+       "value": null,
+       "ok": false,
+       "note": "Fullscreen is a display requirement, not eligibility; propose vocabulary value: fullscreen_required."
+      },
+      {
+       "source": "S004",
+       "raw": "[laptop_or_desktop_only]",
+       "value": "computer_only",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S008",
+       "raw": "[aspect_ratio >= 1.6, landscape orientation]",
+       "value": null,
+       "ok": false,
+       "note": "Screen-geometry requirement for smartphones; propose vocabulary value: screen_geometry_required."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "practice_trials",
+   "default": {
+    "value": 8,
+    "raw": 8,
+    "basis": "anchor",
+    "source": "S019",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "num_practice_trials",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S012",
+       "raw": 12,
+       "value": 12,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S019",
+       "raw": 8,
+       "value": 8,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S068",
+       "raw": 8,
+       "value": 8,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S004",
+       "raw": 10,
+       "value": 10,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S111",
+       "raw": 24,
+       "value": 24,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S056",
+       "raw": 40,
+       "value": 40,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S104",
+       "raw": 60,
+       "value": 60,
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "rest_breaks",
+   "default": {
+    "value": "self_paced",
+    "raw": "self_paced",
+    "basis": "fill",
+    "frequency": "3/4",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "inter_block_break",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S012",
+       "raw": "none",
+       "value": "none",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S047",
+       "raw": "self_paced",
+       "value": "self_paced",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S004",
+       "raw": "self_paced",
+       "value": "self_paced",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S119",
+       "raw": "self_paced",
+       "value": "self_paced",
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "screen_calibration",
+   "default": {
+    "value": "none",
+    "raw": "none",
+    "basis": "fill",
+    "frequency": "2/4",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "size_calibration",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S012",
+       "raw": "none",
+       "value": "none",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S068",
+       "raw": "none",
+       "value": "none",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S119",
+       "raw": "credit_card",
+       "value": "credit_card",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S004",
+       "raw": "credit_card_and_blind_spot",
+       "value": "virtual_chinrest",
+       "ok": true,
+       "note": "Card plus blind-spot is the virtual chinrest procedure."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "block_feedback",
+   "default": {
+    "value": "none",
+    "raw": "none",
+    "basis": "fill",
+    "frequency": "2/5",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "block_feedback",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S012",
+       "raw": "none",
+       "value": "none",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S068",
+       "raw": "none",
+       "value": "none",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S047",
+       "raw": "block_accuracy",
+       "value": "accuracy",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S119",
+       "raw": "block_mean_rt_and_error_rate",
+       "value": "accuracy_rt",
+       "ok": true,
+       "note": "Error rate expressed as accuracy."
+      },
+      {
+       "source": "S005",
+       "raw": "accuracy-contingent speed/accuracy message",
+       "value": "accuracy",
+       "ok": true,
+       "note": "Message about speed vs accuracy chosen from block accuracy; lossy."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "feedback_condition",
+   "default": {
+    "value": "all",
+    "raw": "practice_only",
+    "basis": "anchor",
+    "source": "S019",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "trial_feedback_by_phase",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S012",
+       "raw": "practice_and_test",
+       "value": "all",
+       "ok": true,
+       "note": "Feedback in all phases; trial_feedback content comes from trial_feedback_content, so not set here."
+      },
+      {
+       "source": "S047",
+       "raw": "practice_and_test",
+       "value": "all",
+       "ok": true,
+       "note": "Feedback in all phases; trial_feedback content comes from trial_feedback_content, so not set here."
+      },
+      {
+       "source": "S004",
+       "raw": "errors_only",
+       "value": "errors_only",
+       "ok": true,
+       "note": "Phase scope all phases; content from trial_feedback_content."
+      },
+      {
+       "source": "S019",
+       "raw": "practice_only",
+       "value": "all",
+       "ok": true,
+       "note": "Practice content 'accuracy' is a placeholder; actual content is in trial_feedback_content (e.g. correct/incorrect + RT); condition 'all' assumed."
+      },
+      {
+       "source": "S111",
+       "raw": "practice_only",
+       "value": "all",
+       "ok": true,
+       "note": "Practice content 'accuracy' is a placeholder; actual content is in trial_feedback_content (e.g. correct/incorrect + RT); condition 'all' assumed."
+      },
+      {
+       "source": "S119",
+       "raw": "errors_only",
+       "value": "errors_only",
+       "ok": true,
+       "note": "Phase scope all phases; content from trial_feedback_content."
+      },
+      {
+       "source": "S060",
+       "raw": "errors_only",
+       "value": "errors_only",
+       "ok": true,
+       "note": "Phase scope all phases; content from trial_feedback_content."
+      },
+      {
+       "source": "S068",
+       "raw": "summary after practice only",
+       "value": null,
+       "ok": true,
+       "note": "A summary after practice is block-level feedback, not trial feedback; content unknown."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "trial_feedback",
+   "default": {
+    "value": "accuracy_rt",
+    "raw": "correct/incorrect + RT",
+    "basis": "anchor",
+    "source": "S019",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "trial_feedback_by_phase",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S012",
+       "raw": "practice_and_test",
+       "value": null,
+       "ok": true,
+       "note": "Feedback in all phases; trial_feedback content comes from trial_feedback_content, so not set here."
+      },
+      {
+       "source": "S047",
+       "raw": "practice_and_test",
+       "value": null,
+       "ok": true,
+       "note": "Feedback in all phases; trial_feedback content comes from trial_feedback_content, so not set here."
+      },
+      {
+       "source": "S004",
+       "raw": "errors_only",
+       "value": null,
+       "ok": true,
+       "note": "Phase scope all phases; content from trial_feedback_content."
+      },
+      {
+       "source": "S019",
+       "raw": "practice_only",
+       "value": "none",
+       "ok": true,
+       "note": "Practice content 'accuracy' is a placeholder; actual content is in trial_feedback_content (e.g. correct/incorrect + RT); condition 'all' assumed."
+      },
+      {
+       "source": "S111",
+       "raw": "practice_only",
+       "value": "none",
+       "ok": true,
+       "note": "Practice content 'accuracy' is a placeholder; actual content is in trial_feedback_content (e.g. correct/incorrect + RT); condition 'all' assumed."
+      },
+      {
+       "source": "S119",
+       "raw": "errors_only",
+       "value": null,
+       "ok": true,
+       "note": "Phase scope all phases; content from trial_feedback_content."
+      },
+      {
+       "source": "S060",
+       "raw": "errors_only",
+       "value": null,
+       "ok": true,
+       "note": "Phase scope all phases; content from trial_feedback_content."
+      },
+      {
+       "source": "S068",
+       "raw": "summary after practice only",
+       "value": "none",
+       "ok": true,
+       "note": "A summary after practice is block-level feedback, not trial feedback; content unknown."
+      }
+     ]
+    },
+    {
+     "variation": "trial_feedback_content",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S012",
+       "raw": "correct/incorrect text + 'respond faster' on timeout",
+       "value": "accuracy",
+       "ok": true,
+       "note": "Timeout message belongs to timeout_feedback."
+      },
+      {
+       "source": "S019",
+       "raw": "correct/incorrect + RT",
+       "value": "accuracy_rt",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S015",
+       "raw": "rule reminder after errors",
+       "value": null,
+       "ok": false,
+       "note": "propose vocabulary value: rule_reminder (correct_answer is not faithful)."
+      },
+      {
+       "source": "S004",
+       "raw": "beep + sad-face image on error/timeout",
+       "value": "accuracy",
+       "ok": true,
+       "note": "Negative-only accuracy signal; beep/image modality and errors-only condition not captured here."
+      },
+      {
+       "source": "S119",
+       "raw": "error / too fast / too slow messages",
+       "value": "accuracy_rt",
+       "ok": true,
+       "note": "Accuracy plus speed-limit messages; not RT value feedback."
+      },
+      {
+       "source": "S047",
+       "raw": "accuracy + 'Too late!'",
+       "value": "accuracy",
+       "ok": true,
+       "note": "Timeout message belongs to timeout_feedback."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "instruction_format",
+   "default": {
+    "value": "text",
+    "raw": "written_text",
+    "basis": "fill",
+    "frequency": "1/3",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "instruction_format",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S012",
+       "raw": "written_text",
+       "value": "text",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S068",
+       "raw": "video_then_written",
+       "value": null,
+       "ok": false,
+       "note": "propose vocabulary value: video_and_text (video then duplicate on-screen text)."
+      },
+      {
+       "source": "S104",
+       "raw": "written_with_examples",
+       "value": "text",
+       "ok": true,
+       "note": "Examples shown; no separate examples option."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "speed_accuracy_emphasis",
+   "default": {
+    "value": "both",
+    "raw": "speed_and_accuracy",
+    "basis": "fill",
+    "frequency": "2/3",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "speed_accuracy_instruction",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S004",
+       "raw": "speed_and_accuracy",
+       "value": "both",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S005",
+       "raw": "speed_and_accuracy",
+       "value": "both",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S104",
+       "raw": "blocked speed / accuracy / both",
+       "value": null,
+       "ok": false,
+       "note": "Emphasis varies across blocks over all three values; enum holds one value (needs per-block list)."
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "study_configurations": [
+  {
+   "source": "S004",
+   "citation": "Lee & Pitt 2024, BRM, online spacing flanker",
+   "doi": "10.3758/s13428-023-02327-7",
+   "source_type": "empirical",
+   "setting": "online-unsupervised",
+   "n_options": 24,
+   "fully_typed": true,
+   "options": {
+    "condition_set": [
+     "congruent",
+     "incongruent"
+    ],
+    "cue_target_interval_ms.warning cue": 0,
+    "device_eligibility": "computer_only",
+    "feedback_condition": "errors_only",
+    "fixation_duration_ms": 500,
+    "iti_ms": 1500,
+    "n_blocks": 4,
+    "n_test_trials": 384,
+    "practice_trials": 10,
+    "response_device": "keyboard",
+    "response_keys": [
+     "x",
+     "."
+    ],
+    "response_window_ms.response_deadline_ms": 1500,
+    "rest_breaks": "self_paced",
+    "screen_calibration": "virtual_chinrest",
+    "soa_ms": 0,
+    "speed_accuracy_emphasis": "both",
+    "stimulus_color": "white on black",
+    "stimulus_duration_ms": 1000,
+    "stimulus_layout.flanker_spacing": "[0.23, 0.91, 1.59, 2.95, 4.31, 5.67] deg edge-to-edge",
+    "stimulus_set.flanker": 1,
+    "stimulus_set.stimulus_set": "arrows",
+    "stimulus_set.warning cue": {
+     "cue": "none"
+    },
+    "stimulus_size": {
+     "value": 1.09,
+     "unit": "deg"
+    },
+    "trial_feedback.trial_feedback_content": "accuracy"
+   }
+  },
+  {
+   "source": "S005",
+   "citation": "flanker DDM psychometrics 2025, CABN",
+   "doi": "10.3758/s13415-024-01222-8",
+   "source_type": "empirical",
+   "setting": "lab-native",
+   "n_options": 4,
+   "fully_typed": true,
+   "options": {
+    "block_feedback": "accuracy",
+    "response_device": "mouse",
+    "speed_accuracy_emphasis": "both",
+    "stimulus_duration_ms": 200
+   }
+  },
+  {
+   "source": "S007",
+   "citation": "Hedge, Powell & Sumner 2018, BRM, reliability paradox",
+   "doi": "10.3758/s13428-017-0935-1",
+   "source_type": "empirical",
+   "setting": "lab-native",
+   "n_options": 7,
+   "fully_typed": true,
+   "options": {
+    "condition_proportions.condition_proportions": {
+     "congruent": 0.33,
+     "incongruent": 0.33,
+     "neutral": 0.33
+    },
+    "condition_set": [
+     "congruent",
+     "incongruent",
+     "neutral"
+    ],
+    "iti_ms": 750,
+    "n_test_trials": 720,
+    "response_window_ms.response_deadline_ms": null,
+    "stimulus_duration_ms": null,
+    "stimulus_set.neutral flanker": "straight_lines"
+   }
+  },
+  {
+   "source": "S008",
+   "citation": "Pronk et al. 2023, BRM, smartphone flanker reliability",
+   "doi": "10.3758/s13428-022-01885-6",
+   "source_type": "empirical",
+   "setting": "online-unsupervised",
+   "n_options": 9,
+   "fully_typed": false,
+   "options": {
+    "device_eligibility": {
+     "untranslated": "[aspect_ratio >= 1.6, landscape orientation]"
+    },
+    "feedback_duration_ms": {
+     "untranslated": "min 1000 then keypress"
+    },
+    "fixation_duration_ms": {
+     "min": 500,
+     "max": 950,
+     "step": 50
+    },
+    "n_blocks": 2,
+    "n_test_trials": 320,
+    "response_device": "touch",
+    "response_keys": [
+     "s",
+     "l"
+    ],
+    "response_window_ms.response_deadline_ms": null,
+    "stimulus_duration_ms": null
+   }
+  },
+  {
+   "source": "S012",
+   "citation": "Expfactory flanker defaults",
+   "doi": null,
+   "source_type": "reference-impl",
+   "setting": null,
+   "n_options": 28,
+   "fully_typed": true,
+   "options": {
+    "attention_checks": "none",
+    "block_feedback": "none",
+    "concurrent_task": "none",
+    "condition_proportions.condition_proportions": {
+     "congruent": 0.5,
+     "incongruent": 0.5
+    },
+    "condition_set": [
+     "congruent",
+     "incongruent"
+    ],
+    "cue_target_interval_ms.warning cue": 0,
+    "feedback_condition": "all",
+    "feedback_duration_ms": 1000,
+    "fixation_duration_ms": 500,
+    "instruction_format": "text",
+    "iti_ms": 500,
+    "n_blocks": 1,
+    "n_test_trials": 100,
+    "practice_trials": 12,
+    "response_device": "keyboard",
+    "response_keys": [
+     "f",
+     "h"
+    ],
+    "response_mapping_counterbalancing": "fixed",
+    "response_window_ms.response_deadline_ms": 1500,
+    "rest_breaks": "none",
+    "screen_calibration": "none",
+    "stimulus_duration_ms": 1500,
+    "stimulus_layout.array_position": "centre_at_fixation",
+    "stimulus_layout.flanker_spacing": "adjacent",
+    "stimulus_set.flanker": 2,
+    "stimulus_set.stimulus_set": "letters f/h",
+    "stimulus_set.warning cue": {
+     "cue": "none"
+    },
+    "targets_per_response": 1,
+    "trial_feedback.trial_feedback_content": "accuracy"
+   }
+  },
+  {
+   "source": "S013",
+   "citation": "Expfactory flanker config",
+   "doi": null,
+   "source_type": "reference-impl",
+   "setting": null,
+   "n_options": 1,
+   "fully_typed": false,
+   "options": {
+    "device_eligibility": {
+     "untranslated": "[fullscreen]"
+    }
+   }
+  },
+  {
+   "source": "S015",
+   "citation": "PsyToolkit letter flanker",
+   "doi": null,
+   "source_type": "reference-impl",
+   "setting": null,
+   "n_options": 7,
+   "fully_typed": false,
+   "options": {
+    "n_test_trials": 50,
+    "response_keys": [
+     "a",
+     "l"
+    ],
+    "response_mapping_counterbalancing": "fixed",
+    "stimulus_layout.array_position": "above_fixation",
+    "stimulus_set.stimulus_set": "letters X,C / V,B",
+    "targets_per_response": 2,
+    "trial_feedback.trial_feedback_content": {
+     "untranslated": "rule reminder after errors"
+    }
+   }
+  },
+  {
+   "source": "S016",
+   "citation": "PsyToolkit arrow flanker",
+   "doi": null,
+   "source_type": "reference-impl",
+   "setting": null,
+   "n_options": 1,
+   "fully_typed": true,
+   "options": {
+    "stimulus_set.stimulus_set": "arrows"
+   }
+  },
+  {
+   "source": "S019",
+   "citation": "PEBL flanker defaults",
+   "doi": null,
+   "source_type": "reference-impl",
+   "setting": null,
+   "n_options": 22,
+   "fully_typed": false,
+   "options": {
+    "condition_proportions.condition_proportions": {
+     "congruent": 0.25,
+     "incongruent": 0.25,
+     "neutral_dash": 0.25,
+     "neutral_empty": 0.25
+    },
+    "condition_set": [
+     "congruent",
+     "incongruent",
+     "neutral"
+    ],
+    "feedback_condition": "all",
+    "feedback_duration_ms": 400,
+    "fixation_duration_ms": 500,
+    "iti_ms": 1000,
+    "n_test_trials": 160,
+    "practice.trial_feedback": "accuracy",
+    "practice_trials": 8,
+    "response_device": {
+     "untranslated": "auto (keyboard, mouse or touch targets)"
+    },
+    "response_window_ms.response_deadline_ms": 800,
+    "soa_ms": 0,
+    "stimulus_color": "white on black",
+    "stimulus_duration_ms": null,
+    "stimulus_layout.flanker_spacing": "{gap: 2, unit: px}",
+    "stimulus_set.flanker": 2,
+    "stimulus_set.neutral flanker": "blank",
+    "stimulus_set.stimulus_set": "arrows",
+    "stimulus_size": {
+     "value": 40,
+     "unit": "px"
+    },
+    "trial_feedback.trial_feedback_by_phase": "none",
+    "trial_feedback.trial_feedback_content": "accuracy_rt",
+    "trial_order": "shuffled_list"
+   }
+  },
+  {
+   "source": "S039",
+   "citation": "literature-sample screening rank 6",
+   "doi": "10.1080/13803395.2026.2632223",
+   "source_type": "empirical",
+   "setting": "online-unsupervised",
+   "n_options": 3,
+   "fully_typed": true,
+   "options": {
+    "response_hand": "one_hand_dominant",
+    "response_keys": [
+     "ArrowLeft",
+     "ArrowRight"
+    ],
+    "stimulus_set.stimulus_set": "arrows"
+   }
+  },
+  {
+   "source": "S047",
+   "citation": "literature-sample screening rank 14",
+   "doi": "10.1016/j.scog.2026.100439",
+   "source_type": "empirical",
+   "setting": "online-unsupervised",
+   "n_options": 11,
+   "fully_typed": true,
+   "options": {
+    "block_feedback": "accuracy",
+    "feedback_condition": "all",
+    "feedback_duration_ms": 250,
+    "fixation_duration_ms": 250,
+    "n_blocks": 10,
+    "n_test_trials": 800,
+    "response_window_ms.response_deadline_ms": 1000,
+    "rest_breaks": "self_paced",
+    "stimulus_set.flanker": {
+     "flanker": {
+      "per_side": [
+       2,
+       3
+      ]
+     }
+    },
+    "stimulus_set.stimulus_set": "arrows",
+    "trial_feedback.trial_feedback_content": "accuracy"
+   }
+  },
+  {
+   "source": "S055",
+   "citation": "literature-sample screening rank 22",
+   "doi": "10.1007/s42113-026-00263-1",
+   "source_type": "empirical",
+   "setting": "online-unsupervised",
+   "n_options": 3,
+   "fully_typed": true,
+   "options": {
+    "condition_proportions.condition_proportions": {
+     "congruent": 0.5,
+     "incongruent": 0.5
+    },
+    "n_test_trials": 420,
+    "response_keys": [
+     "w",
+     "p"
+    ]
+   }
+  },
+  {
+   "source": "S056",
+   "citation": "literature-sample screening rank 23",
+   "doi": "10.1038/s41598-026-42307-3",
+   "source_type": "empirical",
+   "setting": "online-unsupervised",
+   "n_options": 6,
+   "fully_typed": true,
+   "options": {
+    "n_blocks": 10,
+    "n_test_trials": 480,
+    "practice_trials": 40,
+    "response_keys": [
+     "w",
+     "p"
+    ],
+    "stimulus_set.stimulus_set": "arrows",
+    "stimulus_size": {
+     "value": 0.1,
+     "unit": "screen_height_fraction"
+    }
+   }
+  },
+  {
+   "source": "S060",
+   "citation": "literature-sample screening rank 27",
+   "doi": "10.3758/s13421-025-01758-1",
+   "source_type": "empirical",
+   "setting": "online-unsupervised",
+   "n_options": 14,
+   "fully_typed": true,
+   "options": {
+    "concurrent_task": "interleaved_trials",
+    "feedback_condition": "errors_only",
+    "feedback_duration_ms": 1000,
+    "fixation_duration_ms": 500,
+    "iti_ms": 500,
+    "n_blocks": 12,
+    "response_hand": "two_hands_index_fingers",
+    "response_keys": [
+     "q",
+     "p"
+    ],
+    "response_mapping_counterbalancing": "random_per_participant",
+    "response_window_ms.response_deadline_ms": 2000,
+    "soa_ms": 150,
+    "stimulus_color": "black on grey",
+    "stimulus_set.flanker": 2,
+    "stimulus_set.stimulus_set": "letters H/S"
+   }
+  },
+  {
+   "source": "S061",
+   "citation": "literature-sample screening rank 28",
+   "doi": "10.29399/npa.29232",
+   "source_type": "empirical",
+   "setting": "lab-native",
+   "n_options": 2,
+   "fully_typed": false,
+   "options": {
+    "condition_proportions.condition_proportions": {
+     "untranslated": "item-specific: MC items 75% congruent, MI items 25% congruent"
+    },
+    "soa_ms": 250
+   }
+  },
+  {
+   "source": "S068",
+   "citation": "literature-sample screening rank 35",
+   "doi": "10.3389/fpsyg.2026.1768354",
+   "source_type": "empirical",
+   "setting": "online-unsupervised",
+   "n_options": 22,
+   "fully_typed": false,
+   "options": {
+    "attention_checks": "none",
+    "block_feedback": "none",
+    "concurrent_task": "none",
+    "condition_proportions.condition_proportions": {
+     "congruent": 0.5,
+     "incongruent": 0.5
+    },
+    "condition_proportions.warning cue": {
+     "cued": 0.5,
+     "uncued": 0.5
+    },
+    "condition_set": [
+     "congruent",
+     "incongruent"
+    ],
+    "cue_target_interval_ms.warning cue": 500,
+    "fixation_duration_ms": {
+     "min": 1100,
+     "max": 2600,
+     "step": 100
+    },
+    "instruction_format": {
+     "untranslated": "video_then_written"
+    },
+    "n_blocks": 10,
+    "n_test_trials": 320,
+    "practice_trials": 8,
+    "response_keys": [
+     "q",
+     "p"
+    ],
+    "screen_calibration": "none",
+    "stimulus_duration_ms": null,
+    "stimulus_layout.array_position": "centre_at_fixation",
+    "stimulus_set.flanker": 2,
+    "stimulus_set.stimulus_set": "arrows",
+    "stimulus_set.warning cue": {
+     "cue": "two circles above/below fixation"
+    },
+    "stimulus_size": {
+     "value": 50,
+     "unit": "px"
+    },
+    "trial_feedback.trial_feedback_by_phase": "none",
+    "trial_order": "random"
+   }
+  },
+  {
+   "source": "S069",
+   "citation": "literature-sample screening rank 36",
+   "doi": "10.3389/fpsyg.2026.1763006",
+   "source_type": "empirical",
+   "setting": "online-unsupervised",
+   "n_options": 2,
+   "fully_typed": true,
+   "options": {
+    "fixation_duration_ms": 500,
+    "stimulus_set.stimulus_set": "pictures (neutral target, valenced distractor pictures; location task)"
+   }
+  },
+  {
+   "source": "S104",
+   "citation": "literature-sample screening rank 72",
+   "doi": "10.1007/s00426-024-02075-z",
+   "source_type": "empirical",
+   "setting": "lab-native",
+   "n_options": 7,
+   "fully_typed": false,
+   "options": {
+    "feedback_duration_ms": 350,
+    "instruction_format": "text",
+    "practice_trials": 60,
+    "response_window_ms.deadline_rule": {
+     "untranslated": "individualized from practice mean RT (-1 SD speed / +1 SD both / +3 SD accuracy)"
+    },
+    "response_window_ms.response_deadline_ms": 2500,
+    "speed_accuracy_emphasis": {
+     "untranslated": "blocked speed / accuracy / both"
+    },
+    "stimulus_set.neutral flanker": "unmapped letter (S)"
+   }
+  },
+  {
+   "source": "S111",
+   "citation": "literature-sample screening rank 79",
+   "doi": "10.1371/journal.pone.0316047",
+   "source_type": "empirical",
+   "setting": "online-unsupervised",
+   "n_options": 15,
+   "fully_typed": false,
+   "options": {
+    "attention_checks": "instructed_items",
+    "condition_proportions.condition_proportions": {
+     "congruent": 0.25,
+     "incongruent": 0.25,
+     "neutral": 0.25,
+     "nogo": 0.25
+    },
+    "condition_set": [
+     "congruent",
+     "incongruent",
+     "neutral",
+     "nogo"
+    ],
+    "feedback_condition": "all",
+    "fixation_duration_ms": 2000,
+    "iti_ms": {
+     "untranslated": "{fixed_trial_duration_ms: 5000}"
+    },
+    "n_test_trials": 72,
+    "practice.trial_feedback": "accuracy",
+    "practice_trials": 24,
+    "response_keys": [
+     "ArrowLeft",
+     "ArrowRight"
+    ],
+    "response_window_ms.response_deadline_ms": 3000,
+    "stimulus_duration_ms": 2000,
+    "stimulus_set.neutral flanker": "squares",
+    "stimulus_set.stimulus_set": "arrows",
+    "trial_feedback.trial_feedback_by_phase": "none"
+   }
+  },
+  {
+   "source": "S119",
+   "citation": "literature-sample screening rank 87",
+   "doi": "10.1007/s42113-024-00211-x",
+   "source_type": "empirical",
+   "setting": "online-unsupervised",
+   "n_options": 19,
+   "fully_typed": true,
+   "options": {
+    "block_feedback": "accuracy_rt",
+    "concurrent_task": "alternating_blocks",
+    "feedback_condition": "errors_only",
+    "feedback_duration_ms": 2000,
+    "fixation_duration_ms": 500,
+    "iti_ms": 750,
+    "n_test_trials": 448,
+    "response_hand": "two_hands_index_fingers",
+    "response_mapping_counterbalancing": "random_per_participant",
+    "response_window_ms.response_deadline_ms": 1500,
+    "rest_breaks": "self_paced",
+    "screen_calibration": "credit_card",
+    "stimulus_color": "black on grey",
+    "stimulus_duration_ms": 150,
+    "stimulus_set.flanker": 1,
+    "stimulus_set.stimulus_set": "letters S/H",
+    "targets_per_response": 1,
+    "trial_feedback.trial_feedback_content": "accuracy_rt",
+    "trial_order": "shuffled_list"
+   }
+  },
+  {
+   "source": "S134",
+   "citation": "Expfactory flanker CSS (letter string font styling)",
+   "doi": null,
+   "source_type": "reference-impl",
+   "setting": null,
+   "n_options": 1,
+   "fully_typed": true,
+   "options": {
+    "stimulus_size": {
+     "value": 50,
+     "unit": "px"
+    }
+   }
+  },
+  {
+   "source": "S135",
+   "citation": "PEBL responsemode auto",
+   "doi": null,
+   "source_type": "reference-impl",
+   "setting": null,
+   "n_options": 1,
+   "fully_typed": true,
+   "options": {
+    "response_keys": [
+     "left shift",
+     "right shift"
+    ]
+   }
+  }
+ ],
+ "defaults": {
+  "source": "S019",
+  "citation": "PEBL flanker defaults",
+  "typicality": 0.443,
+  "coverage": 0.556,
+  "runner_up": {
+   "source": "S012",
+   "citation": "Expfactory flanker defaults",
+   "score": 0.507
+  },
+  "lead": -0.536,
+  "disagreement_with_runner_up": 0.867
+ }
+}

@@ -1,0 +1,7 @@
+{
+  "extends": "@jspsych/config/tsconfig.json",
+  "compilerOptions": {
+    "strict": true,
+    "resolveJsonModule": true
+  }
+}
