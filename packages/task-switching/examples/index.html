@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Switching</title>
+    <script src="https://unpkg.com/jspsych@8"></script>
+    <script src="../dist/index.browser.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css" />
+  </head>
+  <body></body>
+  <script>
+    const jsPsych = initJsPsych({
+      on_finish: function () {
+        const data = jsPsych.data.get();
+        const scores = jsPsychTimelineTaskSwitching.utils.scoring.getSummary(data);
+        console.log("Task Switching scores:", scores);
+        jsPsych.data.displayData();
+      },
+    });
+
+    const timeline = jsPsychTimelineTaskSwitching.createTimeline(jsPsych, {
+      showInstructions: true,
+      numPracticeTrials: 8,
+      numTrials: 24, // Reduced for demo
+    });
+
+    jsPsych.run([timeline]);
+  </script>
+</html>

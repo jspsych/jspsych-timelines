@@ -1,13 +1,14 @@
 {
   "name": "@jspsych-timelines/bart",
   "version": "0.1.0",
-  "description": "Balloon Analog Risk Task for jsPsych",
+  "description": "Balloon Analogue Risk Task (BART) for jsPsych, with practice balloons, blocked trials and built-in scoring.",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "unpkg": "dist/index.global.js",
+  "unpkg": "dist/index.browser.js",
   "scripts": {
-    "build": "tsup src/index.ts --format esm,iife,cjs --sourcemap --dts --treeshake --clean --global-name jsPsychTimelineBart && node -e \"const fs = require('fs'); const path = require('path'); function copyDir(src, dest) { if (!fs.existsSync(dest)) fs.mkdirSync(dest, {recursive: true}); fs.readdirSync(src).forEach(file => { const srcFile = path.join(src, file); const destFile = path.join(dest, file); if (fs.lstatSync(srcFile).isDirectory()) copyDir(srcFile, destFile); else fs.copyFileSync(srcFile, destFile); }); } copyDir('src/css', 'dist/css');\""
+    "build": "tsup src/index.ts --format esm,iife,cjs --sourcemap --dts --treeshake --clean --global-name jsPsychTimelineBart --inject-style && node -e \"require('fs').renameSync('dist/index.global.js','dist/index.browser.js')\" && node -e \"require('fs').renameSync('dist/index.global.js.map','dist/index.browser.js.map')\"",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -24,7 +25,10 @@
   "bugs": {
     "url": "https://github.com/jspsych/jspsych-timelines/issues"
   },
-  "homepage": "/bart/README.md",
+  "homepage": "https://github.com/jspsych/jspsych-timelines/tree/main/packages/bart#readme",
+  "peerDependencies": {
+    "jspsych": ">=8.0.0"
+  },
   "devDependencies": {
     "@jspsych/config": "^3.3.0",
     "jspsych": "^8.2.1",
@@ -34,10 +38,6 @@
   },
   "dependencies": {
     "@jspsych-contrib/plugin-bart": "^1.1.0",
-    "@jspsych/plugin-fullscreen": "^2.1.0",
-    "@jspsych/plugin-html-button-response": "^2.1.0",
-    "@jspsych/plugin-html-keyboard-response": "^2.1.0",
-    "@jspsych/plugin-instructions": "^2.1.0",
-    "@jspsych/plugin-preload": "^2.1.0"
+    "@jspsych/plugin-html-button-response": "^2.1.0"
   }
 }

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitts' Law Task</title>
+    <script src="https://unpkg.com/jspsych@8"></script>
+    <script src="../dist/index.browser.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css" />
+  </head>
+  <body></body>
+  <script>
+    const jsPsych = initJsPsych({
+      on_finish: function () {
+        const data = jsPsych.data.get();
+        const scores = jsPsychTimelineFitts.utils.scoring.getSummary(data);
+        console.log("Fitts scores:", scores);
+        jsPsych.data.displayData();
+      },
+    });
+
+    // requireLandscape is true by default - mobile users will be prompted
+    // to rotate their device to landscape before the task begins
+    const timeline = jsPsychTimelineFitts.createTimeline(jsPsych, {
+      showInstructions: true,
+      showPractice: true,
+      // requireLandscape: true, // enabled by default
+    });
+
+    jsPsych.run([timeline]);
+  </script>
+</html>

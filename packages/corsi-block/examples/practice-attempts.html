@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Corsi Block Task - Limited Practice Attempts</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://unpkg.com/jspsych@8"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-html-button-response@2"></script>
+  <script src="../dist/index.browser.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css">
+  <style>
+    body {
+      touch-action: manipulation;
+    }
+  </style>
+</head>
+
+<body></body>
+<script>
+  const jsPsych = initJsPsych({
+    on_finish: function() {
+      const data = jsPsych.data.get();
+
+      // The practice is recorded like any other trial, so whether the
+      // participant ever passed it is a query, not a separate flag.
+      const practiceResponses = data.filter({
+        task: 'corsi-block',
+        phase: 'practice',
+        part: 'instruction'
+      }).values().filter(trial => trial.correct !== null);
+
+      const passedPractice = practiceResponses.some(trial => trial.correct);
+      const attempts = practiceResponses.length;
+      const span = jsPsychTimelineCorsiBlock.utils.scoring.getSummary(data).span;
+
+      document.body.innerHTML = `
+        <div style="max-width: 600px; margin: 40px auto; font-family: sans-serif;">
+          <h2>Task Complete</h2>
+          <p><strong>Practice attempts used:</strong> ${attempts} of 2</p>
+          <p><strong>Passed the practice:</strong> ${passedPractice ? 'yes' : 'no'}</p>
+          <p><strong>Corsi span:</strong> ${span === null ? 'not established' : span}</p>
+          <p style="color: #666;">
+            A participant who never passed the practice may not have understood
+            the task. Records like this are usually worth excluding, which is
+            why the practice is recorded rather than discarded.
+          </p>
+          <button onclick="jsPsych.data.displayData('json')">Show Raw Data</button>
+        </div>
+      `;
+    }
+  });
+
+  const instructions = {
+    type: jsPsychHtmlButtonResponse,
+    stimulus: `
+      <div style="max-width: 600px; margin: auto;">
+        <h2>Corsi Block Task - Limited Practice Attempts</h2>
+        <p>
+          By default the instruction practice repeats until the participant
+          reproduces the sequence correctly. A participant who cannot do it is
+          then stuck before the task ever starts.
+        </p>
+        <p>
+          This example sets <code>max_practice_attempts: 2</code>. After two
+          failed attempts the task continues regardless, and the practice trials
+          in the data show what happened.
+        </p>
+        <p>To see the cap in action, deliberately tap the wrong blocks twice.</p>
+      </div>
+    `,
+    choices: ['Begin'],
+  };
+
+  const corsiTask = jsPsychTimelineCorsiBlock.createTimeline(jsPsych, {
+    // Give up on the practice after two failed attempts rather than looping
+    // forever. Omit this (or pass null) to repeat until the participant passes.
+    max_practice_attempts: 2,
+
+    starting_length: 2,
+    trials_per_length: 2,
+    max_length: 5
+  });
+
+  jsPsych.run([instructions, corsiTask]);
+</script>
+
+</html>

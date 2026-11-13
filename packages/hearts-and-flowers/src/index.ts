@@ -1,22 +1,26 @@
 import "./styles.css";
+
 import jsPsychHtmlButtonResponse from "@jspsych/plugin-html-button-response";
 import jsPsychHtmlKeyboardResponse from "@jspsych/plugin-html-keyboard-response";
 import { JsPsych } from "jspsych";
 
-import { 
-  StimulusInfo,
-  SameStimulusInfo,
-  StimulusOptions,
-  TextOptions,
-  CreateTimelineOptions,
-  CreateTrialsSubTimelineOptions,
- } from "./text";
-
 import { blankIconSvg } from "../assets/blank-icon.js";
 import { flowerIconSvg } from "../assets/flower-icon.js";
 import { heartIconSvg } from "../assets/heart-icon.js";
+import { version } from "../package.json";
+import {
+  CreateTimelineOptions,
+  CreateTrialsSubTimelineOptions,
+  SameStimulusInfo,
+  StimulusInfo,
+  StimulusOptions,
+  TextOptions,
+} from "./text";
 
 // -- CONSTANTS --
+
+const TASK_NAME = "hearts-and-flowers";
+const VERSION = version;
 /**
  * The default stimulus information object that describes the name and source of the stimulus for both target sides.
  */
@@ -41,13 +45,13 @@ const DEFAULT_TEXT_OBJECT: TextOptions = {
   start_instructions_text: "Time to play!",
   start_instructions_button_text: "Start",
   // -- DEMO INSTRUCTIONS --
-  format_instructions: (stimulus_name: string, side: string): string => 
+  format_instructions: (stimulus_name: string, side: string): string =>
     `When you see a ${stimulus_name}, press the button on the ${side} side.`,
-  format_gametype_announcement: (name: string): string => 
+  format_gametype_announcement: (name: string): string =>
     `This is the ${name} game. Here's how you play it.`,
   gametype_announcement_button_text: "OK",
   // -- FEEDBACK --
-  format_feedback: (correct: boolean) => correct ? "Great job!" : "Try again.",
+  format_feedback: (correct: boolean) => (correct ? "Great job!" : "Try again."),
   // -- FIXATION --
   fixation_text: "+",
   // -- END INSTRUCTIONS --
@@ -68,15 +72,15 @@ function generateStimulus(
   targetSide: "same" | "opposite",
   stimulusSide: "left" | "right",
   stimulusInfo: StimulusInfo,
-  instruction: boolean = false,
+  instruction: boolean = false
 ) {
   return `
     ${
-      instruction 
-      ? `<div class="jspsych-hearts-and-flowers-instruction">
+      instruction
+        ? `<div class="jspsych-hearts-and-flowers-instruction">
         When you see a ${stimulusInfo[targetSide].stimulus_name}, press the button on the ${targetSide} side.
       </div>`
-      : ""
+        : ""
     }
     <div class="jspsych-hearts-and-flowers-stimulus-grid">
       <div class="jspsych-hearts-and-flowers-left-stimulus">${
@@ -101,8 +105,8 @@ function getCorrectResponse(targetSide: "same" | "opposite", stimulusSide: "left
       ? "left"
       : "right"
     : stimulusSide === "left"
-      ? "right"
-      : "left";
+    ? "right"
+    : "left";
 }
 
 // -- TRIALS --
@@ -112,12 +116,22 @@ function getCorrectResponse(targetSide: "same" | "opposite", stimulusSide: "left
  * @param {string} stimulusName - The name of the stimulus to be demoed.
  * @returns {jsPsychHtmlButtonResponse} Plugin object displaying the name of the stimulus to be demoed.
  */
-function createGametypeTrial(stimulusName: string, format_gametype_announcement: (name: string) => string, gametype_announcement_button_text: string) {
+function createGametypeTrial(
+  stimulusName: string,
+  format_gametype_announcement: (name: string) => string,
+  gametype_announcement_button_text: string
+) {
   return {
     type: jsPsychHtmlButtonResponse,
     stimulus: format_gametype_announcement(stimulusName),
     choices: [gametype_announcement_button_text],
-    data: { trial_type: "demo_gametype", stimulus_name: stimulusName },
+    data: {
+      task: TASK_NAME,
+      task_version: VERSION,
+      phase: "practice",
+      part: "instruction",
+      stimulus_name: stimulusName,
+    },
   };
 }
 
@@ -139,7 +153,10 @@ function createTrial(jsPsych: JsPsych, stimulusInfo: StimulusInfo, instruction: 
     },
     choices: ["left", "right"],
     data: {
-      trial_type: instruction ? "demo_trial" : "trial",
+      task: TASK_NAME,
+      task_version: VERSION,
+      phase: instruction ? "practice" : "test",
+      part: "response",
       stimulus_side: () => jsPsych.evaluateTimelineVariable("stimulus_side"),
       target_side: () => jsPsych.evaluateTimelineVariable("target_side"),
       stimulus_name: () =>
@@ -153,7 +170,7 @@ function createTrial(jsPsych: JsPsych, stimulusInfo: StimulusInfo, instruction: 
     on_load: () => {
       // restructure default html-button-reponse layout to have grid align
       const parent = document.querySelector(".jspsych-hearts-and-flowers-trial");
-      
+
       if (instruction) {
         const instructionDiv = document.querySelector(".jspsych-hearts-and-flowers-instruction");
         instructionDiv.parentElement!.removeChild(instructionDiv);
@@ -163,19 +180,19 @@ function createTrial(jsPsych: JsPsych, stimulusInfo: StimulusInfo, instruction: 
       const stimulusGrid = document.querySelector(".jspsych-hearts-and-flowers-stimulus-grid");
       const leftStimulus = stimulusGrid.children[0];
       const rightStimulus = stimulusGrid.children[1];
-      
+
       parent.appendChild(leftStimulus);
       parent.appendChild(rightStimulus);
       parent.removeChild(document.querySelector("#jspsych-html-button-response-stimulus"));
 
       const buttons = document.querySelector("#jspsych-html-button-response-btngroup").children;
-    
+
       const leftButton = buttons[0];
       const rightButton = buttons[1];
 
       leftButton.classList.add("jspsych-hearts-and-flowers-left-button");
       rightButton.classList.add("jspsych-hearts-and-flowers-right-button");
-      
+
       parent.appendChild(leftButton);
       parent.appendChild(rightButton);
       parent.removeChild(document.querySelector("#jspsych-html-button-response-btngroup"));
@@ -183,7 +200,7 @@ function createTrial(jsPsych: JsPsych, stimulusInfo: StimulusInfo, instruction: 
     on_finish: (data) => {
       data.correct = jsPsych.pluginAPI.compareKeys(
         data.response == 0 ? "left" : "right", // clicking "left" button results in data.response = 0
-        data.correct_response,
+        data.correct_response
       );
     },
     css_classes: ["jspsych-hearts-and-flowers-trial"],
@@ -201,13 +218,16 @@ function createFeedbackTrial(jsPsych: JsPsych, format_feedback: (correct: boolea
   return {
     type: jsPsychHtmlKeyboardResponse,
     stimulus: () => {
-      return `<div class="jspsych-hearts-and-flowers-instruction">${
-        format_feedback(jsPsych.data.get().last(1).select("correct").values[0])
-      }</div>`;
+      return `<div class="jspsych-hearts-and-flowers-instruction">${format_feedback(
+        jsPsych.data.get().last(1).select("correct").values[0]
+      )}</div>`;
     },
     trial_duration: 1000,
     data: {
-      trial_type: "demo_feedback",
+      task: TASK_NAME,
+      task_version: VERSION,
+      phase: "practice",
+      part: "feedback",
       correct: () => jsPsych.data.get().last(1).select("correct").values[0],
     },
   };
@@ -220,7 +240,11 @@ function createFeedbackTrial(jsPsych: JsPsych, format_feedback: (correct: boolea
  * @param {Function} fixationDurationFunction - The function that returns a random fixation duration from a list of possible durations.
  * @returns {jsPsychHtmlKeyboardResponse} Plugin object displaying a fixation cross for a random duration.
  */
-function createFixationTrial(jsPsych: JsPsych, fixationDurationFunction: () => number, fixation_text: string = "+") {
+function createFixationTrial(
+  jsPsych: JsPsych,
+  fixationDurationFunction: () => number,
+  fixation_text: string = "+"
+) {
   return {
     type: jsPsychHtmlKeyboardResponse,
     stimulus: `<div class='jspsych-hearts-and-flowers-fixation'>${fixation_text}</div>`,
@@ -229,7 +253,10 @@ function createFixationTrial(jsPsych: JsPsych, fixationDurationFunction: () => n
       trial_duration: true,
     },
     data: {
-      trial_type: "fixation",
+      task: TASK_NAME,
+      task_version: VERSION,
+      phase: "test",
+      part: "fixation",
     },
   };
 }
@@ -248,17 +275,24 @@ function createDemoSubTimeline(
   stimulusInfo: StimulusInfo,
   format_feedback: (correct: boolean) => string,
   format_gametype_announcement: (name: string) => string,
-  gametype_announcement_button_text: string,
+  gametype_announcement_button_text: string
 ) {
   return {
     timeline: [
-      createGametypeTrial(stimulusInfo[targetSide].stimulus_name, format_gametype_announcement, gametype_announcement_button_text),
+      createGametypeTrial(
+        stimulusInfo[targetSide].stimulus_name,
+        format_gametype_announcement,
+        gametype_announcement_button_text
+      ),
       {
         timeline: [
           // A full demo session includes a demo trial with stimulus on the left and a demo trial with stimulus on the right
           {
             // Each demo trial includes a fixation trial, a trial with the actual stimulus, and a feedback trial
-            timeline: [createTrial(jsPsych, stimulusInfo, true), createFeedbackTrial(jsPsych, format_feedback)],
+            timeline: [
+              createTrial(jsPsych, stimulusInfo, true),
+              createFeedbackTrial(jsPsych, format_feedback),
+            ],
             // The demo trial is repeated until the participant gets it right
             loop_function: () => !jsPsych.data.get().last(1).select("correct").values[0],
           },
@@ -305,7 +339,7 @@ function createDemoSubTimeline(
  */
 function createTrialsSubTimeline(
   jsPsych: JsPsych,
-  options: Partial<CreateTrialsSubTimelineOptions> = {},
+  options: Partial<CreateTrialsSubTimelineOptions> = {}
 ) {
   const defaultOptions = {
     target_side: "both" as keyof StimulusInfo | "both",
@@ -330,7 +364,11 @@ function createTrialsSubTimeline(
 
   return {
     timeline: [
-      createFixationTrial(jsPsych, options.fixation_duration_function, mergedTextOptions.fixation_text),
+      createFixationTrial(
+        jsPsych,
+        options.fixation_duration_function,
+        mergedTextOptions.fixation_text
+      ),
       createTrial(jsPsych, options.stimulus_info, false),
     ],
     timeline_variables: ((targetSide) => {
@@ -440,12 +478,22 @@ export function createTimeline(jsPsych: JsPsych, options: Partial<CreateTimeline
   if (options.demo) {
     heartsAndFlowersTimeline.push(
       createDemoSubTimeline(
-        jsPsych, "same", stimulusInfo, mergedTextOptions.format_feedback, mergedTextOptions.format_gametype_announcement, mergedTextOptions.gametype_announcement_button_text
+        jsPsych,
+        "same",
+        stimulusInfo,
+        mergedTextOptions.format_feedback,
+        mergedTextOptions.format_gametype_announcement,
+        mergedTextOptions.gametype_announcement_button_text
       )
     );
     heartsAndFlowersTimeline.push(
       createDemoSubTimeline(
-        jsPsych, "opposite", stimulusInfo, mergedTextOptions.format_feedback, mergedTextOptions.format_gametype_announcement, mergedTextOptions.gametype_announcement_button_text
+        jsPsych,
+        "opposite",
+        stimulusInfo,
+        mergedTextOptions.format_feedback,
+        mergedTextOptions.format_gametype_announcement,
+        mergedTextOptions.gametype_announcement_button_text
       )
     );
   }
@@ -464,7 +512,7 @@ export function createTimeline(jsPsych: JsPsych, options: Partial<CreateTimeline
       fixation_duration_function: options.fixation_duration_function,
       stimulus_info: stimulusInfo,
       text_options: mergedTextOptions,
-    }),
+    })
   );
   if (options.end_instruction) {
     heartsAndFlowersTimeline.push({

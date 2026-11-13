@@ -3,7 +3,7 @@ import jsPsychHtmlKeyboardResponse from "@jspsych/plugin-html-keyboard-response"
 import jsPsychInstructions from "@jspsych/plugin-instructions";
 import { JsPsych } from "jspsych";
 
-import { defaultText, type StroopResultsStats } from "./text";
+import { StroopResultsStats, defaultText } from "./text";
 
 /**
  * Configuration options for the Stroop task timeline.
@@ -185,7 +185,6 @@ function generateStimuli(
   result.push(...jsPsych.randomization.repeat(congruentStimuli, completeCongruentSets));
   const completeIncongruentSets = Math.floor(incongruent_trials / incongruentStimuli.length);
   result.push(...jsPsych.randomization.repeat(incongruentStimuli, completeIncongruentSets));
-
 
   if (congruent_trials % congruentStimuli.length !== 0) {
     const remainingCongruent = jsPsych.randomization.sampleWithoutReplacement(
@@ -436,8 +435,8 @@ function createPracticeDebrief(practiceDebriefText: string, continueBtnText: str
 
 /**
  * Creates a results summary screen showing performance metrics.
- * Ensure that trial data is properly marked with `page: "word"` and `task: "stroop"` for this to work correctly. 
- * 
+ * Ensure that trial data is properly marked with `page: "word"` and `task: "stroop"` for this to work correctly.
+ *
  * @param jsPsych - The jsPsych instance for accessing trial data
  * @param text - Function returning the results HTML; receives the computed metrics
  * @returns jsPsych trial object for results display

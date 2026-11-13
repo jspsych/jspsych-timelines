@@ -1,0 +1,54 @@
+/* Pursuit Rotor Task Styles */
+
+/* Instructions container */
+.jspsych-pursuit-rotor .jspsych-pursuit-rotor-instructions {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0 20px;
+  text-align: left;
+}
+
+.jspsych-pursuit-rotor .jspsych-pursuit-rotor-instructions h2,
+.jspsych-pursuit-rotor .jspsych-pursuit-rotor-instructions h3 {
+  text-align: center;
+}
+
+/* Feedback state modifiers */
+.jspsych-pursuit-rotor .jspsych-pursuit-rotor-feedback-correct {
+  color: green;
+}
+
+.jspsych-pursuit-rotor .jspsych-pursuit-rotor-feedback-incorrect {
+  color: red;
+}
+
+.jspsych-pursuit-rotor .jspsych-pursuit-rotor-feedback-timeout {
+  color: orange;
+}
+
+/* Mobile/touch device optimizations */
+@media (pointer: coarse) {
+  .jspsych-pursuit-rotor #jspsych-html-button-response-btngroup {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 16px;
+    background: inherit;
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+  }
+
+  .jspsych-pursuit-rotor #jspsych-html-button-response-btngroup .jspsych-btn {
+    min-height: 60px;
+    min-width: 120px;
+    font-size: 18px;
+    flex: 1;
+    max-width: 200px;
+  }
+
+  .jspsych-pursuit-rotor {
+    padding-bottom: 100px;
+  }
+}

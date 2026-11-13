@@ -1,0 +1,63 @@
+/* Go/No-Go Task Styles */
+
+/* Instructions container */
+.jspsych-go-nogo .jspsych-go-nogo-instructions {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0 20px;
+  text-align: left;
+}
+
+/* center + align fixation, stimulus, and ISI including their contents 
+   so button and stimulus do not change position per trial. uses
+   grid, not flex in case we have a stimulus of multiple elements. */
+.jspsych-go-nogo .jspsych-go-nogo-fixation,
+.jspsych-go-nogo .jspsych-go-nogo-stimulus,
+.jspsych-go-nogo .jspsych-go-nogo-isi-blank {
+  display: grid;
+  place-items: center;
+}
+
+/* Feedback state modifiers, used by the interactive instruction trials */
+.jspsych-go-nogo .jspsych-go-nogo-feedback-correct {
+  color: green;
+}
+
+.jspsych-go-nogo .jspsych-go-nogo-feedback-incorrect {
+  color: red;
+}
+
+/* Buttons shown but disabled during fixation and ISI screens */
+.jspsych-go-nogo .jspsych-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Mobile/touch device optimizations */
+@media (pointer: coarse) {
+  .jspsych-go-nogo #jspsych-html-button-response-btngroup {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 16px;
+    background: inherit;
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+  }
+
+  .jspsych-go-nogo #jspsych-html-button-response-btngroup .jspsych-btn {
+    min-height: 60px;
+    min-width: 120px;
+    font-size: 18px;
+    flex: 1;
+    max-width: 200px;
+  }
+
+  /* The root sits on the same element as .jspsych-content, so this reserves
+     space for the fixed button group without a global .jspsych-content rule. */
+  .jspsych-go-nogo {
+    padding-bottom: 100px;
+  }
+}

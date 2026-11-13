@@ -1,0 +1,128 @@
+# Corsi Block Task Examples
+
+This directory contains example implementations of the Corsi Block Task timeline.
+
+## Examples
+
+### [index.html](index.html)
+**Basic Example**
+- Default settings
+- Standard 9-block layout
+- Demonstrates basic usage with minimal configuration
+
+### [common-configuration.html](common-configuration.html)
+**Common Configuration**
+- Uses commonly reported timing parameters
+- Blue/Yellow high-contrast color scheme
+- Stop when both trials fail at a length
+- Fixed pseudorandom sequences
+- Comprehensive instructions
+- Detailed results display
+
+### [custom-parameters.html](custom-parameters.html)
+**Fast Research Variant**
+- Faster presentation (500ms vs 1000ms)
+- Starts at length 3
+- 3 trials per length
+- Shorter delays between sequence and response
+- Custom color theme
+- Random sequence generation
+
+### [custom-blocks.html](custom-blocks.html)
+**Custom Block Layout**
+- Demonstrates custom block positioning
+- Uses 5-block cross pattern instead of standard 9 blocks
+- Shows how to define custom layouts
+
+### [practice-attempts.html](practice-attempts.html)
+**Limited Practice Attempts**
+- Caps the instruction practice at 2 attempts with `max_practice_attempts`
+- Continues to the task even if the participant never passes
+- Shows how to check afterwards whether the practice was passed
+
+### [load-from-unpkg.html](load-from-unpkg.html)
+**CDN Loading**
+- Shows how to load from unpkg CDN
+- No build step required
+- Quick demo version
+
+## Running Examples
+
+### Local Development
+If you've built the package locally:
+```bash
+cd packages/corsi-block
+npm run build
+# Then open any example HTML file in a browser
+```
+
+### From CDN
+The `load-from-unpkg.html` example can run directly without any build step.
+
+## Common Customizations
+
+### Adjusting Difficulty
+```javascript
+const corsiTask = jsPsychTimelineCorsiBlock.createTimeline(jsPsych, {
+  starting_length: 3,             // Start harder
+  max_length: 7,                  // End earlier
+  trials_per_length: 3,           // More trials per level
+  sequence_generation: 'random'   // Required: the fixed table holds 2 per length
+});
+```
+
+### Changing Speed
+```javascript
+const corsiTask = jsPsychTimelineCorsiBlock.createTimeline(jsPsych, {
+  stimulus_duration: 750,           // Faster blocks
+  inter_stimulus_interval: 750,     // Faster gaps
+  post_sequence_delay: 300          // Quicker start
+});
+```
+
+### Custom Colors
+```javascript
+const corsiTask = jsPsychTimelineCorsiBlock.createTimeline(jsPsych, {
+  block_colors: {
+    inactive: '#4a90e2',
+    active: '#f39c12',
+    correct: '#2ecc71',
+    incorrect: '#e74c3c'
+  },
+  background_color: '#2c3e50'
+});
+```
+
+### Mobile-Optimized
+All examples include:
+- `<meta name="viewport" content="width=device-width, initial-scale=1.0">` for
+  proper mobile scaling
+- `touch-action: manipulation` for better touch response
+
+Pinch-zoom is deliberately left enabled; the blocks are sized as a percentage of
+the display area, so a participant who needs to zoom can.
+
+## Data Access
+
+After task completion:
+```javascript
+on_finish: function() {
+  // Get the calculated span
+  const span = jsPsychTimelineCorsiBlock.utils.scoring.getSummary(jsPsych.data.get()).span;
+
+  // Get the scored responses. Each sequence is two trials - one that shows it
+  // and one that collects the answer - so `part` matters as well as `phase`.
+  const trials = jsPsych.data.get().filter({
+    task: 'corsi-block',
+    phase: 'test',
+    part: 'response'
+  });
+
+  // Calculate accuracy
+  const accuracy = trials.filter({ correct: true }).count() / trials.count();
+}
+```
+
+## Note on Parameters
+
+The examples show various parameter configurations. The "common configuration" example uses parameters that are frequently reported in the literature (e.g., 1000ms stimulus duration), but you should choose parameters appropriate for your specific research question and population.

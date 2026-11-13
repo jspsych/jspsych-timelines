@@ -26,9 +26,11 @@
   },
   "homepage": "https://github.com/jspsych/jspsych-timelines/packages/spatial-cueing#readme",
   "peerDependencies": {
-    "jspsych": "^8.0.1"
+    "jspsych": ">=8.0.0"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@jspsych/plugin-html-keyboard-response": "^2.1.0"
+  },
   "devDependencies": {
     "tsup": "^8.2.4",
     "typescript": "^5.5.4"

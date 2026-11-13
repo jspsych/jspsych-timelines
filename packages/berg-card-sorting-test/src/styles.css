@@ -1,0 +1,174 @@
+/* Berg Card Sorting Test styles */
+
+/* Instructions and results copy */
+.jspsych-berg-card-sorting-test .bcst-instructions {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0 20px;
+  text-align: left;
+}
+
+.jspsych-berg-card-sorting-test .bcst-instructions h2,
+.jspsych-berg-card-sorting-test .bcst-instructions h3 {
+  text-align: center;
+}
+
+/* Card container */
+.jspsych-berg-card-sorting-test .bcst-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(15px, 4vw, 30px);
+  padding: clamp(10px, 2vw, 20px);
+}
+
+/* Reference cards row — always fits 4 cards */
+.jspsych-berg-card-sorting-test .bcst-reference-cards {
+  display: flex;
+  justify-content: center;
+  gap: clamp(6px, 2vw, 15px);
+  width: 100%;
+  max-width: 500px;
+}
+
+/* Individual card — sized relative to container */
+.jspsych-berg-card-sorting-test .bcst-card {
+  width: clamp(60px, 18vw, 80px);
+  height: clamp(82px, 25vw, 110px);
+  border: 2px solid #333;
+  border-radius: 8px;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(2px, 0.5vw, 4px);
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+
+/* Only the reference cards are choices, so only they respond to the pointer.
+   The stimulus card used to grow on hover despite not being clickable. */
+.jspsych-berg-card-sorting-test .bcst-card-reference {
+  cursor: pointer;
+}
+
+.jspsych-berg-card-sorting-test .bcst-card-reference:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.jspsych-berg-card-sorting-test .bcst-card-stimulus {
+  width: clamp(75px, 22vw, 100px);
+  height: clamp(100px, 30vw, 140px);
+  cursor: default;
+}
+
+/* The reference cards are the plugin's buttons; strip the default chrome so the
+   card itself is the target rather than a card inside a button. */
+.jspsych-berg-card-sorting-test .bcst-choice-button {
+  padding: 0;
+  border: none;
+  background: none;
+}
+
+/* Shapes — scale with card size */
+.jspsych-berg-card-sorting-test .bcst-shape {
+  width: clamp(14px, 4vw, 20px);
+  height: clamp(14px, 4vw, 20px);
+}
+
+.jspsych-berg-card-sorting-test .bcst-shape-triangle {
+  width: 0;
+  height: 0;
+  border-left: clamp(7px, 2vw, 10px) solid transparent;
+  border-right: clamp(7px, 2vw, 10px) solid transparent;
+  border-bottom: clamp(12px, 3.5vw, 18px) solid currentColor;
+}
+
+/* Star and cross are drawn geometrically, like the triangle and circle above.
+   They used to be the glyphs U+2605 and U+2716 in a ::before, which left the
+   font deciding how big the ink was and where the baseline put it -- they
+   rendered small and sat low in their box, with the ascent as slack above, and
+   moved with the participant's font stack. clip-path fills the box exactly. */
+.jspsych-berg-card-sorting-test .bcst-shape-star {
+  background-color: currentColor;
+  clip-path: polygon(
+    50% 0%,
+    61% 35%,
+    98% 35%,
+    68% 57%,
+    79% 91%,
+    50% 70%,
+    21% 91%,
+    32% 57%,
+    2% 35%,
+    39% 35%
+  );
+}
+
+.jspsych-berg-card-sorting-test .bcst-shape-cross {
+  background-color: currentColor;
+  clip-path: polygon(
+    20% 0%,
+    0% 20%,
+    30% 50%,
+    0% 80%,
+    20% 100%,
+    50% 70%,
+    80% 100%,
+    100% 80%,
+    70% 50%,
+    100% 20%,
+    80% 0%,
+    50% 30%
+  );
+}
+
+.jspsych-berg-card-sorting-test .bcst-shape-circle {
+  width: clamp(12px, 3.5vw, 18px);
+  height: clamp(12px, 3.5vw, 18px);
+  border-radius: 50%;
+  background-color: currentColor;
+}
+
+/* Shape colors */
+.jspsych-berg-card-sorting-test .bcst-red { color: #e53935; }
+.jspsych-berg-card-sorting-test .bcst-green { color: #43a047; }
+.jspsych-berg-card-sorting-test .bcst-yellow { color: #fdd835; }
+.jspsych-berg-card-sorting-test .bcst-blue { color: #1e88e5; }
+
+/* Stimulus card area */
+.jspsych-berg-card-sorting-test .bcst-stimulus-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+/* Prompt text */
+.jspsych-berg-card-sorting-test .bcst-prompt {
+  font-size: clamp(14px, 3vw, 16px);
+  color: #666;
+  margin: 0;
+}
+
+/* Feedback */
+.jspsych-berg-card-sorting-test .bcst-feedback {
+  font-size: 24px;
+  font-weight: bold;
+  padding: 10px 20px;
+}
+
+.jspsych-berg-card-sorting-test .bcst-feedback-correct {
+  color: #43a047;
+}
+
+.jspsych-berg-card-sorting-test .bcst-feedback-incorrect {
+  color: #e53935;
+}
+
+/* Results summary on the completion screen */
+.jspsych-berg-card-sorting-test .bcst-results {
+  max-width: 600px;
+  margin: 0 auto;
+}

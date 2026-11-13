@@ -3,19 +3,15 @@
 
 <head>
   <title>Spatial N-Back Task</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <script src="https://unpkg.com/jspsych"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://unpkg.com/jspsych@8"></script>
   <script src="https://unpkg.com/@jspsych/plugin-html-button-response@2.1.0"></script>
-  <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css">
+  <link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css">
 
-  <script src="../dist/index.global.js"></script>
+  <script src="../dist/index.browser.js"></script>
 
-  <!-- OPTIONAL: Spatial N-Back timeline CSS for mobile-friendly styling -->
-  <link rel="stylesheet" href="../src/css/styles.css">
-
-  <!-- Can also load the published timeline package and CSS here instead of locally, e.g. -->
+  <!-- Can also load the published timeline package here instead of locally, e.g. -->
   <!-- <script src="https://unpkg.com/@jspsych-timelines/spatial-nback"></script> -->
-  <!-- <link rel="stylesheet" href="https://unpkg.com/@jspsych-timelines/spatial-nback/dist/css/styles.css"> -->
 </head>
 
 <body></body>
@@ -49,7 +45,7 @@
     feedback_duration: 0,
     show_feedback_text: false,
     show_feedback_border: false,
-    prompt: "", // overrides text.ts defaults
+    prompt: () => "", // overrides text.ts defaults
     buttons: ["MATCH"], // overrides text.ts defaults
     stimulus_color: "#2196F3",
     correct_color: "#4CAF50",

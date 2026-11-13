@@ -1,0 +1,52 @@
+/* Spatial N-Back Task Styles */
+
+/* Instruction pages and the results screen */
+.jspsych-spatial-nback-container .jspsych-spatial-nback-instructions,
+.jspsych-spatial-nback-container .jspsych-spatial-nback-results {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0 20px;
+  text-align: left;
+}
+
+.jspsych-spatial-nback-container .jspsych-spatial-nback-instructions h2,
+.jspsych-spatial-nback-container .jspsych-spatial-nback-instructions h3,
+.jspsych-spatial-nback-container .jspsych-spatial-nback-results h2,
+.jspsych-spatial-nback-container .jspsych-spatial-nback-results h3 {
+  text-align: center;
+}
+
+/* Disabled buttons during non-response periods */
+.jspsych-spatial-nback-container .jspsych-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Mobile/touch device optimizations */
+@media (pointer: coarse) {
+  .jspsych-spatial-nback-container #jspsych-html-button-response-btngroup {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 16px;
+    background: inherit;
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+  }
+
+  .jspsych-spatial-nback-container #jspsych-html-button-response-btngroup .jspsych-btn {
+    min-height: 60px;
+    min-width: 120px;
+    font-size: 18px;
+    flex: 1;
+    max-width: 200px;
+  }
+
+  /* css_classes puts the root on the same element as .jspsych-content, so this
+     replaces the global .jspsych-content rule it used to be written as. */
+  .jspsych-spatial-nback-container {
+    padding-bottom: 100px;
+  }
+}

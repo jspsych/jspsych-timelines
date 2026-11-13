@@ -1,0 +1,138 @@
+/**
+ * Corsi Block Task - Trial Components
+ *
+ * Functions for creating individual trial components
+ */
+
+import jsPsychCorsiBlocks from "@jspsych-contrib/plugin-corsi-blocks";
+import { JsPsych } from "jspsych";
+
+import { CSS_ROOT_CLASS } from "./constants";
+import type { BlockPosition, DataLabels } from "./types";
+
+const TASK_NAME = "corsi-block";
+
+/**
+ * paints the display element according to the param color, which should
+ * be provided by config's `background_color`.
+ */
+export function paintBackground(jsPsych: JsPsych, color: string | null) {
+  if (color === null) {
+    return undefined;
+  }
+  return () => {
+    const stimulus = jsPsych
+      .getDisplayElement()
+      .querySelector<HTMLElement>("#jspsych-corsi-stimulus");
+    if (stimulus) {
+      stimulus.style.backgroundColor = color;
+    }
+  };
+}
+
+/**
+ * Create a display trial (show sequence)
+ */
+export function createDisplayTrial(
+  jsPsych: JsPsych,
+  options: {
+    blocks: BlockPosition[];
+    stimulus_duration: number;
+    inter_stimulus_interval: number;
+    pre_stim_duration: number;
+    post_sequence_delay: number;
+    block_colors: {
+      inactive: string;
+      active: string;
+    };
+    background_color: string | null;
+    display_width: string;
+    display_height: string;
+    block_size: number;
+    prompt?: string;
+    task_version?: string;
+    data_labels?: DataLabels;
+  }
+) {
+  return {
+    type: jsPsychCorsiBlocks,
+    mode: "display",
+    sequence: () => jsPsych.timelineVariable("sequence"),
+    blocks: options.blocks,
+    sequence_block_duration: options.stimulus_duration,
+    sequence_gap_duration: options.inter_stimulus_interval,
+    pre_stim_duration: options.pre_stim_duration,
+    block_color: options.block_colors.inactive,
+    highlight_color: options.block_colors.active,
+    display_width: options.display_width,
+    display_height: options.display_height,
+    block_size: options.block_size,
+    prompt: options.prompt,
+    css_classes: [CSS_ROOT_CLASS],
+    // Blank pause between the sequence ending and the response screen
+    post_trial_gap: options.post_sequence_delay,
+    on_load: paintBackground(jsPsych, options.background_color),
+    data: {
+      ...options.data_labels,
+      task: TASK_NAME,
+      task_version: options.task_version,
+      phase: "test",
+      part: "display",
+      sequence_length: () => jsPsych.timelineVariable("sequence_length"),
+      trial_in_length: () => jsPsych.timelineVariable("trial_in_length"),
+    },
+  };
+}
+
+/**
+ * Create an input trial (collect response)
+ */
+export function createInputTrial(
+  jsPsych: JsPsych,
+  options: {
+    blocks: BlockPosition[];
+    inter_trial_delay: number;
+    click_feedback_duration: number;
+    block_colors: {
+      inactive: string;
+      active: string;
+      correct: string;
+      incorrect: string;
+    };
+    background_color: string | null;
+    display_width: string;
+    display_height: string;
+    block_size: number;
+    prompt?: string;
+    task_version?: string;
+    data_labels?: DataLabels;
+  }
+) {
+  return {
+    type: jsPsychCorsiBlocks,
+    mode: "input",
+    sequence: () => jsPsych.timelineVariable("sequence"),
+    blocks: options.blocks,
+    response_animation_duration: options.click_feedback_duration,
+    block_color: options.block_colors.inactive,
+    highlight_color: options.block_colors.active,
+    correct_color: options.block_colors.correct,
+    incorrect_color: options.block_colors.incorrect,
+    display_width: options.display_width,
+    display_height: options.display_height,
+    block_size: options.block_size,
+    prompt: options.prompt,
+    css_classes: [CSS_ROOT_CLASS],
+    post_trial_gap: options.inter_trial_delay,
+    on_load: paintBackground(jsPsych, options.background_color),
+    data: {
+      ...options.data_labels,
+      task: TASK_NAME,
+      task_version: options.task_version,
+      phase: "test",
+      part: "response",
+      sequence_length: () => jsPsych.timelineVariable("sequence_length"),
+      trial_in_length: () => jsPsych.timelineVariable("trial_in_length"),
+    },
+  };
+}
