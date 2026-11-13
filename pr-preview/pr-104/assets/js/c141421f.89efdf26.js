@@ -1,0 +1,1 @@
+"use strict";(globalThis.webpackChunkjspsych_timelines_website=globalThis.webpackChunkjspsych_timelines_website||[]).push([[957],{936(e){e.exports=JSON.parse('{"name":"docusaurus-theme-search-algolia","id":"default"}')}}]);
