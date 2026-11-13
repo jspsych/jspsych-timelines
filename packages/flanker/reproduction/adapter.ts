@@ -5,20 +5,17 @@
  * ("stimulus_set.neutral flanker"). This file is the single, hand-written retyping table. Every
  * entry is either a FlankerOptions fragment or a classified gap. Nothing is parsed from prose.
  */
+import { createAdapterKit, gap, isGap, ok } from "@jspsych-timelines/testing";
+import type {
+  Adapted as GenericAdapted,
+  ConfigEntry as GenericConfigEntry,
+} from "@jspsych-timelines/testing";
+
 import type { FlankerOptions } from "../src/options";
 
-export type GapClass =
-  | "package fix needed"
-  | "option missing"
-  | "plugin needed"
-  | "dossier value wrong"
-  | "genuinely contradictory";
-
-export type Adapted =
-  | { opts: FlankerOptions; companions?: FlankerOptions }
-  | { gap: GapClass; reason: string };
-
-export const isGap = (a: Adapted): a is { gap: GapClass; reason: string } => "gap" in a;
+export type Adapted = GenericAdapted<FlankerOptions>;
+export type ConfigEntry = GenericConfigEntry<FlankerOptions>;
+export { isGap };
 
 /** Canonical sub-key of an option's component. Observed rows name it by variation, configs by role. */
 const SUB_BY_VARIATION: Record<string, string> = {
@@ -89,9 +86,6 @@ const SPACING: Record<string, any> = {
   },
 };
 
-const gap = (g: GapClass, reason: string): Adapted => ({ gap: g, reason });
-/** `companions` are settings the value needs to be observable; explicit settings override them. */
-const ok = (opts: FlankerOptions, companions?: FlankerOptions): Adapted => ({ opts, companions });
 const letterTargets = (groups: string[][]): Adapted =>
   ok({ stimulus_set: { target: { letters: groups } } }, { targets_per_response: groups[0].length });
 
@@ -230,41 +224,12 @@ export function adapt(
   return gap("package fix needed", `no adapter entry for ${option}/${sub}`);
 }
 
-/** Merge option fragments; maps merge one level deep. Later fragments win. */
-export function mergeOptions(...parts: FlankerOptions[]): FlankerOptions {
-  const out: any = {};
-  for (const p of parts) {
-    for (const [k, v] of Object.entries(p)) {
-      if (["stimulus_set", "stimulus_layout", "practice"].includes(k) && out[k]) {
-        const prev = out[k];
-        out[k] = { ...prev, ...(v as object) };
-        if (k === "stimulus_set" && (v as any).flanker && prev.flanker) {
-          out[k].flanker = { ...prev.flanker, ...(v as any).flanker };
-        }
-      } else out[k] = v;
-    }
-  }
-  return out;
-}
-
-/** Combine adapted entries: companions first (weakest), then the explicit settings in order. */
-export function combine(entries: Adapted[]): FlankerOptions {
-  const primaries = entries.filter(
-    (e): e is { opts: FlankerOptions; companions?: FlankerOptions } => !isGap(e)
-  );
-  const explicit = mergeOptions(...primaries.map((e) => e.opts));
-  const comps: FlankerOptions[] = [];
-  for (const e of primaries) {
-    if (!e.companions) continue;
-    const c: any = { ...e.companions };
-    for (const k of Object.keys(c)) {
-      if (k === "condition_set" && "condition_proportions" in explicit) delete c[k];
-      else if (k !== "stimulus_set" && k in explicit) delete c[k];
-    }
-    comps.push(c);
-  }
-  return mergeOptions(...comps, explicit);
-}
+const kit = createAdapterKit<FlankerOptions>({
+  mapOptions: ["stimulus_set", "stimulus_layout", "practice"],
+  // a companion `condition_set` would contradict explicit `condition_proportions`
+  dropCompanion: (key, explicit) => key === "condition_set" && "condition_proportions" in explicit,
+});
+export const { mergeOptions, combine, assumedSettings } = kit;
 
 /** Retype one key of a study configuration, e.g. "stimulus_set.neutral flanker". */
 export function adaptConfigKey(key: string, value: any): Adapted {
@@ -277,11 +242,6 @@ export function adaptConfigKey(key: string, value: any): Adapted {
     return gap("option missing", `untyped value: ${JSON.stringify(value.untranslated)}`);
   }
   return adapt(option, sub, value);
-}
-
-export interface ConfigEntry {
-  key: string;
-  adapted: Adapted;
 }
 
 /**
@@ -317,22 +277,4 @@ export function adaptConfig(options: Record<string, any>): ConfigEntry[] {
     }
     return { key, adapted: adaptConfigKey(key, options[key]) };
   });
-}
-
-/** Paths (option, or option.key for map options) that `combine` added beyond what the entries state. */
-export function assumedSettings(entries: Adapted[]): string[] {
-  const primaries = entries.filter(
-    (e): e is { opts: FlankerOptions; companions?: FlankerOptions } => !isGap(e)
-  );
-  const explicit: any = mergeOptions(...primaries.map((e) => e.opts));
-  const full: any = combine(entries);
-  const out: string[] = [];
-  for (const [k, v] of Object.entries(full)) {
-    if (["stimulus_set", "stimulus_layout"].includes(k)) {
-      for (const sub of Object.keys(v as object)) {
-        if (!explicit[k] || !(sub in explicit[k])) out.push(`${k}.${sub}`);
-      }
-    } else if (!(k in explicit)) out.push(k);
-  }
-  return out;
 }

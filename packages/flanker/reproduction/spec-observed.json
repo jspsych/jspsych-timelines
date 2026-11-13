@@ -2999,5 +2999,500 @@
   },
   "lead": -0.536,
   "disagreement_with_runner_up": 0.867
- }
+ },
+ "translations": [
+  {
+   "variation": "warning_cue",
+   "raw": "none",
+   "as": {
+    "cue_target_interval_ms": 0,
+    "stimulus_set": {
+     "cue": "none"
+    }
+   },
+   "confidence": "medium",
+   "flag": false,
+   "note": "No cue; condition_proportions omitted (cue rate 0 not expressible as a trial-type proportion without inventing keys)."
+  },
+  {
+   "variation": "warning_cue",
+   "raw": "{proportion_cued: 0.5, cue_target_interval_ms: 500, cue_form: 'two circles above/below fixation, 250 ms'}",
+   "as": {
+    "cue_target_interval_ms": 500,
+    "stimulus_set": {
+     "cue": "two circles above/below fixation"
+    },
+    "condition_proportions": {
+     "cued": 0.5,
+     "uncued": 0.5
+    }
+   },
+   "confidence": "medium",
+   "flag": true,
+   "note": "Cue is orthogonal to congruency, so cued/uncued keys sit awkwardly in condition_proportions; 250 ms cue duration has no target option here; stimulus_set role-map value shape is free text."
+  },
+  {
+   "variation": "feedback_duration_ms",
+   "raw": "min 1000 then keypress",
+   "as": null,
+   "confidence": "high",
+   "flag": true,
+   "note": "Minimum 1000 ms then self-paced dismissal; no typed form for min-then-keypress duration."
+  },
+  {
+   "variation": "fixation_duration_ms",
+   "raw": "{min_ms: 500, max_ms: 950, step_ms: 50}",
+   "as": {
+    "fixation_duration_ms": {
+     "min": 500,
+     "max": 950,
+     "step": 50
+    }
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "fixation_duration_ms",
+   "raw": "{min_ms: 1100, max_ms: 2600, step_ms: 100}",
+   "as": {
+    "fixation_duration_ms": {
+     "min": 1100,
+     "max": 2600,
+     "step": 100
+    }
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "inter_trial_interval_ms",
+   "raw": "{fixed_trial_duration_ms: 5000}",
+   "as": null,
+   "confidence": "medium",
+   "flag": true,
+   "note": "Fixed 5000 ms trial incl. 2000 ms fixation (RT + interval = 3 s); ITI not separable from response window without inventing; consider a trial_duration_ms option."
+  },
+  {
+   "variation": "deadline_rule",
+   "raw": "fixed",
+   "as": {},
+   "confidence": "high",
+   "flag": false,
+   "note": "Category only, no number; the value is in response_deadline_ms."
+  },
+  {
+   "variation": "deadline_rule",
+   "raw": "individualized from practice mean RT (-1 SD speed / +1 SD both / +3 SD accuracy)",
+   "as": null,
+   "confidence": "high",
+   "flag": true,
+   "note": "Per-participant deadline derived from practice RT, differing by instruction; propose vocabulary value: response_window rule or adaptive procedure rt_based (not a trial-wise staircase)."
+  },
+  {
+   "variation": "flanker_target_soa_ms",
+   "raw": "flankers precede target (Kopp variant)",
+   "as": null,
+   "confidence": "high",
+   "flag": true,
+   "note": "Direction only; SOA magnitude not given."
+  },
+  {
+   "variation": "flankers_per_side",
+   "raw": "[2, 3] mixed",
+   "as": {
+    "stimulus_set": {
+     "flanker": {
+      "per_side": [
+       2,
+       3
+      ]
+     }
+    }
+   },
+   "confidence": "medium",
+   "flag": true,
+   "note": "5 or 7 arrows mixed; structure of per-role stimulus_set value is not defined in the vocabulary."
+  },
+  {
+   "variation": "task_interleaving",
+   "raw": "pure_flanker",
+   "as": {
+    "concurrent_task": "none"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "task_interleaving",
+   "raw": "alternating_trials_with_simon",
+   "as": {
+    "concurrent_task": "interleaved_trials"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": "Other task is Simon; task identity not recorded in the enum."
+  },
+  {
+   "variation": "task_interleaving",
+   "raw": "alternating_blocks_with_simon",
+   "as": {
+    "concurrent_task": "alternating_blocks"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": "Other task is Simon; task identity not recorded in the enum."
+  },
+  {
+   "variation": "condition_proportions",
+   "raw": "congruent 0.5, incongruent 0.5",
+   "as": {
+    "condition_proportions": {
+     "congruent": 0.5,
+     "incongruent": 0.5
+    }
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "condition_proportions",
+   "raw": "congruent 0.25, incongruent 0.25, neutral-dash 0.25, neutral-empty 0.25",
+   "as": {
+    "condition_proportions": {
+     "congruent": 0.25,
+     "incongruent": 0.25,
+     "neutral_dash": 0.25,
+     "neutral_empty": 0.25
+    }
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "condition_proportions",
+   "raw": "congruent 0.33, incongruent 0.33, neutral 0.33",
+   "as": {
+    "condition_proportions": {
+     "congruent": 0.33,
+     "incongruent": 0.33,
+     "neutral": 0.33
+    }
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": "Reported as 0.33 each (equal thirds; 240 trials per condition)."
+  },
+  {
+   "variation": "condition_proportions",
+   "raw": "congruent 0.25, incongruent 0.25, neutral 0.25, nogo 0.25",
+   "as": {
+    "condition_proportions": {
+     "congruent": 0.25,
+     "incongruent": 0.25,
+     "neutral": 0.25,
+     "nogo": 0.25
+    }
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "condition_proportions",
+   "raw": "congruent ~0.5 (random per trial)",
+   "as": {
+    "condition_proportions": {
+     "congruent": 0.5,
+     "incongruent": 0.5
+    }
+   },
+   "confidence": "medium",
+   "flag": false,
+   "note": "Approximate; each trial randomly congruent/incongruent, realized proportions vary slightly."
+  },
+  {
+   "variation": "condition_proportions",
+   "raw": "item-specific: MC items 75% congruent, MI items 25% congruent",
+   "as": null,
+   "confidence": "high",
+   "flag": true,
+   "note": "Proportion depends on item set (MC vs MI), not a single trial-type map."
+  },
+  {
+   "variation": "trial_order",
+   "raw": "shuffled_balanced_list",
+   "as": {
+    "trial_order": "shuffled_list"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "trial_order",
+   "raw": "independent_random_per_trial",
+   "as": {
+    "trial_order": "random"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "response_device",
+   "raw": "touchscreen",
+   "as": {
+    "response_device": "touch"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "response_device",
+   "raw": "mouse_buttons",
+   "as": {
+    "response_device": "mouse"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "response_device",
+   "raw": "auto (keyboard, mouse or touch targets)",
+   "as": null,
+   "confidence": "high",
+   "flag": true,
+   "note": "Device chosen at runtime among three; enum takes one value (needs list or 'auto')."
+  },
+  {
+   "variation": "attention_checks",
+   "raw": "arrow-key vigilance probes before the task",
+   "as": {
+    "attention_checks": "instructed_items"
+   },
+   "confidence": "low",
+   "flag": true,
+   "note": "Probes prompt a specific arrow-key press (closest to instructed items); placement before task not expressible."
+  },
+  {
+   "variation": "device_eligibility_checks",
+   "raw": "[fullscreen]",
+   "as": null,
+   "confidence": "high",
+   "flag": true,
+   "note": "Fullscreen is a display requirement, not eligibility; propose vocabulary value: fullscreen_required."
+  },
+  {
+   "variation": "device_eligibility_checks",
+   "raw": "[laptop_or_desktop_only]",
+   "as": {
+    "device_eligibility": "computer_only"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "device_eligibility_checks",
+   "raw": "[aspect_ratio >= 1.6, landscape orientation]",
+   "as": null,
+   "confidence": "high",
+   "flag": true,
+   "note": "Screen-geometry requirement for smartphones; propose vocabulary value: screen_geometry_required."
+  },
+  {
+   "variation": "size_calibration",
+   "raw": "credit_card_and_blind_spot",
+   "as": {
+    "screen_calibration": "virtual_chinrest"
+   },
+   "confidence": "medium",
+   "flag": false,
+   "note": "Card plus blind-spot is the virtual chinrest procedure."
+  },
+  {
+   "variation": "block_feedback",
+   "raw": "block_accuracy",
+   "as": {
+    "block_feedback": "accuracy"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "block_feedback",
+   "raw": "block_mean_rt_and_error_rate",
+   "as": {
+    "block_feedback": "accuracy_rt"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": "Error rate expressed as accuracy."
+  },
+  {
+   "variation": "block_feedback",
+   "raw": "accuracy-contingent speed/accuracy message",
+   "as": {
+    "block_feedback": "accuracy"
+   },
+   "confidence": "low",
+   "flag": true,
+   "note": "Message about speed vs accuracy chosen from block accuracy; lossy."
+  },
+  {
+   "variation": "trial_feedback_by_phase",
+   "raw": "practice_and_test",
+   "as": {
+    "feedback_condition": "all"
+   },
+   "confidence": "medium",
+   "flag": false,
+   "note": "Feedback in all phases; trial_feedback content comes from trial_feedback_content, so not set here."
+  },
+  {
+   "variation": "trial_feedback_by_phase",
+   "raw": "errors_only",
+   "as": {
+    "feedback_condition": "errors_only"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": "Phase scope all phases; content from trial_feedback_content."
+  },
+  {
+   "variation": "trial_feedback_by_phase",
+   "raw": "practice_only",
+   "as": {
+    "trial_feedback": "none",
+    "practice.trial_feedback": "accuracy",
+    "feedback_condition": "all"
+   },
+   "confidence": "medium",
+   "flag": true,
+   "note": "Practice content 'accuracy' is a placeholder; actual content is in trial_feedback_content (e.g. correct/incorrect + RT); condition 'all' assumed."
+  },
+  {
+   "variation": "trial_feedback_by_phase",
+   "raw": "summary after practice only",
+   "as": {
+    "trial_feedback": "none"
+   },
+   "confidence": "low",
+   "flag": true,
+   "note": "A summary after practice is block-level feedback, not trial feedback; content unknown."
+  },
+  {
+   "variation": "trial_feedback_content",
+   "raw": "correct/incorrect text + 'respond faster' on timeout",
+   "as": {
+    "trial_feedback": "accuracy"
+   },
+   "confidence": "medium",
+   "flag": false,
+   "note": "Timeout message belongs to timeout_feedback."
+  },
+  {
+   "variation": "trial_feedback_content",
+   "raw": "correct/incorrect + RT",
+   "as": {
+    "trial_feedback": "accuracy_rt"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "trial_feedback_content",
+   "raw": "rule reminder after errors",
+   "as": null,
+   "confidence": "high",
+   "flag": true,
+   "note": "propose vocabulary value: rule_reminder (correct_answer is not faithful)."
+  },
+  {
+   "variation": "trial_feedback_content",
+   "raw": "beep + sad-face image on error/timeout",
+   "as": {
+    "trial_feedback": "accuracy"
+   },
+   "confidence": "medium",
+   "flag": true,
+   "note": "Negative-only accuracy signal; beep/image modality and errors-only condition not captured here."
+  },
+  {
+   "variation": "trial_feedback_content",
+   "raw": "error / too fast / too slow messages",
+   "as": {
+    "trial_feedback": "accuracy_rt"
+   },
+   "confidence": "low",
+   "flag": true,
+   "note": "Accuracy plus speed-limit messages; not RT value feedback."
+  },
+  {
+   "variation": "trial_feedback_content",
+   "raw": "accuracy + 'Too late!'",
+   "as": {
+    "trial_feedback": "accuracy"
+   },
+   "confidence": "medium",
+   "flag": false,
+   "note": "Timeout message belongs to timeout_feedback."
+  },
+  {
+   "variation": "instruction_format",
+   "raw": "written_text",
+   "as": {
+    "instruction_format": "text"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "instruction_format",
+   "raw": "video_then_written",
+   "as": null,
+   "confidence": "high",
+   "flag": true,
+   "note": "propose vocabulary value: video_and_text (video then duplicate on-screen text)."
+  },
+  {
+   "variation": "instruction_format",
+   "raw": "written_with_examples",
+   "as": {
+    "instruction_format": "text"
+   },
+   "confidence": "medium",
+   "flag": false,
+   "note": "Examples shown; no separate examples option."
+  },
+  {
+   "variation": "speed_accuracy_instruction",
+   "raw": "speed_and_accuracy",
+   "as": {
+    "speed_accuracy_emphasis": "both"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "speed_accuracy_instruction",
+   "raw": "blocked speed / accuracy / both",
+   "as": null,
+   "confidence": "high",
+   "flag": true,
+   "note": "Emphasis varies across blocks over all three values; enum holds one value (needs per-block list)."
+  }
+ ]
 }

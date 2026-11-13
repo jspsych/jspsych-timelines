@@ -1,190 +1,107 @@
 /**
- * Literature-reproduction checks (see packages/flanker/reproduction.md).
+ * Literature-reproduction tests (see packages/flanker/reproduction.md).
  *
- * Level 1: every distinct typed observed value in the generated spec, built as one setting (plus the
- *          companions it needs to be observable) and simulated with data-only simulation.
- * Level 2: every fully typed study configuration, built with all its options at once.
- * The tallies are asserted against reproduction/expected-tallies.json and written to
- * reproduction/results.json, from which reproduction.md is produced.
+ * The runners, the shared checks and the report come from `@jspsych-timelines/testing`. This file
+ * wires the flanker into them (contract, adapter, fixture, tallies) and holds the tests that are
+ * specific to the flanker: defaults against the PEBL anchor, and the docs-meta file.
+ *
+ *   UPDATE_REPRODUCTION=1 npx jest   rewrites expected-tallies.json, results.json, reproduction.md
+ *                                    and the presets in docs-meta
  */
 import * as fs from "fs";
 import * as path from "path";
 
+import { defineReproduction } from "@jspsych-timelines/testing";
+import type { Fixture, ReproductionResults, Tallies } from "@jspsych-timelines/testing";
 import { initJsPsych } from "jspsych";
 
 import meta from "../docs-meta/options.meta.json";
-import {
-  Adapted,
-  adapt,
-  adaptConfig,
-  assumedSettings,
-  combine,
-  isGap,
-  subFromRole,
-  subFromVariation,
-} from "../reproduction/adapter";
+import * as adapterModule from "../reproduction/adapter";
+import { adaptConfig, assumedSettings, combine, isGap } from "../reproduction/adapter";
 import { CHECKS } from "../reproduction/checks";
+import { contract } from "../reproduction/contract";
 import expected from "../reproduction/expected-tallies.json";
-import { run } from "../reproduction/harness";
-import fixture from "../reproduction/spec-observed.json";
+import { harness } from "../reproduction/harness";
+import fixtureJson from "../reproduction/spec-observed.json";
 import { DEFAULT_OPTIONS, PHASE_OPTIONS, resolveOptions } from "./options";
 import { createTimeline } from ".";
 
-interface Case {
-  option: string;
-  sub: string;
-  variation: string;
-  value: any;
-  sources: string[];
-  labelledAddition: boolean;
-}
+const fixture = fixtureJson as unknown as Fixture;
+const reproductionDir = path.join(__dirname, "..", "reproduction");
 
-// -- collect the distinct typed observed values -----------------------------------------------------
+// null = untimed / until response
+const ADD_NULL_OPTIONS = ["response_window_ms", "stimulus_duration_ms"];
 
-const ADD_NULL_OPTIONS = ["response_window_ms", "stimulus_duration_ms"]; // null = untimed / until response
-const cases: Case[] = [];
-let observedTotal = 0;
-let typedTotal = 0;
-for (const o of fixture.options as any[]) {
-  const seen = new Map<string, Case>();
-  for (const c of o.components) {
-    for (const ob of c.observed) {
-      observedTotal++;
-      if (ob.ok) typedTotal++;
-      const keep = ob.ok && ob.value !== null;
-      const addition =
-        ob.ok &&
-        ob.value === null &&
-        ADD_NULL_OPTIONS.includes(o.name) &&
-        c.variation !== "deadline_rule";
-      if (!keep && !addition) continue;
-      const key = `${c.variation}|${JSON.stringify(ob.value)}`;
-      const hit = seen.get(key);
-      if (hit) hit.sources.push(ob.source);
-      else {
-        const k: Case = {
-          option: o.name,
-          sub: subFromVariation(o.name, c.variation),
-          variation: c.variation,
-          value: ob.value,
-          sources: [ob.source],
-          labelledAddition: addition,
-        };
-        seen.set(key, k);
-        cases.push(k);
-      }
-    }
-  }
-}
-
-const results = {
-  level1: [] as any[],
-  level2: [] as any[],
-};
-
-// -- level 1 -------------------------------------------------------------------------------------
-
-describe("level 1: observed values", () => {
-  for (const c of cases) {
-    const label = `${c.option}/${c.variation} = ${JSON.stringify(c.value)} (${c.sources.join(
-      ","
-    )})`;
-    it(label, async () => {
-      const a: Adapted = adapt(c.option, c.sub, c.value);
-      if (isGap(a)) {
-        results.level1.push({ ...c, status: "not expressible", gap: a.gap, reason: a.reason });
-        return;
-      }
-      const opts = combine([a]);
-      const check = CHECKS[c.option];
-      expect(check).toBeDefined();
-      const r = await run(opts);
-      await check.fn(r);
-      const kind = typeof check.kind === "function" ? check.kind(c.sub) : check.kind;
-      results.level1.push({ ...c, status: "checked", kind, options: opts });
-    });
-  }
-});
-
-// -- level 2 -------------------------------------------------------------------------------------
-
-const configs = (fixture.study_configurations as any[]).filter((s) => s.fully_typed);
-
-describe("level 2: fully typed study configurations", () => {
-  for (const s of configs) {
-    it(`${s.source}: ${s.citation}`, async () => {
-      const entries = adaptConfig(s.options);
-      const gaps = entries.filter((e) => isGap(e.adapted));
-      const opts = combine(entries.map((e) => e.adapted));
-      const r = await run(opts);
-      // the resolved option must equal the value the configuration reports
-      const resolvedOf = (key: string, value: any): [any, any] | null => {
-        const e = r.eff as any;
-        if (!key.includes(".")) return [e[key], value];
-        const [opt, role] = key.split(".");
-        if (key === "stimulus_set.flanker")
-          return [
-            e.stimulus_set.flanker.per_side,
-            typeof value === "number" ? value : value.flanker.per_side,
-          ];
-        if (key === "stimulus_set.neutral flanker") return null; // compared as glyphs in the check
-        if (key === "stimulus_set.stimulus_set" && value === "arrows")
-          return [e.stimulus_set.target, "arrows"];
-        if (role === "response_deadline_ms") return [e[opt], value];
-        if (role === "condition_proportions") return [e[opt], value];
-        if (key === "cue_target_interval_ms.warning cue") return [e[opt], value];
-        if (
-          key === "trial_feedback.trial_feedback_content" &&
-          !("trial_feedback.trial_feedback_by_phase" in s.options)
-        )
-          return [e.trial_feedback, value];
-        return null;
-      };
-      let tied = 0;
-      for (const { key, adapted } of entries) {
-        if (isGap(adapted)) continue;
-        const pair = resolvedOf(key, s.options[key]);
-        if (pair) {
-          expect(pair[0]).toEqual(pair[1]);
-          tied++;
-        }
-      }
-      if (entries.some((e) => !isGap(e.adapted))) expect(tied).toBeGreaterThan(0);
-      const options = [
-        ...new Set(
-          entries
-            .filter((e) => !isGap(e.adapted))
-            .map((e) =>
-              e.key.startsWith("practice.") || e.key.startsWith("trial_feedback.")
-                ? "trial_feedback"
-                : e.key.split(".")[0]
-            )
-        ),
+defineReproduction({
+  task: "flanker",
+  dir: reproductionDir,
+  fixture,
+  expectedTallies: expected as Tallies,
+  harness,
+  contract,
+  adapter: {
+    adapt: adapterModule.adapt,
+    adaptConfig,
+    combine,
+    assumedSettings,
+    subFromVariation: adapterModule.subFromVariation,
+  },
+  checks: CHECKS,
+  addNullOptions: ADD_NULL_OPTIONS,
+  nullExcludedVariations: ["deadline_rule"],
+  // level 2: the resolved option must equal the value the configuration reports
+  reportedValue: (key, value, r, s) => {
+    const e = r.eff as any;
+    const [opt, role] = key.split(".");
+    if (key === "stimulus_set.flanker")
+      return [
+        e.stimulus_set.flanker.per_side,
+        typeof value === "number" ? value : value.flanker.per_side,
       ];
-      const checked: string[] = [];
-      for (const name of options) {
-        await CHECKS[name].fn(r);
-        checked.push(name);
-      }
-      results.level2.push({
-        source: s.source,
-        citation: s.citation,
-        n_options: s.n_options,
-        n_keys: entries.length,
-        keys_expressible: entries.length - gaps.length,
-        gaps: gaps.map((g) => ({ key: g.key, ...(g.adapted as any) })),
-        checked_options: checked,
-        assumed: assumedSettings(entries.map((e) => e.adapted)),
-        tied_to_reported_value: tied,
-      });
-    });
-  }
+    if (key === "stimulus_set.neutral flanker") return null; // compared as glyphs in the check
+    if (key === "stimulus_set.stimulus_set" && value === "arrows")
+      return [e.stimulus_set.target, "arrows"];
+    if (role === "response_deadline_ms") return [e[opt], value];
+    if (role === "condition_proportions") return [e[opt], value];
+    if (key === "cue_target_interval_ms.warning cue") return [e[opt], value];
+    if (
+      key === "trial_feedback.trial_feedback_content" &&
+      !("trial_feedback.trial_feedback_by_phase" in s.options)
+    )
+      return [e.trial_feedback, value];
+    return null;
+  },
+  // regenerate the presets in docs-meta from the study configurations (dotted keys retyped)
+  onUpdate: () => {
+    const metaPath = path.join(reproductionDir, "..", "docs-meta", "options.meta.json");
+    const m = JSON.parse(fs.readFileSync(metaPath, "utf8"));
+    m["x-jspsych-presets"] = fixture.study_configurations
+      .map((sc) => {
+        const entries = adaptConfig(sc.options);
+        const opts = combine(entries.map((e) => e.adapted));
+        const gaps = entries.filter((e) => isGap(e.adapted)).map((e) => e.key);
+        const assumed = assumedSettings(entries.map((e) => e.adapted));
+        return {
+          id: sc.source,
+          label: sc.citation,
+          description:
+            `${sc.source_type} · ${sc.setting ?? "no setting"} · ${
+              Object.keys(sc.options).length
+            } spec options` +
+            (gaps.length ? ` · not expressible, left out: ${gaps.join(", ")}` : "") +
+            (assumed.length ? ` · assumed, not reported: ${assumed.join(", ")}` : ""),
+          options: opts,
+        };
+      })
+      .filter((p) => Object.keys(p.options).length >= 3 || p.id === "S069");
+    fs.writeFileSync(metaPath, JSON.stringify(m, null, 2) + "\n");
+  },
 });
 
 // -- defaults ------------------------------------------------------------------------------------
 
 describe("defaults reproduce the PEBL anchor (S019) except the documented changes", () => {
-  const s019 = (fixture.study_configurations as any[]).find((s) => s.source === "S019").options;
+  const s019 = fixture.study_configurations.find((s) => s.source === "S019")!.options;
   const o = resolveOptions({}, "test");
   const p = resolveOptions({}, "practice");
 
@@ -258,56 +175,4 @@ describe("docs-meta/options.meta.json", () => {
       expect(() => createTimeline(initJsPsych(), p.options)).not.toThrow();
     }
   });
-});
-
-// -- tallies -------------------------------------------------------------------------------------
-
-afterAll(() => {
-  const l1 = results.level1;
-  const tallies = {
-    observed_values_total: observedTotal,
-    typed_values_total: typedTotal,
-    level1_distinct_cases: l1.length,
-    level1_checked: l1.filter((x) => x.status === "checked").length,
-    level1_not_expressible: l1.filter((x) => x.status === "not expressible").length,
-    level1_labelled_additions: l1.filter((x) => x.labelledAddition).length,
-    level2_configs: results.level2.length,
-    level2_fully_expressible: results.level2.filter((x) => x.gaps.length === 0).length,
-  };
-  if (process.env.UPDATE_REPRODUCTION) {
-    const dir = path.join(__dirname, "..", "reproduction");
-    fs.writeFileSync(
-      path.join(dir, "expected-tallies.json"),
-      JSON.stringify(tallies, null, 2) + "\n"
-    );
-    fs.writeFileSync(
-      path.join(dir, "results.json"),
-      JSON.stringify({ tallies, ...results }, null, 2) + "\n"
-    );
-    // regenerate the presets in docs-meta from the study configurations (dotted keys retyped)
-    const metaPath = path.join(dir, "..", "docs-meta", "options.meta.json");
-    const m = JSON.parse(fs.readFileSync(metaPath, "utf8"));
-    m["x-jspsych-presets"] = (fixture.study_configurations as any[])
-      .map((sc) => {
-        const entries = adaptConfig(sc.options);
-        const opts = combine(entries.map((e) => e.adapted));
-        const gaps = entries.filter((e) => isGap(e.adapted)).map((e) => e.key);
-        const assumed = assumedSettings(entries.map((e) => e.adapted));
-        return {
-          id: sc.source,
-          label: sc.citation,
-          description:
-            `${sc.source_type} · ${sc.setting ?? "no setting"} · ${
-              Object.keys(sc.options).length
-            } spec options` +
-            (gaps.length ? ` · not expressible, left out: ${gaps.join(", ")}` : "") +
-            (assumed.length ? ` · assumed, not reported: ${assumed.join(", ")}` : ""),
-          options: opts,
-        };
-      })
-      .filter((p) => Object.keys(p.options).length >= 3 || p.id === "S069");
-    fs.writeFileSync(metaPath, JSON.stringify(m, null, 2) + "\n");
-  } else {
-    expect(tallies).toEqual(expected);
-  }
 });

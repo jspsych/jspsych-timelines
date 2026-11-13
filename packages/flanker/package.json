@@ -36,6 +36,7 @@
     "jspsych": ">=8.3.0"
   },
   "devDependencies": {
+    "@jspsych-timelines/testing": "*",
     "@jspsych/config": "^3.2.2",
     "jspsych": "^8.3.0",
     "tsup": "^8.2.4",
