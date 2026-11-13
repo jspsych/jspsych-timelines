@@ -1,0 +1,57 @@
+---
+title: <Task name>
+---
+
+{/* Copy to docs/reference/<task>.mdx, then:
+    1. add { "task": "<task>" } to docs-packages.json
+    2. fill in the sections below; mark anything that doesn't exist yet as TODO.
+   Sections follow PACKAGE-STANDARD section 12. */}
+
+import {TimelineExample} from '@jspsych/docusaurus-theme/components';
+import useBaseUrl from '@docusaurus/useBaseUrl';
+import ParamsTable from '@site/src/components/ParamsTable';
+import schema from '@site/src/schemas/<task>.schema.json';
+import manifest from '@site/src/schemas/manifest.json';
+
+# <Task name>
+
+## Overview
+What the task measures; canonical citation.
+
+## Installation
+npm and CDN snippets.
+
+## Quick Start
+Minimal runnable snippet.
+
+## Task Description
+Trial structure, conditions.
+
+## Parameters
+Generated from `<Task>Options` (plus `packages/<task>/docs-meta/options.meta.json`).
+
+<ParamsTable schema={schema} />
+
+## Try it
+
+<TimelineExample
+  schema={schema}
+  bundle="/bundles/<task>/index.browser.js"
+  globalName={manifest['<task>'].globalName}
+  syncToUrl
+  hashKey="<task>"
+/>
+
+## Data Output
+Every field, and every `phase` / `part` value the package writes.
+
+## Scoring
+Every `ScoringResult` metric, with interpretation.
+
+## Translation
+How to pass `text`, and the key list.
+
+## Timeline Units
+Every `timelineUnits` export.
+
+## References
