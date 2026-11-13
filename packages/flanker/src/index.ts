@@ -204,7 +204,7 @@ function createInteractiveInstructionTrial(
   prompt: string,
   correctButtonIndex: number
 ) {
-  const timeline: any[] = [];
+  let lastTrialCorrect = false;
 
   const instructionTrial = {
     type: jsPsychHtmlButtonResponse,
@@ -224,53 +224,38 @@ function createInteractiveInstructionTrial(
     },
     on_finish: (data: any) => {
       data.correct = data.response === correctButtonIndex;
-      if (data.correct) {
-        timeline.push(successFeedback);
-      } else {
-        timeline.push(failureFeedback);
-        timeline.push(instructionTrial); // Retry on failure
-      }
+      lastTrialCorrect = data.correct;
     },
   };
 
-  const successFeedback = {
+  const feedback = {
     type: jsPsychHtmlKeyboardResponse,
     css_classes: [CSS_ROOT],
-    stimulus: `
-      <div class="jspsych-flanker-instructions">
-        ${prompt}
-        <div style="margin: 20px 0;">${stimulus}</div>
-        <p class="jspsych-flanker-feedback jspsych-flanker-feedback-correct">${config.text.instruction_success}</p>
-      </div>
-    `,
+    stimulus: () => {
+      const outcome = lastTrialCorrect ? "correct" : "incorrect";
+      const msg = lastTrialCorrect
+        ? config.text.instruction_success
+        : config.text.instruction_failure;
+      return `
+        <div class="jspsych-flanker-instructions">
+          ${prompt}
+          <div style="margin: 20px 0;">${stimulus}</div>
+          <p class="jspsych-flanker-feedback jspsych-flanker-feedback-${outcome}">${msg}</p>
+        </div>
+      `;
+    },
     choices: "NO_KEYS",
-    trial_duration: 1000,
+    trial_duration: () => (lastTrialCorrect ? 1000 : 1500),
     data: {
       task: TASK_NAME,
       part: "instruction_feedback",
     },
   };
 
-  const failureFeedback = {
-    type: jsPsychHtmlKeyboardResponse,
-    css_classes: [CSS_ROOT],
-    stimulus: `
-      <div class="jspsych-flanker-instructions">
-        ${prompt}
-        <div style="margin: 20px 0;">${stimulus}</div>
-        <p class="jspsych-flanker-feedback jspsych-flanker-feedback-incorrect">${config.text.instruction_failure}</p>
-      </div>
-    `,
-    choices: "NO_KEYS",
-    trial_duration: 1500,
-    data: {
-      task: TASK_NAME,
-      part: "instruction_feedback",
-    },
+  return {
+    timeline: [instructionTrial, feedback],
+    loop_function: () => !lastTrialCorrect,
   };
-
-  timeline.push(instructionTrial);
-  return { timeline };
 }
 
 /**

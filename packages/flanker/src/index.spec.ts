@@ -309,6 +309,27 @@ describe("Flanker Task", () => {
       expect(instructions.timeline.length).toBeGreaterThan(0);
     });
 
+    it("should repeat an interactive instruction trial until answered correctly", () => {
+      const unit: any = timelineUnits.createInteractiveInstructionTrial(
+        mockConfig as any,
+        "<p>stim</p>",
+        "<p>prompt</p>",
+        1
+      );
+      const [instructionTrial] = unit.timeline;
+
+      expect(unit.timeline).toHaveLength(2);
+      expect(typeof unit.loop_function).toBe("function");
+
+      // Wrong answer: loop again
+      instructionTrial.on_finish({ response: 0 });
+      expect(unit.loop_function()).toBe(true);
+
+      // Correct answer: stop looping
+      instructionTrial.on_finish({ response: 1 });
+      expect(unit.loop_function()).toBe(false);
+    });
+
     it("should create fixation trial with correct duration", () => {
       const fixation = timelineUnits.createFixationTrial(mockConfig);
 
