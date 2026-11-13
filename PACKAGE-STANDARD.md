@@ -403,6 +403,33 @@ Tests **MUST** cover, at minimum:
 
 **CI must run them.** The test step is currently commented out in both `.github/workflows/build.yml` and `.github/workflows/release.yml`, which is why two failing `flanker` assertions are on the branch right now.
 
+### Literature reproduction and layout
+
+Every package built from a generated spec **MUST** use the shared dev-only package `@jspsych-timelines/testing` to test that its options reproduce what the literature varied. It is a `devDependency` and is never published. Packages **MUST NOT** carry their own copy of the harness, the runners or the checks for shared options.
+
+- **Fixture.** `reproduction/spec-observed.json` is the committed record of the task's observed values and study configurations. It is generated from the task's `spec.yaml` and `translations.yaml` with `packages/testing/scripts/fixture-from-spec.mjs <spec-dir> <out.json>`, never copied by hand. The specs live in a private repository, so each package commits what it needs.
+- **Level 1 and level 2.** All runs are seeded.
+  - Level 1 builds each distinct typed observed value on its own, plus any companion settings needed to make it observable. It simulates the result with `jsPsych.simulate(..., "data-only")` and runs that option's check.
+  - Level 2 builds each fully typed study configuration with all its options at once. It ties the resolved options to the values the study reports, then runs the check of every option the study names.
+- **Checks.**
+  - **Shared checks.** Vocabulary options whose effect shows in the standard data fields (§4) use the shared checks of `@jspsych-timelines/testing`:
+    - counts: `n_test_trials`, `practice_trials`, `n_blocks`, `trials_per_block`;
+    - design: `condition_proportions`, `condition_set`, `trial_order`, `sequence_constraints`;
+    - timing: `response_window_ms`, `stimulus_duration_ms`, and the `duration` options such as `fixation_duration_ms`, `iti_ms` and `feedback_duration_ms` (including jitter range, step and seeding);
+    - feedback and response: `trial_feedback`, `feedback_condition`, `response_keys`, `response_device`.
+  - **What the package supplies.**
+    - a data contract (`reproduction/contract.ts`) that names the fields and parts the shared checks read;
+    - an adapter (`reproduction/adapter.ts`) that converts spec values into its options;
+    - its own checks (`reproduction/checks.ts`) for task-specific options.
+  - **No weakening.** A package **MUST NOT** weaken a shared check; it adds assertions with `extendCheck`.
+- **Gaps.** A typed value the package can't express is classified, not skipped silently: package fix needed, option missing, plugin needed, dossier value wrong, or genuinely contradictory.
+- **Tallies.** The counts (observed, typed, level 1 checked and not expressible, level 2 fully expressible) are asserted against the committed `reproduction/expected-tallies.json`, so a regression or an improvement shows up as a diff.
+  - `UPDATE_REPRODUCTION=1 npx jest` rewrites the tallies, `reproduction/results.json` and `reproduction.md`.
+  - `reproduction.md` is generated. Hand-written commentary goes in `reproduction/notes.md`.
+- **Layout.** A package with a centred stimulus (§5) **MUST** have `reproduction/layout.config.mjs` and pass the browser layout check of `@jspsych-timelines/testing` before release. Run it after building with `node ../testing/scripts/layout-check.mjs reproduction/layout.config.mjs`.
+  - The check passes when the stage centre is identical (±1 px) on every screen type, at a narrow and a wide viewport, for each response device.
+  - It needs Chrome, so it isn't part of `npm test`. The jsdom test of the anchored wrapper (§5) is.
+
 ---
 
 ## 10. Build and packaging
@@ -519,7 +546,7 @@ For each piece of shared logic, ask whether an ordinary jsPsych experiment, with
 - **Specialized → an established library** (e.g. `simple-statistics`, above).
 - **Task-specific → the package.**
 
-There is still **no** general `@jspsych-timelines/utils` package.
+There is still **no** general `@jspsych-timelines/utils` package. The one other shared package is `@jspsych-timelines/testing`. It is private and dev-only, and a package's `src/` never imports it (§9).
 
 ---
 
@@ -595,6 +622,8 @@ The first battery release is gated on the jsPsych release carrying the §11 CSS 
 
 - [ ] `npm run build -ws` succeeds
 - [ ] `npm test` passes
+- [ ] Literature reproduction wired to `@jspsych-timelines/testing`: fixture generated, tallies committed, `reproduction.md` regenerated
+- [ ] Layout check passes (packages with a centred stimulus)
 - [ ] `npx prettier --check "packages/<name>/src/**/*.ts"` passes
 - [ ] `npm pack --dry-run -w @jspsych-timelines/<name>` contains only intended files
 - [ ] `main`, `module`, `exports`, and `unpkg` all point at files the build actually produces
