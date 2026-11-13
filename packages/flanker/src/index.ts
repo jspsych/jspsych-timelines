@@ -32,6 +32,7 @@ import {
   createDisplayTrial,
   createFeedback,
   createFixation,
+  createInstructionWalkthrough,
   createInstructions,
   createIti,
   createPracticeIntro,
@@ -51,6 +52,9 @@ export interface TrialData {
   /** "response" is the scorable row. */
   part:
     | "instruction"
+    | "instruction_example"
+    | "instruction_check"
+    | "instruction_feedback"
     | "calibration"
     | "device_check"
     | "attention_check"
@@ -74,6 +78,10 @@ export interface TrialData {
   target?: string;
   flankers?: string;
   flankers_per_side?: number;
+  /** instruction_check / instruction_example rows: the trial type shown (flanker_condition). */
+  condition?: string;
+  /** instruction_check rows: 1-based attempt at this step. */
+  attempt?: number;
   /** Key (keyboard) or button index; null for nogo. */
   correct_response?: string | number | null;
   correct?: boolean;
@@ -91,6 +99,7 @@ export interface TrialData {
   duration_ms?: number;
   fixation_duration?: number;
   /** Feedback rows: content, condition and the text shown. */
+  /** instruction_feedback rows: "correct" | "hint" | "reveal". */
   feedback_kind?: string;
   feedback_condition?: string;
   feedback_text?: string;
@@ -115,6 +124,9 @@ export function createTimeline(
     timeline.push(createCalibration(ctx));
   }
   if (o.instruction_format === "text") timeline.push(createInstructions(ctx));
+  if (o.instruction_format === "text" && o.instruction_demonstration !== "none") {
+    timeline.push(createInstructionWalkthrough(ctx));
+  }
   if (o.attention_checks === "instructed_items") timeline.push(createAttentionChecks(ctx));
 
   if (o.practice_trials > 0) {
@@ -139,6 +151,7 @@ export function createTimeline(
 export const timelineUnits = {
   createContext,
   createInstructions,
+  createInstructionWalkthrough,
   createPracticeIntro,
   createTestIntro,
   createDeviceCheck,

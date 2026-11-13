@@ -242,3 +242,64 @@ export function buildTrialSpecs(ctx: Ctx, n: number): TrialSpec[] {
   if (order === "shuffled_list") return R.shuffle(specs);
   return specs;
 }
+
+/**
+ * One deterministic spec for the instruction walkthrough: the first flanker count and spacing, the
+ * first letter of the target group, and the given neutral form. `group` picks the correct response.
+ */
+export function buildDemoSpec(
+  o: ResolvedOptions,
+  flanker_condition: string,
+  form: NeutralFlankerForm,
+  group: 0 | 1
+): TrialSpec {
+  const congruency: Congruency = flanker_condition.startsWith("neutral")
+    ? "neutral"
+    : (flanker_condition as Congruency);
+  const target = o.stimulus_set.target ?? "arrows";
+  const letters = target === "arrows" ? null : target.letters;
+  const p = o.stimulus_set.flanker?.per_side ?? 2;
+  const per_side = Array.isArray(p) ? p[0] : p;
+  const spacing = o.stimulus_layout.flanker_spacing ?? { gap: 0, unit: "px" as const };
+  const gap =
+    spacing === "adjacent" ? 0 : Array.isArray(spacing.gap) ? spacing.gap[0] : spacing.gap;
+  const gap_unit: "px" | "deg" = spacing === "adjacent" ? "px" : spacing.unit;
+  const other = group === 0 ? 1 : 0;
+  let tgt: Glyph;
+  let flank: Glyph;
+  if (letters) {
+    tgt = letters[group][0];
+    flank =
+      congruency === "nogo"
+        ? letters[other][0]
+        : congruency === "congruent"
+        ? tgt
+        : congruency === "incongruent"
+        ? letters[other][0]
+        : neutralGlyph(form, nonTargetLetter(letters));
+    if (congruency === "nogo") tgt = "cross";
+  } else {
+    const arrow = group === 0 ? "left" : "right";
+    tgt = congruency === "nogo" ? "cross" : arrow;
+    flank =
+      congruency === "incongruent"
+        ? group === 0
+          ? "right"
+          : "left"
+        : congruency === "neutral"
+        ? neutralGlyph(form, "S")
+        : arrow;
+  }
+  return {
+    flanker_condition,
+    congruency,
+    group,
+    target: tgt,
+    flanker: flank,
+    per_side,
+    gap,
+    gap_unit,
+    cued: null,
+    fixation_ms: 0,
+  };
+}

@@ -29,6 +29,10 @@ jsPsych.run([flanker]);
 jsPsychTimelineFlanker.utils.scoring.calculateScores(jsPsych.data.get());
 ```
 
+## Instructions
+
+After the instruction pages, participants do an interactive walkthrough (`instruction_demonstration: "interactive"`, the default): one untimed step for each trial type in `condition_set`, drawn and answered exactly as in the task (same stimuli, keys or buttons). A wrong response shows a hint and repeats the step, up to 3 attempts. Walkthrough rows are tagged `part: "instruction_check"` and are never scored. Use `"examples"` for static examples or `"none"` for text-only instructions (what most published studies did). `timelineUnits.createInstructionWalkthrough(ctx)` builds the walkthrough on its own.
+
 ## Documentation
 
 Full reference (options, data output, scoring, translation): `docs/docs/reference/flanker.md` on the documentation site.

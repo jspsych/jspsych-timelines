@@ -9,6 +9,9 @@ import {
   ATTENTION_CHECK_PROBES,
   CUE_DURATION_MS,
   DEFAULT_PX_PER_DEG,
+  INSTRUCTION_CORRECT_MS,
+  INSTRUCTION_MAX_ATTEMPTS,
+  INSTRUCTION_NOGO_WAIT_MS,
   TASK_CLASS,
   TASK_NAME,
   VERSION,
@@ -16,13 +19,22 @@ import {
 import {
   DEFAULT_OPTIONS,
   FlankerOptions,
+  NeutralFlankerForm,
   ResolvedOptions,
   resolveOptions,
   validateOptions,
 } from "./options";
-import { Mapping, TrialSpec, buildTrialSpecs } from "./sequence";
-import { Glyph, parseColors, renderArray, renderGlyph, renderStage, toPx } from "./stimuli";
-import { TextConfig, defaultText } from "./text";
+import { Mapping, TrialSpec, buildDemoSpec, buildTrialSpecs } from "./sequence";
+import {
+  Glyph,
+  paintDisplay,
+  parseColors,
+  renderArray,
+  renderGlyph,
+  renderStage,
+  toPx,
+} from "./stimuli";
+import { InstructionStepArgs, TextConfig, defaultText } from "./text";
 
 type Phase = "practice" | "test";
 
@@ -131,6 +143,13 @@ function responseLabels(ctx: Context, o: ResolvedOptions, mapping: Mapping): [st
     }
   });
   return labels;
+}
+
+/** Label of response `r` for instruction text: a key cap for the keyboard, else the button label. */
+function responseLabelHtml(o: ResolvedOptions, labels: [string, string], r: number): string {
+  return isKeyboard(o)
+    ? `<kbd>${o.response_keys[r] === " " ? "space" : o.response_keys[r]}</kbd>`
+    : labels[r];
 }
 
 function pxPerDeg(ctx: Context): number {
@@ -509,10 +528,7 @@ export function createInstructions(ctx: Context) {
   const labels = responseLabels(ctx, o, mapping);
   // left/right response index order -> which target group
   const groupOfResponse = (r: number): 0 | 1 => (mapping.response_of_group[0] === r ? 0 : 1);
-  const keyLabel = (r: number) =>
-    isKeyboard(o)
-      ? `<kbd>${o.response_keys[r] === " " ? "space" : o.response_keys[r]}</kbd>`
-      : labels[r];
+  const keyLabel = (r: number) => responseLabelHtml(o, labels, r);
   const pages: string[] = [];
   pages.push(letters ? t.instruction_intro_letters : t.instruction_intro_arrows);
   const emphasis =
@@ -540,6 +556,212 @@ export function createInstructions(ctx: Context) {
   );
   const timeline = pages.map((p) => textPage(ctx, p, "instructions", "instruction"));
   return { timeline };
+}
+
+// -- instruction walkthrough ---------------------------------------------------------------------
+
+export interface DemoStep {
+  o: ResolvedOptions;
+  spec: TrialSpec;
+}
+
+const TEACHING_ORDER: Record<string, number> = {
+  congruent: 0,
+  neutral: 1,
+  incongruent: 2,
+  nogo: 3,
+};
+
+/**
+ * The steps of the walkthrough: one per trial type in `condition_set` (neutral variants one each),
+ * ordered congruent, neutral, incongruent, no-go. A type that only the test phase uses is shown with
+ * the test options, the others with the practice options (the walkthrough precedes practice).
+ * Targets alternate between the two responses from step to step.
+ */
+export function demoSteps(ctx: Context): DemoStep[] {
+  const phases = [...(ctx.test.practice_trials === 0 ? [] : [ctx.practice]), ctx.test];
+  const found: Array<{ cond: string; form: NeutralFlankerForm; o: ResolvedOptions }> = [];
+  for (const o of phases) {
+    for (const c of o.condition_set) {
+      const forms: NeutralFlankerForm[] =
+        c === "neutral"
+          ? ([] as NeutralFlankerForm[]).concat(o.stimulus_set.neutral_flanker ?? "dashes")
+          : c === "neutral_dash"
+          ? ["dashes"]
+          : c === "neutral_empty"
+          ? ["blank"]
+          : ["dashes"];
+      for (const form of forms) {
+        const cond = c === "neutral" ? `neutral_${form}` : c;
+        if (!found.some((f) => f.cond === cond)) found.push({ cond, form, o });
+      }
+    }
+  }
+  const rank = (c: string) => TEACHING_ORDER[c.startsWith("neutral") ? "neutral" : c];
+  found.sort((a, b) => rank(a.cond) - rank(b.cond)); // stable
+  return found.map((f, i) => ({
+    o: f.o,
+    spec: buildDemoSpec(f.o, f.cond, f.form, (i % 2) as 0 | 1),
+  }));
+}
+
+function stepArgs(ctx: Context, step: DemoStep): InstructionStepArgs {
+  const { o, spec } = step;
+  const mapping = mappingFor(ctx, "test", 1);
+  const labels = responseLabels(ctx, o, mapping);
+  const nogo = spec.congruency === "nogo";
+  return {
+    condition: spec.congruency,
+    device: o.response_device as "keyboard" | "mouse" | "touch",
+    target: nogo ? "" : groupHtml(o, spec.group),
+    response: nogo ? "" : responseLabelHtml(o, labels, mapping.response_of_group[spec.group]),
+  };
+}
+
+const demoText = (html: string) => `<div class="jspsych-timelines-flanker-text">${html}</div>`;
+
+/** Static examples: each trial type as drawn in the task, with the answer named (`instruction_demonstration: "examples"`). */
+function createExamples(ctx: Context, steps: DemoStep[]) {
+  const pages = steps.map((step) => ({
+    type: jsPsychHtmlButtonResponse,
+    css_classes: [TASK_CLASS],
+    stimulus: () =>
+      arrayHtml(ctx, step.o, step.spec, null) +
+      demoText(ctx.text.instruction_step(stepArgs(ctx, step))),
+    choices: [ctx.text.continue_button],
+    data: baseData({
+      phase: "instructions",
+      part: "instruction_example",
+      condition: step.spec.flanker_condition,
+      congruency: step.spec.congruency,
+      target: step.spec.target,
+      flankers: step.spec.flanker,
+    }),
+    on_finish: (d: any) => {
+      delete d.stimulus;
+    },
+  }));
+  return {
+    timeline: [
+      textPage(ctx, ctx.text.instruction_examples_intro, "instructions", "instruction"),
+      ...pages,
+    ],
+  };
+}
+
+/**
+ * Interactive walkthrough (PACKAGE-STANDARD §6a): one step per trial type, drawn and answered with
+ * the same renderer and response mapping as the test trials. Untimed, except that a no-go step
+ * waits INSTRUCTION_NOGO_WAIT_MS for the (absent) response. A wrong response shows a hint and
+ * repeats the step; after INSTRUCTION_MAX_ATTEMPTS the answer is shown and it moves on. Rows are
+ * `phase: "instructions"`, `part: "instruction_check"` (hints and confirmations:
+ * `instruction_feedback`) and are never scored.
+ */
+export function createInstructionWalkthrough(ctx: Context) {
+  const o = ctx.test;
+  const mode = o.instruction_demonstration;
+  if (o.instruction_format !== "text" || mode === "none") return { timeline: [] as any[] };
+  const steps = demoSteps(ctx);
+  if (mode === "examples") return createExamples(ctx, steps);
+  const keyboard = isKeyboard(o);
+  const t = ctx.text;
+  const nodes: any[] = [textPage(ctx, t.instruction_demo_intro, "instructions", "instruction")];
+
+  for (const step of steps) {
+    const { o: so, spec } = step;
+    const mapping = mappingFor(ctx, "test", 1);
+    const labels = responseLabels(ctx, so, mapping);
+    const nogo = spec.congruency === "nogo";
+    const correctIndex = mapping.response_of_group[spec.group];
+    const correctResponse: string | number | null = nogo
+      ? null
+      : keyboard
+      ? so.response_keys[correctIndex]
+      : correctIndex;
+    const args = stepArgs(ctx, step);
+    const state = { attempt: 0, correct: null as boolean | null };
+    const shown = (html: string) => arrayHtml(ctx, so, spec, null) + demoText(html);
+    const stepData = {
+      phase: "instructions",
+      condition: spec.flanker_condition,
+      congruency: spec.congruency,
+      target: spec.target,
+      flankers: spec.flanker,
+    };
+
+    const response = {
+      type: keyboard ? jsPsychHtmlKeyboardResponse : jsPsychHtmlButtonResponse,
+      css_classes: [TASK_CLASS],
+      stimulus: () => shown(t.instruction_step(args)),
+      ...(keyboard
+        ? { choices: [...so.response_keys] }
+        : {
+            choices: [...labels],
+            button_html: (choice: string) => `<button class="jspsych-btn">${choice}</button>`,
+          }),
+      trial_duration: nogo ? INSTRUCTION_NOGO_WAIT_MS : null,
+      data: baseData({ ...stepData, part: "instruction_check", correct_response: correctResponse }),
+      // data-only simulation answers correctly (and withholds on no-go)
+      simulation_options: { data: { response: correctResponse, rt: nogo ? null : 600 } },
+      on_finish: (d: any) => {
+        // jsPsych's simulation merge can turn a null response into {}; only a key or a button index counts
+        const timeout = typeof d.response !== "string" && typeof d.response !== "number";
+        if (timeout) d.response = null;
+        const correct = nogo
+          ? timeout
+          : timeout
+          ? false
+          : keyboard
+          ? String(d.response).toLowerCase() === String(correctResponse).toLowerCase()
+          : d.response === correctResponse;
+        state.attempt++;
+        state.correct = correct;
+        delete d.stimulus;
+        d.timeout = timeout;
+        d.correct = correct;
+        d.attempt = state.attempt;
+      },
+    };
+
+    const confirm = createDisplayTrial({
+      ctx,
+      o: so,
+      phase: "instructions",
+      part: "instruction_feedback",
+      duration: INSTRUCTION_CORRECT_MS,
+      stimulus: () => shown(`<p><strong>${t.instruction_correct}</strong></p>`),
+      data: { ...stepData, feedback_kind: "correct" },
+    });
+    const note = (html: string, kind: string) => ({
+      type: jsPsychHtmlButtonResponse,
+      css_classes: [TASK_CLASS],
+      stimulus: () => shown(html),
+      choices: [t.continue_button],
+      data: baseData({ ...stepData, part: "instruction_feedback", feedback_kind: kind }),
+      on_finish: (d: any) => {
+        delete d.stimulus;
+      },
+    });
+    const again = () => state.correct === false && state.attempt < INSTRUCTION_MAX_ATTEMPTS;
+
+    nodes.push({
+      timeline: [
+        response,
+        { timeline: [confirm], conditional_function: () => state.correct === true },
+        { timeline: [note(t.instruction_hint(args), "hint")], conditional_function: again },
+        {
+          timeline: [note(t.instruction_reveal(args), "reveal")],
+          conditional_function: () => state.correct === false && !again(),
+        },
+      ],
+      on_timeline_start: () => {
+        state.attempt = 0;
+        state.correct = null;
+      },
+      loop_function: again,
+    });
+  }
+  return { timeline: nodes };
 }
 
 export function createPracticeIntro(ctx: Context) {

@@ -260,6 +260,18 @@ export interface FlankerOptions {
    */
   speed_accuracy_emphasis?: "speed" | "accuracy" | "both" | "none";
 
+  /**
+   * Walkthrough of the instructions, between the instruction pages and practice (PACKAGE-STANDARD §6a).
+   * "interactive": one untimed step per trial type in `condition_set`, drawn with the task's own renderer
+   * and response mapping; a wrong response shows a hint and repeats the step (at most 3 attempts, then the
+   * answer is shown). "examples": the same stimuli as static pages with the answer named, no responses.
+   * "none": instruction pages only. "animated" and "guided_trial" are not implemented. Only used when
+   * `instruction_format` is "text".
+   * (default: "interactive" — a documented exception to the evidence-anchored defaults (PACKAGE-STANDARD §6a):
+   * most published studies use text-only instructions, S012. Set "none" to reproduce those.)
+   */
+  instruction_demonstration?: "none" | "examples" | "animated" | "guided_trial" | "interactive";
+
   // -- phase overrides and text --
   /**
    * Overrides for the practice phase. Honoured: trial_feedback, feedback_condition, feedback_duration_ms,
@@ -345,6 +357,7 @@ export const DEFAULT_OPTIONS: ResolvedOptions & { practice: Partial<FlankerOptio
   feedback_condition: "all",
   trial_feedback: "none",
   instruction_format: "text",
+  instruction_demonstration: "interactive",
   speed_accuracy_emphasis: "both",
   practice: { trial_feedback: "accuracy_rt" },
 };
@@ -384,6 +397,11 @@ const NOT_IMPLEMENTED: Array<[keyof ResolvedOptions, string[], string]> = [
     "instruction_format",
     ["audio", "video"],
     "no media is bundled; supply your own instruction trials",
+  ],
+  [
+    "instruction_demonstration",
+    ["animated", "guided_trial"],
+    "use interactive (real stimuli, repeat until correct), examples or none",
   ],
   [
     "response_mapping_counterbalancing",

@@ -2622,6 +2622,19 @@
         }
       }
     },
+    "instruction_demonstration": {
+      "x-jspsych": {
+        "group": "instructions",
+        "advanced": false,
+        "vocabulary": "instruction_demonstration",
+        "phaseOverridable": false,
+        "evidence": {
+          "observed": [],
+          "defaultSource": "exception",
+          "needsTranslation": false
+        }
+      }
+    },
     "speed_accuracy_emphasis": {
       "x-jspsych": {
         "group": "instructions",

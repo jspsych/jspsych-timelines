@@ -1,3 +1,10 @@
+export interface InstructionStepArgs {
+  condition: "congruent" | "incongruent" | "neutral" | "nogo";
+  device: "keyboard" | "mouse" | "touch";
+  target: string;
+  response: string;
+}
+
 /**
  * Text for the flanker task. To translate, pass a partial object with the same keys as `text`.
  * Functions that interpolate runtime values take named parameters; see each doc comment.
@@ -23,6 +30,24 @@ export interface TextConfig {
     left_target: string;
     right_target: string;
   }) => string;
+  /** Page before the interactive walkthrough (`instruction_demonstration: "interactive"`). */
+  instruction_demo_intro: string;
+  /** Page before the static examples (`instruction_demonstration: "examples"`). */
+  instruction_examples_intro: string;
+  /**
+   * Explanation shown under a walkthrough stimulus (a step of "interactive", or an example).
+   * @param r.condition "congruent" | "incongruent" | "neutral" | "nogo"
+   * @param r.device    "keyboard" | "mouse" | "touch"
+   * @param r.target    HTML of the target(s) of the correct response (empty for "nogo")
+   * @param r.response  label of the correct response: key or button (empty for "nogo")
+   */
+  instruction_step: (r: InstructionStepArgs) => string;
+  /** Hint after a wrong response in a walkthrough step; the step then repeats. Same parameters as `instruction_step`. */
+  instruction_hint: (r: InstructionStepArgs) => string;
+  /** Shown after the last allowed attempt: the answer, then the walkthrough moves on. */
+  instruction_reveal: (r: InstructionStepArgs) => string;
+  /** Brief confirmation after a correct walkthrough response. */
+  instruction_correct: string;
   /** Sentence about the hand(s) used, by `response_hand`. */
   hand_two_hands_index_fingers: string;
   hand_one_hand_dominant: string;
@@ -109,6 +134,42 @@ export const defaultText: TextConfig = {
     <p>Center ${r.right_target}: ${r.device === "touch" ? "tap" : "click"} <strong>${
           r.right_response
         }</strong>.</p>`,
+  instruction_demo_intro: `<h2>Let's Try It</h2>
+    <p>Here are a few examples of what you will see. Respond to each one as you would in the task.</p>
+    <p>There is no time limit here. If you respond incorrectly, you will get a hint and try again.</p>`,
+  instruction_examples_intro: `<h2>Examples</h2>
+    <p>Here are a few examples of what you will see, with the correct response for each.</p>`,
+  instruction_step: (r) => {
+    const act = r.device === "keyboard" ? "press" : r.device === "touch" ? "tap" : "click";
+    switch (r.condition) {
+      case "congruent":
+        return `<p>The items on the sides are the same as the center one. The center is ${r.target}, so ${act} <strong>${r.response}</strong>.</p>`;
+      case "neutral":
+        return `<p>The items on the sides are different from the center one, but they give no hint. The center is ${r.target}, so ${act} <strong>${r.response}</strong>.</p>`;
+      case "incongruent":
+        return `<p>The items on the sides are different from the center one. Ignore them. The center is ${r.target}, so ${act} <strong>${r.response}</strong>.</p>`;
+      case "nogo":
+        return `<p>The center item is a cross. When you see a cross, do <strong>not</strong> respond. Just wait.</p>`;
+    }
+  },
+  instruction_hint: (r) => {
+    const act = r.device === "keyboard" ? "press" : r.device === "touch" ? "tap" : "click";
+    switch (r.condition) {
+      case "incongruent":
+        return `<p>That is the response for the items on the sides. Respond to the <strong>center</strong> one: it is ${r.target}, so ${act} <strong>${r.response}</strong>.</p><p>Let's try again.</p>`;
+      case "nogo":
+        return `<p>A cross means do <strong>not</strong> respond. Wait until it disappears.</p><p>Let's try again.</p>`;
+      default:
+        return `<p>Not quite. Look at the <strong>center</strong> item: it is ${r.target}, so ${act} <strong>${r.response}</strong>.</p><p>Let's try again.</p>`;
+    }
+  },
+  instruction_reveal: (r) => {
+    const act = r.device === "keyboard" ? "press" : r.device === "touch" ? "tap" : "click";
+    return r.condition === "nogo"
+      ? `<p>With a cross, do not respond at all. Let's move on.</p>`
+      : `<p>For this one, ${act} <strong>${r.response}</strong>. Let's move on.</p>`;
+  },
+  instruction_correct: "Correct!",
   hand_two_hands_index_fingers: "Use the index finger of each hand, one for each response.",
   hand_one_hand_dominant: "Use your dominant hand for both responses.",
   emphasis_speed: "Respond as quickly as you can.",
