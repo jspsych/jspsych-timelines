@@ -3137,7 +3137,7 @@ var jsPsychTimelineFlanker = (function (exports) {
       ...a.flankers.map((g) => cell(g, hideF))
     ].join("");
     const dir = a.orientation === "vertical" ? "column" : "row";
-    return `<div class="jspsych-timelines-flanker-stage" style="color:${a.fg};background:${a.bg};">
+    return `${paintDisplay(a.fg, a.bg)}<div class="jspsych-timelines-flanker-stage">
     <div class="jspsych-timelines-flanker-array" data-orientation="${a.orientation}" style="flex-direction:${dir};gap:${a.gap_px}px;transform:translateY(${a.offset_px}px);">${items}</div>
   </div>`;
   }
@@ -3147,8 +3147,17 @@ var jsPsychTimelineFlanker = (function (exports) {
       throw new Error(`flanker: stimulus_color must look like "white on black", got "${spec}".`);
     return { fg: m[1], bg: m[2] };
   }
+  var SAFE_COLOR = /^[#a-zA-Z0-9(),.%\s-]+$/;
+  function paintDisplay(fg, bg) {
+    if (!SAFE_COLOR.test(fg) || !SAFE_COLOR.test(bg))
+      throw new Error(`flanker: unsupported colour in stimulus_color ("${fg}" on "${bg}").`);
+    return `<style>.jspsych-display-element:has(.jspsych-timelines-flanker){background:${bg};color:${fg};}</style>`;
+  }
   function renderStage(inner, fg, bg) {
-    return `<div class="jspsych-timelines-flanker-stage" style="color:${fg};background:${bg};"><div class="jspsych-timelines-flanker-center">${inner}</div></div>`;
+    return `${paintDisplay(
+    fg,
+    bg
+  )}<div class="jspsych-timelines-flanker-stage"><div class="jspsych-timelines-flanker-center">${inner}</div></div>`;
   }
 
   // src/sequence.ts
@@ -3394,7 +3403,7 @@ var jsPsychTimelineFlanker = (function (exports) {
   }
 
   // src/styles.css
-  styleInject(".jspsych-timelines-flanker .jspsych-timelines-flanker-text {\n  max-width: 600px;\n  margin: 0 auto;\n  padding: 0 20px;\n  text-align: left;\n}\n.jspsych-timelines-flanker .jspsych-timelines-flanker-text h2 {\n  text-align: center;\n}\n.jspsych-timelines-flanker .jspsych-timelines-flanker-stage {\n  box-sizing: border-box;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  min-height: 200px;\n  min-width: min(100%, 420px);\n  margin: 0 auto;\n  padding: 20px;\n  overflow: hidden;\n}\n.jspsych-timelines-flanker .jspsych-timelines-flanker-array {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n.jspsych-timelines-flanker .jspsych-timelines-flanker-item {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  line-height: 1;\n}\n.jspsych-timelines-flanker .jspsych-timelines-flanker-item .letter {\n  font-family: monospace;\n  font-weight: bold;\n}\n.jspsych-timelines-flanker .jspsych-timelines-flanker-center {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  min-height: 80px;\n}\n.jspsych-timelines-flanker .jspsych-timelines-flanker-fixation {\n  font-size: 3em;\n}\n.jspsych-timelines-flanker .jspsych-timelines-flanker-cue {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  gap: 40px;\n}\n.jspsych-timelines-flanker .jspsych-timelines-flanker-cue .dot {\n  width: 24px;\n  height: 24px;\n  border: 3px solid currentColor;\n  border-radius: 50%;\n}\n.jspsych-timelines-flanker .jspsych-timelines-flanker-feedback {\n  font-size: 1.6em;\n}\n.jspsych-timelines-flanker .jspsych-timelines-flanker-feedback.incorrect,\n.jspsych-timelines-flanker .jspsych-timelines-flanker-feedback.timeout {\n  font-weight: bold;\n}\n");
+  styleInject(".jspsych-timelines-flanker .jspsych-timelines-flanker-text {\n  max-width: 600px;\n  margin: 0 auto;\n  padding: 0 20px;\n  text-align: left;\n}\n.jspsych-timelines-flanker .jspsych-timelines-flanker-text h2 {\n  text-align: center;\n}\n.jspsych-timelines-flanker .jspsych-timelines-flanker-stage {\n  box-sizing: border-box;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 640px;\n  max-width: calc(100vw - 16px);\n  height: 280px;\n  margin: 0 auto;\n  padding: 20px;\n  overflow: hidden;\n}\n.jspsych-timelines-flanker .jspsych-timelines-flanker-array {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n.jspsych-timelines-flanker .jspsych-timelines-flanker-item {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  line-height: 1;\n}\n.jspsych-timelines-flanker .jspsych-timelines-flanker-item .letter {\n  font-family: monospace;\n  font-weight: bold;\n}\n.jspsych-timelines-flanker .jspsych-timelines-flanker-center {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  min-height: 80px;\n}\n.jspsych-timelines-flanker .jspsych-timelines-flanker-fixation {\n  font-size: 3em;\n}\n.jspsych-timelines-flanker .jspsych-timelines-flanker-cue {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  gap: 40px;\n}\n.jspsych-timelines-flanker .jspsych-timelines-flanker-cue .dot {\n  width: 24px;\n  height: 24px;\n  border: 3px solid currentColor;\n  border-radius: 50%;\n}\n.jspsych-timelines-flanker .jspsych-timelines-flanker-feedback {\n  font-size: 1.6em;\n}\n.jspsych-timelines-flanker .jspsych-timelines-flanker-feedback.incorrect,\n.jspsych-timelines-flanker .jspsych-timelines-flanker-feedback.timeout {\n  font-weight: bold;\n}\n");
 
   // ../../node_modules/jspsych/dist/index.js
   __toESM(require_auto_bind());
@@ -4372,16 +4381,11 @@ var jsPsychTimelineFlanker = (function (exports) {
   }
   function createDisplayTrial(a) {
     var _a, _b;
-    const { ctx, o } = a;
-    const buttons = !isKeyboard(o);
-    const labels = buttons ? responseLabels(ctx, o, mappingFor(ctx, "test", 1)) : ["\xA0"];
     return {
-      type: HtmlButtonResponsePlugin,
+      type: HtmlKeyboardResponsePlugin,
       css_classes: [TASK_CLASS],
       stimulus: a.stimulus,
-      choices: labels,
-      button_html: (choice) => `<button class="jspsych-btn" disabled${buttons ? "" : ' style="display:none"'}>${choice}</button>`,
-      response_ends_trial: false,
+      choices: "NO_KEYS",
       trial_duration: a.duration,
       data: baseData(__spreadValues({
         phase: a.phase,
