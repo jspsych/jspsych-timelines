@@ -1018,12 +1018,15 @@ parameters:
 - name: instruction_demonstration
   layer: instructions
   type: enum
-  definition: Demonstrations or worked examples in the instructions.
+  definition: Demonstrations or worked examples in the instructions. `interactive` is a walkthrough
+    with the task's real stimuli and response mapping that repeats each step until it is answered
+    correctly (PACKAGE-STANDARD §6a); it is the package default wherever feasible.
   values:
   - none
   - examples
   - animated
   - guided_trial
+  - interactive
   absent_value: none
   granularity_note: 'Value list is open: the recurring values are listed.'
 - name: instruction_framing
