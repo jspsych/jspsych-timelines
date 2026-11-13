@@ -300,6 +300,22 @@ Keys **SHOULD** be `snake_case` and grouped by section with comments.
 
 ---
 
+## 6a. Instructions
+
+Instructions **SHOULD** be interactive and use the task's real stimuli wherever that is reasonable. Participants learn a task far better by doing it than by reading about it.
+
+- **Default.** `instruction_demonstration` defaults to `"interactive"`. This is a deliberate exception to the evidence-anchored defaults of §2a, since most published implementations use text-only instructions. The other values (`"none"`, `"examples"`, …) stay available for reproducing a study's procedure.
+- **Real stimuli, same code.** Walkthrough screens **MUST** render stimuli with the same functions, and accept responses with the same mapping, as the test trials. Instructions then stay correct under any configuration: other stimulus sets, other keys, a touch device, practice overrides. Don't hard-code example images or key names in instruction text. Interpolate them (§6).
+- **Repeat until correct.** Each demo step shows a real stimulus, explains what to do, and waits for the response.
+  - A wrong response shows a short hint saying why it was wrong, then the step repeats.
+  - The walkthrough is untimed, at the participant's own pace, and covers each condition the task uses (e.g. congruent, incongruent, neutral, no-go).
+- **Then practice.** The walkthrough comes before practice and is separate from it. It doesn't count toward `practice_trials`. Practice then runs at real timing, with the practice overrides.
+- **Data.** Walkthrough rows are tagged `phase: "instructions"` and `part: "instruction_check"`. They record `correct` and the attempt number, and are never scored.
+- **When it isn't reasonable.** Some tasks can't usefully demonstrate with real stimuli: a game-like social task, a minutes-long vigilance wait, a choice with real money. These simply don't offer `"interactive"`. Their default stays evidence-based, and nothing more needs saying.
+- **Simulation.** The walkthrough **MUST** work under `jsPsych.simulate()` by answering correctly in data-only mode, so the literature-reproduction tests run through it.
+
+---
+
 ## 7. Versioning
 
 **MUST NOT** hardcode the version:
