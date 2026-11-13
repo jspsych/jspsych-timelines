@@ -11,14 +11,16 @@
   text-align: center;
 }
 
-/* Fixed-size panel so that nothing moves between fixation, array, feedback and ITI. */
+/* Fixed-size panel (not min-size) so that nothing moves between fixation, array, feedback and
+   ITI. The task colours are painted on the whole display by paintDisplay(), not on this panel. */
 .jspsych-timelines-flanker .jspsych-timelines-flanker-stage {
   box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 200px;
-  min-width: min(100%, 420px);
+  width: 640px;
+  max-width: calc(100vw - 16px);
+  height: 280px;
   margin: 0 auto;
   padding: 20px;
   overflow: hidden;

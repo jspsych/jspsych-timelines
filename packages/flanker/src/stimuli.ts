@@ -106,8 +106,12 @@ export function renderArray(a: ArrayRender): string {
     ...a.flankers.map((g) => cell(g, hideF)),
   ].join("");
   const dir = a.orientation === "vertical" ? "column" : "row";
-  return `<div class="jspsych-timelines-flanker-stage" style="color:${a.fg};background:${a.bg};">
-    <div class="jspsych-timelines-flanker-array" data-orientation="${a.orientation}" style="flex-direction:${dir};gap:${a.gap_px}px;transform:translateY(${a.offset_px}px);">${items}</div>
+  return `${paintDisplay(a.fg, a.bg)}<div class="jspsych-timelines-flanker-stage">
+    <div class="jspsych-timelines-flanker-array" data-orientation="${
+      a.orientation
+    }" style="flex-direction:${dir};gap:${a.gap_px}px;transform:translateY(${
+    a.offset_px
+  }px);">${items}</div>
   </div>`;
 }
 
@@ -119,7 +123,25 @@ export function parseColors(spec: string): { fg: string; bg: string } {
   return { fg: m[1], bg: m[2] };
 }
 
-/** Stage with a centred text/shape (fixation, feedback, cue). */
+const SAFE_COLOR = /^[#a-zA-Z0-9(),.%\s-]+$/;
+
+/**
+ * The task colours (`stimulus_color`, e.g. "white on black") paint the whole jsPsych display for
+ * the stimulus screens, not just the stage box. That avoids a coloured rectangle on a page of a
+ * different colour. jsPsych puts `css_classes` on `.jspsych-content`, so the rule reaches the
+ * display element through `:has()`; it is removed with the trial's content. Instruction pages
+ * carry no such rule and keep the page colours.
+ */
+export function paintDisplay(fg: string, bg: string): string {
+  if (!SAFE_COLOR.test(fg) || !SAFE_COLOR.test(bg))
+    throw new Error(`flanker: unsupported colour in stimulus_color ("${fg}" on "${bg}").`);
+  return `<style>.jspsych-display-element:has(.jspsych-timelines-flanker){background:${bg};color:${fg};}</style>`;
+}
+
+/** Stage with a centred text/shape (fixation, feedback, cue). Fixed size: see styles.css. */
 export function renderStage(inner: string, fg: string, bg: string): string {
-  return `<div class="jspsych-timelines-flanker-stage" style="color:${fg};background:${bg};"><div class="jspsych-timelines-flanker-center">${inner}</div></div>`;
+  return `${paintDisplay(
+    fg,
+    bg
+  )}<div class="jspsych-timelines-flanker-stage"><div class="jspsych-timelines-flanker-center">${inner}</div></div>`;
 }

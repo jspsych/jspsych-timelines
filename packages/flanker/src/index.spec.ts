@@ -110,16 +110,28 @@ describe("flanker", () => {
       trials.forEach((t) => expect(t.css_classes).toEqual(["jspsych-timelines-flanker"]));
     });
 
-    it("keyboard tasks show no visible buttons; button tasks show disabled placeholder buttons", () => {
-      const kb = allTrials(createTimeline(jsPsych, { response_device: "keyboard" }).timeline);
-      const fixation = kb.find((t) => t.data.part === "fixation");
-      expect(fixation.response_ends_trial).toBe(false);
-      expect(fixation.button_html("x")).toContain("display:none");
-      const touch = allTrials(createTimeline(jsPsych, { response_device: "touch" }).timeline);
-      const f2 = touch.find((t) => t.data.part === "fixation");
-      expect(f2.choices).toEqual(["Left", "Right"]);
-      expect(f2.button_html("Left")).toContain("disabled");
-      expect(f2.button_html("Left")).not.toContain("display:none");
+    it("display trials use the keyboard plugin with NO_KEYS for every response device (§10)", () => {
+      for (const response_device of ["keyboard", "touch"] as const) {
+        const trials = allTrials(createTimeline(jsPsych, { response_device }).timeline);
+        for (const part of ["fixation", "iti"]) {
+          const t = trials.find((x) => x.data.part === part);
+          expect(t.choices).toBe("NO_KEYS");
+          expect(t.button_html).toBeUndefined();
+          expect(typeof t.trial_duration).toBe("number");
+        }
+      }
+    });
+
+    it("paints the task colours on the whole display, not a box", () => {
+      const trials = allTrials(
+        createTimeline(jsPsych, { stimulus_color: "white on black" }).timeline
+      );
+      const fixation = trials.find((t) => t.data.part === "fixation");
+      expect(fixation.stimulus).toContain(
+        ".jspsych-display-element:has(.jspsych-timelines-flanker){background:black;color:white;}"
+      );
+      expect(fixation.stimulus).not.toMatch(/stage" style="[^"]*background/);
+      expect(() => createTimeline(jsPsych, { stimulus_color: "red;} body{x on black" })).toThrow();
     });
 
     it("uses translated text", async () => {
@@ -162,16 +174,20 @@ describe("flanker", () => {
       await expectFinished();
     });
 
-    it("renders buttons for touch, with disabled placeholders around the response", async () => {
+    it("touch: no buttons on display screens, response buttons on the array", async () => {
+      jest.useFakeTimers();
       const { timeline } = createTimeline(jsPsych, {
         ...base,
         response_device: "touch",
         fixation_duration_ms: 500,
       });
       const { displayElement } = await startTimeline(timeline, jsPsych);
-      const fixBtns = displayElement.querySelectorAll<HTMLButtonElement>(".jspsych-btn");
-      expect(fixBtns).toHaveLength(2);
-      fixBtns.forEach((b) => expect(b.disabled).toBe(true));
+      expect(displayElement.querySelector(".jspsych-timelines-flanker-stage")).not.toBeNull();
+      expect(displayElement.querySelectorAll(".jspsych-btn")).toHaveLength(0);
+      jest.advanceTimersByTime(600);
+      await flushPromises();
+      jest.useRealTimers();
+      expect(displayElement.querySelectorAll(".jspsych-btn")).toHaveLength(2);
     });
 
     it("times out when no response arrives within the window", async () => {

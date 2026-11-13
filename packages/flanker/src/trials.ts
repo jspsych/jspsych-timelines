@@ -155,25 +155,15 @@ interface DisplayArgs {
 }
 
 /**
- * No-response display trial (fixation, cue, ITI, feedback). Uses the button plugin with
- * `response_ends_trial: false` (PACKAGE-STANDARD §10). With a keyboard device there are no buttons.
+ * No-response display trial (fixation, cue, ITI, feedback): the keyboard plugin with
+ * `choices: "NO_KEYS"` and a fixed duration, whatever the response device (PACKAGE-STANDARD §10).
  */
 export function createDisplayTrial(a: DisplayArgs) {
-  const { ctx, o } = a;
-  const buttons = !isKeyboard(o);
-  // The button plugin crashes in data-only simulation with an empty `choices`, so a keyboard task
-  // gets one disabled button that is not displayed.
-  const labels = buttons ? responseLabels(ctx, o, mappingFor(ctx, "test", 1)) : ["\u00a0"];
   return {
-    type: jsPsychHtmlButtonResponse,
+    type: jsPsychHtmlKeyboardResponse,
     css_classes: [TASK_CLASS],
     stimulus: a.stimulus as any,
-    choices: labels,
-    button_html: (choice: string) =>
-      `<button class="jspsych-btn" disabled${
-        buttons ? "" : ' style="display:none"'
-      }>${choice}</button>`,
-    response_ends_trial: false,
+    choices: "NO_KEYS",
     trial_duration: a.duration,
     data: baseData({
       phase: a.phase,

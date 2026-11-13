@@ -164,7 +164,10 @@ export const CHECKS: Record<string, Check> = {
       const [fg, bg] = r.eff.stimulus_color.split(/\s+on\s+/);
       for (const part of ["response", "fixation"]) {
         const t = trialsOf(r, part)[0];
-        expect(evalStimulus(t)).toContain(`color:${fg};background:${bg};`);
+        // the colours paint the whole display, scoped to the task class (stimuli.ts paintDisplay)
+        expect(evalStimulus(t)).toContain(
+          `.jspsych-display-element:has(.jspsych-timelines-flanker){background:${bg};color:${fg};}`
+        );
       }
     },
   },
