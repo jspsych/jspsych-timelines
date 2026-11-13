@@ -1,0 +1,2747 @@
+{
+  "tallies": {
+    "observed_values_total": 224,
+    "typed_values_total": 213,
+    "level1_distinct_cases": 134,
+    "level1_checked": 129,
+    "level1_not_expressible": 5,
+    "level1_labelled_additions": 2,
+    "level2_configs": 14,
+    "level2_fully_expressible": 10
+  },
+  "level1": [
+    {
+      "option": "cue_target_interval_ms",
+      "sub": "main",
+      "variation": "warning_cue",
+      "value": 0,
+      "sources": [
+        "S012",
+        "S004"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "cue_target_interval_ms": 0
+      }
+    },
+    {
+      "option": "cue_target_interval_ms",
+      "sub": "main",
+      "variation": "warning_cue",
+      "value": 500,
+      "sources": [
+        "S068"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "stimulus_set": {
+          "cue": "circles"
+        },
+        "cue_target_interval_ms": 500
+      }
+    },
+    {
+      "option": "feedback_duration_ms",
+      "sub": "main",
+      "variation": "feedback_duration_ms",
+      "value": 1000,
+      "sources": [
+        "S012",
+        "S060"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "trial_feedback": "accuracy",
+        "feedback_duration_ms": 1000
+      }
+    },
+    {
+      "option": "feedback_duration_ms",
+      "sub": "main",
+      "variation": "feedback_duration_ms",
+      "value": 400,
+      "sources": [
+        "S019"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "trial_feedback": "accuracy",
+        "feedback_duration_ms": 400
+      }
+    },
+    {
+      "option": "feedback_duration_ms",
+      "sub": "main",
+      "variation": "feedback_duration_ms",
+      "value": 250,
+      "sources": [
+        "S047"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "trial_feedback": "accuracy",
+        "feedback_duration_ms": 250
+      }
+    },
+    {
+      "option": "feedback_duration_ms",
+      "sub": "main",
+      "variation": "feedback_duration_ms",
+      "value": 2000,
+      "sources": [
+        "S119"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "trial_feedback": "accuracy",
+        "feedback_duration_ms": 2000
+      }
+    },
+    {
+      "option": "feedback_duration_ms",
+      "sub": "main",
+      "variation": "feedback_duration_ms",
+      "value": 350,
+      "sources": [
+        "S104"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "trial_feedback": "accuracy",
+        "feedback_duration_ms": 350
+      }
+    },
+    {
+      "option": "fixation_duration_ms",
+      "sub": "main",
+      "variation": "fixation_duration_ms",
+      "value": 500,
+      "sources": [
+        "S012",
+        "S019",
+        "S004",
+        "S060",
+        "S119",
+        "S069"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "fixation_duration_ms": 500
+      }
+    },
+    {
+      "option": "fixation_duration_ms",
+      "sub": "main",
+      "variation": "fixation_duration_ms",
+      "value": 250,
+      "sources": [
+        "S047"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "fixation_duration_ms": 250
+      }
+    },
+    {
+      "option": "fixation_duration_ms",
+      "sub": "main",
+      "variation": "fixation_duration_ms",
+      "value": 2000,
+      "sources": [
+        "S111"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "fixation_duration_ms": 2000
+      }
+    },
+    {
+      "option": "fixation_duration_ms",
+      "sub": "main",
+      "variation": "fixation_duration_ms",
+      "value": {
+        "min": 500,
+        "max": 950,
+        "step": 50
+      },
+      "sources": [
+        "S008"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "fixation_duration_ms": {
+          "min": 500,
+          "max": 950,
+          "step": 50
+        }
+      }
+    },
+    {
+      "option": "fixation_duration_ms",
+      "sub": "main",
+      "variation": "fixation_duration_ms",
+      "value": {
+        "min": 1100,
+        "max": 2600,
+        "step": 100
+      },
+      "sources": [
+        "S068"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "fixation_duration_ms": {
+          "min": 1100,
+          "max": 2600,
+          "step": 100
+        }
+      }
+    },
+    {
+      "option": "iti_ms",
+      "sub": "main",
+      "variation": "inter_trial_interval_ms",
+      "value": 500,
+      "sources": [
+        "S012",
+        "S060"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "iti_ms": 500
+      }
+    },
+    {
+      "option": "iti_ms",
+      "sub": "main",
+      "variation": "inter_trial_interval_ms",
+      "value": 750,
+      "sources": [
+        "S119",
+        "S007"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "iti_ms": 750
+      }
+    },
+    {
+      "option": "iti_ms",
+      "sub": "main",
+      "variation": "inter_trial_interval_ms",
+      "value": 1000,
+      "sources": [
+        "S019"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "iti_ms": 1000
+      }
+    },
+    {
+      "option": "iti_ms",
+      "sub": "main",
+      "variation": "inter_trial_interval_ms",
+      "value": 1500,
+      "sources": [
+        "S004"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "iti_ms": 1500
+      }
+    },
+    {
+      "option": "response_window_ms",
+      "sub": "deadline",
+      "variation": "response_deadline_ms",
+      "value": null,
+      "sources": [
+        "S007",
+        "S008"
+      ],
+      "labelledAddition": true,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "response_window_ms": null
+      }
+    },
+    {
+      "option": "response_window_ms",
+      "sub": "deadline",
+      "variation": "response_deadline_ms",
+      "value": 800,
+      "sources": [
+        "S019"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "response_window_ms": 800
+      }
+    },
+    {
+      "option": "response_window_ms",
+      "sub": "deadline",
+      "variation": "response_deadline_ms",
+      "value": 1500,
+      "sources": [
+        "S012",
+        "S004",
+        "S119"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "response_window_ms": 1500
+      }
+    },
+    {
+      "option": "response_window_ms",
+      "sub": "deadline",
+      "variation": "response_deadline_ms",
+      "value": 1000,
+      "sources": [
+        "S047"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "response_window_ms": 1000
+      }
+    },
+    {
+      "option": "response_window_ms",
+      "sub": "deadline",
+      "variation": "response_deadline_ms",
+      "value": 2000,
+      "sources": [
+        "S060"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "response_window_ms": 2000
+      }
+    },
+    {
+      "option": "response_window_ms",
+      "sub": "deadline",
+      "variation": "response_deadline_ms",
+      "value": 3000,
+      "sources": [
+        "S111"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "response_window_ms": 3000
+      }
+    },
+    {
+      "option": "response_window_ms",
+      "sub": "deadline",
+      "variation": "response_deadline_ms",
+      "value": 2500,
+      "sources": [
+        "S104"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "response_window_ms": 2500
+      }
+    },
+    {
+      "option": "soa_ms",
+      "sub": "main",
+      "variation": "flanker_target_soa_ms",
+      "value": 0,
+      "sources": [
+        "S004",
+        "S019"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "soa_ms": 0
+      }
+    },
+    {
+      "option": "soa_ms",
+      "sub": "main",
+      "variation": "flanker_target_soa_ms",
+      "value": -150,
+      "sources": [
+        "S060"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "soa_ms": -150
+      }
+    },
+    {
+      "option": "soa_ms",
+      "sub": "main",
+      "variation": "flanker_target_soa_ms",
+      "value": 150,
+      "sources": [
+        "S060"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "soa_ms": 150
+      }
+    },
+    {
+      "option": "soa_ms",
+      "sub": "main",
+      "variation": "flanker_target_soa_ms",
+      "value": -250,
+      "sources": [
+        "S061"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "soa_ms": -250
+      }
+    },
+    {
+      "option": "soa_ms",
+      "sub": "main",
+      "variation": "flanker_target_soa_ms",
+      "value": 250,
+      "sources": [
+        "S061"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "soa_ms": 250
+      }
+    },
+    {
+      "option": "stimulus_duration_ms",
+      "sub": "main",
+      "variation": "stimulus_duration_ms",
+      "value": null,
+      "sources": [
+        "S007",
+        "S008",
+        "S068",
+        "S019"
+      ],
+      "labelledAddition": true,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "stimulus_duration_ms": null
+      }
+    },
+    {
+      "option": "stimulus_duration_ms",
+      "sub": "main",
+      "variation": "stimulus_duration_ms",
+      "value": 1500,
+      "sources": [
+        "S012"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "stimulus_duration_ms": 1500
+      }
+    },
+    {
+      "option": "stimulus_duration_ms",
+      "sub": "main",
+      "variation": "stimulus_duration_ms",
+      "value": 1000,
+      "sources": [
+        "S004"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "stimulus_duration_ms": 1000
+      }
+    },
+    {
+      "option": "stimulus_duration_ms",
+      "sub": "main",
+      "variation": "stimulus_duration_ms",
+      "value": 2000,
+      "sources": [
+        "S111"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "stimulus_duration_ms": 2000
+      }
+    },
+    {
+      "option": "stimulus_duration_ms",
+      "sub": "main",
+      "variation": "stimulus_duration_ms",
+      "value": 150,
+      "sources": [
+        "S119"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "stimulus_duration_ms": 150
+      }
+    },
+    {
+      "option": "stimulus_duration_ms",
+      "sub": "main",
+      "variation": "stimulus_duration_ms",
+      "value": 200,
+      "sources": [
+        "S005"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "stimulus_duration_ms": 200
+      }
+    },
+    {
+      "option": "stimulus_color",
+      "sub": "main",
+      "variation": "display_colours",
+      "value": "white on black",
+      "sources": [
+        "S019",
+        "S004"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "structure",
+      "options": {
+        "stimulus_color": "white on black"
+      }
+    },
+    {
+      "option": "stimulus_color",
+      "sub": "main",
+      "variation": "display_colours",
+      "value": "black on grey",
+      "sources": [
+        "S060",
+        "S119"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "structure",
+      "options": {
+        "stimulus_color": "black on grey"
+      }
+    },
+    {
+      "option": "stimulus_layout",
+      "sub": "spacing",
+      "variation": "flanker_spacing",
+      "value": "{gap: 2, unit: px}",
+      "sources": [
+        "S019"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "stimulus_layout": {
+          "flanker_spacing": {
+            "gap": 2,
+            "unit": "px"
+          }
+        }
+      }
+    },
+    {
+      "option": "stimulus_layout",
+      "sub": "spacing",
+      "variation": "flanker_spacing",
+      "value": "adjacent",
+      "sources": [
+        "S012"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "stimulus_layout": {
+          "flanker_spacing": "adjacent"
+        }
+      }
+    },
+    {
+      "option": "stimulus_layout",
+      "sub": "spacing",
+      "variation": "flanker_spacing",
+      "value": "[0.23, 0.91, 1.59, 2.95, 4.31, 5.67] deg edge-to-edge",
+      "sources": [
+        "S004"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "stimulus_layout": {
+          "flanker_spacing": {
+            "gap": [
+              0.23,
+              0.91,
+              1.59,
+              2.95,
+              4.31,
+              5.67
+            ],
+            "unit": "deg"
+          }
+        }
+      }
+    },
+    {
+      "option": "stimulus_layout",
+      "sub": "position",
+      "variation": "array_position",
+      "value": "centre_at_fixation",
+      "sources": [
+        "S012",
+        "S068"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "stimulus_layout": {
+          "array_position": "centre_at_fixation"
+        }
+      }
+    },
+    {
+      "option": "stimulus_layout",
+      "sub": "position",
+      "variation": "array_position",
+      "value": "above_fixation",
+      "sources": [
+        "S015"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "stimulus_layout": {
+          "array_position": "above_fixation"
+        }
+      }
+    },
+    {
+      "option": "stimulus_layout",
+      "sub": "position",
+      "variation": "array_position",
+      "value": "vertical (flankers above/below target)",
+      "sources": [
+        "S132"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "stimulus_layout": {
+          "orientation": "vertical",
+          "array_position": "centre_at_fixation"
+        }
+      }
+    },
+    {
+      "option": "stimulus_set",
+      "sub": "material",
+      "variation": "stimulus_set",
+      "value": "arrows",
+      "sources": [
+        "S019",
+        "S016",
+        "S039",
+        "S047",
+        "S056",
+        "S068",
+        "S111",
+        "S004"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "stimulus_set": {
+          "target": "arrows"
+        }
+      }
+    },
+    {
+      "option": "stimulus_set",
+      "sub": "material",
+      "variation": "stimulus_set",
+      "value": "letters f/h",
+      "sources": [
+        "S012"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "targets_per_response": 1,
+        "stimulus_set": {
+          "target": {
+            "letters": [
+              [
+                "f"
+              ],
+              [
+                "h"
+              ]
+            ]
+          }
+        }
+      }
+    },
+    {
+      "option": "stimulus_set",
+      "sub": "material",
+      "variation": "stimulus_set",
+      "value": "letters X,C / V,B",
+      "sources": [
+        "S015"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "targets_per_response": 2,
+        "stimulus_set": {
+          "target": {
+            "letters": [
+              [
+                "X",
+                "C"
+              ],
+              [
+                "V",
+                "B"
+              ]
+            ]
+          }
+        }
+      }
+    },
+    {
+      "option": "stimulus_set",
+      "sub": "material",
+      "variation": "stimulus_set",
+      "value": "letters H/S",
+      "sources": [
+        "S060"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "targets_per_response": 1,
+        "stimulus_set": {
+          "target": {
+            "letters": [
+              [
+                "H"
+              ],
+              [
+                "S"
+              ]
+            ]
+          }
+        }
+      }
+    },
+    {
+      "option": "stimulus_set",
+      "sub": "material",
+      "variation": "stimulus_set",
+      "value": "letters S/H",
+      "sources": [
+        "S119"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "targets_per_response": 1,
+        "stimulus_set": {
+          "target": {
+            "letters": [
+              [
+                "S"
+              ],
+              [
+                "H"
+              ]
+            ]
+          }
+        }
+      }
+    },
+    {
+      "option": "stimulus_set",
+      "sub": "material",
+      "variation": "stimulus_set",
+      "value": "pictures (neutral target, valenced distractor pictures; location task)",
+      "sources": [
+        "S069"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "picture stimuli with a location judgement are a different variant (S069)"
+    },
+    {
+      "option": "stimulus_set",
+      "sub": "flanker",
+      "variation": "flankers_per_side",
+      "value": 2,
+      "sources": [
+        "S012",
+        "S019",
+        "S068",
+        "S060"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "stimulus_set": {
+          "flanker": {
+            "per_side": 2
+          }
+        }
+      }
+    },
+    {
+      "option": "stimulus_set",
+      "sub": "flanker",
+      "variation": "flankers_per_side",
+      "value": 1,
+      "sources": [
+        "S004",
+        "S119"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "stimulus_set": {
+          "flanker": {
+            "per_side": 1
+          }
+        }
+      }
+    },
+    {
+      "option": "stimulus_set",
+      "sub": "flanker",
+      "variation": "flankers_per_side",
+      "value": {
+        "flanker": {
+          "per_side": [
+            2,
+            3
+          ]
+        }
+      },
+      "sources": [
+        "S047"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "stimulus_set": {
+          "flanker": {
+            "per_side": [
+              2,
+              3
+            ]
+          }
+        }
+      }
+    },
+    {
+      "option": "stimulus_set",
+      "sub": "neutral",
+      "variation": "neutral_flanker_form",
+      "value": "straight_lines",
+      "sources": [
+        "S007"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "condition_set": [
+          "congruent",
+          "incongruent",
+          "neutral"
+        ],
+        "stimulus_set": {
+          "neutral_flanker": "straight_lines"
+        }
+      }
+    },
+    {
+      "option": "stimulus_set",
+      "sub": "neutral",
+      "variation": "neutral_flanker_form",
+      "value": "dashes",
+      "sources": [
+        "S019"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "condition_set": [
+          "congruent",
+          "incongruent",
+          "neutral"
+        ],
+        "stimulus_set": {
+          "neutral_flanker": "dashes"
+        }
+      }
+    },
+    {
+      "option": "stimulus_set",
+      "sub": "neutral",
+      "variation": "neutral_flanker_form",
+      "value": "blank",
+      "sources": [
+        "S019"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "condition_set": [
+          "congruent",
+          "incongruent",
+          "neutral"
+        ],
+        "stimulus_set": {
+          "neutral_flanker": "blank"
+        }
+      }
+    },
+    {
+      "option": "stimulus_set",
+      "sub": "neutral",
+      "variation": "neutral_flanker_form",
+      "value": "squares",
+      "sources": [
+        "S111"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "condition_set": [
+          "congruent",
+          "incongruent",
+          "neutral"
+        ],
+        "stimulus_set": {
+          "neutral_flanker": "squares"
+        }
+      }
+    },
+    {
+      "option": "stimulus_set",
+      "sub": "neutral",
+      "variation": "neutral_flanker_form",
+      "value": "plus signs / diamonds / vertical arrows",
+      "sources": [
+        "S132"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "condition_set": [
+          "congruent",
+          "incongruent",
+          "neutral"
+        ],
+        "stimulus_set": {
+          "neutral_flanker": [
+            "plus_signs",
+            "diamonds",
+            "vertical_arrows"
+          ]
+        }
+      }
+    },
+    {
+      "option": "stimulus_set",
+      "sub": "neutral",
+      "variation": "neutral_flanker_form",
+      "value": "unmapped letter (S)",
+      "sources": [
+        "S104"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "condition_set": [
+          "congruent",
+          "incongruent",
+          "neutral"
+        ],
+        "stimulus_set": {
+          "target": {
+            "letters": [
+              [
+                "H"
+              ],
+              [
+                "K"
+              ]
+            ]
+          },
+          "neutral_flanker": "unmapped_letter"
+        }
+      }
+    },
+    {
+      "option": "stimulus_set",
+      "sub": "cue",
+      "variation": "warning_cue",
+      "value": {
+        "cue": "none"
+      },
+      "sources": [
+        "S012",
+        "S004"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "stimulus_set": {
+          "cue": "none"
+        }
+      }
+    },
+    {
+      "option": "stimulus_set",
+      "sub": "cue",
+      "variation": "warning_cue",
+      "value": {
+        "cue": "two circles above/below fixation"
+      },
+      "sources": [
+        "S068"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "cue_target_interval_ms": 500,
+        "stimulus_set": {
+          "cue": "circles"
+        }
+      }
+    },
+    {
+      "option": "stimulus_size",
+      "sub": "main",
+      "variation": "stimulus_size",
+      "value": {
+        "value": 40,
+        "unit": "px"
+      },
+      "sources": [
+        "S019"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "structure",
+      "options": {
+        "stimulus_size": {
+          "value": 40,
+          "unit": "px"
+        }
+      }
+    },
+    {
+      "option": "stimulus_size",
+      "sub": "main",
+      "variation": "stimulus_size",
+      "value": {
+        "value": 50,
+        "unit": "px"
+      },
+      "sources": [
+        "S134",
+        "S068"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "structure",
+      "options": {
+        "stimulus_size": {
+          "value": 50,
+          "unit": "px"
+        }
+      }
+    },
+    {
+      "option": "stimulus_size",
+      "sub": "main",
+      "variation": "stimulus_size",
+      "value": {
+        "value": 1.09,
+        "unit": "deg"
+      },
+      "sources": [
+        "S004"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "structure",
+      "options": {
+        "stimulus_size": {
+          "value": 1.09,
+          "unit": "deg"
+        }
+      }
+    },
+    {
+      "option": "stimulus_size",
+      "sub": "main",
+      "variation": "stimulus_size",
+      "value": {
+        "value": 0.1,
+        "unit": "screen_height_fraction"
+      },
+      "sources": [
+        "S056"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "structure",
+      "options": {
+        "stimulus_size": {
+          "value": 0.1,
+          "unit": "screen_height_fraction"
+        }
+      }
+    },
+    {
+      "option": "targets_per_response",
+      "sub": "main",
+      "variation": "targets_per_response",
+      "value": 1,
+      "sources": [
+        "S012",
+        "S119"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "targets_per_response": 1
+      }
+    },
+    {
+      "option": "targets_per_response",
+      "sub": "main",
+      "variation": "targets_per_response",
+      "value": 2,
+      "sources": [
+        "S015"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "stimulus_set": {
+          "target": {
+            "letters": [
+              [
+                "X",
+                "C"
+              ],
+              [
+                "V",
+                "B"
+              ]
+            ]
+          }
+        },
+        "targets_per_response": 2
+      }
+    },
+    {
+      "option": "concurrent_task",
+      "sub": "main",
+      "variation": "task_interleaving",
+      "value": "none",
+      "sources": [
+        "S012",
+        "S068"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "concurrent_task": "none"
+      }
+    },
+    {
+      "option": "concurrent_task",
+      "sub": "main",
+      "variation": "task_interleaving",
+      "value": "interleaved_trials",
+      "sources": [
+        "S060"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "plugin needed",
+      "reason": "interleaving with the Simon task needs the simon-task package; a flanker-only timeline cannot do it"
+    },
+    {
+      "option": "concurrent_task",
+      "sub": "main",
+      "variation": "task_interleaving",
+      "value": "alternating_blocks",
+      "sources": [
+        "S119"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "plugin needed",
+      "reason": "interleaving with the Simon task needs the simon-task package; a flanker-only timeline cannot do it"
+    },
+    {
+      "option": "condition_proportions",
+      "sub": "types",
+      "variation": "condition_proportions",
+      "value": {
+        "congruent": 0.5,
+        "incongruent": 0.5
+      },
+      "sources": [
+        "S012",
+        "S055",
+        "S068"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "condition_proportions": {
+          "congruent": 0.5,
+          "incongruent": 0.5
+        }
+      }
+    },
+    {
+      "option": "condition_proportions",
+      "sub": "types",
+      "variation": "condition_proportions",
+      "value": {
+        "congruent": 0.25,
+        "incongruent": 0.25,
+        "neutral_dash": 0.25,
+        "neutral_empty": 0.25
+      },
+      "sources": [
+        "S019"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "condition_proportions": {
+          "congruent": 0.25,
+          "incongruent": 0.25,
+          "neutral_dash": 0.25,
+          "neutral_empty": 0.25
+        }
+      }
+    },
+    {
+      "option": "condition_proportions",
+      "sub": "types",
+      "variation": "condition_proportions",
+      "value": {
+        "congruent": 0.33,
+        "incongruent": 0.33,
+        "neutral": 0.33
+      },
+      "sources": [
+        "S007"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "condition_proportions": {
+          "congruent": 0.33,
+          "incongruent": 0.33,
+          "neutral": 0.33
+        }
+      }
+    },
+    {
+      "option": "condition_proportions",
+      "sub": "types",
+      "variation": "condition_proportions",
+      "value": {
+        "congruent": 0.25,
+        "incongruent": 0.25,
+        "neutral": 0.25,
+        "nogo": 0.25
+      },
+      "sources": [
+        "S111"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "condition_proportions": {
+          "congruent": 0.25,
+          "incongruent": 0.25,
+          "neutral": 0.25,
+          "nogo": 0.25
+        }
+      }
+    },
+    {
+      "option": "condition_proportions",
+      "sub": "cue",
+      "variation": "warning_cue",
+      "value": {
+        "cued": 0.5,
+        "uncued": 0.5
+      },
+      "sources": [
+        "S068"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "stimulus_set": {
+          "cue": "circles"
+        },
+        "cue_target_interval_ms": 500,
+        "condition_proportions": {
+          "cued": 0.5,
+          "uncued": 0.5
+        }
+      }
+    },
+    {
+      "option": "condition_set",
+      "sub": "main",
+      "variation": "flanker_condition_set",
+      "value": [
+        "congruent",
+        "incongruent"
+      ],
+      "sources": [
+        "S012",
+        "S004",
+        "S068"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "condition_set": [
+          "congruent",
+          "incongruent"
+        ]
+      }
+    },
+    {
+      "option": "condition_set",
+      "sub": "main",
+      "variation": "flanker_condition_set",
+      "value": [
+        "congruent",
+        "incongruent",
+        "neutral"
+      ],
+      "sources": [
+        "S007",
+        "S019"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "condition_set": [
+          "congruent",
+          "incongruent",
+          "neutral"
+        ]
+      }
+    },
+    {
+      "option": "condition_set",
+      "sub": "main",
+      "variation": "flanker_condition_set",
+      "value": [
+        "congruent",
+        "incongruent",
+        "neutral",
+        "nogo"
+      ],
+      "sources": [
+        "S111"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "condition_set": [
+          "congruent",
+          "incongruent",
+          "neutral",
+          "nogo"
+        ]
+      }
+    },
+    {
+      "option": "n_blocks",
+      "sub": "main",
+      "variation": "num_test_blocks",
+      "value": 1,
+      "sources": [
+        "S012"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "n_blocks": 1
+      }
+    },
+    {
+      "option": "n_blocks",
+      "sub": "main",
+      "variation": "num_test_blocks",
+      "value": 2,
+      "sources": [
+        "S008"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "n_blocks": 2
+      }
+    },
+    {
+      "option": "n_blocks",
+      "sub": "main",
+      "variation": "num_test_blocks",
+      "value": 4,
+      "sources": [
+        "S004"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "n_blocks": 4
+      }
+    },
+    {
+      "option": "n_blocks",
+      "sub": "main",
+      "variation": "num_test_blocks",
+      "value": 10,
+      "sources": [
+        "S047",
+        "S056",
+        "S068"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "n_blocks": 10
+      }
+    },
+    {
+      "option": "n_blocks",
+      "sub": "main",
+      "variation": "num_test_blocks",
+      "value": 12,
+      "sources": [
+        "S060"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "n_blocks": 12
+      }
+    },
+    {
+      "option": "n_test_trials",
+      "sub": "main",
+      "variation": "num_test_trials",
+      "value": 100,
+      "sources": [
+        "S012"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "n_test_trials": 100
+      }
+    },
+    {
+      "option": "n_test_trials",
+      "sub": "main",
+      "variation": "num_test_trials",
+      "value": 160,
+      "sources": [
+        "S019"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "n_test_trials": 160
+      }
+    },
+    {
+      "option": "n_test_trials",
+      "sub": "main",
+      "variation": "num_test_trials",
+      "value": 50,
+      "sources": [
+        "S015"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "n_test_trials": 50
+      }
+    },
+    {
+      "option": "n_test_trials",
+      "sub": "main",
+      "variation": "num_test_trials",
+      "value": 800,
+      "sources": [
+        "S047"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "n_test_trials": 800
+      }
+    },
+    {
+      "option": "n_test_trials",
+      "sub": "main",
+      "variation": "num_test_trials",
+      "value": 420,
+      "sources": [
+        "S055"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "n_test_trials": 420
+      }
+    },
+    {
+      "option": "n_test_trials",
+      "sub": "main",
+      "variation": "num_test_trials",
+      "value": 480,
+      "sources": [
+        "S056"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "n_test_trials": 480
+      }
+    },
+    {
+      "option": "n_test_trials",
+      "sub": "main",
+      "variation": "num_test_trials",
+      "value": 320,
+      "sources": [
+        "S068",
+        "S008"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "n_test_trials": 320
+      }
+    },
+    {
+      "option": "n_test_trials",
+      "sub": "main",
+      "variation": "num_test_trials",
+      "value": 72,
+      "sources": [
+        "S111"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "n_test_trials": 72
+      }
+    },
+    {
+      "option": "n_test_trials",
+      "sub": "main",
+      "variation": "num_test_trials",
+      "value": 384,
+      "sources": [
+        "S004"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "n_test_trials": 384
+      }
+    },
+    {
+      "option": "n_test_trials",
+      "sub": "main",
+      "variation": "num_test_trials",
+      "value": 448,
+      "sources": [
+        "S119"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "n_test_trials": 448
+      }
+    },
+    {
+      "option": "n_test_trials",
+      "sub": "main",
+      "variation": "num_test_trials",
+      "value": 720,
+      "sources": [
+        "S007"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "n_test_trials": 720
+      }
+    },
+    {
+      "option": "trial_order",
+      "sub": "main",
+      "variation": "trial_order",
+      "value": "shuffled_list",
+      "sources": [
+        "S019",
+        "S119"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "trial_order": "shuffled_list"
+      }
+    },
+    {
+      "option": "trial_order",
+      "sub": "main",
+      "variation": "trial_order",
+      "value": "random",
+      "sources": [
+        "S068"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "trial_order": "random"
+      }
+    },
+    {
+      "option": "response_device",
+      "sub": "main",
+      "variation": "response_device",
+      "value": "keyboard",
+      "sources": [
+        "S012",
+        "S004"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "response_device": "keyboard"
+      }
+    },
+    {
+      "option": "response_device",
+      "sub": "main",
+      "variation": "response_device",
+      "value": "touch",
+      "sources": [
+        "S008"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "response_device": "touch"
+      }
+    },
+    {
+      "option": "response_device",
+      "sub": "main",
+      "variation": "response_device",
+      "value": "mouse",
+      "sources": [
+        "S005"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "response_device": "mouse"
+      }
+    },
+    {
+      "option": "response_hand",
+      "sub": "main",
+      "variation": "response_hands",
+      "value": "two_hands_index_fingers",
+      "sources": [
+        "S060",
+        "S119"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "structure",
+      "options": {
+        "response_hand": "two_hands_index_fingers"
+      }
+    },
+    {
+      "option": "response_hand",
+      "sub": "main",
+      "variation": "response_hands",
+      "value": "one_hand_dominant",
+      "sources": [
+        "S039"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "structure",
+      "options": {
+        "response_hand": "one_hand_dominant"
+      }
+    },
+    {
+      "option": "response_hand",
+      "sub": "main",
+      "variation": "response_hands",
+      "value": "one-handed vs two-handed (coded across 45 studies)",
+      "sources": [
+        "S028"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "dossier value wrong",
+      "reason": "a coding scheme across studies, not a setting"
+    },
+    {
+      "option": "response_keys",
+      "sub": "main",
+      "variation": "response_keys",
+      "value": [
+        "f",
+        "h"
+      ],
+      "sources": [
+        "S012"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "response_keys": [
+          "f",
+          "h"
+        ]
+      }
+    },
+    {
+      "option": "response_keys",
+      "sub": "main",
+      "variation": "response_keys",
+      "value": [
+        "a",
+        "l"
+      ],
+      "sources": [
+        "S015"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "response_keys": [
+          "a",
+          "l"
+        ]
+      }
+    },
+    {
+      "option": "response_keys",
+      "sub": "main",
+      "variation": "response_keys",
+      "value": [
+        "left shift",
+        "right shift"
+      ],
+      "sources": [
+        "S135"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "plugin needed",
+      "reason": "jsPsych's keyboard listener reports event.key, which is 'Shift' for both shift keys"
+    },
+    {
+      "option": "response_keys",
+      "sub": "main",
+      "variation": "response_keys",
+      "value": [
+        "ArrowLeft",
+        "ArrowRight"
+      ],
+      "sources": [
+        "S039",
+        "S111"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "response_keys": [
+          "ArrowLeft",
+          "ArrowRight"
+        ]
+      }
+    },
+    {
+      "option": "response_keys",
+      "sub": "main",
+      "variation": "response_keys",
+      "value": [
+        "w",
+        "p"
+      ],
+      "sources": [
+        "S056",
+        "S055"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "response_keys": [
+          "w",
+          "p"
+        ]
+      }
+    },
+    {
+      "option": "response_keys",
+      "sub": "main",
+      "variation": "response_keys",
+      "value": [
+        "q",
+        "p"
+      ],
+      "sources": [
+        "S060",
+        "S068"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "response_keys": [
+          "q",
+          "p"
+        ]
+      }
+    },
+    {
+      "option": "response_keys",
+      "sub": "main",
+      "variation": "response_keys",
+      "value": [
+        "x",
+        "."
+      ],
+      "sources": [
+        "S004"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "response_keys": [
+          "x",
+          "."
+        ]
+      }
+    },
+    {
+      "option": "response_keys",
+      "sub": "main",
+      "variation": "response_keys",
+      "value": [
+        "s",
+        "l"
+      ],
+      "sources": [
+        "S008"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "response_keys": [
+          "s",
+          "l"
+        ]
+      }
+    },
+    {
+      "option": "response_mapping_counterbalancing",
+      "sub": "main",
+      "variation": "sr_mapping_assignment",
+      "value": "fixed",
+      "sources": [
+        "S012",
+        "S015"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "stimulus_set": {
+          "target": {
+            "letters": [
+              [
+                "f"
+              ],
+              [
+                "h"
+              ]
+            ]
+          }
+        },
+        "response_mapping_counterbalancing": "fixed"
+      }
+    },
+    {
+      "option": "response_mapping_counterbalancing",
+      "sub": "main",
+      "variation": "sr_mapping_assignment",
+      "value": "random_per_participant",
+      "sources": [
+        "S060",
+        "S119"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "stimulus_set": {
+          "target": {
+            "letters": [
+              [
+                "f"
+              ],
+              [
+                "h"
+              ]
+            ]
+          }
+        },
+        "response_mapping_counterbalancing": "random_per_participant"
+      }
+    },
+    {
+      "option": "attention_checks",
+      "sub": "main",
+      "variation": "attention_checks",
+      "value": "none",
+      "sources": [
+        "S068",
+        "S012"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "attention_checks": "none"
+      }
+    },
+    {
+      "option": "attention_checks",
+      "sub": "main",
+      "variation": "attention_checks",
+      "value": "instructed_items",
+      "sources": [
+        "S111"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "attention_checks": "instructed_items"
+      }
+    },
+    {
+      "option": "device_eligibility",
+      "sub": "main",
+      "variation": "device_eligibility_checks",
+      "value": "computer_only",
+      "sources": [
+        "S004"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "device_eligibility": "computer_only"
+      }
+    },
+    {
+      "option": "practice_trials",
+      "sub": "main",
+      "variation": "num_practice_trials",
+      "value": 12,
+      "sources": [
+        "S012"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 12
+      }
+    },
+    {
+      "option": "practice_trials",
+      "sub": "main",
+      "variation": "num_practice_trials",
+      "value": 8,
+      "sources": [
+        "S019",
+        "S068"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 8
+      }
+    },
+    {
+      "option": "practice_trials",
+      "sub": "main",
+      "variation": "num_practice_trials",
+      "value": 10,
+      "sources": [
+        "S004"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 10
+      }
+    },
+    {
+      "option": "practice_trials",
+      "sub": "main",
+      "variation": "num_practice_trials",
+      "value": 24,
+      "sources": [
+        "S111"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 24
+      }
+    },
+    {
+      "option": "practice_trials",
+      "sub": "main",
+      "variation": "num_practice_trials",
+      "value": 40,
+      "sources": [
+        "S056"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 40
+      }
+    },
+    {
+      "option": "practice_trials",
+      "sub": "main",
+      "variation": "num_practice_trials",
+      "value": 60,
+      "sources": [
+        "S104"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 60
+      }
+    },
+    {
+      "option": "rest_breaks",
+      "sub": "main",
+      "variation": "inter_block_break",
+      "value": "none",
+      "sources": [
+        "S012"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "n_blocks": 3,
+        "rest_breaks": "none"
+      }
+    },
+    {
+      "option": "rest_breaks",
+      "sub": "main",
+      "variation": "inter_block_break",
+      "value": "self_paced",
+      "sources": [
+        "S047",
+        "S004",
+        "S119"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "n_blocks": 3,
+        "rest_breaks": "self_paced"
+      }
+    },
+    {
+      "option": "screen_calibration",
+      "sub": "main",
+      "variation": "size_calibration",
+      "value": "none",
+      "sources": [
+        "S012",
+        "S068"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "structure",
+      "options": {
+        "screen_calibration": "none"
+      }
+    },
+    {
+      "option": "screen_calibration",
+      "sub": "main",
+      "variation": "size_calibration",
+      "value": "credit_card",
+      "sources": [
+        "S119"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "structure",
+      "options": {
+        "screen_calibration": "credit_card"
+      }
+    },
+    {
+      "option": "screen_calibration",
+      "sub": "main",
+      "variation": "size_calibration",
+      "value": "virtual_chinrest",
+      "sources": [
+        "S004"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "structure",
+      "options": {
+        "screen_calibration": "virtual_chinrest"
+      }
+    },
+    {
+      "option": "block_feedback",
+      "sub": "main",
+      "variation": "block_feedback",
+      "value": "none",
+      "sources": [
+        "S012",
+        "S068"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "block_feedback": "none"
+      }
+    },
+    {
+      "option": "block_feedback",
+      "sub": "main",
+      "variation": "block_feedback",
+      "value": "accuracy",
+      "sources": [
+        "S047",
+        "S005"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "block_feedback": "accuracy"
+      }
+    },
+    {
+      "option": "block_feedback",
+      "sub": "main",
+      "variation": "block_feedback",
+      "value": "accuracy_rt",
+      "sources": [
+        "S119"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "block_feedback": "accuracy_rt"
+      }
+    },
+    {
+      "option": "feedback_condition",
+      "sub": "by_phase",
+      "variation": "trial_feedback_by_phase",
+      "value": "all",
+      "sources": [
+        "S012",
+        "S047",
+        "S019",
+        "S111"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "trial_feedback": "accuracy",
+        "feedback_condition": "all"
+      }
+    },
+    {
+      "option": "feedback_condition",
+      "sub": "by_phase",
+      "variation": "trial_feedback_by_phase",
+      "value": "errors_only",
+      "sources": [
+        "S004",
+        "S119",
+        "S060"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "trial_feedback": "accuracy",
+        "feedback_condition": "errors_only"
+      }
+    },
+    {
+      "option": "trial_feedback",
+      "sub": "by_phase",
+      "variation": "trial_feedback_by_phase",
+      "value": "none",
+      "sources": [
+        "S019",
+        "S111",
+        "S068"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "trial_feedback": "none"
+      }
+    },
+    {
+      "option": "trial_feedback",
+      "sub": "content",
+      "variation": "trial_feedback_content",
+      "value": "accuracy",
+      "sources": [
+        "S012",
+        "S004",
+        "S047"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "trial_feedback": "accuracy"
+      }
+    },
+    {
+      "option": "trial_feedback",
+      "sub": "content",
+      "variation": "trial_feedback_content",
+      "value": "accuracy_rt",
+      "sources": [
+        "S019",
+        "S119"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "trial_feedback": "accuracy_rt"
+      }
+    },
+    {
+      "option": "instruction_format",
+      "sub": "main",
+      "variation": "instruction_format",
+      "value": "text",
+      "sources": [
+        "S012",
+        "S104"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "instruction_format": "text"
+      }
+    },
+    {
+      "option": "speed_accuracy_emphasis",
+      "sub": "main",
+      "variation": "speed_accuracy_instruction",
+      "value": "both",
+      "sources": [
+        "S004",
+        "S005"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "structure",
+      "options": {
+        "speed_accuracy_emphasis": "both"
+      }
+    }
+  ],
+  "level2": [
+    {
+      "source": "S004",
+      "citation": "Lee & Pitt 2024, BRM, online spacing flanker",
+      "n_options": 24,
+      "n_keys": 24,
+      "keys_expressible": 24,
+      "gaps": [],
+      "checked_options": [
+        "condition_set",
+        "cue_target_interval_ms",
+        "device_eligibility",
+        "feedback_condition",
+        "fixation_duration_ms",
+        "iti_ms",
+        "n_blocks",
+        "n_test_trials",
+        "practice_trials",
+        "response_device",
+        "response_keys",
+        "response_window_ms",
+        "rest_breaks",
+        "screen_calibration",
+        "soa_ms",
+        "speed_accuracy_emphasis",
+        "stimulus_color",
+        "stimulus_duration_ms",
+        "stimulus_layout",
+        "stimulus_set",
+        "stimulus_size",
+        "trial_feedback"
+      ],
+      "assumed_companions": []
+    },
+    {
+      "source": "S005",
+      "citation": "flanker DDM psychometrics 2025, CABN",
+      "n_options": 4,
+      "n_keys": 4,
+      "keys_expressible": 4,
+      "gaps": [],
+      "checked_options": [
+        "block_feedback",
+        "response_device",
+        "speed_accuracy_emphasis",
+        "stimulus_duration_ms"
+      ],
+      "assumed_companions": []
+    },
+    {
+      "source": "S007",
+      "citation": "Hedge, Powell & Sumner 2018, BRM, reliability paradox",
+      "n_options": 7,
+      "n_keys": 7,
+      "keys_expressible": 7,
+      "gaps": [],
+      "checked_options": [
+        "condition_proportions",
+        "condition_set",
+        "iti_ms",
+        "n_test_trials",
+        "response_window_ms",
+        "stimulus_duration_ms",
+        "stimulus_set"
+      ],
+      "assumed_companions": []
+    },
+    {
+      "source": "S012",
+      "citation": "Expfactory flanker defaults",
+      "n_options": 28,
+      "n_keys": 28,
+      "keys_expressible": 28,
+      "gaps": [],
+      "checked_options": [
+        "attention_checks",
+        "block_feedback",
+        "concurrent_task",
+        "condition_proportions",
+        "condition_set",
+        "cue_target_interval_ms",
+        "feedback_condition",
+        "feedback_duration_ms",
+        "fixation_duration_ms",
+        "instruction_format",
+        "iti_ms",
+        "n_blocks",
+        "n_test_trials",
+        "practice_trials",
+        "response_device",
+        "response_keys",
+        "response_mapping_counterbalancing",
+        "response_window_ms",
+        "rest_breaks",
+        "screen_calibration",
+        "stimulus_duration_ms",
+        "stimulus_layout",
+        "stimulus_set",
+        "targets_per_response",
+        "trial_feedback"
+      ],
+      "assumed_companions": []
+    },
+    {
+      "source": "S016",
+      "citation": "PsyToolkit arrow flanker",
+      "n_options": 1,
+      "n_keys": 1,
+      "keys_expressible": 1,
+      "gaps": [],
+      "checked_options": [
+        "stimulus_set"
+      ],
+      "assumed_companions": []
+    },
+    {
+      "source": "S039",
+      "citation": "literature-sample screening rank 6",
+      "n_options": 3,
+      "n_keys": 3,
+      "keys_expressible": 3,
+      "gaps": [],
+      "checked_options": [
+        "response_hand",
+        "response_keys",
+        "stimulus_set"
+      ],
+      "assumed_companions": []
+    },
+    {
+      "source": "S047",
+      "citation": "literature-sample screening rank 14",
+      "n_options": 11,
+      "n_keys": 11,
+      "keys_expressible": 11,
+      "gaps": [],
+      "checked_options": [
+        "block_feedback",
+        "feedback_condition",
+        "feedback_duration_ms",
+        "fixation_duration_ms",
+        "n_blocks",
+        "n_test_trials",
+        "response_window_ms",
+        "rest_breaks",
+        "stimulus_set",
+        "trial_feedback"
+      ],
+      "assumed_companions": []
+    },
+    {
+      "source": "S055",
+      "citation": "literature-sample screening rank 22",
+      "n_options": 3,
+      "n_keys": 3,
+      "keys_expressible": 3,
+      "gaps": [],
+      "checked_options": [
+        "condition_proportions",
+        "n_test_trials",
+        "response_keys"
+      ],
+      "assumed_companions": []
+    },
+    {
+      "source": "S056",
+      "citation": "literature-sample screening rank 23",
+      "n_options": 6,
+      "n_keys": 6,
+      "keys_expressible": 6,
+      "gaps": [],
+      "checked_options": [
+        "n_blocks",
+        "n_test_trials",
+        "practice_trials",
+        "response_keys",
+        "stimulus_set",
+        "stimulus_size"
+      ],
+      "assumed_companions": []
+    },
+    {
+      "source": "S060",
+      "citation": "literature-sample screening rank 27",
+      "n_options": 14,
+      "n_keys": 14,
+      "keys_expressible": 13,
+      "gaps": [
+        {
+          "key": "concurrent_task",
+          "gap": "plugin needed",
+          "reason": "interleaving with the Simon task needs the simon-task package; a flanker-only timeline cannot do it"
+        }
+      ],
+      "checked_options": [
+        "feedback_condition",
+        "feedback_duration_ms",
+        "fixation_duration_ms",
+        "iti_ms",
+        "n_blocks",
+        "response_hand",
+        "response_keys",
+        "response_mapping_counterbalancing",
+        "response_window_ms",
+        "soa_ms",
+        "stimulus_color",
+        "stimulus_set"
+      ],
+      "assumed_companions": [
+        "trial_feedback",
+        "targets_per_response"
+      ]
+    },
+    {
+      "source": "S069",
+      "citation": "literature-sample screening rank 36",
+      "n_options": 2,
+      "n_keys": 2,
+      "keys_expressible": 1,
+      "gaps": [
+        {
+          "key": "stimulus_set.stimulus_set",
+          "gap": "option missing",
+          "reason": "picture stimuli with a location judgement are a different variant (S069)"
+        }
+      ],
+      "checked_options": [
+        "fixation_duration_ms"
+      ],
+      "assumed_companions": []
+    },
+    {
+      "source": "S119",
+      "citation": "literature-sample screening rank 87",
+      "n_options": 19,
+      "n_keys": 19,
+      "keys_expressible": 18,
+      "gaps": [
+        {
+          "key": "concurrent_task",
+          "gap": "plugin needed",
+          "reason": "interleaving with the Simon task needs the simon-task package; a flanker-only timeline cannot do it"
+        }
+      ],
+      "checked_options": [
+        "block_feedback",
+        "feedback_condition",
+        "feedback_duration_ms",
+        "fixation_duration_ms",
+        "iti_ms",
+        "n_test_trials",
+        "response_hand",
+        "response_mapping_counterbalancing",
+        "response_window_ms",
+        "rest_breaks",
+        "screen_calibration",
+        "stimulus_color",
+        "stimulus_duration_ms",
+        "stimulus_set",
+        "targets_per_response",
+        "trial_feedback",
+        "trial_order"
+      ],
+      "assumed_companions": [
+        "n_blocks"
+      ]
+    },
+    {
+      "source": "S134",
+      "citation": "Expfactory flanker CSS (letter string font styling)",
+      "n_options": 1,
+      "n_keys": 1,
+      "keys_expressible": 1,
+      "gaps": [],
+      "checked_options": [
+        "stimulus_size"
+      ],
+      "assumed_companions": []
+    },
+    {
+      "source": "S135",
+      "citation": "PEBL responsemode auto",
+      "n_options": 1,
+      "n_keys": 1,
+      "keys_expressible": 0,
+      "gaps": [
+        {
+          "key": "response_keys",
+          "gap": "plugin needed",
+          "reason": "jsPsych's keyboard listener reports event.key, which is 'Shift' for both shift keys"
+        }
+      ],
+      "checked_options": [],
+      "assumed_companions": []
+    }
+  ]
+}

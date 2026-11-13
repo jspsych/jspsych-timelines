@@ -1,0 +1,5 @@
+---
+"@jspsych-timelines/flanker": major
+---
+
+Rebuilt from the literature-derived spec. Breaking: all options are snake_case under vocabulary names (`numTestTrials` is now `n_test_trials`, `fixationDuration` is `fixation_duration_ms`, `interTrialInterval` is `iti_ms`, `includeNeutral` is `condition_set`), defaults follow the PEBL flanker battery (800 ms response window, feedback in practice only), `showPracticeFeedback`/`showTestFeedback` become `trial_feedback` with a `practice` override, the scorable row is now `part: "response"`, the scoring result fields are snake_case, and the interactive instruction trials are replaced by static pages. New: 32 spec options, jittered fixation, SOA, warning cue, letters, no-go trials, exact condition proportions per block, `practice` overrides, keyboard/mouse/touch responses.
