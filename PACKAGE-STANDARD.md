@@ -451,7 +451,9 @@ The IIFE global **MUST** be `jsPsychTimeline<TaskName>` in PascalCase.
 
 ### No-response display trials
 
-Fixation, ITI, and feedback trials — anything with no response — **MUST** use `htmlButtonResponse` with `response_ends_trial: false` and disabled placeholder buttons, so the layout does not shift between trials on touch devices. Do not use `htmlKeyboardResponse` with `choices: "NO_KEYS"` for this. Eight packages currently use the keyboard plugin for exactly this, which is the sole reason four of them depend on `@jspsych/plugin-html-keyboard-response` at all, and `flanker` uses both idioms within one file (`src/index.ts:222` vs `:330`).
+Fixation, ITI, cue and feedback trials — anything with no response — **MUST** use `htmlKeyboardResponse` with `choices: "NO_KEYS"` and a `trial_duration`. This holds whatever the task's response device is. **MUST NOT** use `htmlButtonResponse` with disabled or hidden placeholder buttons. That needs CSS hacks to hide the buttons, and the button plugin also crashes in data-only simulation when `choices` is empty.
+
+The old reason for placeholder buttons was that a touch task's layout would shift between button and no-button screens. That is a layout problem, so it gets a layout fix. The opt-in `jspsych-mobile.css` button bar (§11) is `position: fixed`, so its presence doesn't move the stimulus. If a package still sees a shift, it reserves the space with scoped CSS on the display trial (§5), not with fake buttons.
 
 ---
 
