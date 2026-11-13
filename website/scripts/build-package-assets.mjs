@@ -4,25 +4,30 @@
 //   3. generates src/schemas/<task>.schema.json from the exported <Task>Options type,
 //      then merges optional packages/<task>/docs-meta/options.meta.json.
 // Pass --skip-build to reuse existing dist/ folders. Pass task names to limit the run.
-import {execSync} from 'node:child_process';
-import {copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync} from 'node:fs';
-import {dirname, join, resolve} from 'node:path';
-import {fileURLToPath} from 'node:url';
-import {createGenerator} from 'ts-json-schema-generator';
+import { execSync } from "node:child_process";
+import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { dirname, join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+
+import { createGenerator } from "ts-json-schema-generator";
 
 const here = dirname(fileURLToPath(import.meta.url));
-const site = resolve(here, '..');
-const repo = resolve(site, '..');
+const site = resolve(here, "..");
+const repo = resolve(site, "..");
 const args = process.argv.slice(2);
-const skipBuild = args.includes('--skip-build');
-const only = args.filter((a) => !a.startsWith('--'));
+const skipBuild = args.includes("--skip-build");
+const only = args.filter((a) => !a.startsWith("--"));
 
-const pascal = (s) => s.split('-').map((p) => p[0].toUpperCase() + p.slice(1)).join('');
-const isObject = (v) => v && typeof v === 'object' && !Array.isArray(v);
+const pascal = (s) =>
+  s
+    .split("-")
+    .map((p) => p[0].toUpperCase() + p.slice(1))
+    .join("");
+const isObject = (v) => v && typeof v === "object" && !Array.isArray(v);
 
 /** Deep-merge `src` into `dst`; arrays and scalars in `src` replace. */
 export function deepMerge(dst, src) {
-  const out = {...dst};
+  const out = { ...dst };
   for (const [k, v] of Object.entries(src)) {
     out[k] = isObject(v) && isObject(out[k]) ? deepMerge(out[k], v) : v;
   }
@@ -34,7 +39,7 @@ export function deepMerge(dst, src) {
  * "(default: X)" into a schema `default` when the generator didn't get an @default tag.
  */
 function liftDefault(prop) {
-  if (typeof prop.description !== 'string') return;
+  if (typeof prop.description !== "string") return;
   const m = prop.description.match(/\s*\(default:\s*([^)]*)\)\s*$/);
   if (!m) return;
   prop.description = prop.description.slice(0, m.index).trim();
@@ -55,27 +60,27 @@ function liftDefault(prop) {
  * `x-keys` / `x-function-keys` for the docs page.
  */
 function simplifyObjectProp(prop) {
-  if (prop.type !== 'object' || !isObject(prop.properties)) return;
+  if (prop.type !== "object" || !isObject(prop.properties)) return;
   const entries = Object.entries(prop.properties);
-  if (!entries.length || !entries.every(([, v]) => v.type === 'string' || v.$comment)) return;
-  prop['x-keys'] = entries.filter(([, v]) => v.type === 'string').map(([k]) => k);
-  prop['x-function-keys'] = entries.filter(([, v]) => v.type !== 'string').map(([k]) => k);
-  prop.additionalProperties = {type: 'string'};
+  if (!entries.length || !entries.every(([, v]) => v.type === "string" || v.$comment)) return;
+  prop["x-keys"] = entries.filter(([, v]) => v.type === "string").map(([k]) => k);
+  prop["x-function-keys"] = entries.filter(([, v]) => v.type !== "string").map(([k]) => k);
+  prop.additionalProperties = { type: "string" };
   prop.default = {};
   delete prop.properties;
 }
 
 export function generateSchema(task, optionsType) {
-  const pkgDir = join(repo, 'packages', task);
+  const pkgDir = join(repo, "packages", task);
   const generator = createGenerator({
-    path: join(pkgDir, 'src/index.ts'),
-    tsconfig: join(pkgDir, 'tsconfig.json'),
+    path: join(pkgDir, "src/index.ts"),
+    tsconfig: join(pkgDir, "tsconfig.json"),
     type: optionsType,
-    expose: 'none',
+    expose: "none",
     topRef: false,
     skipTypeCheck: true,
     additionalProperties: false,
-    jsDoc: 'extended',
+    jsDoc: "extended",
   });
   const schema = JSON.parse(JSON.stringify(generator.createSchema(optionsType)));
   for (const prop of Object.values(schema.properties ?? {})) {
@@ -86,57 +91,68 @@ export function generateSchema(task, optionsType) {
 }
 
 export function mergeMeta(schema, meta) {
-  const out = {...schema, properties: {...schema.properties}};
+  const out = { ...schema, properties: { ...schema.properties } };
   for (const [name, extra] of Object.entries(meta.properties ?? {})) {
     if (!out.properties[name]) {
       console.warn(`  warning: options.meta.json names unknown option "${name}"`);
       continue;
     }
     // Only the meta's `x-jspsych` object is merged (deep) into the generated property.
-    out.properties[name] = deepMerge(out.properties[name], {'x-jspsych': extra?.['x-jspsych'] ?? {}});
+    out.properties[name] = deepMerge(out.properties[name], {
+      "x-jspsych": extra?.["x-jspsych"] ?? {},
+    });
   }
-  if (meta['x-jspsych-spec']) out['x-jspsych-spec'] = meta['x-jspsych-spec']; // provenance, passed through
-  if (meta['x-jspsych-presets']) out['x-jspsych-presets'] = meta['x-jspsych-presets']; // replace
+  if (meta["x-jspsych-spec"]) out["x-jspsych-spec"] = meta["x-jspsych-spec"]; // provenance, passed through
+  if (meta["x-jspsych-presets"]) out["x-jspsych-presets"] = meta["x-jspsych-presets"]; // replace
   return out;
 }
 
-function globalNameOf(pkgJson) {
-  const m = /--global-name\s+(\S+)/.exec(pkgJson.scripts?.build ?? '');
-  if (!m) throw new Error(`${pkgJson.name}: no --global-name in build script`);
+function globalNameOf(pkgJson, pkgDir) {
+  // Standard packages (§10) set it in tsup.config.ts via makeTimelineConfig("..."); older ones pass --global-name.
+  const tsupConfig = join(pkgDir, "tsup.config.ts");
+  if (existsSync(tsupConfig)) {
+    const c = /makeTimelineConfig\(\s*["'`]([^"'`]+)["'`]/.exec(readFileSync(tsupConfig, "utf8"));
+    if (c) return c[1];
+  }
+  const m = /--global-name\s+(\S+)/.exec(pkgJson.scripts?.build ?? "");
+  if (!m) throw new Error(`${pkgJson.name}: no global name in tsup.config.ts or the build script`);
   return m[1];
 }
 
-const {packages} = JSON.parse(readFileSync(join(site, 'docs-packages.json'), 'utf8'));
+const { packages } = JSON.parse(readFileSync(join(site, "docs-packages.json"), "utf8"));
 const manifest = {};
 
 for (const entry of packages) {
-  const {task} = entry;
+  const { task } = entry;
   if (only.length && !only.includes(task)) continue;
-  const pkgDir = join(repo, 'packages', task);
-  const pkgJson = JSON.parse(readFileSync(join(pkgDir, 'package.json'), 'utf8'));
+  const pkgDir = join(repo, "packages", task);
+  const pkgJson = JSON.parse(readFileSync(join(pkgDir, "package.json"), "utf8"));
   console.log(`[${task}]`);
 
   if (!skipBuild) {
-    console.log('  building package');
-    execSync('npm run build', {cwd: pkgDir, stdio: 'inherit'});
+    console.log("  building package");
+    execSync("npm run build", { cwd: pkgDir, stdio: "inherit" });
   }
-  const bundleSrc = join(pkgDir, 'dist/index.browser.js');
+  const bundleSrc = join(pkgDir, "dist/index.browser.js");
   if (!existsSync(bundleSrc)) throw new Error(`${bundleSrc} missing (build failed?)`);
-  const bundleDir = join(site, 'static/bundles', task);
-  mkdirSync(bundleDir, {recursive: true});
-  copyFileSync(bundleSrc, join(bundleDir, 'index.browser.js'));
+  const bundleDir = join(site, "static/bundles", task);
+  mkdirSync(bundleDir, { recursive: true });
+  copyFileSync(bundleSrc, join(bundleDir, "index.browser.js"));
 
   const optionsType = entry.optionsType ?? `${pascal(task)}Options`;
   let schema = generateSchema(task, optionsType);
-  const metaPath = join(pkgDir, 'docs-meta/options.meta.json');
+  const metaPath = join(pkgDir, "docs-meta/options.meta.json");
   if (existsSync(metaPath)) {
-    schema = mergeMeta(schema, JSON.parse(readFileSync(metaPath, 'utf8')));
-    console.log('  merged docs-meta/options.meta.json');
+    schema = mergeMeta(schema, JSON.parse(readFileSync(metaPath, "utf8")));
+    console.log("  merged docs-meta/options.meta.json");
   }
-  mkdirSync(join(site, 'src/schemas'), {recursive: true});
-  writeFileSync(join(site, 'src/schemas', `${task}.schema.json`), JSON.stringify(schema, null, 2) + '\n');
+  mkdirSync(join(site, "src/schemas"), { recursive: true });
+  writeFileSync(
+    join(site, "src/schemas", `${task}.schema.json`),
+    JSON.stringify(schema, null, 2) + "\n"
+  );
   manifest[task] = {
-    globalName: entry.globalName ?? globalNameOf(pkgJson),
+    globalName: entry.globalName ?? globalNameOf(pkgJson, pkgDir),
     version: pkgJson.version,
     optionsType,
   };
@@ -144,6 +160,6 @@ for (const entry of packages) {
 }
 
 if (!only.length) {
-  mkdirSync(join(site, 'src/schemas'), {recursive: true});
-  writeFileSync(join(site, 'src/schemas/manifest.json'), JSON.stringify(manifest, null, 2) + '\n');
+  mkdirSync(join(site, "src/schemas"), { recursive: true });
+  writeFileSync(join(site, "src/schemas/manifest.json"), JSON.stringify(manifest, null, 2) + "\n");
 }
