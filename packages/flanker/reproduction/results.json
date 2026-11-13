@@ -602,7 +602,7 @@
       ],
       "labelledAddition": false,
       "status": "checked",
-      "kind": "behaviour",
+      "kind": "recorded-parameter",
       "options": {
         "stimulus_layout": {
           "flanker_spacing": {
@@ -622,7 +622,7 @@
       ],
       "labelledAddition": false,
       "status": "checked",
-      "kind": "behaviour",
+      "kind": "recorded-parameter",
       "options": {
         "stimulus_layout": {
           "flanker_spacing": "adjacent"
@@ -639,7 +639,7 @@
       ],
       "labelledAddition": false,
       "status": "checked",
-      "kind": "behaviour",
+      "kind": "recorded-parameter",
       "options": {
         "stimulus_layout": {
           "flanker_spacing": {
@@ -667,7 +667,7 @@
       ],
       "labelledAddition": false,
       "status": "checked",
-      "kind": "behaviour",
+      "kind": "structure",
       "options": {
         "stimulus_layout": {
           "array_position": "centre_at_fixation"
@@ -684,7 +684,7 @@
       ],
       "labelledAddition": false,
       "status": "checked",
-      "kind": "behaviour",
+      "kind": "structure",
       "options": {
         "stimulus_layout": {
           "array_position": "above_fixation"
@@ -701,7 +701,7 @@
       ],
       "labelledAddition": false,
       "status": "checked",
-      "kind": "behaviour",
+      "kind": "structure",
       "options": {
         "stimulus_layout": {
           "orientation": "vertical",
@@ -2480,7 +2480,8 @@
         "stimulus_size",
         "trial_feedback"
       ],
-      "assumed_companions": []
+      "assumed": [],
+      "tied_to_reported_value": 22
     },
     {
       "source": "S005",
@@ -2495,7 +2496,8 @@
         "speed_accuracy_emphasis",
         "stimulus_duration_ms"
       ],
-      "assumed_companions": []
+      "assumed": [],
+      "tied_to_reported_value": 4
     },
     {
       "source": "S007",
@@ -2513,7 +2515,8 @@
         "stimulus_duration_ms",
         "stimulus_set"
       ],
-      "assumed_companions": []
+      "assumed": [],
+      "tied_to_reported_value": 6
     },
     {
       "source": "S012",
@@ -2549,7 +2552,8 @@
         "targets_per_response",
         "trial_feedback"
       ],
-      "assumed_companions": []
+      "assumed": [],
+      "tied_to_reported_value": 24
     },
     {
       "source": "S016",
@@ -2561,7 +2565,8 @@
       "checked_options": [
         "stimulus_set"
       ],
-      "assumed_companions": []
+      "assumed": [],
+      "tied_to_reported_value": 1
     },
     {
       "source": "S039",
@@ -2575,7 +2580,8 @@
         "response_keys",
         "stimulus_set"
       ],
-      "assumed_companions": []
+      "assumed": [],
+      "tied_to_reported_value": 3
     },
     {
       "source": "S047",
@@ -2596,7 +2602,8 @@
         "stimulus_set",
         "trial_feedback"
       ],
-      "assumed_companions": []
+      "assumed": [],
+      "tied_to_reported_value": 11
     },
     {
       "source": "S055",
@@ -2610,7 +2617,8 @@
         "n_test_trials",
         "response_keys"
       ],
-      "assumed_companions": []
+      "assumed": [],
+      "tied_to_reported_value": 3
     },
     {
       "source": "S056",
@@ -2627,7 +2635,8 @@
         "stimulus_set",
         "stimulus_size"
       ],
-      "assumed_companions": []
+      "assumed": [],
+      "tied_to_reported_value": 6
     },
     {
       "source": "S060",
@@ -2656,10 +2665,11 @@
         "stimulus_color",
         "stimulus_set"
       ],
-      "assumed_companions": [
+      "assumed": [
         "trial_feedback",
         "targets_per_response"
-      ]
+      ],
+      "tied_to_reported_value": 12
     },
     {
       "source": "S069",
@@ -2677,7 +2687,8 @@
       "checked_options": [
         "fixation_duration_ms"
       ],
-      "assumed_companions": []
+      "assumed": [],
+      "tied_to_reported_value": 1
     },
     {
       "source": "S119",
@@ -2711,9 +2722,10 @@
         "trial_feedback",
         "trial_order"
       ],
-      "assumed_companions": [
+      "assumed": [
         "n_blocks"
-      ]
+      ],
+      "tied_to_reported_value": 17
     },
     {
       "source": "S134",
@@ -2725,7 +2737,8 @@
       "checked_options": [
         "stimulus_size"
       ],
-      "assumed_companions": []
+      "assumed": [],
+      "tied_to_reported_value": 1
     },
     {
       "source": "S135",
@@ -2741,7 +2754,8 @@
         }
       ],
       "checked_options": [],
-      "assumed_companions": []
+      "assumed": [],
+      "tied_to_reported_value": 0
     }
   ]
 }

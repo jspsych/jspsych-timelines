@@ -10,7 +10,7 @@ import { Run, collectTrials, evalStimulus, rowsOf, run } from "./harness";
 
 export type CheckKind = "behaviour" | "recorded-parameter" | "structure";
 export interface Check {
-  kind: CheckKind;
+  kind: CheckKind | ((sub: string) => CheckKind);
   fn: (r: Run) => Promise<void> | void;
 }
 
@@ -169,7 +169,8 @@ export const CHECKS: Record<string, Check> = {
     },
   },
   stimulus_layout: {
-    kind: "behaviour",
+    // spacing is read from the data fields; position and orientation from the rendered HTML
+    kind: (sub) => (sub === "spacing" ? "recorded-parameter" : "structure"),
     fn: (r) => {
       const { flanker_spacing: sp, array_position: pos, orientation } = r.eff.stimulus_layout;
       const rows = test(r);
@@ -224,11 +225,6 @@ export const CHECKS: Record<string, Check> = {
         trialsOf(r, "response").find((t) => t.data.flankers_per_side === n)!
       );
       expect((html.match(/jspsych-timelines-flanker-item"/g) ?? []).length).toBe(2 * n + 1);
-      const neutral = rows.filter(
-        (x) =>
-          x.congruency === "neutral" &&
-          x.flanker_condition === "neutral_" + x.flanker_condition.slice(8)
-      );
       const forms = Array.isArray(ss.neutral_flanker)
         ? ss.neutral_flanker
         : [ss.neutral_flanker ?? "dashes"];
@@ -237,7 +233,30 @@ export const CHECKS: Record<string, Check> = {
           x.congruency === "neutral" &&
           !["neutral_dash", "neutral_empty"].includes(x.flanker_condition)
       );
-      void neutral;
+      // independent of the package: which glyph each form must produce
+      const glyphOf: Record<string, string> = {
+        dashes: "dash",
+        blank: "blank",
+        straight_lines: "line",
+        squares: "square",
+        plus_signs: "plus",
+        diamonds: "diamond",
+        vertical_arrows: "up",
+      };
+      const taken = new Set(
+        ss.target !== "arrows" && ss.target
+          ? ss.target.letters.flat().map((l) => l.toUpperCase())
+          : []
+      );
+      generic.forEach((x) => {
+        const form = x.flanker_condition.slice("neutral_".length);
+        const want = form === "unmapped_letter" ? x.flankers : glyphOf[form];
+        expect(x.flankers).toBe(want);
+        if (form === "unmapped_letter") {
+          expect(taken.has(String(x.flankers).toUpperCase())).toBe(false);
+          expect(String(x.flankers)).toMatch(/^[A-Z]$/);
+        }
+      });
       if (generic.length) {
         forms.forEach((f) =>
           expect(generic.some((x) => x.flanker_condition === `neutral_${f}`)).toBe(true)
@@ -246,6 +265,12 @@ export const CHECKS: Record<string, Check> = {
           expect(forms.map((f) => `neutral_${f}`)).toContain(x.flanker_condition)
         );
       }
+      rows
+        .filter((x) => x.flanker_condition === "neutral_dash")
+        .forEach((x) => expect(x.flankers).toBe("dash"));
+      rows
+        .filter((x) => x.flanker_condition === "neutral_empty")
+        .forEach((x) => expect(x.flankers).toBe("blank"));
       const cue = ss.cue ?? "none";
       expect(rowsOf(r, "test", "cue").length > 0).toBe(cue !== "none");
     },

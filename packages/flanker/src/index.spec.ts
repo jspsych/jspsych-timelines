@@ -1,7 +1,13 @@
 import * as fs from "fs";
 import * as path from "path";
 
-import { simulateTimeline } from "@jspsych/test-utils";
+import {
+  clickTarget,
+  flushPromises,
+  pressKey,
+  simulateTimeline,
+  startTimeline,
+} from "@jspsych/test-utils";
 import { DataCollection, JsPsych, initJsPsych } from "jspsych";
 
 import { version } from "../package.json";
@@ -123,6 +129,65 @@ describe("flanker", () => {
         text: { instruction_intro_arrows: "<p>Hola</p>", continue_button: "Continuar" },
       });
       expect(rows.find((r) => r.part === "instruction").stimulus).toContain("Hola");
+    });
+  });
+
+  describe("real run (plugin trial code, not simulation)", () => {
+    const base: FlankerOptions = {
+      instruction_format: "experimenter",
+      practice_trials: 0,
+      n_test_trials: 2,
+      fixation_duration_ms: 0,
+      iti_ms: 0,
+      condition_set: ["congruent", "incongruent"],
+    };
+
+    it("renders the array, takes a key press and scores it", async () => {
+      const { timeline } = createTimeline(jsPsych, base);
+      const { displayElement, getData, expectFinished } = await startTimeline(timeline, jsPsych);
+      for (let i = 0; i < 2; i++) {
+        expect(displayElement.querySelector(".jspsych-timelines-flanker-array")).not.toBeNull();
+        expect(displayElement.querySelectorAll(".jspsych-timelines-flanker-item")).toHaveLength(5);
+        expect(displayElement.querySelector(".jspsych-btn")).toBeNull();
+        const key = allTrials(timeline).filter((t) => t.data.part === "response")[i].data
+          .correct_response;
+        await pressKey(key);
+      }
+      expect(displayElement.textContent).toContain("Task Complete");
+      const rows = getData().filter({ part: "response" }).values() as any[];
+      expect(rows.map((r) => r.correct)).toEqual([true, true]);
+      expect(rows.every((r) => r.timeout === false && typeof r.rt === "number")).toBe(true);
+      expect(displayElement.textContent).toContain("100.0%");
+      await clickTarget(displayElement.querySelector("button")!);
+      await expectFinished();
+    });
+
+    it("renders buttons for touch, with disabled placeholders around the response", async () => {
+      const { timeline } = createTimeline(jsPsych, {
+        ...base,
+        response_device: "touch",
+        fixation_duration_ms: 500,
+      });
+      const { displayElement } = await startTimeline(timeline, jsPsych);
+      const fixBtns = displayElement.querySelectorAll<HTMLButtonElement>(".jspsych-btn");
+      expect(fixBtns).toHaveLength(2);
+      fixBtns.forEach((b) => expect(b.disabled).toBe(true));
+    });
+
+    it("times out when no response arrives within the window", async () => {
+      jest.useFakeTimers();
+      const { timeline } = createTimeline(jsPsych, {
+        ...base,
+        n_test_trials: 1,
+        response_window_ms: 300,
+      });
+      const { getData } = await startTimeline(timeline, jsPsych);
+      jest.advanceTimersByTime(400);
+      await flushPromises();
+      jest.useRealTimers();
+      const rows = getData().filter({ part: "response" }).values() as any[];
+      expect(rows).toHaveLength(1);
+      expect(rows[0]).toMatchObject({ response: null, timeout: true, correct: false });
     });
   });
 

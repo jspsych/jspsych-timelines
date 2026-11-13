@@ -44,7 +44,7 @@ export interface FlankerStimulusSet {
   target?: "arrows" | { letters: string[][] };
   /**
    * Flankers per side of the target: one number, or a list from which each trial draws (balanced).
-   * (default: { per_side: 2 } — PEBL flanker defaults, S019; also 4/6 online studies)
+   * (default: { per_side: 2 } — PEBL flanker defaults, S019; 2 per side in 4 of the 7 studies that report it)
    */
   flanker?: { per_side?: number | number[] };
   /**

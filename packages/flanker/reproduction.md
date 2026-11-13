@@ -16,13 +16,13 @@ How much of what the flanker literature varied can this package express, and doe
 | Expressible and checked | 198 (97.5%) | 129 (96.3%) |
 | Not expressible | 5 | 5 |
 
-Of all 224 rows, 198 (88.4%) are expressible and checked. The 129 checked cases split by what the check can see:
+Of all 224 rows, 198 (88.4%) are expressible and checked. The 129 checked cases split by what the check can see (86 + 28 + 15):
 
 | Check kind | Cases | What it asserts |
 |---|---|---|
-| Behaviour | 92 | Counts per phase and block, exact condition counts, rows present or absent, timeouts under forced slow RTs, keys, mapping across seeds, abort on a touch-only device |
-| Recorded parameter | 25 | A duration or interval (fixation, ITI, feedback, SOA, stimulus duration) equals the value in the data row and in the plugin parameter. Both come from one variable and the data-only simulator ignores time, so this proves the value arrived, not that the browser times it. |
-| Structure | 12 | The rendered HTML or built timeline contains it: colours, item size in px/deg/height fraction, instruction sentence, calibration plugin and its parameters |
+| Behaviour | 86 | Counts per phase and block, exact condition counts, rows present or absent, timeouts under forced slow RTs, keys, mapping across seeds, abort on a touch-only device |
+| Recorded parameter | 28 | A duration, interval or spacing (fixation, ITI, feedback, SOA, stimulus duration, flanker gap) equals the value in the data row and in the plugin parameter or rendered HTML. Both come from one variable and the data-only simulator ignores time, so this proves the value arrived, not that the browser times it. |
+| Structure | 15 | The rendered HTML or built timeline contains it: colours, item size in px/deg/height fraction, array position and orientation, instruction sentence, calibration plugin and its parameters |
 
 Not checkable in data-only simulation, only structurally: `screen_calibration` `credit_card` and `virtual_chinrest` (the virtual chinrest plugin has no `simulate`, so the test removes it before simulating and inspects the built node), and real stimulus timing for every duration.
 
@@ -36,7 +36,7 @@ Not checkable in data-only simulation, only structurally: `screen_calibration` `
 
 The 8 configurations the spec marks not fully typed are not part of level 2. Six of them (S008, S015, S019, S068, S104, S111) still have presets in `docs-meta` with the untyped keys left out; S016, S134 and S135 have too few options to be useful presets.
 
-Companion settings that a configuration needed but did not state (counted as expressible, listed because they are assumptions): S060 gives `feedback_condition` and `feedback_duration_ms` but no feedback content, so `trial_feedback: "accuracy"` is assumed; S119 gives `rest_breaks: self_paced` but no `n_blocks`, so 3 blocks are assumed. S060 also needs letter targets for its counterbalancing; the letters are in its `stimulus_set`.
+Besides every option's check, level 2 asserts for the keys that map one-to-one that the resolved option equals the reported value (111 keys across the 14 configurations). Companion settings that a configuration needed but did not state are counted as expressible and listed here because they are assumptions: S060 gives `feedback_condition` and `feedback_duration_ms` but no feedback content, so `trial_feedback: "accuracy"` is assumed (its `targets_per_response: 1` companion equals the default); S119 gives `rest_breaks: self_paced` but no `n_blocks`, so 3 blocks are assumed. Presets in `docs-meta` name these assumptions in their description.
 
 ## Gaps
 

@@ -299,7 +299,7 @@ export function adaptConfig(options: Record<string, any>): ConfigEntry[] {
       key === "trial_feedback.trial_feedback_content" &&
       typeof content === "string"
     ) {
-      return { key, adapted: ok({ practice: { trial_feedback: content } }) };
+      return { key, adapted: ok({ practice: { trial_feedback: content as any } }) };
     }
     if (
       testNone &&
@@ -317,4 +317,22 @@ export function adaptConfig(options: Record<string, any>): ConfigEntry[] {
     }
     return { key, adapted: adaptConfigKey(key, options[key]) };
   });
+}
+
+/** Paths (option, or option.key for map options) that `combine` added beyond what the entries state. */
+export function assumedSettings(entries: Adapted[]): string[] {
+  const primaries = entries.filter(
+    (e): e is { opts: FlankerOptions; companions?: FlankerOptions } => !isGap(e)
+  );
+  const explicit: any = mergeOptions(...primaries.map((e) => e.opts));
+  const full: any = combine(entries);
+  const out: string[] = [];
+  for (const [k, v] of Object.entries(full)) {
+    if (["stimulus_set", "stimulus_layout"].includes(k)) {
+      for (const sub of Object.keys(v as object)) {
+        if (!explicit[k] || !(sub in explicit[k])) out.push(`${k}.${sub}`);
+      }
+    } else if (!(k in explicit)) out.push(k);
+  }
+  return out;
 }

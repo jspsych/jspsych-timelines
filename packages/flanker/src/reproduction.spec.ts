@@ -17,6 +17,7 @@ import {
   Adapted,
   adapt,
   adaptConfig,
+  assumedSettings,
   combine,
   isGap,
   subFromRole,
@@ -99,7 +100,8 @@ describe("level 1: observed values", () => {
       expect(check).toBeDefined();
       const r = await run(opts);
       await check.fn(r);
-      results.level1.push({ ...c, status: "checked", kind: check.kind, options: opts });
+      const kind = typeof check.kind === "function" ? check.kind(c.sub) : check.kind;
+      results.level1.push({ ...c, status: "checked", kind, options: opts });
     });
   }
 });
@@ -115,6 +117,39 @@ describe("level 2: fully typed study configurations", () => {
       const gaps = entries.filter((e) => isGap(e.adapted));
       const opts = combine(entries.map((e) => e.adapted));
       const r = await run(opts);
+      // the resolved option must equal the value the configuration reports
+      const resolvedOf = (key: string, value: any): [any, any] | null => {
+        const e = r.eff as any;
+        if (!key.includes(".")) return [e[key], value];
+        const [opt, role] = key.split(".");
+        if (key === "stimulus_set.flanker")
+          return [
+            e.stimulus_set.flanker.per_side,
+            typeof value === "number" ? value : value.flanker.per_side,
+          ];
+        if (key === "stimulus_set.neutral flanker") return null; // compared as glyphs in the check
+        if (key === "stimulus_set.stimulus_set" && value === "arrows")
+          return [e.stimulus_set.target, "arrows"];
+        if (role === "response_deadline_ms") return [e[opt], value];
+        if (role === "condition_proportions") return [e[opt], value];
+        if (key === "cue_target_interval_ms.warning cue") return [e[opt], value];
+        if (
+          key === "trial_feedback.trial_feedback_content" &&
+          !("trial_feedback.trial_feedback_by_phase" in s.options)
+        )
+          return [e.trial_feedback, value];
+        return null;
+      };
+      let tied = 0;
+      for (const { key, adapted } of entries) {
+        if (isGap(adapted)) continue;
+        const pair = resolvedOf(key, s.options[key]);
+        if (pair) {
+          expect(pair[0]).toEqual(pair[1]);
+          tied++;
+        }
+      }
+      if (entries.some((e) => !isGap(e.adapted))) expect(tied).toBeGreaterThan(0);
       const options = [
         ...new Set(
           entries
@@ -139,14 +174,8 @@ describe("level 2: fully typed study configurations", () => {
         keys_expressible: entries.length - gaps.length,
         gaps: gaps.map((g) => ({ key: g.key, ...(g.adapted as any) })),
         checked_options: checked,
-        assumed_companions: Object.keys(opts).filter(
-          (k) =>
-            !entries.some(
-              (e) =>
-                e.key.split(".")[0] === k ||
-                (e.key === "practice.trial_feedback" && k === "practice")
-            )
-        ),
+        assumed: assumedSettings(entries.map((e) => e.adapted)),
+        tied_to_reported_value: tied,
       });
     });
   }
@@ -263,6 +292,7 @@ afterAll(() => {
         const entries = adaptConfig(sc.options);
         const opts = combine(entries.map((e) => e.adapted));
         const gaps = entries.filter((e) => isGap(e.adapted)).map((e) => e.key);
+        const assumed = assumedSettings(entries.map((e) => e.adapted));
         return {
           id: sc.source,
           label: sc.citation,
@@ -270,7 +300,8 @@ afterAll(() => {
             `${sc.source_type} · ${sc.setting ?? "no setting"} · ${
               Object.keys(sc.options).length
             } spec options` +
-            (gaps.length ? ` · not expressible, left out: ${gaps.join(", ")}` : ""),
+            (gaps.length ? ` · not expressible, left out: ${gaps.join(", ")}` : "") +
+            (assumed.length ? ` · assumed, not reported: ${assumed.join(", ")}` : ""),
           options: opts,
         };
       })

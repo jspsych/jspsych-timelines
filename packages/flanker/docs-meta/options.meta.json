@@ -3016,7 +3016,7 @@
     {
       "id": "S060",
       "label": "literature-sample screening rank 27",
-      "description": "empirical · online-unsupervised · 14 spec options · not expressible, left out: concurrent_task",
+      "description": "empirical · online-unsupervised · 14 spec options · not expressible, left out: concurrent_task · assumed, not reported: trial_feedback, targets_per_response",
       "options": {
         "trial_feedback": "accuracy",
         "stimulus_set": {
@@ -3111,7 +3111,7 @@
     {
       "id": "S104",
       "label": "literature-sample screening rank 72",
-      "description": "empirical · lab-native · 7 spec options · not expressible, left out: response_window_ms.deadline_rule, speed_accuracy_emphasis",
+      "description": "empirical · lab-native · 7 spec options · not expressible, left out: response_window_ms.deadline_rule, speed_accuracy_emphasis · assumed, not reported: trial_feedback, condition_set, stimulus_set.target",
       "options": {
         "trial_feedback": "accuracy",
         "condition_set": [
@@ -3179,7 +3179,7 @@
     {
       "id": "S119",
       "label": "literature-sample screening rank 87",
-      "description": "empirical · online-unsupervised · 19 spec options · not expressible, left out: concurrent_task",
+      "description": "empirical · online-unsupervised · 19 spec options · not expressible, left out: concurrent_task · assumed, not reported: n_blocks",
       "options": {
         "stimulus_set": {
           "target": {
