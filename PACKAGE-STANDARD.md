@@ -233,6 +233,8 @@ Every package injects its stylesheet into the same document (`import "./styles.c
 
 4. A package **MUST NOT** ship generic touch/mobile styling. That now lives upstream (§11).
 
+5. A task with a centred stimulus **MUST** put it in a fixed-size stage anchored at the vertical centre of the display on **every** task screen (fixation, cue, stimulus, feedback, ITI, instruction and hint screens alike). jsPsych centres `.jspsych-content` as a whole, so extra text or a plugin button group below the stimulus would otherwise shift it. Anchor the stage independently of its siblings (e.g. `position: absolute; top: 50%; transform: translate(-50%, -50%)` inside a full-height content box, or a full-height grid with `minmax(0, 1fr) auto minmax(0, 1fr)` rows). Accompanying text and the response/continue button group go in a region below the stage that does not move it, scrolls if long, and keeps the buttons visible in a short (about 430 px) run area. The task colours (`stimulus_color`) paint the whole display, not a box around the stage. Verify with a browser check that records the stage's bounding rect on each screen type (and at a narrow and a wide viewport) and asserts the same centre (±1 px); keep a jsdom test that every stimulus screen uses the anchored wrapper.
+
 ### Why
 
 Current selector overlap across the new packages:
