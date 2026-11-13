@@ -7,6 +7,7 @@
 import { execSync } from "node:child_process";
 import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
+import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 
 import { createGenerator } from "ts-json-schema-generator";
@@ -90,6 +91,34 @@ export function generateSchema(task, optionsType) {
   return schema;
 }
 
+/**
+ * The package's DEFAULT_OPTIONS is the source of truth for defaults (doc comments are prose and
+ * may not parse). Load the built CommonJS entry with a minimal `window` stub (jsPsych touches
+ * `window` at import) and set `default` on every schema property it covers.
+ */
+export function applyPackageDefaults(schema, pkgDir) {
+  const entry = join(pkgDir, "dist/index.cjs");
+  if (!existsSync(entry)) return 0;
+  globalThis.window = globalThis.window || {};
+  const mod = createRequire(import.meta.url)(entry);
+  const defaults = mod?.utils?.constants?.DEFAULT_OPTIONS;
+  if (!isObject(defaults)) return 0;
+  let n = 0;
+  for (const [name, value] of Object.entries(defaults)) {
+    if (name === "text" || !schema.properties?.[name] || typeof value === "function") continue;
+    const prop = schema.properties[name];
+    prop.default = value;
+    // Map options keyed by task terms (Record<string, T>) can come out as `additionalProperties: false`
+    // with no listed properties, which would reject every key: infer the value type from the default.
+    if (isObject(value) && prop.type === "object" && !isObject(prop.properties) && prop.additionalProperties === false) {
+      const kinds = new Set(Object.values(value).map((v) => (v === null ? "null" : Array.isArray(v) ? "array" : typeof v)));
+      prop.additionalProperties = kinds.size === 1 && ["number", "string", "boolean"].includes([...kinds][0]) ? { type: [...kinds][0] } : true;
+    }
+    n++;
+  }
+  return n;
+}
+
 export function mergeMeta(schema, meta) {
   const out = { ...schema, properties: { ...schema.properties } };
   for (const [name, extra] of Object.entries(meta.properties ?? {})) {
@@ -141,6 +170,8 @@ for (const entry of packages) {
 
   const optionsType = entry.optionsType ?? `${pascal(task)}Options`;
   let schema = generateSchema(task, optionsType);
+  const nDefaults = applyPackageDefaults(schema, pkgDir);
+  console.log(`  defaults from DEFAULT_OPTIONS: ${nDefaults}`);
   const metaPath = join(pkgDir, "docs-meta/options.meta.json");
   if (existsSync(metaPath)) {
     schema = mergeMeta(schema, JSON.parse(readFileSync(metaPath, "utf8")));
