@@ -92,8 +92,18 @@ export interface ArrayRender {
   hide?: "flankers" | "target" | null;
 }
 
-/** HTML of the whole stimulus panel. */
-export function renderArray(a: ArrayRender): string {
+/**
+ * Anchored screen layout (PACKAGE-STANDARD section 5): the stage sits at the vertical centre of
+ * the display on every task screen. Text (and the plugin's button group) belong to the region
+ * below it and never move it. `below` is the optional HTML for that region.
+ */
+export function renderScreen(stage: string, below = ""): string {
+  const region = below ? `<div class="jspsych-timelines-flanker-below">${below}</div>` : "";
+  return `<div class="jspsych-timelines-flanker-screen">${stage}${region}</div>`;
+}
+
+/** HTML of the whole stimulus panel, plus optional text for the region below the stage. */
+export function renderArray(a: ArrayRender, below = ""): string {
   const cell = (g: Glyph, hidden: boolean) =>
     `<span class="jspsych-timelines-flanker-item" style="width:${a.size_px}px;height:${
       a.size_px
@@ -106,13 +116,10 @@ export function renderArray(a: ArrayRender): string {
     ...a.flankers.map((g) => cell(g, hideF)),
   ].join("");
   const dir = a.orientation === "vertical" ? "column" : "row";
-  return `${paintDisplay(a.fg, a.bg)}<div class="jspsych-timelines-flanker-stage">
-    <div class="jspsych-timelines-flanker-array" data-orientation="${
-      a.orientation
-    }" style="flex-direction:${dir};gap:${a.gap_px}px;transform:translateY(${
-    a.offset_px
-  }px);">${items}</div>
+  const stage = `<div class="jspsych-timelines-flanker-stage">
+    <div class="jspsych-timelines-flanker-array" data-orientation="${a.orientation}" style="flex-direction:${dir};gap:${a.gap_px}px;transform:translateY(${a.offset_px}px);">${items}</div>
   </div>`;
+  return paintDisplay(a.fg, a.bg) + renderScreen(stage, below);
 }
 
 /** Parse "<fg> on <bg>"; falls back to white on black. */
@@ -139,9 +146,7 @@ export function paintDisplay(fg: string, bg: string): string {
 }
 
 /** Stage with a centred text/shape (fixation, feedback, cue). Fixed size: see styles.css. */
-export function renderStage(inner: string, fg: string, bg: string): string {
-  return `${paintDisplay(
-    fg,
-    bg
-  )}<div class="jspsych-timelines-flanker-stage"><div class="jspsych-timelines-flanker-center">${inner}</div></div>`;
+export function renderStage(inner: string, fg: string, bg: string, below = ""): string {
+  const stage = `<div class="jspsych-timelines-flanker-stage"><div class="jspsych-timelines-flanker-center">${inner}</div></div>`;
+  return paintDisplay(fg, bg) + renderScreen(stage, below);
 }

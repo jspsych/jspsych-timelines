@@ -11,19 +11,72 @@
   text-align: center;
 }
 
-/* Fixed-size panel (not min-size) so that nothing moves between fixation, array, feedback and
-   ITI. The task colours are painted on the whole display by paintDisplay(), not on this panel. */
+/* Anchored layout (PACKAGE-STANDARD section 5). On every task screen with a stage, the stage is
+   centred on the vertical centre of the display with absolute positioning, so nothing else on the
+   screen (text, the plugin's button group) can move it. Text goes in the region below the stage
+   (scrolls if long); the plugin's button group is pinned to the bottom edge, and the text region
+   stops above it. The task colours are painted on the whole display by paintDisplay(). */
+.jspsych-timelines-flanker {
+  --flanker-stage-h: min(280px, 40vh);
+  --flanker-btn-reserve: 76px;
+}
+
+.jspsych-timelines-flanker:has(.jspsych-timelines-flanker-screen) {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: none;
+  height: 100vh;
+  margin: 0;
+  overflow: hidden;
+}
+
+.jspsych-timelines-flanker .jspsych-timelines-flanker-screen {
+  display: contents;
+}
+
 .jspsych-timelines-flanker .jspsych-timelines-flanker-stage {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 640px;
   max-width: calc(100vw - 16px);
-  height: 280px;
-  margin: 0 auto;
+  height: var(--flanker-stage-h);
   padding: 20px;
   overflow: hidden;
+}
+
+.jspsych-timelines-flanker .jspsych-timelines-flanker-below {
+  position: absolute;
+  top: calc(50% + var(--flanker-stage-h) / 2 + 8px);
+  right: 0;
+  bottom: 0;
+  left: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.jspsych-timelines-flanker:has(#jspsych-html-button-response-btngroup)
+  .jspsych-timelines-flanker-below {
+  bottom: var(--flanker-btn-reserve);
+}
+
+.jspsych-timelines-flanker:has(.jspsych-timelines-flanker-screen)
+  #jspsych-html-button-response-btngroup {
+  position: absolute;
+  right: 0;
+  bottom: 12px;
+  left: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
 .jspsych-timelines-flanker .jspsych-timelines-flanker-array {

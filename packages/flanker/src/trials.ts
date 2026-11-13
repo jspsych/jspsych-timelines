@@ -278,7 +278,8 @@ function arrayHtml(
   ctx: Context,
   o: ResolvedOptions,
   spec: TrialSpec,
-  hide: "flankers" | "target" | null
+  hide: "flankers" | "target" | null,
+  below = ""
 ): string {
   const { fg, bg } = parseColors(o.stimulus_color);
   const ppd = pxPerDeg(ctx);
@@ -286,17 +287,20 @@ function arrayHtml(
   const gap = toPx(spec.gap, spec.gap_unit, ppd, viewportHeight());
   const pos = o.stimulus_layout.array_position ?? "centre_at_fixation";
   const offset = pos === "above_fixation" ? -2 * size : pos === "below_fixation" ? 2 * size : 0;
-  return renderArray({
-    flankers: new Array(spec.per_side).fill(spec.flanker as Glyph),
-    target: spec.target,
-    size_px: size,
-    gap_px: gap,
-    orientation: o.stimulus_layout.orientation ?? "horizontal",
-    offset_px: offset,
-    fg,
-    bg,
-    hide,
-  });
+  return renderArray(
+    {
+      flankers: new Array(spec.per_side).fill(spec.flanker as Glyph),
+      target: spec.target,
+      size_px: size,
+      gap_px: gap,
+      orientation: o.stimulus_layout.orientation ?? "horizontal",
+      offset_px: offset,
+      fg,
+      bg,
+      hide,
+    },
+    below
+  );
 }
 
 export function createPreview(
@@ -626,8 +630,13 @@ function createExamples(ctx: Context, steps: DemoStep[]) {
     type: jsPsychHtmlButtonResponse,
     css_classes: [TASK_CLASS],
     stimulus: () =>
-      arrayHtml(ctx, step.o, step.spec, null) +
-      demoText(ctx.text.instruction_step(stepArgs(ctx, step))),
+      arrayHtml(
+        ctx,
+        step.o,
+        step.spec,
+        null,
+        demoText(ctx.text.instruction_step(stepArgs(ctx, step)))
+      ),
     choices: [ctx.text.continue_button],
     data: baseData({
       phase: "instructions",
@@ -680,7 +689,7 @@ export function createInstructionWalkthrough(ctx: Context) {
       : correctIndex;
     const args = stepArgs(ctx, step);
     const state = { attempt: 0, correct: null as boolean | null };
-    const shown = (html: string) => arrayHtml(ctx, so, spec, null) + demoText(html);
+    const shown = (html: string) => arrayHtml(ctx, so, spec, null, demoText(html));
     const stepData = {
       phase: "instructions",
       condition: spec.flanker_condition,
