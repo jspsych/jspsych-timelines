@@ -76,6 +76,11 @@ export function createTimeline(jsPsych: JsPsych, options: FlankerOptions = {}) {
 Options that mean the same thing in different tasks **MUST** have the same name, type and absent value in every package, so a researcher who learns one package has learned most of the others. The shared vocabulary is `vocabulary/vocabulary.yaml` (148 parameters, derived from the literature for 79 RDoC tasks). Its rules are in `vocabulary/RULES.md`. A task-specific option follows the same conventions under its own snake_case name.
 
 - **Names.** Use the vocabulary's name when the option is one of its concepts, e.g. `response_window_ms`, `iti_ms`, `practice_trials`, `trial_feedback`, `condition_proportions`, `response_device`. Units are in the name (`_ms`), never in the value.
+- **Durations can be jittered.** Every `_ms` option has vocabulary type `duration`, which is a `DurationSpec`:
+  - either a number of milliseconds;
+  - or `{ min, max, step? }`, sampled per trial, uniformly from `min`, `min + step`, … up to `max`, using `jsPsych.randomization` (§3). `step` defaults to 1 ms.
+
+  The sampled value **MUST** be written into the trial's data (e.g. `fixation_duration: 734`), so analyses can use the actual duration. Absent values still follow the absence rule: `0` means it doesn't happen, and `null` means no limit. Lists of fixed levels (e.g. SOAs of 100, 300, 500 as conditions) are design factors, not jitter, and belong in a task-specific option.
 - **Absence is a value, typed by meaning.** There are no on/off booleans like `show_fixation`.
 
   | Kind | Absent value | Example |
