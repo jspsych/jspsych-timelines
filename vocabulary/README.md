@@ -12,3 +12,4 @@ Edit these files only through that process. A change to an option name here is a
 ## Amendments since `2026-11-13-std-final`
 
 - **2026-11-13:** `instruction_demonstration` gains the value `interactive`, and packages default to it wherever feasible (PACKAGE-STANDARD §6a). This was a human decision, not derived from the literature survey.
+- **2026-11-13:** all 20 `_ms` parameters have type `duration`, which is a `DurationSpec`: a number, or `{min, max, step?}` sampled per trial (PACKAGE-STANDARD §2a). This was a human decision. Several definitions already said "fixed value or jitter range".

@@ -2,7 +2,7 @@
 parameters:
 - name: fixation_duration_ms
   layer: timing
-  type: number
+  type: duration
   unit: ms
   definition: Duration of the fixation mark (or hold at a start position) before the trial's first event. Fixed
     value or jitter range.
@@ -10,7 +10,7 @@ parameters:
   granularity_note: Presence is duration > 0. Pre-cue/pre-target fixations are the same parameter.
 - name: pre_stimulus_delay_ms
   layer: timing
-  type: number
+  type: duration
   unit: ms
   definition: Blank (non-fixation) gap between trial start or fixation offset and the first stimulus; includes gap-paradigm
     fixation-offset gaps.
@@ -19,7 +19,7 @@ parameters:
     a dossier records it.
 - name: iti_ms
   layer: timing
-  type: number
+  type: duration
   unit: ms
   definition: 'Inter-trial interval: from the end of a trial (including feedback) to the start of the next; also
     called RSI where the trial ends at the response.'
@@ -27,7 +27,7 @@ parameters:
   granularity_note: Phase-specific ITIs (training_iti_ms) map here with the phase qualifier (R10).
 - name: response_window_ms
   layer: timing
-  type: number
+  type: duration
   unit: ms
   definition: Maximum time after the response-eligible event in which a response is accepted. Covers deadline, time
     limit, timeout and response window (R6).
@@ -36,7 +36,7 @@ parameters:
     are narrower rows.
 - name: stimulus_duration_ms
   layer: timing
-  type: number
+  type: duration
   unit: ms
   definition: Exposure duration of the main stimulus of a trial (target, probe, sample, display).
   absent_value: null
@@ -44,14 +44,14 @@ parameters:
     rows with role: in the note.'
 - name: item_duration_ms
   layer: timing
-  type: number
+  type: duration
   unit: ms
   definition: Presentation time of each item in a sequentially presented list or stream (span lists, RSVP items,
     word lists).
   granularity_note: Separate from stimulus_duration_ms because sequential tasks set item and probe durations independently.
 - name: inter_item_interval_ms
   layer: timing
-  type: number
+  type: duration
   unit: ms
   definition: Gap between successive items or stimuli within a trial (ISI); list rate given onset-to-onset maps
     as overlapping.
@@ -59,48 +59,48 @@ parameters:
   granularity_note: Between-trial gaps are iti_ms.
 - name: soa_ms
   layer: timing
-  type: number
+  type: duration
   unit: ms
   definition: Onset asynchrony between two events of a trial other than cue and target (flanker-target, task 1-task
     2, audio-visual, masker lead).
   granularity_note: Cue-target intervals are cue_target_interval_ms.
 - name: cue_duration_ms
   layer: timing
-  type: number
+  type: duration
   unit: ms
   definition: Duration of a cue, precue or warning signal.
   absent_value: null
   granularity_note: null = cue stays until the response.
 - name: cue_target_interval_ms
   layer: timing
-  type: number
+  type: duration
   unit: ms
   definition: Interval between cue onset (or offset) and target/probe onset, including task-switching CSI.
   absent_value: 0
   granularity_note: SOA vs ISI form noted per row.
 - name: mask_duration_ms
   layer: timing
-  type: number
+  type: duration
   unit: ms
   definition: Duration of a forward or backward mask.
   absent_value: 0
   granularity_note: 0 = no mask.
 - name: feedback_duration_ms
   layer: timing
-  type: number
+  type: duration
   unit: ms
   definition: How long trial feedback or the outcome display stays on screen (R11).
   granularity_note: Phase-specific durations take the phase qualifier. Per-outcome durations ({correct, error})
     are allowed values.
 - name: feedback_delay_ms
   layer: timing
-  type: number
+  type: duration
   unit: ms
   definition: Gap between the response and the onset of feedback (R11).
   absent_value: 0
 - name: outcome_delay_ms
   layer: timing
-  type: number
+  type: duration
   unit: ms
   definition: Delay between an action or CS and its outcome event (reward, tone, US) when the outcome is part of
     the task's event sequence.
@@ -109,7 +109,7 @@ parameters:
     CS-US).
 - name: retention_interval_ms
   layer: timing
-  type: number
+  type: duration
   unit: ms
   definition: Delay within a trial between offset of the material to remember and the probe or recall prompt.
   absent_value: 0
@@ -123,34 +123,34 @@ parameters:
   granularity_note: null = no delayed test. 0 is not used because it would mean an immediate test.
 - name: break_duration_ms
   layer: timing
-  type: number
+  type: duration
   unit: ms
   definition: Duration of the rest between blocks.
   absent_value: null
   granularity_note: null = self-paced. Whether breaks occur is rest_breaks.
 - name: timeout_message_ms
   layer: timing
-  type: number
+  type: duration
   unit: ms
   definition: Duration of the 'too slow' message after a missed response.
   absent_value: 0
   granularity_note: Content is timeout_feedback (R11).
 - name: preview_duration_ms
   layer: timing
-  type: number
+  type: duration
   unit: ms
   definition: Duration of a preview display (targets, items, pictures) before the main event.
   absent_value: 0
   granularity_note: self-paced is written null.
 - name: pre_block_countdown_ms
   layer: timing
-  type: number
+  type: duration
   unit: ms
   definition: Duration of a ready screen or countdown before a block or trial sequence starts.
   absent_value: 0
 - name: tone_ramp_ms
   layer: timing
-  type: number
+  type: duration
   unit: ms
   definition: Rise/fall ramp of tone stimuli.
 - name: session_duration_min
