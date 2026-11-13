@@ -2829,6 +2829,9 @@ var jsPsychTimelineFlanker = (function (exports) {
   var CUE_DURATION_MS = 250;
   var ATTENTION_CHECK_PROBES = 2;
   var DEFAULT_PX_PER_DEG = 37.8;
+  var INSTRUCTION_MAX_ATTEMPTS = 3;
+  var INSTRUCTION_NOGO_WAIT_MS = 2500;
+  var INSTRUCTION_CORRECT_MS = 900;
 
   // src/options.ts
   var PHASE_OPTIONS = [
@@ -2896,6 +2899,7 @@ var jsPsychTimelineFlanker = (function (exports) {
     feedback_condition: "all",
     trial_feedback: "none",
     instruction_format: "text",
+    instruction_demonstration: "interactive",
     speed_accuracy_emphasis: "both",
     practice: { trial_feedback: "accuracy_rt" }
   };
@@ -2932,6 +2936,11 @@ var jsPsychTimelineFlanker = (function (exports) {
       "instruction_format",
       ["audio", "video"],
       "no media is bundled; supply your own instruction trials"
+    ],
+    [
+      "instruction_demonstration",
+      ["animated", "guided_trial"],
+      "use interactive (real stimuli, repeat until correct), examples or none"
     ],
     [
       "response_mapping_counterbalancing",
@@ -3322,6 +3331,41 @@ var jsPsychTimelineFlanker = (function (exports) {
     if (order === "shuffled_list") return R.shuffle(specs);
     return specs;
   }
+  function buildDemoSpec(o, flanker_condition, form, group) {
+    var _a, _b, _c, _d;
+    const congruency = flanker_condition.startsWith("neutral") ? "neutral" : flanker_condition;
+    const target = (_a = o.stimulus_set.target) != null ? _a : "arrows";
+    const letters = target === "arrows" ? null : target.letters;
+    const p = (_c = (_b = o.stimulus_set.flanker) == null ? void 0 : _b.per_side) != null ? _c : 2;
+    const per_side = Array.isArray(p) ? p[0] : p;
+    const spacing = (_d = o.stimulus_layout.flanker_spacing) != null ? _d : { gap: 0, unit: "px" };
+    const gap = spacing === "adjacent" ? 0 : Array.isArray(spacing.gap) ? spacing.gap[0] : spacing.gap;
+    const gap_unit = spacing === "adjacent" ? "px" : spacing.unit;
+    const other = group === 0 ? 1 : 0;
+    let tgt;
+    let flank;
+    if (letters) {
+      tgt = letters[group][0];
+      flank = congruency === "nogo" ? letters[other][0] : congruency === "congruent" ? tgt : congruency === "incongruent" ? letters[other][0] : neutralGlyph(form, nonTargetLetter(letters));
+      if (congruency === "nogo") tgt = "cross";
+    } else {
+      const arrow = group === 0 ? "left" : "right";
+      tgt = congruency === "nogo" ? "cross" : arrow;
+      flank = congruency === "incongruent" ? group === 0 ? "right" : "left" : congruency === "neutral" ? neutralGlyph(form, "S") : arrow;
+    }
+    return {
+      flanker_condition,
+      congruency,
+      group,
+      target: tgt,
+      flanker: flank,
+      per_side,
+      gap,
+      gap_unit,
+      cued: null,
+      fixation_ms: 0
+    };
+  }
 
   // src/text.ts
   var defaultText = {
@@ -3336,6 +3380,40 @@ var jsPsychTimelineFlanker = (function (exports) {
     <p>Center ${r.right_target}: press <strong>${r.right_response}</strong>.</p>` : `<h2>How to Respond</h2>
     <p>Center ${r.left_target}: ${r.device === "touch" ? "tap" : "click"} <strong>${r.left_response}</strong>.</p>
     <p>Center ${r.right_target}: ${r.device === "touch" ? "tap" : "click"} <strong>${r.right_response}</strong>.</p>`,
+    instruction_demo_intro: `<h2>Let's Try It</h2>
+    <p>Here are a few examples of what you will see. Respond to each one as you would in the task.</p>
+    <p>There is no time limit here. If you respond incorrectly, you will get a hint and try again.</p>`,
+    instruction_examples_intro: `<h2>Examples</h2>
+    <p>Here are a few examples of what you will see, with the correct response for each.</p>`,
+    instruction_step: (r) => {
+      const act = r.device === "keyboard" ? "press" : r.device === "touch" ? "tap" : "click";
+      switch (r.condition) {
+        case "congruent":
+          return `<p>The items on the sides are the same as the center one. The center is ${r.target}, so ${act} <strong>${r.response}</strong>.</p>`;
+        case "neutral":
+          return `<p>The items on the sides are different from the center one, but they give no hint. The center is ${r.target}, so ${act} <strong>${r.response}</strong>.</p>`;
+        case "incongruent":
+          return `<p>The items on the sides are different from the center one. Ignore them. The center is ${r.target}, so ${act} <strong>${r.response}</strong>.</p>`;
+        case "nogo":
+          return `<p>The center item is a cross. When you see a cross, do <strong>not</strong> respond. Just wait.</p>`;
+      }
+    },
+    instruction_hint: (r) => {
+      const act = r.device === "keyboard" ? "press" : r.device === "touch" ? "tap" : "click";
+      switch (r.condition) {
+        case "incongruent":
+          return `<p>That is the response for the items on the sides. Respond to the <strong>center</strong> one: it is ${r.target}, so ${act} <strong>${r.response}</strong>.</p><p>Let's try again.</p>`;
+        case "nogo":
+          return `<p>A cross means do <strong>not</strong> respond. Wait until it disappears.</p><p>Let's try again.</p>`;
+        default:
+          return `<p>Not quite. Look at the <strong>center</strong> item: it is ${r.target}, so ${act} <strong>${r.response}</strong>.</p><p>Let's try again.</p>`;
+      }
+    },
+    instruction_reveal: (r) => {
+      const act = r.device === "keyboard" ? "press" : r.device === "touch" ? "tap" : "click";
+      return r.condition === "nogo" ? `<p>With a cross, do not respond at all. Let's move on.</p>` : `<p>For this one, ${act} <strong>${r.response}</strong>. Let's move on.</p>`;
+    },
+    instruction_correct: "Correct!",
     hand_two_hands_index_fingers: "Use the index finger of each hand, one for each response.",
     hand_one_hand_dominant: "Use your dominant hand for both responses.",
     emphasis_speed: "Respond as quickly as you can.",
@@ -4372,6 +4450,9 @@ var jsPsychTimelineFlanker = (function (exports) {
     });
     return labels;
   }
+  function responseLabelHtml(o, labels, r) {
+    return isKeyboard(o) ? `<kbd>${o.response_keys[r] === " " ? "space" : o.response_keys[r]}</kbd>` : labels[r];
+  }
   function pxPerDeg(ctx) {
     var _a;
     return (_a = ctx.state.px_per_deg) != null ? _a : DEFAULT_PX_PER_DEG;
@@ -4659,7 +4740,7 @@ var jsPsychTimelineFlanker = (function (exports) {
     const mapping = mappingFor(ctx, "test", 1);
     const labels = responseLabels(ctx, o, mapping);
     const groupOfResponse = (r) => mapping.response_of_group[0] === r ? 0 : 1;
-    const keyLabel = (r) => isKeyboard(o) ? `<kbd>${o.response_keys[r] === " " ? "space" : o.response_keys[r]}</kbd>` : labels[r];
+    const keyLabel = (r) => responseLabelHtml(o, labels, r);
     const pages = [];
     pages.push(letters ? t.instruction_intro_letters : t.instruction_intro_arrows);
     const emphasis = o.speed_accuracy_emphasis === "speed" ? t.emphasis_speed : o.speed_accuracy_emphasis === "accuracy" ? t.emphasis_accuracy : o.speed_accuracy_emphasis === "both" ? t.emphasis_both : "";
@@ -4675,6 +4756,159 @@ var jsPsychTimelineFlanker = (function (exports) {
     );
     const timeline = pages.map((p) => textPage(ctx, p, "instructions", "instruction"));
     return { timeline };
+  }
+  var TEACHING_ORDER = {
+    congruent: 0,
+    neutral: 1,
+    incongruent: 2,
+    nogo: 3
+  };
+  function demoSteps(ctx) {
+    var _a;
+    const phases = [...ctx.test.practice_trials === 0 ? [] : [ctx.practice], ctx.test];
+    const found = [];
+    for (const o of phases) {
+      for (const c of o.condition_set) {
+        const forms = c === "neutral" ? [].concat((_a = o.stimulus_set.neutral_flanker) != null ? _a : "dashes") : c === "neutral_dash" ? ["dashes"] : c === "neutral_empty" ? ["blank"] : ["dashes"];
+        for (const form of forms) {
+          const cond = c === "neutral" ? `neutral_${form}` : c;
+          if (!found.some((f) => f.cond === cond)) found.push({ cond, form, o });
+        }
+      }
+    }
+    const rank = (c) => TEACHING_ORDER[c.startsWith("neutral") ? "neutral" : c];
+    found.sort((a, b) => rank(a.cond) - rank(b.cond));
+    return found.map((f, i) => ({
+      o: f.o,
+      spec: buildDemoSpec(f.o, f.cond, f.form, i % 2)
+    }));
+  }
+  function stepArgs(ctx, step) {
+    const { o, spec } = step;
+    const mapping = mappingFor(ctx, "test", 1);
+    const labels = responseLabels(ctx, o, mapping);
+    const nogo = spec.congruency === "nogo";
+    return {
+      condition: spec.congruency,
+      device: o.response_device,
+      target: nogo ? "" : groupHtml(o, spec.group),
+      response: nogo ? "" : responseLabelHtml(o, labels, mapping.response_of_group[spec.group])
+    };
+  }
+  var demoText = (html) => `<div class="jspsych-timelines-flanker-text">${html}</div>`;
+  function createExamples(ctx, steps) {
+    const pages = steps.map((step) => ({
+      type: HtmlButtonResponsePlugin,
+      css_classes: [TASK_CLASS],
+      stimulus: () => arrayHtml(ctx, step.o, step.spec, null) + demoText(ctx.text.instruction_step(stepArgs(ctx, step))),
+      choices: [ctx.text.continue_button],
+      data: baseData({
+        phase: "instructions",
+        part: "instruction_example",
+        condition: step.spec.flanker_condition,
+        congruency: step.spec.congruency,
+        target: step.spec.target,
+        flankers: step.spec.flanker
+      }),
+      on_finish: (d) => {
+        delete d.stimulus;
+      }
+    }));
+    return {
+      timeline: [
+        textPage(ctx, ctx.text.instruction_examples_intro, "instructions", "instruction"),
+        ...pages
+      ]
+    };
+  }
+  function createInstructionWalkthrough(ctx) {
+    const o = ctx.test;
+    const mode = o.instruction_demonstration;
+    if (o.instruction_format !== "text" || mode === "none") return { timeline: [] };
+    const steps = demoSteps(ctx);
+    if (mode === "examples") return createExamples(ctx, steps);
+    const keyboard = isKeyboard(o);
+    const t = ctx.text;
+    const nodes = [textPage(ctx, t.instruction_demo_intro, "instructions", "instruction")];
+    for (const step of steps) {
+      const { o: so, spec } = step;
+      const mapping = mappingFor(ctx, "test", 1);
+      const labels = responseLabels(ctx, so, mapping);
+      const nogo = spec.congruency === "nogo";
+      const correctIndex = mapping.response_of_group[spec.group];
+      const correctResponse = nogo ? null : keyboard ? so.response_keys[correctIndex] : correctIndex;
+      const args = stepArgs(ctx, step);
+      const state = { attempt: 0, correct: null };
+      const shown = (html) => arrayHtml(ctx, so, spec, null) + demoText(html);
+      const stepData = {
+        phase: "instructions",
+        condition: spec.flanker_condition,
+        congruency: spec.congruency,
+        target: spec.target,
+        flankers: spec.flanker
+      };
+      const response = __spreadProps(__spreadValues({
+        type: keyboard ? HtmlKeyboardResponsePlugin : HtmlButtonResponsePlugin,
+        css_classes: [TASK_CLASS],
+        stimulus: () => shown(t.instruction_step(args))
+      }, keyboard ? { choices: [...so.response_keys] } : {
+        choices: [...labels],
+        button_html: (choice) => `<button class="jspsych-btn">${choice}</button>`
+      }), {
+        trial_duration: nogo ? INSTRUCTION_NOGO_WAIT_MS : null,
+        data: baseData(__spreadProps(__spreadValues({}, stepData), { part: "instruction_check", correct_response: correctResponse })),
+        // data-only simulation answers correctly (and withholds on no-go)
+        simulation_options: { data: { response: correctResponse, rt: nogo ? null : 600 } },
+        on_finish: (d) => {
+          const timeout = typeof d.response !== "string" && typeof d.response !== "number";
+          if (timeout) d.response = null;
+          const correct = nogo ? timeout : timeout ? false : keyboard ? String(d.response).toLowerCase() === String(correctResponse).toLowerCase() : d.response === correctResponse;
+          state.attempt++;
+          state.correct = correct;
+          delete d.stimulus;
+          d.timeout = timeout;
+          d.correct = correct;
+          d.attempt = state.attempt;
+        }
+      });
+      const confirm = createDisplayTrial({
+        ctx,
+        o: so,
+        phase: "instructions",
+        part: "instruction_feedback",
+        duration: INSTRUCTION_CORRECT_MS,
+        stimulus: () => shown(`<p><strong>${t.instruction_correct}</strong></p>`),
+        data: __spreadProps(__spreadValues({}, stepData), { feedback_kind: "correct" })
+      });
+      const note = (html, kind) => ({
+        type: HtmlButtonResponsePlugin,
+        css_classes: [TASK_CLASS],
+        stimulus: () => shown(html),
+        choices: [t.continue_button],
+        data: baseData(__spreadProps(__spreadValues({}, stepData), { part: "instruction_feedback", feedback_kind: kind })),
+        on_finish: (d) => {
+          delete d.stimulus;
+        }
+      });
+      const again = () => state.correct === false && state.attempt < INSTRUCTION_MAX_ATTEMPTS;
+      nodes.push({
+        timeline: [
+          response,
+          { timeline: [confirm], conditional_function: () => state.correct === true },
+          { timeline: [note(t.instruction_hint(args), "hint")], conditional_function: again },
+          {
+            timeline: [note(t.instruction_reveal(args), "reveal")],
+            conditional_function: () => state.correct === false && !again()
+          }
+        ],
+        on_timeline_start: () => {
+          state.attempt = 0;
+          state.correct = null;
+        },
+        loop_function: again
+      });
+    }
+    return { timeline: nodes };
   }
   function createPracticeIntro(ctx) {
     return textPage(ctx, ctx.text.instruction_practice_intro, "instructions", "instruction");
@@ -4803,6 +5037,9 @@ var jsPsychTimelineFlanker = (function (exports) {
       timeline.push(createCalibration(ctx));
     }
     if (o.instruction_format === "text") timeline.push(createInstructions(ctx));
+    if (o.instruction_format === "text" && o.instruction_demonstration !== "none") {
+      timeline.push(createInstructionWalkthrough(ctx));
+    }
     if (o.attention_checks === "instructed_items") timeline.push(createAttentionChecks(ctx));
     if (o.practice_trials > 0) {
       if (o.instruction_format === "text") timeline.push(createPracticeIntro(ctx));
@@ -4822,6 +5059,7 @@ var jsPsychTimelineFlanker = (function (exports) {
   var timelineUnits = {
     createContext,
     createInstructions,
+    createInstructionWalkthrough,
     createPracticeIntro,
     createTestIntro,
     createDeviceCheck,
