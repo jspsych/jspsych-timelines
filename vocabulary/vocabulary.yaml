@@ -1,0 +1,1153 @@
+# Final cross-task vocabulary, run 2026-11-13-std-final. Rules: RULES.md R1-R17.
+parameters:
+- name: fixation_duration_ms
+  layer: timing
+  type: number
+  unit: ms
+  definition: Duration of the fixation mark (or hold at a start position) before the trial's first event. Fixed
+    value or jitter range.
+  absent_value: 0
+  granularity_note: Presence is duration > 0. Pre-cue/pre-target fixations are the same parameter.
+- name: pre_stimulus_delay_ms
+  layer: timing
+  type: number
+  unit: ms
+  definition: Blank (non-fixation) gap between trial start or fixation offset and the first stimulus; includes gap-paradigm
+    fixation-offset gaps.
+  absent_value: 0
+  granularity_note: Separate from fixation because the display differs. A negative value (overlap) is allowed where
+    a dossier records it.
+- name: iti_ms
+  layer: timing
+  type: number
+  unit: ms
+  definition: 'Inter-trial interval: from the end of a trial (including feedback) to the start of the next; also
+    called RSI where the trial ends at the response.'
+  absent_value: 0
+  granularity_note: Phase-specific ITIs (training_iti_ms) map here with the phase qualifier (R10).
+- name: response_window_ms
+  layer: timing
+  type: number
+  unit: ms
+  definition: Maximum time after the response-eligible event in which a response is accepted. Covers deadline, time
+    limit, timeout and response window (R6).
+  absent_value: null
+  granularity_note: null = untimed. Role- or phase-specific windows (processing task, training, easy/hard task)
+    are narrower rows.
+- name: stimulus_duration_ms
+  layer: timing
+  type: number
+  unit: ms
+  definition: Exposure duration of the main stimulus of a trial (target, probe, sample, display).
+  absent_value: null
+  granularity_note: 'null = until response. Role-specific durations (probe, sample, stop signal, CS, US) are narrower
+    rows with role: in the note.'
+- name: item_duration_ms
+  layer: timing
+  type: number
+  unit: ms
+  definition: Presentation time of each item in a sequentially presented list or stream (span lists, RSVP items,
+    word lists).
+  granularity_note: Separate from stimulus_duration_ms because sequential tasks set item and probe durations independently.
+- name: inter_item_interval_ms
+  layer: timing
+  type: number
+  unit: ms
+  definition: Gap between successive items or stimuli within a trial (ISI); list rate given onset-to-onset maps
+    as overlapping.
+  absent_value: 0
+  granularity_note: Between-trial gaps are iti_ms.
+- name: soa_ms
+  layer: timing
+  type: number
+  unit: ms
+  definition: Onset asynchrony between two events of a trial other than cue and target (flanker-target, task 1-task
+    2, audio-visual, masker lead).
+  granularity_note: Cue-target intervals are cue_target_interval_ms.
+- name: cue_duration_ms
+  layer: timing
+  type: number
+  unit: ms
+  definition: Duration of a cue, precue or warning signal.
+  absent_value: null
+  granularity_note: null = cue stays until the response.
+- name: cue_target_interval_ms
+  layer: timing
+  type: number
+  unit: ms
+  definition: Interval between cue onset (or offset) and target/probe onset, including task-switching CSI.
+  absent_value: 0
+  granularity_note: SOA vs ISI form noted per row.
+- name: mask_duration_ms
+  layer: timing
+  type: number
+  unit: ms
+  definition: Duration of a forward or backward mask.
+  absent_value: 0
+  granularity_note: 0 = no mask.
+- name: feedback_duration_ms
+  layer: timing
+  type: number
+  unit: ms
+  definition: How long trial feedback or the outcome display stays on screen (R11).
+  granularity_note: Phase-specific durations take the phase qualifier. Per-outcome durations ({correct, error})
+    are allowed values.
+- name: feedback_delay_ms
+  layer: timing
+  type: number
+  unit: ms
+  definition: Gap between the response and the onset of feedback (R11).
+  absent_value: 0
+- name: outcome_delay_ms
+  layer: timing
+  type: number
+  unit: ms
+  definition: Delay between an action or CS and its outcome event (reward, tone, US) when the outcome is part of
+    the task's event sequence.
+  absent_value: 0
+  granularity_note: Kept separate from feedback_delay_ms where the outcome is the manipulated event (action-outcome,
+    CS-US).
+- name: retention_interval_ms
+  layer: timing
+  type: number
+  unit: ms
+  definition: Delay within a trial between offset of the material to remember and the probe or recall prompt.
+  absent_value: 0
+  granularity_note: Delays between a study phase and a test phase are study_test_delay.
+- name: study_test_delay
+  layer: timing
+  type: string
+  unit: duration
+  definition: Delay between a study/training phase and a later test phase (minutes to days).
+  absent_value: null
+  granularity_note: null = no delayed test. 0 is not used because it would mean an immediate test.
+- name: break_duration_ms
+  layer: timing
+  type: number
+  unit: ms
+  definition: Duration of the rest between blocks.
+  absent_value: null
+  granularity_note: null = self-paced. Whether breaks occur is rest_breaks.
+- name: timeout_message_ms
+  layer: timing
+  type: number
+  unit: ms
+  definition: Duration of the 'too slow' message after a missed response.
+  absent_value: 0
+  granularity_note: Content is timeout_feedback (R11).
+- name: preview_duration_ms
+  layer: timing
+  type: number
+  unit: ms
+  definition: Duration of a preview display (targets, items, pictures) before the main event.
+  absent_value: 0
+  granularity_note: self-paced is written null.
+- name: pre_block_countdown_ms
+  layer: timing
+  type: number
+  unit: ms
+  definition: Duration of a ready screen or countdown before a block or trial sequence starts.
+  absent_value: 0
+- name: tone_ramp_ms
+  layer: timing
+  type: number
+  unit: ms
+  definition: Rise/fall ramp of tone stimuli.
+- name: session_duration_min
+  layer: timing
+  type: number
+  unit: min
+  definition: Intended or maximum length of the task or session in time.
+  absent_value: null
+  granularity_note: null = no time limit.
+- name: trial_termination_rule
+  layer: timing
+  type: enum
+  definition: 'What ends the stimulus or trial: the response, a fixed duration, or either.'
+  values:
+  - response_terminated
+  - fixed_duration
+  - response_or_timeout
+  granularity_note: 'Related to stimulus_duration_ms: null there is response_terminated here.'
+- name: n_test_trials
+  layer: design
+  type: integer
+  unit: count
+  definition: Number of scored main-phase trials (total across blocks).
+  granularity_note: Practice and training counts are separate (R3).
+- name: practice_trials
+  layer: procedure
+  type: integer
+  unit: count
+  definition: Number of practice trials (or amount of practice) before the main task.
+  absent_value: 0
+  granularity_note: 0 = no practice. Structure-only values (e.g. 'one worked example') map as overlapping. Not a
+    phase version of n_test_trials (R10).
+- name: training_trials
+  layer: design
+  type: integer
+  unit: count
+  definition: Amount of training/acquisition in learning tasks (trials, cycles or minutes).
+  absent_value: 0
+  granularity_note: 'A count separated by what is counted (R3); rows carry phase: training.'
+- name: trials_per_block
+  layer: design
+  type: integer
+  unit: count
+  definition: Number of trials in each block.
+- name: n_blocks
+  layer: design
+  type: integer
+  unit: count
+  definition: Number of blocks, runs or lists in the main phase.
+  granularity_note: Games, runs and lists are blocks.
+- name: trials_per_condition
+  layer: design
+  type: integer
+  unit: count
+  definition: Number of trials (or blocks) per design cell, level or condition.
+- name: n_sessions
+  layer: design
+  type: integer
+  unit: count
+  definition: Number of sessions or days.
+  granularity_note: Spacing is session_schedule.
+- name: n_filler_trials
+  layer: design
+  type: integer
+  unit: count
+  definition: Number of filler or buffer trials/items.
+  absent_value: 0
+- name: stimulus_repetitions
+  layer: design
+  type: integer
+  unit: count
+  definition: How often each stimulus, item or pair is presented.
+  granularity_note: Phase-specific counts take the phase qualifier.
+- name: set_sizes
+  layer: design
+  type: list
+  unit: items
+  definition: 'Load levels: memory set size, display size or list length. Always a list; a single load is [6] (R16).'
+  granularity_note: N-back's n is not a set size. Fixed schedules of levels are block_order; performance-dependent
+    schedules are adaptive.
+- name: difficulty_levels
+  layer: design
+  type: list
+  definition: Fixed levels of the main difficulty factor (coherence, degradation, morph intensity, frequency difference,
+    SSD set).
+  granularity_note: Fixed (constant-stimuli) levels; adaptive tracking is the adaptive bundle.
+- name: condition_set
+  layer: design
+  type: list
+  definition: Which conditions or trial types are included in the design.
+  granularity_note: Proportions of them are condition_proportions.
+- name: condition_proportions
+  layer: design
+  type: map
+  unit: proportion
+  definition: 'Proportion of each trial type, keyed by the task''s own names, e.g. { stop: 0.25, go: 0.75 } (R13).'
+  granularity_note: Single-event rates (stop-signal, target, lure, catch, P(go)) map as narrower. Cue validity is
+    separate.
+- name: cue_validity_proportion
+  layer: design
+  type: number
+  unit: proportion
+  definition: P(cue valid | cued trial).
+  granularity_note: Kept separate from condition_proportions because it is conditional (R13).
+- name: block_composition
+  layer: design
+  type: enum
+  definition: What each block contains. A list when the session has several kinds of block, e.g. [single_condition,
+    mixed] (R15).
+  values:
+  - mixed
+  - single_condition
+  - alternating_runs
+- name: block_order
+  layer: design
+  type: enum
+  definition: Order of blocks or conditions across the session, including fixed schedules of set sizes (R15).
+  values:
+  - fixed
+  - random
+  - counterbalanced
+  - ascending
+  - descending
+  - alternating
+- name: trial_order
+  layer: design
+  type: enum
+  definition: How trials are ordered within a block (R15).
+  values:
+  - random
+  - shuffled_list
+  - fixed_sequence
+  granularity_note: Constraints on the sequence are sequence_constraints.
+- name: sequence_constraints
+  layer: design
+  type: map
+  definition: 'Constraints on the generated sequence, keyed by the task''s own names: max_run, min_gap, no_immediate_repeat;
+    others as free text (R15).'
+  absent_value: null
+- name: task_variant
+  layer: design
+  type: enum
+  definition: Which named variant of the paradigm is run, or a change to what the task measures (R5).
+  granularity_note: Values are task-specific variant names.
+- name: phase_sequence
+  layer: design
+  type: list
+  definition: Which phases the session includes and in what order (acquisition, extinction, generalization, test).
+- name: concurrent_task
+  layer: design
+  type: enum
+  definition: A secondary task performed during or interleaved with the primary task.
+  values:
+  - none
+  - simultaneous
+  - interleaved_trials
+  - alternating_blocks
+  absent_value: none
+  granularity_note: 'Value list is open: the recurring values are listed.'
+- name: single_task_blocks
+  layer: design
+  type: enum
+  definition: Single-task (or baseline) blocks in a dual-task or multi-rule design.
+  values:
+  - none
+  - before_dual
+  - after_dual
+  - interleaved
+  absent_value: none
+  granularity_note: 'Pure-then-mixed task switching is block_composition. Value list is open: the recurring values
+    are listed.'
+- name: alternate_forms
+  layer: design
+  type: enum
+  definition: Alternate or parallel item lists/forms.
+  values:
+  - none
+  - parallel_forms
+  - list_versions
+  - subset_per_participant
+  absent_value: none
+  granularity_note: 'Value list is open: the recurring values are listed.'
+- name: stimulus_role_assignment
+  layer: design
+  type: enum
+  definition: How stimuli are assigned to roles (target, CS+, rule) across participants or blocks.
+  values:
+  - fixed
+  - random_per_participant
+  - counterbalanced
+  - rotated
+- name: target_serial_position
+  layer: design
+  type: list
+  unit: position
+  definition: Serial position of the target within the stream or memory set.
+- name: additional_tests
+  layer: design
+  type: list
+  definition: Extra test phases appended to the main test (recognition, cued recall, memory probe).
+  absent_value: null
+- name: foil_selection_rule
+  layer: design
+  type: enum
+  definition: How foils or lures are constructed or chosen.
+- name: reward_probability
+  layer: design
+  type: map
+  unit: probability
+  definition: Reward/outcome probabilities of the options or stimuli (static or initial).
+- name: reward_magnitude
+  layer: design
+  type: map
+  definition: Amounts at stake per outcome or condition.
+- name: reward_schedule
+  layer: design
+  type: enum
+  definition: How outcomes are scheduled over trials (random walk and its parameters, fixed sequence, VI/RR schedules,
+    aversive-event schedule).
+- name: outcome_valence
+  layer: design
+  type: enum
+  definition: Valence of the outcomes in the design.
+  values:
+  - gain
+  - loss
+  - gain_and_loss
+  - mixed
+- name: outcome_type
+  layer: design
+  type: enum
+  definition: Kind of outcome or reinforcer (money, points, food, social).
+  granularity_note: 'Outcome images are stimulus_set with role: outcome.'
+- name: pair_relatedness
+  layer: stimulus
+  type: enum
+  definition: Semantic/associative relatedness of paired items.
+- name: stimulus_set
+  layer: stimulus
+  type: stimulus-set
+  definition: 'Stimulus material. In a task with several kinds of stimulus, a map keyed by the task''s own names,
+    e.g. { cue: arrows, target: letter_X } (R12).'
+  granularity_note: 'Rows that vary one part of the set (cue form, flanker form, mask, distractors) are narrower
+    with role: <word> in the note.'
+- name: stimulus_size
+  layer: stimulus
+  type: structure
+  definition: Size of the stimuli, with its unit (px, deg, cm, screen-relative).
+  granularity_note: Role-specific sizes and the size unit/scaling map as narrower.
+- name: stimulus_color
+  layer: stimulus
+  type: enum
+  definition: Colour of the stimuli (incl. palette and greyscale vs colour).
+- name: background_color
+  layer: stimulus
+  type: enum
+  definition: Background colour of the display.
+- name: stimulus_eccentricity
+  layer: stimulus
+  type: number
+  unit: deg
+  definition: Distance of stimuli from fixation.
+- name: stimulus_layout
+  layer: stimulus
+  type: enum
+  definition: Spatial arrangement and positions of stimuli (array shape, positions, spacing, jitter).
+- name: stimulus_language
+  layer: stimulus
+  type: enum
+  definition: Language of verbal stimuli.
+- name: stimulus_modality
+  layer: stimulus
+  type: enum
+  definition: Sensory modality of the stimuli.
+  values:
+  - visual
+  - auditory
+  - audiovisual
+  - tactile
+  granularity_note: Role-specific modality (stop signal, outcome) maps as narrower.
+- name: stimulus_motion
+  layer: stimulus
+  type: enum
+  definition: Static vs moving stimuli.
+  values:
+  - static
+  - dynamic
+- name: stimulus_speed
+  layer: stimulus
+  type: number
+  definition: Speed of moving stimuli (dots, walker).
+- name: stimulus_inversion
+  layer: stimulus
+  type: enum
+  definition: Upright vs inverted presentation.
+  values:
+  - upright
+  - inverted
+  - mixed
+- name: face_occlusion
+  layer: stimulus
+  type: enum
+  definition: Occlusion of faces (masks, scarves).
+  values:
+  - none
+  - face_mask
+  - scarf
+  absent_value: none
+  granularity_note: 'Value list is open: the recurring values are listed.'
+- name: letter_case
+  layer: stimulus
+  type: enum
+  definition: Letter case of verbal stimuli.
+  values:
+  - lower
+  - upper
+  - mixed
+- name: presentation_mode
+  layer: stimulus
+  type: enum
+  definition: Whether items/options are shown together or one after another (incl. one vs many per screen).
+  values:
+  - simultaneous
+  - sequential
+- name: probe_format
+  layer: stimulus
+  type: enum
+  definition: Form of the test probe display (single probe vs whole display/string).
+- name: search_type
+  layer: stimulus
+  type: enum
+  definition: Type of visual search (feature, conjunction, singleton).
+- name: partner_representation
+  layer: stimulus
+  type: enum
+  definition: How co-players or opponents are represented.
+- name: probability_display
+  layer: stimulus
+  type: enum
+  definition: How probabilities are displayed (text, pie chart, spinner).
+- name: presentation_level_db
+  layer: stimulus
+  type: number
+  unit: dB
+  definition: Presentation level of auditory stimuli (SPL or digital), incl. roving range.
+  granularity_note: How the level is set is volume_calibration.
+- name: snr_db
+  layer: stimulus
+  type: number
+  unit: dB
+  definition: Fixed signal-to-noise ratio.
+  granularity_note: Adaptive SNR is the adaptive bundle.
+- name: tone_frequency_hz
+  layer: stimulus
+  type: number
+  unit: Hz
+  definition: Frequency of tone stimuli, incl. roving.
+- name: response_device
+  layer: response
+  type: enum
+  definition: Physical input device (R14).
+  values:
+  - keyboard
+  - mouse
+  - touch
+  - microphone
+  - eye_tracker
+  - gamepad
+  granularity_note: Modality rows (spoken vs typed, vocal, saccadic vs manual) map here as overlapping. Dedicated
+    hardware (button box, force sensor, motion tracker) is narrower.
+- name: response_format
+  layer: response
+  type: enum
+  definition: 'Shape of the response (R14): single response (go/no-go, detection), n-AFC, rating, free text, location,
+    or none (passive).'
+  values:
+  - single_response
+  - n_afc
+  - rating
+  - free_text
+  - location
+  - none
+  absent_value: none
+  granularity_note: What is judged (detection vs localization, recall vs recognition) is task-specific or task_variant.
+- name: n_response_options
+  layer: response
+  type: integer
+  unit: count
+  definition: Number of response alternatives (options, arms, labels) per trial.
+  granularity_note: The count that goes with response_format n_afc.
+- name: rating_scale_range
+  layer: response
+  type: structure
+  definition: Range, step and anchors of a rating scale or slider.
+  granularity_note: Goes with response_format rating.
+- name: slider_start_position
+  layer: response
+  type: enum
+  definition: Initial position of a slider.
+  values:
+  - middle
+  - minimum
+  - none
+  absent_value: none
+- name: n_responses_per_trial
+  layer: response
+  type: integer
+  unit: count
+  definition: Number of responses collected per trial.
+- name: response_keys
+  layer: response
+  type: list
+  definition: The keys or buttons used to respond.
+- name: response_key_mapping
+  layer: response
+  type: map
+  definition: Assignment of responses, options or fingers to keys/buttons.
+- name: response_mapping_counterbalancing
+  layer: response
+  type: enum
+  definition: How the key mapping is assigned across participants.
+  values:
+  - fixed
+  - counterbalanced
+  - random_per_participant
+  - within_participant
+- name: response_hand
+  layer: response
+  type: enum
+  definition: Hand or finger used to respond.
+- name: option_side_assignment
+  layer: response
+  type: enum
+  definition: Screen position or order of the response options.
+  values:
+  - fixed
+  - random_per_trial
+  - counterbalanced
+- name: response_order
+  layer: response
+  type: enum
+  definition: Order in which responses must be given (serial vs free recall order, task 1 first).
+  values:
+  - serial
+  - free
+  - task1_first
+  granularity_note: Recall order is a response rule, not ordering (R15).
+- name: response_onset_rule
+  layer: response
+  type: enum
+  definition: When responses become possible (during stimulus, after offset, forced-response signal, minimum viewing
+    time).
+- name: early_response_handling
+  layer: response
+  type: enum
+  definition: What happens to anticipations and false starts (threshold, message, flag).
+- name: missed_response_handling
+  layer: response
+  type: enum
+  definition: What happens when no valid response is made in time (skip, repeat, random choice).
+- name: confidence_rating
+  layer: response
+  type: enum
+  definition: Whether and how confidence is rated after responses.
+  values:
+  - none
+  - binary
+  - scale
+  absent_value: none
+  granularity_note: 'Value list is open: the recurring values are listed.'
+- name: trial_initiation
+  layer: procedure
+  type: enum
+  definition: How each trial starts.
+  values:
+  - automatic
+  - self_paced
+  - hold_to_start
+- name: practice_criterion
+  layer: procedure
+  type: structure
+  definition: Accuracy criterion to pass practice or end training, and what happens if missed.
+  absent_value: null
+  granularity_note: 'Training criteria take phase: training.'
+- name: practice_max_repeats
+  layer: procedure
+  type: integer
+  unit: count
+  definition: Maximum repeats of practice or training.
+  absent_value: 0
+- name: practice_ramp
+  layer: procedure
+  type: enum
+  definition: A fixed easy-to-hard ramp (slower timing, longer durations) during practice.
+  values:
+  - none
+  - timing_ramp
+  - rate_ramp
+  absent_value: none
+  granularity_note: 'Performance-dependent ramps are adaptive. Value list is open: the recurring values are listed.'
+- name: pretraining
+  layer: procedure
+  type: enum
+  definition: A familiarization or pre-exposure phase before the task (stimulus pre-exposure, Pavlovian pretraining,
+    name familiarization).
+  values:
+  - none
+  - stimulus_preexposure
+  - pavlovian
+  - familiarization
+  absent_value: none
+  granularity_note: 'Value list is open: the recurring values are listed.'
+- name: attention_checks
+  layer: procedure
+  type: enum
+  definition: Attention, engagement or catch items embedded in the task, with any exclusion rule (R4).
+  values:
+  - none
+  - catch_trials
+  - instructed_items
+  - consistency_items
+  - self_report
+  absent_value: none
+  granularity_note: 'Value list is open: the recurring values are listed.'
+- name: comprehension_check
+  layer: procedure
+  type: enum
+  definition: Check of instruction understanding before the task (R4).
+  values:
+  - none
+  - quiz
+  - quiz_with_repeat
+  - knowledge_test
+  absent_value: none
+  granularity_note: 'Value list is open: the recurring values are listed.'
+- name: manipulation_check
+  layer: procedure
+  type: enum
+  definition: Post- or in-task probe of contingency awareness, suspicion or manipulation success.
+  values:
+  - none
+  - questionnaire
+  - in_task_probe
+  - debrief
+  absent_value: none
+  granularity_note: 'Value list is open: the recurring values are listed.'
+- name: headphone_check
+  layer: procedure
+  type: enum
+  definition: Headphone screening (R4).
+  values:
+  - none
+  - self_report
+  - screening_task
+  absent_value: none
+  granularity_note: 'Value list is open: the recurring values are listed.'
+- name: audio_check
+  layer: procedure
+  type: enum
+  definition: Sound playback or microphone check (R4).
+  values:
+  - none
+  - playback_test
+  - microphone_test
+  absent_value: none
+  granularity_note: 'Value list is open: the recurring values are listed.'
+- name: volume_calibration
+  layer: procedure
+  type: enum
+  definition: How presentation level or aversive-stimulus intensity is set (R4).
+  values:
+  - none
+  - fixed_level
+  - participant_adjusted
+  - calibrated_spl
+  - intensity_workup
+  absent_value: none
+  granularity_note: 'Value list is open: the recurring values are listed.'
+- name: screen_calibration
+  layer: procedure
+  type: enum
+  definition: Display size calibration (credit card, virtual chinrest) (R4).
+  values:
+  - none
+  - credit_card
+  - virtual_chinrest
+  - self_report
+  absent_value: none
+  granularity_note: 'Value list is open: the recurring values are listed.'
+- name: eyetracker_calibration
+  layer: procedure
+  type: structure
+  definition: Eye-tracker calibration and validation procedure (R4).
+  absent_value: null
+- name: device_eligibility
+  layer: procedure
+  type: enum
+  definition: Restrictions and checks on device, browser, transducer or setup (R4).
+  values:
+  - none
+  - computer_only
+  - browser_restricted
+  - hardware_required
+  absent_value: none
+  granularity_note: 'Value list is open: the recurring values are listed.'
+- name: participant_eligibility
+  layer: procedure
+  type: enum
+  definition: Participant-level screening (vision, hearing, clinical, fasting) (R4).
+  values:
+  - none
+  - vision
+  - hearing
+  - clinical
+  - fasting
+  absent_value: none
+  granularity_note: 'Value list is open: the recurring values are listed.'
+- name: fullscreen_enforcement
+  layer: procedure
+  type: enum
+  definition: Whether fullscreen or window focus is enforced.
+  values:
+  - none
+  - fullscreen
+  - fullscreen_and_focus
+  absent_value: none
+  granularity_note: 'Value list is open: the recurring values are listed.'
+- name: viewing_distance_cm
+  layer: procedure
+  type: number
+  unit: cm
+  definition: Assumed or instructed viewing distance.
+- name: rest_breaks
+  layer: procedure
+  type: enum
+  definition: Whether and how often breaks occur, and their content.
+  values:
+  - none
+  - self_paced
+  - fixed_interval
+  absent_value: none
+  granularity_note: 'Their length is break_duration_ms. Value list is open: the recurring values are listed.'
+- name: retention_filler_task
+  layer: procedure
+  type: enum
+  definition: Activity filling a delay or the end of a list.
+  values:
+  - none
+  - arithmetic
+  - counting
+  - distractor_task
+  absent_value: none
+  granularity_note: 'Value list is open: the recurring values are listed.'
+- name: error_correction_procedure
+  layer: procedure
+  type: enum
+  definition: Handling of errors within a trial (retry, correction, answer change, hints).
+  values:
+  - none
+  - retry
+  - correction_trial
+  - answer_change_allowed
+  absent_value: none
+  granularity_note: 'Value list is open: the recurring values are listed.'
+- name: replay_allowed
+  layer: procedure
+  type: enum
+  definition: Whether stimuli can be replayed.
+  values:
+  - no_replay
+  - replay_allowed
+- name: administration_mode
+  layer: procedure
+  type: enum
+  definition: How the task is administered (self-administered browser, examiner-read, paper, remote-supervised).
+- name: session_schedule
+  layer: procedure
+  type: enum
+  definition: Spacing of sessions or test-retest schedule.
+- name: task_end_rule
+  layer: procedure
+  type: enum
+  definition: What ends the task when it is not performance-dependent.
+  values:
+  - fixed_time
+  - fixed_trial_count
+  granularity_note: Performance-dependent stopping is adaptive.discontinue_rule.
+- name: additional_ratings
+  layer: procedure
+  type: enum
+  definition: Ratings or questions collected after trials, phases or the task (liking, expectancy, automaticity).
+  values:
+  - none
+  - post_trial
+  - post_phase
+  - post_task
+  absent_value: none
+  granularity_note: 'Value list is open: the recurring values are listed.'
+- name: mood_measure
+  layer: procedure
+  type: enum
+  definition: Mood or affect measure and when it is taken.
+  values:
+  - none
+  - pre_post
+  - repeated
+  absent_value: none
+  granularity_note: 'Value list is open: the recurring values are listed.'
+- name: thought_probes
+  layer: procedure
+  type: enum
+  definition: In-task experience-sampling probes.
+  values:
+  - none
+  - periodic
+  - random
+  absent_value: none
+  granularity_note: 'Value list is open: the recurring values are listed.'
+- name: physiological_measure
+  layer: procedure
+  type: enum
+  definition: Physiological recording used as an outcome.
+  values:
+  - none
+  - scr
+  - emg
+  - heart_rate
+  - pupil
+  absent_value: none
+  granularity_note: 'Value list is open: the recurring values are listed.'
+- name: trial_feedback
+  layer: feedback
+  type: enum
+  definition: What is shown after each trial (R11). RT-only feedback is rt.
+  values:
+  - none
+  - accuracy
+  - rt
+  - accuracy_rt
+  - points
+  - reward_outcome
+  - correct_answer
+  absent_value: none
+  granularity_note: Phase schedules (practice only) are phase overrides; on which trials is feedback_condition.
+- name: feedback_condition
+  layer: feedback
+  type: enum
+  definition: On which trials feedback is shown; ignored when trial_feedback is none (R11).
+  values:
+  - all
+  - errors_only
+  - correct_only
+- name: block_feedback
+  layer: feedback
+  type: enum
+  definition: Summary feedback after each block.
+  values:
+  - none
+  - accuracy
+  - rt
+  - accuracy_rt
+  - points
+  - progress
+  absent_value: none
+  granularity_note: 'Value list is open: the recurring values are listed.'
+- name: end_of_task_feedback
+  layer: feedback
+  type: enum
+  definition: Feedback or score report at the end of the task.
+  values:
+  - none
+  - score
+  - summary
+  - normative
+  absent_value: none
+  granularity_note: 'Value list is open: the recurring values are listed.'
+- name: timeout_feedback
+  layer: feedback
+  type: enum
+  definition: Message or penalty shown on a missed/late response.
+  values:
+  - none
+  - message
+  - sound
+  - penalty
+  absent_value: none
+  granularity_note: 'Value list is open: the recurring values are listed.'
+- name: running_score_display
+  layer: feedback
+  type: enum
+  definition: Display of a running score or total.
+  values:
+  - none
+  - running_total
+  absent_value: none
+  granularity_note: 'Value list is open: the recurring values are listed.'
+- name: progress_indicator
+  layer: feedback
+  type: enum
+  definition: Display of progress through the task or trial.
+  values:
+  - none
+  - counter
+  - progress_bar
+  absent_value: none
+  granularity_note: 'Value list is open: the recurring values are listed.'
+- name: response_acknowledgement
+  layer: feedback
+  type: enum
+  definition: Visual echo that a response registered (keypress marks, highlight of the chosen option).
+  values:
+  - none
+  - keypress_mark
+  - highlight
+  absent_value: none
+  granularity_note: 'Value list is open: the recurring values are listed.'
+- name: movement_feedback
+  layer: feedback
+  type: enum
+  definition: Online visual feedback of the hand or cursor during a movement.
+  values:
+  - none
+  - endpoint
+  - online
+  - online_and_endpoint
+  absent_value: none
+  granularity_note: 'Value list is open: the recurring values are listed.'
+- name: performance_incentive
+  layer: feedback
+  type: enum
+  definition: Incentive scheme tied to performance.
+  values:
+  - none
+  - bonus
+  - points_only
+  - fixed_payment
+  absent_value: none
+- name: payout_rule
+  layer: feedback
+  type: enum
+  definition: How earnings are computed and paid (real vs hypothetical, random trial).
+- name: endowment
+  layer: feedback
+  type: number
+  definition: Starting endowment or budget.
+  absent_value: 0
+- name: response_cost
+  layer: feedback
+  type: number
+  definition: Cost or penalty per response.
+  absent_value: 0
+- name: instruction_language
+  layer: instructions
+  type: enum
+  definition: Language of instructions and labels.
+- name: instruction_format
+  layer: instructions
+  type: enum
+  definition: Medium of the instructions.
+  values:
+  - text
+  - audio
+  - video
+  - experimenter
+- name: instruction_demonstration
+  layer: instructions
+  type: enum
+  definition: Demonstrations or worked examples in the instructions.
+  values:
+  - none
+  - examples
+  - animated
+  - guided_trial
+  absent_value: none
+  granularity_note: 'Value list is open: the recurring values are listed.'
+- name: instruction_framing
+  layer: instructions
+  type: enum
+  definition: Cover story or framing of the task.
+- name: speed_accuracy_emphasis
+  layer: instructions
+  type: enum
+  definition: Instructed emphasis on speed vs accuracy.
+  values:
+  - speed
+  - accuracy
+  - both
+  - none
+  absent_value: none
+- name: strategy_instruction
+  layer: instructions
+  type: enum
+  definition: Instructions about strategy (rehearsal, waiting, encoding).
+  values:
+  - none
+  absent_value: none
+  granularity_note: 'Value list is open: the recurring values are listed.'
+- name: contingency_disclosure
+  layer: instructions
+  type: enum
+  definition: Whether and how the task's structure or contingencies are disclosed.
+  values:
+  - none
+  - partial
+  - full
+  absent_value: none
+  granularity_note: 'Value list is open: the recurring values are listed.'
+- name: judgment_wording
+  layer: instructions
+  type: enum
+  definition: Wording of the judgment participants are asked to make, where the construct stays the same.
+  granularity_note: A change of what is judged is task_variant (R14).
+- name: gaze_instruction
+  layer: instructions
+  type: enum
+  definition: Instruction about where to look.
+  values:
+  - none
+  - fixate
+  - look_opposite
+  absent_value: none
+  granularity_note: 'Value list is open: the recurring values are listed.'
+- name: environment_instructions
+  layer: instructions
+  type: enum
+  definition: Instructions about the testing environment.
+  values:
+  - none
+  - quiet_room
+  - no_aids
+  absent_value: none
+  granularity_note: 'Value list is open: the recurring values are listed.'
+- name: outcome_realness_instruction
+  layer: instructions
+  type: enum
+  definition: Instructions about whether outcomes are real.
+- name: rule_reminder
+  layer: instructions
+  type: enum
+  definition: On-screen reminder of the task rule or mapping.
+  values:
+  - none
+  - on_screen
+  absent_value: none
+  granularity_note: 'Value list is open: the recurring values are listed.'
+- name: population_protocol
+  layer: population
+  type: enum
+  definition: Whole-protocol adaptation for a population.
+  values:
+  - standard
+  - child
+  - gamified_child
+  - clinical
+- name: adaptive
+  layer: procedure
+  type: object
+  absent_value: null
+  definition: 'Adaptive or tracking procedure: anything whose next level depends on performance, incl. ascend-until-failure
+    (R16). The value can be passed whole to a shared staircase helper.'
+  granularity_note: null = not adaptive. A practice override replaces the whole bundle. Rows that set one field
+    map to adaptive.<field>; rows that set the whole procedure, or a part with no field (reset scope, per-condition
+    tracks), map to adaptive.
+  fields:
+  - name: procedure
+    type: enum
+    unit: null
+    definition: The adaptive rule.
+    values:
+    - staircase_1up_1down
+    - staircase_1up_2down
+    - staircase_1up_3down
+    - ascending_discontinue
+    - quest
+    - rt_based
+  - name: start_level
+    type: number
+    unit: task unit
+    definition: Starting level, in the task's own unit.
+    values: null
+  - name: step_size
+    type: number | {up, down}
+    unit: task unit
+    definition: Step size, or separate up/down steps.
+    values: null
+  - name: target_accuracy
+    type: number
+    unit: proportion
+    definition: Performance level the procedure converges on.
+    values: null
+  - name: bounds
+    type: list
+    unit: task unit
+    definition: '[min, max] of the tracked level.'
+    values: null
+  - name: discontinue_rule
+    type: structure
+    unit: null
+    definition: Rule that ends the procedure (reversals, consecutive failures, trial count).
+    values: null

@@ -54,7 +54,7 @@ The signature is `(jsPsych, options)` where `options` is a **single named interf
 ```ts
 export interface FlankerOptions {
   /** Number of test trials (default: 120) */
-  numTestTrials?: number;
+  n_test_trials?: number;
   /** Custom text strings for translation. Partial objects are merged with defaults. */
   text?: Partial<TextConfig>;
 }
@@ -64,11 +64,33 @@ export function createTimeline(jsPsych: JsPsych, options: FlankerOptions = {}) {
 
 - The interface **MUST** be named `<Task>Options` and be exported.
 - The parameter **MUST** be named `options` (not `config`).
+- Option names **MUST** be snake_case, like jsPsych's own plugin parameters (`trial_duration`) and the data fields. Shared concepts **MUST** use the vocabulary name (§2a).
 - Every property **MUST** be optional and **MUST** carry a doc comment stating its default. These comments are the source text for the site's parameter table.
 - Defaults **MUST** live in an exported `DEFAULT_OPTIONS` object, not scattered in the signature.
 - The return type **MUST NOT** be `any`.
 
 `bart`, `go-nogo`, `columbia-card`, and `spatial-nback` still use destructured defaults, and `corsi-block` uses `config: CorsiBlockConfig` returning `any`; these should be converted.
+
+### 2a. Options vocabulary
+
+Options that mean the same thing in different tasks **MUST** have the same name, type and absent value in every package, so a researcher who learns one package has learned most of the others. The shared vocabulary is `vocabulary/vocabulary.yaml` (148 parameters, derived from the literature for 79 RDoC tasks). Its rules are in `vocabulary/RULES.md`. A task-specific option follows the same conventions under its own snake_case name.
+
+- **Names.** Use the vocabulary's name when the option is one of its concepts, e.g. `response_window_ms`, `iti_ms`, `practice_trials`, `trial_feedback`, `condition_proportions`, `response_device`. Units are in the name (`_ms`), never in the value.
+- **Absence is a value, typed by meaning.** There are no on/off booleans like `show_fixation`.
+
+  | Kind | Absent value | Example |
+  |---|---|---|
+  | Enum | `"none"` | `trial_feedback: "none"` |
+  | Limit whose absence means "no limit" | `null` (as jsPsych's `trial_duration: null`) | `response_window_ms: null` |
+  | Event whose absence means "doesn't happen" | `0` | `fixation_duration_ms: 0` |
+  | Bundle switched off | `null` | `adaptive: null` |
+
+  `undefined` (option not given) always means "use the default".
+- **Phase overrides, not phase names.** There are no `practice_feedback` / `test_feedback` pairs. A package that has a practice phase **MUST** accept `practice?: Partial<<Task>Options>`, whose values override the main options during practice: `{ trial_feedback: "none", practice: { trial_feedback: "accuracy" } }`. `practice_trials` is a separate count, not a phase override. `practice` is therefore a reserved option name.
+- **Task vocabulary goes in values, not names.** Options that cover several stimulus kinds or trial types take a map keyed by the task's own terms, not a cross-task role list: `stimulus_set: { cue: …, target: … }`, `condition_proportions: { stop: 0.25, go: 0.75 }`.
+- **Bundle only what is configured as a unit.** An adaptive procedure is one `adaptive` option (`procedure`, `start_level`, `step_size`, `target_accuracy`, `bounds`, `discontinue_rule`), passed whole to the staircase helper. Settings that are changed one at a time stay flat: `trial_feedback`, `feedback_condition` and `feedback_duration_ms` are separate options.
+- **Response = device + format.** `response_device` takes `keyboard`, `mouse`, `touch`, `microphone`, `eye_tracker` or `gamepad`. `response_format` takes `single_response`, `n_afc`, `rating`, `free_text`, `location` or `none`. Modality is not an option; it is implied by these two. What the participant judges (detection vs localization) changes the measure, so it is a `task_variant`, not a response option.
+- **Defaults are evidence-based and documented.** Every option's doc comment states its default *and where it came from*: the anchor configuration (a cited study or reference implementation), the most common value in recent online studies, or a recorded human decision. The package's generated spec (`spec.yaml`) is the source.
 
 ### `timelineUnits`
 
@@ -463,9 +485,16 @@ Only `probit` and its `inverseErrorFunction` dependency land in the bundle. `d�
 
 The extreme-rate correction policy stays local but **MUST** be named accurately and identically across the four. `oddball` and `continuous-performance-test` currently both label theirs "log-linear" while applying `(count + 0.5)/(total + 1)` only when the rate is exactly 0 or 1 — that is the Macmillan & Kaplan approach, not Hautus's log-linear correction, which adds 0.5 to all cells unconditionally.
 
-### Not here
+### Where shared code goes
 
-There is deliberately **no** `@jspsych-timelines/utils` package. Anything general enough to want one belongs in core; anything specialized enough that core would reject it belongs in a library that already exists.
+For each piece of shared logic, ask whether an ordinary jsPsych experiment, with no timeline package, would want it.
+
+- **Yes → jsPsych core.** Examples: adaptive staircases (a new core module), constrained sequence generation (exact proportions per block, `max_run`, `min_gap`) and jittered durations (both in `jsPsych.randomization`). Packages that need these wait for, or build against a pre-release of, the jsPsych version that has them.
+- **Only meaningful with the options vocabulary → `@jspsych-timelines/core`.** This is the one shared package in this repo. It is deliberately small: the vocabulary's TypeScript types, `resolveOptions` (defaults, practice overrides, absence normalization), and data tagging. It contains **no** timeline units. Common pieces such as fixation, feedback and practice loops are built in each package; if one is truly needed everywhere, it becomes a jsPsych plugin.
+- **Specialized → an established library** (e.g. `simple-statistics`, above).
+- **Task-specific → the package.**
+
+There is still **no** general `@jspsych-timelines/utils` package.
 
 ---
 
