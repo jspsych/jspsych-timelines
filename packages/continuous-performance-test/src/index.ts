@@ -618,8 +618,9 @@ function createStandardTrial(
     trial_duration: config.stimulusDuration + currentISI,
     response_ends_trial: false,
     on_load: () => {
-      // Show fixation or blank after stimulus disappears
-      setTimeout(() => {
+      // Show fixation or blank after stimulus disappears.
+      // Use pluginAPI.setTimeout so jsPsych can clear it if the trial ends early.
+      jsPsych.pluginAPI.setTimeout(() => {
         const stimDisplay = document.querySelector("#jspsych-html-button-response-stimulus");
         if (stimDisplay) {
           stimDisplay.innerHTML = config.showFixation ? createFixationHTML() : "";
@@ -717,7 +718,7 @@ function createAXTrial(
       block: block,
     },
     on_load: () => {
-      setTimeout(() => {
+      jsPsych.pluginAPI.setTimeout(() => {
         const stimDisplay = document.querySelector("#jspsych-html-button-response-stimulus");
         if (stimDisplay) {
           stimDisplay.innerHTML = config.showFixation ? createFixationHTML() : "";
@@ -734,7 +735,7 @@ function createAXTrial(
     trial_duration: config.stimulusDuration + currentISI,
     response_ends_trial: false,
     on_load: () => {
-      setTimeout(() => {
+      jsPsych.pluginAPI.setTimeout(() => {
         const stimDisplay = document.querySelector("#jspsych-html-button-response-stimulus");
         if (stimDisplay) {
           stimDisplay.innerHTML = config.showFixation ? createFixationHTML() : "";
