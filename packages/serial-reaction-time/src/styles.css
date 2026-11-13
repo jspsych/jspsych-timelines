@@ -1,0 +1,20 @@
+/* Serial Reaction Time Task Styles */
+
+.instructions {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0 20px;
+  text-align: left;
+}
+
+.instructions h2,
+.instructions h3 {
+  text-align: center;
+}
+
+.transition {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0 20px;
+  text-align: center;
+}
