@@ -1,0 +1,97 @@
+{
+  "properties": {
+    "showInstructions": {
+      "x-jspsych": {
+        "group": "instructions"
+      }
+    },
+    "text": {
+      "x-jspsych": {
+        "group": "instructions",
+        "widget": "map",
+        "advanced": true
+      }
+    },
+    "numPracticeTrials": {
+      "x-jspsych": {
+        "group": "procedure",
+        "absentValue": 0
+      }
+    },
+    "numTestTrials": {
+      "x-jspsych": {
+        "group": "procedure"
+      }
+    },
+    "numBlocks": {
+      "x-jspsych": {
+        "group": "procedure"
+      }
+    },
+    "includeNeutral": {
+      "x-jspsych": {
+        "group": "design"
+      }
+    },
+    "fixationDuration": {
+      "x-jspsych": {
+        "group": "timing",
+        "unit": "ms"
+      }
+    },
+    "responseDuration": {
+      "x-jspsych": {
+        "group": "timing",
+        "unit": "ms"
+      }
+    },
+    "interTrialInterval": {
+      "x-jspsych": {
+        "group": "timing",
+        "unit": "ms"
+      }
+    },
+    "feedbackDuration": {
+      "x-jspsych": {
+        "group": "timing",
+        "unit": "ms",
+        "advanced": true
+      }
+    },
+    "showPracticeFeedback": {
+      "x-jspsych": {
+        "group": "feedback"
+      }
+    },
+    "showTestFeedback": {
+      "x-jspsych": {
+        "group": "feedback"
+      }
+    }
+  },
+  "x-jspsych-presets": [
+    {
+      "id": "quick",
+      "label": "Quick demo (short)",
+      "description": "No instructions, 2 practice and 6 test trials, shorter timings.",
+      "options": {
+        "showInstructions": false,
+        "numPracticeTrials": 2,
+        "numTestTrials": 6,
+        "fixationDuration": 200,
+        "interTrialInterval": 200,
+        "responseDuration": 1500
+      }
+    },
+    {
+      "id": "feedback",
+      "label": "Feedback on every trial",
+      "options": {
+        "showInstructions": false,
+        "numPracticeTrials": 0,
+        "numTestTrials": 8,
+        "showTestFeedback": true
+      }
+    }
+  ]
+}
