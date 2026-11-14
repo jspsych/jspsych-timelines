@@ -16,7 +16,7 @@
     "@docusaurus/core": "3.9.2",
     "@docusaurus/preset-classic": "3.9.2",
     "@jspsych/docusaurus-preset": "^0.2.2",
-    "@jspsych/docusaurus-theme": "^0.4.0",
+    "@jspsych/docusaurus-theme": "^0.4.1",
     "@mdx-js/react": "^3.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
