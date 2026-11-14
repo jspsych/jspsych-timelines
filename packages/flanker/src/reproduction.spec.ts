@@ -13,6 +13,7 @@ import * as path from "path";
 
 import { defineReproduction } from "@jspsych-timelines/testing";
 import type { Fixture, ReproductionResults, Tallies } from "@jspsych-timelines/testing";
+import { simulateTimeline } from "@jspsych/test-utils";
 import { initJsPsych } from "jspsych";
 
 import meta from "../docs-meta/options.meta.json";
@@ -28,6 +29,15 @@ import { createTimeline } from ".";
 
 const fixture = fixtureJson as unknown as Fixture;
 const reproductionDir = path.join(__dirname, "..", "reproduction");
+
+/** A short run for trying the task on the docs page. Not from a study; listed first. */
+const QUICK_DEMO_PRESET = {
+  id: "quick-demo",
+  label: "Quick demo",
+  description:
+    "A short run for trying the task: the walkthrough, 4 practice trials and 12 test trials. Not from a study.",
+  options: { practice_trials: 4, n_test_trials: 12 },
+};
 
 // null = untimed / until response
 const ADD_NULL_OPTIONS = ["response_window_ms", "stimulus_duration_ms"];
@@ -71,29 +81,33 @@ defineReproduction({
       return [e.trial_feedback, value];
     return null;
   },
-  // regenerate the presets in docs-meta from the study configurations (dotted keys retyped)
+  // regenerate the presets in docs-meta: the quick demo first, then the study configurations
+  // (dotted keys retyped)
   onUpdate: () => {
     const metaPath = path.join(reproductionDir, "..", "docs-meta", "options.meta.json");
     const m = JSON.parse(fs.readFileSync(metaPath, "utf8"));
-    m["x-jspsych-presets"] = fixture.study_configurations
-      .map((sc) => {
-        const entries = adaptConfig(sc.options);
-        const opts = combine(entries.map((e) => e.adapted));
-        const gaps = entries.filter((e) => isGap(e.adapted)).map((e) => e.key);
-        const assumed = assumedSettings(entries.map((e) => e.adapted));
-        return {
-          id: sc.source,
-          label: sc.citation,
-          description:
-            `${sc.source_type} · ${sc.setting ?? "no setting"} · ${
-              Object.keys(sc.options).length
-            } spec options` +
-            (gaps.length ? ` · not expressible, left out: ${gaps.join(", ")}` : "") +
-            (assumed.length ? ` · assumed, not reported: ${assumed.join(", ")}` : ""),
-          options: opts,
-        };
-      })
-      .filter((p) => Object.keys(p.options).length >= 3 || p.id === "S069");
+    m["x-jspsych-presets"] = [
+      QUICK_DEMO_PRESET,
+      ...fixture.study_configurations
+        .map((sc) => {
+          const entries = adaptConfig(sc.options);
+          const opts = combine(entries.map((e) => e.adapted));
+          const gaps = entries.filter((e) => isGap(e.adapted)).map((e) => e.key);
+          const assumed = assumedSettings(entries.map((e) => e.adapted));
+          return {
+            id: sc.source,
+            label: sc.citation,
+            description:
+              `${sc.source_type} · ${sc.setting ?? "no setting"} · ${
+                Object.keys(sc.options).length
+              } spec options` +
+              (gaps.length ? ` · not expressible, left out: ${gaps.join(", ")}` : "") +
+              (assumed.length ? ` · assumed, not reported: ${assumed.join(", ")}` : ""),
+            options: opts,
+          };
+        })
+        .filter((p) => Object.keys(p.options).length >= 3 || p.id === "S069"),
+    ];
     fs.writeFileSync(metaPath, JSON.stringify(m, null, 2) + "\n");
   },
 });
@@ -174,5 +188,22 @@ describe("docs-meta/options.meta.json", () => {
       Object.keys(p.options).forEach((k) => expect([...optionNames, "practice"]).toContain(k));
       expect(() => createTimeline(initJsPsych(), p.options)).not.toThrow();
     }
+  });
+
+  it("the quick demo preset is listed first and runs 4 practice and 12 test trials", async () => {
+    const presets = (meta as any)["x-jspsych-presets"] as any[];
+    expect(presets[0]).toEqual(QUICK_DEMO_PRESET);
+    const jsPsych = initJsPsych();
+    const { timeline } = createTimeline(jsPsych, QUICK_DEMO_PRESET.options);
+    const { getData, expectFinished } = await simulateTimeline(
+      timeline,
+      "data-only",
+      { default: { data: { rt: 400 } } },
+      jsPsych
+    );
+    await expectFinished();
+    const responses = (phase: string) => getData().filter({ phase, part: "response" }).count();
+    expect(responses("practice")).toBe(4);
+    expect(responses("test")).toBe(12);
   });
 });

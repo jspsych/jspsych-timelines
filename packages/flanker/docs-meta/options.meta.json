@@ -2698,6 +2698,15 @@
   },
   "x-jspsych-presets": [
     {
+      "id": "quick-demo",
+      "label": "Quick demo",
+      "description": "A short run for trying the task: the walkthrough, 4 practice trials and 12 test trials. Not from a study.",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 12
+      }
+    },
+    {
       "id": "S004",
       "label": "Lee & Pitt 2024, BRM, online spacing flanker",
       "description": "empirical · online-unsupervised · 24 spec options",
