@@ -136,7 +136,13 @@ const isi = jsPsych.randomization.randomInt(400, 800);
 
 Core provides `shuffle`, `shuffleNoRepeats`, `shuffleAlternateGroups`, `sampleWithReplacement`, `sampleWithoutReplacement`, `repeat`, `randomInt`, `sampleNormal`, `sampleExGaussian`, and more.
 
-This is not stylistic. `jsPsych.randomization.setSeed()` seeds jsPsych's generator only; `Math.random()` ignores it. A timeline that reaches for `Math.random()` silently makes the whole experiment non-reproducible, including the parts contributed by other packages. There are currently 42 `Math.random()` call sites across 24 packages, including a byte-identical Fisher-Yates `shuffleArray` copy-pasted into 13 of them — every one of which is `jsPsych.randomization.shuffle`.
+Seeding is not the reason for this rule. `jsPsych.randomization.setSeed()` replaces the global `Math.random` with a seeded generator, so for now a stray `Math.random()` call is seeded too. The rule exists for three other reasons:
+
+- **One auditable path.** Every random draw goes through a named core function, so a reviewer can find all of a package's randomness with one search and see what kind of draw each one is.
+- **No copies of core.** A hand-rolled draw is almost always a copy of a core function. Copies drift and pick up the usual mistakes, such as the biased `sort(() => Math.random() - 0.5)` shuffle.
+- **Independence from how seeding works.** Packages should not rely on the global override. If core ever seeds a private generator instead of replacing `Math.random`, code using `jsPsych.randomization.*` stays reproducible, and code calling `Math.random()` silently stops being reproducible.
+
+There are currently 42 `Math.random()` call sites across 24 packages, including a byte-identical Fisher-Yates `shuffleArray` copy-pasted into 13 of them — every one of which is `jsPsych.randomization.shuffle`.
 
 ### Summary statistics
 
