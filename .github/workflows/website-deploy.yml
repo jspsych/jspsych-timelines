@@ -1,0 +1,51 @@
+name: Deploy website
+
+# Deviation from jspsych-docs-theme/NEW_SITE.md: the site is published to the root of the
+# `gh-pages` branch (Pages source = "Deploy from a branch") instead of the Actions-artifact
+# deploy. PR previews live under /pr-preview/ on the same branch (website-preview.yml), and the
+# artifact deploy would wipe them. `keep_files` keeps them when main is published.
+on:
+  push:
+    branches: [main]
+    paths: ["website/**", "packages/**", "vocabulary/**", ".github/workflows/website-*.yml"]
+  workflow_dispatch:
+
+env:
+  HUSKY: 0
+
+permissions:
+  contents: write
+
+concurrency:
+  group: website-gh-pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            website/package-lock.json
+      # Packages are built from this checkout by website/scripts/build-package-assets.mjs.
+      - name: Install monorepo dependencies
+        run: npm ci
+      - name: Install website dependencies
+        working-directory: website
+        run: npm ci
+      - name: Build website
+        working-directory: website
+        run: npm run build
+      - name: Publish to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: website/build
+          publish_branch: gh-pages
+          keep_files: true # never wipes pr-preview/ (other files are overwritten, not deleted)
+          enable_jekyll: false # writes .nojekyll; CNAME comes from website/static/CNAME

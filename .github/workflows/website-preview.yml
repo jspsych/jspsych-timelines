@@ -1,0 +1,53 @@
+name: Website PR preview
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, closed]
+    paths: ["website/**", "packages/**", "vocabulary/**", ".github/workflows/website-*.yml"]
+
+env:
+  HUSKY: 0
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: website-preview-${{ github.ref }}
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    # Previews from forks can't push to gh-pages.
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    steps:
+      - uses: actions/checkout@v4
+        if: github.event.action != 'closed'
+      - uses: actions/setup-node@v4
+        if: github.event.action != 'closed'
+        with:
+          node-version: 22.x
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            website/package-lock.json
+      - name: Install monorepo dependencies
+        if: github.event.action != 'closed'
+        run: npm ci
+      - name: Install website dependencies
+        if: github.event.action != 'closed'
+        working-directory: website
+        run: npm ci
+      - name: Build website
+        if: github.event.action != 'closed'
+        working-directory: website
+        env:
+          DOCUSAURUS_BASE_URL: /pr-preview/pr-${{ github.event.number }}/
+        run: npm run build
+      - uses: rossjrw/pr-preview-action@v1
+        with:
+          source-dir: website/build
+          preview-branch: gh-pages
+          umbrella-dir: pr-preview
+          # On the custom domain the preview is served from the domain root.
+          custom-url: timelines.jspsych.org

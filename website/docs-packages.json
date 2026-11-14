@@ -1,0 +1,6 @@
+{
+  "_comment": "Packages that have a docs page. Each is built from the monorepo, its browser bundle is copied to static/bundles/<task>/ and its options schema is generated to src/schemas/<task>.schema.json. Optional keys: globalName (default: read from the package's build script), optionsType (default: <PascalTask>Options).",
+  "packages": [
+    {"task": "flanker"}
+  ]
+}

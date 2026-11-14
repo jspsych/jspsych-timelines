@@ -1,0 +1,50 @@
+{
+  "name": "jspsych-timelines-website",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "docusaurus": "docusaurus",
+    "assets": "node scripts/build-package-assets.mjs",
+    "start": "npm run assets && docusaurus start",
+    "prebuild": "node scripts/build-package-assets.mjs",
+    "build": "docusaurus build",
+    "serve": "docusaurus serve",
+    "clear": "docusaurus clear",
+    "typecheck": "tsc"
+  },
+  "dependencies": {
+    "@docusaurus/core": "3.9.2",
+    "@docusaurus/preset-classic": "3.9.2",
+    "@jspsych/docusaurus-preset": "^0.2.2",
+    "@jspsych/docusaurus-theme": "^0.4.1",
+    "@mdx-js/react": "^3.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@docusaurus/module-type-aliases": "3.9.2",
+    "@docusaurus/tsconfig": "3.9.2",
+    "@docusaurus/types": "3.9.2",
+    "ts-json-schema-generator": "^2.3.0",
+    "typescript": "~5.6.2"
+  },
+  "overrides": {
+    "@docusaurus/plugin-content-docs": "3.9.2",
+    "webpack": "5.105.3"
+  },
+  "engines": {
+    "node": ">=20.0"
+  },
+  "browserslist": {
+    "production": [
+      ">0.5%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 3 chrome version",
+      "last 3 firefox version",
+      "last 5 safari version"
+    ]
+  }
+}

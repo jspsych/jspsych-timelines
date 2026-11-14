@@ -1,0 +1,157 @@
+---
+title: Flanker
+sidebar_label: Flanker
+---
+
+import {TimelineExample} from '@jspsych/docusaurus-theme/components';
+import ParamsTable from '@site/src/components/ParamsTable';
+import schema from '@site/src/schemas/flanker.schema.json';
+import manifest from '@site/src/schemas/manifest.json';
+
+# Flanker
+
+Package: `@jspsych-timelines/flanker` ([source](https://github.com/jspsych/jspsych-timelines/tree/main/packages/flanker)). Version documented here: <code>{manifest.flanker.version}</code>.
+
+## Overview
+
+The Eriksen Flanker Task measures inhibitory control and selective attention. On each trial the participant sees a row of five arrows and reports the direction of the center (target) arrow while ignoring the other four. The flankers point the same way as the target (congruent), the opposite way (incongruent), or are replaced by dashes (neutral). The extra time and errors on incongruent trials, relative to congruent trials, are the flanker effect.
+
+This implementation is based on the PEBL Test Battery version of the task, with large touch-friendly response buttons.
+
+**Canonical citation:** TODO. The package README does not cite the original paper (Eriksen & Eriksen, 1974) or the PEBL version. Confirm and add them under References.
+
+## Installation
+
+```bash
+npm install @jspsych-timelines/flanker
+```
+
+From a CDN:
+
+```html
+<script src="https://unpkg.com/jspsych@8"></script>
+<script src="https://unpkg.com/@jspsych-timelines/flanker"></script>
+<link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css" />
+```
+
+## Quick Start
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <script src="https://unpkg.com/jspsych@8"></script>
+    <script src="https://unpkg.com/@jspsych-timelines/flanker"></script>
+    <link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css" />
+  </head>
+  <body></body>
+  <script>
+    const jsPsych = initJsPsych();
+    const task = jsPsychTimelineFlanker.createTimeline(jsPsych);
+    jsPsych.run([task]);
+  </script>
+</html>
+```
+
+## Task Description
+
+Trial structure: fixation, then the arrow row with Left and Right buttons until a response or the response duration passes, then optional feedback, then an inter-trial interval. A practice block (with optional interactive instructions) comes first, then one or more test blocks. Congruent and incongruent trials cover both target directions; neutral trials are added when `includeNeutral` is true.
+
+TODO: trial counts per condition and how trial order is randomized. This is not in the README.
+
+## Parameters
+
+Generated from the exported `FlankerOptions` type, with the grouping in `packages/flanker/docs-meta/options.meta.json`.
+
+<ParamsTable schema={schema} />
+
+## Try it
+
+For a short run, pick "Quick demo" in the Preset menu (the walkthrough, 4 practice and 12 test trials) and press Run. The other presets are study configurations from the literature. The task runs from the bundle built from this repository. The options are kept in the URL hash, so you can share a configuration.
+
+<TimelineExample
+  schema={schema}
+  bundle="/bundles/flanker/index.browser.js"
+  globalName={manifest.flanker.globalName}
+  syncToUrl
+  hashKey="flanker"
+  height={460}
+/>
+
+## Examples
+
+```javascript
+const timeline = createTimeline(jsPsych, {
+  numPracticeTrials: 6,
+  numTestTrials: 60,
+  numBlocks: 2,
+  fixationDuration: 300,
+  responseDuration: 1500,
+  includeNeutral: false,
+});
+```
+
+TODO: add one or two more worked configurations once the options are renamed.
+
+## Data Output
+
+Every trial carries `task: "flanker"` and `task_version`. The trial that records the response has these fields.
+
+| Field | Type | Description |
+|---|---|---|
+| `task` | string | `"flanker"` |
+| `task_version` | string | Package version |
+| `phase` | string | `"practice"` or `"test"` |
+| `block` | number | Block number (1-indexed) |
+| `trial` | number | Trial within block (1-indexed) |
+| `target_direction` | string | `"left"` or `"right"` |
+| `congruence` | string | `"congruent"`, `"incongruent"` or `"neutral"` |
+| `correct_response` | number | Expected button index (0 = left, 1 = right) |
+| `response` | number or null | Button pressed (null on timeout) |
+| `correct` | boolean | Whether the response was correct |
+| `rt` | number or null | Response time in ms (null on timeout) |
+
+**`part` values the package writes today:** `instruction`, `instruction_feedback`, `fixation`, `stimulus`, `feedback`, `iti`, `transition`. The final screen uses `phase: "completion"`.
+
+TODO (PACKAGE-STANDARD section 4): the scorable trial currently has `part: "stimulus"`; the standard requires `part: "response"`. `phase` values `instructions` and `completion` are not declared in `TrialData`. Update this table when the package is converted.
+
+## Scoring
+
+```javascript
+import { utils } from "@jspsych-timelines/flanker";
+
+const scores = utils.scoring.getSummary(jsPsych.data.get());
+```
+
+| Metric | Description | Interpretation |
+|---|---|---|
+| `accuracy` | Overall accuracy (0-1) | Higher is better |
+| `meanRT` | Mean RT of correct trials (ms) | Lower is faster |
+| `congruentAccuracy`, `incongruentAccuracy`, `neutralAccuracy` | Accuracy by condition | Higher is better |
+| `congruentRT`, `incongruentRT`, `neutralRT` | Mean RT by condition (ms) | Lower is faster |
+| `flankerEffectRT` | RT(incongruent) minus RT(congruent) | Higher means more interference |
+| `flankerEffectAccuracy` | Accuracy(congruent) minus accuracy(incongruent) | Higher means more interference |
+| `totalTrials`, `correctTrials` | Test trial counts | |
+
+TODO: document the empty-data case (standard requires `0` for counts and `null` for means, never `NaN`) and whether RT metrics use correct trials only for every condition.
+
+## Translation
+
+Pass a `text` object to replace interface strings; partial objects are merged with the defaults. The string keys are listed in the `text` row of the parameters table. Three keys are functions (`instruction_response`, `block_complete`, `result_summary`) and can only be set from code.
+
+```javascript
+createTimeline(jsPsych, {
+  text: { left_button: "Izquierda", right_button: "Derecha", continue_button: "Continuar" },
+});
+```
+
+## Timeline Units
+
+`timelineUnits` exports factories for the individual pieces: `createInstructionTrials`, `createFixationTrial`, `createStimulusTrial`, `createFeedbackTrial`, `createItiTrial`, `createTransitionTrial`, `createPracticeBlock` and `createTestBlock`.
+
+TODO: document each unit's signature.
+
+## References
+
+TODO: Eriksen, B. A., & Eriksen, C. W. (1974). Effects of noise letters upon the identification of a target letter in a nonsearch task. *Perception & Psychophysics, 16*(1), 143-149. (Cited from memory; verify before publishing.) Add the PEBL Test Battery reference used by this implementation.
