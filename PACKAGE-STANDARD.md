@@ -582,6 +582,17 @@ Every package **MUST** have a reference page at `docs/docs/reference/<task-name>
 
 The page **MUST** be registered in `docs/sidebars.ts`.
 
+### Presets and the quick demo
+
+The interactive example on the reference page (`TimelineExample`) offers a Preset menu, read from `x-jspsych-presets` in `docs-meta/options.meta.json`.
+
+- **The first preset MUST be a quick demo,** with `id: "quick-demo"` and `label: "Quick demo"`. It exists so that a reader can try the task in about a minute. It is not from a study, and its description says so.
+- **It only shortens the task.** It keeps the default instructions, including the interactive walkthrough (§6a), and sets only the vocabulary's count options to small values. Typical settings are `practice_trials: 4`, `n_test_trials: 12` and `n_blocks: 1`. A task without those options uses its own length options, such as list length or number of rounds. The values **MUST** be valid for the task's design, for example a multiple of the number of conditions when proportions must be exact.
+- **The other presets are the study configurations** from the spec, after them.
+- **Regeneration MUST keep it.** Whatever code rewrites the presets (for flanker, the `onUpdate` of its reproduction test) puts the quick demo first and never drops it.
+- **A test MUST cover it.** The test checks that the quick demo is listed first, simulates it with `jsPsych.simulate(..., "data-only")`, and checks the practice and test trial counts it promises.
+- **The page text** under "Try it" points readers to "Quick demo" in the Preset menu.
+
 ### Package README
 
 The README is deliberately short — roughly 40 lines — and **MUST** contain only:
@@ -639,6 +650,7 @@ The first battery release is gated on the jsPsych release carrying the §11 CSS 
 - [ ] `task_version` is imported from `package.json`
 - [ ] The scorable trial is tagged `phase: "practice" | "test"` and `part: "response"`
 - [ ] Site reference page exists and is registered in `docs/sidebars.ts`
+- [ ] The first preset is the tested "Quick demo" (§12)
 - [ ] README is thin and links to the site
 - [ ] `examples/index.html` runs against a fresh build
 - [ ] A changeset exists
