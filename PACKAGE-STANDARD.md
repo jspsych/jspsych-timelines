@@ -136,7 +136,13 @@ const isi = jsPsych.randomization.randomInt(400, 800);
 
 Core provides `shuffle`, `shuffleNoRepeats`, `shuffleAlternateGroups`, `sampleWithReplacement`, `sampleWithoutReplacement`, `repeat`, `randomInt`, `sampleNormal`, `sampleExGaussian`, and more.
 
-This is not stylistic. `jsPsych.randomization.setSeed()` seeds jsPsych's generator only; `Math.random()` ignores it. A timeline that reaches for `Math.random()` silently makes the whole experiment non-reproducible, including the parts contributed by other packages. There are currently 42 `Math.random()` call sites across 24 packages, including a byte-identical Fisher-Yates `shuffleArray` copy-pasted into 13 of them — every one of which is `jsPsych.randomization.shuffle`.
+Seeding is not the reason for this rule. `jsPsych.randomization.setSeed()` replaces the global `Math.random` with a seeded generator, so for now a stray `Math.random()` call is seeded too. The rule exists for three other reasons:
+
+- **One auditable path.** Every random draw goes through a named core function, so a reviewer can find all of a package's randomness with one search and see what kind of draw each one is.
+- **No copies of core.** A hand-rolled draw is almost always a copy of a core function. Copies drift and pick up the usual mistakes, such as the biased `sort(() => Math.random() - 0.5)` shuffle.
+- **Independence from how seeding works.** Packages should not rely on the global override. If core ever seeds a private generator instead of replacing `Math.random`, code using `jsPsych.randomization.*` stays reproducible, and code calling `Math.random()` silently stops being reproducible.
+
+There are currently 42 `Math.random()` call sites across 24 packages, including a byte-identical Fisher-Yates `shuffleArray` copy-pasted into 13 of them — every one of which is `jsPsych.randomization.shuffle`.
 
 ### Summary statistics
 
@@ -405,14 +411,30 @@ Tests **MUST** cover, at minimum:
 
 ### Literature reproduction and layout
 
-Every package built from a generated spec **MUST** test that its options reproduce what the literature varied, using the shared dev-only package `@jspsych-timelines/testing` (a `devDependency`, never published). Packages **MUST NOT** carry their own copy of the harness, the runners or the checks for shared options.
+Every package built from a generated spec **MUST** use the shared dev-only package `@jspsych-timelines/testing` to test that its options reproduce what the literature varied. It is a `devDependency` and is never published. Packages **MUST NOT** carry their own copy of the harness, the runners or the checks for shared options.
 
-- **Fixture.** `reproduction/spec-observed.json` is the committed record of the task's observed values and study configurations. It is generated from the task's `spec.yaml` and `translations.yaml` with `packages/testing/scripts/fixture-from-spec.mjs <spec-dir> <out.json>`, never copied by hand (the specs live in a private repository, so the package commits what it needs).
-- **Levels.** Level 1 builds each distinct typed observed value alone (plus the companion settings it needs to be observable), simulates it with `jsPsych.simulate(..., "data-only")` and runs the option's check. Level 2 builds each fully typed study configuration with all its options at once, ties the resolved options to the values it reports, and runs the check of every option it names. Runs are seeded.
-- **Checks.** Options in the vocabulary whose effect shows in the standard data fields (§4) use the shared checks of `@jspsych-timelines/testing` (`n_test_trials`, `practice_trials`, `n_blocks`, `trials_per_block`, `condition_proportions`, `condition_set`, `trial_order`, `sequence_constraints`, `response_window_ms`, `stimulus_duration_ms`, the `duration` options such as `fixation_duration_ms`, `iti_ms` and `feedback_duration_ms` including jitter range, step and seeding, `trial_feedback`, `feedback_condition`, `response_keys`, `response_device`). The package supplies a data contract (`reproduction/contract.ts`) that names the fields and parts those checks read, an adapter (`reproduction/adapter.ts`) that retypes spec values into its options, and its own checks (`reproduction/checks.ts`) for task-specific options. A package **MUST NOT** weaken a shared check; it adds assertions with `extendCheck`.
-- **Gaps.** A typed value the package cannot express is classified, not skipped silently: package fix needed, option missing, plugin needed, dossier value wrong, or genuinely contradictory.
-- **Tallies.** The counts (observed, typed, level 1 checked and not expressible, level 2 fully expressible) are asserted against the committed `reproduction/expected-tallies.json`, so a regression or an improvement shows up as a diff. `UPDATE_REPRODUCTION=1 npx jest` rewrites the tallies, `reproduction/results.json` and `reproduction.md`. `reproduction.md` is generated; hand-written commentary goes in `reproduction/notes.md`.
-- **Layout.** Packages with a centred stimulus (§5) **MUST** have `reproduction/layout.config.mjs` and pass the browser layout check of `@jspsych-timelines/testing` (`node ../testing/scripts/layout-check.mjs reproduction/layout.config.mjs`, after building) before release: the stage centre is identical (±1 px) on every screen type, at a narrow and a wide viewport, for each response device. The check needs Chrome and is not part of `npm test`; the jsdom test of the anchored wrapper (§5) is.
+- **Fixture.** `reproduction/spec-observed.json` is the committed record of the task's observed values and study configurations. It is generated from the task's `spec.yaml` and `translations.yaml` with `packages/testing/scripts/fixture-from-spec.mjs <spec-dir> <out.json>`, never copied by hand. The specs live in a private repository, so each package commits what it needs.
+- **Level 1 and level 2.** All runs are seeded.
+  - Level 1 builds each distinct typed observed value on its own, plus any companion settings needed to make it observable. It simulates the result with `jsPsych.simulate(..., "data-only")` and runs that option's check.
+  - Level 2 builds each fully typed study configuration with all its options at once. It ties the resolved options to the values the study reports, then runs the check of every option the study names.
+- **Checks.**
+  - **Shared checks.** Vocabulary options whose effect shows in the standard data fields (§4) use the shared checks of `@jspsych-timelines/testing`:
+    - counts: `n_test_trials`, `practice_trials`, `n_blocks`, `trials_per_block`;
+    - design: `condition_proportions`, `condition_set`, `trial_order`, `sequence_constraints`;
+    - timing: `response_window_ms`, `stimulus_duration_ms`, and the `duration` options such as `fixation_duration_ms`, `iti_ms` and `feedback_duration_ms` (including jitter range, step and seeding);
+    - feedback and response: `trial_feedback`, `feedback_condition`, `response_keys`, `response_device`.
+  - **What the package supplies.**
+    - a data contract (`reproduction/contract.ts`) that names the fields and parts the shared checks read;
+    - an adapter (`reproduction/adapter.ts`) that converts spec values into its options;
+    - its own checks (`reproduction/checks.ts`) for task-specific options.
+  - **No weakening.** A package **MUST NOT** weaken a shared check; it adds assertions with `extendCheck`.
+- **Gaps.** A typed value the package can't express is classified, not skipped silently: package fix needed, option missing, plugin needed, dossier value wrong, or genuinely contradictory.
+- **Tallies.** The counts (observed, typed, level 1 checked and not expressible, level 2 fully expressible) are asserted against the committed `reproduction/expected-tallies.json`, so a regression or an improvement shows up as a diff.
+  - `UPDATE_REPRODUCTION=1 npx jest` rewrites the tallies, `reproduction/results.json` and `reproduction.md`.
+  - `reproduction.md` is generated. Hand-written commentary goes in `reproduction/notes.md`.
+- **Layout.** A package with a centred stimulus (§5) **MUST** have `reproduction/layout.config.mjs` and pass the browser layout check of `@jspsych-timelines/testing` before release. Run it after building with `node ../testing/scripts/layout-check.mjs reproduction/layout.config.mjs`.
+  - The check passes when the stage centre is identical (±1 px) on every screen type, at a narrow and a wide viewport, for each response device.
+  - It needs Chrome, so it isn't part of `npm test`. The jsdom test of the anchored wrapper (§5) is.
 
 ---
 
@@ -530,7 +552,7 @@ For each piece of shared logic, ask whether an ordinary jsPsych experiment, with
 - **Specialized → an established library** (e.g. `simple-statistics`, above).
 - **Task-specific → the package.**
 
-There is still **no** general `@jspsych-timelines/utils` package. The one other shared package is `@jspsych-timelines/testing`: private, dev-only, never imported by a package's `src/` (§9).
+There is still **no** general `@jspsych-timelines/utils` package. The one other shared package is `@jspsych-timelines/testing`. It is private and dev-only, and a package's `src/` never imports it (§9).
 
 ---
 
