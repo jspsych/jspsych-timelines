@@ -210,14 +210,14 @@ describe("flanker", () => {
   describe("options", () => {
     it("has a default for every option and the documented practice override", () => {
       expect(DEFAULT_OPTIONS.trial_feedback).toBe("none");
-      expect(DEFAULT_OPTIONS.practice).toEqual({ trial_feedback: "accuracy_rt" });
+      expect(DEFAULT_OPTIONS.practice).toEqual({ trial_feedback: "accuracy" });
       expect(DEFAULT_OPTIONS.response_window_ms).toBe(800);
       expect(DEFAULT_OPTIONS.n_blocks).toBe(1);
       expect(utils.constants.DEFAULT_OPTIONS).toBe(DEFAULT_OPTIONS);
     });
 
     it("practice overrides win; the default practice feedback yields to the user's top-level value", () => {
-      expect(resolveOptions({}, "practice").trial_feedback).toBe("accuracy_rt");
+      expect(resolveOptions({}, "practice").trial_feedback).toBe("accuracy");
       expect(resolveOptions({}, "test").trial_feedback).toBe("none");
       expect(resolveOptions({ trial_feedback: "none" }, "practice").trial_feedback).toBe("none");
       expect(resolveOptions({ trial_feedback: "accuracy" }, "practice").trial_feedback).toBe(

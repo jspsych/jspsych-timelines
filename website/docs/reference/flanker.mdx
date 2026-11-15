@@ -58,7 +58,7 @@ From a CDN:
 
 Each trial shows a fixation cross, then a row of five arrows. The participant reports the direction of the middle arrow (by default with Q for left and P for right) and ignores the flanking arrows, which point the same way (congruent) or the other way (incongruent). On neutral trials the flankers are dashes or are left out. The row stays up until a response or until the 800 ms response window ends. Feedback follows if it is on, then a 1,000 ms interval before the next trial. A warning cue before the row, a flanker–target onset asynchrony and letter targets are options.
 
-The task opens with an interactive walkthrough, one example of each trial type with a hint and a retry after a wrong answer. Then come 8 practice trials with accuracy and RT feedback, and 160 test trials without feedback. The defaults follow the PEBL flanker battery (S019).
+The task opens with an interactive walkthrough, one example of each trial type with a hint and a retry after a wrong answer. Then come 8 practice trials with correct/incorrect feedback, and 160 test trials without feedback. The defaults follow the PEBL flanker battery (S019), except that practice feedback leaves out PEBL's response time.
 
 Trial counts are exact within each block: `condition_proportions` (by default congruent, incongruent and two neutral forms, a quarter each) is turned into counts by largest remainders, each trial type has equal left and right targets, and `trial_order: "shuffled_list"` shuffles that balanced list.
 
@@ -83,18 +83,49 @@ For a short run, pick "Quick demo" in the Preset menu (the walkthrough, 4 practi
 
 ## Examples
 
+Congruent and incongruent trials only, in two blocks of 48 with a self-paced break, a jittered fixation and a longer response window:
+
 ```javascript
-const timeline = createTimeline(jsPsych, {
-  numPracticeTrials: 6,
-  numTestTrials: 60,
-  numBlocks: 2,
-  fixationDuration: 300,
-  responseDuration: 1500,
-  includeNeutral: false,
+const { timeline } = createTimeline(jsPsych, {
+  condition_set: ["congruent", "incongruent"],
+  n_test_trials: 96,
+  n_blocks: 2,
+  rest_breaks: "self_paced",
+  fixation_duration_ms: { min: 400, max: 800, step: 100 },
+  response_window_ms: 1500,
 });
 ```
 
-TODO: add one or two more worked configurations once the options are renamed.
+Letter flankers as in Eriksen & Eriksen (1974), two letters per response:
+
+```javascript
+const { timeline } = createTimeline(jsPsych, {
+  stimulus_set: { target: { letters: [["H", "K"], ["S", "C"]] } },
+  targets_per_response: 2,
+  response_keys: ["f", "j"],
+});
+```
+
+A warning cue on half of the trials, crossed with congruency:
+
+```javascript
+const { timeline } = createTimeline(jsPsych, {
+  stimulus_set: { cue: "circles" },
+  cue_target_interval_ms: 500,
+  condition_proportions: {
+    flanker_condition: { congruent: 0.5, incongruent: 0.5 },
+    cue: { cued: 0.5, uncued: 0.5 },
+  },
+});
+```
+
+PEBL's practice feedback, with the response time as well as correct/incorrect:
+
+```javascript
+const { timeline } = createTimeline(jsPsych, {
+  practice: { trial_feedback: "accuracy_rt" },
+});
+```
 
 ## Data Output
 

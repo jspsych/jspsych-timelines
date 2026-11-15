@@ -292,7 +292,8 @@ export interface FlankerOptions {
    * response_window_ms, fixation_duration_ms, iti_ms, stimulus_duration_ms, soa_ms, cue_target_interval_ms,
    * condition_set, condition_proportions, trial_order, stimulus_set, stimulus_layout, stimulus_size,
    * stimulus_color, targets_per_response. Other keys are ignored in practice.
-   * (default: { trial_feedback: "accuracy_rt" } — PEBL gives feedback in practice only, S019. It applies
+   * (default: { trial_feedback: "accuracy" } — feedback in practice only, as in PEBL (S019), but correct/incorrect
+   * without PEBL's RT, so practice teaches the rule rather than speed. It applies
    * unless `trial_feedback` is set at the top level or in `practice`.)
    */
   practice?: Partial<FlankerOptions>;
@@ -420,7 +421,7 @@ export const DEFAULT_OPTIONS: Omit<ResolvedOptions, "cue_proportions"> & {
   instruction_format: "text",
   instruction_demonstration: "interactive",
   speed_accuracy_emphasis: "both",
-  practice: { trial_feedback: "accuracy_rt" },
+  practice: { trial_feedback: "accuracy" },
 };
 
 // -- resolution ---------------------------------------------------------------------------------

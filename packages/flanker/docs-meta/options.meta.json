@@ -2577,7 +2577,7 @@
         "defaultChanged": {
           "from": "accuracy_rt",
           "to": "none",
-          "reason": "PEBL gives no feedback in the test phase; the content component's accuracy_rt becomes the practice default (practice: { trial_feedback: 'accuracy_rt' })"
+          "reason": "PEBL gives no feedback in the test phase; practice gets correct/incorrect feedback without RT (practice: { trial_feedback: 'accuracy' })"
         }
       }
     },

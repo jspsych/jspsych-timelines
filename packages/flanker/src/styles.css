@@ -61,6 +61,13 @@
   overscroll-behavior: contain;
 }
 
+/* Short text under the stage (walkthrough captions, hints, feedback) is centred under the
+   stimulus; full-page instructions stay left-aligned for reading. */
+.jspsych-timelines-flanker .jspsych-timelines-flanker-below .jspsych-timelines-flanker-text {
+  text-align: center;
+  text-wrap: balance;
+}
+
 .jspsych-timelines-flanker:has(#jspsych-html-button-response-btngroup)
   .jspsych-timelines-flanker-below {
   bottom: var(--flanker-btn-reserve);

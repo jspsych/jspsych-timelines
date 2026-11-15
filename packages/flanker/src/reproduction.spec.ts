@@ -148,7 +148,7 @@ describe("defaults reproduce the PEBL anchor (S019) except the documented change
   });
 
   it("documented changes", () => {
-    expect(p.trial_feedback).toBe("accuracy_rt"); // content component; spec's practice.trial_feedback "accuracy" is a placeholder
+    expect(p.trial_feedback).toBe("accuracy"); // PEBL shows accuracy + RT in practice; the package shows accuracy only (DEFAULTS.md)
     expect(s019["practice.trial_feedback"]).toBe("accuracy");
     expect(o.response_device).toBe("keyboard"); // spec: auto (untyped)
     expect(o.condition_set).toEqual(["congruent", "incongruent", "neutral_dash", "neutral_empty"]); // spec: [c, i, neutral]
