@@ -45,7 +45,8 @@
   "dependencies": {
     "@jspsych/plugin-html-button-response": "^2.1.0",
     "@jspsych/plugin-html-keyboard-response": "^2.1.0",
-    "@jspsych/plugin-virtual-chinrest": "^3.1.0"
+    "@jspsych/plugin-virtual-chinrest": "^3.1.0",
+    "@jspsych/sequencer": "^0.1.0"
   },
   "module": "dist/index.js",
   "exports": {

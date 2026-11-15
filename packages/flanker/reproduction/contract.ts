@@ -9,8 +9,6 @@ import type { ResolvedOptions } from "../src/options";
 import { allocateCounts } from "../src/sequence";
 import { splitTrials } from "../src/trials";
 
-const CUE_FACTORS = ["cued", "uncued"];
-
 export const coarse = (c: string) => (c.startsWith("neutral") ? "neutral" : c);
 
 export const contract = defineContract<ResolvedOptions>({
@@ -18,9 +16,8 @@ export const contract = defineContract<ResolvedOptions>({
   // the trial type is `flanker_condition`; `neutral_dash` and `neutral_empty` count as `neutral`
   condition: (row) => row.flanker_condition ?? null,
   normaliseCondition: coarse,
-  // `cued` and `uncued` are an orthogonal factor, not trial types
-  proportionKeys: (eff) =>
-    Object.keys(eff.condition_proportions).filter((k) => !CUE_FACTORS.includes(k)),
+  // the cue is a separate factor (`eff.cue_proportions`), checked in checks.ts
+  proportionKeys: (eff) => Object.keys(eff.condition_proportions),
   rowMatchesKey: (row, key) =>
     key === "neutral" ? row.congruency === "neutral" : row.flanker_condition === key,
   // no-go trials have no correct response and no response to time out

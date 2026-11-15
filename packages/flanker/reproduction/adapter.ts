@@ -173,10 +173,12 @@ export function adapt(
             "interleaving with the Simon task needs the simon-task package; a flanker-only timeline cannot do it"
           );
     case "condition_proportions":
-      if (sub === "types") return ok({ condition_proportions: value });
+      // each source fills one factor; `combine` flattens a lone trial-type factor
+      if (sub === "types") return ok({ condition_proportions: { flanker_condition: value } });
       if (sub === "cue") {
         return ok(
-          { condition_proportions: value },
+          // the translation gives the crossed-factor form already ({ cue: { cued, uncued } })
+          { condition_proportions: { cue: value?.cue ?? value } },
           { stimulus_set: { cue: "circles" }, cue_target_interval_ms: 500 }
         );
       }
@@ -225,11 +227,21 @@ export function adapt(
 }
 
 const kit = createAdapterKit<FlankerOptions>({
-  mapOptions: ["stimulus_set", "stimulus_layout", "practice"],
+  mapOptions: ["stimulus_set", "stimulus_layout", "practice", "condition_proportions"],
   // a companion `condition_set` would contradict explicit `condition_proportions`
   dropCompanion: (key, explicit) => key === "condition_set" && "condition_proportions" in explicit,
 });
-export const { mergeOptions, combine, assumedSettings } = kit;
+export const { mergeOptions, assumedSettings } = kit;
+
+/** `kit.combine`, then a lone trial-type factor is written in the flat form (PACKAGE-STANDARD §2a). */
+export const combine: typeof kit.combine = (entries) => {
+  const out: any = kit.combine(entries);
+  const p = out.condition_proportions;
+  if (p && Object.keys(p).length === 1 && p.flanker_condition) {
+    out.condition_proportions = p.flanker_condition;
+  }
+  return out;
+};
 
 /** Retype one key of a study configuration, e.g. "stimulus_set.neutral flanker". */
 export function adaptConfigKey(key: string, value: any): Adapted {

@@ -595,3 +595,57 @@ describe("flanker", () => {
     });
   });
 });
+
+describe("condition_proportions with a crossed cue factor (PACKAGE-STANDARD §2a)", () => {
+  const cueOpts = { stimulus_set: { cue: "circles" }, cue_target_interval_ms: 500 } as const;
+
+  it("splits the trial types and the cue into separate factors", () => {
+    const o = resolveOptions({
+      ...cueOpts,
+      condition_proportions: {
+        flanker_condition: { congruent: 0.5, incongruent: 0.5 },
+        cue: { cued: 0.25, uncued: 0.75 },
+      },
+    } as FlankerOptions);
+    expect(o.condition_proportions).toEqual({ congruent: 0.5, incongruent: 0.5 });
+    expect(o.condition_set).toEqual(["congruent", "incongruent"]);
+    expect(o.cue_proportions).toEqual({ cued: 0.25, uncued: 0.75 });
+  });
+
+  it("counts each factor exactly within a block", () => {
+    const jsPsych = initJsPsych();
+    const o = resolveOptions({
+      ...cueOpts,
+      condition_proportions: {
+        flanker_condition: { congruent: 0.5, incongruent: 0.5 },
+        cue: { cued: 0.25, uncued: 0.75 },
+      },
+    } as FlankerOptions);
+    const specs = buildTrialSpecs({ jsPsych, o }, 40);
+    expect(specs.filter((s) => s.cued === true)).toHaveLength(10);
+    expect(specs.filter((s) => s.flanker_condition === "congruent")).toHaveLength(20);
+  });
+
+  it("a cue factor alone keeps the default trial types", () => {
+    const o = resolveOptions({
+      ...cueOpts,
+      condition_proportions: { cue: { cued: 0.5, uncued: 0.5 } },
+    } as FlankerOptions);
+    expect(Object.keys(o.condition_proportions)).toEqual(DEFAULT_OPTIONS.condition_set);
+    expect(o.cue_proportions).toEqual({ cued: 0.5, uncued: 0.5 });
+  });
+
+  it("rejects cue levels among the trial types, mixed forms and unknown factors", () => {
+    expect(() =>
+      resolveOptions({ condition_proportions: { congruent: 0.5, cued: 0.5 } } as any)
+    ).toThrow(/the cue is a separate factor/);
+    expect(() =>
+      resolveOptions({
+        condition_proportions: { congruent: 0.5, cue: { cued: 0.5, uncued: 0.5 } },
+      } as any)
+    ).toThrow(/mixes numbers/);
+    expect(() => resolveOptions({ condition_proportions: { load: { high: 1 } } } as any)).toThrow(
+      /unknown factor load/
+    );
+  });
+});

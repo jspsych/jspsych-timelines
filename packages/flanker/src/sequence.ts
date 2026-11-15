@@ -1,3 +1,5 @@
+import { allocate, sequence } from "@jspsych/sequencer";
+import type { SequenceConstraint } from "@jspsych/sequencer";
 import type { JsPsych } from "jspsych";
 
 import type {
@@ -32,18 +34,34 @@ export interface Mapping {
   response_of_group: [number, number];
 }
 
-/** Largest-remainder allocation of `n` items to normalised weights; ties go to the earlier entry. */
+/**
+ * Largest-remainder allocation of `n` items to normalised weights; ties go to the earlier entry.
+ * `allocate` from @jspsych/sequencer, with the flanker's error message.
+ */
 export function allocateCounts(weights: number[], n: number): number[] {
-  const total = weights.reduce((a, b) => a + b, 0);
-  if (!(total > 0)) throw new Error("flanker: condition proportions must sum to more than 0.");
-  const exact = weights.map((w) => (w / total) * n);
-  const counts = exact.map(Math.floor);
-  let left = n - counts.reduce((a, b) => a + b, 0);
-  const order = exact
-    .map((e, i) => ({ i, r: e - Math.floor(e) }))
-    .sort((a, b) => b.r - a.r || a.i - b.i);
-  for (let k = 0; left > 0; k = (k + 1) % order.length, left--) counts[order[k].i]++;
-  return counts;
+  if (!(weights.reduce((a, b) => a + b, 0) > 0)) {
+    throw new Error("flanker: condition proportions must sum to more than 0.");
+  }
+  return allocate(weights, n);
+}
+
+/** A random source for @jspsych/sequencer drawn through jsPsych.randomization (PACKAGE-STANDARD §3). */
+export const sequencerRng = (jsPsych: JsPsych) => () =>
+  jsPsych.randomization.randomInt(0, 2 ** 30 - 1) / 2 ** 30;
+
+/**
+ * Order one block's trials. Without constraints this is a plain shuffle; with constraints (a task's
+ * `sequence_constraints`, PACKAGE-STANDARD §2a) @jspsych/sequencer finds an order that satisfies
+ * them and throws, naming the rule, if none exists. The flanker passes none: none of its studies
+ * constrains the order beyond a shuffled balanced list.
+ */
+export function orderTrials<T>(
+  jsPsych: JsPsych,
+  trials: T[],
+  constraints: SequenceConstraint<T>[] = []
+): T[] {
+  if (constraints.length === 0) return jsPsych.randomization.shuffle(trials);
+  return sequence(trials, constraints, { rng: sequencerRng(jsPsych) });
 }
 
 export function expandDuration(d: DurationOrJitter): number[] {
@@ -80,9 +98,7 @@ export function buildTrialSpecs(ctx: Ctx, n: number): TrialSpec[] {
   const { jsPsych, o } = ctx;
   const R = jsPsych.randomization;
   const props = o.condition_proportions;
-  const conds = (Object.keys(props) as Array<keyof typeof props>).filter(
-    (k) => k !== "cued" && k !== "uncued" && (props[k] ?? 0) > 0
-  ) as FlankerCondition[];
+  const conds = (Object.keys(props) as FlankerCondition[]).filter((k) => (props[k] ?? 0) > 0);
   const weights = conds.map((c) => props[c] as number);
   const order = o.trial_order;
   const target = o.stimulus_set.target ?? "arrows";
@@ -150,8 +166,9 @@ export function buildTrialSpecs(ctx: Ctx, n: number): TrialSpec[] {
   // cue factor
   let cuedList: Array<boolean | null> = new Array(n).fill(null);
   if ((o.stimulus_set.cue ?? "none") !== "none") {
-    const pc = props.cued ?? (props.uncued === undefined ? 1 : 0);
-    const pu = props.uncued ?? 0;
+    const cp = o.cue_proportions ?? { cued: 1 };
+    const pc = cp.cued ?? 0;
+    const pu = cp.uncued ?? 0;
     if (rnd) {
       cuedList = condList.map(
         () => R.sampleWithReplacement([true, false], 1, [pc || 1e-9, pu || 1e-9])[0]
@@ -239,7 +256,7 @@ export function buildTrialSpecs(ctx: Ctx, n: number): TrialSpec[] {
     };
   });
 
-  if (order === "shuffled_list") return R.shuffle(specs);
+  if (order === "shuffled_list") return orderTrials(jsPsych, specs);
   return specs;
 }
 

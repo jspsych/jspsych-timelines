@@ -3089,8 +3089,14 @@
         "block_feedback": "none",
         "concurrent_task": "none",
         "condition_proportions": {
-          "cued": 0.5,
-          "uncued": 0.5
+          "flanker_condition": {
+            "congruent": 0.5,
+            "incongruent": 0.5
+          },
+          "cue": {
+            "cued": 0.5,
+            "uncued": 0.5
+          }
         },
         "condition_set": [
           "congruent",

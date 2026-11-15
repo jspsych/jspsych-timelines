@@ -387,8 +387,8 @@ const flankerOnly: Record<string, FlankerCheck> = {
 /** Cued and uncued trials are a factor of their own: counted separately from the trial types. */
 const condition_proportions = extendCheck(sharedChecks.condition_proportions, {
   fn: (r) => {
-    const { cued, uncued } = r.eff.condition_proportions;
-    if (cued === undefined && uncued === undefined) return;
+    if (!r.eff.cue_proportions) return;
+    const { cued, uncued } = r.eff.cue_proportions;
     const rows = test(r).filter((x) => x.block === 1);
     const nc = allocateCounts([cued ?? 0, uncued ?? 0], rows.length)[0];
     expect(rows.filter((x) => x.cued === true).length).toBe(nc);

@@ -1386,8 +1386,10 @@
       "sub": "cue",
       "variation": "warning_cue",
       "value": {
-        "cued": 0.5,
-        "uncued": 0.5
+        "cue": {
+          "cued": 0.5,
+          "uncued": 0.5
+        }
       },
       "sources": [
         "S068"
@@ -1401,8 +1403,10 @@
         },
         "cue_target_interval_ms": 500,
         "condition_proportions": {
-          "cued": 0.5,
-          "uncued": 0.5
+          "cue": {
+            "cued": 0.5,
+            "uncued": 0.5
+          }
         }
       }
     },

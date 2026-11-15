@@ -35,7 +35,7 @@
        "raw": "{proportion_cued: 0.5, cue_target_interval_ms: 500, cue_form: 'two circles above/below fixation, 250 ms'}",
        "value": 500,
        "ok": true,
-       "note": "Cue is orthogonal to congruency, so cued/uncued keys sit awkwardly in condition_proportions; 250 ms cue duration has no target option here; stimulus_set role-map value shape is free text."
+       "note": "Cue is a crossed factor (PACKAGE-STANDARD §2a map of maps); 250 ms cue duration has no target option here; stimulus_set role-map value shape is free text."
       }
      ]
     }
@@ -927,7 +927,7 @@
         "cue": "two circles above/below fixation"
        },
        "ok": true,
-       "note": "Cue is orthogonal to congruency, so cued/uncued keys sit awkwardly in condition_proportions; 250 ms cue duration has no target option here; stimulus_set role-map value shape is free text."
+       "note": "Cue is a crossed factor (PACKAGE-STANDARD §2a map of maps); 250 ms cue duration has no target option here; stimulus_set role-map value shape is free text."
       }
      ]
     }
@@ -1214,11 +1214,13 @@
        "source": "S068",
        "raw": "{proportion_cued: 0.5, cue_target_interval_ms: 500, cue_form: 'two circles above/below fixation, 250 ms'}",
        "value": {
-        "cued": 0.5,
-        "uncued": 0.5
+        "cue": {
+         "cued": 0.5,
+         "uncued": 0.5
+        }
        },
        "ok": true,
-       "note": "Cue is orthogonal to congruency, so cued/uncued keys sit awkwardly in condition_proportions; 250 ms cue duration has no target option here; stimulus_set role-map value shape is free text."
+       "note": "Cue is a crossed factor (PACKAGE-STANDARD §2a map of maps); 250 ms cue duration has no target option here; stimulus_set role-map value shape is free text."
       }
      ]
     }
@@ -2811,8 +2813,10 @@
      "incongruent": 0.5
     },
     "condition_proportions.warning cue": {
-     "cued": 0.5,
-     "uncued": 0.5
+     "cue": {
+      "cued": 0.5,
+      "uncued": 0.5
+     }
     },
     "condition_set": [
      "congruent",
@@ -3023,13 +3027,15 @@
      "cue": "two circles above/below fixation"
     },
     "condition_proportions": {
-     "cued": 0.5,
-     "uncued": 0.5
+     "cue": {
+      "cued": 0.5,
+      "uncued": 0.5
+     }
     }
    },
    "confidence": "medium",
    "flag": true,
-   "note": "Cue is orthogonal to congruency, so cued/uncued keys sit awkwardly in condition_proportions; 250 ms cue duration has no target option here; stimulus_set role-map value shape is free text."
+   "note": "Cue is a crossed factor (PACKAGE-STANDARD §2a map of maps); 250 ms cue duration has no target option here; stimulus_set role-map value shape is free text."
   },
   {
    "variation": "feedback_duration_ms",

@@ -18,8 +18,20 @@ export type FlankerCondition =
   | "neutral_empty"
   | "nogo";
 
-/** Orthogonal cue factor, usable as keys of `condition_proportions` when a warning cue is shown. */
+/** Levels of the warning-cue factor, crossed with the trial types when a cue is shown. */
 export type CueCondition = "cued" | "uncued";
+
+/** Proportion of each trial type, keyed by trial type. */
+export type TrialTypeProportions = Partial<Record<FlankerCondition, number>>;
+
+/**
+ * Crossed factors (PACKAGE-STANDARD §2a): the trial types and the warning cue, each with its own
+ * proportions. Either factor may be left out (equal proportions over `condition_set`; no cue split).
+ */
+export interface FactorProportions {
+  flanker_condition?: TrialTypeProportions;
+  cue?: Partial<Record<CueCondition, number>>;
+}
 
 export type NeutralFlankerForm =
   | "dashes"
@@ -137,11 +149,12 @@ export interface FlankerOptions {
    */
   concurrent_task?: "none" | "simultaneous" | "interleaved_trials" | "alternating_blocks";
   /**
-   * Proportion of each trial type per block, keyed by trial type (and optionally cued/uncued).
-   * Normalised to sum 1; counts per block use largest remainders. Must agree with `condition_set`.
+   * Proportion of each trial type per block, keyed by trial type. With a warning cue, give the cue
+   * as a second, crossed factor: `{ flanker_condition: { congruent: .5, incongruent: .5 }, cue: { cued: .5, uncued: .5 } }`.
+   * Normalised to sum 1 per factor; counts per block use largest remainders. Must agree with `condition_set`.
    * (default: { congruent: .25, incongruent: .25, neutral_dash: .25, neutral_empty: .25 } — PEBL flanker defaults, S019)
    */
-  condition_proportions?: Partial<Record<FlankerCondition | CueCondition, number>>;
+  condition_proportions?: TrialTypeProportions | FactorProportions;
   /**
    * Trial types included. `neutral` stands for any neutral form. If both this and
    * `condition_proportions` are given they must name the same types.
@@ -309,9 +322,56 @@ export const PHASE_OPTIONS = [
 
 export type PhaseOptionKey = (typeof PHASE_OPTIONS)[number];
 
-export type ResolvedOptions = Required<Omit<FlankerOptions, "practice" | "text">>;
+export type ResolvedOptions = Required<
+  Omit<FlankerOptions, "practice" | "text" | "condition_proportions">
+> & {
+  /** The trial-type factor (flat map). */
+  condition_proportions: TrialTypeProportions;
+  /** The cue factor, or null when the cue is not split (every trial cued when a cue is shown). */
+  cue_proportions: Partial<Record<CueCondition, number>> | null;
+};
 
-export const DEFAULT_OPTIONS: ResolvedOptions & { practice: Partial<FlankerOptions> } = {
+const FACTOR_NAMES = ["flanker_condition", "cue"];
+
+/**
+ * Split `condition_proportions` into its factors. Numbers = the trial-type factor alone; objects =
+ * crossed factors. Mixing the two, unknown factor names, or cue levels among the trial types throw.
+ */
+export function splitFactors(p: TrialTypeProportions | FactorProportions | undefined): {
+  types?: TrialTypeProportions;
+  cue?: Partial<Record<CueCondition, number>>;
+} {
+  if (p === undefined || p === null) return {};
+  const values = Object.values(p);
+  const objects = values.filter((v) => v !== null && typeof v === "object").length;
+  if (objects === 0) {
+    if ("cued" in p || "uncued" in p) {
+      throw new Error(
+        "flanker: condition_proportions: the cue is a separate factor; write { flanker_condition: { ... }, cue: { cued: ..., uncued: ... } }."
+      );
+    }
+    return { types: p as TrialTypeProportions };
+  }
+  if (objects !== values.length) {
+    throw new Error(
+      "flanker: condition_proportions mixes numbers (one factor) and maps (crossed factors); use one form."
+    );
+  }
+  const unknown = Object.keys(p).filter((k) => !FACTOR_NAMES.includes(k));
+  if (unknown.length) {
+    throw new Error(
+      `flanker: condition_proportions: unknown factor ${unknown.join(
+        ", "
+      )} (factors: ${FACTOR_NAMES.join(", ")}).`
+    );
+  }
+  const f = p as FactorProportions;
+  return { types: f.flanker_condition, cue: f.cue };
+}
+
+export const DEFAULT_OPTIONS: Omit<ResolvedOptions, "cue_proportions"> & {
+  practice: Partial<FlankerOptions>;
+} = {
   cue_target_interval_ms: 0,
   feedback_duration_ms: 400,
   fixation_duration_ms: 500,
@@ -449,13 +509,13 @@ export function resolveOptions(
   };
   merged.stimulus_layout = mergeMap(DEFAULT_OPTIONS.stimulus_layout, layer.stimulus_layout);
 
-  // reconcile condition_set / condition_proportions
-  const propConditions = (p: object) =>
-    Object.keys(p).filter((k) => k !== "cued" && k !== "uncued") as FlankerCondition[];
+  // reconcile condition_set / condition_proportions (trial-type factor); the cue factor is separate
+  const { types, cue } = splitFactors(layer.condition_proportions);
+  merged.condition_proportions = types ?? DEFAULT_OPTIONS.condition_proportions;
+  merged.cue_proportions = cue ?? null;
   const setGiven = layer.condition_set !== undefined;
-  const givenConds = layer.condition_proportions ? propConditions(layer.condition_proportions) : [];
+  const givenConds = types ? (Object.keys(types) as FlankerCondition[]) : [];
   const propGiven = givenConds.length > 0;
-  const cuedOnly = layer.condition_proportions && !propGiven ? layer.condition_proportions : {};
   if (setGiven && propGiven) {
     const a = new Set(layer.condition_set!.map(coarse));
     const b = new Set(givenConds.map(coarse));
@@ -465,12 +525,9 @@ export function resolveOptions(
       );
     }
   } else if (setGiven || (!propGiven && layer.condition_proportions)) {
-    // equal proportions over the given (or default) set; cued/uncued keys are kept
+    // equal proportions over the given (or default) set
     const set = layer.condition_set ?? DEFAULT_OPTIONS.condition_set;
-    merged.condition_proportions = {
-      ...Object.fromEntries(set.map((c) => [c, 1])),
-      ...cuedOnly,
-    };
+    merged.condition_proportions = Object.fromEntries(set.map((c) => [c, 1]));
   } else if (propGiven) {
     merged.condition_set = givenConds;
   }
@@ -493,7 +550,7 @@ export function validateOptions(o: ResolvedOptions): void {
   if (!(o.targets_per_response === 1 || o.targets_per_response === 2)) {
     throw new Error("flanker: targets_per_response must be 1 or 2.");
   }
-  const conds = Object.keys(o.condition_proportions).filter((k) => k !== "cued" && k !== "uncued");
+  const conds = Object.keys(o.condition_proportions);
   if (conds.includes("nogo") && o.response_window_ms === null) {
     throw new Error(
       "flanker: a nogo condition needs a response_window_ms (null would never end the trial)."
