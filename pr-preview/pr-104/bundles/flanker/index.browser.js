@@ -11,6 +11,7 @@ var jsPsychTimelineFlanker = (function (exports) {
   var __getProtoOf = Object.getPrototypeOf;
   var __hasOwnProp = Object.prototype.hasOwnProperty;
   var __propIsEnum = Object.prototype.propertyIsEnumerable;
+  var __pow = Math.pow;
   var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
   var __spreadValues = (a, b) => {
     for (var prop in b || (b = {}))
@@ -2747,7 +2748,7 @@ var jsPsychTimelineFlanker = (function (exports) {
         "zulu"
       ];
       function words(options) {
-        const random = (options == null ? void 0 : options.seed) ? new seedrandom2(options.seed) : null;
+        const random2 = (options == null ? void 0 : options.seed) ? new seedrandom2(options.seed) : null;
         function word() {
           if (options && options.maxLength > 1) {
             return generateWordWithMaxLength();
@@ -2770,7 +2771,7 @@ var jsPsychTimelineFlanker = (function (exports) {
           return wordList[randInt(wordList.length)];
         }
         function randInt(lessThan) {
-          const r = random ? random() : Math.random();
+          const r = random2 ? random2() : Math.random();
           return Math.floor(r * lessThan);
         }
         if (typeof options === "undefined") {
@@ -2792,11 +2793,11 @@ var jsPsychTimelineFlanker = (function (exports) {
         if (typeof options.separator !== "string") {
           options.separator = " ";
         }
-        var total = options.min + randInt(options.max + 1 - options.min);
+        var total2 = options.min + randInt(options.max + 1 - options.min);
         var results = [];
         var token = "";
         var relativeIndex = 0;
-        for (var i = 0; i < total * options.wordsPerString; i++) {
+        for (var i = 0; i < total2 * options.wordsPerString; i++) {
           if (relativeIndex === options.wordsPerString - 1) {
             token += options.formatter(word(), relativeIndex);
           } else {
@@ -2853,6 +2854,35 @@ var jsPsychTimelineFlanker = (function (exports) {
     "stimulus_color",
     "targets_per_response"
   ];
+  var FACTOR_NAMES = ["flanker_condition", "cue"];
+  function splitFactors(p) {
+    if (p === void 0 || p === null) return {};
+    const values = Object.values(p);
+    const objects = values.filter((v) => v !== null && typeof v === "object").length;
+    if (objects === 0) {
+      if ("cued" in p || "uncued" in p) {
+        throw new Error(
+          "flanker: condition_proportions: the cue is a separate factor; write { flanker_condition: { ... }, cue: { cued: ..., uncued: ... } }."
+        );
+      }
+      return { types: p };
+    }
+    if (objects !== values.length) {
+      throw new Error(
+        "flanker: condition_proportions mixes numbers (one factor) and maps (crossed factors); use one form."
+      );
+    }
+    const unknown = Object.keys(p).filter((k) => !FACTOR_NAMES.includes(k));
+    if (unknown.length) {
+      throw new Error(
+        `flanker: condition_proportions: unknown factor ${unknown.join(
+        ", "
+      )} (factors: ${FACTOR_NAMES.join(", ")}).`
+      );
+    }
+    const f = p;
+    return { types: f.flanker_condition, cue: f.cue };
+  }
   var DEFAULT_OPTIONS = {
     cue_target_interval_ms: 0,
     feedback_duration_ms: 400,
@@ -2976,11 +3006,12 @@ var jsPsychTimelineFlanker = (function (exports) {
       flanker: __spreadValues(__spreadValues({}, DEFAULT_OPTIONS.stimulus_set.flanker), (_c = (_b = layer.stimulus_set) == null ? void 0 : _b.flanker) != null ? _c : {})
     });
     merged.stimulus_layout = mergeMap(DEFAULT_OPTIONS.stimulus_layout, layer.stimulus_layout);
-    const propConditions = (p) => Object.keys(p).filter((k) => k !== "cued" && k !== "uncued");
+    const { types, cue } = splitFactors(layer.condition_proportions);
+    merged.condition_proportions = types != null ? types : DEFAULT_OPTIONS.condition_proportions;
+    merged.cue_proportions = cue != null ? cue : null;
     const setGiven = layer.condition_set !== void 0;
-    const givenConds = layer.condition_proportions ? propConditions(layer.condition_proportions) : [];
+    const givenConds = types ? Object.keys(types) : [];
     const propGiven = givenConds.length > 0;
-    const cuedOnly = layer.condition_proportions && !propGiven ? layer.condition_proportions : {};
     if (setGiven && propGiven) {
       const a = new Set(layer.condition_set.map(coarse));
       const b = new Set(givenConds.map(coarse));
@@ -2991,7 +3022,7 @@ var jsPsychTimelineFlanker = (function (exports) {
       }
     } else if (setGiven || !propGiven && layer.condition_proportions) {
       const set = (_d = layer.condition_set) != null ? _d : DEFAULT_OPTIONS.condition_set;
-      merged.condition_proportions = __spreadValues(__spreadValues({}, Object.fromEntries(set.map((c) => [c, 1]))), cuedOnly);
+      merged.condition_proportions = Object.fromEntries(set.map((c) => [c, 1]));
     } else if (propGiven) {
       merged.condition_set = givenConds;
     }
@@ -3013,7 +3044,7 @@ var jsPsychTimelineFlanker = (function (exports) {
     if (!(o.targets_per_response === 1 || o.targets_per_response === 2)) {
       throw new Error("flanker: targets_per_response must be 1 or 2.");
     }
-    const conds = Object.keys(o.condition_proportions).filter((k) => k !== "cued" && k !== "uncued");
+    const conds = Object.keys(o.condition_proportions);
     if (conds.includes("nogo") && o.response_window_ms === null) {
       throw new Error(
         "flanker: a nogo condition needs a response_window_ms (null would never end the trial)."
@@ -3070,6 +3101,379 @@ var jsPsychTimelineFlanker = (function (exports) {
   }
   function getSummary(data) {
     return __spreadProps(__spreadValues({}, calculateScores(data)), { task: TASK_NAME, version: VERSION });
+  }
+
+  // ../../node_modules/@jspsych/sequencer/dist/index.js
+  var random = () => Math.random();
+  function withRng(rng, fn) {
+    const prev = random;
+    random = rng != null ? rng : () => Math.random();
+    try {
+      return fn();
+    } finally {
+      random = prev;
+    }
+  }
+  var SequenceError = class extends Error {
+    constructor(message, constraints, proven_infeasible = false) {
+      super(message);
+      this.name = "SequenceError";
+      this.constraints = constraints;
+      this.proven_infeasible = proven_infeasible;
+    }
+  };
+  function shuffled(a) {
+    const c = a.slice();
+    for (let m = c.length; m > 1; ) {
+      const i = Math.floor(random() * m--);
+      const t = c[m];
+      c[m] = c[i];
+      c[i] = t;
+    }
+    return c;
+  }
+  var signatures = /* @__PURE__ */ new WeakMap();
+  function signature(item) {
+    if (typeof item !== "object" || item === null) return item;
+    let s = signatures.get(item);
+    if (s === void 0) {
+      const vals = Object.values(item);
+      if (vals.every((v) => typeof v !== "object" && typeof v !== "function"))
+        s = JSON.stringify(item);
+      else return item;
+      signatures.set(item, s);
+    }
+    return s;
+  }
+  function allocate(weights, n) {
+    const keys = Array.isArray(weights) ? weights.map((_, i) => i) : Object.keys(weights);
+    const w = keys.map((key) => weights[key]);
+    if (w.some((x) => !(x >= 0)) || !w.some((x) => x > 0)) {
+      throw new Error("allocate(): weights must be non-negative numbers and not all zero.");
+    }
+    const total2 = w.reduce((a, b) => a + b, 0);
+    const quota = w.map((x) => x / total2 * n);
+    const base = quota.map(Math.floor);
+    const frac = quota.map((q, i) => Math.round((q - base[i]) * 1e9));
+    let left = n - base.reduce((a, b) => a + b, 0);
+    const order = frac.map((_, i) => i).sort((a, b) => frac[b] - frac[a] || a - b);
+    for (const i of order) {
+      if (left-- <= 0) break;
+      base[i]++;
+    }
+    if (Array.isArray(weights)) return base;
+    const out = {};
+    keys.forEach((key, i) => out[key] = base[i]);
+    return out;
+  }
+  var isSampler = (s) => !Array.isArray(s);
+  function total(cs, seq, start) {
+    let t = 0;
+    for (const c of cs) t += c.violations(seq, start);
+    return t;
+  }
+  function violated(cs, seq, start) {
+    return cs.filter((c) => c.violations(seq, start) > 0).map((c) => c.name);
+  }
+  var Fail = class extends Error {
+    constructor(blame, proven, detail) {
+      super(detail);
+      this.blame = blame;
+      this.proven = proven;
+      this.detail = detail;
+    }
+  };
+  function backtrackItems(items, cs, after, o) {
+    var _a, _b, _c, _d;
+    const start = after.length;
+    for (const c of cs) {
+      if (c.feasible && !c.feasible(after, items, start)) {
+        throw new Fail([c.name], true, `"${c.name}" cannot be satisfied by these items`);
+      }
+    }
+    const blame = /* @__PURE__ */ new Map();
+    let bestDepth = -1;
+    let exhausted = false;
+    let timedOut = false;
+    for (let attempt = 0; attempt < o.max_attempts; attempt++) {
+      if (Date.now() > o.deadline) {
+        timedOut = true;
+        break;
+      }
+      const ctx = after.slice();
+      const rem = items.slice();
+      let nodes = 0;
+      let budgetHit = false;
+      const stack = [];
+      const open = () => stack.push({
+        order: shuffled(rem.map((_, i) => i)),
+        pos: 0,
+        tried: /* @__PURE__ */ new Set(),
+        idx: -1,
+        item: void 0,
+        placed: false,
+        local: /* @__PURE__ */ new Map()
+      });
+      if (rem.length) open();
+      while (stack.length && rem.length) {
+        const f = stack[stack.length - 1];
+        if (f.placed) {
+          ctx.pop();
+          rem.splice(f.idx, 0, f.item);
+          f.placed = false;
+        }
+        let advanced = false;
+        while (f.pos < f.order.length) {
+          const idx = f.order[f.pos++];
+          const item = rem[idx];
+          const sig = signature(item);
+          if (f.tried.has(sig)) continue;
+          f.tried.add(sig);
+          let rejectedBy;
+          for (const c of cs) {
+            if (c.allows && !c.allows(ctx, item, start)) {
+              rejectedBy = c.name;
+              break;
+            }
+          }
+          if (rejectedBy) {
+            f.local.set(rejectedBy, ((_a = f.local.get(rejectedBy)) != null ? _a : 0) + 1);
+            continue;
+          }
+          ctx.push(item);
+          rem.splice(idx, 1);
+          let bad;
+          for (const c of cs) {
+            if (c.feasible && !c.feasible(ctx, rem, start)) {
+              bad = c.name;
+              break;
+            }
+          }
+          if (bad) {
+            f.local.set(bad, ((_b = f.local.get(bad)) != null ? _b : 0) + 1);
+            ctx.pop();
+            rem.splice(idx, 0, item);
+            continue;
+          }
+          f.idx = idx;
+          f.item = item;
+          f.placed = true;
+          advanced = true;
+          break;
+        }
+        if (advanced) {
+          if (++nodes > o.max_nodes || (nodes & 255) === 0 && Date.now() > o.deadline) {
+            budgetHit = true;
+            break;
+          }
+          if (rem.length) open();
+          continue;
+        }
+        const depth = stack.length - 1;
+        if (depth >= bestDepth) {
+          if (depth > bestDepth) blame.clear();
+          bestDepth = depth;
+          for (const [name, n] of f.local) blame.set(name, ((_c = blame.get(name)) != null ? _c : 0) + n);
+        }
+        stack.pop();
+      }
+      if (!budgetHit && !stack.length && rem.length) {
+        exhausted = true;
+        break;
+      }
+      if (!rem.length) {
+        if (total(cs, ctx, start) === 0) return ctx.slice(start);
+        for (const n of violated(cs, ctx, start)) blame.set(n, ((_d = blame.get(n)) != null ? _d : 0) + 1);
+      }
+    }
+    const names = [...blame.entries()].sort((a, b) => b[1] - a[1]).map(([n]) => n);
+    const main = names.slice(0, 3);
+    throw new Fail(
+      main,
+      exhausted && cs.every((c) => c.allows),
+      exhausted ? `no valid order exists (search exhausted after placing ${bestDepth} of ${items.length} items); blocked by ${main.map((n) => `"${n}"`).join(", ") || "the constraints"}` : `no valid order found in ${timedOut ? "the time limit" : o.max_attempts + " attempts"} (got ${Math.max(bestDepth, 0)} of ${items.length} items in place); mostly blocked by ${main.map((n) => `"${n}"`).join(", ") || "the constraints"}`
+    );
+  }
+  function backtrackSampled(src, cs, after, o) {
+    var _a, _b;
+    const start = after.length;
+    const blame = /* @__PURE__ */ new Map();
+    let best = 0;
+    for (let attempt = 0; attempt < o.max_attempts && Date.now() <= o.deadline; attempt++) {
+      const ctx = after.slice();
+      let nodes = 0;
+      let stuck = 0;
+      while (ctx.length - start < src.n && nodes++ < o.max_nodes) {
+        let placed = false;
+        for (let t = 0; t < 100 && !placed; t++) {
+          const item = src.draw();
+          const rej = cs.find((c) => c.allows && !c.allows(ctx, item, start));
+          if (rej) blame.set(rej.name, ((_a = blame.get(rej.name)) != null ? _a : 0) + 1);
+          else {
+            ctx.push(item);
+            placed = true;
+          }
+        }
+        if (!placed) {
+          if (ctx.length > start) ctx.pop();
+          if (++stuck > 50) break;
+        }
+        best = Math.max(best, ctx.length - start);
+      }
+      if (ctx.length - start === src.n) {
+        if (total(cs, ctx, start) === 0) return ctx.slice(start);
+        for (const n of violated(cs, ctx, start)) blame.set(n, ((_b = blame.get(n)) != null ? _b : 0) + 1);
+      }
+    }
+    const names = [...blame.entries()].sort((a, b) => b[1] - a[1]).map(([n]) => n).slice(0, 3);
+    throw new Fail(
+      names,
+      false,
+      `no valid sequence found in ${o.max_attempts} attempts (got ${best} of ${src.n}); mostly blocked by ${names.map((n) => `"${n}"`).join(", ") || "the constraints"}`
+    );
+  }
+  function repair(source, cs, after, o) {
+    const start = after.length;
+    const n = isSampler(source) ? source.n : source.length;
+    const draw = isSampler(source) ? () => source.draw() : void 0;
+    let bestSeq;
+    let bestCost = Infinity;
+    const withPos = cs.filter((c) => c.positions);
+    for (let attempt = 0; attempt < o.max_attempts; attempt++) {
+      if (attempt > 0 && Date.now() > o.deadline) break;
+      let cur = draw ? Array.from({ length: n }, draw) : shuffled(source);
+      let full = after.concat(cur);
+      let cost = total(cs, full, start);
+      const budget = 30 * n + 500;
+      for (let it = 0; it < budget && cost > 0; it++) {
+        if ((it & 63) === 63 && Date.now() > o.deadline) break;
+        let i;
+        if (withPos.length && random() < 0.8) {
+          const pool = [];
+          for (const c of withPos)
+            if (c.violations(full, start) > 0) {
+              for (const p of c.positions(full, start)) if (p >= start) pool.push(p - start);
+            }
+          i = pool.length ? pool[Math.floor(random() * pool.length)] : Math.floor(random() * n);
+        } else i = Math.floor(random() * n);
+        if (draw) {
+          const old = cur[i];
+          cur[i] = draw();
+          full[start + i] = cur[i];
+          const c2 = total(cs, full, start);
+          if (c2 <= cost) cost = c2;
+          else {
+            cur[i] = old;
+            full[start + i] = old;
+          }
+        } else {
+          const j = Math.floor(random() * n);
+          if (i === j || cur[i] === cur[j]) continue;
+          const a = cur[i];
+          cur[i] = cur[j];
+          cur[j] = a;
+          full[start + i] = cur[i];
+          full[start + j] = cur[j];
+          const c2 = total(cs, full, start);
+          if (c2 <= cost) cost = c2;
+          else {
+            cur[j] = cur[i];
+            cur[i] = a;
+            full[start + i] = a;
+            full[start + j] = cur[j];
+          }
+        }
+      }
+      if (cost === 0) return cur;
+      if (cost < bestCost) {
+        bestCost = cost;
+        bestSeq = cur;
+      }
+    }
+    const names = violated(cs, after.concat(bestSeq), start);
+    throw new Fail(
+      names,
+      false,
+      `repair could not remove all violations in ${o.max_attempts} attempts (best had ${bestCost}); still violated: ${names.map((x) => `"${x}"`).join(", ")}`
+    );
+  }
+  function rejection(source, cs, after, o) {
+    var _a;
+    const start = after.length;
+    const make = () => isSampler(source) ? Array.from({ length: source.n }, () => source.draw()) : shuffled(source);
+    const tally = /* @__PURE__ */ new Map();
+    for (let a = 0; a < o.max_attempts; a++) {
+      if ((a & 63) === 63 && Date.now() > o.deadline) break;
+      const cand = make();
+      const full = after.concat(cand);
+      const bad = violated(cs, full, start);
+      if (!bad.length) return cand;
+      for (const b of bad) tally.set(b, ((_a = tally.get(b)) != null ? _a : 0) + 1);
+    }
+    const names = [...tally.entries()].sort((a, b) => b[1] - a[1]).map(([n]) => n).slice(0, 3);
+    throw new Fail(
+      names,
+      false,
+      `rejection sampling found no valid order in ${o.max_attempts} shuffles; most often violated: ${names.map((x) => `"${x}"`).join(", ")}`
+    );
+  }
+  function sequence(source, constraints, options = {}) {
+    return withRng(options.rng, () => solve(source, constraints, options));
+  }
+  function solve(source, constraints, options) {
+    var _a, _b, _c, _d;
+    const after = (_a = options.after) != null ? _a : [];
+    const n = isSampler(source) ? source.n : source.length;
+    const solver = (_b = options.solver) != null ? _b : "auto";
+    const max_nodes = (_c = options.max_nodes) != null ? _c : 10 * n + 500;
+    const deadline = Date.now() + ((_d = options.time_limit) != null ? _d : 3e3);
+    const run = (which) => {
+      var _a2, _b2, _c2, _d2;
+      switch (which) {
+        case "backtrack":
+          return isSampler(source) ? backtrackSampled(source, constraints, after, {
+            max_attempts: (_a2 = options.max_attempts) != null ? _a2 : 30,
+            max_nodes,
+            deadline
+          }) : backtrackItems(source, constraints, after, {
+            max_attempts: (_b2 = options.max_attempts) != null ? _b2 : 30,
+            max_nodes,
+            deadline
+          });
+        case "repair":
+          return repair(source, constraints, after, {
+            max_attempts: (_c2 = options.max_attempts) != null ? _c2 : 10,
+            deadline
+          });
+        case "rejection":
+          return rejection(source, constraints, after, {
+            max_attempts: (_d2 = options.max_attempts) != null ? _d2 : 2e4,
+            deadline
+          });
+      }
+    };
+    try {
+      if (solver !== "auto") return run(solver);
+      if (constraints.every((c) => c.allows)) {
+        try {
+          return run("backtrack");
+        } catch (e) {
+          if (!(e instanceof Fail) || e.proven) throw e;
+          try {
+            return run("repair");
+          } catch (e2) {
+            if (e2 instanceof Fail) throw e;
+            throw e2;
+          }
+        }
+      }
+      return run("repair");
+    } catch (e) {
+      if (e instanceof Fail) {
+        throw new SequenceError(`sequence(): ${e.detail}.`, e.blame, e.proven);
+      }
+      throw e;
+    }
   }
 
   // src/stimuli.ts
@@ -3174,14 +3578,15 @@ var jsPsychTimelineFlanker = (function (exports) {
 
   // src/sequence.ts
   function allocateCounts(weights, n) {
-    const total = weights.reduce((a, b) => a + b, 0);
-    if (!(total > 0)) throw new Error("flanker: condition proportions must sum to more than 0.");
-    const exact = weights.map((w) => w / total * n);
-    const counts = exact.map(Math.floor);
-    let left = n - counts.reduce((a, b) => a + b, 0);
-    const order = exact.map((e, i) => ({ i, r: e - Math.floor(e) })).sort((a, b) => b.r - a.r || a.i - b.i);
-    for (let k = 0; left > 0; k = (k + 1) % order.length, left--) counts[order[k].i]++;
-    return counts;
+    if (!(weights.reduce((a, b) => a + b, 0) > 0)) {
+      throw new Error("flanker: condition proportions must sum to more than 0.");
+    }
+    return allocate(weights, n);
+  }
+  var sequencerRng = (jsPsych) => () => jsPsych.randomization.randomInt(0, __pow(2, 30) - 1) / __pow(2, 30);
+  function orderTrials(jsPsych, trials, constraints = []) {
+    if (constraints.length === 0) return jsPsych.randomization.shuffle(trials);
+    return sequence(trials, constraints, { rng: sequencerRng(jsPsych) });
   }
   function expandDuration(d) {
     if (typeof d === "number") return [d];
@@ -3202,16 +3607,14 @@ var jsPsychTimelineFlanker = (function (exports) {
     return shuffle ? ctx.jsPsych.randomization.shuffle(out) : out;
   }
   function buildTrialSpecs(ctx, n) {
-    var _a, _b, _c, _d, _e;
+    var _a, _b, _c, _d, _e, _f;
     const { jsPsych, o } = ctx;
     const R = jsPsych.randomization;
     const props = o.condition_proportions;
-    const conds = Object.keys(props).filter(
-      (k) => {
-        var _a2;
-        return k !== "cued" && k !== "uncued" && ((_a2 = props[k]) != null ? _a2 : 0) > 0;
-      }
-    );
+    const conds = Object.keys(props).filter((k) => {
+      var _a2;
+      return ((_a2 = props[k]) != null ? _a2 : 0) > 0;
+    });
     const weights = conds.map((c) => props[c]);
     const order = o.trial_order;
     const target = (_a = o.stimulus_set.target) != null ? _a : "arrows";
@@ -3269,8 +3672,9 @@ var jsPsychTimelineFlanker = (function (exports) {
     const gapList = rnd ? condList.map(() => R.sampleWithReplacement(gaps, 1)[0]) : balanced(ctx, gaps, n, shuffle);
     let cuedList = new Array(n).fill(null);
     if (((_c = o.stimulus_set.cue) != null ? _c : "none") !== "none") {
-      const pc = (_d = props.cued) != null ? _d : props.uncued === void 0 ? 1 : 0;
-      const pu = (_e = props.uncued) != null ? _e : 0;
+      const cp = (_d = o.cue_proportions) != null ? _d : { cued: 1 };
+      const pc = (_e = cp.cued) != null ? _e : 0;
+      const pu = (_f = cp.uncued) != null ? _f : 0;
       if (rnd) {
         cuedList = condList.map(
           () => R.sampleWithReplacement([true, false], 1, [pc || 1e-9, pu || 1e-9])[0]
@@ -3331,7 +3735,7 @@ var jsPsychTimelineFlanker = (function (exports) {
         fixation_ms: R.sampleWithReplacement(fixations, 1)[0]
       };
     });
-    if (order === "shuffled_list") return R.shuffle(specs);
+    if (order === "shuffled_list") return orderTrials(jsPsych, specs);
     return specs;
   }
   function buildDemoSpec(o, flanker_condition, form, group) {
@@ -4721,9 +5125,9 @@ var jsPsychTimelineFlanker = (function (exports) {
       timeline: specs.map((s, i) => createTrialSequence(ctx, o, s, phase, block, i + 1))
     };
   }
-  function splitTrials(total, parts) {
-    const base = Math.floor(total / parts);
-    const extra = total - base * parts;
+  function splitTrials(total2, parts) {
+    const base = Math.floor(total2 / parts);
+    const extra = total2 - base * parts;
     return Array.from({ length: parts }, (_, i) => base + (i < extra ? 1 : 0));
   }
   function textPage(ctx, html, phase, part, label) {
