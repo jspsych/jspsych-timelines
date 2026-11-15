@@ -2193,10 +2193,11 @@
   {
    "name": "trial_feedback",
    "default": {
-    "value": "accuracy_rt",
+    "value": "accuracy",
     "raw": "correct/incorrect + RT",
-    "basis": "anchor",
+    "basis": "no_rt_feedback",
     "source": "S019",
+    "replaced": "accuracy_rt",
     "needs_translation": false
    },
    "components": [
