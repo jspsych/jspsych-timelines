@@ -56,13 +56,15 @@ From a CDN:
 
 ## Task Description
 
-Trial structure: fixation, then the arrow row with Left and Right buttons until a response or the response duration passes, then optional feedback, then an inter-trial interval. A practice block (with optional interactive instructions) comes first, then one or more test blocks. Congruent and incongruent trials cover both target directions; neutral trials are added when `includeNeutral` is true.
+Each trial shows a fixation cross, then a row of five arrows. The participant reports the direction of the middle arrow (by default with `z` for left and `/` for right) and ignores the flanking arrows, which point the same way (congruent) or the other way (incongruent). On neutral trials the flankers are dashes or are left out. The row stays up until a response or until the 800 ms response window ends. Feedback follows if it is on, then a 1,000 ms interval before the next trial. A warning cue before the row, a flanker–target onset asynchrony and letter targets are options.
 
-TODO: trial counts per condition and how trial order is randomized. This is not in the README.
+The task opens with an interactive walkthrough, one example of each trial type with a hint and a retry after a wrong answer. Then come 8 practice trials with accuracy and RT feedback, and 160 test trials without feedback. The defaults follow the PEBL flanker battery (S019).
+
+Trial counts are exact within each block: `condition_proportions` (by default congruent, incongruent and two neutral forms, a quarter each) is turned into counts by largest remainders, each trial type has equal left and right targets, and `trial_order: "shuffled_list"` shuffles that balanced list.
 
 ## Parameters
 
-Generated from the exported `FlankerOptions` type, with the grouping in `packages/flanker/docs-meta/options.meta.json`.
+Pick an option on the left, or search by name or description. Each option shows its default and where that default came from, what turns it off, whether practice can use a different value, and the values used in the studies behind the spec. Link to one with `#param-<name>`, e.g. [`#param-iti_ms`](#param-iti_ms).
 
 <ParamsTable schema={schema} />
 
