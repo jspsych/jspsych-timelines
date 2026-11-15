@@ -146,10 +146,22 @@ function responseLabels(ctx: Context, o: ResolvedOptions, mapping: Mapping): [st
 }
 
 /** Label of response `r` for instruction text: a key cap for the keyboard, else the button label. */
+/** How a key is named to the participant: letters in capitals, named keys in words. */
+const KEY_NAMES: Record<string, string> = {
+  " ": "space",
+  ArrowLeft: "← left arrow",
+  ArrowRight: "right arrow →",
+  ArrowUp: "↑ up arrow",
+  ArrowDown: "↓ down arrow",
+  Enter: "Enter",
+};
+
+export function keyName(key: string): string {
+  return KEY_NAMES[key] ?? (key.length === 1 ? key.toUpperCase() : key);
+}
+
 function responseLabelHtml(o: ResolvedOptions, labels: [string, string], r: number): string {
-  return isKeyboard(o)
-    ? `<kbd>${o.response_keys[r] === " " ? "space" : o.response_keys[r]}</kbd>`
-    : labels[r];
+  return isKeyboard(o) ? `<kbd>${keyName(o.response_keys[r])}</kbd>` : labels[r];
 }
 
 function pxPerDeg(ctx: Context): number {

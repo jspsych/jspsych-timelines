@@ -44,7 +44,7 @@ export default {
         name: `keyboard ${viewport.width}x${viewport.height}`,
         viewport,
         options: { ...options, cue_target_interval_ms: 300, stimulus_set: { cue: "circles" } },
-        keys: { array: "z" },
+        keys: { array: "q" },
       },
       {
         name: `touch ${viewport.width}x${viewport.height}`,

@@ -68,8 +68,8 @@ describe("instruction walkthrough (interactive)", () => {
       expect(r.attempt).toBe(1);
     });
     expect(c[2]).toMatchObject({ correct_response: null, timeout: true });
-    expect(c[0].correct_response).toBe("z");
-    expect(c[1].correct_response).toBe("/"); // targets alternate between the two responses
+    expect(c[0].correct_response).toBe("q");
+    expect(c[1].correct_response).toBe("p"); // targets alternate between the two responses
     expect(
       rows.filter((r) => r.part === "instruction_feedback" && r.feedback_kind === "correct")
     ).toHaveLength(3);
@@ -133,7 +133,7 @@ describe("instruction walkthrough (interactive)", () => {
       allTrials(tl)
         .filter((t) => t.data?.part === "instruction_check")
         .map((t) => t.data.correct_response);
-    const wrongOf = (right: string) => (right === "z" ? "/" : "z");
+    const wrongOf = (right: string) => (right === "q" ? "p" : "q");
 
     afterEach(() => jest.useRealTimers());
 
@@ -145,19 +145,19 @@ describe("instruction walkthrough (interactive)", () => {
       const { displayElement, getData } = await startTimeline([wt], jsPsych);
       await clickTarget(displayElement.querySelector("button")!); // intro page
       expect(displayElement.querySelector(".jspsych-timelines-flanker-array")).not.toBeNull();
-      expect(displayElement.innerHTML).toContain("<kbd>" + k1 + "</kbd>");
+      expect(displayElement.innerHTML).toContain("<kbd>" + k1.toUpperCase() + "</kbd>");
 
       await pressKey(wrongOf(k1));
       expect(displayElement.textContent).toContain("Let's try again");
       await clickTarget(displayElement.querySelector("button")!);
       // same step again
-      expect(displayElement.innerHTML).toContain("<kbd>" + k1 + "</kbd>");
+      expect(displayElement.innerHTML).toContain("<kbd>" + k1.toUpperCase() + "</kbd>");
       await pressKey(k1);
       expect(displayElement.textContent).toContain("Correct!");
       jest.advanceTimersByTime(1000);
       await flushPromises();
       // next step: incongruent, other key
-      expect(displayElement.innerHTML).toContain("<kbd>" + k2 + "</kbd>");
+      expect(displayElement.innerHTML).toContain("<kbd>" + k2.toUpperCase() + "</kbd>");
       const rows = checks(getData().values() as any[]);
       expect(rows.map((r) => [r.condition, r.attempt, r.correct])).toEqual([
         ["congruent", 1, false],
@@ -178,11 +178,11 @@ describe("instruction walkthrough (interactive)", () => {
           expect(displayElement.textContent).toContain("Let's try again");
         } else {
           expect(displayElement.textContent).toContain("Let's move on");
-          expect(displayElement.innerHTML).toContain("<kbd>" + k1 + "</kbd>");
+          expect(displayElement.innerHTML).toContain("<kbd>" + k1.toUpperCase() + "</kbd>");
         }
         await clickTarget(displayElement.querySelector("button")!);
       }
-      expect(displayElement.innerHTML).toContain("<kbd>" + k2 + "</kbd>");
+      expect(displayElement.innerHTML).toContain("<kbd>" + k2.toUpperCase() + "</kbd>");
       const rows = checks(getData().values() as any[]);
       expect(rows.map((r) => r.attempt)).toEqual([1, 2, 3]);
       expect(rows.every((r) => r.condition === "congruent" && r.correct === false)).toBe(true);
@@ -199,8 +199,20 @@ describe("instruction walkthrough (interactive)", () => {
       const { displayElement } = await startTimeline([wt], jsPsych);
       await clickTarget(displayElement.querySelector("button")!);
       expect(displayElement.textContent).toContain("The center is H");
-      expect(displayElement.innerHTML).toContain("<kbd>a</kbd>");
-      expect(displayElement.innerHTML).not.toContain("<kbd>z</kbd>");
+      expect(displayElement.innerHTML).toContain("<kbd>A</kbd>");
+      expect(displayElement.innerHTML).not.toContain("<kbd>Q</kbd>");
+    });
+
+    it("names arrow keys and space in words", async () => {
+      const ctx = timelineUnits.createContext(jsPsych, {
+        ...base,
+        response_keys: ["ArrowLeft", "ArrowRight"],
+      });
+      const wt = timelineUnits.createInstructionWalkthrough(ctx);
+      const { displayElement } = await startTimeline([wt], jsPsych);
+      await clickTarget(displayElement.querySelector("button")!);
+      expect(displayElement.innerHTML).toContain("<kbd>← left arrow</kbd>");
+      expect(displayElement.innerHTML).not.toContain("ArrowLeft");
     });
 
     it("uses buttons on a touch device", async () => {

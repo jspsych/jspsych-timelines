@@ -191,7 +191,8 @@ export interface FlankerOptions {
   response_hand?: "two_hands_index_fingers" | "one_hand_dominant";
   /**
    * Keys for the first (left) and second (right) response; arrow keys as `"ArrowLeft"`.
-   * (default: ["z", "/"] — PEBL browser keys, S135; PEBL's native left/right shift cannot be told apart by jsPsych)
+   * (default: ["q", "p"] — the most common letter pair in the studies, 2/11, tied with w/p; the anchor's keys
+   * are punctuation or left/right shift, which read badly or can't be told apart; see DEFAULTS.md)
    */
   response_keys?: string[];
   /**
@@ -406,7 +407,7 @@ export const DEFAULT_OPTIONS: Omit<ResolvedOptions, "cue_proportions"> & {
   trial_order: "shuffled_list",
   response_device: "keyboard",
   response_hand: "two_hands_index_fingers",
-  response_keys: ["z", "/"],
+  response_keys: ["q", "p"],
   response_mapping_counterbalancing: "fixed",
   attention_checks: "none",
   device_eligibility: "none",

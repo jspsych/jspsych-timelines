@@ -440,7 +440,7 @@ describe("flanker", () => {
       const d: any = { response: t.data.correct_response };
       t.on_finish(d);
       expect(d).toMatchObject({ correct: true, timeout: false });
-      const wrong: any = { response: t.data.correct_response === "z" ? "/" : "z" };
+      const wrong: any = { response: t.data.correct_response === "q" ? "p" : "q" };
       t.on_finish(wrong);
       expect(wrong).toMatchObject({ correct: false, timeout: false });
       const miss: any = { response: null };
@@ -457,7 +457,7 @@ describe("flanker", () => {
       const held: any = { response: null };
       n.on_finish(held);
       expect(held).toMatchObject({ correct: true, timeout: true });
-      const pressed: any = { response: "z" };
+      const pressed: any = { response: "q" };
       n.on_finish(pressed);
       expect(pressed.correct).toBe(false);
     });
