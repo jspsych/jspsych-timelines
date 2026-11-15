@@ -2918,7 +2918,7 @@ var jsPsychTimelineFlanker = (function (exports) {
     trial_order: "shuffled_list",
     response_device: "keyboard",
     response_hand: "two_hands_index_fingers",
-    response_keys: ["z", "/"],
+    response_keys: ["q", "p"],
     response_mapping_counterbalancing: "fixed",
     attention_checks: "none",
     device_eligibility: "none",
@@ -4857,8 +4857,20 @@ var jsPsychTimelineFlanker = (function (exports) {
     });
     return labels;
   }
+  var KEY_NAMES = {
+    " ": "space",
+    ArrowLeft: "\u2190 left arrow",
+    ArrowRight: "right arrow \u2192",
+    ArrowUp: "\u2191 up arrow",
+    ArrowDown: "\u2193 down arrow",
+    Enter: "Enter"
+  };
+  function keyName(key) {
+    var _a;
+    return (_a = KEY_NAMES[key]) != null ? _a : key.length === 1 ? key.toUpperCase() : key;
+  }
   function responseLabelHtml(o, labels, r) {
-    return isKeyboard(o) ? `<kbd>${o.response_keys[r] === " " ? "space" : o.response_keys[r]}</kbd>` : labels[r];
+    return isKeyboard(o) ? `<kbd>${keyName(o.response_keys[r])}</kbd>` : labels[r];
   }
   function pxPerDeg(ctx) {
     var _a;
