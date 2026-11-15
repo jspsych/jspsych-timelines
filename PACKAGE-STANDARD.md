@@ -80,7 +80,7 @@ Options that mean the same thing in different tasks **MUST** have the same name,
   - either a number of milliseconds;
   - or `{ min, max, step? }`, sampled per trial, uniformly from `min`, `min + step`, … up to `max`, using `jsPsych.randomization` (§3). `step` defaults to 1 ms.
 
-  The sampled value **MUST** be written into the trial's data (e.g. `fixation_duration: 734`), so analyses can use the actual duration. Absent values still follow the absence rule: `0` means it doesn't happen, and `null` means no limit. Lists of fixed levels (e.g. SOAs of 100, 300, 500 as conditions) are design factors, not jitter, and belong in a task-specific option.
+  The sampled value **MUST** be written into the trial's data, so analyses can use the actual duration. The data field is the option's name without `_ms`, in milliseconds: `fixation_duration_ms` → `fixation_duration: 734`, `iti_ms` → `iti`, `feedback_duration_ms` → `feedback_duration`, `cue_target_interval_ms` → `cue_target_interval`. This matches jsPsych's own fields (`rt`, `trial_duration`), which are in milliseconds without a suffix. Absent values still follow the absence rule: `0` means it doesn't happen, and `null` means no limit. Lists of fixed levels (e.g. SOAs of 100, 300, 500 as conditions) are design factors, not jitter, and belong in a task-specific option.
 - **Absence is a value, typed by meaning.** There are no on/off booleans like `show_fixation`.
 
   | Kind | Absent value | Example |
@@ -93,6 +93,23 @@ Options that mean the same thing in different tasks **MUST** have the same name,
   `undefined` (option not given) always means "use the default".
 - **Phase overrides, not phase names.** There are no `practice_feedback` / `test_feedback` pairs. A package that has a practice phase **MUST** accept `practice?: Partial<<Task>Options>`, whose values override the main options during practice: `{ trial_feedback: "none", practice: { trial_feedback: "accuracy" } }`. `practice_trials` is a separate count, not a phase override. `practice` is therefore a reserved option name.
 - **Task vocabulary goes in values, not names.** Options that cover several stimulus kinds or trial types take a map keyed by the task's own terms, not a cross-task role list: `stimulus_set: { cue: …, target: … }`, `condition_proportions: { stop: 0.25, go: 0.75 }`.
+- **Crossed factors are a map of maps.** In `condition_proportions`, numbers mean one factor: `{ congruent: 0.5, incongruent: 0.5 }`. Objects mean independent factors, fully crossed, each keyed by the task's own factor name: `{ congruency: { congruent: 0.5, incongruent: 0.5 }, cue: { cued: 0.5, uncued: 0.5 } }`. A map **MUST NOT** mix numbers and objects. Counts are exact per factor within a block (largest remainder); the factors are crossed by assigning each factor's levels independently.
+- **Sequence constraints have one typed form.** `sequence_constraints` holds ordering rules that apply within each block, and across block boundaries for the neighbour rules (runs, gaps, repeats). `<condition>` is a key of `condition_proportions` (or of one factor's map). Omitted keys mean no constraint.
+
+  ```ts
+  sequence_constraints?: {
+    max_run?: number | Record<string, number>;   // at most n consecutive trials of the same condition, or of each listed condition
+    min_gap?: Record<string, number>;            // at least n other trials between two trials of that condition
+    max_gap?: Record<string, number>;            // at most n other trials between two trials of that condition
+    run_length?: Record<string, number[]>;       // runs of that condition only have these lengths (go runs of 1, 3 or 5)
+    start_with?: Record<string, number>;         // each block starts with n trials of that condition
+    no_immediate_repeat?: true | string[];       // no condition repeats on consecutive trials, or none of these trial fields does
+    balanced_transitions?: true;                 // each condition follows each condition equally often (within 1)
+    cycle_length?: number;                       // every consecutive n trials hold the block's proportions exactly
+  } | null;
+  ```
+
+  Packages implement these with `@jspsych/sequencer` (§11): each key maps onto one of its rules (`maxRun`, `minGap`, `maxGap`, `runLength`, `startWith`, `noRepeat`, `balancedTransitions`; `cycle_length` is `sequenceBlocks` over chunks). An order the rules can't satisfy throws the sequencer's error, which names the rule, when the timeline is built. A rule that isn't in this list is a vocabulary proposal, not a task-specific key.
 - **Bundle only what is configured as a unit.** An adaptive procedure is one `adaptive` option (`procedure`, `start_level`, `step_size`, `target_accuracy`, `bounds`, `discontinue_rule`), passed whole to the staircase helper. Settings that are changed one at a time stay flat: `trial_feedback`, `feedback_condition` and `feedback_duration_ms` are separate options.
 - **Response = device + format.** `response_device` takes `keyboard`, `mouse`, `touch`, `microphone`, `eye_tracker` or `gamepad`. `response_format` takes `single_response`, `n_afc`, `rating`, `free_text`, `location` or `none`. Modality is not an option; it is implied by these two. What the participant judges (detection vs localization) changes the measure, so it is a `task_variant`, not a response option.
 - **Defaults are evidence-based and documented.** Every option's doc comment states its default *and where it came from*: the anchor configuration (a cited study or reference implementation), the most common value in recent online studies, or a recorded human decision. The package's generated spec (`spec.yaml`) is the source.
@@ -135,6 +152,16 @@ const isi = jsPsych.randomization.randomInt(400, 800);
 ```
 
 Core provides `shuffle`, `shuffleNoRepeats`, `shuffleAlternateGroups`, `sampleWithReplacement`, `sampleWithoutReplacement`, `repeat`, `randomInt`, `sampleNormal`, `sampleExGaussian`, and more.
+
+Constrained orders (exact counts, run limits, gaps, balanced transitions) **MUST** use `@jspsych/sequencer`, not a hand-written retry loop. It takes its random numbers from an `rng` option; pass one drawn from `jsPsych.randomization`, so the order goes through the same path as every other draw:
+
+```ts
+import { allocate, maxRun, sequence } from "@jspsych/sequencer";
+
+const rng = () => jsPsych.randomization.randomInt(0, 2 ** 30 - 1) / 2 ** 30;
+const counts = allocate(condition_proportions, n_trials); // exact counts, largest remainder
+const order = sequence(trials, [maxRun({ key: "condition", max: 3 })], { rng });
+```
 
 Seeding is not the reason for this rule. `jsPsych.randomization.setSeed()` replaces the global `Math.random` with a seeded generator, so for now a stray `Math.random()` call is seeded too. The rule exists for three other reasons:
 
@@ -547,7 +574,7 @@ The extreme-rate correction policy stays local but **MUST** be named accurately 
 
 For each piece of shared logic, ask whether an ordinary jsPsych experiment, with no timeline package, would want it.
 
-- **Yes → jsPsych core.** Examples: adaptive staircases (a new core module), constrained sequence generation (exact proportions per block, `max_run`, `min_gap`) and jittered durations (both in `jsPsych.randomization`). Packages that need these wait for, or build against a pre-release of, the jsPsych version that has them.
+- **Yes → jsPsych core, or a standalone `@jspsych/*` library.** Examples: adaptive staircases (`jsPsych.adaptive`, in core since 8.4.0) and constrained sequence generation (`@jspsych/sequencer`, a dependency-free library in its own repo, jspsych/sequencer). Packages that need a core addition wait for, or build against a pre-release of, the jsPsych version that has it.
 - **Only meaningful with the options vocabulary → `@jspsych-timelines/core`.** This is the one shared package in this repo. It is deliberately small: the vocabulary's TypeScript types, `resolveOptions` (defaults, practice overrides, absence normalization), and data tagging. It contains **no** timeline units. Common pieces such as fixation, feedback and practice loops are built in each package; if one is truly needed everywhere, it becomes a jsPsych plugin.
 - **Specialized → an established library** (e.g. `simple-statistics`, above).
 - **Task-specific → the package.**
