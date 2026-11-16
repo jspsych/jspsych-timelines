@@ -20,8 +20,15 @@ export interface DeadlineContext {
   trial_index_in_block: number;
 }
 
-/** A computed value for `response_window_ms`: ms, or null for no limit. `label` is recorded as `response_window_rule`. */
-export type DeadlineFunction = ((ctx: DeadlineContext) => number | null) & { label?: string };
+/** A computed value for `response_window_ms`: ms, or null for no limit. A function's `label` property is recorded as `response_window_rule`. */
+export interface DeadlineFunction {
+  (ctx: DeadlineContext): number | null;
+  /** Readable name of the rule, recorded with the value as `response_window_rule`. */
+  label?: string;
+}
+
+/** What the prebuilt helpers return: a deadline function with its readable label. */
+export type LabelledDeadline = DeadlineFunction & { label: string };
 
 export interface DeadlineBounds {
   /** Lowest deadline returned (ms). */
@@ -74,12 +81,12 @@ function make(
   label: string,
   f: (rts: number[]) => number,
   bounds: DeadlineBounds
-): DeadlineFunction {
-  const fn: DeadlineFunction = ({ jsPsych }) => {
+): LabelledDeadline {
+  const fn = (({ jsPsych }) => {
     const rts = calibrationRts(jsPsych);
     if (rts.length < MIN_CALIBRATION_ROWS) return clamp(FALLBACK_DEADLINE_MS, bounds);
     return Math.round(clamp(f(rts), bounds));
-  };
+  }) as LabelledDeadline;
   fn.label = label + (bounds.min !== undefined || bounds.max !== undefined ? " (bounded)" : "");
   return fn;
 }
@@ -89,10 +96,10 @@ export const deadlines = {
    * Mean + `k` sample SDs of the correct processing-only practice RTs: the anchor's calibrated deadline with
    * `k = 2.5` (Unsworth et al. 2005; also PsyToolkit), or `k = 2` (S039).
    */
-  meanPlusSd: (k: number, bounds: DeadlineBounds = {}): DeadlineFunction =>
+  meanPlusSd: (k: number, bounds: DeadlineBounds = {}): LabelledDeadline =>
     make(`mean + ${k} SD of correct practice RTs`, (rts) => mean(rts) + k * sd(rts), bounds),
   /** The `p`-th percentile (0-100) of the correct processing-only practice RTs. */
-  percentile: (p: number, bounds: DeadlineBounds = {}): DeadlineFunction =>
+  percentile: (p: number, bounds: DeadlineBounds = {}): LabelledDeadline =>
     make(`${p}th percentile of correct practice RTs`, (rts) => percentileOf(rts, p), bounds),
   /** Number, mean and SD of the practice RTs the helpers would use now (for reports and checks). */
   calibration: (jsPsych: JsPsych) => {
