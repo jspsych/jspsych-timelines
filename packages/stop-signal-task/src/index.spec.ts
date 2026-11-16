@@ -168,11 +168,6 @@ describe("simulation (an independent race model)", () => {
       expect(s.mean_go_rt!).toBeGreaterThan(380);
       expect(s.mean_go_rt!).toBeLessThan(600);
       expect(s.failed_stop_rt!).toBeLessThan(s.mean_go_rt!);
-      expect(s.checks).toMatchObject({
-        stop_accuracy_ok: true,
-        race_model_ok: true,
-        go_omissions_ok: true,
-      });
     }
   });
 
@@ -238,13 +233,8 @@ describe("scoring", () => {
     ]) {
       expect((s as any)[k]).toBeNull();
     }
-    expect(s.checks).toEqual({
-      stop_accuracy_ok: null,
-      race_model_ok: null,
-      go_omissions_ok: null,
-      go_choice_errors_ok: null,
-      enough_stop_trials: false,
-    });
+    // the package reports measures; it never judges or excludes a session
+    expect(s).not.toHaveProperty("checks");
     expect(JSON.stringify(s)).not.toContain("NaN");
   });
 
@@ -269,8 +259,6 @@ describe("scoring", () => {
     expect(s.ssrt_mean).toBe(380 - 225);
     expect(s.failed_stop_rt).toBe(365);
     expect(s.go_omission_rate).toBe(0.1);
-    expect(s.checks.race_model_ok).toBe(true);
-    expect(s.checks.enough_stop_trials).toBe(false);
   });
 
   it("counts choice errors in the go distribution, and a response before the signal as a failed stop", () => {

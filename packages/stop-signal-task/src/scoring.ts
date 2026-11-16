@@ -1,6 +1,6 @@
 import type { DataCollection } from "jspsych";
 
-import { CHECK_LIMITS, TASK_NAME, VERSION } from "./constants";
+import { TASK_NAME, VERSION } from "./constants";
 
 /**
  * Scores from the test phase, kept local to the package (PACKAGE-STANDARD §11: SSRT is specific to this task).
@@ -42,19 +42,6 @@ export interface ScoringResult {
   ssrt_integration_blockwise: number | null;
   /** SSRT, mean method: mean go RT (responses only) minus mean SSD. Biased by skewed RTs (S001, S027). null if either is missing. */
   ssrt_mean: number | null;
-  /** The usual checks of a stop-signal session (see CHECK_LIMITS); null where the measure is missing. */
-  checks: {
-    /** p(respond | signal) between 0.25 and 0.75 */
-    stop_accuracy_ok: boolean | null;
-    /** mean failed-stop RT faster than mean go RT: the race model's independence assumption holds on average */
-    race_model_ok: boolean | null;
-    /** go omissions at most 25 % */
-    go_omissions_ok: boolean | null;
-    /** go choice errors at most 10 % */
-    go_choice_errors_ok: boolean | null;
-    /** at least 50 stop trials (fewer make SSRT unreliable) */
-    enough_stop_trials: boolean;
-  };
 }
 
 const isNum = (x: unknown): x is number => typeof x === "number";
@@ -124,7 +111,6 @@ export function scoreRows(rows: DataCollection): ScoringResult {
 
   const goOmissionRate = nGo ? goOmissions / nGo : null;
   const goChoiceRate = nGo ? goErrors / nGo : null;
-  const [lo, hi] = CHECK_LIMITS.p_respond_signal;
   return {
     n_trials: rows.count(),
     n_go_trials: nGo,
@@ -143,15 +129,6 @@ export function scoreRows(rows: DataCollection): ScoringResult {
       ? perBlock.reduce((a, b) => a + b, 0) / perBlock.length
       : null,
     ssrt_mean: allGoRt !== null && meanSsd !== null ? allGoRt - meanSsd : null,
-    checks: {
-      stop_accuracy_ok: pRespond === null ? null : pRespond >= lo && pRespond <= hi,
-      race_model_ok: failedRt !== null && allGoRt !== null ? failedRt < allGoRt : null,
-      go_omissions_ok:
-        goOmissionRate === null ? null : goOmissionRate <= CHECK_LIMITS.go_omission_rate_max,
-      go_choice_errors_ok:
-        goChoiceRate === null ? null : goChoiceRate <= CHECK_LIMITS.go_choice_error_rate_max,
-      enough_stop_trials: nStop >= CHECK_LIMITS.min_stop_trials,
-    },
   };
 }
 

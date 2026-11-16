@@ -4,7 +4,7 @@ import { join } from "path";
 import { simulateTimeline } from "@jspsych/test-utils";
 import { DataCollection, JsPsych, initJsPsych } from "jspsych";
 
-import { PROCESSING_ACCURACY_CRITERION } from "./constants";
+import { PROCESSING_ACCURACY_TARGET } from "./constants";
 import { OperationSpanOptions, resolveOptions } from "./options";
 import { calculateScores, scoreRecall } from "./scoring";
 import { createTimeline, timelineUnits, utils } from ".";
@@ -425,7 +425,6 @@ describe("scoring", () => {
       speed_errors: 0,
       processing_errors: 0,
       processing_accuracy: null,
-      meets_processing_criterion: null,
       mean_processing_rt: null,
     });
   });
@@ -458,26 +457,15 @@ describe("scoring", () => {
     expect(s.accuracy_errors).toBe(1);
     expect(s.processing_errors).toBe(2);
     expect(s.processing_accuracy).toBe(0.5);
-    expect(s.meets_processing_criterion).toBe(false);
     expect(s.mean_processing_rt).toBe(1000);
   });
 
-  it("the processing criterion is 85% by default and can be set", () => {
-    expect(PROCESSING_ACCURACY_CRITERION).toBe(0.85);
-    const rows = [
-      ...Array(17)
-        .fill(0)
-        .map(() => proc(true)),
-      proc(false),
-      proc(false),
-      proc(true),
-    ];
-    expect(calculateScores(new DataCollection(rows)).processing_accuracy).toBeCloseTo(18 / 20);
-    expect(calculateScores(new DataCollection(rows)).meets_processing_criterion).toBe(true);
-    expect(
-      calculateScores(new DataCollection(rows), { processing_criterion: 0.95 })
-        .meets_processing_criterion
-    ).toBe(false);
+  it("reports processing accuracy without judging it (no built-in criterion)", () => {
+    expect(PROCESSING_ACCURACY_TARGET).toBe(0.85);
+    const rows = [...Array(17).fill(0).map(() => proc(true)), proc(false), proc(false), proc(true)];
+    const s = calculateScores(new DataCollection(rows));
+    expect(s.processing_accuracy).toBeCloseTo(18 / 20);
+    expect(Object.keys(s).some((k) => /criterion|exclu|_ok$/.test(k))).toBe(false);
   });
 
   it("scoreRecall: serial needs the right position, free needs the item; blanks never match", () => {

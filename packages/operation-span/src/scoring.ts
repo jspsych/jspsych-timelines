@@ -1,6 +1,6 @@
 import type { DataCollection } from "jspsych";
 
-import { PROCESSING_ACCURACY_CRITERION, TASK_NAME, VERSION } from "./constants";
+import { TASK_NAME, VERSION } from "./constants";
 
 const norm = (x: unknown) =>
   String(x ?? "")
@@ -77,17 +77,11 @@ export interface ScoringResult {
   processing_errors: number;
   /** Proportion of processing problems solved correctly and in time. null if none. */
   processing_accuracy: number | null;
-  /** processing_accuracy at or above the criterion (default 0.85, S006/S007); null if there is no processing. */
-  meets_processing_criterion: boolean | null;
   /** Mean RT (ms) of the timed processing response on correct problems. null if none. */
   mean_processing_rt: number | null;
 }
 
-export function calculateScores(
-  data: DataCollection,
-  options: { processing_criterion?: number } = {}
-): ScoringResult {
-  const criterion = options.processing_criterion ?? PROCESSING_ACCURACY_CRITERION;
+export function calculateScores(data: DataCollection): ScoringResult {
   const recall = data.filter({ task: TASK_NAME, phase: "test", part: "response" });
   const proc = data.filter({ task: TASK_NAME, phase: "test", part: "processing" });
   const n = recall.count();
@@ -113,14 +107,10 @@ export function calculateScores(
     speed_errors: speed,
     processing_errors: nProc - nCorrect,
     processing_accuracy: nProc > 0 ? nCorrect / nProc : null,
-    meets_processing_criterion: nProc > 0 ? nCorrect / nProc >= criterion : null,
     mean_processing_rt: rts.count() > 0 ? rts.select("rt").mean() : null,
   };
 }
 
-export function getSummary(
-  data: DataCollection,
-  options: { processing_criterion?: number } = {}
-): ScoringResult & { task: string; version: string } {
-  return { ...calculateScores(data, options), task: TASK_NAME, version: VERSION };
+export function getSummary(data: DataCollection): ScoringResult & { task: string; version: string } {
+  return { ...calculateScores(data), task: TASK_NAME, version: VERSION };
 }

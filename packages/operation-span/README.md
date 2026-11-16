@@ -1,6 +1,6 @@
 # Operation Span (complex span)
 
-The automated operation span measures working memory capacity: the participant alternates between checking math problems and remembering letters, then recalls the letters in order. Its score is the number of letters recalled in the correct position (partial credit), with a processing-accuracy criterion (85%) and a time limit set from the participant's own practice speed. The default configuration follows Unsworth, Heitz, Schrock & Engle (2005), *Behavior Research Methods*, 37, 498-505; every option, its default and the evidence behind it is on the documentation site.
+The automated operation span measures working memory capacity: the participant alternates between checking math problems and remembering letters, then recalls the letters in order. Its score is the number of letters recalled in the correct position (partial credit), with processing accuracy reported alongside it and a time limit set from the participant's own practice speed. The default configuration follows Unsworth, Heitz, Schrock & Engle (2005), *Behavior Research Methods*, 37, 498-505; every option, its default and the evidence behind it is on the documentation site.
 
 ## Installation
 

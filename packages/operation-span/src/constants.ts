@@ -27,8 +27,11 @@ export const DIGITS: readonly string[] = ["1", "2", "3", "4", "5", "6", "7", "8"
 /** Columns of the recall matrix (S006: a 4 x 3 matrix, so 4 columns). */
 export const GRID_COLUMNS = 4;
 
-/** Processing accuracy that the anchor asks participants to keep and uses as an exclusion criterion (S006, S007). */
-export const PROCESSING_ACCURACY_CRITERION = 0.85;
+/**
+ * Processing accuracy the instructions ask participants to keep (S006: "at least 85%"). Only the instruction text uses it;
+ * the package never excludes or flags participants on performance (PACKAGE-STANDARD §11).
+ */
+export const PROCESSING_ACCURACY_TARGET = 0.85;
 /**
  * The fixed deadline (ms) the calibrated-deadline helpers return while they have too few practice RTs.
  * It is the spec's `response_window_ms` fill value (6000 ms, 2 of 6 fixed-deadline values; S021, S026).

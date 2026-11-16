@@ -27,7 +27,7 @@ const sst = jsPsychTimelineStopSignalTask.createTimeline(jsPsych, {
 
 jsPsych.run([sst]);
 
-// SSRT (integration method with replacement of go omissions), the mean method and the usual checks
+// SSRT (integration method with replacement of go omissions), and the mean method; exclusion checks are left to the analysis
 jsPsychTimelineStopSignalTask.utils.scoring.calculateScores(jsPsych.data.get());
 ```
 

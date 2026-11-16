@@ -1,6 +1,6 @@
 import type { JsPsych } from "jspsych";
 
-import { CHECK_LIMITS, SIMULATION, TASK_CLASS, TASK_NAME, VERSION } from "./constants";
+import { SIMULATION, TASK_CLASS, TASK_NAME, VERSION } from "./constants";
 import { allocateTypes, buildBlockSpecs, constraintsFor, sampleDuration } from "./design";
 import {
   DEFAULT_OPTIONS,
@@ -185,7 +185,6 @@ export const utils = {
     TASK_CLASS,
     DEFAULT_OPTIONS,
     PHASE_OPTIONS,
-    CHECK_LIMITS,
     SIMULATION,
   },
   text: { defaultText },

@@ -22,20 +22,6 @@ export const INSTRUCTION_SSD_MS = 250;
 /** Duration of the "Correct!" confirmation in the walkthrough, ms. */
 export const INSTRUCTION_CORRECT_MS = 900;
 
-/**
- * Checks for a usable stop-signal session. From the consensus guide (Verbruggen et al., 2019, S001, as the dossier
- * records it): at least 50 stop trials; p(respond | signal) between 0.25 and 0.75; failed-stop RTs faster than go RTs
- * (the race model's independence assumption). The go-omission (25%) and choice-error (10%) limits are package
- * conventions: the dossier only says that studies add their own thresholds on omissions and go accuracy (S026, S030, S080)
- * and gives no numbers, so these two are not from a source.
- */
-export const CHECK_LIMITS = {
-  p_respond_signal: [0.25, 0.75] as [number, number],
-  go_omission_rate_max: 0.25,
-  go_choice_error_rate_max: 0.1,
-  min_stop_trials: 50,
-};
-
 /** The simulated participant used by data-only and visual simulation (an independent race model). */
 export const SIMULATION = {
   /** go RT: ex-Gaussian, ms */

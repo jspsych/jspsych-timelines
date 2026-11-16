@@ -14,7 +14,7 @@ What the anchor does (S006, dossier `canonical_design`): three practice parts (l
 | **Fallback deadline** | 6000 ms | Used until 5 correct processing-only practice RTs exist (for example with `practice_trials: 4`). 6000 ms is the spec's fill value (2 of 6 fixed deadlines). The anchor has no fallback because its practice always yields enough RTs. |
 | **Which phases the calibrated deadline times** | The processing-only practice is self-paced; the combined practice and the test use the calibrated deadline | S006 computes the limit from the processing-only practice; the dossier does not state whether the combined practice is timed. The package times it (the limit is then in force for the first time under combined load, as in the test). With a fixed `response_window_ms` the processing-only practice is still self-paced unless `practice.response_window_ms` is given. |
 | **Letters-only practice** | 4 trials, set sizes from `practice.set_sizes` (default 2) | The dossier gives only PsyToolkit's "4 sets of 2-3 letters" (S017). |
-| **Practice processing accuracy** | Reported (`processing_accuracy`, `meets_processing_criterion`), not enforced | The anchor's 85% is an exclusion criterion applied after the fact, not a practice gate. `practice_criterion` (S036's 85% per 10 trials) is available and off by default. |
+| **Practice processing accuracy** | Reported (`processing_accuracy`), never judged | The anchor (S006, S007) excludes participants below 85% math accuracy after the fact. The package reports `processing_accuracy` and leaves exclusion to the analysis (PACKAGE-STANDARD §11). `practice_criterion` (S036 uses 85% over 10 trials) is available and off by default. |
 | **`end_of_task_feedback`** | `"none"` | The spec has no typed value for the anchor (S027 shows percentage success at the end). |
 
 ## Defaults changed from the spec
@@ -43,7 +43,7 @@ What the anchor does (S006, dossier `canonical_design`): three practice parts (l
 | `processing_display_format` | `"problem_then_answer_screens"` | S006 p. 502 | Timing: the problem screen is timed and ends when the participant says it is solved (a click, or the space bar with the keyboard); the answer screen is untimed. |
 | `response_device`, `response_format` | `{ processing: "mouse", recall: "mouse" }`, `"n_afc"` | S006 | The 12-letter click matrix (4 x 3) with blank and clear buttons; Done submits. |
 | `response_order`, `recall_omission_handling` | `"serial"`, `"blank_button"` | S006 | A blank keeps later items in their serial position. |
-| `speed_accuracy_emphasis` | `"accuracy"` | S006 | Instruction text: keep math accuracy at 85% or higher. The 85% is `utils.constants.PROCESSING_ACCURACY_CRITERION`. |
+| `speed_accuracy_emphasis` | `"accuracy"` | S006 | Instruction text: keep math accuracy at 85% or higher. The 85% is `utils.constants.PROCESSING_ACCURACY_TARGET`. |
 | `processing_read_aloud` | `false` | S006 | A boolean in the spec; it only adds an instruction sentence (it cannot be verified online). |
 | `practice_criterion` | `null` | S006 has none | S036's `{ accuracy: .85, window: 10 }` is a study preset. |
 | `instruction_demonstration` | `"interactive"` | PACKAGE-STANDARD §6a | A documented exception to evidence-anchored defaults. |

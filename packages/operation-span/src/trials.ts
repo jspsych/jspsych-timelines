@@ -8,7 +8,7 @@ import {
   INSTRUCTION_CORRECT_MS,
   INSTRUCTION_MAX_ATTEMPTS,
   INSTRUCTION_RECALL_SET_SIZE,
-  PROCESSING_ACCURACY_CRITERION,
+  PROCESSING_ACCURACY_TARGET,
   TASK_CLASS,
   TASK_NAME,
   TIMEOUT_NOTICE_MS,
@@ -938,7 +938,7 @@ export function createInstructions(ctx: Context) {
     o.speed_accuracy_emphasis === "speed"
       ? t.emphasis_speed
       : o.speed_accuracy_emphasis === "accuracy"
-      ? t.emphasis_accuracy({ criterion_percent: Math.round(PROCESSING_ACCURACY_CRITERION * 100) })
+      ? t.emphasis_accuracy({ criterion_percent: Math.round(PROCESSING_ACCURACY_TARGET * 100) })
       : o.speed_accuracy_emphasis === "both"
       ? t.emphasis_both
       : "";

@@ -177,8 +177,8 @@ Scores come from the test phase. Counts are 0 and every mean, rate and differenc
 | `go_accuracy`, `go_omission_rate`, `go_choice_error_rate` | Go trials: correct, no response, wrong key | |
 | `mean_go_rt`, `median_go_rt` | RT of correct go responses (ms) | |
 | `n_trials`, `n_go_trials`, `n_stop_trials` | Test trial counts | |
-| `checks` | `stop_accuracy_ok` (p(respond \| signal) between 0.25 and 0.75), `race_model_ok` (mean failed-stop RT below mean go RT), `enough_stop_trials` (at least 50) | The consensus guide's criteria (Verbruggen et al., 2019); `null` where the measure is missing |
-| `checks.go_omissions_ok`, `checks.go_choice_errors_ok` | Go omissions at most 25%, choice errors at most 10% | Package conventions, not from a source: studies add their own thresholds and the dossier gives no numbers |
+
+The package does not judge or exclude sessions. The consensus guide (Verbruggen et al., 2019) recommends checking that p(respond | signal) is between 0.25 and 0.75, that failed-stop RTs are faster than go RTs, and that there are at least 50 stop trials. Studies also set their own limits on go omissions and choice errors. The fields above have what those checks need, so apply them in the analysis.
 
 ## Translation
 

@@ -160,7 +160,7 @@ Every row carries `task: "operation-span"` and `task_version`. **The scorable ro
 
 ## Scoring
 
-`utils.scoring.calculateScores(data, { processing_criterion })` filters on `task`, `phase: "test"` and the part, so other tasks' rows and practice are ignored. Empty data gives 0 for counts and sums and `null` for means and proportions.
+`utils.scoring.calculateScores(data)` filters on `task`, `phase: "test"` and the part, so other tasks' rows and practice are ignored. Empty data gives 0 for counts and sums and `null` for means and proportions.
 
 | Field | Meaning |
 |---|---|
@@ -170,9 +170,10 @@ Every row carries `task: "operation-span"` and `task_version`. **The scorable ro
 | `n_perfect_trials`, `all_or_nothing_unit` | Perfect trials, and their proportion |
 | `processing_accuracy` | Proportion of problems solved correctly and in time (a speed error counts as an error) |
 | `speed_errors`, `accuracy_errors`, `processing_errors` | Misses of the deadline, wrong answers, and both |
-| `meets_processing_criterion` | `processing_accuracy` at or above 85% (the anchor's exclusion criterion; `utils.constants.PROCESSING_ACCURACY_CRITERION`) |
 | `mean_processing_rt` | Mean timed RT of correct problems |
 | `n_trials`, `total_items`, `n_processing` | Counts |
+
+The package does not exclude participants. Unsworth et al. (2005) drop participants below 85% processing accuracy; apply that, or another rule, to `processing_accuracy` in the analysis.
 
 With `response_order: "free"` a position counts when its letter was entered anywhere. Letters are compared without regard to case. Walkthrough and practice rows are never scored.
 
