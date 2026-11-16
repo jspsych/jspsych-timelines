@@ -152,22 +152,22 @@ export const defaultText: TextConfig = {
     <p>Here are the shapes you will see, with the correct response for each.</p>`,
   instruction_step: (r) =>
     r.condition === "go"
-      ? `<p>This is a ${r.stimulus_name}. Respond: ${act(r.device)} <strong>${
+      ? `<p>This is the ${r.stimulus_name}. Respond: ${act(r.device)} <strong>${
           r.response
         }</strong>.</p>`
-      : `<p>This is a ${r.stimulus_name}. Do <strong>not</strong> respond. Just wait.</p>`,
+      : `<p>This is the ${r.stimulus_name}. Do <strong>not</strong> respond. Just wait.</p>`,
   instruction_hint: (r) =>
     r.condition === "go"
-      ? `<p>Not quite. A ${r.stimulus_name} means respond: ${act(r.device)} <strong>${
+      ? `<p>Not quite. The ${r.stimulus_name} means respond: ${act(r.device)} <strong>${
           r.response
         }</strong>.</p><p>Let's try again.</p>`
-      : `<p>A ${r.stimulus_name} means do <strong>not</strong> respond. Wait until it disappears.</p><p>Let's try again.</p>`,
+      : `<p>The ${r.stimulus_name} means do <strong>not</strong> respond. Wait until it disappears.</p><p>Let's try again.</p>`,
   instruction_reveal: (r) =>
     r.condition === "go"
-      ? `<p>For a ${r.stimulus_name}, ${act(r.device)} <strong>${
+      ? `<p>For the ${r.stimulus_name}, ${act(r.device)} <strong>${
           r.response
         }</strong>. Let's move on.</p>`
-      : `<p>With a ${r.stimulus_name}, do not respond at all. Let's move on.</p>`,
+      : `<p>With the ${r.stimulus_name}, do not respond at all. Let's move on.</p>`,
   instruction_correct: "Correct!",
   emphasis_speed: "Respond as quickly as you can.",
   emphasis_accuracy: "Try to be as accurate as you can.",

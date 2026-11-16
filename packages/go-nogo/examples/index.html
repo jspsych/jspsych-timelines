@@ -1,59 +1,32 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <title>Go/No-go Task Example</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/jspsych@8"></script>
+    <script src="../dist/index.browser.js"></script>
+    <!-- Once published: <script src="https://unpkg.com/@jspsych-timelines/go-nogo"></script> -->
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/jspsych@8/css/jspsych.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>jsPsych Go-NoGo Task</title>
-  <script src="https://unpkg.com/jspsych@8"></script>
-  <link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css">
-  <script src="../dist/index.browser.js"></script>
-  <!-- Can also load the published timeline package here instead of locally, e.g. -->
-  <!-- <script src="https://unpkg.com/@jspsych-timelines/go-nogo"></script> -->
-</head>
+  <body></body>
+  <script>
+    const jsPsych = initJsPsych({
+      on_finish: () => {
+        jsPsych.data.displayData();
+        const scores = jsPsychTimelineGoNogo.utils.scoring.getSummary(jsPsych.data.get());
+        console.log("Go/No-go Task Results:", scores);
+      },
+    });
 
-<body></body>
-<script>
-  const jsPsych = initJsPsych({
-    on_finish: () => jsPsych.data.displayData()
-  });
+    // The default task is 350 test trials; this is a short demo with ordering rules on the no-go trials.
+    const task = jsPsychTimelineGoNogo.createTimeline(jsPsych, {
+      practice_trials: 6,
+      n_test_trials: 40,
+      condition_proportions: { go: 0.8, nogo: 0.2 },
+      sequence_constraints: { max_run: { nogo: 2 }, min_gap: { nogo: 3 } },
+    });
 
-  const config = {
-    /* structure */
-    show_instructions: true,
-    show_practice: true,
-    show_debrief: false,
-    num_blocks: 1,
-    num_trials: 10,
-    probability: 0.75, // proportion of GO trials, 0-1
-
-    /* timing, in milliseconds */
-    trial_timeout: 500,     // response window for the stimulus
-    fixation_duration: 500, // fixation cross before the stimulus
-    isi_duration: 500,      // blank screen after the stimulus
-    // stimulus_duration: 200,     // hide the stimulus early, keep accepting responses
-    // block_break_duration: 15000, // countdown instead of a continue button
-
-    /* stimuli — default to utils.shapes.circle (go) and .octagon (no-go) */
-    // go_stimulus: jsPsychTimelineGoNoGo.utils.shapes.square,
-    // nogo_stimuli: ["<h1>X</h1>", "NO-GO"],
-    // go_practice_timeout: 10000,
-    // nogo_practice_timeout: 3000,
-
-    /* texts — merged over utils.text. Note the practice strings name the
-       default shapes, so override them alongside any stimulus change. */
-    // text: { stimulusButton: "Klicken", finishButton: "Fertig" },
-  };
-
-  const timeline = jsPsychTimelineGoNoGo.createTimeline(jsPsych, config);
-
-  // Or compose the pieces yourself:
-  // const { createInstructions, timelineUnits, utils } = jsPsychTimelineGoNoGo;
-  // const instructions = createInstructions();
-  // const practice = timelineUnits.createPractice();          // returns an array
-  // const debrief = timelineUnits.createDebrief(jsPsych);
-  // jsPsych.run([instructions, ...practice, timeline, debrief]);
-
-  jsPsych.run(timeline);
-</script>
+    jsPsych.run([task]);
+  </script>
 </html>

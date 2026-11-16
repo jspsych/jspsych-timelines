@@ -66,7 +66,11 @@ export interface SequenceConstraints {
 
 /** Context passed to a function-valued option (PACKAGE-STANDARD §2a). */
 export interface OptionContext {
-  jsPsych: import("jspsych").JsPsych;
+  /**
+   * The jsPsych instance. Typed loosely so the options type can be turned into a schema for the docs site;
+   * read the data so far with `jsPsych.data.get()` and draw with `jsPsych.randomization`.
+   */
+  jsPsych: { data: { get: () => any }; randomization: any };
   phase: "practice" | "test";
   block: number;
   trial_index_in_block: number;
@@ -156,7 +160,7 @@ export interface GoNogoOptions {
    * (`go`, `nogo`): `{ max_run: { nogo: 2 }, min_gap: { nogo: 3 } }` (S157), `{ run_length: { go: [1, 3, 5] } }` (S207).
    * Applies to the test phase; practice is unconstrained unless `practice.sequence_constraints` is set.
    * An order the rules cannot satisfy throws at `createTimeline`, naming the rule.
-   * (default: null — Expfactory go_nogo, S022, has no ordering rules)
+   * (default: {} — no ordering rules; Expfactory go_nogo, S022, draws at random)
    */
   sequence_constraints?: SequenceConstraints | null;
   /**
@@ -303,7 +307,7 @@ export const DEFAULT_OPTIONS: ResolvedOptions & { practice: Partial<GoNogoOption
   condition_proportions: { go: 0.9, nogo: 0.1 },
   n_blocks: 1,
   n_test_trials: 350,
-  sequence_constraints: null,
+  sequence_constraints: {},
   single_task_blocks: "none",
   stimulus_role_assignment: "random_per_participant",
   trial_order: "shuffled_list",

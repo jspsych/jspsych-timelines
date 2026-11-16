@@ -122,28 +122,47 @@ describe("go-nogo", () => {
   });
 
   describe("no-response trials", () => {
-    it("scores a withheld no-go response as correct and a no-go response as a commission error", async () => {
-      // simulated participant responds to every trial (default simulation) except where the trial says no
-      const respondAll = { default: { data: { rt: 400, response: " " } } };
-      const rows = await simulate(
-        jsPsych,
-        { practice_trials: 0, n_test_trials: 20, condition_proportions: { go: 0.5, nogo: 0.5 } },
-        respondAll
+    it("scores a no-go response as a commission error, and a withheld one as a correct rejection", async () => {
+      // jsPsych's default simulated participant responds on every trial: every no-go is a commission error
+      const base: GoNogoOptions = {
+        practice_trials: 0,
+        n_test_trials: 20,
+        condition_proportions: { go: 0.5, nogo: 0.5 },
+      };
+      const all = (await simulate(jsPsych, base)).filter(
+        (r) => r.phase === "test" && r.part === "response"
       );
-      const t = rows.filter((r) => r.phase === "test" && r.part === "response");
-      const go = t.filter((r) => r.condition === "go");
-      go.forEach((r) => {
-        expect(r.responded).toBe(true);
-        expect(r.correct).toBe(true);
-        expect(r.timeout).toBe(false);
-      });
-      // the package's simulation withholds on no-go trials
-      t.filter((r) => r.condition === "nogo").forEach((r) => {
-        expect(r.responded).toBe(false);
-        expect(r.correct).toBe(true);
-        expect(r.response).toBeNull();
-        expect(r.rt).toBeNull();
-      });
+      all
+        .filter((r) => r.condition === "go")
+        .forEach((r) => {
+          expect(r.responded).toBe(true);
+          expect(r.correct).toBe(true);
+          expect(r.timeout).toBe(false);
+        });
+      all
+        .filter((r) => r.condition === "nogo")
+        .forEach((r) => {
+          expect(r.responded).toBe(true);
+          expect(r.correct).toBe(false);
+          expect(r.rt).toBe(400);
+        });
+      // the named simulation options "nogo" let the caller withhold on no-go trials
+      const withheld = (
+        await simulate(initJsPsych(), base, {
+          default: { data: { rt: 400 } },
+          nogo: { data: { response: null, rt: null } },
+        })
+      ).filter((r) => r.phase === "test" && r.part === "response");
+      withheld.filter((r) => r.condition === "go").forEach((r) => expect(r.correct).toBe(true));
+      withheld
+        .filter((r) => r.condition === "nogo")
+        .forEach((r) => {
+          expect(r.responded).toBe(false);
+          expect(r.correct).toBe(true);
+          expect(r.timeout).toBe(true);
+          expect(r.response).toBeNull();
+          expect(r.rt).toBeNull();
+        });
     });
 
     it("scores a slow participant's go trials as omissions (timeouts)", async () => {
@@ -240,9 +259,9 @@ describe("go-nogo", () => {
     it("sequence_constraints at the top level apply to the test only", () => {
       const sc = { max_run: { nogo: 2 } };
       expect(resolveOptions({ sequence_constraints: sc }, "test").sequence_constraints).toEqual(sc);
-      expect(
-        resolveOptions({ sequence_constraints: sc }, "practice").sequence_constraints
-      ).toBeNull();
+      expect(resolveOptions({ sequence_constraints: sc }, "practice").sequence_constraints).toEqual(
+        {}
+      );
       expect(
         resolveOptions(
           { sequence_constraints: sc, practice: { sequence_constraints: { max_run: 3 } } },
@@ -379,7 +398,8 @@ describe("go-nogo", () => {
           expect(r.trial_type).toBe("html-button-response");
           expect(r.response_device).toBe(device);
           expect(r.correct_response).toBe(r.condition === "go" ? 0 : null);
-          expect(r.correct).toBe(true);
+          // the default simulated participant clicks on every trial: right for go, a commission error for no-go
+          expect(r.correct).toBe(r.condition === "go");
         });
       }
     });
@@ -531,13 +551,22 @@ describe("go-nogo", () => {
     });
 
     it("scores a simulated run and exposes getSummary", async () => {
-      const rows = await simulate(jsPsych, { practice_trials: 0, n_test_trials: 50 });
-      const data = new DataCollection(rows);
-      const s = utils.scoring.getSummary(data);
+      const rows = await simulate(
+        jsPsych,
+        { practice_trials: 0, n_test_trials: 50 },
+        { default: { data: { rt: 400 } }, nogo: { data: { response: null, rt: null } } }
+      );
+      const s = utils.scoring.getSummary(new DataCollection(rows));
       expect(s.task).toBe("go-nogo");
       expect(s.n_trials).toBe(50);
       expect(s.commission_error_rate).toBe(0);
       expect(s.omission_error_rate).toBe(0);
+      // a participant who responds to everything commits a commission error on every no-go trial
+      const all = utils.scoring.calculateScores(
+        new DataCollection(await simulate(initJsPsych(), { practice_trials: 0, n_test_trials: 50 }))
+      );
+      expect(all.commission_error_rate).toBe(1);
+      expect(all.hits).toBe(45);
     });
   });
 

@@ -318,8 +318,10 @@ export function createResponseTrial(
     data,
     on_load: acknowledge(o, keyboard),
     on_finish: onFinish,
-    // data-only simulation: a participant who does the task correctly responds to go stimuli and withholds on no-go
-    ...(nogo ? { simulation_options: { data: { response: null, rt: null } } } : {}),
+    // data-only simulation: jsPsych's default participant responds on every trial, so every no-go trial is a
+    // commission error. A no-go trial asks for the named simulation options "nogo", which the caller can set to
+    // withhold: jsPsych.simulate(timeline, "data-only", { default: {...}, nogo: { data: { response: null, rt: null } } })
+    ...(nogo ? { simulation_options: "nogo" } : {}),
   };
   if (keyboard) {
     return { type: jsPsychHtmlKeyboardResponse, choices: [...o.response_keys], ...common };

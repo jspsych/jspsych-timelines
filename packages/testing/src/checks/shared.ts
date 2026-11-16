@@ -223,7 +223,22 @@ const trial_order: Check = {
     if (order === "random") {
       // independent draws: proportions are only approximate (deterministic under the fixed seed)
       expect(testRows(r, c)).toHaveLength(r.eff.n_test_trials);
-      if (c.proportionKeys(r.eff).length > 1) expect(allExact).toBe(false);
+      if (c.proportionKeys(r.eff).length > 1) {
+        // exact counts by chance are possible (about 1 in 8 for a 90/10 split of 350 trials): any of several seeds will do
+        const others = await harness.runSeeds(r.opts, [
+          "random-a",
+          "random-b",
+          "random-c",
+          "random-d",
+        ]);
+        const exactIn = (run: Run) =>
+          Array.from({ length: blocksOf(run, c) }, (_, i) => i + 1).every(
+            (b) =>
+              JSON.stringify(observedCountsPerBlock(run, c, b)) ===
+              JSON.stringify(expectedCountsPerBlock(run, c, b))
+          );
+        expect([r, ...others].some((run) => !exactIn(run))).toBe(true);
+      }
     } else if (order === "shuffled_list") {
       expect(allExact).toBe(true);
       // shuffled: the first block is not grouped by condition
