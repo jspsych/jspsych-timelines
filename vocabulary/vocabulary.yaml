@@ -229,6 +229,7 @@ parameters:
   type: list
   unit: items
   definition: 'Load levels: memory set size, display size or list length. Always a list; a single load is [6] (R16).'
+  practice_inherits: false
   granularity_note: N-back's n is not a set size. Fixed schedules of levels are block_order; performance-dependent
     schedules are adaptive.
 - name: difficulty_levels
@@ -290,9 +291,10 @@ parameters:
 - name: sequence_constraints
   layer: design
   type: map
-  definition: 'Constraints on the generated sequence, keyed by the task''s own names: max_run, min_gap, no_immediate_repeat;
-    others as free text (R15).'
+  definition: 'Ordering rules for the generated sequence, in the typed form of PACKAGE-STANDARD §2a: max_run, min_gap,
+    max_gap, run_length, start_with, no_immediate_repeat, balanced_transitions, cycle_length (R15).'
   absent_value: null
+  practice_inherits: false
 - name: task_variant
   layer: design
   type: enum
@@ -1073,9 +1075,14 @@ parameters:
 - name: strategy_instruction
   layer: instructions
   type: enum
-  definition: Instructions about strategy (rehearsal, waiting, encoding).
+  definition: Instructions about strategy (rehearsal, waiting, encoding). dont_wait = do not wait for a stop signal;
+    dont_wait_plus_tracking_explanation = that, plus an explanation that the signal delay adapts so stopping succeeds
+    about half the time; balance_speed_and_stopping = be fast and stop when possible, equally.
   values:
   - none
+  - dont_wait
+  - dont_wait_plus_tracking_explanation
+  - balance_speed_and_stopping
   absent_value: none
   granularity_note: 'Value list is open: the recurring values are listed.'
 - name: contingency_disclosure
