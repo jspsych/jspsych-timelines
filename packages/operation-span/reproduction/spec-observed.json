@@ -1,0 +1,2298 @@
+{
+ "spec": "specs/complex-span/spec.yaml (jspsych-timelines-paper, vocabulary 2026-11-13-std-final)",
+ "options": [
+  {
+   "name": "feedback_duration_ms",
+   "default": {
+    "value": 2000,
+    "raw": 2000,
+    "basis": "anchor",
+    "source": "S006",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "trial_feedback_duration_ms",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S006",
+       "raw": 2000,
+       "value": 2000,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S021",
+       "raw": 1000,
+       "value": 1000,
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "inter_item_interval_ms",
+   "default": {
+    "value": 500,
+    "raw": 500,
+    "basis": "fill",
+    "frequency": "1/2",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "inter_event_interval_ms",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S007",
+       "raw": 0,
+       "value": 0,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S020",
+       "raw": 500,
+       "value": 500,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S036",
+       "raw": 100,
+       "value": 100,
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "response_window_ms",
+   "default": {
+    "value": {
+     "processing_deadline_ms": 6000,
+     "processing task": null
+    },
+    "basis": "components"
+   },
+   "components": [
+    {
+     "variation": "processing_deadline_ms",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S021",
+       "raw": 6000,
+       "value": 6000,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S026",
+       "raw": 6000,
+       "value": 6000,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S020",
+       "raw": 10000,
+       "value": 10000,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S027",
+       "raw": 10000,
+       "value": 10000,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S027",
+       "raw": 7000,
+       "value": 7000,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S036",
+       "raw": 3500,
+       "value": 3500,
+       "ok": true,
+       "note": null
+      }
+     ]
+    },
+    {
+     "variation": "processing_pacing_rule",
+     "role": "processing task",
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S006",
+       "raw": "individual_mean_plus_2.5sd",
+       "value": null,
+       "ok": false,
+       "note": "Per-participant deadline = mean practice processing RT + 2.5 SD; no typed form (response_window_ms is a single number). propose vocabulary value: individualized deadline (adaptive.procedure rt_based?)"
+      },
+      {
+       "source": "S017",
+       "raw": "individual_mean_plus_2.5sd",
+       "value": null,
+       "ok": false,
+       "note": "Per-participant deadline = mean practice processing RT + 2.5 SD; no typed form (response_window_ms is a single number). propose vocabulary value: individualized deadline (adaptive.procedure rt_based?)"
+      },
+      {
+       "source": "S039",
+       "raw": "individual_mean_plus_2sd",
+       "value": null,
+       "ok": false,
+       "note": "Per-participant deadline = mean + 2 SD (Wahlheim formula); same gap as the 2.5 SD rule. propose vocabulary value: individualized deadline"
+      },
+      {
+       "source": "S026",
+       "raw": "fixed_deadline",
+       "value": null,
+       "ok": true,
+       "note": "Rule name only; the fixed number lives in processing_deadline_ms."
+      },
+      {
+       "source": "S027",
+       "raw": "fixed_deadline",
+       "value": null,
+       "ok": true,
+       "note": "Rule name only; the fixed number lives in processing_deadline_ms."
+      },
+      {
+       "source": "S036",
+       "raw": "fixed_duration",
+       "value": null,
+       "ok": true,
+       "note": "Arithmetic shown for a fixed 3.5 s (S036); number lives in processing_deadline_ms / stimulus duration, no separate setting here."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "stimulus_duration_ms",
+   "default": {
+    "value": {
+     "memorandum": 800
+    },
+    "basis": "components"
+   },
+   "components": [
+    {
+     "variation": "memorandum_duration_ms",
+     "role": "memorandum",
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S006",
+       "raw": 800,
+       "value": 800,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S021",
+       "raw": 1000,
+       "value": 1000,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S026",
+       "raw": 1000,
+       "value": 1000,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S033",
+       "raw": 1000,
+       "value": 1000,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S020",
+       "raw": 1200,
+       "value": 1200,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S036",
+       "raw": 1500,
+       "value": 1500,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S045",
+       "raw": 1500,
+       "value": 1500,
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "stimulus_language",
+   "default": {
+    "value": "Portuguese",
+    "raw": "Portuguese",
+    "basis": "fill",
+    "frequency": "2/4",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "stimulus_language",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S027",
+       "raw": "Portuguese",
+       "value": "Portuguese",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S032",
+       "raw": "Portuguese",
+       "value": "Portuguese",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S020",
+       "raw": "Dutch",
+       "value": "Dutch",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S020",
+       "raw": "German",
+       "value": "German",
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "stimulus_set",
+   "default": {
+    "value": "letters",
+    "raw": "letters",
+    "basis": "anchor",
+    "source": "S006",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "memorandum_type",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S006",
+       "raw": "letters",
+       "value": "letters",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S028",
+       "raw": "letters",
+       "value": "letters",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S034",
+       "raw": "words",
+       "value": "words",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S043",
+       "raw": "words",
+       "value": "words",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S020",
+       "raw": "digits",
+       "value": "digits",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S027",
+       "raw": "grid_locations",
+       "value": "grid_locations",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S033",
+       "raw": "arrows",
+       "value": "arrows",
+       "ok": true,
+       "note": null
+      }
+     ]
+    },
+    {
+     "variation": "memorandum_source",
+     "role": "memorandum",
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S006",
+       "raw": "separate_item",
+       "value": "separate_item",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S043",
+       "raw": "separate_item",
+       "value": "separate_item",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S027",
+       "raw": "sentence_final_word",
+       "value": "sentence_final_word",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S032",
+       "raw": "sentence_final_word",
+       "value": "sentence_final_word",
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "processing_display_format",
+   "default": {
+    "value": "problem_then_answer_screens",
+    "raw": "problem_then_answer_screens",
+    "basis": "anchor",
+    "source": "S006",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "processing_display_format",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S006",
+       "raw": "problem_then_answer_screens",
+       "value": "problem_then_answer_screens",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S021",
+       "raw": "equation_with_answer_single_screen",
+       "value": "equation_with_answer_single_screen",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S026",
+       "raw": "equation_with_answer_single_screen",
+       "value": "equation_with_answer_single_screen",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S039",
+       "raw": "equation_and_memorandum_same_screen",
+       "value": "equation_and_memorandum_same_screen",
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "block_order",
+   "default": {
+    "value": "random",
+    "raw": "random_per_participant",
+    "basis": "anchor",
+    "source": "S006",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "set_size_order",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S006",
+       "raw": "random_per_participant",
+       "value": "random",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S034",
+       "raw": "random_per_participant",
+       "value": "random",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S020",
+       "raw": "fixed_pseudorandom",
+       "value": "fixed",
+       "ok": true,
+       "note": "One pseudorandom order, identical for all participants."
+      },
+      {
+       "source": "S027",
+       "raw": "fixed_pseudorandom",
+       "value": "fixed",
+       "ok": true,
+       "note": "One pseudorandom order, identical for all participants."
+      },
+      {
+       "source": "S032",
+       "raw": "ascending",
+       "value": "ascending",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S009",
+       "raw": "blocked_random_within_block",
+       "value": "random",
+       "ok": true,
+       "note": "Each block holds one trial of every set size in random order; lossy, the one-of-each-per-block structure is not expressible."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "n_test_trials",
+   "default": {
+    "value": 15,
+    "raw": 15,
+    "basis": "anchor",
+    "source": "S006",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "total_test_trials",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S006",
+       "raw": 15,
+       "value": 15,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S027",
+       "raw": 15,
+       "value": 15,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S026",
+       "raw": 12,
+       "value": 12,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S043",
+       "raw": 12,
+       "value": 12,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S033",
+       "raw": 9,
+       "value": 9,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S034",
+       "raw": 20,
+       "value": 20,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S045",
+       "raw": 18,
+       "value": 18,
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "set_sizes",
+   "default": {
+    "value": [
+     3,
+     4,
+     5,
+     6,
+     7
+    ],
+    "raw": "3-7",
+    "basis": "anchor",
+    "source": "S006",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "set_sizes",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S006",
+       "raw": "3-7",
+       "value": [
+        3,
+        4,
+        5,
+        6,
+        7
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S028",
+       "raw": "3-7",
+       "value": [
+        3,
+        4,
+        5,
+        6,
+        7
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S009",
+       "raw": "2-5",
+       "value": [
+        2,
+        3,
+        4,
+        5
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S043",
+       "raw": "2-5",
+       "value": [
+        2,
+        3,
+        4,
+        5
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S033",
+       "raw": "2-5",
+       "value": [
+        2,
+        3,
+        4,
+        5
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S027",
+       "raw": "2-6",
+       "value": [
+        2,
+        3,
+        4,
+        5,
+        6
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S032",
+       "raw": "2-6",
+       "value": [
+        2,
+        3,
+        4,
+        5,
+        6
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S034",
+       "raw": "2-6",
+       "value": [
+        2,
+        3,
+        4,
+        5,
+        6
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S021",
+       "raw": "4-7",
+       "value": [
+        4,
+        5,
+        6,
+        7
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S021",
+       "raw": "3-5",
+       "value": [
+        3,
+        4,
+        5
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S026",
+       "raw": "4-7",
+       "value": [
+        4,
+        5,
+        6,
+        7
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S033",
+       "raw": "4-6",
+       "value": [
+        4,
+        5,
+        6
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S011",
+       "raw": "3-9",
+       "value": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S036",
+       "raw": "4",
+       "value": [
+        4
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S045",
+       "raw": "8",
+       "value": [
+        8
+       ],
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "trials_per_condition",
+   "default": {
+    "value": 3,
+    "raw": 3,
+    "basis": "anchor",
+    "source": "S006",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "trials_per_set_size",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S006",
+       "raw": 3,
+       "value": 3,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S027",
+       "raw": 3,
+       "value": 3,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S011",
+       "raw": 2,
+       "value": 2,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S023",
+       "raw": 1,
+       "value": 1,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S034",
+       "raw": 4,
+       "value": 4,
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "memorandum_order_in_pair",
+   "default": {
+    "value": "processing_first",
+    "raw": "processing_first",
+    "basis": "anchor",
+    "source": "S006",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "memorandum_order_in_pair",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S006",
+       "raw": "processing_first",
+       "value": "processing_first",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S027",
+       "raw": "processing_first",
+       "value": "processing_first",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S021",
+       "raw": "memorandum_first",
+       "value": "memorandum_first",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S033",
+       "raw": "memorandum_first",
+       "value": "memorandum_first",
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "processing_items_per_memorandum",
+   "default": {
+    "value": 1,
+    "raw": 1,
+    "basis": "anchor",
+    "source": "S006",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "processing_items_per_memorandum",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S006",
+       "raw": 1,
+       "value": 1,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S033",
+       "raw": 1,
+       "value": 1,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S045",
+       "raw": 2,
+       "value": 2,
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "response_device",
+   "default": {
+    "value": {
+     "recall_input_mode": "mouse",
+     "processing task": "mouse"
+    },
+    "basis": "components"
+   },
+   "components": [
+    {
+     "variation": "recall_input_mode",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S006",
+       "raw": "click_response_grid",
+       "value": "mouse",
+       "ok": true,
+       "note": "Click one letter per position in a 4x3 grid (12 alternatives); n_afc is the closest format, location would also fit."
+      },
+      {
+       "source": "S026",
+       "raw": "click_response_grid",
+       "value": "mouse",
+       "ok": true,
+       "note": "Click one letter per position in a 4x3 grid (12 alternatives); n_afc is the closest format, location would also fit."
+      },
+      {
+       "source": "S033",
+       "raw": "click_response_grid",
+       "value": "mouse",
+       "ok": true,
+       "note": "Click one letter per position in a 4x3 grid (12 alternatives); n_afc is the closest format, location would also fit."
+      },
+      {
+       "source": "S020",
+       "raw": "typed_text",
+       "value": "keyboard",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S027",
+       "raw": "typed_text",
+       "value": "keyboard",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S034",
+       "raw": "typed_text",
+       "value": "keyboard",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S045",
+       "raw": "keypress_per_item",
+       "value": "keyboard",
+       "ok": true,
+       "note": "One key press per recalled letter (S045)."
+      }
+     ]
+    },
+    {
+     "variation": "processing_response_input",
+     "role": "processing task",
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S006",
+       "raw": "mouse_buttons",
+       "value": "mouse",
+       "ok": true,
+       "note": "Applies to the processing task only; recall device is set by recall_input_mode and can differ."
+      },
+      {
+       "source": "S034",
+       "raw": "mouse_buttons",
+       "value": "mouse",
+       "ok": true,
+       "note": "Applies to the processing task only; recall device is set by recall_input_mode and can differ."
+      },
+      {
+       "source": "S027",
+       "raw": "keyboard_keys",
+       "value": "keyboard",
+       "ok": true,
+       "note": "Processing task only (F/J or a/l keys); recall device is set by recall_input_mode and can differ."
+      },
+      {
+       "source": "S033",
+       "raw": "keyboard_keys",
+       "value": "keyboard",
+       "ok": true,
+       "note": "Processing task only (F/J or a/l keys); recall device is set by recall_input_mode and can differ."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "response_format",
+   "default": {
+    "value": "n_afc",
+    "raw": "click_response_grid",
+    "basis": "anchor",
+    "source": "S006",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "recall_input_mode",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S006",
+       "raw": "click_response_grid",
+       "value": "n_afc",
+       "ok": true,
+       "note": "Click one letter per position in a 4x3 grid (12 alternatives); n_afc is the closest format, location would also fit."
+      },
+      {
+       "source": "S026",
+       "raw": "click_response_grid",
+       "value": "n_afc",
+       "ok": true,
+       "note": "Click one letter per position in a 4x3 grid (12 alternatives); n_afc is the closest format, location would also fit."
+      },
+      {
+       "source": "S033",
+       "raw": "click_response_grid",
+       "value": "n_afc",
+       "ok": true,
+       "note": "Click one letter per position in a 4x3 grid (12 alternatives); n_afc is the closest format, location would also fit."
+      },
+      {
+       "source": "S020",
+       "raw": "typed_text",
+       "value": "free_text",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S027",
+       "raw": "typed_text",
+       "value": "free_text",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S034",
+       "raw": "typed_text",
+       "value": "free_text",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S045",
+       "raw": "keypress_per_item",
+       "value": "single_response",
+       "ok": true,
+       "note": "One key press per recalled letter (S045)."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "response_order",
+   "default": {
+    "value": "serial",
+    "raw": "serial_order",
+    "basis": "anchor",
+    "source": "S006",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "recall_order_requirement",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S006",
+       "raw": "serial_order",
+       "value": "serial",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S027",
+       "raw": "serial_order",
+       "value": "serial",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S020",
+       "raw": "free_order_permitted",
+       "value": "free",
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "recall_omission_handling",
+   "default": {
+    "value": "blank_button",
+    "raw": "blank_button",
+    "basis": "anchor",
+    "source": "S006",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "recall_omission_handling",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S006",
+       "raw": "blank_button",
+       "value": "blank_button",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S017",
+       "raw": "question_mark_key",
+       "value": "question_mark_key",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S034",
+       "raw": "skip_button",
+       "value": "skip_button",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S045",
+       "raw": "none",
+       "value": "none",
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "practice_criterion",
+   "default": {
+    "value": null,
+    "basis": "components"
+   },
+   "components": [
+    {
+     "variation": "practice_advance_criterion",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S033",
+       "raw": "optional_repeat_if_at_or_below_chance",
+       "value": null,
+       "ok": false,
+       "note": "Repeat practice (optionally) when accuracy is at or below chance; practice_criterion structure has no defined fields. propose vocabulary value: practice_criterion fields (accuracy, window, on_fail)"
+      },
+      {
+       "source": "S036",
+       "raw": "85% correct per 10-trial block",
+       "value": {
+        "accuracy": 0.85,
+        "block_trials": 10
+       },
+       "ok": true,
+       "note": "Field names are invented; the vocabulary does not define the structure. On-fail action not stated."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "practice_trials",
+   "default": {
+    "value": 15,
+    "raw": 15,
+    "basis": "anchor",
+    "source": "S006",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "practice_structure",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S006",
+       "raw": "storage_processing_combined",
+       "value": null,
+       "ok": true,
+       "note": "Structure label; counts differ by source (S033: 3 letter, 8 math, 3 combined) and live in processing_practice_trials."
+      },
+      {
+       "source": "S033",
+       "raw": "storage_processing_combined",
+       "value": null,
+       "ok": true,
+       "note": "Structure label; counts differ by source (S033: 3 letter, 8 math, 3 combined) and live in processing_practice_trials."
+      },
+      {
+       "source": "S026",
+       "raw": "storage_processing",
+       "value": null,
+       "ok": true,
+       "note": "Structure label (S026: letter-only then math-only practice); no count of its own."
+      },
+      {
+       "source": "S027",
+       "raw": "combined_only",
+       "value": null,
+       "ok": true,
+       "note": "Structure label; S027 has 3 and S034 has 2 practice trials, not recoverable from the raw value."
+      },
+      {
+       "source": "S034",
+       "raw": "combined_only",
+       "value": null,
+       "ok": true,
+       "note": "Structure label; S027 has 3 and S034 has 2 practice trials, not recoverable from the raw value."
+      }
+     ]
+    },
+    {
+     "variation": "processing_practice_trials",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S006",
+       "raw": 15,
+       "value": 15,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S033",
+       "raw": 8,
+       "value": 8,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S026",
+       "raw": 5,
+       "value": 5,
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "end_of_task_feedback",
+   "default": {
+    "value": null,
+    "raw": "per_trial",
+    "basis": "anchor",
+    "source": "S006",
+    "needs_translation": true
+   },
+   "components": [
+    {
+     "variation": "feedback_schedule",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S006",
+       "raw": "per_trial",
+       "value": null,
+       "ok": true,
+       "note": "Per-trial letters recalled and math correct/errors (S006, S021); accuracy is the closest content. End-of-task not stated."
+      },
+      {
+       "source": "S021",
+       "raw": "per_trial",
+       "value": null,
+       "ok": true,
+       "note": "Per-trial letters recalled and math correct/errors (S006, S021); accuracy is the closest content. End-of-task not stated."
+      },
+      {
+       "source": "S027",
+       "raw": "end_of_task_only",
+       "value": "score",
+       "ok": true,
+       "note": "Percentage success shown at end of each task (S027)."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "trial_feedback",
+   "default": {
+    "value": "accuracy",
+    "raw": "per_trial",
+    "basis": "anchor",
+    "source": "S006",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "feedback_schedule",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S006",
+       "raw": "per_trial",
+       "value": "accuracy",
+       "ok": true,
+       "note": "Per-trial letters recalled and math correct/errors (S006, S021); accuracy is the closest content. End-of-task not stated."
+      },
+      {
+       "source": "S021",
+       "raw": "per_trial",
+       "value": "accuracy",
+       "ok": true,
+       "note": "Per-trial letters recalled and math correct/errors (S006, S021); accuracy is the closest content. End-of-task not stated."
+      },
+      {
+       "source": "S027",
+       "raw": "end_of_task_only",
+       "value": "none",
+       "ok": true,
+       "note": "Percentage success shown at end of each task (S027)."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "instruction_format",
+   "default": {
+    "value": null,
+    "raw": "video_then_written",
+    "basis": "fill",
+    "frequency": "1/2",
+    "needs_translation": true
+   },
+   "components": [
+    {
+     "variation": "instruction_format",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S026",
+       "raw": "video_then_written",
+       "value": null,
+       "ok": false,
+       "note": "Video followed by duplicate on-screen text; instruction_format is a single enum. propose vocabulary value: video_then_text"
+      },
+      {
+       "source": "S032",
+       "raw": "written_or_video_tutorial",
+       "value": null,
+       "ok": false,
+       "note": "Written or video tutorial offered as a choice; no single enum value. propose vocabulary value: text_or_video"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "speed_accuracy_emphasis",
+   "default": {
+    "value": "accuracy",
+    "raw": "keep_processing_accuracy_at_least_85pct",
+    "basis": "anchor",
+    "source": "S006",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "processing_emphasis_instruction",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S006",
+       "raw": "keep_processing_accuracy_at_least_85pct",
+       "value": "accuracy",
+       "ok": true,
+       "note": "Instruction concerns processing-task accuracy (keep at 85%+); the 85% figure itself has no option here."
+      },
+      {
+       "source": "S030",
+       "raw": "equal_effort_both_subtasks",
+       "value": null,
+       "ok": true,
+       "note": "Equal priority to storage and processing, not a speed/accuracy emphasis."
+      },
+      {
+       "source": "S021",
+       "raw": "quick_and_accurate_with_time_limit",
+       "value": "both",
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "processing_read_aloud",
+   "default": {
+    "value": false,
+    "raw": false,
+    "basis": "anchor",
+    "source": "S006",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "processing_read_aloud",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S034",
+       "raw": true,
+       "value": true,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S036",
+       "raw": true,
+       "value": true,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S006",
+       "raw": false,
+       "value": false,
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "study_configurations": [
+  {
+   "source": "S006",
+   "citation": "Unsworth et al. 2005, BRM (automated OSPAN)",
+   "doi": "10.3758/bf03192720",
+   "source_type": "reference-impl",
+   "setting": null,
+   "n_options": 21,
+   "fully_typed": false,
+   "options": {
+    "block_order": "random",
+    "feedback_duration_ms": 2000,
+    "memorandum_order_in_pair": "processing_first",
+    "n_test_trials": 15,
+    "practice_trials.processing_practice_trials": 15,
+    "processing_display_format": "problem_then_answer_screens",
+    "processing_items_per_memorandum": 1,
+    "processing_read_aloud": false,
+    "recall_omission_handling": "blank_button",
+    "response_device.processing task": "mouse",
+    "response_device.recall_input_mode": "mouse",
+    "response_format": "n_afc",
+    "response_order": "serial",
+    "response_window_ms.processing task": {
+     "untranslated": "individual_mean_plus_2.5sd"
+    },
+    "set_sizes": [
+     3,
+     4,
+     5,
+     6,
+     7
+    ],
+    "speed_accuracy_emphasis": "accuracy",
+    "stimulus_duration_ms.memorandum": 800,
+    "stimulus_set.memorandum": "separate_item",
+    "stimulus_set.memorandum_type": "letters",
+    "trial_feedback": "accuracy",
+    "trials_per_condition": 3
+   }
+  },
+  {
+   "source": "S009",
+   "citation": "Foster et al. 2015, Mem Cogn (shortened)",
+   "doi": "10.3758/s13421-014-0461-7",
+   "source_type": "reference-impl",
+   "setting": null,
+   "n_options": 2,
+   "fully_typed": true,
+   "options": {
+    "block_order": "random",
+    "set_sizes": [
+     2,
+     3,
+     4,
+     5
+    ]
+   }
+  },
+  {
+   "source": "S011",
+   "citation": "Draheim et al. 2018, Psych Assess (IRT; advanced)",
+   "doi": "10.1037/pas0000444",
+   "source_type": "reference-impl",
+   "setting": null,
+   "n_options": 2,
+   "fully_typed": true,
+   "options": {
+    "set_sizes": [
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ],
+    "trials_per_condition": 2
+   }
+  },
+  {
+   "source": "S017",
+   "citation": "PsyToolkit AOSPAN",
+   "doi": null,
+   "source_type": "reference-impl",
+   "setting": null,
+   "n_options": 2,
+   "fully_typed": false,
+   "options": {
+    "recall_omission_handling": "question_mark_key",
+    "response_window_ms.processing task": {
+     "untranslated": "individual_mean_plus_2.5sd"
+    }
+   }
+  },
+  {
+   "source": "S020",
+   "citation": "Klaus & Schriefers jsPsych reading/operation/mixed span (MIT, commit 4dc9ed6)",
+   "doi": null,
+   "source_type": "reference-impl",
+   "setting": null,
+   "n_options": 9,
+   "fully_typed": true,
+   "options": {
+    "block_order": "fixed",
+    "inter_item_interval_ms": 500,
+    "response_device.recall_input_mode": "keyboard",
+    "response_format": "free_text",
+    "response_order": "free",
+    "response_window_ms.processing_deadline_ms": 10000,
+    "stimulus_duration_ms.memorandum": 1200,
+    "stimulus_language": "German",
+    "stimulus_set.memorandum_type": "digits"
+   }
+  },
+  {
+   "source": "S021",
+   "citation": "Luthra & Todd jsPsych ospan/symspan (no licence, commit c4700e7)",
+   "doi": null,
+   "source_type": "reference-impl",
+   "setting": null,
+   "n_options": 8,
+   "fully_typed": true,
+   "options": {
+    "feedback_duration_ms": 1000,
+    "memorandum_order_in_pair": "memorandum_first",
+    "processing_display_format": "equation_with_answer_single_screen",
+    "response_window_ms.processing_deadline_ms": 6000,
+    "set_sizes": [
+     3,
+     4,
+     5
+    ],
+    "speed_accuracy_emphasis": "both",
+    "stimulus_duration_ms.memorandum": 1000,
+    "trial_feedback": "accuracy"
+   }
+  },
+  {
+   "source": "S023",
+   "citation": "literature sample",
+   "doi": "10.1007/s10936-026-10268-3",
+   "source_type": "empirical",
+   "setting": "lab-native",
+   "n_options": 1,
+   "fully_typed": true,
+   "options": {
+    "trials_per_condition": 1
+   }
+  },
+  {
+   "source": "S026",
+   "citation": "literature sample",
+   "doi": "10.3389/fpsyg.2026.1768354",
+   "source_type": "empirical",
+   "setting": "online-unsupervised",
+   "n_options": 9,
+   "fully_typed": false,
+   "options": {
+    "instruction_format": {
+     "untranslated": "video_then_written"
+    },
+    "n_test_trials": 12,
+    "practice_trials.processing_practice_trials": 5,
+    "processing_display_format": "equation_with_answer_single_screen",
+    "response_device.recall_input_mode": "mouse",
+    "response_format": "n_afc",
+    "response_window_ms.processing_deadline_ms": 6000,
+    "set_sizes": [
+     4,
+     5,
+     6,
+     7
+    ],
+    "stimulus_duration_ms.memorandum": 1000
+   }
+  },
+  {
+   "source": "S027",
+   "citation": "literature sample",
+   "doi": "10.5334/joc.489",
+   "source_type": "empirical",
+   "setting": "online-unsupervised",
+   "n_options": 15,
+   "fully_typed": true,
+   "options": {
+    "block_order": "fixed",
+    "end_of_task_feedback": "score",
+    "memorandum_order_in_pair": "processing_first",
+    "n_test_trials": 15,
+    "response_device.processing task": "keyboard",
+    "response_device.recall_input_mode": "keyboard",
+    "response_format": "free_text",
+    "response_order": "serial",
+    "response_window_ms.processing_deadline_ms": 7000,
+    "set_sizes": [
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "stimulus_language": "Portuguese",
+    "stimulus_set.memorandum": "sentence_final_word",
+    "stimulus_set.memorandum_type": "grid_locations",
+    "trial_feedback": "none",
+    "trials_per_condition": 3
+   }
+  },
+  {
+   "source": "S028",
+   "citation": "literature sample",
+   "doi": "10.1016/j.dib.2025.111923",
+   "source_type": "empirical",
+   "setting": "online-unsupervised",
+   "n_options": 2,
+   "fully_typed": true,
+   "options": {
+    "set_sizes": [
+     3,
+     4,
+     5,
+     6,
+     7
+    ],
+    "stimulus_set.memorandum_type": "letters"
+   }
+  },
+  {
+   "source": "S032",
+   "citation": "literature sample",
+   "doi": "10.1186/s41155-025-00353-2",
+   "source_type": "empirical",
+   "setting": "online-unsupervised",
+   "n_options": 5,
+   "fully_typed": false,
+   "options": {
+    "block_order": "ascending",
+    "instruction_format": {
+     "untranslated": "written_or_video_tutorial"
+    },
+    "set_sizes": [
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "stimulus_language": "Portuguese",
+    "stimulus_set.memorandum": "sentence_final_word"
+   }
+  },
+  {
+   "source": "S033",
+   "citation": "literature sample",
+   "doi": "10.1098/rsos.241837",
+   "source_type": "empirical",
+   "setting": "online-unsupervised",
+   "n_options": 11,
+   "fully_typed": false,
+   "options": {
+    "memorandum_order_in_pair": "memorandum_first",
+    "n_test_trials": 9,
+    "practice_criterion": {
+     "untranslated": "optional_repeat_if_at_or_below_chance"
+    },
+    "practice_trials.processing_practice_trials": 8,
+    "processing_items_per_memorandum": 1,
+    "response_device.processing task": "keyboard",
+    "response_device.recall_input_mode": "mouse",
+    "response_format": "n_afc",
+    "set_sizes": [
+     4,
+     5,
+     6
+    ],
+    "stimulus_duration_ms.memorandum": 1000,
+    "stimulus_set.memorandum_type": "arrows"
+   }
+  },
+  {
+   "source": "S034",
+   "citation": "literature sample",
+   "doi": "10.3758/s13421-024-01658-w",
+   "source_type": "empirical",
+   "setting": "online-unsupervised",
+   "n_options": 10,
+   "fully_typed": true,
+   "options": {
+    "block_order": "random",
+    "n_test_trials": 20,
+    "processing_read_aloud": true,
+    "recall_omission_handling": "skip_button",
+    "response_device.processing task": "mouse",
+    "response_device.recall_input_mode": "keyboard",
+    "response_format": "free_text",
+    "set_sizes": [
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "stimulus_set.memorandum_type": "words",
+    "trials_per_condition": 4
+   }
+  },
+  {
+   "source": "S036",
+   "citation": "literature sample",
+   "doi": "10.3758/s13421-024-01596-7",
+   "source_type": "empirical",
+   "setting": "online-unsupervised",
+   "n_options": 6,
+   "fully_typed": true,
+   "options": {
+    "inter_item_interval_ms": 100,
+    "practice_criterion": {
+     "accuracy": 0.85,
+     "block_trials": 10
+    },
+    "processing_read_aloud": true,
+    "response_window_ms.processing_deadline_ms": 3500,
+    "set_sizes": [
+     4
+    ],
+    "stimulus_duration_ms.memorandum": 1500
+   }
+  },
+  {
+   "source": "S039",
+   "citation": "literature sample",
+   "doi": "10.1523/eneuro.0394-23.2024",
+   "source_type": "empirical",
+   "setting": "lab-native",
+   "n_options": 2,
+   "fully_typed": false,
+   "options": {
+    "processing_display_format": "equation_and_memorandum_same_screen",
+    "response_window_ms.processing task": {
+     "untranslated": "individual_mean_plus_2sd"
+    }
+   }
+  },
+  {
+   "source": "S043",
+   "citation": "literature sample",
+   "doi": "10.3389/frai.2023.1253940",
+   "source_type": "empirical",
+   "setting": "online-unsupervised",
+   "n_options": 4,
+   "fully_typed": true,
+   "options": {
+    "n_test_trials": 12,
+    "set_sizes": [
+     2,
+     3,
+     4,
+     5
+    ],
+    "stimulus_set.memorandum": "separate_item",
+    "stimulus_set.memorandum_type": "words"
+   }
+  },
+  {
+   "source": "S045",
+   "citation": "literature sample",
+   "doi": "10.3758/s13421-021-01261-3",
+   "source_type": "empirical",
+   "setting": "online-unsupervised",
+   "n_options": 7,
+   "fully_typed": true,
+   "options": {
+    "n_test_trials": 18,
+    "processing_items_per_memorandum": 2,
+    "recall_omission_handling": "none",
+    "response_device.recall_input_mode": "keyboard",
+    "response_format": "single_response",
+    "set_sizes": [
+     8
+    ],
+    "stimulus_duration_ms.memorandum": 1500
+   }
+  }
+ ],
+ "defaults": {
+  "source": "S006",
+  "citation": "Unsworth et al. 2005, BRM (automated OSPAN)",
+  "typicality": 0.724,
+  "coverage": 0.808,
+  "runner_up": {
+   "source": "S026",
+   "citation": "literature sample",
+   "score": 0.26
+  },
+  "lead": 0.6,
+  "disagreement_with_runner_up": 0.875
+ },
+ "translations": [
+  {
+   "variation": "processing_pacing_rule",
+   "raw": "individual_mean_plus_2.5sd",
+   "as": null,
+   "confidence": "high",
+   "flag": true,
+   "note": "Per-participant deadline = mean practice processing RT + 2.5 SD; no typed form (response_window_ms is a single number). propose vocabulary value: individualized deadline (adaptive.procedure rt_based?)"
+  },
+  {
+   "variation": "processing_pacing_rule",
+   "raw": "individual_mean_plus_2sd",
+   "as": null,
+   "confidence": "high",
+   "flag": true,
+   "note": "Per-participant deadline = mean + 2 SD (Wahlheim formula); same gap as the 2.5 SD rule. propose vocabulary value: individualized deadline"
+  },
+  {
+   "variation": "processing_pacing_rule",
+   "raw": "fixed_deadline",
+   "as": {},
+   "confidence": "high",
+   "flag": false,
+   "note": "Rule name only; the fixed number lives in processing_deadline_ms."
+  },
+  {
+   "variation": "processing_pacing_rule",
+   "raw": "fixed_duration",
+   "as": {},
+   "confidence": "medium",
+   "flag": false,
+   "note": "Arithmetic shown for a fixed 3.5 s (S036); number lives in processing_deadline_ms / stimulus duration, no separate setting here."
+  },
+  {
+   "variation": "set_size_order",
+   "raw": "random_per_participant",
+   "as": {
+    "block_order": "random"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "set_size_order",
+   "raw": "fixed_pseudorandom",
+   "as": {
+    "block_order": "fixed"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": "One pseudorandom order, identical for all participants."
+  },
+  {
+   "variation": "set_size_order",
+   "raw": "blocked_random_within_block",
+   "as": {
+    "block_order": "random"
+   },
+   "confidence": "medium",
+   "flag": true,
+   "note": "Each block holds one trial of every set size in random order; lossy, the one-of-each-per-block structure is not expressible."
+  },
+  {
+   "variation": "set_sizes",
+   "raw": "3-7",
+   "as": {
+    "set_sizes": [
+     3,
+     4,
+     5,
+     6,
+     7
+    ]
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "set_sizes",
+   "raw": "2-5",
+   "as": {
+    "set_sizes": [
+     2,
+     3,
+     4,
+     5
+    ]
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "set_sizes",
+   "raw": "2-6",
+   "as": {
+    "set_sizes": [
+     2,
+     3,
+     4,
+     5,
+     6
+    ]
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "set_sizes",
+   "raw": "4-7",
+   "as": {
+    "set_sizes": [
+     4,
+     5,
+     6,
+     7
+    ]
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "set_sizes",
+   "raw": "3-5",
+   "as": {
+    "set_sizes": [
+     3,
+     4,
+     5
+    ]
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "set_sizes",
+   "raw": "4-6",
+   "as": {
+    "set_sizes": [
+     4,
+     5,
+     6
+    ]
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "set_sizes",
+   "raw": "3-9",
+   "as": {
+    "set_sizes": [
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ]
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "set_sizes",
+   "raw": "4",
+   "as": {
+    "set_sizes": [
+     4
+    ]
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "set_sizes",
+   "raw": "8",
+   "as": {
+    "set_sizes": [
+     8
+    ]
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "recall_input_mode",
+   "raw": "click_response_grid",
+   "as": {
+    "response_device": "mouse",
+    "response_format": "n_afc"
+   },
+   "confidence": "medium",
+   "flag": true,
+   "note": "Click one letter per position in a 4x3 grid (12 alternatives); n_afc is the closest format, location would also fit."
+  },
+  {
+   "variation": "recall_input_mode",
+   "raw": "typed_text",
+   "as": {
+    "response_device": "keyboard",
+    "response_format": "free_text"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "recall_input_mode",
+   "raw": "keypress_per_item",
+   "as": {
+    "response_device": "keyboard",
+    "response_format": "single_response"
+   },
+   "confidence": "medium",
+   "flag": false,
+   "note": "One key press per recalled letter (S045)."
+  },
+  {
+   "variation": "processing_response_input",
+   "raw": "mouse_buttons",
+   "as": {
+    "response_device": "mouse"
+   },
+   "confidence": "medium",
+   "flag": false,
+   "note": "Applies to the processing task only; recall device is set by recall_input_mode and can differ."
+  },
+  {
+   "variation": "processing_response_input",
+   "raw": "keyboard_keys",
+   "as": {
+    "response_device": "keyboard"
+   },
+   "confidence": "medium",
+   "flag": false,
+   "note": "Processing task only (F/J or a/l keys); recall device is set by recall_input_mode and can differ."
+  },
+  {
+   "variation": "recall_order_requirement",
+   "raw": "serial_order",
+   "as": {
+    "response_order": "serial"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "recall_order_requirement",
+   "raw": "free_order_permitted",
+   "as": {
+    "response_order": "free"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "practice_advance_criterion",
+   "raw": "optional_repeat_if_at_or_below_chance",
+   "as": null,
+   "confidence": "high",
+   "flag": true,
+   "note": "Repeat practice (optionally) when accuracy is at or below chance; practice_criterion structure has no defined fields. propose vocabulary value: practice_criterion fields (accuracy, window, on_fail)"
+  },
+  {
+   "variation": "practice_advance_criterion",
+   "raw": "85% correct per 10-trial block",
+   "as": {
+    "practice_criterion": {
+     "accuracy": 0.85,
+     "block_trials": 10
+    }
+   },
+   "confidence": "medium",
+   "flag": true,
+   "note": "Field names are invented; the vocabulary does not define the structure. On-fail action not stated."
+  },
+  {
+   "variation": "practice_structure",
+   "raw": "storage_processing_combined",
+   "as": {},
+   "confidence": "high",
+   "flag": false,
+   "note": "Structure label; counts differ by source (S033: 3 letter, 8 math, 3 combined) and live in processing_practice_trials."
+  },
+  {
+   "variation": "practice_structure",
+   "raw": "storage_processing",
+   "as": {},
+   "confidence": "high",
+   "flag": false,
+   "note": "Structure label (S026: letter-only then math-only practice); no count of its own."
+  },
+  {
+   "variation": "practice_structure",
+   "raw": "combined_only",
+   "as": {},
+   "confidence": "high",
+   "flag": false,
+   "note": "Structure label; S027 has 3 and S034 has 2 practice trials, not recoverable from the raw value."
+  },
+  {
+   "variation": "feedback_schedule",
+   "raw": "per_trial",
+   "as": {
+    "trial_feedback": "accuracy"
+   },
+   "confidence": "medium",
+   "flag": false,
+   "note": "Per-trial letters recalled and math correct/errors (S006, S021); accuracy is the closest content. End-of-task not stated."
+  },
+  {
+   "variation": "feedback_schedule",
+   "raw": "end_of_task_only",
+   "as": {
+    "trial_feedback": "none",
+    "end_of_task_feedback": "score"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": "Percentage success shown at end of each task (S027)."
+  },
+  {
+   "variation": "instruction_format",
+   "raw": "video_then_written",
+   "as": null,
+   "confidence": "high",
+   "flag": true,
+   "note": "Video followed by duplicate on-screen text; instruction_format is a single enum. propose vocabulary value: video_then_text"
+  },
+  {
+   "variation": "instruction_format",
+   "raw": "written_or_video_tutorial",
+   "as": null,
+   "confidence": "high",
+   "flag": true,
+   "note": "Written or video tutorial offered as a choice; no single enum value. propose vocabulary value: text_or_video"
+  },
+  {
+   "variation": "processing_emphasis_instruction",
+   "raw": "keep_processing_accuracy_at_least_85pct",
+   "as": {
+    "speed_accuracy_emphasis": "accuracy"
+   },
+   "confidence": "medium",
+   "flag": false,
+   "note": "Instruction concerns processing-task accuracy (keep at 85%+); the 85% figure itself has no option here."
+  },
+  {
+   "variation": "processing_emphasis_instruction",
+   "raw": "equal_effort_both_subtasks",
+   "as": {},
+   "confidence": "medium",
+   "flag": false,
+   "note": "Equal priority to storage and processing, not a speed/accuracy emphasis."
+  },
+  {
+   "variation": "processing_emphasis_instruction",
+   "raw": "quick_and_accurate_with_time_limit",
+   "as": {
+    "speed_accuracy_emphasis": "both"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  }
+ ]
+}

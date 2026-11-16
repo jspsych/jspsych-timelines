@@ -1,0 +1,1548 @@
+{
+  "tallies": {
+    "observed_values_total": 132,
+    "typed_values_total": 126,
+    "level1_distinct_cases": 75,
+    "level1_checked": 68,
+    "level1_not_expressible": 7,
+    "level1_labelled_additions": 0,
+    "level2_configs": 11,
+    "level2_fully_expressible": 9
+  },
+  "level1": [
+    {
+      "option": "feedback_duration_ms",
+      "sub": "main",
+      "variation": "trial_feedback_duration_ms",
+      "value": 2000,
+      "sources": [
+        "S006"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "trial_feedback": "accuracy",
+        "feedback_duration_ms": 2000
+      }
+    },
+    {
+      "option": "feedback_duration_ms",
+      "sub": "main",
+      "variation": "trial_feedback_duration_ms",
+      "value": 1000,
+      "sources": [
+        "S021"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "trial_feedback": "accuracy",
+        "feedback_duration_ms": 1000
+      }
+    },
+    {
+      "option": "inter_item_interval_ms",
+      "sub": "main",
+      "variation": "inter_event_interval_ms",
+      "value": 0,
+      "sources": [
+        "S007"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "inter_item_interval_ms": 0
+      }
+    },
+    {
+      "option": "inter_item_interval_ms",
+      "sub": "main",
+      "variation": "inter_event_interval_ms",
+      "value": 500,
+      "sources": [
+        "S020"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "inter_item_interval_ms": 500
+      }
+    },
+    {
+      "option": "inter_item_interval_ms",
+      "sub": "main",
+      "variation": "inter_event_interval_ms",
+      "value": 100,
+      "sources": [
+        "S036"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "inter_item_interval_ms": 100
+      }
+    },
+    {
+      "option": "response_window_ms",
+      "sub": "deadline",
+      "variation": "processing_deadline_ms",
+      "value": 6000,
+      "sources": [
+        "S021",
+        "S026"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "response_window_ms": 6000
+      }
+    },
+    {
+      "option": "response_window_ms",
+      "sub": "deadline",
+      "variation": "processing_deadline_ms",
+      "value": 10000,
+      "sources": [
+        "S020",
+        "S027"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "response_window_ms": 10000
+      }
+    },
+    {
+      "option": "response_window_ms",
+      "sub": "deadline",
+      "variation": "processing_deadline_ms",
+      "value": 7000,
+      "sources": [
+        "S027"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "response_window_ms": 7000
+      }
+    },
+    {
+      "option": "response_window_ms",
+      "sub": "deadline",
+      "variation": "processing_deadline_ms",
+      "value": 3500,
+      "sources": [
+        "S036"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "response_window_ms": 3500
+      }
+    },
+    {
+      "option": "stimulus_duration_ms",
+      "sub": "main",
+      "variation": "memorandum_duration_ms",
+      "value": 800,
+      "sources": [
+        "S006"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "stimulus_duration_ms": 800
+      }
+    },
+    {
+      "option": "stimulus_duration_ms",
+      "sub": "main",
+      "variation": "memorandum_duration_ms",
+      "value": 1000,
+      "sources": [
+        "S021",
+        "S026",
+        "S033"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "stimulus_duration_ms": 1000
+      }
+    },
+    {
+      "option": "stimulus_duration_ms",
+      "sub": "main",
+      "variation": "memorandum_duration_ms",
+      "value": 1200,
+      "sources": [
+        "S020"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "stimulus_duration_ms": 1200
+      }
+    },
+    {
+      "option": "stimulus_duration_ms",
+      "sub": "main",
+      "variation": "memorandum_duration_ms",
+      "value": 1500,
+      "sources": [
+        "S036",
+        "S045"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "stimulus_duration_ms": 1500
+      }
+    },
+    {
+      "option": "stimulus_language",
+      "sub": "main",
+      "variation": "stimulus_language",
+      "value": "Portuguese",
+      "sources": [
+        "S027",
+        "S032"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "\"Portuguese\" selects word or sentence lists; none are bundled (supply stimulus_set.memorandum: { words })"
+    },
+    {
+      "option": "stimulus_language",
+      "sub": "main",
+      "variation": "stimulus_language",
+      "value": "Dutch",
+      "sources": [
+        "S020"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "\"Dutch\" selects word or sentence lists; none are bundled (supply stimulus_set.memorandum: { words })"
+    },
+    {
+      "option": "stimulus_language",
+      "sub": "main",
+      "variation": "stimulus_language",
+      "value": "German",
+      "sources": [
+        "S020"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "\"German\" selects word or sentence lists; none are bundled (supply stimulus_set.memorandum: { words })"
+    },
+    {
+      "option": "stimulus_set",
+      "sub": "type",
+      "variation": "memorandum_type",
+      "value": "letters",
+      "sources": [
+        "S006",
+        "S028"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "stimulus_set": {
+          "memorandum": "letters"
+        }
+      }
+    },
+    {
+      "option": "stimulus_set",
+      "sub": "type",
+      "variation": "memorandum_type",
+      "value": "words",
+      "sources": [
+        "S034",
+        "S043"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "stimulus_set": {
+          "memorandum": {
+            "words": [
+              "apple",
+              "bread",
+              "chair",
+              "dance",
+              "eagle",
+              "flame",
+              "grape",
+              "house",
+              "ivory",
+              "jelly",
+              "knife",
+              "lemon",
+              "mouse",
+              "night",
+              "ocean",
+              "plant"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "option": "stimulus_set",
+      "sub": "type",
+      "variation": "memorandum_type",
+      "value": "digits",
+      "sources": [
+        "S020"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "stimulus_set": {
+          "memorandum": "digits"
+        }
+      }
+    },
+    {
+      "option": "stimulus_set",
+      "sub": "type",
+      "variation": "memorandum_type",
+      "value": "grid_locations",
+      "sources": [
+        "S027"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "memoranda \"grid_locations\" are spatial: they need a location grid or arrow display and a matching recall input"
+    },
+    {
+      "option": "stimulus_set",
+      "sub": "type",
+      "variation": "memorandum_type",
+      "value": "arrows",
+      "sources": [
+        "S033"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "memoranda \"arrows\" are spatial: they need a location grid or arrow display and a matching recall input"
+    },
+    {
+      "option": "stimulus_set",
+      "sub": "source",
+      "variation": "memorandum_source",
+      "value": "separate_item",
+      "sources": [
+        "S006",
+        "S043"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "stimulus_set": {
+          "memorandum_source": "separate_item"
+        }
+      }
+    },
+    {
+      "option": "stimulus_set",
+      "sub": "source",
+      "variation": "memorandum_source",
+      "value": "sentence_final_word",
+      "sources": [
+        "S027",
+        "S032"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "the sentence-final word as memorandum is reading span: it needs a sentence processing task"
+    },
+    {
+      "option": "processing_display_format",
+      "sub": "main",
+      "variation": "processing_display_format",
+      "value": "problem_then_answer_screens",
+      "sources": [
+        "S006"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "structure",
+      "options": {
+        "processing_display_format": "problem_then_answer_screens"
+      }
+    },
+    {
+      "option": "processing_display_format",
+      "sub": "main",
+      "variation": "processing_display_format",
+      "value": "equation_with_answer_single_screen",
+      "sources": [
+        "S021",
+        "S026"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "structure",
+      "options": {
+        "processing_display_format": "equation_with_answer_single_screen"
+      }
+    },
+    {
+      "option": "processing_display_format",
+      "sub": "main",
+      "variation": "processing_display_format",
+      "value": "equation_and_memorandum_same_screen",
+      "sources": [
+        "S039"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "the memorandum shown on the equation's screen (S039, lab) is not implemented"
+    },
+    {
+      "option": "block_order",
+      "sub": "main",
+      "variation": "set_size_order",
+      "value": "random",
+      "sources": [
+        "S006",
+        "S034",
+        "S009"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "block_order": "random"
+      }
+    },
+    {
+      "option": "block_order",
+      "sub": "main",
+      "variation": "set_size_order",
+      "value": "fixed",
+      "sources": [
+        "S020",
+        "S027"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "block_order": "fixed"
+      }
+    },
+    {
+      "option": "block_order",
+      "sub": "main",
+      "variation": "set_size_order",
+      "value": "ascending",
+      "sources": [
+        "S032"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "block_order": "ascending"
+      }
+    },
+    {
+      "option": "n_test_trials",
+      "sub": "main",
+      "variation": "total_test_trials",
+      "value": 15,
+      "sources": [
+        "S006",
+        "S027"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "set_sizes": [
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "n_test_trials": 15
+      }
+    },
+    {
+      "option": "n_test_trials",
+      "sub": "main",
+      "variation": "total_test_trials",
+      "value": 12,
+      "sources": [
+        "S026",
+        "S043"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "set_sizes": [
+          2,
+          3,
+          4,
+          5
+        ],
+        "n_test_trials": 12
+      }
+    },
+    {
+      "option": "n_test_trials",
+      "sub": "main",
+      "variation": "total_test_trials",
+      "value": 9,
+      "sources": [
+        "S033"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "set_sizes": [
+          3,
+          4,
+          5
+        ],
+        "n_test_trials": 9
+      }
+    },
+    {
+      "option": "n_test_trials",
+      "sub": "main",
+      "variation": "total_test_trials",
+      "value": 20,
+      "sources": [
+        "S034"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "set_sizes": [
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "n_test_trials": 20
+      }
+    },
+    {
+      "option": "n_test_trials",
+      "sub": "main",
+      "variation": "total_test_trials",
+      "value": 18,
+      "sources": [
+        "S045"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "set_sizes": [
+          4,
+          5,
+          6
+        ],
+        "n_test_trials": 18
+      }
+    },
+    {
+      "option": "set_sizes",
+      "sub": "main",
+      "variation": "set_sizes",
+      "value": [
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "sources": [
+        "S006",
+        "S028"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "set_sizes": [
+          3,
+          4,
+          5,
+          6,
+          7
+        ]
+      }
+    },
+    {
+      "option": "set_sizes",
+      "sub": "main",
+      "variation": "set_sizes",
+      "value": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "sources": [
+        "S009",
+        "S043",
+        "S033"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "set_sizes": [
+          2,
+          3,
+          4,
+          5
+        ]
+      }
+    },
+    {
+      "option": "set_sizes",
+      "sub": "main",
+      "variation": "set_sizes",
+      "value": [
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "sources": [
+        "S027",
+        "S032",
+        "S034"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "set_sizes": [
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      }
+    },
+    {
+      "option": "set_sizes",
+      "sub": "main",
+      "variation": "set_sizes",
+      "value": [
+        4,
+        5,
+        6,
+        7
+      ],
+      "sources": [
+        "S021",
+        "S026"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "set_sizes": [
+          4,
+          5,
+          6,
+          7
+        ]
+      }
+    },
+    {
+      "option": "set_sizes",
+      "sub": "main",
+      "variation": "set_sizes",
+      "value": [
+        3,
+        4,
+        5
+      ],
+      "sources": [
+        "S021"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "set_sizes": [
+          3,
+          4,
+          5
+        ]
+      }
+    },
+    {
+      "option": "set_sizes",
+      "sub": "main",
+      "variation": "set_sizes",
+      "value": [
+        4,
+        5,
+        6
+      ],
+      "sources": [
+        "S033"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "set_sizes": [
+          4,
+          5,
+          6
+        ]
+      }
+    },
+    {
+      "option": "set_sizes",
+      "sub": "main",
+      "variation": "set_sizes",
+      "value": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "sources": [
+        "S011"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "set_sizes": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ]
+      }
+    },
+    {
+      "option": "set_sizes",
+      "sub": "main",
+      "variation": "set_sizes",
+      "value": [
+        4
+      ],
+      "sources": [
+        "S036"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "set_sizes": [
+          4
+        ]
+      }
+    },
+    {
+      "option": "set_sizes",
+      "sub": "main",
+      "variation": "set_sizes",
+      "value": [
+        8
+      ],
+      "sources": [
+        "S045"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "set_sizes": [
+          8
+        ]
+      }
+    },
+    {
+      "option": "trials_per_condition",
+      "sub": "main",
+      "variation": "trials_per_set_size",
+      "value": 3,
+      "sources": [
+        "S006",
+        "S027"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "trials_per_condition": 3
+      }
+    },
+    {
+      "option": "trials_per_condition",
+      "sub": "main",
+      "variation": "trials_per_set_size",
+      "value": 2,
+      "sources": [
+        "S011"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "trials_per_condition": 2
+      }
+    },
+    {
+      "option": "trials_per_condition",
+      "sub": "main",
+      "variation": "trials_per_set_size",
+      "value": 1,
+      "sources": [
+        "S023"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "trials_per_condition": 1
+      }
+    },
+    {
+      "option": "trials_per_condition",
+      "sub": "main",
+      "variation": "trials_per_set_size",
+      "value": 4,
+      "sources": [
+        "S034"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "trials_per_condition": 4
+      }
+    },
+    {
+      "option": "memorandum_order_in_pair",
+      "sub": "main",
+      "variation": "memorandum_order_in_pair",
+      "value": "processing_first",
+      "sources": [
+        "S006",
+        "S027"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "memorandum_order_in_pair": "processing_first"
+      }
+    },
+    {
+      "option": "memorandum_order_in_pair",
+      "sub": "main",
+      "variation": "memorandum_order_in_pair",
+      "value": "memorandum_first",
+      "sources": [
+        "S021",
+        "S033"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "memorandum_order_in_pair": "memorandum_first"
+      }
+    },
+    {
+      "option": "processing_items_per_memorandum",
+      "sub": "main",
+      "variation": "processing_items_per_memorandum",
+      "value": 1,
+      "sources": [
+        "S006",
+        "S033"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "processing_items_per_memorandum": 1
+      }
+    },
+    {
+      "option": "processing_items_per_memorandum",
+      "sub": "main",
+      "variation": "processing_items_per_memorandum",
+      "value": 2,
+      "sources": [
+        "S045"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "processing_items_per_memorandum": 2
+      }
+    },
+    {
+      "option": "response_device",
+      "sub": "recall",
+      "variation": "recall_input_mode",
+      "value": "mouse",
+      "sources": [
+        "S006",
+        "S026",
+        "S033"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "response_device": {
+          "recall": "mouse"
+        }
+      }
+    },
+    {
+      "option": "response_device",
+      "sub": "recall",
+      "variation": "recall_input_mode",
+      "value": "keyboard",
+      "sources": [
+        "S020",
+        "S027",
+        "S034",
+        "S045"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "response_format": "free_text",
+        "response_device": {
+          "recall": "keyboard"
+        }
+      }
+    },
+    {
+      "option": "response_device",
+      "sub": "processing",
+      "variation": "processing_response_input",
+      "value": "mouse",
+      "sources": [
+        "S006",
+        "S034"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "response_device": {
+          "processing": "mouse"
+        }
+      }
+    },
+    {
+      "option": "response_device",
+      "sub": "processing",
+      "variation": "processing_response_input",
+      "value": "keyboard",
+      "sources": [
+        "S027",
+        "S033"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "response_device": {
+          "processing": "keyboard"
+        }
+      }
+    },
+    {
+      "option": "response_format",
+      "sub": "main",
+      "variation": "recall_input_mode",
+      "value": "n_afc",
+      "sources": [
+        "S006",
+        "S026",
+        "S033"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "structure",
+      "options": {
+        "response_format": "n_afc"
+      }
+    },
+    {
+      "option": "response_format",
+      "sub": "main",
+      "variation": "recall_input_mode",
+      "value": "free_text",
+      "sources": [
+        "S020",
+        "S027",
+        "S034"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "structure",
+      "options": {
+        "response_device": {
+          "recall": "keyboard"
+        },
+        "response_format": "free_text"
+      }
+    },
+    {
+      "option": "response_format",
+      "sub": "main",
+      "variation": "recall_input_mode",
+      "value": "single_response",
+      "sources": [
+        "S045"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "structure",
+      "options": {
+        "response_device": {
+          "recall": "keyboard"
+        },
+        "response_format": "single_response"
+      }
+    },
+    {
+      "option": "response_order",
+      "sub": "main",
+      "variation": "recall_order_requirement",
+      "value": "serial",
+      "sources": [
+        "S006",
+        "S027"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "response_order": "serial"
+      }
+    },
+    {
+      "option": "response_order",
+      "sub": "main",
+      "variation": "recall_order_requirement",
+      "value": "free",
+      "sources": [
+        "S020"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "response_order": "free"
+      }
+    },
+    {
+      "option": "recall_omission_handling",
+      "sub": "main",
+      "variation": "recall_omission_handling",
+      "value": "blank_button",
+      "sources": [
+        "S006"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "structure",
+      "options": {
+        "recall_omission_handling": "blank_button"
+      }
+    },
+    {
+      "option": "recall_omission_handling",
+      "sub": "main",
+      "variation": "recall_omission_handling",
+      "value": "question_mark_key",
+      "sources": [
+        "S017"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "structure",
+      "options": {
+        "response_device": {
+          "recall": "keyboard"
+        },
+        "response_format": "free_text",
+        "recall_omission_handling": "question_mark_key"
+      }
+    },
+    {
+      "option": "recall_omission_handling",
+      "sub": "main",
+      "variation": "recall_omission_handling",
+      "value": "skip_button",
+      "sources": [
+        "S034"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "structure",
+      "options": {
+        "recall_omission_handling": "skip_button"
+      }
+    },
+    {
+      "option": "recall_omission_handling",
+      "sub": "main",
+      "variation": "recall_omission_handling",
+      "value": "none",
+      "sources": [
+        "S045"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "structure",
+      "options": {
+        "recall_omission_handling": "none"
+      }
+    },
+    {
+      "option": "practice_criterion",
+      "sub": "main",
+      "variation": "practice_advance_criterion",
+      "value": {
+        "accuracy": 0.85,
+        "block_trials": 10
+      },
+      "sources": [
+        "S036"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_criterion": {
+          "accuracy": 0.85,
+          "window": 10
+        }
+      }
+    },
+    {
+      "option": "practice_trials",
+      "sub": "processing",
+      "variation": "processing_practice_trials",
+      "value": 15,
+      "sources": [
+        "S006"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 15
+      }
+    },
+    {
+      "option": "practice_trials",
+      "sub": "processing",
+      "variation": "processing_practice_trials",
+      "value": 8,
+      "sources": [
+        "S033"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 8
+      }
+    },
+    {
+      "option": "practice_trials",
+      "sub": "processing",
+      "variation": "processing_practice_trials",
+      "value": 5,
+      "sources": [
+        "S026"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 5
+      }
+    },
+    {
+      "option": "end_of_task_feedback",
+      "sub": "main",
+      "variation": "feedback_schedule",
+      "value": "score",
+      "sources": [
+        "S027"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "structure",
+      "options": {
+        "end_of_task_feedback": "score"
+      }
+    },
+    {
+      "option": "trial_feedback",
+      "sub": "main",
+      "variation": "feedback_schedule",
+      "value": "accuracy",
+      "sources": [
+        "S006",
+        "S021"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "trial_feedback": "accuracy"
+      }
+    },
+    {
+      "option": "trial_feedback",
+      "sub": "main",
+      "variation": "feedback_schedule",
+      "value": "none",
+      "sources": [
+        "S027"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "trial_feedback": "none"
+      }
+    },
+    {
+      "option": "speed_accuracy_emphasis",
+      "sub": "main",
+      "variation": "processing_emphasis_instruction",
+      "value": "accuracy",
+      "sources": [
+        "S006"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "structure",
+      "options": {
+        "speed_accuracy_emphasis": "accuracy"
+      }
+    },
+    {
+      "option": "speed_accuracy_emphasis",
+      "sub": "main",
+      "variation": "processing_emphasis_instruction",
+      "value": "both",
+      "sources": [
+        "S021"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "structure",
+      "options": {
+        "speed_accuracy_emphasis": "both"
+      }
+    },
+    {
+      "option": "processing_read_aloud",
+      "sub": "main",
+      "variation": "processing_read_aloud",
+      "value": true,
+      "sources": [
+        "S034",
+        "S036"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "structure",
+      "options": {
+        "processing_read_aloud": true
+      }
+    },
+    {
+      "option": "processing_read_aloud",
+      "sub": "main",
+      "variation": "processing_read_aloud",
+      "value": false,
+      "sources": [
+        "S006"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "structure",
+      "options": {
+        "processing_read_aloud": false
+      }
+    }
+  ],
+  "level2": [
+    {
+      "source": "S009",
+      "citation": "Foster et al. 2015, Mem Cogn (shortened)",
+      "n_options": 2,
+      "n_keys": 2,
+      "keys_expressible": 2,
+      "gaps": [],
+      "checked_options": [
+        "block_order",
+        "set_sizes"
+      ],
+      "assumed": [],
+      "tied_to_reported_value": 2
+    },
+    {
+      "source": "S011",
+      "citation": "Draheim et al. 2018, Psych Assess (IRT; advanced)",
+      "n_options": 2,
+      "n_keys": 2,
+      "keys_expressible": 2,
+      "gaps": [],
+      "checked_options": [
+        "set_sizes",
+        "trials_per_condition"
+      ],
+      "assumed": [],
+      "tied_to_reported_value": 2
+    },
+    {
+      "source": "S020",
+      "citation": "Klaus & Schriefers jsPsych reading/operation/mixed span (MIT, commit 4dc9ed6)",
+      "n_options": 9,
+      "n_keys": 9,
+      "keys_expressible": 8,
+      "gaps": [
+        {
+          "key": "stimulus_language",
+          "gap": "option missing",
+          "reason": "\"German\" selects word or sentence lists; none are bundled (supply stimulus_set.memorandum: { words })"
+        }
+      ],
+      "checked_options": [
+        "block_order",
+        "inter_item_interval_ms",
+        "response_device",
+        "response_format",
+        "response_order",
+        "response_window_ms",
+        "stimulus_duration_ms",
+        "stimulus_set"
+      ],
+      "assumed": [],
+      "tied_to_reported_value": 8
+    },
+    {
+      "source": "S021",
+      "citation": "Luthra & Todd jsPsych ospan/symspan (no licence, commit c4700e7)",
+      "n_options": 8,
+      "n_keys": 8,
+      "keys_expressible": 8,
+      "gaps": [],
+      "checked_options": [
+        "feedback_duration_ms",
+        "memorandum_order_in_pair",
+        "processing_display_format",
+        "response_window_ms",
+        "set_sizes",
+        "speed_accuracy_emphasis",
+        "stimulus_duration_ms",
+        "trial_feedback"
+      ],
+      "assumed": [],
+      "tied_to_reported_value": 8
+    },
+    {
+      "source": "S023",
+      "citation": "literature sample",
+      "n_options": 1,
+      "n_keys": 1,
+      "keys_expressible": 1,
+      "gaps": [],
+      "checked_options": [
+        "trials_per_condition"
+      ],
+      "assumed": [],
+      "tied_to_reported_value": 1
+    },
+    {
+      "source": "S027",
+      "citation": "literature sample",
+      "n_options": 15,
+      "n_keys": 15,
+      "keys_expressible": 12,
+      "gaps": [
+        {
+          "key": "stimulus_language",
+          "gap": "option missing",
+          "reason": "\"Portuguese\" selects word or sentence lists; none are bundled (supply stimulus_set.memorandum: { words })"
+        },
+        {
+          "key": "stimulus_set.memorandum",
+          "gap": "option missing",
+          "reason": "the sentence-final word as memorandum is reading span: it needs a sentence processing task"
+        },
+        {
+          "key": "stimulus_set.memorandum_type",
+          "gap": "option missing",
+          "reason": "memoranda \"grid_locations\" are spatial: they need a location grid or arrow display and a matching recall input"
+        }
+      ],
+      "checked_options": [
+        "block_order",
+        "end_of_task_feedback",
+        "memorandum_order_in_pair",
+        "n_test_trials",
+        "response_device",
+        "response_format",
+        "response_order",
+        "response_window_ms",
+        "set_sizes",
+        "trial_feedback",
+        "trials_per_condition"
+      ],
+      "assumed": [],
+      "tied_to_reported_value": 12
+    },
+    {
+      "source": "S028",
+      "citation": "literature sample",
+      "n_options": 2,
+      "n_keys": 2,
+      "keys_expressible": 2,
+      "gaps": [],
+      "checked_options": [
+        "set_sizes",
+        "stimulus_set"
+      ],
+      "assumed": [],
+      "tied_to_reported_value": 2
+    },
+    {
+      "source": "S034",
+      "citation": "literature sample",
+      "n_options": 10,
+      "n_keys": 10,
+      "keys_expressible": 10,
+      "gaps": [],
+      "checked_options": [
+        "block_order",
+        "n_test_trials",
+        "processing_read_aloud",
+        "recall_omission_handling",
+        "response_device",
+        "response_format",
+        "set_sizes",
+        "stimulus_set",
+        "trials_per_condition"
+      ],
+      "assumed": [],
+      "tied_to_reported_value": 10
+    },
+    {
+      "source": "S036",
+      "citation": "literature sample",
+      "n_options": 6,
+      "n_keys": 6,
+      "keys_expressible": 6,
+      "gaps": [],
+      "checked_options": [
+        "inter_item_interval_ms",
+        "practice_criterion",
+        "processing_read_aloud",
+        "response_window_ms",
+        "set_sizes",
+        "stimulus_duration_ms"
+      ],
+      "assumed": [],
+      "tied_to_reported_value": 6
+    },
+    {
+      "source": "S043",
+      "citation": "literature sample",
+      "n_options": 4,
+      "n_keys": 4,
+      "keys_expressible": 4,
+      "gaps": [],
+      "checked_options": [
+        "n_test_trials",
+        "set_sizes",
+        "stimulus_set"
+      ],
+      "assumed": [],
+      "tied_to_reported_value": 4
+    },
+    {
+      "source": "S045",
+      "citation": "literature sample",
+      "n_options": 7,
+      "n_keys": 7,
+      "keys_expressible": 7,
+      "gaps": [],
+      "checked_options": [
+        "n_test_trials",
+        "processing_items_per_memorandum",
+        "recall_omission_handling",
+        "response_device",
+        "response_format",
+        "set_sizes",
+        "stimulus_duration_ms"
+      ],
+      "assumed": [],
+      "tied_to_reported_value": 7
+    }
+  ]
+}

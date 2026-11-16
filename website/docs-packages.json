@@ -9,6 +9,9 @@
     },
     {
       "task": "stop-signal-task"
+    },
+    {
+      "task": "operation-span"
     }
   ]
 }

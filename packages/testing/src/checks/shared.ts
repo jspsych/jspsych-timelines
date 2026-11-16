@@ -14,6 +14,25 @@ import type { Check, CheckContext, CheckSet } from "./types";
 
 const phaseRows = (r: Run, c: DataContract, phase: "test" | "practice") =>
   rowsOf(r, phase, c.parts.response);
+
+const partName = (c: DataContract, part: string) =>
+  (c.parts as unknown as Record<string, string>)[part] ?? part;
+
+/** Rows a check of `option` reads: the contract's scope for it, or the scorable rows. */
+function scopedRows(r: Run, c: DataContract, option: string, phase: "test" | "practice") {
+  const s = c.scope[option];
+  if (!s) return phaseRows(r, c, phase);
+  const rows = rowsOf(r, phase, partName(c, s.part));
+  return s.filter ? rows.filter(s.filter) : rows;
+}
+/** Built trials a check of `option` reads the plugin parameters of. */
+function scopedTrials(r: Run, c: DataContract, option: string) {
+  const s = c.scope[option];
+  return trialsOf(r, s ? partName(c, s.builtPart ? s.builtPart(r.eff) : s.part) : c.parts.response);
+}
+/** The resolved value of `option` for the scoped part. */
+const scopedValue = (r: Run, c: DataContract, option: string): any =>
+  c.scope[option]?.value ? c.scope[option].value!(r.eff) : r.eff[option];
 const testRows = (r: Run, c: DataContract) => phaseRows(r, c, "test");
 
 const isSpec = (v: unknown): v is { min: number; max: number; step?: number } =>
@@ -141,7 +160,7 @@ const practice_trials: Check = {
   kind: "behaviour",
   requires: ["parts.response"],
   fn: (r, { contract: c }) =>
-    expect(phaseRows(r, c, "practice")).toHaveLength(r.eff.practice_trials),
+    expect(scopedRows(r, c, "practice_trials", "practice")).toHaveLength(r.eff.practice_trials),
 };
 
 const n_blocks: Check = {
@@ -367,10 +386,19 @@ const response_window_ms: Check = {
   requires: ["parts.response", "fields.timeout", "exempt"],
   optional: ["fields.response_window"],
   fn: async (r, { contract: c, harness }) => {
-    const v = r.eff.response_window_ms as DurationSpec | null;
-    const rows = testRows(r, c);
+    const raw = scopedValue(r, c, "response_window_ms");
+    // a computed value (PACKAGE-STANDARD 2a): each row records what the function returned
+    const computed = typeof raw === "function";
+    const v = (computed ? 1 : raw) as DurationSpec | null;
+    const rows = scopedRows(r, c, "response_window_ms", "test");
     const f = c.fields;
-    if (f.response_window) {
+    if (f.response_window && computed) {
+      rows.forEach((x) =>
+        expect(x[f.response_window!] === null || typeof x[f.response_window!] === "number").toBe(
+          true
+        )
+      );
+    } else if (f.response_window) {
       if (isSpec(v))
         expectOnGrid(
           rows.map((x) => x[f.response_window!]),
@@ -378,7 +406,7 @@ const response_window_ms: Check = {
         );
       else rows.forEach((x) => expect(x[f.response_window!]).toBe(v));
     }
-    const built = trialsOf(r, c.parts.response).filter((t) => t.data?.phase === "test");
+    const built = scopedTrials(r, c, "response_window_ms").filter((t) => t.data?.phase === "test");
     built.forEach((t) => {
       if (typeof t.trial_duration === "function") return;
       if (isSpec(v)) expectOnGrid([t.trial_duration], v);
@@ -386,14 +414,14 @@ const response_window_ms: Check = {
     });
     // a participant slower than the window times out; with no window nobody does
     const slow = await harness.runSlow(r.opts);
-    const slowRows = testRows(slow, c).filter((x) => !c.exempt(x));
+    const slowRows = scopedRows(slow, c, "response_window_ms", "test").filter((x) => !c.exempt(x));
     expect(slowRows.length).toBeGreaterThan(0);
     slowRows.forEach((x) => expect(x[f.timeout!]).toBe(v !== null));
     // a fast participant does not, whatever the window (when the window is longer than the RT)
     const shortest = isSpec(v) ? v.min : v;
     if (shortest !== null && shortest > 100) {
       const fast = await harness.run(r.opts, { default: { data: { rt: 50 } } });
-      testRows(fast, c)
+      scopedRows(fast, c, "response_window_ms", "test")
         .filter((x) => !c.exempt(x))
         .forEach((x) => expect(x[f.timeout!]).toBe(false));
     }
@@ -404,9 +432,21 @@ const stimulus_duration_ms: Check = {
   kind: "recorded-parameter",
   requires: ["parts.response", "fields.stimulus_duration"],
   fn: (r, { contract: c }) => {
-    const v = r.eff.stimulus_duration_ms;
-    testRows(r, c).forEach((x) => expect(x[c.fields.stimulus_duration!]).toBe(v));
-    trialsOf(r, c.parts.response).forEach((t) => expect(t.stimulus_duration).toBe(v));
+    const v = scopedValue(r, c, "stimulus_duration_ms");
+    const rows = scopedRows(r, c, "stimulus_duration_ms", "test");
+    // a jitter range: every row records a value of the range
+    if (typeof v === "object" && v !== null) {
+      expectOnGrid(
+        rows.map((x) => x[c.fields.stimulus_duration!]),
+        v
+      );
+      scopedTrials(r, c, "stimulus_duration_ms").forEach((t) =>
+        expectOnGrid([t.stimulus_duration], v)
+      );
+      return;
+    }
+    rows.forEach((x) => expect(x[c.fields.stimulus_duration!]).toBe(v));
+    scopedTrials(r, c, "stimulus_duration_ms").forEach((t) => expect(t.stimulus_duration).toBe(v));
   },
 };
 
@@ -416,10 +456,11 @@ const response_keys: Check = {
   fn: (r, { contract: c }) => {
     const keys: string[] = r.eff.response_keys;
     // other devices use buttons instead of keys
-    if (r.eff.response_device && r.eff.response_device !== "keyboard") return;
-    expect(trialsOf(r, c.parts.response)[0].choices).toEqual(keys);
+    const device = scopedValue(r, c, "response_device");
+    if (device && device !== "keyboard") return;
+    expect(scopedTrials(r, c, "response_keys")[0].choices).toEqual(keys);
     const lower = keys.map((k) => k.toLowerCase());
-    const rows = testRows(r, c);
+    const rows = scopedRows(r, c, "response_keys", "test");
     const f = c.fields;
     rows
       .filter((x) => !c.exempt(x))
@@ -438,11 +479,11 @@ const response_device: Check = {
   requires: ["parts.response", "plugins", "fields.response"],
   optional: ["fields.response_device"],
   fn: (r, { contract: c }) => {
-    const device: string = r.eff.response_device;
+    const device: string = scopedValue(r, c, "response_device");
     const plugin = c.plugins[device];
     expect(plugin).toBeDefined();
     const f = c.fields;
-    testRows(r, c).forEach((x) => {
+    scopedRows(r, c, "response_device", "test").forEach((x) => {
       expect(x.trial_type).toBe(plugin);
       if (f.response_device) expect(x[f.response_device]).toBe(device);
       // keyboard plugins record the key (string), button plugins the button index (number)
@@ -451,8 +492,8 @@ const response_device: Check = {
       if (plugin.includes("button"))
         expect(typeof x[f.response] === "number" || x[f.response] === null).toBe(true);
     });
-    const choices = trialsOf(r, c.parts.response)[0].choices;
-    if (plugin.includes("button") && r.eff.response_keys) {
+    const choices = scopedTrials(r, c, "response_device")[0].choices;
+    if (plugin.includes("button") && r.eff.response_keys && !c.scope.response_device) {
       expect(choices).toHaveLength(r.eff.response_keys.length);
     }
   },

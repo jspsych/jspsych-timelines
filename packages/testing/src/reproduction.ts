@@ -81,9 +81,8 @@ export interface ReproductionConfig<O = any, E = any> {
   nullExcludedVariations?: string[];
   /**
    * Level 2: the value a configuration key resolved to, paired with the value it reports.
-   * Keys without a dot are paired with `r.eff[key]` by default; this handles the dotted ones, and can
-   * also re-pair an undotted key whose typed value is spelled differently from the resolved option.
-   * Return `null` when the key cannot be compared one-to-one (undotted keys then use the default pairing).
+   * Asked for every key first. Keys without a dot are paired with `r.eff[key]` by default when it returns `null`;
+   * this handles the dotted ones and any key the package retyped. Return `null` when the key cannot be compared one-to-one.
    */
   reportedValue?: (
     key: string,
@@ -164,10 +163,11 @@ export function defineReproduction<O = any, E = any>(config: ReproductionConfig<
         let tied = 0;
         for (const { key, adapted } of entries) {
           if (isGap(adapted)) continue;
-          // a dotted key is compared only if `reportedValue` says how; an undotted key is compared with
-          // the resolved option of the same name unless `reportedValue` gives another pairing
-          const custom = config.reportedValue?.(key, s.options[key], r, s) ?? null;
-          const pair = custom ?? (key.includes(".") ? null : [(r.eff as any)[key], s.options[key]]);
+          // `reportedValue` is asked first for every key (a package may retype even an undotted key, such
+          // as a bundle whose field names differ); without an answer an undotted key is compared as it is
+          const pair =
+            config.reportedValue?.(key, s.options[key], r, s) ??
+            (key.includes(".") ? null : [(r.eff as any)[key], s.options[key]]);
           if (pair) {
             expect(pair[0]).toEqual(pair[1]);
             tied++;
