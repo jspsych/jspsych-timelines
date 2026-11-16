@@ -3107,7 +3107,7 @@ var jsPsychTimelineFlanker = (function (exports) {
   var random = () => Math.random();
   function withRng(rng, fn) {
     const prev = random;
-    random = rng != null ? rng : () => Math.random();
+    random = rng != null ? rng : (() => Math.random());
     try {
       return fn();
     } finally {
@@ -4544,9 +4544,7 @@ var jsPsychTimelineFlanker = (function (exports) {
         //card dimension: 85.60 × 53.98 mm (3.370 × 2.125 in)
       };
       let blindspot_config_data = {
-        ball_pos: [],
-        slider_clck: false
-      };
+        ball_pos: []};
       let aspect_ratio = trial.item_width_mm / trial.item_height_mm;
       const start_div_height = aspect_ratio < 1 ? trial.item_init_size : Math.round(trial.item_init_size / aspect_ratio);
       const start_div_width = aspect_ratio < 1 ? Math.round(trial.item_init_size * aspect_ratio) : trial.item_init_size;
@@ -4901,8 +4899,6 @@ var jsPsychTimelineFlanker = (function (exports) {
   function createFixation(ctx, o, phase, block, ms) {
     const { fg, bg } = parseColors(o.stimulus_color);
     return createDisplayTrial({
-      ctx,
-      o,
       phase,
       part: "fixation",
       block,
@@ -4922,8 +4918,6 @@ var jsPsychTimelineFlanker = (function (exports) {
     const fix = `<span class="jspsych-timelines-flanker-fixation">${ctx.text.fixation}</span>`;
     const nodes = [
       createDisplayTrial({
-        ctx,
-        o,
         phase,
         part: "cue",
         block,
@@ -4939,8 +4933,6 @@ var jsPsychTimelineFlanker = (function (exports) {
     if (interval > cueMs) {
       nodes.push(
         createDisplayTrial({
-          ctx,
-          o,
           phase,
           part: "cue",
           block,
@@ -4955,8 +4947,6 @@ var jsPsychTimelineFlanker = (function (exports) {
   function createIti(ctx, o, phase, block) {
     const { fg, bg } = parseColors(o.stimulus_color);
     return createDisplayTrial({
-      ctx,
-      o,
       phase,
       part: "iti",
       block,
@@ -4990,8 +4980,6 @@ var jsPsychTimelineFlanker = (function (exports) {
   function createPreview(ctx, o, spec, phase, block) {
     const soa = o.soa_ms;
     return createDisplayTrial({
-      ctx,
-      o,
       phase,
       part: "preview",
       block,
@@ -5095,8 +5083,6 @@ var jsPsychTimelineFlanker = (function (exports) {
   function createFeedback(ctx, o, phase, block) {
     const { fg, bg } = parseColors(o.stimulus_color);
     const trial = createDisplayTrial({
-      ctx,
-      o,
       phase,
       part: "feedback",
       block,
@@ -5300,8 +5286,6 @@ var jsPsychTimelineFlanker = (function (exports) {
         }
       });
       const confirm = createDisplayTrial({
-        ctx,
-        o: so,
         phase: "instructions",
         part: "instruction_feedback",
         duration: INSTRUCTION_CORRECT_MS,
