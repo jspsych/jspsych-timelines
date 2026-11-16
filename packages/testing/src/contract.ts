@@ -56,6 +56,11 @@ export interface DataContract<E = any> {
    * `cued`). Rows are counted by `normaliseCondition(condition(row))`.
    */
   proportionKeys: (eff: E) => string[];
+  /**
+   * The proportions of block `block` (1-based), keyed like `proportionKeys`. Default: `eff.condition_proportions`.
+   * A package whose `condition_proportions` is a per-block list (PACKAGE-STANDARD 2a) returns the block's entry.
+   */
+  proportionsFor: (eff: E, block: number) => Record<string, number>;
   /** Does the row count towards this `condition_proportions` key? Default: its condition equals the key. */
   rowMatchesKey: (row: Row, key: string) => boolean;
   /** Rows with no correct response or no response window (e.g. no-go trials). */
@@ -159,6 +164,7 @@ export function defineContract<E = any>(input: ContractInput<E>): DataContract<E
     normaliseCondition,
     proportionKeys:
       input.proportionKeys ?? ((eff: any) => Object.keys(eff.condition_proportions ?? {})),
+    proportionsFor: input.proportionsFor ?? ((eff: any) => eff.condition_proportions),
     rowMatchesKey:
       input.rowMatchesKey ??
       ((row: Row, key: string) => {

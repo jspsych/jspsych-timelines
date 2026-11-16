@@ -98,6 +98,11 @@ export const CHECKS: CheckSet = {
 
 A check is `{ kind, requires, optional?, fn(r, { contract, harness }) }` and uses jest's `expect`. `kind` says what it can see: `behaviour` (rows), `recorded-parameter` (a value arrived in data and plugin parameter; data-only simulation ignores time), `structure` (built timeline or HTML).
 
+Two optional hooks serve packages whose resolved options differ from the vocabulary's simple form (both added with the stop-signal task):
+
+- `contract.proportionsFor(eff, block)`: the proportions of one block, for a `condition_proportions` that is a per-block list (PACKAGE-STANDARD 2a). Default: `eff.condition_proportions`. The shared `condition_proportions` check and the order checks use it.
+- `defineReproduction({ reportedValue })` is asked about every configuration key. Return `[actual, expected]` to compare, or `null` for the default: an undotted key is compared with `r.eff[key]`, a dotted key is skipped. The stop-signal task uses it for `practice_criterion`, which the spec types with its own field names.
+
 ### 6. The spec file
 
 ```ts

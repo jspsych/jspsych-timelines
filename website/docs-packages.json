@@ -6,6 +6,9 @@
     },
     {
       "task": "go-nogo"
+    },
+    {
+      "task": "stop-signal-task"
     }
   ]
 }

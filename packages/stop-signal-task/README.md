@@ -1,10 +1,6 @@
-# @jspsych-timelines/stop-signal-task
+# Stop-Signal Task
 
-A jsPsych timeline for the Stop Signal Task, measuring response inhibition and impulse control.
-
-## Overview
-
-Participants see arrows pointing left or right and must press the matching direction button. On a proportion of trials (~25%), a stop signal appears after a variable delay, and participants must withhold their response. An adaptive staircase adjusts the stop signal delay (SSD) to converge on ~50% stopping accuracy, enabling valid SSRT estimation.
+The stop-signal (countermanding) task measures response inhibition: participants respond quickly to an arrow, but on a minority of trials a stop signal appears shortly after it and they must withhold the response. The stop-signal delay follows a staircase that keeps stopping at about 50% success, and the stop-signal reaction time (SSRT) is estimated with the integration method. The default configuration follows the STOP-IT task (Verbruggen et al., 2008) and the consensus guide of Verbruggen et al. (2019), *eLife*, 8, e46323; every option, its default and the evidence behind it is on the documentation site. Logan, G. D., & Cowan, W. B. (1984), *Psychological Review*, 91, 295-327 (the race model; cited from memory, the dossier could not read it).
 
 ## Installation
 
@@ -12,53 +8,34 @@ Participants see arrows pointing left or right and must press the matching direc
 npm install @jspsych-timelines/stop-signal-task
 ```
 
-## Usage
-
-```javascript
-import { createTimeline } from "@jspsych-timelines/stop-signal-task";
-
-const jsPsych = initJsPsych();
-const timeline = createTimeline(jsPsych, {
-  numTestTrials: 192,
-  showInstructions: true,
-});
-jsPsych.run([timeline]);
+```html
+<script src="https://unpkg.com/@jspsych-timelines/stop-signal-task"></script>
 ```
 
-## Configuration Options
+The package needs jsPsych 8.4.0 or later (`jsPsych.adaptive`).
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `showInstructions` | boolean | `true` | Show built-in instruction screens |
-| `showPracticeFeedback` | boolean | `true` | Show feedback during practice |
-| `showTestFeedback` | boolean | `false` | Show feedback during test |
-| `numPracticeTrials` | number | `24` | Number of practice trials |
-| `numTestTrials` | number | `192` | Number of test trials |
-| `fixationDuration` | number | `500` | Fixation cross duration (ms) |
-| `responseDuration` | number | `1500` | Maximum response time (ms) |
-| `feedbackDuration` | number | `400` | Feedback display duration (ms) |
-| `interTrialInterval` | number | `1000` | Inter-trial interval (ms) |
-| `stopProbability` | number | `0.25` | Proportion of stop trials |
-| `initialSSD` | number | `250` | Initial stop signal delay (ms) |
-| `ssdStep` | number | `50` | SSD adjustment step size (ms) |
-| `minSSD` | number | `50` | Minimum SSD (ms) |
-| `maxSSD` | number | `800` | Maximum SSD (ms) |
-| `maxConsecutiveStop` | number | `3` | Max consecutive stop trials |
-| `maxConsecutiveGo` | number | `5` | Max consecutive go trials |
-| `text` | object | - | Custom text strings for translation |
+## Quick Start
 
-## Scoring
+```js
+const jsPsych = initJsPsych();
 
-Access scores via `utils.scoring.getSummary(data)`:
+const sst = jsPsychTimelineStopSignalTask.createTimeline(jsPsych, {
+  n_blocks: 4,
+  trials_per_block: 64,
+  adaptive: { start_level: 200, step_size: 50, bounds: [50, 1200] },
+});
 
-- **goAccuracy**: Correct go responses / total go trials
-- **stopAccuracy**: Successful stops / total stop trials
-- **meanGoRT**: Mean reaction time on correct go trials
-- **goRTStandardDeviation**: SD of go trial reaction times
-- **meanSSD**: Average stop signal delay
-- **ssrt**: Stop Signal Reaction Time (integration method)
-- **commissionErrors**: Responses on stop trials
-- **omissionErrors**: No response on go trials
+jsPsych.run([sst]);
+
+// SSRT (integration method with replacement of go omissions), the mean method and the usual checks
+jsPsychTimelineStopSignalTask.utils.scoring.calculateScores(jsPsych.data.get());
+```
+
+Fixed delays instead of the staircase: `difficulty_levels: [17, 67, 117, 167]`.
+
+## Documentation
+
+Full reference (options, data output, scoring, translation): `website/docs/reference/stop-signal-task.mdx` on the documentation site.
 
 ## License
 

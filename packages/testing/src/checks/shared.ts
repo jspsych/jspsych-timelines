@@ -114,8 +114,9 @@ function blockCounts(r: Run, c: DataContract, phase: "test" | "practice" = "test
 function expectedCountsPerBlock(r: Run, c: DataContract, block: number): Record<string, number> {
   const sizes = c.blockSizes(r.eff);
   const keys = c.proportionKeys(r.eff);
+  const proportions = c.proportionsFor(r.eff, block);
   const counts = c.allocate(
-    keys.map((k) => r.eff.condition_proportions[k]),
+    keys.map((k) => proportions[k]),
     sizes[block - 1]
   );
   return Object.fromEntries(keys.map((k, i) => [k, counts[i]]));

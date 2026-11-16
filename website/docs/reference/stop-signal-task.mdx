@@ -1,0 +1,207 @@
+---
+title: Stop-Signal Task
+sidebar_label: Stop-Signal Task
+---
+
+import {TimelineExample} from '@jspsych/docusaurus-theme/components';
+import ParamsTable from '@site/src/components/ParamsTable';
+import schema from '@site/src/schemas/stop-signal-task.schema.json';
+import manifest from '@site/src/schemas/manifest.json';
+
+# Stop-Signal Task
+
+Package: `@jspsych-timelines/stop-signal-task` ([source](https://github.com/jspsych/jspsych-timelines/tree/main/packages/stop-signal-task)). Version documented here: <code>{manifest['stop-signal-task'].version}</code>. Needs jsPsych 8.4.0 or later (`jsPsych.adaptive`).
+
+## Overview
+
+The stop-signal (countermanding) task measures response inhibition. Participants respond to the direction of an arrow as quickly as they can. On a minority of trials a stop signal appears shortly after the arrow (the stop-signal delay, SSD) and they must withhold the response. When the signal is late, stopping is hard; when it is early, stopping is easy. The race model (Logan & Cowan, 1984) treats the response as a race between a go process and a stop process and lets the duration of the stop process, the stop-signal reaction time (SSRT), be estimated from the go RT distribution, the stopping rate and the SSDs.
+
+The defaults follow the STOP-IT task (Verbruggen et al., 2008) and the consensus guide of Verbruggen et al. (2019): 25% stop trials, a 1-up/1-down staircase on the SSD that converges where about half of the stops succeed, and the integration method for SSRT.
+
+**Canonical citations:** Logan, G. D., & Cowan, W. B. (1984). On the ability to inhibit thought and action: A theory of an act of control. *Psychological Review, 91*(3), 295-327. Verbruggen, F., et al. (2019). A consensus guide to capturing the ability to inhibit actions and impulsive behaviors in the stop-signal task. *eLife, 8*, e46323.
+
+## Installation
+
+```bash
+npm install @jspsych-timelines/stop-signal-task
+```
+
+From a CDN:
+
+```html
+<script src="https://unpkg.com/jspsych@8.4.0"></script>
+<script src="https://unpkg.com/@jspsych-timelines/stop-signal-task"></script>
+<link rel="stylesheet" href="https://unpkg.com/jspsych@8.4.0/css/jspsych.css" />
+```
+
+## Quick Start
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <script src="https://unpkg.com/jspsych@8.4.0"></script>
+    <script src="https://unpkg.com/@jspsych-timelines/stop-signal-task"></script>
+    <link rel="stylesheet" href="https://unpkg.com/jspsych@8.4.0/css/jspsych.css" />
+  </head>
+  <body></body>
+  <script>
+    const jsPsych = initJsPsych();
+    const task = jsPsychTimelineStopSignalTask.createTimeline(jsPsych);
+    jsPsych.run([task]);
+  </script>
+</html>
+```
+
+## Task Description
+
+Each trial shows a fixation cross (250 ms), then a left or right arrow. The participant presses the left or right arrow key (by default) within a 1,250 ms window. On stop trials the arrow turns red after the stop-signal delay, and the participant should not respond. The signal is part of the same stage and the same plugin trial as the arrow: nothing moves when it comes, and the response time is measured from the arrow's onset throughout. A 500 ms interval follows.
+
+The task opens with an interactive walkthrough: one example of each arrow, and one stop trial whose signal comes after 250 ms (no response within 2.5 s counts as correct), with a hint and a retry after a wrong answer. Then come 32 practice trials with correct/incorrect feedback, and 4 test blocks of 64 trials without trial feedback. Each block ends with a summary (go accuracy, go RT, stopping rate; a reminder not to wait for the signal if more than 60% of the stops succeeded) and a 15 s rest. The defaults follow STOP-IT (S010).
+
+**Staircase.** The stop-signal delay is a staircase built with `jsPsych.adaptive` (the `adaptive` option). It starts at 200 ms; a successful stop lengthens the next delay by 50 ms, a failed stop shortens it by 50 ms, within 50 and 1200 ms. With equal steps it converges where p(stop) is 0.5. `step_size: { up: 25, down: 50 }` converges at 0.667 (and `target_accuracy` is derived from the steps, or the other way round; if you give both and they disagree it throws). `tracks: "per_condition"` keeps one independent staircase for each go direction. `reset` decides whether a block starts a fresh staircase: `"never"` (the default: practice carries into the test), `"block"`, or `"phase"` (the test starts fresh). The staircase state after every stop trial, and its full `toJSON()` once per block, are written to the data.
+
+**Fixed delays.** `difficulty_levels: [17, 67, 117, 167]` replaces the staircase with those delays (each stop trial gets one, balanced); `{ min: 100, max: 450, step: 50 }` draws a random delay. Giving `difficulty_levels` switches the staircase off; giving it together with `adaptive` throws.
+
+**Per-block stop proportions.** `condition_proportions` takes one map or a list of maps, one per block, the last repeating: `[{ stop: 0.4, go: 0.6 }, { stop: 0.2, go: 0.8 }]`. Counts are exact within each block (largest remainder), and the block's stop proportion is recorded as `stop_probability_condition`.
+
+**Order.** By default every 8 consecutive trials hold 2 stop and 6 go trials (STOP-IT's design cycle), shuffled within the cycle. The default cycle rule applies only where blocks and proportions fit it; otherwise a block is a shuffled list with exact counts. `sequence_constraints` takes the standard rules (`max_run`, `min_gap`, `max_gap`, `run_length`, `start_with`, `no_immediate_repeat`, `balanced_transitions`, `cycle_length`) with `go` and `stop` as the conditions.
+
+## Parameters
+
+Pick an option on the left, or search by name or description. Each option shows its default and where that default came from, what turns it off, whether practice can use a different value, and the values used in the studies behind the spec. Link to one with `#param-<name>`, e.g. [`#param-adaptive`](#param-adaptive).
+
+<ParamsTable schema={schema} />
+
+## Try it
+
+For a short run, pick "Quick demo" in the Preset menu (the walkthrough, 8 practice and 16 test trials) and press Run. The other presets are study configurations from the literature; values the package cannot express are listed in each preset's description. The task runs from the bundle built from this repository. The options are kept in the URL hash, so you can share a configuration.
+
+<TimelineExample
+  schema={schema}
+  bundle="/bundles/stop-signal-task/index.browser.js"
+  globalName={manifest['stop-signal-task'].globalName}
+  syncToUrl
+  hashKey="stop-signal-task"
+  height={460}
+/>
+
+## Examples
+
+A two-staircase design with one staircase per go direction, a 66.7% target and a fresh staircase in the test:
+
+```javascript
+const { timeline } = createTimeline(jsPsych, {
+  adaptive: {
+    tracks: "per_condition",
+    step_size: { up: 25, down: 50 },
+    reset: "phase",
+    start_level: 250,
+  },
+});
+```
+
+Fixed delays, with block-wise stop proportions (a 40% and then a 20% block, repeating):
+
+```javascript
+const { timeline } = createTimeline(jsPsych, {
+  difficulty_levels: [17, 67, 117, 167],
+  n_blocks: 4,
+  trials_per_block: 40,
+  condition_proportions: [{ stop: 0.4, go: 0.6 }, { stop: 0.2, go: 0.8 }],
+});
+```
+
+A practice that repeats until go accuracy is at least 80% (twice at most), a blue frame as the signal and a tone-free, keyboard-free touch version:
+
+```javascript
+const { timeline } = createTimeline(jsPsych, {
+  practice_criterion: { accuracy: 0.8, on_fail: "repeat", max_repeats: 2 },
+  stimulus_set: { stop_signal: "border" },
+  response_device: "touch",
+});
+```
+
+## Data Output
+
+Every trial carries `task: "stop-signal-task"` and `task_version`. The row that records the response (`phase: "practice"` or `"test"`, `part: "response"`) has these fields.
+
+| Field | Type | Description |
+|---|---|---|
+| `phase` | string | `"practice"` or `"test"` |
+| `block` | number | Block number (1-indexed; practice is block 1) |
+| `trial_index_in_block` | number | Position within the block (1-indexed) |
+| `practice_attempt` | number | Practice only: 1-indexed attempt (with `practice_criterion`) |
+| `condition` | string | `"go"` or `"stop"` (the spec calls it `trial_type`; jsPsych's own `trial_type` column holds the plugin name) |
+| `go_stimulus` | string | `"left"` or `"right"`: the direction of the arrow |
+| `correct_response` | string or number | Key (keyboard) or button index for the arrow |
+| `response` | string, number or null | Key or button pressed; null for no response |
+| `rt` | number or null | Response time in ms from go onset; null for no response. On a failed stop it can be shorter than `ssd` |
+| `correct` | boolean | Go: the right key. Stop: no response |
+| `timeout` | boolean | No response before the window ended |
+| `stop_outcome` | string | `"successful"`, `"failed"`, or `"na"` for go trials |
+| `ssd` | number or null | Requested stop-signal delay in ms (stop trials) |
+| `ssd_actual` | number or null | Measured delay in ms, to the display frame. null in a simulated run |
+| `stop_signal_shown` | boolean or null | The signal appeared (false when the response came first) |
+| `staircase_id` | string or null | Which staircase set the delay: `"all"`, `"left"`, `"right"`; null for fixed delays |
+| `staircase_state` | object or null | The staircase after this trial's update (`toJSON()` without `history`: level, trial count, reversals, estimate, done, stop reason) |
+| `next_ssd` | number or null | The delay the staircase will use next |
+| `staircase_final` | list | On the last response row of every block: `toJSON()` of every staircase, with its history |
+| `stop_probability_condition` | number | The stop proportion of the block (0-1) |
+| `response_window`, `stimulus_duration`, `stop_signal_duration`, `stop_signal`, `response_device` | | The settings in force |
+| `practice_criterion_met`, `practice_go_accuracy` | | On the last row of each practice attempt, with `practice_criterion` |
+
+Jittered durations are recorded as `fixation_duration`, `iti` and `feedback_duration` (ms) on their rows, and `break_duration` on the rest rows.
+
+**`part` values the package writes:** `instruction`, `instruction_example`, `instruction_check`, `instruction_feedback` (walkthrough rows: `phase: "instructions"`, never scored), `device_check`, `fixation`, `response`, `feedback`, `iti`, `block_feedback`, `rest`, `completion`. The final screen uses `phase: "completion"`.
+
+## Scoring
+
+```javascript
+import { utils } from "@jspsych-timelines/stop-signal-task";
+
+const scores = utils.scoring.getSummary(jsPsych.data.get());
+```
+
+Scores come from the test phase. Counts are 0 and every mean, rate and difference is `null` on empty data (never `NaN`). RTs are measured from go onset.
+
+| Metric | Description | Interpretation |
+|---|---|---|
+| `ssrt_integration` | Integration method with replacement of go omissions (Verbruggen et al., 2019): the nth go RT minus mean SSD, with n = p(respond \| signal) x number of go trials, over all go RTs (choice errors included) and omissions set to the maximum go RT | The recommended SSRT: longer means slower stopping. `null` when p(respond \| signal) is 0 |
+| `ssrt_integration_blockwise` | The same, per block, averaged over blocks (S079) | Avoids the underestimation from slowing across blocks |
+| `ssrt_mean` | Mean go RT minus mean SSD | Biased when RTs are skewed; reported for comparison |
+| `p_respond_signal`, `stop_accuracy` | Proportion of stop trials with / without a response | About 0.5 under the staircase |
+| `mean_ssd` | Mean requested SSD (ms) | |
+| `failed_stop_rt` | Mean RT of responses on stop trials (ms) | Faster than the go RT if the race model holds |
+| `go_accuracy`, `go_omission_rate`, `go_choice_error_rate` | Go trials: correct, no response, wrong key | |
+| `mean_go_rt`, `median_go_rt` | RT of correct go responses (ms) | |
+| `n_trials`, `n_go_trials`, `n_stop_trials` | Test trial counts | |
+| `checks` | `stop_accuracy_ok` (p(respond \| signal) between 0.25 and 0.75), `race_model_ok` (mean failed-stop RT below mean go RT), `enough_stop_trials` (at least 50) | The consensus guide's criteria (Verbruggen et al., 2019); `null` where the measure is missing |
+| `checks.go_omissions_ok`, `checks.go_choice_errors_ok` | Go omissions at most 25%, choice errors at most 10% | Package conventions, not from a source: studies add their own thresholds and the dossier gives no numbers |
+
+## Translation
+
+Pass a `text` object to replace interface strings; partial objects are merged with the defaults. The string keys are listed in the `text` row of the parameters table. Functions that interpolate values (`instruction_response`, `instruction_stop`, `instruction_step`, `instruction_hint`, `instruction_reveal`, `strategy_tracking_explanation`, `feedback_rt`, `feedback_correct_answer`, `block_complete`, `block_feedback`, `result_summary`) can only be set from code.
+
+```javascript
+createTimeline(jsPsych, {
+  text: { left_button: "Izquierda", right_button: "Derecha", continue_button: "Continuar" },
+});
+```
+
+## Timeline Units
+
+`timelineUnits` exports factories for the individual pieces. Most take the context from `createContext(jsPsych, options)`: `createInstructions`, `createInstructionWalkthrough`, `createPracticeIntro`, `createTestIntro`, `createDeviceCheck`, `createFixation`, `createResponseTrial` (the one-trial stop signal), `createFeedback`, `createIti`, `createDisplayTrial`, `createTrialSequence`, `createBlock`, `createPractice` (with `practice_criterion`), `createBlockFeedback`, `createRestBreak`, `createTransition` and `createCompletion`. `utils` also has `utils.adaptive` (`resolveAdaptive`, `StaircaseSet`), `utils.simulation.simulateRace` (the race model used by simulation) and `utils.scoring.integrationSsrt`.
+
+## Simulation
+
+Under `jsPsych.simulate(timeline, "data-only")` a stop trial is an independent race between an ex-Gaussian go process (mean 500 ms) and a stop process that finishes about 200 ms after the signal, with 3% trigger failures, 2% go omissions and 3% choice errors (`utils.constants.SIMULATION`). The staircase converges near 50% stops, SSRT estimates are near 200 ms, and failed stops are faster than go responses. A global `default: { data: { rt } }` simulation option overrides the model.
+
+## References
+
+Logan, G. D., & Cowan, W. B. (1984). On the ability to inhibit thought and action: A theory of an act of control. *Psychological Review, 91*(3), 295-327. (Cited from memory: the dossier could not read it, S105. Verify before publishing.)
+
+Verbruggen, F., Logan, G. D., & Stevens, M. A. (2008). STOP-IT: Windows executable software for the stop-signal paradigm. *Behavior Research Methods, 40*(2), 479-483. (Cited from memory; the implementation here follows the jsPsych STOP-IT version, S010. Verify before publishing.)
+
+Verbruggen, F., Aron, A. R., Band, G. P. H., et al. (2019). A consensus guide to capturing the ability to inhibit actions and impulsive behaviors in the stop-signal task. *eLife, 8*, e46323.
