@@ -31,6 +31,13 @@ const config: Config = defineJspsychConfig({
     ],
   },
 
+  // The demos load jsPsych from unpkg. The theme's default (8.2.2) predates
+  // jsPsych.adaptive, which stop-signal-task needs (8.4.0+); keep this in step
+  // with the jspsych version the packages are built and tested against.
+  jspsych: {
+    timelineExample: {jspsychVersion: '8.4.0'},
+  },
+
   footerLinks: [
     {
       title: 'Docs',
