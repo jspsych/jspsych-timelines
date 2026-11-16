@@ -177,7 +177,8 @@ Scores come from the test phase. Counts are 0 and every mean, rate and differenc
 | `go_accuracy`, `go_omission_rate`, `go_choice_error_rate` | Go trials: correct, no response, wrong key | |
 | `mean_go_rt`, `median_go_rt` | RT of correct go responses (ms) | |
 | `n_trials`, `n_go_trials`, `n_stop_trials` | Test trial counts | |
-| `checks` | `stop_accuracy_ok` (p(respond \| signal) between 0.25 and 0.75), `race_model_ok` (mean failed-stop RT below mean go RT), `go_omissions_ok` (at most 25%), `go_choice_errors_ok` (at most 10%), `enough_stop_trials` (at least 50) | The consensus guide's exclusion criteria; `null` where the measure is missing |
+| `checks` | `stop_accuracy_ok` (p(respond \| signal) between 0.25 and 0.75), `race_model_ok` (mean failed-stop RT below mean go RT), `enough_stop_trials` (at least 50) | The consensus guide's criteria (Verbruggen et al., 2019); `null` where the measure is missing |
+| `checks.go_omissions_ok`, `checks.go_choice_errors_ok` | Go omissions at most 25%, choice errors at most 10% | Package conventions, not from a source: studies add their own thresholds and the dossier gives no numbers |
 
 ## Translation
 
@@ -199,8 +200,8 @@ Under `jsPsych.simulate(timeline, "data-only")` a stop trial is an independent r
 
 ## References
 
-Logan, G. D., & Cowan, W. B. (1984). On the ability to inhibit thought and action: A theory of an act of control. *Psychological Review, 91*(3), 295-327.
+Logan, G. D., & Cowan, W. B. (1984). On the ability to inhibit thought and action: A theory of an act of control. *Psychological Review, 91*(3), 295-327. (Cited from memory: the dossier could not read it, S105. Verify before publishing.)
 
-Verbruggen, F., Logan, G. D., & Stevens, M. A. (2008). STOP-IT: Windows executable software for the stop-signal paradigm. *Behavior Research Methods, 40*(2), 479-483.
+Verbruggen, F., Logan, G. D., & Stevens, M. A. (2008). STOP-IT: Windows executable software for the stop-signal paradigm. *Behavior Research Methods, 40*(2), 479-483. (Cited from memory; the implementation here follows the jsPsych STOP-IT version, S010. Verify before publishing.)
 
 Verbruggen, F., Aron, A. R., Band, G. P. H., et al. (2019). A consensus guide to capturing the ability to inhibit actions and impulsive behaviors in the stop-signal task. *eLife, 8*, e46323.

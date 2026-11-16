@@ -197,11 +197,16 @@ const newState = (): TrialState => ({
   sim: null,
 });
 
-/** One short tone through the Web Audio API (silent where there is no audio). */
-function playTone(jsPsych: JsPsych, ms: number) {
+/**
+ * One short tone through the Web Audio API. Returns whether the audio context was running when the
+ * tone started (false: no audio, or a context the browser has not unlocked), so the data do not claim
+ * a signal nobody heard.
+ */
+function playTone(jsPsych: JsPsych, ms: number): boolean {
   try {
     const ctx = (jsPsych.pluginAPI as any).audioContext?.() as AudioContext | null | undefined;
-    if (!ctx) return;
+    if (!ctx) return false;
+    if (ctx.state === "suspended") void ctx.resume();
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
     osc.frequency.value = TONE_FREQUENCY_HZ;
@@ -210,8 +215,9 @@ function playTone(jsPsych: JsPsych, ms: number) {
     gain.connect(ctx.destination);
     osc.start();
     osc.stop(ctx.currentTime + ms / 1000);
+    return ctx.state === "running";
   } catch {
-    // no audio: the trial still runs
+    return false; // no audio: the trial still runs
   }
 }
 
@@ -226,6 +232,8 @@ interface ResponseArgs {
   window: number | null;
   below?: string;
   data: Record<string, unknown>;
+  /** a global forced RT (`default.data.rt`) replaces the race model; the walkthrough ignores it and answers correctly */
+  honourForcedRt: boolean;
   /** the simulated response when no forced RT is given */
   simulate: (st: TrialState) => { rt: number | null; response_index: 0 | 1 | null };
   /** after the common outcome fields are set */
@@ -263,7 +271,7 @@ function buildResponseTrial(a: ResponseArgs) {
     const show = () => {
       st.ssd_actual = Math.round(performance.now() - t0);
       st.shown = true;
-      if (tone) playTone(ctx.jsPsych, signalMs ?? TONE_DURATION_MS);
+      if (tone) st.shown = playTone(ctx.jsPsych, signalMs ?? TONE_DURATION_MS);
       else {
         root.classList.add(CLS.signalled);
         if (signalMs !== null) {
@@ -339,7 +347,7 @@ function buildResponseTrial(a: ResponseArgs) {
     // data-only simulation: an independent race between the go and the stop process
     simulation_options: () => {
       resolve();
-      if (hasForcedRt(ctx.jsPsych)) return {};
+      if (a.honourForcedRt && hasForcedRt(ctx.jsPsych)) return {};
       if (st.sim === null) {
         const r = a.simulate(st);
         st.sim = {
@@ -383,6 +391,7 @@ export function createResponseTrial(
     direction: spec.go_direction,
     trial_type: spec.trial_type,
     window: o.response_window_ms,
+    honourForcedRt: true,
     resolve: (st) => {
       if (spec.trial_type !== "stop") return;
       if (o.adaptive) {
@@ -707,6 +716,7 @@ export function createInstructionWalkthrough(ctx: Context) {
       direction: step.direction,
       trial_type: step.trial_type,
       window: stop ? INSTRUCTION_STOP_WAIT_MS : null,
+      honourForcedRt: false,
       below: demoText(t.instruction_step(args)),
       resolve: (st) => {
         if (stop) st.ssd = INSTRUCTION_SSD_MS;
@@ -843,19 +853,15 @@ export function createBlockFeedback(ctx: Context, block: number) {
     stimulus: () => {
       const rows = ctx.jsPsych.data
         .get()
-        .filter({ task: TASK_NAME, phase: "test", part: "response", block })
-        .values();
-      const go = rows.filter((r: any) => r.condition === "go");
-      const stop = rows.filter((r: any) => r.condition === "stop");
-      const goCorrect = go.filter((r: any) => r.correct === true);
-      const rts = goCorrect.map((r: any) => r.rt).filter((x: any) => typeof x === "number");
-      const goAcc = go.length ? goCorrect.length / go.length : null;
-      const stopAcc = stop.length
-        ? stop.filter((r: any) => r.correct === true).length / stop.length
-        : null;
-      const meanRt = rts.length
-        ? rts.reduce((a: number, b: number) => a + b, 0) / rts.length
-        : null;
+        .filter({ task: TASK_NAME, phase: "test", part: "response", block });
+      const go = rows.filter({ condition: "go" });
+      const stop = rows.filter({ condition: "stop" });
+      const goCorrect = go.filter({ correct: true });
+      const goAcc = go.count() > 0 ? goCorrect.count() / go.count() : null;
+      const stopAcc =
+        stop.count() > 0 ? stop.filter({ correct: true }).count() / stop.count() : null;
+      const rts = goCorrect.select("rt");
+      const meanRt = rts.count() > 0 ? rts.mean() : null;
       let html = ctx.text.block_feedback({
         block,
         n_blocks: o.n_blocks,

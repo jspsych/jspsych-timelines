@@ -188,6 +188,21 @@ describe("simulation (an independent race model)", () => {
   });
 });
 
+describe("walkthrough under a forced global RT", () => {
+  it("still answers correctly: the forced RT applies to the task's trials, not to the walkthrough", async () => {
+    for (const rt of [400, 50000]) {
+      const { rows } = await run(
+        { n_test_trials: 8, n_blocks: 1, practice_trials: 0 },
+        { default: { data: { rt } } }
+      );
+      const checks = rows.filter((r) => r.part === "instruction_check");
+      expect(checks.map((r) => r.correct)).toEqual([true, true, true]);
+      expect(checks.map((r) => r.attempt)).toEqual([1, 1, 1]);
+      expect(checks.map((r) => r.response)).toEqual(["ArrowLeft", "ArrowRight", null]);
+    }
+  });
+});
+
 describe("scoring", () => {
   const row = (
     condition: "go" | "stop",
@@ -289,9 +304,9 @@ describe("scoring", () => {
   });
 
   it("integrationSsrt is null when it is undefined: no stop trials, or nobody ever responds on stop trials", () => {
-    expect(integrationSsrt([row("go", 400, null) as any])).toBeNull();
+    expect(integrationSsrt(new DataCollection([row("go", 400, null)]))).toBeNull();
     expect(
-      integrationSsrt([row("go", 400, null) as any, row("stop", null, 200) as any])
+      integrationSsrt(new DataCollection([row("go", 400, null), row("stop", null, 200)]))
     ).toBeNull();
   });
 

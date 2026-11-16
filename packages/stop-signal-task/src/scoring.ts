@@ -57,93 +57,91 @@ export interface ScoringResult {
   };
 }
 
-const mean = (xs: number[]): number | null =>
-  xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : null;
+const isNum = (x: unknown): x is number => typeof x === "number";
+const hasRt = (t: any) => isNum(t.rt);
+/** A response of any kind: a key, or a button index (which can be 0). */
+const responded = (t: any) => isNum(t.rt) || (t.response !== null && t.response !== undefined);
 
-const median = (xs: number[]): number | null => {
-  if (!xs.length) return null;
-  const s = [...xs].sort((a, b) => a - b);
-  const m = Math.floor(s.length / 2);
-  return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2;
+/** Mean of a field over a collection, through DataColumn (PACKAGE-STANDARD §3); null for no values, never NaN. */
+const meanOf = (c: DataCollection, field: string): number | null => {
+  const col = c.select(field);
+  return col.count() ? col.mean() : null;
 };
 
-interface Row {
-  trial_type: "go" | "stop";
-  correct: boolean;
-  rt: number | null;
-  response: unknown;
-  ssd: number | null;
-  block: number;
-}
-
-const toRows = (col: DataCollection): Row[] =>
-  col.values().map((t: any) => ({
-    trial_type: t.condition,
-    correct: t.correct === true,
-    rt: typeof t.rt === "number" ? t.rt : null,
-    response: t.response,
-    ssd: typeof t.ssd === "number" ? t.ssd : null,
-    block: t.block,
-  }));
-
 /**
- * The integration method on one set of rows. Go RTs include choice errors; omissions take the maximum go RT.
- * Returns null when it is undefined (no stop trials, no go RTs, or no responses on stop trials).
+ * The integration method on a collection of response rows (go and stop). Go RTs include choice errors;
+ * omissions take the maximum go RT; the nth RT is picked from the sorted, replaced distribution (this
+ * step is the method itself and stays local). Returns null when it is undefined: no stop trials, no go RTs,
+ * or no responses on stop trials.
  */
-export function integrationSsrt(rows: Row[]): number | null {
-  const go = rows.filter((r) => r.trial_type === "go");
-  const stop = rows.filter((r) => r.trial_type === "stop");
-  if (!go.length || !stop.length) return null;
-  const rts = go.filter((r) => r.rt !== null).map((r) => r.rt as number);
-  if (!rts.length) return null;
-  const max = Math.max(...rts);
-  const all = go.map((r) => (r.rt !== null ? r.rt : max)).sort((a, b) => a - b);
-  const p = stop.filter((r) => r.rt !== null || r.response !== null).length / stop.length;
+export function integrationSsrt(rows: DataCollection): number | null {
+  const go = rows.filter({ condition: "go" });
+  const stop = rows.filter({ condition: "stop" });
+  if (!go.count() || !stop.count()) return null;
+  const rts = go.filterCustom(hasRt).select("rt");
+  if (!rts.count()) return null;
+  const max = rts.max();
+  const all = go
+    .values()
+    .map((t: any) => (isNum(t.rt) ? t.rt : max))
+    .sort((a: number, b: number) => a - b);
+  const p = stop.filterCustom(responded).count() / stop.count();
   if (p === 0) return null;
   const nth = Math.min(all.length, Math.max(1, Math.ceil(p * all.length)));
-  const ssd = mean(stop.filter((r) => r.ssd !== null).map((r) => r.ssd as number));
+  const ssd = meanOf(
+    stop.filterCustom((t: any) => isNum(t.ssd)),
+    "ssd"
+  );
   if (ssd === null) return null;
   return all[nth - 1] - ssd;
 }
 
-/** Scores for one phase's rows (the package scores the test phase). */
-export function scoreRows(rows: Row[]): ScoringResult {
-  const go = rows.filter((r) => r.trial_type === "go");
-  const stop = rows.filter((r) => r.trial_type === "stop");
-  const responded = (r: Row) => r.rt !== null || r.response !== null;
-  const goCorrect = go.filter((r) => r.correct);
-  const goOmissions = go.filter((r) => !responded(r));
-  const goErrors = go.filter((r) => responded(r) && !r.correct);
-  const failed = stop.filter(responded);
-  const pRespond = stop.length ? failed.length / stop.length : null;
-  const meanGoRt = mean(goCorrect.filter((r) => r.rt !== null).map((r) => r.rt as number));
-  const meanSsd = mean(stop.filter((r) => r.ssd !== null).map((r) => r.ssd as number));
-  const failedRt = mean(failed.filter((r) => r.rt !== null).map((r) => r.rt as number));
-  const allGoRt = mean(go.filter((r) => r.rt !== null).map((r) => r.rt as number));
+/** Scores for one phase's response rows (the package scores the test phase). */
+export function scoreRows(rows: DataCollection): ScoringResult {
+  const go = rows.filter({ condition: "go" });
+  const stop = rows.filter({ condition: "stop" });
+  const nGo = go.count();
+  const nStop = stop.count();
+  const goCorrect = go.filter({ correct: true });
+  const goOmissions = go.filterCustom((t: any) => !responded(t)).count();
+  const goErrors = go.filterCustom((t: any) => responded(t) && t.correct !== true).count();
+  const failed = stop.filterCustom(responded);
+  const pRespond = nStop ? failed.count() / nStop : null;
+  const goCorrectRt = goCorrect.filterCustom(hasRt).select("rt");
+  const meanGoRt = goCorrectRt.count() ? goCorrectRt.mean() : null;
+  const meanSsd = meanOf(
+    stop.filterCustom((t: any) => isNum(t.ssd)),
+    "ssd"
+  );
+  const failedRt = meanOf(failed.filterCustom(hasRt), "rt");
+  const allGoRt = meanOf(go.filterCustom(hasRt), "rt");
 
-  const blocks = [...new Set(stop.map((r) => r.block))];
+  // blockwise: one estimate per block that has stop trials, then their average (a handful of numbers, summed here)
+  const blocks = [...new Set(stop.select("block").values)];
   const perBlock = blocks
-    .map((b) => integrationSsrt(rows.filter((r) => r.block === b)))
+    .map((b) => integrationSsrt(rows.filter({ block: b })))
     .filter((x): x is number => x !== null);
 
-  const goOmissionRate = go.length ? goOmissions.length / go.length : null;
-  const goChoiceRate = go.length ? goErrors.length / go.length : null;
+  const goOmissionRate = nGo ? goOmissions / nGo : null;
+  const goChoiceRate = nGo ? goErrors / nGo : null;
   const [lo, hi] = CHECK_LIMITS.p_respond_signal;
   return {
-    n_trials: rows.length,
-    n_go_trials: go.length,
-    n_stop_trials: stop.length,
-    go_accuracy: go.length ? goCorrect.length / go.length : null,
+    n_trials: rows.count(),
+    n_go_trials: nGo,
+    n_stop_trials: nStop,
+    go_accuracy: nGo ? goCorrect.count() / nGo : null,
     go_omission_rate: goOmissionRate,
     go_choice_error_rate: goChoiceRate,
     mean_go_rt: meanGoRt,
-    median_go_rt: median(goCorrect.filter((r) => r.rt !== null).map((r) => r.rt as number)),
+    median_go_rt: goCorrectRt.count() ? goCorrectRt.median() : null,
     p_respond_signal: pRespond,
     stop_accuracy: pRespond === null ? null : 1 - pRespond,
     mean_ssd: meanSsd,
     failed_stop_rt: failedRt,
     ssrt_integration: integrationSsrt(rows),
-    ssrt_integration_blockwise: perBlock.length ? mean(perBlock) : null,
+    ssrt_integration_blockwise: perBlock.length
+      ? perBlock.reduce((a, b) => a + b, 0) / perBlock.length
+      : null,
     ssrt_mean: allGoRt !== null && meanSsd !== null ? allGoRt - meanSsd : null,
     checks: {
       stop_accuracy_ok: pRespond === null ? null : pRespond >= lo && pRespond <= hi,
@@ -152,14 +150,13 @@ export function scoreRows(rows: Row[]): ScoringResult {
         goOmissionRate === null ? null : goOmissionRate <= CHECK_LIMITS.go_omission_rate_max,
       go_choice_errors_ok:
         goChoiceRate === null ? null : goChoiceRate <= CHECK_LIMITS.go_choice_error_rate_max,
-      enough_stop_trials: stop.length >= CHECK_LIMITS.min_stop_trials,
+      enough_stop_trials: nStop >= CHECK_LIMITS.min_stop_trials,
     },
   };
 }
 
 export function calculateScores(data: DataCollection): ScoringResult {
-  const test = data.filter({ task: TASK_NAME, phase: "test", part: "response" });
-  return scoreRows(toRows(test));
+  return scoreRows(data.filter({ task: TASK_NAME, phase: "test", part: "response" }));
 }
 
 export function getSummary(

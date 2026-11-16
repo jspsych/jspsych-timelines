@@ -23,9 +23,11 @@ export const INSTRUCTION_SSD_MS = 250;
 export const INSTRUCTION_CORRECT_MS = 900;
 
 /**
- * Consensus criteria for a usable stop-signal session (Verbruggen et al., 2019, S001): the probability
- * of responding on stop trials should be between 0.25 and 0.75, go omissions and choice errors should
- * be rare, and failed-stop RTs should be faster than go RTs (the independence assumption of the race model).
+ * Checks for a usable stop-signal session. From the consensus guide (Verbruggen et al., 2019, S001, as the dossier
+ * records it): at least 50 stop trials; p(respond | signal) between 0.25 and 0.75; failed-stop RTs faster than go RTs
+ * (the race model's independence assumption). The go-omission (25%) and choice-error (10%) limits are package
+ * conventions: the dossier only says that studies add their own thresholds on omissions and go accuracy (S026, S030, S080)
+ * and gives no numbers, so these two are not from a source.
  */
 export const CHECK_LIMITS = {
   p_respond_signal: [0.25, 0.75] as [number, number],

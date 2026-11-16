@@ -1,6 +1,6 @@
 # Stop-Signal Task
 
-The stop-signal (countermanding) task measures response inhibition: participants respond quickly to an arrow, but on a minority of trials a stop signal appears shortly after it and they must withhold the response. The stop-signal delay follows a staircase that keeps stopping at about 50% success, and the stop-signal reaction time (SSRT) is estimated with the integration method. The default configuration follows the STOP-IT task (Verbruggen et al., 2008) and the consensus guide of Verbruggen et al. (2019), *eLife*, 8, e46323; every option, its default and the evidence behind it is on the documentation site. Logan & Cowan (1984), *J. Exp. Psychol. Hum. Percept. Perform.*, 10, 276-291.
+The stop-signal (countermanding) task measures response inhibition: participants respond quickly to an arrow, but on a minority of trials a stop signal appears shortly after it and they must withhold the response. The stop-signal delay follows a staircase that keeps stopping at about 50% success, and the stop-signal reaction time (SSRT) is estimated with the integration method. The default configuration follows the STOP-IT task (Verbruggen et al., 2008) and the consensus guide of Verbruggen et al. (2019), *eLife*, 8, e46323; every option, its default and the evidence behind it is on the documentation site. Logan, G. D., & Cowan, W. B. (1984), *Psychological Review*, 91, 295-327 (the race model; cited from memory, the dossier could not read it).
 
 ## Installation
 
