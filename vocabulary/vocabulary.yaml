@@ -246,7 +246,9 @@ parameters:
   layer: design
   type: map
   unit: proportion
-  definition: 'Proportion of each trial type, keyed by the task''s own names, e.g. { stop: 0.25, go: 0.75 } (R13).'
+  definition: 'Proportion of each trial type, keyed by the task''s own names, e.g. { stop: 0.25, go: 0.75 } (R13). Crossed
+    factors are a map of maps ({ congruency: {...}, cue: {...} }); a list of maps gives one per block, the last
+    repeating (e.g. [{ stop: 0.4, go: 0.6 }, { stop: 0.2, go: 0.8 }]).'
   granularity_note: Single-event rates (stop-signal, target, lure, catch, P(go)) map as narrower. Cue validity is
     separate.
 - name: cue_validity_proportion
@@ -267,7 +269,7 @@ parameters:
 - name: block_order
   layer: design
   type: enum
-  definition: Order of blocks or conditions across the session, including fixed schedules of set sizes (R15).
+  definition: Order of blocks or conditions across the session, including fixed schedules of set sizes (R15). random_within_block = each block holds every level once, in random order.
   values:
   - fixed
   - random
@@ -275,6 +277,7 @@ parameters:
   - ascending
   - descending
   - alternating
+  - random_within_block
 - name: trial_order
   layer: design
   type: enum
@@ -631,9 +634,33 @@ parameters:
   - hold_to_start
 - name: practice_criterion
   layer: procedure
-  type: structure
+  type: object
   definition: Accuracy criterion to pass practice or end training, and what happens if missed.
   absent_value: null
+  fields:
+  - name: accuracy
+    type: number
+    unit: proportion
+    definition: Minimum proportion correct over the window.
+    values: null
+  - name: window
+    type: number
+    unit: trials
+    definition: Number of most recent practice trials the accuracy is computed over (null = the whole practice block).
+    values: null
+  - name: on_fail
+    type: enum
+    unit: null
+    definition: What happens when the criterion is missed.
+    values:
+    - repeat
+    - continue
+    - end
+  - name: max_repeats
+    type: number
+    unit: count
+    definition: Most practice repeats before on_fail no longer repeats (then the task continues).
+    values: null
   granularity_note: 'Training criteria take phase: training.'
 - name: practice_max_repeats
   layer: procedure
@@ -1147,10 +1174,26 @@ parameters:
   - name: bounds
     type: list
     unit: task unit
-    definition: '[min, max] of the tracked level.'
+    definition: '[min, max] of the tracked level; null on a side means no limit, e.g. [0, null].'
     values: null
   - name: discontinue_rule
     type: structure
     unit: null
     definition: Rule that ends the procedure (reversals, consecutive failures, trial count).
     values: null
+  - name: tracks
+    type: enum
+    unit: null
+    definition: 'One procedure for all trials, or one per condition (e.g. a stop-signal delay staircase per stimulus);
+      per_condition tracks are independent and the trial''s condition picks the track.'
+    values:
+    - single
+    - per_condition
+  - name: reset
+    type: enum
+    unit: null
+    definition: When the tracked level returns to start_level.
+    values:
+    - never
+    - block
+    - phase
