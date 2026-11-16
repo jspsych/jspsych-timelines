@@ -38,7 +38,7 @@ export interface DeadlineBounds {
 }
 
 /** The practice RTs a calibrated deadline is computed from: correct processing-only practice responses with an RT. */
-export function calibrationRts(jsPsych: JsPsych): number[] {
+export function calibrationColumn(jsPsych: JsPsych) {
   return jsPsych.data
     .get()
     .filter({
@@ -49,9 +49,12 @@ export function calibrationRts(jsPsych: JsPsych): number[] {
       correct: true,
     })
     .filterCustom((r: any) => typeof r.rt === "number")
-    .select("rt")
-    .values.slice();
+    .select("rt");
 }
+
+/** The calibration RTs as numbers. */
+export const calibrationRts = (jsPsych: JsPsych): number[] =>
+  calibrationColumn(jsPsych).values.slice();
 
 function clamp(v: number, b: DeadlineBounds): number {
   let out = v;
@@ -60,15 +63,7 @@ function clamp(v: number, b: DeadlineBounds): number {
   return out;
 }
 
-function mean(xs: number[]): number {
-  return xs.reduce((a, b) => a + b, 0) / xs.length;
-}
-/** Sample SD (n - 1), as jsPsych's `DataColumn.sd()`. */
-function sd(xs: number[]): number {
-  const m = mean(xs);
-  return Math.sqrt(xs.reduce((a, x) => a + (x - m) ** 2, 0) / (xs.length - 1));
-}
-/** Linear-interpolation percentile, p in [0, 100]. */
+/** Linear-interpolation percentile, p in [0, 100] (core's `DataColumn` has none). */
 function percentileOf(xs: number[], p: number): number {
   const s = xs.slice().sort((a, b) => a - b);
   const pos = (p / 100) * (s.length - 1);
@@ -77,14 +72,12 @@ function percentileOf(xs: number[], p: number): number {
   return s[lo] + (s[hi] - s[lo]) * (pos - lo);
 }
 
-function make(
-  label: string,
-  f: (rts: number[]) => number,
-  bounds: DeadlineBounds
-): LabelledDeadline {
+type Column = ReturnType<typeof calibrationColumn>;
+
+function make(label: string, f: (rts: Column) => number, bounds: DeadlineBounds): LabelledDeadline {
   const fn = (({ jsPsych }) => {
-    const rts = calibrationRts(jsPsych);
-    if (rts.length < MIN_CALIBRATION_ROWS) return clamp(FALLBACK_DEADLINE_MS, bounds);
+    const rts = calibrationColumn(jsPsych);
+    if (rts.count() < MIN_CALIBRATION_ROWS) return clamp(FALLBACK_DEADLINE_MS, bounds);
     return Math.round(clamp(f(rts), bounds));
   }) as LabelledDeadline;
   fn.label = label + (bounds.min !== undefined || bounds.max !== undefined ? " (bounded)" : "");
@@ -97,17 +90,17 @@ export const deadlines = {
    * `k = 2.5` (Unsworth et al. 2005; also PsyToolkit), or `k = 2` (S039).
    */
   meanPlusSd: (k: number, bounds: DeadlineBounds = {}): LabelledDeadline =>
-    make(`mean + ${k} SD of correct practice RTs`, (rts) => mean(rts) + k * sd(rts), bounds),
+    make(`mean + ${k} SD of correct practice RTs`, (rts) => rts.mean() + k * rts.sd(), bounds),
   /** The `p`-th percentile (0-100) of the correct processing-only practice RTs. */
   percentile: (p: number, bounds: DeadlineBounds = {}): LabelledDeadline =>
-    make(`${p}th percentile of correct practice RTs`, (rts) => percentileOf(rts, p), bounds),
+    make(`${p}th percentile of correct practice RTs`, (rts) => percentileOf(rts.values, p), bounds),
   /** Number, mean and SD of the practice RTs the helpers would use now (for reports and checks). */
   calibration: (jsPsych: JsPsych) => {
-    const rts = calibrationRts(jsPsych);
+    const rts = calibrationColumn(jsPsych);
     return {
-      n: rts.length,
-      mean: rts.length ? mean(rts) : null,
-      sd: rts.length > 1 ? sd(rts) : null,
+      n: rts.count(),
+      mean: rts.count() > 0 ? rts.mean() : null,
+      sd: rts.count() > 1 ? rts.sd() : null,
     };
   },
 };
