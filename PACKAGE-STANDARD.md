@@ -81,6 +81,17 @@ Options that mean the same thing in different tasks **MUST** have the same name,
   - or `{ min, max, step? }`, sampled per trial, uniformly from `min`, `min + step`, … up to `max`, using `jsPsych.randomization` (§3). `step` defaults to 1 ms.
 
   The sampled value **MUST** be written into the trial's data, so analyses can use the actual duration. The data field is the option's name without `_ms`, in milliseconds: `fixation_duration_ms` → `fixation_duration: 734`, `iti_ms` → `iti`, `feedback_duration_ms` → `feedback_duration`, `cue_target_interval_ms` → `cue_target_interval`. This matches jsPsych's own fields (`rt`, `trial_duration`), which are in milliseconds without a suffix. Absent values still follow the absence rule: `0` means it doesn't happen, and `null` means no limit. Lists of fixed levels (e.g. SOAs of 100, 300, 500 as conditions) are design factors, not jitter, and belong in a task-specific option.
+- **Rules are functions, not strings.** When a value is computed from what the participant did, the option takes a function, never a special string or a rule object (no `"mean+2.5sd"`). The case in the specs is a response deadline set from practice (complex span's automated operation span, Unsworth et al. 2005: practice mean + 2.5 SD; also single studies in go/no-go and flanker). `response_window_ms` then takes a number or a function that receives the practice rows the deadline is calibrated on (a jsPsych `DataCollection`, e.g. correct responses) and returns milliseconds:
+
+  ```ts
+  response_window_ms: utils.deadlines.meanPlusSd(2.5)                  // prebuilt
+  response_window_ms: ({ practice }) => practice.select("rt").median() + 200   // anything else
+  ```
+
+  - The package **MUST** export prebuilt helpers for the rules its studies use, under a `utils` key (`utils.deadlines.meanPlusSd(k)`, `percentile(p)`, with `{ min, max }` bounds). Each package writes its own; they are a few lines, so there is no shared package for them.
+  - Practice runs with the package's fixed default window; the computed value applies to the test phase. With fewer than 5 usable practice RTs the test phase keeps the fixed window.
+  - The data **MUST** record the computed value on every test trial (`response_window`, per the duration-field rule) and, once, the rule's label (each helper carries one, e.g. "mean + 2.5 SD of correct practice RTs") and whether it fell back.
+  - Function values are code-only: the docs form and shareable URLs do not edit them, and presets that reproduce such a study leave the option out, with a note. When the anchor's rule is a function, the default is that helper and the parameter reference shows it as code.
 - **Absence is a value, typed by meaning.** There are no on/off booleans like `show_fixation`.
 
   | Kind | Absent value | Example |
