@@ -84,7 +84,7 @@ Options that mean the same thing in different tasks **MUST** have the same name,
 - **Rules are functions, not strings.** When a value is computed during the session, the option takes a function, never a special string or a rule object (no `"mean+2.5sd"`). The function is called at the start of each trial that uses the option, with a context object, and returns the value. It is not handed any particular data: it reads what it needs itself, usually with `jsPsych.data.get().filter(...)`, so a rule can depend on practice RTs, on earlier test trials, or on nothing in the data at all.
 
   ```ts
-  // context: { jsPsych, phase, block, trial_in_block }
+  // context: { jsPsych, phase, block, trial_index_in_block }
   response_window_ms: utils.deadlines.meanPlusSd(2.5)        // prebuilt
   response_window_ms: ({ jsPsych }) =>                        // anything else
     jsPsych.data.get().filter({ phase: "practice", part: "response", correct: true }).select("rt").median() + 200
@@ -251,6 +251,8 @@ Other trials **SHOULD** draw their `part` value from this vocabulary where one f
 Prefer `iti` over `isi` or `delay`; prefer `instruction` over `intro` or `announcement`. Tasks with genuinely novel trial types (`digit_presentation`, `math_feedback`, `round_summary`) **SHOULD** name them descriptively rather than forcing a poor fit.
 
 Likewise `phase` **SHOULD** be one of `instructions`, `practice`, `test`, `completion`, plus `study` for tasks with a distinct encoding stage.
+
+Packages **MUST NOT** write `trial_index`: jsPsych writes it on every row as a counter over the whole experiment, and a package value would collide with it. A package that records a trial's position within its block names it `trial_index_in_block` (1-based) and writes it on the scorable row next to `block` (1…n). The spec generator renames the `trial_index` that some measures list as a needed field.
 
 ### Always
 
