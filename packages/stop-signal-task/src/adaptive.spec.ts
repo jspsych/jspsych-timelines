@@ -284,6 +284,18 @@ describe("fixed stop-signal delays (difficulty_levels) instead of the staircase"
 });
 
 describe("per-block stop proportions (a list of maps)", () => {
+  it("a list longer than n_blocks throws (the list never sets the number of blocks)", () => {
+    expect(() =>
+      createTimeline(initJsPsych(), {
+        n_blocks: 1,
+        condition_proportions: [
+          { stop: 0.4, go: 0.6 },
+          { stop: 0.2, go: 0.8 },
+        ],
+      })
+    ).toThrow(/lists 2 blocks but the test has 1/);
+  });
+
   it("each block takes its entry, the last repeating", async () => {
     const { rows } = await run({
       n_blocks: 4,

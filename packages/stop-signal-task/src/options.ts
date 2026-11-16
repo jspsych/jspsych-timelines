@@ -803,6 +803,13 @@ export function validateOptions(o: ResolvedOptions, phase: "practice" | "test" =
   if (!(o.n_blocks >= 1) || !Number.isInteger(o.n_blocks)) {
     throw new Error("stop-signal-task: n_blocks must be a positive integer.");
   }
+  // a per-block list never sets the number of blocks (PACKAGE-STANDARD §2a): fewer entries repeat the last, more throw
+  const nLists = Array.isArray(o.condition_proportions) ? o.condition_proportions.length : 1;
+  if (phase === "test" && nLists > o.n_blocks) {
+    throw new Error(
+      `stop-signal-task: condition_proportions lists ${nLists} blocks but the test has ${o.n_blocks}; set n_blocks or shorten the list.`
+    );
+  }
   if (!(o.trials_per_block >= 1)) {
     throw new Error("stop-signal-task: trials_per_block must be a positive integer.");
   }
