@@ -513,7 +513,8 @@ export function createTrialSequence(
   const tl: any[] = [];
   if (spec.fixation_ms > 0) tl.push(createFixation(phase, block, spec.fixation_ms, ctx));
   tl.push(createResponseTrial(ctx, o, spec, phase, block, trialInBlock, extra));
-  if (o.trial_feedback !== "none") tl.push(createFeedback(ctx, o, phase, block, spec.feedback_ms));
+  if (o.trial_feedback !== "none" && spec.feedback_ms > 0)
+    tl.push(createFeedback(ctx, o, phase, block, spec.feedback_ms));
   if (spec.iti_ms > 0) tl.push(createIti(phase, block, spec.iti_ms));
   return { timeline: tl };
 }

@@ -90,6 +90,17 @@ export interface ReproductionConfig<O = any, E = any> {
     r: Run<O, E>,
     config: StudyConfiguration
   ) => [actual: any, expected: any] | null;
+  /**
+   * Level 2: the same for keys without a dot, when `r.eff[key] === value` is not the right comparison
+   * (the spec reports a bundle in a shape that differs from the package's resolved option). Return
+   * `undefined` to compare directly, `null` to skip, or `[actual, expected]`.
+   */
+  reportedPlain?: (
+    key: string,
+    value: any,
+    r: Run<O, E>,
+    config: StudyConfiguration
+  ) => [actual: any, expected: any] | null | undefined;
   /** Level 2: the option whose check covers a configuration key. Default: the part before the dot. */
   checkedOption?: (key: string) => string;
   /** Path of `reproduction.md`; default: next to `dir`. */
@@ -165,6 +176,8 @@ export function defineReproduction<O = any, E = any>(config: ReproductionConfig<
           if (isGap(adapted)) continue;
           const pair = key.includes(".")
             ? config.reportedValue?.(key, s.options[key], r, s) ?? null
+            : config.reportedPlain?.(key, s.options[key], r, s) !== undefined
+            ? config.reportedPlain!(key, s.options[key], r, s)
             : [(r.eff as any)[key], s.options[key]];
           if (pair) {
             expect(pair[0]).toEqual(pair[1]);

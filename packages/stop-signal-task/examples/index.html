@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Stop-Signal Task Example</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://unpkg.com/jspsych@8.4.0"></script>
+    <script src="../dist/index.browser.js"></script>
+    <!-- Once published: <script src="https://unpkg.com/@jspsych-timelines/stop-signal-task"></script> -->
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/jspsych@8.4.0/css/jspsych.css" />
+  </head>
+
+  <body></body>
+  <script>
+    const jsPsych = initJsPsych({
+      on_finish: () => {
+        jsPsych.data.displayData();
+        const scores = jsPsychTimelineStopSignalTask.utils.scoring.getSummary(jsPsych.data.get());
+        console.log("Stop-signal task results:", scores);
+      },
+    });
+
+    // The defaults follow STOP-IT: 4 blocks of 64 trials, 25% stop trials, a staircase on the
+    // stop-signal delay. For a shorter demo, reduce the trial counts (multiples of 8 keep the cycles exact):
+    const task = jsPsychTimelineStopSignalTask.createTimeline(jsPsych, {
+      practice_trials: 8,
+      n_test_trials: 32,
+      n_blocks: 1,
+    });
+
+    jsPsych.run([task]);
+  </script>
+</html>
