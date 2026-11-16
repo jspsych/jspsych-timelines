@@ -5013,7 +5013,7 @@ var jsPsychTimelineFlanker = (function (exports) {
       phase,
       part: "response",
       block,
-      trial_in_block: trialInBlock,
+      trial_index_in_block: trialInBlock,
       congruency: spec.congruency,
       flanker_condition: spec.flanker_condition,
       target: targetLabel,
