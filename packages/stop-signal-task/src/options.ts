@@ -269,7 +269,7 @@ export interface StopSignalTaskOptions {
   /**
    * Instruction about how to balance responding and stopping (S001 recommends telling participants not to wait).
    * `"dont_wait"`, `"dont_wait_plus_tracking_explanation"` (adds that the signal gets later or earlier with performance),
-   * `"balance_speed_and_stopping"`, or `"none"`. These values come from the dossier, which the vocabulary's value list ("none") lacks.
+   * `"balance_speed_and_stopping"`, or `"none"`.
    * (default: "dont_wait_plus_tracking_explanation" — STOP-IT, S010)
    */
   strategy_instruction?:

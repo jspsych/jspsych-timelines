@@ -1,13 +1,13 @@
 {
   "tallies": {
     "observed_values_total": 219,
-    "typed_values_total": 198,
-    "level1_distinct_cases": 132,
-    "level1_checked": 103,
+    "typed_values_total": 204,
+    "level1_distinct_cases": 135,
+    "level1_checked": 106,
     "level1_not_expressible": 29,
     "level1_labelled_additions": 3,
-    "level2_configs": 10,
-    "level2_fully_expressible": 3
+    "level2_configs": 12,
+    "level2_fully_expressible": 4
   },
   "level1": [
     {
@@ -2183,6 +2183,57 @@
       }
     },
     {
+      "option": "strategy_instruction",
+      "sub": "main",
+      "variation": "waiting_instruction",
+      "value": "dont_wait",
+      "sources": [
+        "S001",
+        "S070",
+        "S072"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "instruction_format": "text",
+        "strategy_instruction": "dont_wait"
+      }
+    },
+    {
+      "option": "strategy_instruction",
+      "sub": "main",
+      "variation": "waiting_instruction",
+      "value": "dont_wait_plus_tracking_explanation",
+      "sources": [
+        "S010",
+        "S082"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "instruction_format": "text",
+        "strategy_instruction": "dont_wait_plus_tracking_explanation"
+      }
+    },
+    {
+      "option": "strategy_instruction",
+      "sub": "main",
+      "variation": "waiting_instruction",
+      "value": "balance_speed_and_stopping",
+      "sources": [
+        "S011"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "instruction_format": "text",
+        "strategy_instruction": "balance_speed_and_stopping"
+      }
+    },
+    {
       "option": "population_protocol",
       "sub": "main",
       "variation": "child_protocol",
@@ -2282,6 +2333,49 @@
       "tied_to_reported_value": 7
     },
     {
+      "source": "S010",
+      "citation": "STOP-IT jsPsych version (Verbruggen), commit 73e4654",
+      "n_options": 32,
+      "n_keys": 32,
+      "keys_expressible": 31,
+      "gaps": [
+        {
+          "key": "device_eligibility",
+          "gap": "plugin needed",
+          "reason": "fullscreen, window size and browser checks (a device-check plugin)"
+        }
+      ],
+      "checked_options": [
+        "adaptive",
+        "block_feedback",
+        "break_duration_ms",
+        "condition_proportions",
+        "feedback_duration_ms",
+        "fixation_duration_ms",
+        "iti_ms",
+        "n_blocks",
+        "performance_incentive",
+        "population_protocol",
+        "trial_feedback",
+        "practice_criterion",
+        "practice_trials",
+        "response_device",
+        "response_keys",
+        "response_mapping_counterbalancing",
+        "response_window_ms",
+        "sequence_constraints",
+        "stimulus_duration_ms",
+        "stimulus_modality",
+        "stimulus_set",
+        "strategy_instruction",
+        "trials_per_block"
+      ],
+      "assumed": [
+        "instruction_format"
+      ],
+      "tied_to_reported_value": 28
+    },
+    {
       "source": "S025",
       "citation": "Bissett et al. 2021, Sci Adv",
       "n_options": 1,
@@ -2365,6 +2459,29 @@
         "difficulty_levels"
       ],
       "tied_to_reported_value": 3
+    },
+    {
+      "source": "S070",
+      "citation": "Comparing self-other distinction across motor, cognitive and affective domains. (2024)",
+      "n_options": 10,
+      "n_keys": 10,
+      "keys_expressible": 10,
+      "gaps": [],
+      "checked_options": [
+        "block_feedback",
+        "condition_proportions",
+        "n_blocks",
+        "response_device",
+        "response_keys",
+        "stimulus_set",
+        "strategy_instruction",
+        "trial_feedback",
+        "trials_per_block"
+      ],
+      "assumed": [
+        "instruction_format"
+      ],
+      "tied_to_reported_value": 8
     },
     {
       "source": "S079",

@@ -111,6 +111,8 @@ export function calculateScores(data: DataCollection): ScoringResult {
   };
 }
 
-export function getSummary(data: DataCollection): ScoringResult & { task: string; version: string } {
+export function getSummary(
+  data: DataCollection
+): ScoringResult & { task: string; version: string } {
   return { ...calculateScores(data), task: TASK_NAME, version: VERSION };
 }

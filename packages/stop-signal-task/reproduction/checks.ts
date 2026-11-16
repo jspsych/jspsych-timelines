@@ -8,6 +8,7 @@
 import { Check, CheckSet, distinct, extendCheck, sharedChecks } from "@jspsych-timelines/testing";
 
 import type { StopSignalTaskOptions } from "../src/options";
+import { defaultText } from "../src/text";
 import type { Eff, Run } from "./harness";
 import { evalStimulus, harness, rowsOf, trialsOf } from "./harness";
 
@@ -192,6 +193,23 @@ const own: Record<string, SstCheck> = {
     fn: (r) => {
       const fb = rowsOf(r, "test", "block_feedback");
       expect(fb).toHaveLength(r.eff.block_feedback === "none" ? 0 : r.eff.n_blocks);
+    },
+  },
+  strategy_instruction: {
+    requires: [],
+    kind: "behaviour",
+    fn: (r) => {
+      // the instruction pages carry the strategy sentence for the chosen value, and no other
+      const shown = r.rows
+        .filter((x: any) => x.phase === "instructions" && typeof x.stimulus === "string")
+        .map((x: any) => x.stimulus)
+        .join("\n");
+      const has = (html: string) => shown.includes(html);
+      const v = r.eff.strategy_instruction;
+      expect(has(defaultText.strategy_dont_wait)).toBe(
+        v === "dont_wait" || v === "dont_wait_plus_tracking_explanation"
+      );
+      expect(has(defaultText.strategy_balance)).toBe(v === "balance_speed_and_stopping");
     },
   },
   performance_incentive: {

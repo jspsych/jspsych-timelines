@@ -68,7 +68,9 @@
 
 /* Short text under the stage (prompts, hints, step explanations) is centred under the stimulus;
    full-page instructions stay left-aligned for reading. */
-.jspsych-timelines-operation-span .jspsych-timelines-operation-span-below .jspsych-timelines-operation-span-text {
+.jspsych-timelines-operation-span
+  .jspsych-timelines-operation-span-below
+  .jspsych-timelines-operation-span-text {
   text-align: center;
   text-wrap: balance;
 }

@@ -109,6 +109,8 @@ export function adapt(
   switch (option) {
     case "break_duration_ms":
       return ok({ break_duration_ms: value });
+    case "strategy_instruction":
+      return ok({ strategy_instruction: value }, { instruction_format: "text" });
     case "feedback_duration_ms":
       return ok({ feedback_duration_ms: value }, { trial_feedback: "accuracy" });
     case "fixation_duration_ms":
@@ -283,10 +285,12 @@ export function adaptConfigKey(key: string, value: any): Adapted {
     return gap("option missing", `untyped value: ${JSON.stringify(value.untranslated)}`);
   }
   if (option === "adaptive") {
-    // the spec flattens ssd_min_ms and ssd_max_ms into one `adaptive.bounds` (a lone number), so a
-    // study that reports both shows only the later one, and a lone number is a minimum below 100 ms
-    // and a maximum above (the values in the dossier: 33 and 33.3 ms, 550 to 1200 ms)
-    if (role === "bounds") return adaptField(value < 100 ? "bounds_min" : "bounds_max", value);
+    // the spec combines a study's ssd_min_ms and ssd_max_ms into `adaptive.bounds: [min, max]`, null for a
+    // side it does not report; an unreported minimum is 0 ms (the physical limit), an unreported maximum none
+    if (role === "bounds") {
+      const [lo, hi] = value as (number | null)[];
+      return ok({ adaptive: { bounds: [lo ?? 0, hi ?? null] } });
+    }
     return adaptField(role, value);
   }
   if (option === "stimulus_duration_ms") {

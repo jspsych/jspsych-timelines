@@ -63,7 +63,9 @@
 
 /* Short text under the stage (walkthrough captions, hints, feedback) is centred under the
    stimulus; full-page instructions stay left-aligned for reading. */
-.jspsych-timelines-stop-signal-task .jspsych-timelines-stop-signal-task-below .jspsych-timelines-stop-signal-task-text {
+.jspsych-timelines-stop-signal-task
+  .jspsych-timelines-stop-signal-task-below
+  .jspsych-timelines-stop-signal-task-text {
   text-align: center;
   text-wrap: balance;
 }
@@ -86,9 +88,6 @@
   gap: 8px;
 }
 
-
-
-
 .jspsych-timelines-stop-signal-task .jspsych-timelines-stop-signal-task-center {
   display: flex;
   align-items: center;
@@ -99,8 +98,6 @@
 .jspsych-timelines-stop-signal-task .jspsych-timelines-stop-signal-task-fixation {
   font-size: 3em;
 }
-
-
 
 .jspsych-timelines-stop-signal-task .jspsych-timelines-stop-signal-task-feedback {
   font-size: 1.6em;
@@ -129,7 +126,9 @@
   border-radius: 50%;
 }
 
-.jspsych-timelines-stop-signal-task .jspsych-timelines-stop-signal-task-stage[data-go="arrows_in_circle"] .jspsych-timelines-stop-signal-task-ring {
+.jspsych-timelines-stop-signal-task
+  .jspsych-timelines-stop-signal-task-stage[data-go="arrows_in_circle"]
+  .jspsych-timelines-stop-signal-task-ring {
   border-color: currentColor;
 }
 
@@ -149,15 +148,21 @@
   pointer-events: none;
 }
 
-.jspsych-timelines-stop-signal-task .jspsych-timelines-stop-signal-task-stage[data-signal="border"].jspsych-timelines-stop-signal-task-signalled .jspsych-timelines-stop-signal-task-signal {
+.jspsych-timelines-stop-signal-task
+  .jspsych-timelines-stop-signal-task-stage[data-signal="border"].jspsych-timelines-stop-signal-task-signalled
+  .jspsych-timelines-stop-signal-task-signal {
   visibility: visible;
   border-width: 15px;
 }
 
-.jspsych-timelines-stop-signal-task .jspsych-timelines-stop-signal-task-stage[data-signal="arrow_turns_red"].jspsych-timelines-stop-signal-task-signalled .jspsych-timelines-stop-signal-task-arrow {
+.jspsych-timelines-stop-signal-task
+  .jspsych-timelines-stop-signal-task-stage[data-signal="arrow_turns_red"].jspsych-timelines-stop-signal-task-signalled
+  .jspsych-timelines-stop-signal-task-arrow {
   color: #e53935;
 }
 
-.jspsych-timelines-stop-signal-task .jspsych-timelines-stop-signal-task-stage[data-signal="circle_turns_red"].jspsych-timelines-stop-signal-task-signalled .jspsych-timelines-stop-signal-task-ring {
+.jspsych-timelines-stop-signal-task
+  .jspsych-timelines-stop-signal-task-stage[data-signal="circle_turns_red"].jspsych-timelines-stop-signal-task-signalled
+  .jspsych-timelines-stop-signal-task-ring {
   border-color: #e53935;
 }

@@ -6,45 +6,47 @@ This file is generated. Commentary that belongs to the package goes in `reproduc
 
 ## Numbers
 
-**Observed values.** The spec lists 219 observed values over the 26 options; 198 are typed, 21 are not.
+**Observed values.** The spec lists 219 observed values over the 26 options; 204 are typed, 15 are not.
 
 | | Rows | Distinct (option, component, value) |
 |---|---|---|
 | Observed values | 219 | |
-| Untyped by the spec, not attempted | 21 | |
+| Untyped by the spec, not attempted | 15 | |
 | Typed with value `null` (absent), skipped | 9 | |
 | Typed with value `null` that mean "until response" or "untimed", **added** as labelled additions | 3 | 3 |
-| Cases in level 1 | 189 | 132 |
-| Expressible and checked | 159 (84.1%) | 103 (78.0%) |
+| Cases in level 1 | 195 | 135 |
+| Expressible and checked | 165 (84.6%) | 106 (78.5%) |
 | Not expressible | 30 | 29 |
 
-Of all 219 rows, 159 (72.6%) are expressible and checked. The 103 checked cases split by what the check can see:
+Of all 219 rows, 165 (75.3%) are expressible and checked. The 106 checked cases split by what the check can see:
 
 | Check kind | Cases | What it asserts |
 |---|---|---|
-| Behaviour | 67 | Counts per phase and block, exact condition counts, rows present or absent, timeouts under forced slow RTs, keys, device, mapping across seeds |
+| Behaviour | 70 | Counts per phase and block, exact condition counts, rows present or absent, timeouts under forced slow RTs, keys, device, mapping across seeds |
 | Recorded parameter | 23 | A duration, interval or spacing equals the value in the data row and in the plugin parameter. Both come from one variable and the data-only simulator ignores time, so this proves the value arrived, not that the browser times it. |
 | Structure | 13 | The rendered HTML or built timeline contains it: colours, sizes, positions, instruction sentences, plugins and their parameters |
 
 ## Study configurations
 
-22 configurations, 10 fully typed. Level 2 builds each fully typed one with all its options at once, simulates it, checks the resolved options against the values it reports, and runs the check of every option it names.
+22 configurations, 12 fully typed. Level 2 builds each fully typed one with all its options at once, simulates it, checks the resolved options against the values it reports, and runs the check of every option it names.
 
 | | Configurations |
 |---|---|
-| Fully typed (spec flag) | 10 of 22 |
-| Fully expressible and all values checked | 3 of 10 (30.0%) |
-| Expressible except some values | 7 |
+| Fully typed (spec flag) | 12 of 22 |
+| Fully expressible and all values checked | 4 of 12 (33.3%) |
+| Expressible except some values | 8 |
 
 | Source | Citation | Keys | Expressible | Tied to reported value | Not expressible | Assumed, not reported |
 |---|---|---|---|---|---|---|
 | S007 | Thakkar et al. 2011, Biol Psychiatry | 10 | 7 | 7 | `stimulus_eccentricity`, `stimulus_set.go`, `stimulus_set.stop signal` |  |
 | S008 | Countermanding saccades in children, 2026, Atten Percept Psychophys | 10 | 7 | 7 | `population_protocol`, `stimulus_eccentricity`, `stimulus_set.stop signal` |  |
+| S010 | STOP-IT jsPsych version (Verbruggen), commit 73e4654 | 32 | 31 | 28 | `device_eligibility` | `instruction_format` |
 | S025 | Bissett et al. 2021, Sci Adv | 1 | 1 | 1 |  |  |
 | S026 | Hedge, Powell & Sumner 2018, Behav Res Methods | 5 | 4 | 3 | `stimulus_set.go` |  |
 | S029 | Wadsley et al. 2023, Exp Brain Res (SeleST) | 1 | 0 | 0 | `performance_incentive` |  |
 | S052 | An exploration of relationships between associative and non-associative measures (2025) | 3 | 3 | 2 |  |  |
 | S057 | The rollercoaster of obsessive-compulsive disorder: How chronotype and time of d (2025) | 4 | 4 | 3 |  | `difficulty_levels` |
+| S070 | Comparing self-other distinction across motor, cognitive and affective domains. (2024) | 10 | 10 | 8 |  | `instruction_format` |
 | S079 | The effects of conscious movement investment on inhibiting a simple response. (2024) | 16 | 14 | 13 | `practice_trials.go_only_practice`, `stimulus_set.go` | `trial_feedback` |
 | S086 | A Novel, Expert-Endorsed, Neurocognitive Digital Assessment Tool for Addictive D (2023) | 9 | 6 | 6 | `performance_incentive`, `stimulus_set.go`, `stimulus_set.stop signal` |  |
 | S087 | Exploring Response Inhibition, the Behavioral Inhibition System and Possible Sex (2023) | 1 | 0 | 0 | `response_device` |  |
@@ -91,7 +93,7 @@ Classes: package fix needed, option missing, plugin needed, dossier value wrong,
 
 By class: option missing 21, plugin needed 8.
 
-### Untyped values (21 rows, not attempted)
+### Untyped values (15 rows, not attempted)
 
 | Option / raw value | Source | Spec's note |
 |---|---|---|
@@ -110,12 +112,6 @@ By class: option missing 21, plugin needed 8.
 | `device_eligibility`: browser-focus monitoring (exclusion) | S098 | propose vocabulary value: focus_monitoring |
 | `practice_trials`: 1 block | S014 | Go-only practice length given in blocks, trial count unknown; practice_trials is a count. |
 | `block_feedback`: conditional_warnings | S091 | Only performance-conditional warnings; propose vocabulary value: warnings. |
-| `strategy_instruction`: dont_wait | S001 | propose vocabulary value: dont_wait (strategy_instruction has only none). |
-| `strategy_instruction`: dont_wait_plus_tracking_explanation | S010 | propose vocabulary value: dont_wait_tracking_explained (strategy_instruction has only none). |
-| `strategy_instruction`: dont_wait | S070 | propose vocabulary value: dont_wait (strategy_instruction has only none). |
-| `strategy_instruction`: dont_wait | S072 | propose vocabulary value: dont_wait (strategy_instruction has only none). |
-| `strategy_instruction`: dont_wait_plus_tracking_explanation | S082 | propose vocabulary value: dont_wait_tracking_explained (strategy_instruction has only none). |
-| `strategy_instruction`: balance_speed_and_stopping | S011 | propose vocabulary value: balance_speed_and_stopping (strategy_instruction has only none). |
 
 ## Notes on the stop-signal task (hand-written, `reproduction/notes.md`)
 

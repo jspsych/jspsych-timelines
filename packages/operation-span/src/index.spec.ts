@@ -462,7 +462,14 @@ describe("scoring", () => {
 
   it("reports processing accuracy without judging it (no built-in criterion)", () => {
     expect(PROCESSING_ACCURACY_TARGET).toBe(0.85);
-    const rows = [...Array(17).fill(0).map(() => proc(true)), proc(false), proc(false), proc(true)];
+    const rows = [
+      ...Array(17)
+        .fill(0)
+        .map(() => proc(true)),
+      proc(false),
+      proc(false),
+      proc(true),
+    ];
     const s = calculateScores(new DataCollection(rows));
     expect(s.processing_accuracy).toBeCloseTo(18 / 20);
     expect(Object.keys(s).some((k) => /criterion|exclu|_ok$/.test(k))).toBe(false);

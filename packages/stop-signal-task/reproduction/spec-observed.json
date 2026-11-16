@@ -2109,11 +2109,11 @@
   {
    "name": "strategy_instruction",
    "default": {
-    "value": null,
+    "value": "dont_wait_plus_tracking_explanation",
     "raw": "dont_wait_plus_tracking_explanation",
     "basis": "anchor",
     "source": "S010",
-    "needs_translation": true
+    "needs_translation": false
    },
    "components": [
     {
@@ -2125,44 +2125,44 @@
       {
        "source": "S001",
        "raw": "dont_wait",
-       "value": null,
-       "ok": false,
-       "note": "propose vocabulary value: dont_wait (strategy_instruction has only none)."
+       "value": "dont_wait",
+       "ok": true,
+       "note": null
       },
       {
        "source": "S010",
        "raw": "dont_wait_plus_tracking_explanation",
-       "value": null,
-       "ok": false,
-       "note": "propose vocabulary value: dont_wait_tracking_explained (strategy_instruction has only none)."
+       "value": "dont_wait_plus_tracking_explanation",
+       "ok": true,
+       "note": null
       },
       {
        "source": "S070",
        "raw": "dont_wait",
-       "value": null,
-       "ok": false,
-       "note": "propose vocabulary value: dont_wait (strategy_instruction has only none)."
+       "value": "dont_wait",
+       "ok": true,
+       "note": null
       },
       {
        "source": "S072",
        "raw": "dont_wait",
-       "value": null,
-       "ok": false,
-       "note": "propose vocabulary value: dont_wait (strategy_instruction has only none)."
+       "value": "dont_wait",
+       "ok": true,
+       "note": null
       },
       {
        "source": "S082",
        "raw": "dont_wait_plus_tracking_explanation",
-       "value": null,
-       "ok": false,
-       "note": "propose vocabulary value: dont_wait_tracking_explained (strategy_instruction has only none)."
+       "value": "dont_wait_plus_tracking_explanation",
+       "ok": true,
+       "note": null
       },
       {
        "source": "S011",
        "raw": "balance_speed_and_stopping",
-       "value": null,
-       "ok": false,
-       "note": "propose vocabulary value: balance_speed_and_stopping (strategy_instruction has only none)."
+       "value": "balance_speed_and_stopping",
+       "ok": true,
+       "note": null
       }
      ]
     }
@@ -2261,9 +2261,12 @@
    "source_type": "reference-impl",
    "setting": null,
    "n_options": 32,
-   "fully_typed": false,
+   "fully_typed": true,
    "options": {
-    "adaptive.bounds": 1200,
+    "adaptive.bounds": [
+     50,
+     1200
+    ],
     "adaptive.procedure": "tracking",
     "adaptive.start_level": 200,
     "adaptive.step_size": 50,
@@ -2297,9 +2300,7 @@
     "stimulus_modality.stop signal": "visual",
     "stimulus_set.go": "left/right arrows",
     "stimulus_set.stop signal": "go arrow turns red",
-    "strategy_instruction": {
-     "untranslated": "dont_wait_plus_tracking_explanation"
-    },
+    "strategy_instruction": "dont_wait_plus_tracking_explanation",
     "trial_feedback": "none",
     "trials_per_block": 64
    }
@@ -2313,7 +2314,10 @@
    "n_options": 23,
    "fully_typed": false,
    "options": {
-    "adaptive.bounds": 850,
+    "adaptive.bounds": [
+     0,
+     850
+    ],
     "adaptive.procedure": "tracking",
     "adaptive.ssd_reset_policy": {
      "untranslated": "reset_per_condition"
@@ -2346,9 +2350,7 @@
     "stimulus_duration_ms.stop signal": 500,
     "stimulus_set.go": "4 shapes mapped to 2 keys",
     "stimulus_set.stop signal": "star outline around the shape",
-    "strategy_instruction": {
-     "untranslated": "balance_speed_and_stopping"
-    },
+    "strategy_instruction": "balance_speed_and_stopping",
     "trials_per_block": 50
    }
   },
@@ -2489,7 +2491,7 @@
    "source_type": "empirical",
    "setting": "online-unsupervised",
    "n_options": 10,
-   "fully_typed": false,
+   "fully_typed": true,
    "options": {
     "block_feedback": "none",
     "condition_proportions.stop_signal_probability": 0.25,
@@ -2501,9 +2503,7 @@
     ],
     "stimulus_set.go": "left/right arrows",
     "stimulus_set.stop signal": "go arrow turns red",
-    "strategy_instruction": {
-     "untranslated": "dont_wait"
-    },
+    "strategy_instruction": "dont_wait",
     "trial_feedback": "none",
     "trials_per_block": 64
    }
@@ -2533,9 +2533,7 @@
     ],
     "stimulus_set.go": "stimulus location left/right of fixation (food/non-food pictures or words, task-irrelevant)",
     "stimulus_set.stop signal": "blue box around stimulus",
-    "strategy_instruction": {
-     "untranslated": "dont_wait"
-    },
+    "strategy_instruction": "dont_wait",
     "trials_per_block": 128
    }
   },
@@ -2548,7 +2546,10 @@
    "n_options": 16,
    "fully_typed": true,
    "options": {
-    "adaptive.bounds": 33,
+    "adaptive.bounds": [
+     33,
+     null
+    ],
     "adaptive.start_level": 183,
     "adaptive.step_size": 50,
     "condition_proportions.stop_signal_probability": 0.2,
@@ -2620,9 +2621,7 @@
     "response_window_ms": 1500,
     "stimulus_set.go": "black arrows on grey",
     "stimulus_set.stop signal": "blue square (0.7 x 0.7 deg)",
-    "strategy_instruction": {
-     "untranslated": "dont_wait_plus_tracking_explanation"
-    },
+    "strategy_instruction": "dont_wait_plus_tracking_explanation",
     "trial_feedback": "none",
     "trials_per_block": 96
    }
@@ -2699,7 +2698,10 @@
    "n_options": 6,
    "fully_typed": false,
    "options": {
-    "adaptive.bounds": 1000,
+    "adaptive.bounds": [
+     0,
+     1000
+    ],
     "adaptive.start_level": 350,
     "block_feedback": {
      "untranslated": "conditional_warnings"
@@ -2726,7 +2728,10 @@
    "n_options": 6,
    "fully_typed": false,
    "options": {
-    "adaptive.bounds": 550,
+    "adaptive.bounds": [
+     null,
+     550
+    ],
     "condition_proportions.stop_probability_blocks": {
      "untranslated": "0.5 vs 0.2, alternating (Exp 1) or clustered (Exp 2), informed"
     },
@@ -3288,26 +3293,32 @@
   {
    "variation": "waiting_instruction",
    "raw": "dont_wait",
-   "as": null,
+   "as": {
+    "strategy_instruction": "dont_wait"
+   },
    "confidence": "high",
-   "flag": true,
-   "note": "propose vocabulary value: dont_wait (strategy_instruction has only none)."
+   "flag": false,
+   "note": "Vocabulary value added after the pilot."
   },
   {
    "variation": "waiting_instruction",
    "raw": "dont_wait_plus_tracking_explanation",
-   "as": null,
+   "as": {
+    "strategy_instruction": "dont_wait_plus_tracking_explanation"
+   },
    "confidence": "high",
-   "flag": true,
-   "note": "propose vocabulary value: dont_wait_tracking_explained (strategy_instruction has only none)."
+   "flag": false,
+   "note": "Vocabulary value added after the pilot."
   },
   {
    "variation": "waiting_instruction",
    "raw": "balance_speed_and_stopping",
-   "as": null,
+   "as": {
+    "strategy_instruction": "balance_speed_and_stopping"
+   },
    "confidence": "high",
-   "flag": true,
-   "note": "propose vocabulary value: balance_speed_and_stopping (strategy_instruction has only none)."
+   "flag": false,
+   "note": "Vocabulary value added after the pilot."
   },
   {
    "variation": "child_protocol",

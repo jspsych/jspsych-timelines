@@ -87,7 +87,11 @@ defineReproduction({
       case "adaptive.target_accuracy":
         return [a?.target_accuracy, value];
       case "adaptive.bounds":
-        return [a?.bounds[value < 100 ? 0 : 1], value];
+        // [min, max]; a side the study does not report is null and is not compared
+        return [
+          (value as (number | null)[]).map((v, i) => (v === null ? null : a?.bounds[i])),
+          value,
+        ];
       case "condition_proportions.stop_signal_probability":
         return [rounded(e.condition_proportions.stop as number), value];
       case "stimulus_duration_ms.go_stimulus_duration_ms":
@@ -160,7 +164,7 @@ describe("defaults reproduce the STOP-IT anchor (S010) except the documented cha
     expect(o.adaptive).toMatchObject({
       start_level: s010["adaptive.start_level"],
       target_accuracy: s010["adaptive.target_accuracy"],
-      bounds: [50, s010["adaptive.bounds"]], // the spec's lone `bounds` is the maximum; 50 ms is ssd_min_ms
+      bounds: s010["adaptive.bounds"], // [ssd_min_ms, ssd_max_ms]
       tracks: "single",
       reset: "never", // "continuous"
     });
