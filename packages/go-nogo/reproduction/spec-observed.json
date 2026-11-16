@@ -1,0 +1,2102 @@
+{
+ "spec": "specs/go-nogo/spec.yaml (jspsych-timelines-paper, vocabulary 2026-11-13-std-final)",
+ "options": [
+  {
+   "name": "feedback_duration_ms",
+   "default": {
+    "value": 1000,
+    "raw": 1000,
+    "basis": "anchor",
+    "source": "S022",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "feedback_duration_ms",
+     "role": null,
+     "phase": "practice",
+     "field": null,
+     "observed": [
+      {
+       "source": "S022",
+       "raw": 1000,
+       "value": 1000,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S183",
+       "raw": 500,
+       "value": 500,
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "iti_ms",
+   "default": {
+    "value": 0,
+    "raw": 0,
+    "basis": "anchor",
+    "source": "S022",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "inter_trial_interval_ms",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S022",
+       "raw": 0,
+       "value": 0,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S028",
+       "raw": 1000,
+       "value": 1000,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S157",
+       "raw": 1300,
+       "value": 1300,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S183",
+       "raw": 500,
+       "value": 500,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S017",
+       "raw": 750,
+       "value": 750,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S071",
+       "raw": 1700,
+       "value": 1700,
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "pre_block_countdown_ms",
+   "default": {
+    "value": 0,
+    "raw": false,
+    "basis": "anchor",
+    "source": "S022",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "pre_block_countdown",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S028",
+       "raw": true,
+       "value": null,
+       "ok": false,
+       "note": "A countdown exists (PEBL CountDown) but its duration is not in the dossier; do not invent ms."
+      },
+      {
+       "source": "S022",
+       "raw": false,
+       "value": 0,
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "response_window_ms",
+   "default": {
+    "value": {
+     "min": 1000,
+     "max": 1500
+    },
+    "raw": "1000-1500 (jittered)",
+    "basis": "anchor",
+    "source": "S022",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "response_window_ms",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S022",
+       "raw": "1000-1500 (jittered)",
+       "value": {
+        "min": 1000,
+        "max": 1500
+       },
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S028",
+       "raw": 1450,
+       "value": 1450,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S031",
+       "raw": 2000,
+       "value": 2000,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S175",
+       "raw": 1500,
+       "value": 1500,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S183",
+       "raw": 1000,
+       "value": 1000,
+       "ok": true,
+       "note": null
+      }
+     ]
+    },
+    {
+     "variation": "response_deadline_rule",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S022",
+       "raw": "fixed",
+       "value": null,
+       "ok": true,
+       "note": "Category only; the number lives in response_window_ms observations elsewhere."
+      },
+      {
+       "source": "S207",
+       "raw": "participant-specific deadline from short-SOA go RT (mean+2SD or 90th percentile)",
+       "value": null,
+       "ok": false,
+       "note": "Per-participant deadline derived from measured go RT; propose vocabulary value: response_window rule or adaptive procedure rt_based."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "stimulus_duration_ms",
+   "default": {
+    "value": 750,
+    "raw": 750,
+    "basis": "anchor",
+    "source": "S022",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "stimulus_duration_ms",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S022",
+       "raw": 750,
+       "value": 750,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S028",
+       "raw": 500,
+       "value": 500,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S054",
+       "raw": 1000,
+       "value": 1000,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S157",
+       "raw": 200,
+       "value": 200,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S169",
+       "raw": 2000,
+       "value": 2000,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S175",
+       "raw": 1500,
+       "value": 1500,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S017",
+       "raw": 1250,
+       "value": 1250,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S071",
+       "raw": 300,
+       "value": 300,
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "trial_termination_rule",
+   "default": {
+    "value": "fixed_duration",
+    "raw": false,
+    "basis": "fill",
+    "frequency": "1/2",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "response_terminates_trial",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S028",
+       "raw": false,
+       "value": "fixed_duration",
+       "ok": true,
+       "note": "Fixed SOA/trial duration regardless of response."
+      },
+      {
+       "source": "S169",
+       "raw": true,
+       "value": "response_or_timeout",
+       "ok": true,
+       "note": "S169 shows cue 2 s or until button press; other sources (S183, S082) only state the stimulus vanishes on response, so response_terminated is possible there."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "stimulus_layout",
+   "default": {
+    "value": "center",
+    "raw": "center",
+    "basis": "anchor",
+    "source": "S022",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "stimulus_location",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S022",
+       "raw": "center",
+       "value": "center",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S028",
+       "raw": "random cell of a 2x2 grid",
+       "value": "random cell of a 2x2 grid",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S046",
+       "raw": "top centre",
+       "value": "top centre",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S183",
+       "raw": "left/right x near/far in 3D scene",
+       "value": "left/right x near/far in 3D scene",
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "stimulus_modality",
+   "default": {
+    "value": "visual",
+    "raw": "visual",
+    "basis": "anchor",
+    "source": "S022",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "stimulus_modality",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S022",
+       "raw": "visual",
+       "value": "visual",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S118",
+       "raw": "auditory",
+       "value": "auditory",
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "stimulus_set",
+   "default": {
+    "value": "coloured squares (orange/blue)",
+    "raw": "coloured squares (orange/blue)",
+    "basis": "anchor",
+    "source": "S022",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "stimulus_set",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S022",
+       "raw": "coloured squares (orange/blue)",
+       "value": "coloured squares (orange/blue)",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S028",
+       "raw": "letters P / R",
+       "value": "letters P / R",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S031",
+       "raw": "words Go / No go",
+       "value": "words Go / No go",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S054",
+       "raw": "coloured circles (blue go / orange no-go)",
+       "value": "coloured circles (blue go / orange no-go)",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S046",
+       "raw": "symbol-colour conjunctions (1 go, 3 no-go)",
+       "value": "symbol-colour conjunctions (1 go, 3 no-go)",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S123",
+       "raw": "letters (A, B, C go; X no-go)",
+       "value": "letters (A, B, C go; X no-go)",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S157",
+       "raw": "green circle go / red X no-go",
+       "value": "green circle go / red X no-go",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S169",
+       "raw": "faces: gender (cold) or emotion (hot)",
+       "value": "faces: gender (cold) or emotion (hot)",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S175",
+       "raw": "emoticon cat face x parachute colour conjunctions",
+       "value": "emoticon cat face x parachute colour conjunctions",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S183",
+       "raw": "geometric shapes (square/hexagon) in pots in a rendered 3D room",
+       "value": "geometric shapes (square/hexagon) in pots in a rendered 3D room",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S017",
+       "raw": "letter stream, 4 letters per block, new set each block",
+       "value": "letter stream, 4 letters per block, new set each block",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S071",
+       "raw": "line drawings (car go / dog no-go)",
+       "value": "line drawings (car go / dog no-go)",
+       "ok": true,
+       "note": null
+      }
+     ]
+    },
+    {
+     "variation": "n_go_stimulus_types",
+     "role": "go",
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S022",
+       "raw": 1,
+       "value": 1,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S123",
+       "raw": 3,
+       "value": 3,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S175",
+       "raw": 2,
+       "value": 2,
+       "ok": true,
+       "note": null
+      }
+     ]
+    },
+    {
+     "variation": "n_nogo_stimulus_types",
+     "role": "nogo",
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S022",
+       "raw": 1,
+       "value": 1,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S046",
+       "raw": 3,
+       "value": 3,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S175",
+       "raw": 4,
+       "value": 4,
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "inter_trial_display",
+   "default": {
+    "value": "blank",
+    "raw": "blank",
+    "basis": "anchor",
+    "source": "S022",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "inter_trial_display",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S022",
+       "raw": "blank",
+       "value": "blank",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S028",
+       "raw": "placeholder grid with stars",
+       "value": "placeholder grid with stars",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S054",
+       "raw": "fixation_cross",
+       "value": "fixation_cross",
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "condition_proportions",
+   "default": {
+    "value": 0.9,
+    "raw": 0.9,
+    "basis": "anchor",
+    "source": "S022",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "go_probability",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S022",
+       "raw": 0.9,
+       "value": 0.9,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S028",
+       "raw": 0.8,
+       "value": 0.8,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S054",
+       "raw": 0.5,
+       "value": 0.5,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S046",
+       "raw": 0.25,
+       "value": 0.25,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S157",
+       "raw": 0.82,
+       "value": 0.82,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S169",
+       "raw": 0.75,
+       "value": 0.75,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S175",
+       "raw": 0.4,
+       "value": 0.4,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S183",
+       "raw": 0.71,
+       "value": 0.71,
+       "ok": true,
+       "note": null
+      }
+     ]
+    },
+    {
+     "variation": "practice_go_probability",
+     "role": null,
+     "phase": "practice",
+     "field": null,
+     "observed": [
+      {
+       "source": "S022",
+       "raw": 0.5,
+       "value": 0.5,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S028",
+       "raw": 0.8,
+       "value": 0.8,
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "n_blocks",
+   "default": {
+    "value": 1,
+    "raw": 1,
+    "basis": "anchor",
+    "source": "S022",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "n_test_blocks",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S022",
+       "raw": 1,
+       "value": 1,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S028",
+       "raw": 2,
+       "value": 2,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S183",
+       "raw": 8,
+       "value": 8,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S017",
+       "raw": 5,
+       "value": 5,
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "n_test_trials",
+   "default": {
+    "value": 350,
+    "raw": 350,
+    "basis": "anchor",
+    "source": "S022",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "n_test_trials",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S022",
+       "raw": 350,
+       "value": 350,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S028",
+       "raw": 320,
+       "value": 320,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S054",
+       "raw": 40,
+       "value": 40,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S157",
+       "raw": 150,
+       "value": 150,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S169",
+       "raw": 160,
+       "value": 160,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S175",
+       "raw": 270,
+       "value": 270,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S183",
+       "raw": 224,
+       "value": 224,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S017",
+       "raw": 600,
+       "value": 600,
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "sequence_constraints",
+   "default": {
+    "value": {},
+    "raw": "random",
+    "basis": "anchor",
+    "source": "S022",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "sequence_order",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S022",
+       "raw": "random",
+       "value": {},
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S157",
+       "raw": "fixed pseudorandom (max 2 consecutive no-go, at least 3 go between)",
+       "value": {
+        "max_run": {
+         "nogo": 2
+        },
+        "min_gap": {
+         "nogo": 3
+        }
+       },
+       "ok": true,
+       "note": "Reads as no-go runs at most 2 and at least 3 go between no-go trials (the two rules are slightly inconsistent as worded); 'fixed' taken as same sequence for all participants."
+      },
+      {
+       "source": "S207",
+       "raw": "fixed sequences of 1, 3 or 5 go before each no-go",
+       "value": {
+        "run_length": {
+         "go": [
+          1,
+          3,
+          5
+         ]
+        }
+       },
+       "ok": true,
+       "note": "Studied and argued against (S207); whether the order of 1/3/5 runs is fixed or random is not stated."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "single_task_blocks",
+   "default": {
+    "value": "none",
+    "raw": false,
+    "basis": "anchor",
+    "source": "S022",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "go_only_baseline_blocks",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S022",
+       "raw": false,
+       "value": "none",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S183",
+       "raw": true,
+       "value": null,
+       "ok": false,
+       "note": "Go-only control task with 16 go trials in each block; position relative to main blocks (before/after/interleaved) not stated."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "stimulus_role_assignment",
+   "default": {
+    "value": "random_per_participant",
+    "raw": "randomized_per_participant",
+    "basis": "anchor",
+    "source": "S022",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "go_mapping_change_between_blocks",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S022",
+       "raw": "none",
+       "value": "fixed",
+       "ok": true,
+       "note": "One assignment for the whole task."
+      },
+      {
+       "source": "S028",
+       "raw": "reversal",
+       "value": "rotated",
+       "ok": true,
+       "note": "Go and no-go stimuli swap roles in the second round; 'rotated' is the closest value, but a two-state reversal may deserve its own value."
+      },
+      {
+       "source": "S017",
+       "raw": "new stimulus set each block",
+       "value": null,
+       "ok": false,
+       "note": "Roles are fixed but the stimuli change per block; propose vocabulary value: new_stimuli_per_block (or a stimulus_set option)."
+      },
+      {
+       "source": "S169",
+       "raw": "rule switches between runs (gender rule, emotion rule)",
+       "value": null,
+       "ok": false,
+       "note": "The go/no-go rule itself changes between runs; propose vocabulary value: rule_switch_between_blocks."
+      }
+     ]
+    },
+    {
+     "variation": "stimulus_role_assignment",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S022",
+       "raw": "randomized_per_participant",
+       "value": "random_per_participant",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S028",
+       "raw": "fixed",
+       "value": "fixed",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S183",
+       "raw": "counterbalanced",
+       "value": "counterbalanced",
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "trial_order",
+   "default": {
+    "value": "random",
+    "raw": "random",
+    "basis": "anchor",
+    "source": "S022",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "sequence_order",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S022",
+       "raw": "random",
+       "value": "random",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S157",
+       "raw": "fixed pseudorandom (max 2 consecutive no-go, at least 3 go between)",
+       "value": "fixed_sequence",
+       "ok": true,
+       "note": "Reads as no-go runs at most 2 and at least 3 go between no-go trials (the two rules are slightly inconsistent as worded); 'fixed' taken as same sequence for all participants."
+      },
+      {
+       "source": "S207",
+       "raw": "fixed sequences of 1, 3 or 5 go before each no-go",
+       "value": "fixed_sequence",
+       "ok": true,
+       "note": "Studied and argued against (S207); whether the order of 1/3/5 runs is fixed or random is not stated."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "response_device",
+   "default": {
+    "value": "keyboard",
+    "raw": "spacebar",
+    "basis": "anchor",
+    "source": "S022",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "response_input",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S022",
+       "raw": "spacebar",
+       "value": "keyboard",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S046",
+       "raw": "mouse_click_on_stimulus",
+       "value": "mouse",
+       "ok": true,
+       "note": "Click on the stimulus itself; target-click location not typed."
+      },
+      {
+       "source": "S054",
+       "raw": "spacebar or mouse click",
+       "value": null,
+       "ok": false,
+       "note": "Either device accepted; single-valued enum cannot express both. Propose vocabulary value: allow list of devices."
+      },
+      {
+       "source": "S183",
+       "raw": "lateralized keys (left/right by stimulus side)",
+       "value": "keyboard",
+       "ok": true,
+       "note": "Device only; the left/right key-by-stimulus-side mapping is lost."
+      },
+      {
+       "source": "S175",
+       "raw": "touchscreen",
+       "value": "touch",
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "practice_trials",
+   "default": {
+    "value": 10,
+    "raw": 10,
+    "basis": "anchor",
+    "source": "S022",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "practice_trials",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S022",
+       "raw": 10,
+       "value": 10,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S046",
+       "raw": 6,
+       "value": 6,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S157",
+       "raw": 20,
+       "value": 20,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S175",
+       "raw": 40,
+       "value": 40,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S103",
+       "raw": 25,
+       "value": 25,
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "block_feedback",
+   "default": {
+    "value": "none",
+    "raw": "none",
+    "basis": "anchor",
+    "source": "S022",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "block_summary_feedback",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S022",
+       "raw": "none",
+       "value": "none",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S183",
+       "raw": "mean_go_rt",
+       "value": "rt",
+       "ok": true,
+       "note": "Mean RT on go trials only."
+      },
+      {
+       "source": "S017",
+       "raw": "mean_rt_and_error_rate",
+       "value": "accuracy_rt",
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "feedback_condition",
+   "default": {
+    "value": {
+     "trial_feedback_practice": null,
+     "trial_feedback_test": null
+    },
+    "basis": "components"
+   },
+   "components": [
+    {
+     "variation": "trial_feedback_practice",
+     "role": null,
+     "phase": "practice",
+     "field": null,
+     "observed": [
+      {
+       "source": "S022",
+       "raw": "correct_and_incorrect",
+       "value": null,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S028",
+       "raw": "errors_only",
+       "value": null,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S103",
+       "raw": "performance_feedback",
+       "value": null,
+       "ok": true,
+       "note": "Source only says 'performance feedback' on 25 practice trials; content (accuracy, RT, both) and trial coverage unknown."
+      }
+     ]
+    },
+    {
+     "variation": "trial_feedback_test",
+     "role": null,
+     "phase": "test",
+     "field": null,
+     "observed": [
+      {
+       "source": "S022",
+       "raw": "none",
+       "value": null,
+       "ok": true,
+       "note": "feedback_condition omitted (ignored when feedback is none)."
+      },
+      {
+       "source": "S175",
+       "raw": "errors_only",
+       "value": "errors_only",
+       "ok": true,
+       "note": "Feedback content on errors not specified; accuracy assumed."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "response_acknowledgement",
+   "default": {
+    "value": "none",
+    "raw": "none",
+    "basis": "anchor",
+    "source": "S022",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "response_acknowledgement",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S022",
+       "raw": "none",
+       "value": "none",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S028",
+       "raw": "response label set bold for 150 ms",
+       "value": "highlight",
+       "ok": true,
+       "note": "150 ms emphasis of the response label; duration has no option."
+      },
+      {
+       "source": "S046",
+       "raw": "clicked stimulus highlighted with a red square",
+       "value": "highlight",
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "trial_feedback",
+   "default": {
+    "value": {
+     "trial_feedback_practice": null,
+     "trial_feedback_test": "none"
+    },
+    "basis": "components"
+   },
+   "components": [
+    {
+     "variation": "trial_feedback_practice",
+     "role": null,
+     "phase": "practice",
+     "field": null,
+     "observed": [
+      {
+       "source": "S022",
+       "raw": "correct_and_incorrect",
+       "value": null,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S028",
+       "raw": "errors_only",
+       "value": null,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S103",
+       "raw": "performance_feedback",
+       "value": null,
+       "ok": true,
+       "note": "Source only says 'performance feedback' on 25 practice trials; content (accuracy, RT, both) and trial coverage unknown."
+      }
+     ]
+    },
+    {
+     "variation": "trial_feedback_test",
+     "role": null,
+     "phase": "test",
+     "field": null,
+     "observed": [
+      {
+       "source": "S022",
+       "raw": "none",
+       "value": "none",
+       "ok": true,
+       "note": "feedback_condition omitted (ignored when feedback is none)."
+      },
+      {
+       "source": "S175",
+       "raw": "errors_only",
+       "value": "accuracy",
+       "ok": true,
+       "note": "Feedback content on errors not specified; accuracy assumed."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "rule_reminder",
+   "default": {
+    "value": "none",
+    "raw": false,
+    "basis": "anchor",
+    "source": "S022",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "rule_reminder_on_screen",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S028",
+       "raw": true,
+       "value": "on_screen",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S022",
+       "raw": false,
+       "value": "none",
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "speed_accuracy_emphasis",
+   "default": {
+    "value": "speed",
+    "raw": "speed",
+    "basis": "fill",
+    "frequency": "1/2",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "speed_accuracy_emphasis",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S157",
+       "raw": "speed",
+       "value": "speed",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S017",
+       "raw": "speed_and_accuracy",
+       "value": "both",
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "study_configurations": [
+  {
+   "source": "S017",
+   "citation": "Hedge, Powell & Sumner 2018, BRM",
+   "doi": "10.3758/s13428-017-0935-1",
+   "source_type": "empirical",
+   "setting": "lab-native",
+   "n_options": 8,
+   "fully_typed": false,
+   "options": {
+    "block_feedback": "accuracy_rt",
+    "iti_ms": 750,
+    "n_blocks": 5,
+    "n_test_trials": 600,
+    "speed_accuracy_emphasis": "both",
+    "stimulus_duration_ms": 1250,
+    "stimulus_role_assignment.go_mapping_change_between_blocks": {
+     "untranslated": "new stimulus set each block"
+    },
+    "stimulus_set.stimulus_set": "letter stream, 4 letters per block, new set each block"
+   }
+  },
+  {
+   "source": "S022",
+   "citation": "Expfactory go_nogo defaults",
+   "doi": null,
+   "source_type": "reference-impl",
+   "setting": null,
+   "n_options": 26,
+   "fully_typed": true,
+   "options": {
+    "block_feedback": "none",
+    "condition_proportions.go_probability": 0.9,
+    "inter_trial_display": "blank",
+    "iti_ms": 0,
+    "n_blocks": 1,
+    "n_test_trials": 350,
+    "practice.condition_proportions.practice_go_probability": 0.5,
+    "practice.feedback_duration_ms": 1000,
+    "practice_trials": 10,
+    "pre_block_countdown_ms": 0,
+    "response_acknowledgement": "none",
+    "response_device": "keyboard",
+    "response_window_ms.response_window_ms": {
+     "min": 1000,
+     "max": 1500
+    },
+    "rule_reminder": "none",
+    "sequence_constraints": {},
+    "single_task_blocks": "none",
+    "stimulus_duration_ms": 750,
+    "stimulus_layout": "center",
+    "stimulus_modality": "visual",
+    "stimulus_role_assignment.go_mapping_change_between_blocks": "fixed",
+    "stimulus_role_assignment.stimulus_role_assignment": "random_per_participant",
+    "stimulus_set.go": 1,
+    "stimulus_set.nogo": 1,
+    "stimulus_set.stimulus_set": "coloured squares (orange/blue)",
+    "test.trial_feedback.trial_feedback_test": "none",
+    "trial_order": "random"
+   }
+  },
+  {
+   "source": "S028",
+   "citation": "PEBL gonogo defaults",
+   "doi": null,
+   "source_type": "reference-impl",
+   "setting": null,
+   "n_options": 16,
+   "fully_typed": false,
+   "options": {
+    "condition_proportions.go_probability": 0.8,
+    "inter_trial_display": "placeholder grid with stars",
+    "iti_ms": 1000,
+    "n_blocks": 2,
+    "n_test_trials": 320,
+    "practice.condition_proportions.practice_go_probability": 0.8,
+    "pre_block_countdown_ms": {
+     "untranslated": true
+    },
+    "response_acknowledgement": "highlight",
+    "response_window_ms.response_window_ms": 1450,
+    "rule_reminder": "on_screen",
+    "stimulus_duration_ms": 500,
+    "stimulus_layout": "random cell of a 2x2 grid",
+    "stimulus_role_assignment.go_mapping_change_between_blocks": "rotated",
+    "stimulus_role_assignment.stimulus_role_assignment": "fixed",
+    "stimulus_set.stimulus_set": "letters P / R",
+    "trial_termination_rule": "fixed_duration"
+   }
+  },
+  {
+   "source": "S031",
+   "citation": "PsyToolkit go/no-go library defaults",
+   "doi": null,
+   "source_type": "reference-impl",
+   "setting": null,
+   "n_options": 2,
+   "fully_typed": true,
+   "options": {
+    "response_window_ms.response_window_ms": 2000,
+    "stimulus_set.stimulus_set": "words Go / No go"
+   }
+  },
+  {
+   "source": "S046",
+   "citation": "Baumeister A, Schuurmans L, Borgmann L,  2026, Psychooncology",
+   "doi": "10.1002/pon.70566",
+   "source_type": "empirical",
+   "setting": "online-unsupervised",
+   "n_options": 7,
+   "fully_typed": true,
+   "options": {
+    "condition_proportions.go_probability": 0.25,
+    "practice_trials": 6,
+    "response_acknowledgement": "highlight",
+    "response_device": "mouse",
+    "stimulus_layout": "top centre",
+    "stimulus_set.nogo": 3,
+    "stimulus_set.stimulus_set": "symbol-colour conjunctions (1 go, 3 no-go)"
+   }
+  },
+  {
+   "source": "S054",
+   "citation": "Moore T, Brock K, Palmer J, Baker R, Tal 2026, Sports (Basel)",
+   "doi": "10.3390/sports14070269",
+   "source_type": "empirical",
+   "setting": "online-unsupervised",
+   "n_options": 6,
+   "fully_typed": false,
+   "options": {
+    "condition_proportions.go_probability": 0.5,
+    "inter_trial_display": "fixation_cross",
+    "n_test_trials": 40,
+    "response_device": {
+     "untranslated": "spacebar or mouse click"
+    },
+    "stimulus_duration_ms": 1000,
+    "stimulus_set.stimulus_set": "coloured circles (blue go / orange no-go)"
+   }
+  },
+  {
+   "source": "S071",
+   "citation": "Satheesan L, Shastri U, Bajaj G, Kalaiah 2026, PLoS One",
+   "doi": "10.1371/journal.pone.0361204",
+   "source_type": "empirical",
+   "setting": "lab-browser",
+   "n_options": 3,
+   "fully_typed": true,
+   "options": {
+    "iti_ms": 1700,
+    "stimulus_duration_ms": 300,
+    "stimulus_set.stimulus_set": "line drawings (car go / dog no-go)"
+   }
+  },
+  {
+   "source": "S103",
+   "citation": "Treacy C, Andrews SC, Levenstein JM. 2025, Brain Struct Funct",
+   "doi": "10.1007/s00429-025-03017-0",
+   "source_type": "empirical",
+   "setting": "lab-browser",
+   "n_options": 1,
+   "fully_typed": true,
+   "options": {
+    "practice_trials": 25
+   }
+  },
+  {
+   "source": "S118",
+   "citation": "Simkute D, Tarailis P, Pipinis E, Grisko 2025, Behav Sci (Basel)",
+   "doi": "10.3390/bs15050579",
+   "source_type": "empirical",
+   "setting": "lab-native",
+   "n_options": 1,
+   "fully_typed": true,
+   "options": {
+    "stimulus_modality": "auditory"
+   }
+  },
+  {
+   "source": "S123",
+   "citation": "Bolton K, Yang L. 2025, Healthcare (Basel)",
+   "doi": "10.3390/healthcare13070792",
+   "source_type": "empirical",
+   "setting": "online-unsupervised",
+   "n_options": 2,
+   "fully_typed": true,
+   "options": {
+    "stimulus_set.go": 3,
+    "stimulus_set.stimulus_set": "letters (A, B, C go; X no-go)"
+   }
+  },
+  {
+   "source": "S157",
+   "citation": "Allen MT, Interian A, Reddy V, Rodriguez 2025, PeerJ",
+   "doi": "10.7717/peerj.19057",
+   "source_type": "empirical",
+   "setting": "online-unsupervised",
+   "n_options": 9,
+   "fully_typed": true,
+   "options": {
+    "condition_proportions.go_probability": 0.82,
+    "iti_ms": 1300,
+    "n_test_trials": 150,
+    "practice_trials": 20,
+    "sequence_constraints": {
+     "max_run": {
+      "nogo": 2
+     },
+     "min_gap": {
+      "nogo": 3
+     }
+    },
+    "speed_accuracy_emphasis": "speed",
+    "stimulus_duration_ms": 200,
+    "stimulus_set.stimulus_set": "green circle go / red X no-go",
+    "trial_order": "fixed_sequence"
+   }
+  },
+  {
+   "source": "S169",
+   "citation": "Raybould JN, Tunney RJ. 2024, BMC Psychiatry",
+   "doi": "10.1186/s12888-024-06072-9",
+   "source_type": "empirical",
+   "setting": "online-unsupervised",
+   "n_options": 6,
+   "fully_typed": false,
+   "options": {
+    "condition_proportions.go_probability": 0.75,
+    "n_test_trials": 160,
+    "stimulus_duration_ms": 2000,
+    "stimulus_role_assignment.go_mapping_change_between_blocks": {
+     "untranslated": "rule switches between runs (gender rule, emotion rule)"
+    },
+    "stimulus_set.stimulus_set": "faces: gender (cold) or emotion (hot)",
+    "trial_termination_rule": "response_or_timeout"
+   }
+  },
+  {
+   "source": "S175",
+   "citation": "Park SE, Chung J, Lee J, Kim MJ, Kim J,  2024, PLOS Digit Health",
+   "doi": "10.1371/journal.pdig.0000595",
+   "source_type": "empirical",
+   "setting": "online-unsupervised",
+   "n_options": 10,
+   "fully_typed": true,
+   "options": {
+    "condition_proportions.go_probability": 0.4,
+    "n_test_trials": 270,
+    "practice_trials": 40,
+    "response_window_ms.response_window_ms": 1500,
+    "stimulus_duration_ms": 1500,
+    "stimulus_set.go": 2,
+    "stimulus_set.nogo": 4,
+    "stimulus_set.stimulus_set": "emoticon cat face x parachute colour conjunctions",
+    "test.feedback_condition.trial_feedback_test": "errors_only",
+    "test.trial_feedback.trial_feedback_test": "accuracy"
+   }
+  },
+  {
+   "source": "S175",
+   "citation": "Park SE, Chung J, Lee J, Kim MJ, Kim J,  2024, PLOS Digit Health",
+   "doi": "10.1371/journal.pdig.0000595",
+   "source_type": "empirical",
+   "setting": "tablet",
+   "n_options": 1,
+   "fully_typed": true,
+   "options": {
+    "response_device": "touch"
+   }
+  },
+  {
+   "source": "S183",
+   "citation": "Carpio A, Dreher JC, Ferrera D, Galán D, 2024, Sci Rep",
+   "doi": "10.1038/s41598-024-67673-8",
+   "source_type": "empirical",
+   "setting": "online-unsupervised",
+   "n_options": 12,
+   "fully_typed": false,
+   "options": {
+    "block_feedback": "rt",
+    "condition_proportions.go_probability": 0.71,
+    "iti_ms": 500,
+    "n_blocks": 8,
+    "n_test_trials": 224,
+    "practice.feedback_duration_ms": 500,
+    "response_device": "keyboard",
+    "response_window_ms.response_window_ms": 1000,
+    "single_task_blocks": {
+     "untranslated": true
+    },
+    "stimulus_layout": "left/right x near/far in 3D scene",
+    "stimulus_role_assignment.stimulus_role_assignment": "counterbalanced",
+    "stimulus_set.stimulus_set": "geometric shapes (square/hexagon) in pots in a rendered 3D room"
+   }
+  },
+  {
+   "source": "S207",
+   "citation": "Smith & Jamadar 2021, PsyArXiv",
+   "doi": "10.31234/osf.io/3b6sp",
+   "source_type": "empirical",
+   "setting": "lab-native",
+   "n_options": 3,
+   "fully_typed": false,
+   "options": {
+    "response_window_ms.response_deadline_rule": {
+     "untranslated": "participant-specific deadline from short-SOA go RT (mean+2SD or 90th percentile)"
+    },
+    "sequence_constraints": {
+     "run_length": {
+      "go": [
+       1,
+       3,
+       5
+      ]
+     }
+    },
+    "trial_order": "fixed_sequence"
+   }
+  }
+ ],
+ "defaults": {
+  "source": "S022",
+  "citation": "Expfactory go_nogo defaults",
+  "typicality": 0.963,
+  "coverage": 0.931,
+  "runner_up": {
+   "source": "S028",
+   "citation": "PEBL gonogo defaults",
+   "score": 0.058
+  },
+  "lead": 0.937,
+  "disagreement_with_runner_up": 1
+ },
+ "translations": [
+  {
+   "variation": "pre_block_countdown",
+   "raw": true,
+   "as": null,
+   "confidence": "low",
+   "flag": true,
+   "note": "A countdown exists (PEBL CountDown) but its duration is not in the dossier; do not invent ms."
+  },
+  {
+   "variation": "pre_block_countdown",
+   "raw": false,
+   "as": {
+    "pre_block_countdown_ms": 0
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "response_deadline_rule",
+   "raw": "fixed",
+   "as": {},
+   "confidence": "high",
+   "flag": false,
+   "note": "Category only; the number lives in response_window_ms observations elsewhere."
+  },
+  {
+   "variation": "response_deadline_rule",
+   "raw": "participant-specific deadline from short-SOA go RT (mean+2SD or 90th percentile)",
+   "as": null,
+   "confidence": "high",
+   "flag": true,
+   "note": "Per-participant deadline derived from measured go RT; propose vocabulary value: response_window rule or adaptive procedure rt_based."
+  },
+  {
+   "variation": "response_terminates_trial",
+   "raw": false,
+   "as": {
+    "trial_termination_rule": "fixed_duration"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": "Fixed SOA/trial duration regardless of response."
+  },
+  {
+   "variation": "response_terminates_trial",
+   "raw": true,
+   "as": {
+    "trial_termination_rule": "response_or_timeout"
+   },
+   "confidence": "medium",
+   "flag": false,
+   "note": "S169 shows cue 2 s or until button press; other sources (S183, S082) only state the stimulus vanishes on response, so response_terminated is possible there."
+  },
+  {
+   "variation": "sequence_order",
+   "raw": "random",
+   "as": {
+    "trial_order": "random",
+    "sequence_constraints": {}
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "sequence_order",
+   "raw": "fixed pseudorandom (max 2 consecutive no-go, at least 3 go between)",
+   "as": {
+    "trial_order": "fixed_sequence",
+    "sequence_constraints": {
+     "max_run": {
+      "nogo": 2
+     },
+     "min_gap": {
+      "nogo": 3
+     }
+    }
+   },
+   "confidence": "medium",
+   "flag": false,
+   "note": "Reads as no-go runs at most 2 and at least 3 go between no-go trials (the two rules are slightly inconsistent as worded); 'fixed' taken as same sequence for all participants."
+  },
+  {
+   "variation": "sequence_order",
+   "raw": "fixed sequences of 1, 3 or 5 go before each no-go",
+   "as": {
+    "trial_order": "fixed_sequence",
+    "sequence_constraints": {
+     "run_length": {
+      "go": [
+       1,
+       3,
+       5
+      ]
+     }
+    }
+   },
+   "confidence": "medium",
+   "flag": false,
+   "note": "Studied and argued against (S207); whether the order of 1/3/5 runs is fixed or random is not stated."
+  },
+  {
+   "variation": "go_only_baseline_blocks",
+   "raw": false,
+   "as": {
+    "single_task_blocks": "none"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "go_only_baseline_blocks",
+   "raw": true,
+   "as": null,
+   "confidence": "low",
+   "flag": true,
+   "note": "Go-only control task with 16 go trials in each block; position relative to main blocks (before/after/interleaved) not stated."
+  },
+  {
+   "variation": "go_mapping_change_between_blocks",
+   "raw": "none",
+   "as": {
+    "stimulus_role_assignment": "fixed"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": "One assignment for the whole task."
+  },
+  {
+   "variation": "go_mapping_change_between_blocks",
+   "raw": "reversal",
+   "as": {
+    "stimulus_role_assignment": "rotated"
+   },
+   "confidence": "medium",
+   "flag": true,
+   "note": "Go and no-go stimuli swap roles in the second round; 'rotated' is the closest value, but a two-state reversal may deserve its own value."
+  },
+  {
+   "variation": "go_mapping_change_between_blocks",
+   "raw": "new stimulus set each block",
+   "as": null,
+   "confidence": "medium",
+   "flag": true,
+   "note": "Roles are fixed but the stimuli change per block; propose vocabulary value: new_stimuli_per_block (or a stimulus_set option)."
+  },
+  {
+   "variation": "go_mapping_change_between_blocks",
+   "raw": "rule switches between runs (gender rule, emotion rule)",
+   "as": null,
+   "confidence": "medium",
+   "flag": true,
+   "note": "The go/no-go rule itself changes between runs; propose vocabulary value: rule_switch_between_blocks."
+  },
+  {
+   "variation": "stimulus_role_assignment",
+   "raw": "randomized_per_participant",
+   "as": {
+    "stimulus_role_assignment": "random_per_participant"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "response_input",
+   "raw": "spacebar",
+   "as": {
+    "response_device": "keyboard"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "response_input",
+   "raw": "mouse_click_on_stimulus",
+   "as": {
+    "response_device": "mouse"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": "Click on the stimulus itself; target-click location not typed."
+  },
+  {
+   "variation": "response_input",
+   "raw": "spacebar or mouse click",
+   "as": null,
+   "confidence": "medium",
+   "flag": true,
+   "note": "Either device accepted; single-valued enum cannot express both. Propose vocabulary value: allow list of devices."
+  },
+  {
+   "variation": "response_input",
+   "raw": "lateralized keys (left/right by stimulus side)",
+   "as": {
+    "response_device": "keyboard"
+   },
+   "confidence": "medium",
+   "flag": false,
+   "note": "Device only; the left/right key-by-stimulus-side mapping is lost."
+  },
+  {
+   "variation": "response_input",
+   "raw": "touchscreen",
+   "as": {
+    "response_device": "touch"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "block_summary_feedback",
+   "raw": "mean_go_rt",
+   "as": {
+    "block_feedback": "rt"
+   },
+   "confidence": "medium",
+   "flag": false,
+   "note": "Mean RT on go trials only."
+  },
+  {
+   "variation": "block_summary_feedback",
+   "raw": "mean_rt_and_error_rate",
+   "as": {
+    "block_feedback": "accuracy_rt"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "trial_feedback_practice",
+   "raw": "correct_and_incorrect",
+   "as": {
+    "practice.trial_feedback": "accuracy",
+    "practice.feedback_condition": "all"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "trial_feedback_practice",
+   "raw": "errors_only",
+   "as": {
+    "practice.trial_feedback": "accuracy",
+    "practice.feedback_condition": "errors_only"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "trial_feedback_practice",
+   "raw": "performance_feedback",
+   "as": {
+    "practice.trial_feedback": "accuracy"
+   },
+   "confidence": "low",
+   "flag": true,
+   "note": "Source only says 'performance feedback' on 25 practice trials; content (accuracy, RT, both) and trial coverage unknown."
+  },
+  {
+   "variation": "trial_feedback_test",
+   "raw": "none",
+   "as": {
+    "trial_feedback": "none"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": "feedback_condition omitted (ignored when feedback is none)."
+  },
+  {
+   "variation": "trial_feedback_test",
+   "raw": "errors_only",
+   "as": {
+    "trial_feedback": "accuracy",
+    "feedback_condition": "errors_only"
+   },
+   "confidence": "medium",
+   "flag": false,
+   "note": "Feedback content on errors not specified; accuracy assumed."
+  },
+  {
+   "variation": "response_acknowledgement",
+   "raw": "response label set bold for 150 ms",
+   "as": {
+    "response_acknowledgement": "highlight"
+   },
+   "confidence": "medium",
+   "flag": false,
+   "note": "150 ms emphasis of the response label; duration has no option."
+  },
+  {
+   "variation": "response_acknowledgement",
+   "raw": "clicked stimulus highlighted with a red square",
+   "as": {
+    "response_acknowledgement": "highlight"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "rule_reminder_on_screen",
+   "raw": true,
+   "as": {
+    "rule_reminder": "on_screen"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "rule_reminder_on_screen",
+   "raw": false,
+   "as": {
+    "rule_reminder": "none"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "speed_accuracy_emphasis",
+   "raw": "speed_and_accuracy",
+   "as": {
+    "speed_accuracy_emphasis": "both"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  }
+ ]
+}

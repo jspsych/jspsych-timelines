@@ -243,14 +243,90 @@ const trial_order: Check = {
 
 const MAX_RUN_SEEDS = ["seq-a", "seq-b", "seq-c", "seq-d", "seq-e"];
 
-function longestRun(seq: unknown[]): number {
-  let best = 0;
-  let run = 0;
-  seq.forEach((x, i) => {
-    run = i > 0 && x === seq[i - 1] ? run + 1 : 1;
-    best = Math.max(best, run);
-  });
-  return best;
+/** Runs of equal values in order: `{ value, length }`. */
+function runsOf(seq: unknown[]): Array<{ value: unknown; length: number }> {
+  const out: Array<{ value: unknown; length: number }> = [];
+  for (const x of seq) {
+    if (out.length && out[out.length - 1].value === x) out[out.length - 1].length++;
+    else out.push({ value: x, length: 1 });
+  }
+  return out;
+}
+
+/** Numbers of other trials between consecutive trials of `value`. */
+function gapsOf(seq: unknown[], value: unknown): number[] {
+  const idx = seq.flatMap((x, i) => (x === value ? [i] : []));
+  return idx.slice(1).map((i, k) => i - idx[k] - 1);
+}
+
+const asRecord = (v: unknown, keys: unknown[]): Record<string, number> =>
+  typeof v === "object" && v !== null
+    ? (v as Record<string, number>)
+    : Object.fromEntries(keys.map((k) => [String(k), v as number]));
+
+/**
+ * Data-level checks of the typed `sequence_constraints` keys (PACKAGE-STANDARD 2a) that need only the
+ * trial types in order: `max_run` (a number, or a map by condition), `min_gap`, `max_gap`, `run_length`,
+ * `start_with`, `no_immediate_repeat` (`true`, or a list of row fields). The neighbour rules run over the
+ * whole test sequence, so they hold across block boundaries; `start_with` runs per block. A key the shared
+ * check does not cover (`balanced_transitions`, `cycle_length`) needs a handler in
+ * `contract.sequenceConstraints`, which overrides the shared one for that key.
+ */
+function checkConstraint(key: string, value: any, blocks: Row[][], c: DataContract) {
+  // neighbour rules look across block boundaries (the standard); a task that orders blocks separately opts out
+  if (!c.sequenceAcrossBlocks && blocks.length > 1 && key !== "start_with") {
+    blocks.forEach((rows) => checkConstraint(key, value, [rows], c));
+    return;
+  }
+  const all = blocks.flat();
+  const seq = conditionSeq(all, c);
+  const override = c.sequenceConstraints[key];
+  if (override) {
+    blocks.forEach((rows) => override(rows, value, c));
+    return;
+  }
+  const runs = runsOf(seq);
+  switch (key) {
+    case "max_run":
+      for (const [cond, n] of Object.entries(asRecord(value, distinct(seq)))) {
+        runs
+          .filter((r) => r.value === cond)
+          .forEach((r) => expect(r.length).toBeLessThanOrEqual(n));
+      }
+      return;
+    case "min_gap":
+      for (const [cond, n] of Object.entries(value as Record<string, number>))
+        gapsOf(seq, cond).forEach((g) => expect(g).toBeGreaterThanOrEqual(n));
+      return;
+    case "max_gap":
+      for (const [cond, n] of Object.entries(value as Record<string, number>))
+        gapsOf(seq, cond).forEach((g) => expect(g).toBeLessThanOrEqual(n));
+      return;
+    case "run_length":
+      // the last run of the whole sequence is exempt: nothing follows it
+      for (const [cond, allowed] of Object.entries(value as Record<string, number[]>))
+        runs
+          .slice(0, -1)
+          .filter((r) => r.value === cond)
+          .forEach((r) => expect(allowed).toContain(r.length));
+      return;
+    case "start_with":
+      for (const [cond, n] of Object.entries(value as Record<string, number>))
+        blocks.forEach((rows) =>
+          conditionSeq(rows.slice(0, n), c).forEach((x) => expect(x).toBe(cond))
+        );
+      return;
+    case "no_immediate_repeat":
+      if (value === true) runs.forEach((r) => expect(r.length).toBe(1));
+      else if (Array.isArray(value))
+        for (const field of value)
+          all.slice(1).forEach((row, i) => expect(row[field]).not.toBe(all[i][field]));
+      return;
+    default:
+      throw new Error(
+        `no data-level check for sequence_constraints.${key}: add a handler to the contract`
+      );
+  }
 }
 
 const sequence_constraints: Check = {
@@ -262,19 +338,8 @@ const sequence_constraints: Check = {
     // several seeds: one lucky sequence would satisfy a constraint that is not applied
     const runs = [r, ...(await harness.runSeeds(r.opts, MAX_RUN_SEEDS))];
     for (const run of runs) {
-      for (const [, rows] of byBlock(testRows(run, c), c.fields.block)) {
-        const seq = conditionSeq(rows, c);
-        for (const [key, value] of Object.entries(sc)) {
-          if (key === "max_run") expect(longestRun(seq)).toBeLessThanOrEqual(value);
-          else if (key === "no_immediate_repeat") {
-            if (value) expect(longestRun(seq)).toBeLessThanOrEqual(1);
-          } else if (c.sequenceConstraints[key]) c.sequenceConstraints[key](rows, value, c);
-          else
-            throw new Error(
-              `no data-level check for sequence_constraints.${key}: add a handler to the contract`
-            );
-        }
-      }
+      const blocks = [...byBlock(testRows(run, c), c.fields.block).values()];
+      for (const [key, value] of Object.entries(sc)) checkConstraint(key, value, blocks, c);
     }
   },
 };

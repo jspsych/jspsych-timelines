@@ -252,6 +252,8 @@ export function createMiniTimeline(
 }
 
 export const miniContract = defineContract({
+  // the mini task orders each block on its own
+  sequenceAcrossBlocks: false,
   task: "mini-task",
   durationFields: (option) =>
     option === "fixation_duration_ms" ? ["duration_ms", "fixation_duration"] : ["duration_ms"],

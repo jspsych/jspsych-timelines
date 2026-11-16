@@ -163,7 +163,10 @@ export function createCountdown(ctx: Context, o: ResolvedOptions, phase: Phase, 
     block,
     duration: o.pre_block_countdown_ms,
     stimulus: renderStage(
-      `<div class="jspsych-timelines-go-nogo-text">${ctx.text.countdown({ phase, block })}</div>`
+      `<div class="jspsych-timelines-go-nogo-feedback">${ctx.text.countdown({
+        phase,
+        block,
+      })}</div>`
     ),
     data: { transition: "countdown" },
   });

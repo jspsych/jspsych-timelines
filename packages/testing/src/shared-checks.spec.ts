@@ -138,3 +138,99 @@ describe("data contract", () => {
     expect(fix(a)).not.toEqual(fix(c));
   });
 });
+
+describe("sequence_constraints: the typed form of PACKAGE-STANDARD 2a", () => {
+  const contract = defineContract({
+    task: "t",
+    condition: (row) => row.condition,
+  });
+  const fake = (blocks: string[][], sc: any) => {
+    const rows = blocks.flatMap((b, bi) =>
+      b.map((condition, i) => ({
+        task: "t",
+        phase: "test",
+        part: "response",
+        block: bi + 1,
+        trial_index_in_block: i + 1,
+        condition,
+        stimulus: i % 2,
+      }))
+    );
+    const run: any = { eff: { sequence_constraints: sc }, rows };
+    const harness: any = { runSeeds: async () => [] };
+    return () => (sharedChecks.sequence_constraints as any).fn(run, { contract, harness });
+  };
+  const seq = (s: string) => s.split("").map((c) => (c === "g" ? "go" : "nogo"));
+
+  it("max_run by condition, min_gap, max_gap, run_length and start_with pass on a valid order", async () => {
+    await fake([seq("gggnggggn"), seq("gggngggn")], {
+      max_run: { nogo: 1, go: 4 },
+      min_gap: { nogo: 3 },
+      max_gap: { nogo: 4 },
+      run_length: { go: [3, 4] },
+      start_with: { go: 3 },
+    })();
+  });
+
+  it("each key fails on an order that breaks it", async () => {
+    const bad: [any, string[][]][] = [
+      [{ max_run: { nogo: 1 } }, [seq("gggnn")]],
+      [{ max_run: { go: 2 } }, [seq("gggn")]],
+      [{ min_gap: { nogo: 3 } }, [seq("ggnggn")]],
+      [{ max_gap: { nogo: 2 } }, [seq("gnggggn")]],
+      [{ run_length: { go: [1, 3, 5] } }, [seq("ggngggn")]],
+      [{ start_with: { go: 2 } }, [seq("ggn"), seq("gng")]],
+      [{ no_immediate_repeat: true }, [seq("gng"), seq("ggn")]],
+    ];
+    // no_immediate_repeat with a field: every row of the fake has the stimulus alternating, so use identical ones
+    await expect(
+      (async () => {
+        const rows = [0, 1].map((i) => ({
+          task: "t",
+          phase: "test",
+          part: "response",
+          block: 1,
+          condition: "go",
+          stimulus: "A",
+          i,
+        }));
+        await (sharedChecks.sequence_constraints as any).fn(
+          { eff: { sequence_constraints: { no_immediate_repeat: ["stimulus"] } }, rows },
+          { contract, harness: { runSeeds: async () => [] } }
+        );
+      })()
+    ).rejects.toThrow();
+    for (const [sc, blocks] of bad) await expect(fake(blocks, sc)()).rejects.toThrow();
+  });
+
+  it("neighbour rules cross block boundaries unless the contract opts out", async () => {
+    // a no-go at the end of block 1 and the start of block 2: gap 0
+    const blocks = [seq("gggn"), seq("ngggg")];
+    await expect(fake(blocks, { min_gap: { nogo: 2 } })()).rejects.toThrow();
+    const perBlock = defineContract({
+      task: "t",
+      condition: (row) => row.condition,
+      sequenceAcrossBlocks: false,
+    });
+    const run: any = {
+      eff: { sequence_constraints: { min_gap: { nogo: 2 } } },
+      rows: blocks.flatMap((b, bi) =>
+        b.map((condition) => ({
+          task: "t",
+          phase: "test",
+          part: "response",
+          block: bi + 1,
+          condition,
+        }))
+      ),
+    };
+    await (sharedChecks.sequence_constraints as any).fn(run, {
+      contract: perBlock,
+      harness: { runSeeds: async () => [] },
+    });
+  });
+
+  it("a key without a shared check needs a contract handler", async () => {
+    await expect(fake([seq("gng")], { cycle_length: 3 })()).rejects.toThrow(/no data-level check/);
+  });
+});

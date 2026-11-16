@@ -72,7 +72,13 @@ export interface DataContract<E = any> {
   /** device -> plugin name written by jsPsych as `trial_type` */
   plugins: Record<string, string>;
   /**
-   * Checks for the keys of `sequence_constraints` beyond `max_run` and `no_immediate_repeat`.
+   * Do the neighbour rules of `sequence_constraints` (runs, gaps, repeats) hold across block boundaries, as
+   * the standard says? Default `true`: the shared check then runs them over the whole test sequence. A task
+   * that orders each block on its own sets `false`.
+   */
+  sequenceAcrossBlocks: boolean;
+  /**
+   * Checks for the keys of `sequence_constraints`; override the shared handlers (max_run, min_gap, max_gap, run_length, start_with, no_immediate_repeat) or add the others (balanced_transitions, cycle_length).
    * Each receives the response rows of one block, in order, and the constraint's value.
    */
   sequenceConstraints: Record<
@@ -170,5 +176,6 @@ export function defineContract<E = any>(input: ContractInput<E>): DataContract<E
       ...(input.plugins ?? {}),
     },
     sequenceConstraints: input.sequenceConstraints ?? {},
+    sequenceAcrossBlocks: input.sequenceAcrossBlocks ?? true,
   };
 }
