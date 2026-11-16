@@ -176,7 +176,7 @@ export function createMiniTimeline(
           o.response_window_ms === null ? null : sample(jsPsych, o.response_window_ms, bugs);
         const data = base(phase, "response", {
           block,
-          trial_in_block: ti + 1,
+          trial_index_in_block: ti + 1,
           condition,
           correct_response: touch ? correctIndex : keys[correctIndex],
           response_window: win,

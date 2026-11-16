@@ -70,8 +70,8 @@ export interface TrialData {
     | "completion";
   /** 1..n (practice is block 1). */
   block?: number | null;
-  /** Position within the block, 1-based. (The spec's `trial_index`; renamed because jsPsych owns `trial_index`.) */
-  trial_in_block?: number;
+  /** Position within the block, 1-based. (jsPsych owns `trial_index`, a global counter; PACKAGE-STANDARD §4.) */
+  trial_index_in_block?: number;
   congruency?: "congruent" | "incongruent" | "neutral" | "nogo";
   /** congruent | incongruent | neutral_dash | neutral_empty | neutral_<form> | nogo */
   flanker_condition?: string;
