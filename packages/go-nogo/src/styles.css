@@ -1,63 +1,182 @@
-/* Go/No-Go Task Styles */
+/* All rules are scoped under the task class (PACKAGE-STANDARD §5). */
 
-/* Instructions container */
-.jspsych-go-nogo .jspsych-go-nogo-instructions {
+.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-text {
   max-width: 600px;
   margin: 0 auto;
   padding: 0 20px;
   text-align: left;
 }
 
-/* center + align fixation, stimulus, and ISI including their contents 
-   so button and stimulus do not change position per trial. uses
-   grid, not flex in case we have a stimulus of multiple elements. */
-.jspsych-go-nogo .jspsych-go-nogo-fixation,
-.jspsych-go-nogo .jspsych-go-nogo-stimulus,
-.jspsych-go-nogo .jspsych-go-nogo-isi-blank {
+.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-text h2 {
+  text-align: center;
+}
+
+/* Anchored layout (PACKAGE-STANDARD section 5). On every task screen with a stage, the stage is
+   centred on the vertical centre of the display with absolute positioning, so nothing else on the
+   screen (text, the plugin's button group) can move it. Text goes in the region below the stage
+   (scrolls if long); the plugin's button group is pinned to the bottom edge, and the text region
+   stops above it. The task colours are painted on the whole display by paintDisplay(). */
+.jspsych-timelines-go-nogo {
+  --go-nogo-stage-h: min(280px, 40vh);
+  --go-nogo-btn-reserve: 76px;
+}
+
+.jspsych-timelines-go-nogo:has(.jspsych-timelines-go-nogo-screen) {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: none;
+  height: 100vh;
+  margin: 0;
+  overflow: hidden;
+}
+
+.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-screen {
+  display: contents;
+}
+
+.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-stage {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 640px;
+  max-width: calc(100vw - 16px);
+  height: var(--go-nogo-stage-h);
+  padding: 20px;
+  overflow: hidden;
+}
+
+.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-below {
+  position: absolute;
+  top: calc(50% + var(--go-nogo-stage-h) / 2 + 8px);
+  right: 0;
+  bottom: 0;
+  left: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* Short text under the stage (walkthrough captions, hints, feedback) is centred under the
+   stimulus; full-page instructions stay left-aligned for reading. */
+.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-below .jspsych-timelines-go-nogo-text {
+  text-align: center;
+  text-wrap: balance;
+}
+
+.jspsych-timelines-go-nogo:has(#jspsych-html-button-response-btngroup)
+  .jspsych-timelines-go-nogo-below {
+  bottom: var(--go-nogo-btn-reserve);
+}
+
+.jspsych-timelines-go-nogo:has(.jspsych-timelines-go-nogo-screen)
+  #jspsych-html-button-response-btngroup {
+  position: absolute;
+  right: 0;
+  bottom: 12px;
+  left: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* The field fills the stage; the stimulus sits at its centre, its top, or in one cell of a 2x2 grid. */
+.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-field[data-location="top_center"] {
+  align-items: flex-start;
+}
+
+.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-field.grid {
   display: grid;
-  place-items: center;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
 }
 
-/* Feedback state modifiers, used by the interactive instruction trials */
-.jspsych-go-nogo .jspsych-go-nogo-feedback-correct {
-  color: green;
+.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.jspsych-go-nogo .jspsych-go-nogo-feedback-incorrect {
-  color: red;
+.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
 }
 
-/* Buttons shown but disabled during fixation and ISI screens */
-.jspsych-go-nogo .jspsych-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-item svg {
+  display: block;
 }
 
-/* Mobile/touch device optimizations */
-@media (pointer: coarse) {
-  .jspsych-go-nogo #jspsych-html-button-response-btngroup {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 16px;
-    background: inherit;
-    display: flex;
-    gap: 16px;
-    justify-content: center;
-  }
+.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-item.acknowledge-highlight {
+  outline: 4px solid red;
+  outline-offset: 6px;
+}
 
-  .jspsych-go-nogo #jspsych-html-button-response-btngroup .jspsych-btn {
-    min-height: 60px;
-    min-width: 120px;
-    font-size: 18px;
-    flex: 1;
-    max-width: 200px;
-  }
+.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-item.acknowledge-mark::after {
+  content: "\2713";
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.4em;
+}
 
-  /* The root sits on the same element as .jspsych-content, so this reserves
-     space for the fixed button group without a global .jspsych-content rule. */
-  .jspsych-go-nogo {
-    padding-bottom: 100px;
-  }
+.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-letter {
+  font-family: monospace;
+  font-weight: bold;
+}
+
+.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-inline {
+  display: inline-block;
+  vertical-align: middle;
+  margin: 0 4px;
+}
+
+.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 80px;
+}
+
+.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-fixation {
+  font-size: 3em;
+}
+
+/* Fixation cross kept behind a response trial: visible only once the stimulus has been hidden
+   (jsPsych hides it with an inline visibility:hidden after stimulus_duration). */
+.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-bgfix {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  visibility: hidden;
+}
+
+.jspsych-timelines-go-nogo:has([id$="-stimulus"][style*="hidden"]) .jspsych-timelines-go-nogo-bgfix {
+  visibility: visible;
+}
+
+.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-feedback {
+  font-size: 1.6em;
+}
+
+.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-feedback.incorrect {
+  font-weight: bold;
 }
