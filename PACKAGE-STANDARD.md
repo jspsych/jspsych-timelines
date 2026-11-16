@@ -81,6 +81,19 @@ Options that mean the same thing in different tasks **MUST** have the same name,
   - or `{ min, max, step? }`, sampled per trial, uniformly from `min`, `min + step`, … up to `max`, using `jsPsych.randomization` (§3). `step` defaults to 1 ms.
 
   The sampled value **MUST** be written into the trial's data, so analyses can use the actual duration. The data field is the option's name without `_ms`, in milliseconds: `fixation_duration_ms` → `fixation_duration: 734`, `iti_ms` → `iti`, `feedback_duration_ms` → `feedback_duration`, `cue_target_interval_ms` → `cue_target_interval`. This matches jsPsych's own fields (`rt`, `trial_duration`), which are in milliseconds without a suffix. Absent values still follow the absence rule: `0` means it doesn't happen, and `null` means no limit. Lists of fixed levels (e.g. SOAs of 100, 300, 500 as conditions) are design factors, not jitter, and belong in a task-specific option.
+- **Rules are functions, not strings.** When a value is computed during the session, the option takes a function, never a special string or a rule object (no `"mean+2.5sd"`). The function is called at the start of each trial that uses the option, with a context object, and returns the value. It is not handed any particular data: it reads what it needs itself, usually with `jsPsych.data.get().filter(...)`, so a rule can depend on practice RTs, on earlier test trials, or on nothing in the data at all.
+
+  ```ts
+  // context: { jsPsych, phase, block, trial_index_in_block }
+  response_window_ms: utils.deadlines.meanPlusSd(2.5)        // prebuilt
+  response_window_ms: ({ jsPsych }) =>                        // anything else
+    jsPsych.data.get().filter({ phase: "practice", part: "response", correct: true }).select("rt").median() + 200
+  ```
+
+  The case in the specs is a response deadline set from practice (complex span's automated operation span, Unsworth et al. 2005: practice mean + 2.5 SD; also single studies in go/no-go and flanker).
+  - The package **MUST** export prebuilt helpers for the rules its studies use, under a `utils` key (e.g. `utils.deadlines.meanPlusSd(k)`, `percentile(p)`, with `{ min, max }` bounds). Each package writes its own; they are a few lines, so there is no shared package for them. A helper decides which rows it uses (for a deadline, the package's correct practice responses) and what to return before it has them: the deadline helpers return the package's fixed default during practice and when there are fewer than 5 usable practice RTs. Prebuilt helpers **MUST** be deterministic given the data so far, since they run on every trial: the same data gives the same value (a calibrated deadline stays fixed once practice is over). A custom function may do anything, including random draws through `jsPsych.randomization`, which are then drawn anew on each trial.
+  - The data **MUST** record the value used on every trial (for a deadline, `response_window`, per the duration-field rule). Prebuilt helpers carry a readable label (e.g. "mean + 2.5 SD of correct practice RTs"), which is recorded with it.
+  - Function values are code-only: the docs form and shareable URLs do not edit them, and presets that reproduce such a study leave the option out, with a note. When the anchor's rule is a function, the default is that helper and the parameter reference shows it as code.
 - **Absence is a value, typed by meaning.** There are no on/off booleans like `show_fixation`.
 
   | Kind | Absent value | Example |
@@ -238,6 +251,8 @@ Other trials **SHOULD** draw their `part` value from this vocabulary where one f
 Prefer `iti` over `isi` or `delay`; prefer `instruction` over `intro` or `announcement`. Tasks with genuinely novel trial types (`digit_presentation`, `math_feedback`, `round_summary`) **SHOULD** name them descriptively rather than forcing a poor fit.
 
 Likewise `phase` **SHOULD** be one of `instructions`, `practice`, `test`, `completion`, plus `study` for tasks with a distinct encoding stage.
+
+Packages **MUST NOT** write `trial_index`: jsPsych writes it on every row as a counter over the whole experiment, and a package value would collide with it. A package that records a trial's position within its block names it `trial_index_in_block` (1-based) and writes it on the scorable row next to `block` (1…n). The spec generator renames the `trial_index` that some measures list as a needed field.
 
 ### Always
 
