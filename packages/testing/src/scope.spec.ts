@@ -51,7 +51,9 @@ describe("contract.scope", () => {
   });
 
   it("stimulus_duration_ms reads the memorandum rows and the built memorandum trials", async () => {
-    const trials = [{ data: { part: "memorandum", phase: "test" }, stimulus_duration: 800 }];
+    const trials = [
+      { type: {}, data: { part: "memorandum", phase: "test" }, stimulus_duration: 800 },
+    ];
     const good = fakeRun(
       { stimulus_duration_ms: 800 },
       [row("memorandum", { stimulus_duration: 800 })],
@@ -73,7 +75,7 @@ describe("contract.scope", () => {
         row("memorandum", { stimulus_duration: 600 }),
         row("memorandum", { stimulus_duration: 1000 }),
       ],
-      [{ data: { part: "memorandum", phase: "test" }, stimulus_duration: 800 }]
+      [{ type: {}, data: { part: "memorandum", phase: "test" }, stimulus_duration: 800 }]
     );
     expect(() => sharedChecks.stimulus_duration_ms.fn(jitter, ctx)).not.toThrow();
   });
@@ -81,7 +83,9 @@ describe("contract.scope", () => {
   it("response_window_ms accepts a computed value: every row records a number or null, and a slow participant times out", async () => {
     const eff = { window: () => 500 };
     const rows = [row("processing", { timeout: false, response_window: 500 })];
-    const trials = [{ data: { part: "problem", phase: "test" }, trial_duration: () => 500 }];
+    const trials = [
+      { type: {}, data: { part: "problem", phase: "test" }, trial_duration: () => 500 },
+    ];
     const run = fakeRun(eff, rows, trials);
     const c = {
       ...ctx,
@@ -118,7 +122,7 @@ describe("contract.scope", () => {
           response_device: "keyboard",
         }),
       ],
-      [{ data: { part: "processing", phase: "test" }, choices: ["f", "j"] }]
+      [{ type: {}, data: { part: "processing", phase: "test" }, choices: ["f", "j"] }]
     );
     expect(() => sharedChecks.response_device.fn(run, ctx)).not.toThrow();
     const wrong = fakeRun(
@@ -130,7 +134,7 @@ describe("contract.scope", () => {
           response_device: "keyboard",
         }),
       ],
-      [{ data: { part: "processing", phase: "test" }, choices: ["f", "j"] }]
+      [{ type: {}, data: { part: "processing", phase: "test" }, choices: ["f", "j"] }]
     );
     expect(() => sharedChecks.response_device.fn(wrong, ctx)).toThrow();
   });
