@@ -81,16 +81,18 @@ Options that mean the same thing in different tasks **MUST** have the same name,
   - or `{ min, max, step? }`, sampled per trial, uniformly from `min`, `min + step`, … up to `max`, using `jsPsych.randomization` (§3). `step` defaults to 1 ms.
 
   The sampled value **MUST** be written into the trial's data, so analyses can use the actual duration. The data field is the option's name without `_ms`, in milliseconds: `fixation_duration_ms` → `fixation_duration: 734`, `iti_ms` → `iti`, `feedback_duration_ms` → `feedback_duration`, `cue_target_interval_ms` → `cue_target_interval`. This matches jsPsych's own fields (`rt`, `trial_duration`), which are in milliseconds without a suffix. Absent values still follow the absence rule: `0` means it doesn't happen, and `null` means no limit. Lists of fixed levels (e.g. SOAs of 100, 300, 500 as conditions) are design factors, not jitter, and belong in a task-specific option.
-- **Rules are functions, not strings.** When a value is computed from what the participant did, the option takes a function, never a special string or a rule object (no `"mean+2.5sd"`). The case in the specs is a response deadline set from practice (complex span's automated operation span, Unsworth et al. 2005: practice mean + 2.5 SD; also single studies in go/no-go and flanker). `response_window_ms` then takes a number or a function that receives the practice rows the deadline is calibrated on (a jsPsych `DataCollection`, e.g. correct responses) and returns milliseconds:
+- **Rules are functions, not strings.** When a value is computed during the session, the option takes a function, never a special string or a rule object (no `"mean+2.5sd"`). The function is called at the start of each trial that uses the option, with a context object, and returns the value. It is not handed any particular data: it reads what it needs itself, usually with `jsPsych.data.get().filter(...)`, so a rule can depend on practice RTs, on earlier test trials, or on nothing in the data at all.
 
   ```ts
-  response_window_ms: utils.deadlines.meanPlusSd(2.5)                  // prebuilt
-  response_window_ms: ({ practice }) => practice.select("rt").median() + 200   // anything else
+  // context: { jsPsych, phase, block, trial_in_block }
+  response_window_ms: utils.deadlines.meanPlusSd(2.5)        // prebuilt
+  response_window_ms: ({ jsPsych }) =>                        // anything else
+    jsPsych.data.get().filter({ phase: "practice", part: "response", correct: true }).select("rt").median() + 200
   ```
 
-  - The package **MUST** export prebuilt helpers for the rules its studies use, under a `utils` key (`utils.deadlines.meanPlusSd(k)`, `percentile(p)`, with `{ min, max }` bounds). Each package writes its own; they are a few lines, so there is no shared package for them.
-  - Practice runs with the package's fixed default window; the computed value applies to the test phase. With fewer than 5 usable practice RTs the test phase keeps the fixed window.
-  - The data **MUST** record the computed value on every test trial (`response_window`, per the duration-field rule) and, once, the rule's label (each helper carries one, e.g. "mean + 2.5 SD of correct practice RTs") and whether it fell back.
+  The case in the specs is a response deadline set from practice (complex span's automated operation span, Unsworth et al. 2005: practice mean + 2.5 SD; also single studies in go/no-go and flanker).
+  - The package **MUST** export prebuilt helpers for the rules its studies use, under a `utils` key (e.g. `utils.deadlines.meanPlusSd(k)`, `percentile(p)`, with `{ min, max }` bounds). Each package writes its own; they are a few lines, so there is no shared package for them. A helper decides which rows it uses (for a deadline, the package's correct practice responses) and what to return before it has them: the deadline helpers return the package's fixed default during practice and when there are fewer than 5 usable practice RTs.
+  - The data **MUST** record the value used on every trial (for a deadline, `response_window`, per the duration-field rule). Prebuilt helpers carry a readable label (e.g. "mean + 2.5 SD of correct practice RTs"), which is recorded with it.
   - Function values are code-only: the docs form and shareable URLs do not edit them, and presets that reproduce such a study leave the option out, with a note. When the anchor's rule is a function, the default is that helper and the parameter reference shows it as code.
 - **Absence is a value, typed by meaning.** There are no on/off booleans like `show_fixation`.
 
