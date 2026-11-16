@@ -39,6 +39,22 @@ export interface FieldNames {
   feedback_kind: string | null;
 }
 
+/**
+ * Where an option's shared check looks when the option belongs to another part of a multi-part trial
+ * than the scorable `parts.response` (a dual task: the processing task's deadline and device, the
+ * memoranda's duration). Omit for options of the scorable trial.
+ */
+export interface OptionScope<E = any> {
+  /** the part whose rows the check reads (a key of `parts` or a literal part name) */
+  part: string;
+  /** only these rows of the part (e.g. exclude a notice that replaced the response screen) */
+  filter?: (row: Row) => boolean;
+  /** the part whose *built* trials carry the plugin parameter (`trial_duration`, `choices`); default `part` */
+  builtPart?: (eff: E) => string;
+  /** the resolved value for that part when it differs from `eff[option]` (e.g. one device of several) */
+  value?: (eff: E) => unknown;
+}
+
 export interface DataContract<E = any> {
   /** `TASK_NAME`: every row the package writes has `task` equal to it */
   task: string;
@@ -79,6 +95,8 @@ export interface DataContract<E = any> {
     string,
     (blockRows: Row[], value: any, contract: DataContract<E>) => void
   >;
+  /** Per option: the part its shared check reads, when it is not `parts.response`. */
+  scope: Record<string, OptionScope<E>>;
 }
 
 /** Largest-remainder allocation; ties go to the earlier entry. */
@@ -170,5 +188,6 @@ export function defineContract<E = any>(input: ContractInput<E>): DataContract<E
       ...(input.plugins ?? {}),
     },
     sequenceConstraints: input.sequenceConstraints ?? {},
+    scope: input.scope ?? {},
   };
 }
