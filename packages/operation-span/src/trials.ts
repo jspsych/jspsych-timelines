@@ -137,7 +137,11 @@ export function resolveWindow(
   return { value: sampleDuration(jsPsych, v), rule: "jitter" };
 }
 
-const noResponse = (d: any) => typeof d.response !== "string" && typeof d.response !== "number";
+/**
+ * A missed deadline: no RT. (A button response of 0 is falsy, and jsPsych's simulation leaves it in place
+ * when it removes the RT of a timed-out trial, so the RT is what tells.)
+ */
+const noResponse = (d: any) => typeof d.rt !== "number";
 
 const buttonHtml = (choice: string) => `<button class="jspsych-btn">${choice}</button>`;
 
@@ -456,7 +460,7 @@ export function createRecall(ctx: Context, o: ResolvedOptions, a: RecallArgs) {
     }),
     on_load: () => {
       Object.assign(state, newRecallState());
-      wireRecall(state, spec);
+      wireRecall(state, spec, ctx.jsPsych.getDisplayElement());
     },
     on_finish: (d: any) => {
       delete d.stimulus;
@@ -477,14 +481,12 @@ export function createRecall(ctx: Context, o: ResolvedOptions, a: RecallArgs) {
 }
 
 function runningAccuracy(ctx: Context, phase: Phase, part?: PracticePart): number | null {
-  const rows = ctx.jsPsych.data
-    .get()
-    .filter({
-      task: TASK_NAME,
-      phase,
-      part: "processing",
-      ...(part ? { practice_part: part } : {}),
-    });
+  const rows = ctx.jsPsych.data.get().filter({
+    task: TASK_NAME,
+    phase,
+    part: "processing",
+    ...(part ? { practice_part: part } : {}),
+  });
   const n = rows.count();
   return n > 0 ? rows.filter({ correct: true }).count() / n : null;
 }

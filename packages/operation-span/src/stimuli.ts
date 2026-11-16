@@ -223,8 +223,8 @@ export function finalItems(state: RecallState, spec: RecallSpec): (string | null
  * Wire the recall panel after the screen is on (`on_load`). The plugin's button group holds the Done
  * button; this enables and disables it and, for key-press recall, presses it when the last item is in.
  */
-export function wireRecall(state: RecallState, spec: RecallSpec): void {
-  const root = document.querySelector(`.${cls("recall")}`) as HTMLElement | null;
+export function wireRecall(state: RecallState, spec: RecallSpec, display: HTMLElement): void {
+  const root = display.querySelector(`.${cls("recall")}`) as HTMLElement | null;
   if (!root) return;
   state.wired = true;
   const done = document.querySelector(
@@ -259,7 +259,7 @@ export function wireRecall(state: RecallState, spec: RecallSpec): void {
     });
     root.querySelector('[data-action="blank"]')?.addEventListener("click", () => {
       state.touched = true;
-      const active = boxes.findIndex((b) => b === document.activeElement);
+      const active = boxes.findIndex((b) => b === display.ownerDocument.activeElement);
       const next = boxes[Math.min((active < 0 ? 0 : active) + 1, boxes.length - 1)];
       next?.focus();
     });
@@ -303,8 +303,10 @@ export function wireRecall(state: RecallState, spec: RecallSpec): void {
         else if (pool.has(norm(e.key)) && !state.items.some((x) => norm(x) === norm(e.key)))
           push(pool.get(norm(e.key))!);
       };
-      document.addEventListener("keydown", onKey);
-      cleanups.push(() => document.removeEventListener("keydown", onKey));
+      // on the body, as jsPsych's own keyboard listener
+      const body = display.ownerDocument.body;
+      body.addEventListener("keydown", onKey);
+      cleanups.push(() => body.removeEventListener("keydown", onKey));
     }
     paint();
   }

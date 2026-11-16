@@ -204,3 +204,17 @@
     gap: 4px;
   }
 }
+
+@media (max-width: 420px) {
+  .jspsych-timelines-operation-span .jspsych-timelines-operation-span-slots,
+  .jspsych-timelines-operation-span .jspsych-timelines-operation-span-boxes {
+    gap: 4px;
+  }
+  .jspsych-timelines-operation-span .jspsych-timelines-operation-span-slot {
+    min-width: 30px;
+    padding: 0 3px;
+  }
+  .jspsych-timelines-operation-span .jspsych-timelines-operation-span-box {
+    width: 40px;
+  }
+}
