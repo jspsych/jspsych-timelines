@@ -1,3 +1,5 @@
+import type { JsPsych } from "jspsych";
+
 /**
  * Options for the go/no-go timeline.
  *
@@ -66,11 +68,8 @@ export interface SequenceConstraints {
 
 /** Context passed to a function-valued option (PACKAGE-STANDARD §2a). */
 export interface OptionContext {
-  /**
-   * The jsPsych instance. Typed loosely so the options type can be turned into a schema for the docs site;
-   * read the data so far with `jsPsych.data.get()` and draw with `jsPsych.randomization`.
-   */
-  jsPsych: { data: { get: () => any }; randomization: any };
+  /** The jsPsych instance: read the data so far with `jsPsych.data.get()` and draw with `jsPsych.randomization`. */
+  jsPsych: JsPsych;
   phase: "practice" | "test";
   block: number;
   trial_index_in_block: number;
@@ -103,6 +102,7 @@ export interface GoNogoOptions {
    * no-go trials), or a function that returns the window when each trial starts, such as
    * `utils.deadlines.meanPlusSd(2.5)`. Misses are recorded as `timeout: true`.
    * (default: { min: 1000, max: 1500 } — Expfactory go_nogo, S022; fixed windows of 1000 to 2000 ms in S028, S031, S175, S183)
+   * @acceptsFunction (ctx: { jsPsych, phase, block, trial_index_in_block }) => number
    */
   response_window_ms?: DurationOrJitter | null | ResponseWindowFunction;
   /**

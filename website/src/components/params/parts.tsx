@@ -97,6 +97,12 @@ export function Details({item, heading}: {item: ParamItem; heading?: boolean}): 
             ))}
           </Fact>
         )}
+        {item.fn !== null && (
+          <Fact label="Function">
+            {item.fn ? <code>{item.fn}</code> : 'Also takes a function.'} Code only: the form and shared
+            links don’t edit it.
+          </Fact>
+        )}
         {item.absent && (
           <Fact label="Off">
             <code>{item.absent.split(' = ')[0]}</code> {item.absent.split(' = ')[1]}

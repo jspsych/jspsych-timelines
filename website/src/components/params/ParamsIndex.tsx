@@ -1,5 +1,6 @@
 import {useEffect, useId, useMemo, useRef, useState, type KeyboardEvent, type ReactElement} from 'react';
 import clsx from 'clsx';
+import useBrokenLinks from '@docusaurus/useBrokenLinks';
 
 import {filterItems, groupsOf, itemsOf, type OptionsSchema, type ParamItem} from './model';
 import {Details, Toolbar, useHashTarget} from './parts';
@@ -34,8 +35,13 @@ export function ParamsIndex({schema}: {schema: OptionsSchema}): ReactElement {
   const hash = useHashTarget();
   const [selected, setSelected] = useState<string | null>(null);
   const listRef = useRef<HTMLDivElement>(null);
+  const brokenLinks = useBrokenLinks();
+  for (const i of s.all) brokenLinks.collectAnchor(anchor(i.name));
   useEffect(() => {
-    if (hash) setSelected(hash);
+    if (!hash) return;
+    setSelected(hash);
+    // a link to an advanced parameter shows the advanced ones, or the selection would fall back to the first
+    if (s.all.find((i) => i.name === hash)?.advanced) s.setShowAdvanced(true);
   }, [hash]);
   // keep a visible selection: fall back to the first match
   const current: ParamItem | undefined =
@@ -112,6 +118,12 @@ export function ParamsIndex({schema}: {schema: OptionsSchema}): ReactElement {
             ))}
           </div>
           <div className={styles.pane} id={current ? anchor(current.name) : undefined} aria-live="polite">
+            {/* every parameter has an anchor in the static page, so #param-<name> links resolve before hydration */}
+            {s.all
+              .filter((i) => i.name !== current?.name)
+              .map((i) => (
+                <span key={i.name} id={anchor(i.name)} className={styles.anchorProxy} aria-hidden="true" />
+              ))}
             {current && (
               <>
                 <div className={styles.paneGroup}>{current.groupLabel}</div>

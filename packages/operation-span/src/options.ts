@@ -96,6 +96,7 @@ export interface OperationSpanOptions {
    * correct processing-only practice RTs; until there are 5 usable RTs it returns the fixed 6000 ms). The processing-only practice part itself is self-paced
    * unless `practice.response_window_ms` is given. Function values are code-only: presets leave them out.
    * (default: utils.deadlines.meanPlusSd(2.5) — Unsworth et al. 2005, S006; also PsyToolkit, S017)
+   * @acceptsFunction (ctx: { jsPsych, phase, block, trial_index_in_block }) => number
    */
   response_window_ms?: ResponseWindow;
   /**

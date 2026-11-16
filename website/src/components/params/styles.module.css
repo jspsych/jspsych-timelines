@@ -266,6 +266,12 @@
   scroll-margin-top: calc(var(--ifm-navbar-height) + 7rem);
 }
 
+.anchorProxy {
+  display: block;
+  height: 0;
+  scroll-margin-top: calc(var(--ifm-navbar-height) + 7rem);
+}
+
 .paneGroup {
   margin-bottom: 0.25rem;
   font-size: 0.75rem;

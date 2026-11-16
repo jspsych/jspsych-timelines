@@ -23,6 +23,10 @@ export type SchemaProp = {
     phaseOverridable?: boolean;
     absentValue?: Json;
     widget?: string;
+    /** The option also takes a function (code only); the signature when the package gives one. */
+    function?: string | boolean;
+    /** A default that is code (a prebuilt rule), shown as written. */
+    defaultCode?: string;
     evidence?: {
       observed?: { value: Json; typed?: boolean; source?: string }[];
       defaultSource?: string;
@@ -59,6 +63,8 @@ export type ParamItem = {
   sources: number;
   keys: string[] | null;
   functionKeys: string[] | null;
+  /** Signature of the function the option also takes, or "" when unspecified; null if it takes none. */
+  fn: string | null;
 };
 
 export const GROUPS: { id: string; label: string }[] = [
@@ -84,8 +90,11 @@ export function short(v: Json, max = 48): string {
 function typeOf(p: SchemaProp, depth = 0): string {
   const x = p["x-jspsych"];
   if (depth === 0 && x?.widget === "duration") {
-    const nullable = [p.type ?? []].flat().includes("null");
-    const jitter = (p.anyOf ?? p.oneOf ?? []).some((b) => b.type === "object");
+    // the branches may be nested one level (a named DurationOrJitter type inside a wider union)
+    const branches = (p.anyOf ?? p.oneOf ?? []).flatMap((b) => [b, ...(b.anyOf ?? b.oneOf ?? [])]);
+    const nullable =
+      [p.type ?? []].flat().includes("null") || branches.some((b) => [b.type ?? []].flat().includes("null"));
+    const jitter = branches.some((b) => b.type === "object");
     return ["ms", jitter && "{min, max, step}", nullable && "null"].filter(Boolean).join(" | ");
   }
   if (p.const !== undefined) return fmt(p.const);
@@ -142,11 +151,13 @@ export function itemsOf(schema: OptionsSchema): ParamItem[] {
       group: g.id,
       groupLabel: g.label,
       advanced: x.advanced === true,
-      type: typeOf(p),
+      type: x.function ? `${typeOf(p)} | function` : typeOf(p),
       values: p.enum ? p.enum.map((v) => fmt(v)) : null,
-      default: short(p.default),
+      default: x.defaultCode ?? short(p.default),
       defaultFull:
-        p.default === undefined
+        x.defaultCode !== undefined
+          ? x.defaultCode
+          : p.default === undefined
           ? "—"
           : typeof p.default === "object" && p.default !== null
           ? JSON.stringify(p.default, null, 2)
@@ -164,6 +175,7 @@ export function itemsOf(schema: OptionsSchema): ParamItem[] {
       sources: new Set(observedRaw.map((o) => o.source)).size,
       keys: p["x-keys"] ?? null,
       functionKeys: p["x-function-keys"] ?? null,
+      fn: x.function ? (typeof x.function === "string" ? x.function : "") : null,
     };
   });
 }

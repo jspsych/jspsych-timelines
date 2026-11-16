@@ -41,11 +41,20 @@ export function deepMerge(dst, src) {
  */
 function liftDefault(prop) {
   if (typeof prop.description !== "string") return;
-  const m = prop.description.match(/\s*\(default:\s*([^)]*)\)\s*$/);
-  if (!m) return;
-  prop.description = prop.description.slice(0, m.index).trim();
+  // the last "(default: ...)" running to the end; the value may itself contain parentheses
+  const d = prop.description.trimEnd();
+  const at = d.lastIndexOf("(default:");
+  if (at < 0 || !d.endsWith(")")) return;
+  prop.description = d.slice(0, at).trim();
+  const text = d.slice(at + "(default:".length, -1).trim();
   if (prop.default !== undefined) return;
-  const raw = m[1].trim();
+  // "value — source": keep the source out of the value
+  const raw = text.split(/\s+—\s+/)[0].trim();
+  // a code default (a function such as utils.deadlines.meanPlusSd(2.5)) is shown as written
+  if (/^[A-Za-z_$][\w$.]*\(.*\)$/.test(raw)) {
+    prop["x-jspsych"] = { ...(prop["x-jspsych"] ?? {}), defaultCode: raw };
+    return;
+  }
   try {
     prop.default = JSON.parse(raw);
   } catch {
@@ -71,6 +80,29 @@ function simplifyObjectProp(prop) {
   delete prop.properties;
 }
 
+/** Move an `@acceptsFunction` tag to `x-jspsych.function` (the signature, or true). */
+function markFunctionOption(prop) {
+  if (!("acceptsFunction" in prop)) return;
+  const sig = typeof prop.acceptsFunction === "string" ? prop.acceptsFunction.trim() : "";
+  prop["x-jspsych"] = { ...(prop["x-jspsych"] ?? {}), function: sig || true };
+  delete prop.acceptsFunction;
+  // a callable interface (a rule with `label` / `explain` properties) survives "hide" as an object of just
+  // those properties: it is the function, not a value a form could edit
+  const alts = prop.anyOf ?? prop.oneOf;
+  if (Array.isArray(alts)) {
+    const kept = alts.filter(
+      (b) =>
+        !(
+          b.type === "object" &&
+          isObject(b.properties) &&
+          Object.keys(b.properties).every((k) => k === "label" || k === "explain")
+        )
+    );
+    if (prop.anyOf) prop.anyOf = kept;
+    else prop.oneOf = kept;
+  }
+}
+
 export function generateSchema(task, optionsType) {
   const pkgDir = join(repo, "packages", task);
   const generator = createGenerator({
@@ -82,9 +114,15 @@ export function generateSchema(task, optionsType) {
     skipTypeCheck: true,
     additionalProperties: false,
     jsDoc: "extended",
+    // function types (rule options, text functions) can't be edited in a form; hiding them also keeps the
+    // generator out of their parameter types (the JsPsych class in a rule's context makes it throw)
+    functions: "hide",
+    // `@acceptsFunction <signature>` on an option says it also takes a function (PACKAGE-STANDARD §2a)
+    extraTags: ["acceptsFunction"],
   });
   const schema = JSON.parse(JSON.stringify(generator.createSchema(optionsType)));
   for (const prop of Object.values(schema.properties ?? {})) {
+    markFunctionOption(prop);
     simplifyObjectProp(prop);
     liftDefault(prop);
   }
