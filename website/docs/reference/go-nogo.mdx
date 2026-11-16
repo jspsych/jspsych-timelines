@@ -60,7 +60,7 @@ Each trial shows one stimulus (by default a blue or an orange square) for 750 ms
 
 The task opens with an interactive walkthrough: one step for each stimulus, a go stimulus first and then a no-go stimulus. A go step waits for the response and a no-go step waits 2.5 seconds for you not to respond. A wrong response shows a hint and the step repeats, up to 3 attempts. Then come 10 practice trials at 50% go with correct/incorrect feedback, and 350 test trials, 90% go, without feedback.
 
-Counts are exact within each block: `condition_proportions` is turned into counts by largest remainders, the stimuli of each trial type are balanced, and `trial_order: "shuffled_list"` shuffles that list. `"random"` draws every trial independently; `"fixed_sequence"` gives every participant the same order.
+`trial_order: "shuffled_list"` is the default (the spec types Expfactory's order as `random`, but Expfactory shuffles a list with exact counts). Counts are exact within each block: `condition_proportions` is turned into counts by largest remainders, the stimuli of each trial type are balanced, and that list is shuffled. `"random"` draws every trial independently; `"fixed_sequence"` gives every participant the same order.
 
 ### Ordering rules
 

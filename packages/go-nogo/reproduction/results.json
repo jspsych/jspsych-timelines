@@ -1368,7 +1368,9 @@
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
-      "options": {}
+      "options": {
+        "n_blocks": 3
+      }
     },
     {
       "option": "stimulus_role_assignment",

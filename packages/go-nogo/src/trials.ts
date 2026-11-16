@@ -209,30 +209,37 @@ function windowOf(
  * highlighted or marked for ACKNOWLEDGE_MS. Runs in the browser only (data-only simulation has no display).
  */
 function acknowledge(o: ResolvedOptions, keyboard: boolean) {
-  return () => {
-    if (o.response_acknowledgement === "none" || typeof document === "undefined") return;
-    const mark = () => {
-      const el = document.querySelector(".jspsych-timelines-go-nogo-item");
-      if (!el) return;
-      const cls =
-        o.response_acknowledgement === "highlight" ? "acknowledge-highlight" : "acknowledge-mark";
-      el.classList.add(cls);
-      setTimeout(() => el.classList.remove(cls), ACKNOWLEDGE_MS);
-    };
-    if (keyboard) {
-      const key = o.response_keys[0].toLowerCase();
-      const onKey = (e: KeyboardEvent) => {
-        if (e.key.toLowerCase() === key) {
-          mark();
-          document.removeEventListener("keydown", onKey);
-        }
+  let cleanup: (() => void) | null = null;
+  return {
+    on_load: () => {
+      cleanup = null;
+      if (o.response_acknowledgement === "none" || typeof document === "undefined") return;
+      const mark = () => {
+        const el = document.querySelector(".jspsych-timelines-go-nogo-item");
+        if (!el) return;
+        const cls =
+          o.response_acknowledgement === "highlight" ? "acknowledge-highlight" : "acknowledge-mark";
+        el.classList.add(cls);
+        setTimeout(() => el.classList.remove(cls), ACKNOWLEDGE_MS);
       };
-      document.addEventListener("keydown", onKey);
-    } else {
-      document
-        .querySelector("#jspsych-html-button-response-btngroup")
-        ?.addEventListener("click", mark, { once: true });
-    }
+      if (keyboard) {
+        const key = o.response_keys[0].toLowerCase();
+        const onKey = (e: KeyboardEvent) => {
+          if (e.key.toLowerCase() === key) {
+            mark();
+            document.removeEventListener("keydown", onKey);
+          }
+        };
+        document.addEventListener("keydown", onKey);
+        // a trial without a keypress must not leave its listener for the next trial
+        cleanup = () => document.removeEventListener("keydown", onKey);
+      } else {
+        document
+          .querySelector("#jspsych-html-button-response-btngroup")
+          ?.addEventListener("click", mark, { once: true });
+      }
+    },
+    cleanup: () => cleanup?.(),
   };
 }
 
@@ -280,7 +287,9 @@ export function createResponseTrial(
     ...extra,
   });
 
+  const ack = acknowledge(o, keyboard);
   const onFinish = (d: any) => {
+    ack.cleanup();
     const responded = hasResponse(d);
     if (!responded) {
       d.response = null;
@@ -316,7 +325,7 @@ export function createResponseTrial(
     response_ends_trial: o.trial_termination_rule !== "fixed_duration",
     prompt: prompt || null,
     data,
-    on_load: acknowledge(o, keyboard),
+    on_load: ack.on_load,
     on_finish: onFinish,
     // data-only simulation: jsPsych's default participant responds on every trial, so every no-go trial is a
     // commission error. A no-go trial asks for the named simulation options "nogo", which the caller can set to
@@ -437,7 +446,11 @@ export function createBlock(ctx: Context, phase: Phase, block: number, specs: Tr
 export function createBaselineBlock(ctx: Context, index: number) {
   const o = ctx.test;
   const specs = buildBaselineBlock({ jsPsych: ctx.jsPsych, o, stimulus_set: ctx.stimulus_set });
-  const tl: any[] = [textPage(ctx, ctx.text.instruction_baseline_intro, "test", "instruction")];
+  const tl: any[] = [];
+  // the experimenter explains the block when the instructions are skipped
+  if (o.instruction_format === "text") {
+    tl.push(textPage(ctx, ctx.text.instruction_baseline_intro, "test", "instruction"));
+  }
   specs.forEach((s, i) =>
     tl.push(createTrialSequence(ctx, o, s, "test", null, i + 1, { baseline_block: index }))
   );

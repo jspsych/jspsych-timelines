@@ -104,7 +104,11 @@ export function adapt(
     case "pre_block_countdown_ms":
       return ok({ pre_block_countdown_ms: value });
     case "response_window_ms":
-      if (sub === "rule") return gap("option missing", "deadline rule from short-SOA go RT");
+      if (sub === "rule")
+        return gap(
+          "option missing",
+          "a deadline from short-SOA go RT is code-only: utils.deadlines.meanPlusSd(2) or percentile(90), not a typed value"
+        );
       return value === null
         ? // no limit: the trial ends on a response, and a no-go trial would never end
           ok(
@@ -166,7 +170,7 @@ export function adapt(
     case "stimulus_role_assignment":
       if (sub === "change") {
         // "none"/"fixed": the go mapping does not change between blocks, which is how this package always works
-        if (value === "fixed" || value === "none") return ok({});
+        if (value === "fixed" || value === "none") return ok({}, { n_blocks: 3 });
         return gap(
           "package fix needed",
           "a reversal of the go mapping between blocks (rotated) is not implemented"

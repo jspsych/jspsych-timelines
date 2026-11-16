@@ -58,6 +58,8 @@ export interface TrialData {
     | "transition"
     | "block_feedback"
     | "completion";
+  /** Countdown rows (`part: "transition"`): what the screen is, `"countdown"`. */
+  transition?: string;
   /** 1..n (practice is block 1); null for go-only baseline blocks and for rows outside a block. */
   block?: number | null;
   /** Position within the block, 1-based. (jsPsych owns `trial_index`, a global counter; PACKAGE-STANDARD §4.) */

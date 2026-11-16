@@ -180,8 +180,8 @@ export interface GoNogoOptions {
   /**
    * Order within a block: "shuffled_list" (exact counts, shuffled), "random" (independent draws), "fixed_sequence"
    * (exact counts, the same order for every participant).
-   * (default: "shuffled_list" — differs from the spec's "random" (S022): independent draws can give a block with no
-   * no-go trial and inexact proportions; see DEFAULTS.md)
+   * (default: "shuffled_list" — the spec types S022 as "random", but Expfactory builds a list with
+   * `jsPsych.randomization.repeat` (exact counts, shuffled), and independent draws can give a block with no no-go trial; see DEFAULTS.md)
    */
   trial_order?: "random" | "shuffled_list" | "fixed_sequence";
 

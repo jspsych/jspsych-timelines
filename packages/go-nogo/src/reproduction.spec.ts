@@ -170,7 +170,7 @@ describe("defaults reproduce the Expfactory anchor (S022) except the documented 
   });
 
   it("documented changes", () => {
-    // spec: random (independent draws); exact counts per block instead (DEFAULTS.md)
+    // spec: random; the dossier's own locator is a shuffled list with exact counts (DEFAULTS.md)
     expect(s022.trial_order).toBe("random");
     expect(o.trial_order).toBe("shuffled_list");
     // spec has no practice default for the feedback content (null); correct/incorrect, no RT

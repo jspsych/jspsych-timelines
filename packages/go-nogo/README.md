@@ -1,6 +1,6 @@
 # Go/No-go Task
 
-The go/no-go task measures response inhibition and sustained attention: respond to frequent "go" stimuli and withhold the response to rare "no-go" stimuli. Errors of commission (responding to a no-go stimulus), errors of omission, go RT and d' are the usual measures. The default configuration follows the Experiment Factory go_nogo task (Sochat et al., 2016); every option, its default and the evidence behind it is on the documentation site. Gomez, Ratcliff & Perea (2007), *Journal of Experimental Psychology: General*, 136, 389-413.
+The go/no-go task measures response inhibition and sustained attention: respond to frequent "go" stimuli and withhold the response to rare "no-go" stimuli. Errors of commission (responding to a no-go stimulus), errors of omission, go RT and d' are the usual measures. The default configuration follows the Experiment Factory go_nogo task (Sochat et al., 2016; cited from memory, verify); every option, its default and the evidence behind it is on the documentation site. A methods reference to check before citing: Gomez, Ratcliff & Perea (2007), *Journal of Experimental Psychology: General*, 136, 389-413 (listed as unread in the dossier).
 
 ## Installation
 

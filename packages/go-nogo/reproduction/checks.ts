@@ -168,6 +168,15 @@ const goNogoOnly: Record<string, GoNogoCheck> = {
             .filter((x) => x.condition === "go")
             .map((x) => x.stimulus)
         ).sort();
+      // the go stimuli do not change between blocks (S022: go_mapping_change_between_blocks "none")
+      const blocks = distinct(withoutBaseline(test(r)).map((x) => x.block));
+      const goIn = (b: number) =>
+        distinct(
+          withoutBaseline(test(r))
+            .filter((x) => x.block === b && x.condition === "go")
+            .map((x) => x.stimulus)
+        ).sort();
+      blocks.forEach((b) => expect(goIn(b)).toEqual(goIn(blocks[0])));
       if (v === "fixed") return expect(goOf(r)).toEqual(goIds);
       // drawn once per participant: stable within a run, both assignments occur across participants
       const short = { ...r.opts, n_test_trials: 10, practice_trials: 0 };

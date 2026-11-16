@@ -74,7 +74,8 @@ describe("go-nogo", () => {
       expect(test.filter((r) => r.condition === "go_control")).toHaveLength(48);
       expect(main.filter((r) => r.condition === "nogo")).toHaveLength(6);
       expect(rows.filter((r) => r.phase === "practice")).toHaveLength(0);
-      expect(rows.filter((r) => r.part === "instruction")).toHaveLength(3); // baseline intros only
+      // the experimenter explains the baseline blocks too
+      expect(rows.filter((r) => r.part === "instruction")).toHaveLength(0);
       expect(rows.filter((r) => r.part === "block_feedback")).toHaveLength(3);
       expect(rows.filter((r) => r.part === "iti")).toHaveLength(72);
       expect(rows.filter((r) => r.part === "feedback")).toHaveLength(
@@ -318,6 +319,18 @@ describe("go-nogo", () => {
         if (where === "before_dual") expect(idx(base[0])).toBeLessThan(idx(main));
         else expect(idx(base[0])).toBeGreaterThan(idx(main));
       }
+    });
+
+    it("announces each baseline block when the instructions are text", async () => {
+      const rows = await simulate(initJsPsych(), {
+        practice_trials: 0,
+        n_test_trials: 8,
+        n_blocks: 2,
+        instruction_demonstration: "none",
+        single_task_blocks: "interleaved",
+      });
+      // two instruction pages, the test intro, and one intro per baseline block
+      expect(rows.filter((r) => r.part === "instruction")).toHaveLength(5);
     });
 
     it("baseline trials do not enter the scores", () => {

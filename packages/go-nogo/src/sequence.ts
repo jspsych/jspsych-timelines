@@ -304,7 +304,8 @@ export function buildBlocks(
             w.push(weights[i] / list.length);
           });
         });
-        // not @jspsych/sequencer's `sampler`: it draws from Math.random, ignoring `rng`
+        // drawn through jsPsych.randomization (@jspsych/sequencer's `sampler` also takes `rng` while `sequence()` runs, but
+        // an unconstrained block is not drawn inside `sequence()`)
         const source = {
           n: m,
           draw: () => R.sampleWithReplacement(pool, 1, w)[0],
