@@ -98,21 +98,36 @@ defineReproduction({
         .map((sc) => {
           const entries = adaptConfig(sc.options);
           const opts = combine(entries.map((e) => e.adapted));
-          const gaps = entries.filter((e) => isGap(e.adapted)).map((e) => e.key);
+          const expressible = entries.filter((e) => !isGap(e.adapted)).length;
+          // the calibrated deadline is the package default and code-only: say so instead of "not expressible"
+          const calibrated = entries.some(
+            (e) => isGap(e.adapted) && e.key.startsWith("response_window_ms.")
+          );
+          const gaps = entries
+            .filter((e) => isGap(e.adapted) && !e.key.startsWith("response_window_ms."))
+            .map((e) => e.key);
           const assumed = assumedSettings(entries.map((e) => e.adapted));
+          const standIn = typeof (opts as any).stimulus_set?.memorandum === "object";
           return {
+            expressible,
             id: sc.source,
             label: sc.citation,
             description:
               `${sc.source_type} · ${sc.setting ?? "no setting"} · ${
                 Object.keys(sc.options).length
               } spec options` +
+              (calibrated
+                ? " · uses a calibrated deadline (mean + SD of the practice RTs): the package default, code-only, so not set here"
+                : "") +
               (gaps.length ? ` · not expressible, left out: ${gaps.join(", ")}` : "") +
+              (standIn ? " · the word pool is a stand-in: supply your own words" : "") +
               (assumed.length ? ` · assumed, not reported: ${assumed.join(", ")}` : ""),
             options: opts,
           };
         })
-        .filter((p) => Object.keys(p.options).length >= 2),
+        // at least two values the study reported (assumed companion settings do not count)
+        .filter((p) => p.expressible >= 2)
+        .map(({ expressible: _e, ...p }) => p),
     ];
     fs.writeFileSync(metaPath, JSON.stringify(m, null, 2) + "\n");
   },

@@ -25,6 +25,11 @@ export interface DeadlineFunction {
   (ctx: DeadlineContext): number | null;
   /** Readable name of the rule, recorded with the value as `response_window_rule`. */
   label?: string;
+  /**
+   * The rule as it applied to one trial, recorded as `response_window_rule` instead of `label` (the prebuilt
+   * helpers say how many practice RTs they used, or that they fell back to the fixed default).
+   */
+  explain?: (ctx: any) => string;
 }
 
 /** What the prebuilt helpers return: a deadline function with its readable label. */
@@ -81,6 +86,12 @@ function make(label: string, f: (rts: Column) => number, bounds: DeadlineBounds)
     return Math.round(clamp(f(rts), bounds));
   }) as LabelledDeadline;
   fn.label = label + (bounds.min !== undefined || bounds.max !== undefined ? " (bounded)" : "");
+  fn.explain = ({ jsPsych }: DeadlineContext) => {
+    const n = calibrationColumn(jsPsych).count();
+    return n < MIN_CALIBRATION_ROWS
+      ? `${fn.label}: fixed ${FALLBACK_DEADLINE_MS} ms fallback, ${n} of ${MIN_CALIBRATION_ROWS} usable practice RTs`
+      : `${fn.label} (n = ${n})`;
+  };
   return fn;
 }
 

@@ -1720,7 +1720,7 @@
     {
       "id": "S006",
       "label": "Unsworth et al. 2005, BRM (automated OSPAN)",
-      "description": "reference-impl · no setting · 21 spec options · not expressible, left out: response_window_ms.processing task",
+      "description": "reference-impl · no setting · 21 spec options · uses a calibrated deadline (mean + SD of the practice RTs): the package default, code-only, so not set here",
       "options": {
         "block_order": "random",
         "feedback_duration_ms": 2000,
@@ -1783,18 +1783,6 @@
           9
         ],
         "trials_per_condition": 2
-      }
-    },
-    {
-      "id": "S017",
-      "label": "PsyToolkit AOSPAN",
-      "description": "reference-impl · no setting · 2 spec options · not expressible, left out: response_window_ms.processing task · assumed, not reported: response_device.recall, response_format",
-      "options": {
-        "response_device": {
-          "recall": "keyboard"
-        },
-        "response_format": "free_text",
-        "recall_omission_handling": "question_mark_key"
       }
     },
     {
@@ -1941,7 +1929,7 @@
     {
       "id": "S034",
       "label": "literature sample",
-      "description": "empirical · online-unsupervised · 10 spec options",
+      "description": "empirical · online-unsupervised · 10 spec options · the word pool is a stand-in: supply your own words",
       "options": {
         "response_device": {
           "recall": "keyboard",
@@ -2005,7 +1993,7 @@
     {
       "id": "S043",
       "label": "literature sample",
-      "description": "empirical · online-unsupervised · 4 spec options",
+      "description": "empirical · online-unsupervised · 4 spec options · the word pool is a stand-in: supply your own words",
       "options": {
         "n_test_trials": 12,
         "set_sizes": [

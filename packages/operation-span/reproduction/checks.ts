@@ -327,15 +327,12 @@ const extended: CheckSet<OperationSpanOptions, ResolvedOptions> = {
       const rules = distinct(proc.map((x) => x.response_window_rule));
       // every processing row records the deadline in force and the rule that gave it
       expect(rules).toHaveLength(1);
-      expect(rules[0]).toBe(
-        typeof v === "function"
-          ? v.label ?? "custom function"
-          : v === null
-          ? "none"
-          : typeof v === "number"
-          ? "fixed"
-          : "jitter"
-      );
+      if (typeof v === "function") {
+        // a helper's label, then how it applied (the number of practice RTs, or the fallback)
+        expect(rules[0].startsWith(v.label ?? "custom function")).toBe(true);
+        return;
+      }
+      expect(rules[0]).toBe(v === null ? "none" : typeof v === "number" ? "fixed" : "jitter");
       // the processing-only practice is self-paced (it calibrates the deadline)
       rowsOf(r, "practice", "processing")
         .filter((x) => x.practice_part === "processing_only")

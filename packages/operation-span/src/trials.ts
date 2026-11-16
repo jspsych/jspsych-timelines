@@ -131,7 +131,8 @@ export function resolveWindow(
   v: ResponseWindow,
   c: DeadlineContext
 ): ResolvedWindow {
-  if (typeof v === "function") return { value: v(c), rule: v.label ?? "custom function" };
+  if (typeof v === "function")
+    return { value: v(c), rule: v.explain?.(c) ?? v.label ?? "custom function" };
   if (v === null) return { value: null, rule: "none" };
   if (typeof v === "number") return { value: v, rule: "fixed" };
   return { value: sampleDuration(jsPsych, v), rule: "jitter" };
@@ -455,7 +456,6 @@ export function createRecall(ctx: Context, o: ResolvedOptions, a: RecallArgs) {
       response_order: o.response_order,
       response_format: o.response_format,
       response_device: o.response_device.recall,
-      stimulus_duration: o.stimulus_duration_ms,
       ...a.data,
     }),
     on_load: () => {

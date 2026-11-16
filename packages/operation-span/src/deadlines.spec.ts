@@ -149,14 +149,31 @@ describe("the calibrated deadline in a run", () => {
     expect(timed.length).toBeGreaterThan(10);
     timed.forEach((r) => {
       expect(r.response_window).toBe(expected); // fixed once practice is over
-      expect(r.response_window_rule).toBe("mean + 2.5 SD of correct practice RTs");
+      // the rule's label and the number of practice RTs it used
+      expect(r.response_window_rule).toBe(
+        `mean + 2.5 SD of correct practice RTs (n = ${rts.length})`
+      );
     });
   });
 
   it("falls back to 6000 ms when practice gave too few correct RTs, and says so in the data", async () => {
     const rows = await runVarying({ practice_trials: 2 });
     const timed = rows.filter((r) => r.part === "processing" && r.phase === "test");
-    timed.forEach((r) => expect(r.response_window).toBe(6000));
+    expect(timed.length).toBeGreaterThan(0);
+    timed.forEach((r) => {
+      expect(r.response_window).toBe(6000);
+      expect(r.response_window_rule).toMatch(
+        /^mean \+ 2\.5 SD of correct practice RTs: fixed 6000 ms fallback, [0-2] of 5 usable practice RTs$/
+      );
+    });
+    // no processing-only practice at all: the same, with 0 RTs
+    const none = await runVarying({
+      practice_structure: "combined_only",
+      practice_combined_trials: 2,
+    });
+    none
+      .filter((r) => r.part === "processing" && r.phase === "test")
+      .forEach((r) => expect(r.response_window_rule).toContain("0 of 5 usable practice RTs"));
   });
 
   it("a custom function is called with the context, once per timed trial, and recorded", async () => {
