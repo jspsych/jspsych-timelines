@@ -174,7 +174,12 @@ export function createCountdown(ctx: Context, o: ResolvedOptions, phase: Phase, 
 
 // -- the scorable trial -------------------------------------------------------------------------
 
-const hasResponse = (d: any) => typeof d.response === "string" || typeof d.response === "number";
+/**
+ * A response is a key or a button index with an RT. A timed-out button trial under jsPsych's simulation keeps
+ * the button index 0 with rt null, so the RT decides (PACKAGE-STANDARD §9, timeouts).
+ */
+const hasResponse = (d: any) =>
+  (typeof d.response === "string" || typeof d.response === "number") && typeof d.rt === "number";
 
 /** What the response window of one trial is, and how it is recorded. */
 function windowOf(

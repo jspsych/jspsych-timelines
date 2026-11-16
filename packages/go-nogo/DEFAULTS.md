@@ -41,9 +41,9 @@ What Expfactory does (S022): one coloured square per trial (orange or blue; whic
 | Go-only baseline block | 16 trials | S183 (the one study with baseline blocks) |
 | Walkthrough no-go wait | 2500 ms | PACKAGE-STANDARD §6a |
 | Response acknowledgement | 150 ms | S028 |
-| Deadline helpers' fallback | 1250 ms, and at least 5 correct go practice RTs | the middle of the default window range; PACKAGE-STANDARD §2a asks for a fixed default during practice, which here is a range. **Needs human decision:** 1250 ms is a choice. |
+| Deadline helpers' fallback | 1250 ms, and at least 5 correct go practice RTs | the middle of the default window range; PACKAGE-STANDARD §2a asks for a fixed default during practice, which here is a range. Accepted by the maintainer on 2026-11-16. |
 | d' correction | rates of 0 or 1 become 1/(2n) and 1 - 1/(2n) (Macmillan and Kaplan, 1985) | the standard asks that the correction be named and identical across packages |
 
 ## Scope of `sequence_constraints`
 
-The rules in the literature order the test sequence (S157 and S207). At the top level, `sequence_constraints` therefore applies to the test only; practice is unconstrained unless `practice.sequence_constraints` is set. This departs from the standard's precedence (a top-level value applies to every phase): with the practice default of 10 trials at 0.5 go, `min_gap: { nogo: 3 }` cannot be satisfied (5 no-go trials need 17 trials), so applying it would make any constrained configuration throw. **Needs human decision** whether the standard should say this for orders in general.
+The rules in the literature order the test sequence (S157 and S207). At the top level, `sequence_constraints` therefore applies to the test only; practice is unconstrained unless `practice.sequence_constraints` is set. This departs from the standard's precedence (a top-level value applies to every phase): with the practice default of 10 trials at 0.5 go, `min_gap: { nogo: 3 }` cannot be satisfied (5 no-go trials need 17 trials), so applying it would make any constrained configuration throw. The standard now says this (§2a, test-design options).

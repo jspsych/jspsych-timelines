@@ -289,8 +289,11 @@ function buildResponseTrial(a: ResponseArgs) {
   const onFinish = (d: any) => {
     if (st.raf !== null && typeof cancelAnimationFrame === "function") cancelAnimationFrame(st.raf);
     delete d.stimulus;
-    // jsPsych's simulation merge can turn a null response into {}; only a key or a button index counts
-    const responded = typeof d.response === "string" || typeof d.response === "number";
+    // jsPsych's simulation merge can turn a null response into {}, and a timed-out button trial keeps the
+    // index 0 with rt null: only a key or a button index with an RT counts (PACKAGE-STANDARD §9, timeouts)
+    const responded =
+      (typeof d.response === "string" || typeof d.response === "number") &&
+      typeof d.rt === "number";
     if (!responded) {
       d.response = null;
       d.rt = null;

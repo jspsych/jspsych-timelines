@@ -29,7 +29,7 @@ export const GRID_COLUMNS = 4;
 
 /**
  * Processing accuracy the instructions ask participants to keep (S006: "at least 85%"). Only the instruction text uses it;
- * the package never excludes or flags participants on performance (PACKAGE-STANDARD §11).
+ * the package never excludes or flags participants on performance (PACKAGE-STANDARD §2, `utils`).
  */
 export const PROCESSING_ACCURACY_TARGET = 0.85;
 /**

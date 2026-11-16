@@ -2,11 +2,11 @@
 
 The task is the spec's "complex span" (`specs/complex-span`); the package keeps the published name `operation-span`, because the anchor is the automated operation span of Unsworth, Heitz, Schrock and Engle (2005, S006; Engle lab), summarised for the family by Redick et al. (2012, S008) with the procedural recommendations of Conway et al. (2005, S007). Reading, symmetry and rotation span are the spec's deferred `processing_task` variant: `task_variant` accepts only `"operation_span"` and throws naming the others.
 
-The spec marked the anchor `escalate: true` (reason: `processing_pacing_rule`, decision `null`). The pacing rule is therefore a **needs human decision** item below. Everything else follows the anchor, with the changes listed here.
+The spec marked the anchor `escalate: true` (reason: `processing_pacing_rule`, decision `null`). The pacing rule and the items below were reviewed: the maintainer accepted these defaults on 2026-11-16. Everything else follows the anchor, with the changes listed here.
 
 What the anchor does (S006, dossier `canonical_design`): three practice parts (letters only; 15 processing problems, self-paced, whose mean and SD set the time limit; 3 combined trials of set size 2), then 15 test trials (3 each of set sizes 3-7, random order per participant). Each trial alternates a problem ("(2 x 3) + 1 = ?", solved in the head, click, then a true/false answer screen) with a letter shown for 800 ms, then a 4 x 3 letter matrix for serial recall with blank and clear buttons. The problem screen is timed at mean + 2.5 SD of the practice solution times; the answer screen is not (S017, after Unsworth's clarification). Feedback after each trial (letters recalled, math errors, running math accuracy) for 2000 ms. Partial-credit scoring; participants below 85% processing accuracy are excluded.
 
-## Needs human decision
+## Decided after review (2026-11-16)
 
 | Item | Package default | Why it is open |
 |---|---|---|
@@ -14,7 +14,7 @@ What the anchor does (S006, dossier `canonical_design`): three practice parts (l
 | **Fallback deadline** | 6000 ms | Used until 5 correct processing-only practice RTs exist (for example with `practice_trials: 4`). 6000 ms is the spec's fill value (2 of 6 fixed deadlines). The anchor has no fallback because its practice always yields enough RTs. |
 | **Which phases the calibrated deadline times** | The processing-only practice is self-paced; the combined practice and the test use the calibrated deadline | S006 computes the limit from the processing-only practice; the dossier does not state whether the combined practice is timed. The package times it (the limit is then in force for the first time under combined load, as in the test). With a fixed `response_window_ms` the processing-only practice is still self-paced unless `practice.response_window_ms` is given. |
 | **Letters-only practice** | 4 trials, set sizes from `practice.set_sizes` (default 2) | The dossier gives only PsyToolkit's "4 sets of 2-3 letters" (S017). |
-| **Practice processing accuracy** | Reported (`processing_accuracy`), never judged | The anchor (S006, S007) excludes participants below 85% math accuracy after the fact. The package reports `processing_accuracy` and leaves exclusion to the analysis (PACKAGE-STANDARD §11). `practice_criterion` (S036 uses 85% over 10 trials) is available and off by default. |
+| **Practice processing accuracy** | Reported (`processing_accuracy`), never judged | The anchor (S006, S007) excludes participants below 85% math accuracy after the fact. The package reports `processing_accuracy` and leaves exclusion to the analysis (PACKAGE-STANDARD §2, `utils`). `practice_criterion` (S036 uses 85% over 10 trials) is available and off by default. |
 | **`end_of_task_feedback`** | `"none"` | The spec has no typed value for the anchor (S027 shows percentage success at the end). |
 
 ## Defaults changed from the spec
