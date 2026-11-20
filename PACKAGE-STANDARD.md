@@ -377,7 +377,9 @@ Instructions **SHOULD** be interactive and use the task's real stimuli wherever 
   - A wrong response shows a short hint saying why it was wrong, then the step repeats. After 3 attempts the hint gives the answer and the walkthrough moves on, so nobody gets stuck.
   - The walkthrough is untimed, at the participant's own pace, except for stimuli whose duration is part of the task (complex span's memoranda, a briefly flashed target), which keep their real duration. It covers each condition the task uses (e.g. congruent, incongruent, neutral, no-go). A step whose correct answer is to withhold a response (no-go, stop) is the exception: it waits a fixed time (2.5 s), and no response by then is correct.
   - The examples alternate between the responses, so each response is taught.
-- **Then practice.** The walkthrough comes before practice and is separate from it. It doesn't count toward `practice_trials`. Practice then runs at real timing, with the practice overrides.
+- **Captions describe what is on screen.** Text next to a demo stimulus **MUST** match the stimulus as configured, not the default design. With blank flankers, it says there is nothing on the sides. With letter stimuli, it names only the letter shown, not the whole response set. Test the caption under a non-default configuration.
+- **One idea per page.** An instruction page explains one thing. Advice on how to do the task (balancing speed against stopping, keeping math accuracy up) goes on its own page after the rules, not at the end of them.
+- **Then practice.** The walkthrough comes before practice and is separate from it. It doesn't count toward `practice_trials`. Practice then runs at real timing, with the practice overrides. The page before practice **MUST** say what changes: trials now run at the real task's pace, and the main task starts after practice. A task practised in parts (complex span: letters, then math, then both) says so up front and names each part as it starts.
 - **Data.** Walkthrough rows are tagged `phase: "instructions"` and `part: "instruction_check"`. They record `correct` and the attempt number, and are never scored. Hint screens are `part: "instruction_feedback"`; static example pages (`"examples"`) are `part: "instruction_example"`.
 - **Experimenter-led.** With `instruction_format: "experimenter"`, the walkthrough and instruction pages are skipped.
 - **When it isn't reasonable.** Some tasks can't usefully demonstrate with real stimuli: a game-like social task, a minutes-long vigilance wait, a choice with real money. These simply don't offer `"interactive"`. Their default stays evidence-based, and nothing more needs saying.
@@ -705,7 +707,9 @@ The first battery release is gated on the jsPsych release carrying the §11 CSS 
 - [ ] `npm run build -ws` succeeds
 - [ ] `npm test` passes
 - [ ] Literature reproduction wired to `@jspsych-timelines/testing`: fixture generated, tallies committed, `reproduction.md` regenerated
-- [ ] Layout check passes (packages with a centred stimulus)
+- [ ] Layout check passes (packages with a centred stimulus), including the clipping check and, with a fixation mark, `markSelector`
+- [ ] All text is body size (§5); walkthrough captions match a non-default configuration; the page before practice says what changes (§6a)
+- [ ] Study presets use the spec's `label` (§12)
 - [ ] `npx prettier --check "packages/<name>/src/**/*.ts"` passes
 - [ ] `npm pack --dry-run -w @jspsych-timelines/<name>` contains only intended files
 - [ ] `main`, `module`, `exports`, and `unpkg` all point at files the build actually produces
