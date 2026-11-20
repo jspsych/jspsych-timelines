@@ -1522,6 +1522,7 @@
   {
    "source": "S006",
    "citation": "Unsworth et al. 2005, BRM (automated OSPAN)",
+   "label": "Unsworth et al. 2005, Behavior Research Methods",
    "doi": "10.3758/bf03192720",
    "source_type": "reference-impl",
    "setting": null,
@@ -1562,6 +1563,7 @@
   {
    "source": "S009",
    "citation": "Foster et al. 2015, Mem Cogn (shortened)",
+   "label": "Foster et al. 2015, Memory & Cognition",
    "doi": "10.3758/s13421-014-0461-7",
    "source_type": "reference-impl",
    "setting": null,
@@ -1580,6 +1582,7 @@
   {
    "source": "S011",
    "citation": "Draheim et al. 2018, Psych Assess (IRT; advanced)",
+   "label": "Draheim et al. 2018, Psychological Assessment",
    "doi": "10.1037/pas0000444",
    "source_type": "reference-impl",
    "setting": null,
@@ -1601,6 +1604,7 @@
   {
    "source": "S017",
    "citation": "PsyToolkit AOSPAN",
+   "label": "PsyToolkit AOSPAN",
    "doi": null,
    "source_type": "reference-impl",
    "setting": null,
@@ -1616,6 +1620,8 @@
   {
    "source": "S020",
    "citation": "Klaus & Schriefers jsPsych reading/operation/mixed span (MIT, commit 4dc9ed6)",
+   "label": "Klaus & Schriefers jsPsych reading/operation/mixed span",
+   "label_note": "MIT, commit 4dc9ed6",
    "doi": null,
    "source_type": "reference-impl",
    "setting": null,
@@ -1636,6 +1642,8 @@
   {
    "source": "S021",
    "citation": "Luthra & Todd jsPsych ospan/symspan (no licence, commit c4700e7)",
+   "label": "Luthra & Todd jsPsych ospan/symspan",
+   "label_note": "no licence, commit c4700e7",
    "doi": null,
    "source_type": "reference-impl",
    "setting": null,
@@ -1659,6 +1667,7 @@
   {
    "source": "S023",
    "citation": "literature sample",
+   "label": "Öztekin & Erçetin 2026, Journal of Psycholinguistic Research",
    "doi": "10.1007/s10936-026-10268-3",
    "source_type": "empirical",
    "setting": "lab-native",
@@ -1671,6 +1680,7 @@
   {
    "source": "S026",
    "citation": "literature sample",
+   "label": "Golden et al. 2026, Frontiers in Psychology",
    "doi": "10.3389/fpsyg.2026.1768354",
    "source_type": "empirical",
    "setting": "online-unsupervised",
@@ -1698,6 +1708,7 @@
   {
    "source": "S027",
    "citation": "literature sample",
+   "label": "Gaspar et al. 2026, Journal of Cognition",
    "doi": "10.5334/joc.489",
    "source_type": "empirical",
    "setting": "online-unsupervised",
@@ -1730,6 +1741,7 @@
   {
    "source": "S028",
    "citation": "literature sample",
+   "label": "Wereszczyński et al. 2025, Data in Brief",
    "doi": "10.1016/j.dib.2025.111923",
    "source_type": "empirical",
    "setting": "online-unsupervised",
@@ -1749,6 +1761,7 @@
   {
    "source": "S032",
    "citation": "literature sample",
+   "label": "de Azevedo et al. 2025, Psicologia: Reflexão e Crítica",
    "doi": "10.1186/s41155-025-00353-2",
    "source_type": "empirical",
    "setting": "online-unsupervised",
@@ -1773,6 +1786,7 @@
   {
    "source": "S033",
    "citation": "literature sample",
+   "label": "Vermeent et al. 2025, Royal Society Open Science",
    "doi": "10.1098/rsos.241837",
    "source_type": "empirical",
    "setting": "online-unsupervised",
@@ -1801,6 +1815,7 @@
   {
    "source": "S034",
    "citation": "literature sample",
+   "label": "MacMillan et al. 2024, Memory & Cognition",
    "doi": "10.3758/s13421-024-01658-w",
    "source_type": "empirical",
    "setting": "online-unsupervised",
@@ -1828,6 +1843,7 @@
   {
    "source": "S036",
    "citation": "literature sample",
+   "label": "Loaiza & Souza 2024, Memory & Cognition",
    "doi": "10.3758/s13421-024-01596-7",
    "source_type": "empirical",
    "setting": "online-unsupervised",
@@ -1850,6 +1866,7 @@
   {
    "source": "S039",
    "citation": "literature sample",
+   "label": "Otstavnov et al. 2024, eNeuro",
    "doi": "10.1523/eneuro.0394-23.2024",
    "source_type": "empirical",
    "setting": "lab-native",
@@ -1865,6 +1882,7 @@
   {
    "source": "S043",
    "citation": "literature sample",
+   "label": "Wallinheimo et al. 2023, Frontiers in Artificial Intelligence",
    "doi": "10.3389/frai.2023.1253940",
    "source_type": "empirical",
    "setting": "online-unsupervised",
@@ -1885,6 +1903,7 @@
   {
    "source": "S045",
    "citation": "literature sample",
+   "label": "Araya et al. 2022, Memory & Cognition",
    "doi": "10.3758/s13421-021-01261-3",
    "source_type": "empirical",
    "setting": "online-unsupervised",

@@ -1430,6 +1430,7 @@
   {
    "source": "S017",
    "citation": "Hedge, Powell & Sumner 2018, BRM",
+   "label": "Hedge et al. 2018, Behavior Research Methods",
    "doi": "10.3758/s13428-017-0935-1",
    "source_type": "empirical",
    "setting": "lab-native",
@@ -1451,6 +1452,7 @@
   {
    "source": "S022",
    "citation": "Expfactory go_nogo defaults",
+   "label": "Expfactory go_nogo defaults",
    "doi": null,
    "source_type": "reference-impl",
    "setting": null,
@@ -1491,6 +1493,7 @@
   {
    "source": "S028",
    "citation": "PEBL gonogo defaults",
+   "label": "PEBL gonogo defaults",
    "doi": null,
    "source_type": "reference-impl",
    "setting": null,
@@ -1520,6 +1523,7 @@
   {
    "source": "S031",
    "citation": "PsyToolkit go/no-go library defaults",
+   "label": "PsyToolkit go/no-go library defaults",
    "doi": null,
    "source_type": "reference-impl",
    "setting": null,
@@ -1533,6 +1537,7 @@
   {
    "source": "S046",
    "citation": "Baumeister A, Schuurmans L, Borgmann L,  2026, Psychooncology",
+   "label": "Baumeister et al. 2026, Psycho-Oncology",
    "doi": "10.1002/pon.70566",
    "source_type": "empirical",
    "setting": "online-unsupervised",
@@ -1551,6 +1556,7 @@
   {
    "source": "S054",
    "citation": "Moore T, Brock K, Palmer J, Baker R, Tal 2026, Sports (Basel)",
+   "label": "Moore et al. 2026, Sports",
    "doi": "10.3390/sports14070269",
    "source_type": "empirical",
    "setting": "online-unsupervised",
@@ -1570,6 +1576,7 @@
   {
    "source": "S071",
    "citation": "Satheesan L, Shastri U, Bajaj G, Kalaiah 2026, PLoS One",
+   "label": "Satheesan et al. 2026, PLOS ONE",
    "doi": "10.1371/journal.pone.0361204",
    "source_type": "empirical",
    "setting": "lab-browser",
@@ -1584,6 +1591,7 @@
   {
    "source": "S103",
    "citation": "Treacy C, Andrews SC, Levenstein JM. 2025, Brain Struct Funct",
+   "label": "Treacy et al. 2025, Brain Structure and Function",
    "doi": "10.1007/s00429-025-03017-0",
    "source_type": "empirical",
    "setting": "lab-browser",
@@ -1596,6 +1604,7 @@
   {
    "source": "S118",
    "citation": "Simkute D, Tarailis P, Pipinis E, Grisko 2025, Behav Sci (Basel)",
+   "label": "Simkute et al. 2025, Behavioral Sciences",
    "doi": "10.3390/bs15050579",
    "source_type": "empirical",
    "setting": "lab-native",
@@ -1608,6 +1617,7 @@
   {
    "source": "S123",
    "citation": "Bolton K, Yang L. 2025, Healthcare (Basel)",
+   "label": "Bolton & Yang 2025, Healthcare",
    "doi": "10.3390/healthcare13070792",
    "source_type": "empirical",
    "setting": "online-unsupervised",
@@ -1621,6 +1631,7 @@
   {
    "source": "S157",
    "citation": "Allen MT, Interian A, Reddy V, Rodriguez 2025, PeerJ",
+   "label": "Allen et al. 2025, PeerJ",
    "doi": "10.7717/peerj.19057",
    "source_type": "empirical",
    "setting": "online-unsupervised",
@@ -1648,6 +1659,7 @@
   {
    "source": "S169",
    "citation": "Raybould JN, Tunney RJ. 2024, BMC Psychiatry",
+   "label": "Raybould & Tunney 2024, BMC Psychiatry",
    "doi": "10.1186/s12888-024-06072-9",
    "source_type": "empirical",
    "setting": "online-unsupervised",
@@ -1667,6 +1679,7 @@
   {
    "source": "S175",
    "citation": "Park SE, Chung J, Lee J, Kim MJ, Kim J,  2024, PLOS Digit Health",
+   "label": "Park et al. 2024, PLOS Digital Health (1)",
    "doi": "10.1371/journal.pdig.0000595",
    "source_type": "empirical",
    "setting": "online-unsupervised",
@@ -1688,6 +1701,7 @@
   {
    "source": "S175",
    "citation": "Park SE, Chung J, Lee J, Kim MJ, Kim J,  2024, PLOS Digit Health",
+   "label": "Park et al. 2024, PLOS Digital Health (2)",
    "doi": "10.1371/journal.pdig.0000595",
    "source_type": "empirical",
    "setting": "tablet",
@@ -1700,6 +1714,7 @@
   {
    "source": "S183",
    "citation": "Carpio A, Dreher JC, Ferrera D, Galán D, 2024, Sci Rep",
+   "label": "Carpio et al. 2024, Scientific Reports",
    "doi": "10.1038/s41598-024-67673-8",
    "source_type": "empirical",
    "setting": "online-unsupervised",
@@ -1725,6 +1740,7 @@
   {
    "source": "S207",
    "citation": "Smith & Jamadar 2021, PsyArXiv",
+   "label": "Smith & Jamadar 2021, PsyArXiv",
    "doi": "10.31234/osf.io/3b6sp",
    "source_type": "empirical",
    "setting": "lab-native",

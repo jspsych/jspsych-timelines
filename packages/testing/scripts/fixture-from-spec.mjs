@@ -56,6 +56,9 @@ const fixture = {
   study_configurations: (spec.study_configurations ?? []).map((s) => ({
     source: s.source,
     citation: s.citation,
+    // display name in the one format all packages use ("Surname et al. 2024, Journal")
+    ...(s.label ? { label: s.label } : {}),
+    ...(s.label_note ? { label_note: s.label_note } : {}),
     doi: s.doi ?? null,
     source_type: s.source_type,
     setting: s.setting ?? null,

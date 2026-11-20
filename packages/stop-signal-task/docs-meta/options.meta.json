@@ -2685,7 +2685,7 @@
     },
     {
       "id": "S007",
-      "label": "Thakkar et al. 2011, Biol Psychiatry",
+      "label": "Thakkar et al. 2011, Biological Psychiatry",
       "description": "empirical · lab-native · 10 spec options · not expressible, left out: stimulus_eccentricity, stimulus_set.go, stimulus_set.stop signal",
       "options": {
         "adaptive": {
@@ -2707,7 +2707,7 @@
     },
     {
       "id": "S008",
-      "label": "Countermanding saccades in children, 2026, Atten Percept Psychophys",
+      "label": "Hodgson et al. 2026, Attention, Perception, & Psychophysics",
       "description": "empirical · lab-native · 10 spec options · not expressible, left out: population_protocol, stimulus_eccentricity, stimulus_set.stop signal",
       "options": {
         "adaptive": null,
@@ -2786,8 +2786,8 @@
     },
     {
       "id": "S011",
-      "label": "Expfactory stop-signal (Eisenberg, Enkavi, Bissett, Sochat, Poldrack)",
-      "description": "reference-impl · no setting · 23 spec options · not expressible, left out: adaptive.ssd_reset_policy, condition_proportions.stop_probability_blocks, practice_criterion, practice_trials.go_only_practice, response_mapping_counterbalancing, stimulus_set.go, stimulus_set.stop signal · assumed, not reported: stimulus_set.stop_signal, instruction_format",
+      "label": "Expfactory stop-signal",
+      "description": "Eisenberg, Enkavi, Bissett, Sochat, Poldrack · reference-impl · no setting · 23 spec options · not expressible, left out: adaptive.ssd_reset_policy, condition_proportions.stop_probability_blocks, practice_criterion, practice_trials.go_only_practice, response_mapping_counterbalancing, stimulus_set.go, stimulus_set.stop signal · assumed, not reported: stimulus_set.stop_signal, instruction_format",
       "options": {
         "stimulus_set": {
           "stop_signal": "border"
@@ -2823,8 +2823,8 @@
     },
     {
       "id": "S014",
-      "label": "PsyToolkit experiment library: Stop signal task (Stoet)",
-      "description": "reference-impl · no setting · 10 spec options · not expressible, left out: difficulty_levels, practice_trials.go_only_practice · assumed, not reported: difficulty_levels",
+      "label": "PsyToolkit experiment library: Stop signal task",
+      "description": "Stoet · reference-impl · no setting · 10 spec options · not expressible, left out: difficulty_levels, practice_trials.go_only_practice · assumed, not reported: difficulty_levels",
       "options": {
         "difficulty_levels": {
           "min": 100,
@@ -2850,7 +2850,7 @@
     },
     {
       "id": "S026",
-      "label": "Hedge, Powell & Sumner 2018, Behav Res Methods",
+      "label": "Hedge et al. 2018, Behavior Research Methods",
       "description": "empirical · lab-native · 5 spec options · not expressible, left out: stimulus_set.go",
       "options": {
         "stimulus_set": {
@@ -2865,7 +2865,7 @@
     },
     {
       "id": "S052",
-      "label": "An exploration of relationships between associative and non-associative measures (2025)",
+      "label": "Brudan et al. 2025, Quarterly Journal of Experimental Psychology",
       "description": "empirical · online-unsupervised · 3 spec options",
       "options": {
         "adaptive": {
@@ -2879,7 +2879,7 @@
     },
     {
       "id": "S057",
-      "label": "The rollercoaster of obsessive-compulsive disorder: How chronotype and time of d (2025)",
+      "label": "Kalanthroff et al. 2025, Journal of Mood & Anxiety Disorders",
       "description": "empirical · no setting · 4 spec options · assumed, not reported: difficulty_levels",
       "options": {
         "difficulty_levels": [
@@ -2897,7 +2897,7 @@
     },
     {
       "id": "S070",
-      "label": "Comparing self-other distinction across motor, cognitive and affective domains. (2024)",
+      "label": "Pronizius et al. 2024, Royal Society Open Science",
       "description": "empirical · online-unsupervised · 10 spec options · assumed, not reported: instruction_format",
       "options": {
         "instruction_format": "text",
@@ -2923,7 +2923,7 @@
     },
     {
       "id": "S072",
-      "label": "Modality Matters: Fasted Individuals Inhibit Food Stimuli Better Than Neutral St (2024)",
+      "label": "van den Hoek Ostende et al. 2024, Nutrients",
       "description": "empirical · online-unsupervised · 13 spec options · not expressible, left out: adaptive.ssd_staircase_structure, stimulus_set.go · assumed, not reported: instruction_format",
       "options": {
         "instruction_format": "text",
@@ -2952,7 +2952,7 @@
     },
     {
       "id": "S079",
-      "label": "The effects of conscious movement investment on inhibiting a simple response. (2024)",
+      "label": "You et al. 2024, Frontiers in Psychology",
       "description": "empirical · online-unsupervised · 16 spec options · not expressible, left out: practice_trials.go_only_practice, stimulus_set.go · assumed, not reported: trial_feedback",
       "options": {
         "trial_feedback": "accuracy",
@@ -2987,7 +2987,7 @@
     },
     {
       "id": "S080",
-      "label": "Mindfulness and inhibitory control: Insights from the stop signal task with neut (2024)",
+      "label": "Logemann-Molnár et al. 2024, PLOS ONE",
       "description": "empirical · online-unsupervised · 10 spec options · not expressible, left out: iti_ms, stimulus_set.go",
       "options": {
         "stimulus_set": {
@@ -3011,7 +3011,7 @@
     },
     {
       "id": "S082",
-      "label": "The effect of staircase stopping accuracy and testing environment on stop-signal (2024)",
+      "label": "Tran et al. 2023, Behavior Research Methods",
       "description": "empirical · online-unsupervised · 17 spec options · not expressible, left out: adaptive.ssd_reset_policy, stimulus_set.go, stimulus_set.stop signal · assumed, not reported: instruction_format",
       "options": {
         "instruction_format": "text",
@@ -3043,7 +3043,7 @@
     },
     {
       "id": "S085",
-      "label": "Failing to attend versus failing to stop: Single-trial decomposition of action-s (2023)",
+      "label": "Hannah et al. 2022, Behavior Research Methods",
       "description": "empirical · online-unsupervised · 10 spec options · not expressible, left out: adaptive.bounds, adaptive.ssd_staircase_structure, device_eligibility, stimulus_set.go, stimulus_set.stop signal",
       "options": {
         "adaptive": {
@@ -3063,7 +3063,7 @@
     },
     {
       "id": "S086",
-      "label": "A Novel, Expert-Endorsed, Neurocognitive Digital Assessment Tool for Addictive D (2023)",
+      "label": "Lee et al. 2023, Journal of Medical Internet Research",
       "description": "empirical · online-unsupervised · 9 spec options · not expressible, left out: performance_incentive, stimulus_set.go, stimulus_set.stop signal",
       "options": {
         "adaptive": {
@@ -3084,7 +3084,7 @@
     },
     {
       "id": "S098",
-      "label": "Proactively Adjusting Stopping: Response Inhibition is Faster when Stopping Occu (2023)",
+      "label": "Doekemeijer et al. 2023, Journal of Cognition",
       "description": "empirical · online-unsupervised · 6 spec options · not expressible, left out: condition_proportions.stop_probability_blocks, device_eligibility, practice_trials.go_only_practice · assumed, not reported: stimulus_set.stop_signal",
       "options": {
         "stimulus_set": {

@@ -42,6 +42,10 @@ export interface FixtureOption {
 export interface StudyConfiguration {
   source: string;
   citation: string;
+  /** display name for presets: "Surname et al. 2024, Journal" (absent in older fixtures; use citation) */
+  label?: string;
+  /** a note moved out of the name (licence, commit) for the preset description */
+  label_note?: string;
   doi: string | null;
   source_type: string;
   setting: string | null;

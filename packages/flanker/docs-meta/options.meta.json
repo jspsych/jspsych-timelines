@@ -2708,7 +2708,7 @@
     },
     {
       "id": "S004",
-      "label": "Lee & Pitt 2024, BRM, online spacing flanker",
+      "label": "Lee & Pitt 2024, Behavior Research Methods",
       "description": "empirical · online-unsupervised · 24 spec options",
       "options": {
         "condition_set": [
@@ -2764,7 +2764,7 @@
     },
     {
       "id": "S005",
-      "label": "flanker DDM psychometrics 2025, CABN",
+      "label": "Rappaport et al. 2025, Cognitive, Affective, & Behavioral Neuroscience",
       "description": "empirical · lab-native · 4 spec options",
       "options": {
         "block_feedback": "accuracy",
@@ -2775,7 +2775,7 @@
     },
     {
       "id": "S007",
-      "label": "Hedge, Powell & Sumner 2018, BRM, reliability paradox",
+      "label": "Hedge et al. 2018, Behavior Research Methods",
       "description": "empirical · lab-native · 7 spec options",
       "options": {
         "condition_proportions": {
@@ -2799,7 +2799,7 @@
     },
     {
       "id": "S008",
-      "label": "Pronk et al. 2023, BRM, smartphone flanker reliability",
+      "label": "Pronk et al. 2022, Behavior Research Methods",
       "description": "empirical · online-unsupervised · 9 spec options · not expressible, left out: device_eligibility, feedback_duration_ms",
       "options": {
         "fixation_duration_ms": {
@@ -2960,7 +2960,7 @@
     },
     {
       "id": "S039",
-      "label": "literature-sample screening rank 6",
+      "label": "Sturm et al. 2026, Journal of Clinical and Experimental Neuropsychology",
       "description": "empirical · online-unsupervised · 3 spec options",
       "options": {
         "response_hand": "one_hand_dominant",
@@ -2975,7 +2975,7 @@
     },
     {
       "id": "S047",
-      "label": "literature-sample screening rank 14",
+      "label": "Zhao & Cannon 2026, Schizophrenia Research: Cognition",
       "description": "empirical · online-unsupervised · 11 spec options",
       "options": {
         "block_feedback": "accuracy",
@@ -3000,7 +3000,7 @@
     },
     {
       "id": "S055",
-      "label": "literature-sample screening rank 22",
+      "label": "Molloy et al. 2026, Computational Brain & Behavior",
       "description": "empirical · online-unsupervised · 3 spec options",
       "options": {
         "condition_proportions": {
@@ -3016,7 +3016,7 @@
     },
     {
       "id": "S056",
-      "label": "literature-sample screening rank 23",
+      "label": "Osborne et al. 2026, Scientific Reports",
       "description": "empirical · online-unsupervised · 6 spec options",
       "options": {
         "n_blocks": 10,
@@ -3037,7 +3037,7 @@
     },
     {
       "id": "S060",
-      "label": "literature-sample screening rank 27",
+      "label": "Bratzke et al. 2026, Memory & Cognition",
       "description": "empirical · online-unsupervised · 14 spec options · not expressible, left out: concurrent_task · assumed, not reported: trial_feedback, targets_per_response",
       "options": {
         "trial_feedback": "accuracy",
@@ -3075,7 +3075,7 @@
     },
     {
       "id": "S068",
-      "label": "literature-sample screening rank 35",
+      "label": "Golden et al. 2026, Frontiers in Psychology",
       "description": "empirical · online-unsupervised · 22 spec options · not expressible, left out: instruction_format",
       "options": {
         "stimulus_set": {
@@ -3130,7 +3130,7 @@
     },
     {
       "id": "S069",
-      "label": "literature-sample screening rank 36",
+      "label": "Ashkenazi & Danan 2026, Frontiers in Psychology",
       "description": "empirical · online-unsupervised · 2 spec options · not expressible, left out: stimulus_set.stimulus_set",
       "options": {
         "fixation_duration_ms": 500
@@ -3138,7 +3138,7 @@
     },
     {
       "id": "S104",
-      "label": "literature-sample screening rank 72",
+      "label": "Smith & Ulrich 2025, Psychological Research",
       "description": "empirical · lab-native · 7 spec options · not expressible, left out: response_window_ms.deadline_rule, speed_accuracy_emphasis · assumed, not reported: trial_feedback, condition_set, stimulus_set.target",
       "options": {
         "trial_feedback": "accuracy",
@@ -3168,7 +3168,7 @@
     },
     {
       "id": "S111",
-      "label": "literature-sample screening rank 79",
+      "label": "Orpella et al. 2025, PLOS ONE",
       "description": "empirical · online-unsupervised · 15 spec options · not expressible, left out: iti_ms",
       "options": {
         "attention_checks": "instructed_items",
@@ -3206,7 +3206,7 @@
     },
     {
       "id": "S119",
-      "label": "literature-sample screening rank 87",
+      "label": "Ellinghaus et al. 2024, Computational Brain & Behavior",
       "description": "empirical · online-unsupervised · 19 spec options · not expressible, left out: concurrent_task · assumed, not reported: n_blocks",
       "options": {
         "stimulus_set": {

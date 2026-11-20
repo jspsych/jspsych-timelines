@@ -1719,7 +1719,7 @@
     },
     {
       "id": "S006",
-      "label": "Unsworth et al. 2005, BRM (automated OSPAN)",
+      "label": "Unsworth et al. 2005, Behavior Research Methods",
       "description": "reference-impl · no setting · 21 spec options · uses a calibrated deadline (mean + SD of the practice RTs): the package default, code-only, so not set here",
       "options": {
         "block_order": "random",
@@ -1756,7 +1756,7 @@
     },
     {
       "id": "S009",
-      "label": "Foster et al. 2015, Mem Cogn (shortened)",
+      "label": "Foster et al. 2015, Memory & Cognition",
       "description": "reference-impl · no setting · 2 spec options",
       "options": {
         "block_order": "random",
@@ -1770,7 +1770,7 @@
     },
     {
       "id": "S011",
-      "label": "Draheim et al. 2018, Psych Assess (IRT; advanced)",
+      "label": "Draheim et al. 2018, Psychological Assessment",
       "description": "reference-impl · no setting · 2 spec options",
       "options": {
         "set_sizes": [
@@ -1787,8 +1787,8 @@
     },
     {
       "id": "S020",
-      "label": "Klaus & Schriefers jsPsych reading/operation/mixed span (MIT, commit 4dc9ed6)",
-      "description": "reference-impl · no setting · 9 spec options · not expressible, left out: stimulus_language",
+      "label": "Klaus & Schriefers jsPsych reading/operation/mixed span",
+      "description": "MIT, commit 4dc9ed6 · reference-impl · no setting · 9 spec options · not expressible, left out: stimulus_language",
       "options": {
         "response_device": {
           "recall": "keyboard"
@@ -1806,8 +1806,8 @@
     },
     {
       "id": "S021",
-      "label": "Luthra & Todd jsPsych ospan/symspan (no licence, commit c4700e7)",
-      "description": "reference-impl · no setting · 8 spec options",
+      "label": "Luthra & Todd jsPsych ospan/symspan",
+      "description": "no licence, commit c4700e7 · reference-impl · no setting · 8 spec options",
       "options": {
         "feedback_duration_ms": 1000,
         "memorandum_order_in_pair": "memorandum_first",
@@ -1825,7 +1825,7 @@
     },
     {
       "id": "S026",
-      "label": "literature sample",
+      "label": "Golden et al. 2026, Frontiers in Psychology",
       "description": "empirical · online-unsupervised · 9 spec options · not expressible, left out: instruction_format",
       "options": {
         "n_test_trials": 12,
@@ -1847,7 +1847,7 @@
     },
     {
       "id": "S027",
-      "label": "literature sample",
+      "label": "Gaspar et al. 2026, Journal of Cognition",
       "description": "empirical · online-unsupervised · 15 spec options · not expressible, left out: stimulus_language, stimulus_set.memorandum, stimulus_set.memorandum_type",
       "options": {
         "response_device": {
@@ -1874,7 +1874,7 @@
     },
     {
       "id": "S028",
-      "label": "literature sample",
+      "label": "Wereszczyński et al. 2025, Data in Brief",
       "description": "empirical · online-unsupervised · 2 spec options",
       "options": {
         "set_sizes": [
@@ -1891,7 +1891,7 @@
     },
     {
       "id": "S032",
-      "label": "literature sample",
+      "label": "de Azevedo et al. 2025, Psicologia: Reflexão e Crítica",
       "description": "empirical · online-unsupervised · 5 spec options · not expressible, left out: instruction_format, stimulus_language, stimulus_set.memorandum",
       "options": {
         "block_order": "ascending",
@@ -1906,7 +1906,7 @@
     },
     {
       "id": "S033",
-      "label": "literature sample",
+      "label": "Vermeent et al. 2025, Royal Society Open Science",
       "description": "empirical · online-unsupervised · 11 spec options · not expressible, left out: practice_criterion, stimulus_set.memorandum_type",
       "options": {
         "memorandum_order_in_pair": "memorandum_first",
@@ -1928,7 +1928,7 @@
     },
     {
       "id": "S034",
-      "label": "literature sample",
+      "label": "MacMillan et al. 2024, Memory & Cognition",
       "description": "empirical · online-unsupervised · 10 spec options · the word pool is a stand-in: supply your own words",
       "options": {
         "response_device": {
@@ -1974,7 +1974,7 @@
     },
     {
       "id": "S036",
-      "label": "literature sample",
+      "label": "Loaiza & Souza 2024, Memory & Cognition",
       "description": "empirical · online-unsupervised · 6 spec options",
       "options": {
         "inter_item_interval_ms": 100,
@@ -1992,7 +1992,7 @@
     },
     {
       "id": "S043",
-      "label": "literature sample",
+      "label": "Wallinheimo et al. 2023, Frontiers in Artificial Intelligence",
       "description": "empirical · online-unsupervised · 4 spec options · the word pool is a stand-in: supply your own words",
       "options": {
         "n_test_trials": 12,
@@ -2029,7 +2029,7 @@
     },
     {
       "id": "S045",
-      "label": "literature sample",
+      "label": "Araya et al. 2022, Memory & Cognition",
       "description": "empirical · online-unsupervised · 7 spec options",
       "options": {
         "response_device": {

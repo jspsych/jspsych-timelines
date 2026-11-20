@@ -116,8 +116,9 @@ defineReproduction({
           const assumed = assumedSettings(entries.map((e) => e.adapted));
           return {
             id: sc.source + (sc.setting === "tablet" ? "-tablet" : ""),
-            label: sc.citation,
+            label: sc.label ?? sc.citation,
             description:
+              (sc.label_note ? `${sc.label_note} · ` : "") +
               `${sc.source_type} · ${sc.setting ?? "no setting"} · ${
                 Object.keys(sc.options).length
               } spec options` +

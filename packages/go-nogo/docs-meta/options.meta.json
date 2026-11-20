@@ -1607,7 +1607,7 @@
     },
     {
       "id": "S017",
-      "label": "Hedge, Powell & Sumner 2018, BRM",
+      "label": "Hedge et al. 2018, Behavior Research Methods",
       "description": "empirical · lab-native · 8 spec options · not expressible, left out: stimulus_role_assignment.go_mapping_change_between_blocks, stimulus_set.stimulus_set · assumed, not reported: response_window_ms",
       "options": {
         "response_window_ms": 1250,
@@ -1722,7 +1722,7 @@
     },
     {
       "id": "S046",
-      "label": "Baumeister A, Schuurmans L, Borgmann L,  2026, Psychooncology",
+      "label": "Baumeister et al. 2026, Psycho-Oncology",
       "description": "empirical · online-unsupervised · 7 spec options · not expressible, left out: stimulus_set.stimulus_set",
       "options": {
         "condition_proportions": {
@@ -1753,7 +1753,7 @@
     },
     {
       "id": "S054",
-      "label": "Moore T, Brock K, Palmer J, Baker R, Tal 2026, Sports (Basel)",
+      "label": "Moore et al. 2026, Sports",
       "description": "empirical · online-unsupervised · 6 spec options · not expressible, left out: response_device · assumed, not reported: iti_ms",
       "options": {
         "iti_ms": 500,
@@ -1778,7 +1778,7 @@
     },
     {
       "id": "S071",
-      "label": "Satheesan L, Shastri U, Bajaj G, Kalaiah 2026, PLoS One",
+      "label": "Satheesan et al. 2026, PLOS ONE",
       "description": "empirical · lab-browser · 3 spec options · not expressible, left out: stimulus_set.stimulus_set",
       "options": {
         "iti_ms": 1700,
@@ -1787,7 +1787,7 @@
     },
     {
       "id": "S157",
-      "label": "Allen MT, Interian A, Reddy V, Rodriguez 2025, PeerJ",
+      "label": "Allen et al. 2025, PeerJ",
       "description": "empirical · online-unsupervised · 9 spec options",
       "options": {
         "condition_proportions": {
@@ -1822,7 +1822,7 @@
     },
     {
       "id": "S169",
-      "label": "Raybould JN, Tunney RJ. 2024, BMC Psychiatry",
+      "label": "Raybould & Tunney 2024, BMC Psychiatry",
       "description": "empirical · online-unsupervised · 6 spec options · not expressible, left out: stimulus_role_assignment.go_mapping_change_between_blocks, stimulus_set.stimulus_set · assumed, not reported: response_window_ms",
       "options": {
         "response_window_ms": 2000,
@@ -1837,7 +1837,7 @@
     },
     {
       "id": "S175",
-      "label": "Park SE, Chung J, Lee J, Kim MJ, Kim J,  2024, PLOS Digit Health",
+      "label": "Park et al. 2024, PLOS Digital Health (1)",
       "description": "empirical · online-unsupervised · 10 spec options · not expressible, left out: stimulus_set.stimulus_set",
       "options": {
         "condition_proportions": {
@@ -1884,7 +1884,7 @@
     },
     {
       "id": "S183",
-      "label": "Carpio A, Dreher JC, Ferrera D, Galán D, 2024, Sci Rep",
+      "label": "Carpio et al. 2024, Scientific Reports",
       "description": "empirical · online-unsupervised · 12 spec options · not expressible, left out: single_task_blocks, stimulus_layout, stimulus_role_assignment.stimulus_role_assignment, stimulus_set.stimulus_set",
       "options": {
         "block_feedback": "rt",

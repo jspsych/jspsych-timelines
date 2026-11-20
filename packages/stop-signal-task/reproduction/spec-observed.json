@@ -2207,6 +2207,7 @@
   {
    "source": "S007",
    "citation": "Thakkar et al. 2011, Biol Psychiatry",
+   "label": "Thakkar et al. 2011, Biological Psychiatry",
    "doi": "10.1016/j.biopsych.2010.08.016",
    "source_type": "empirical",
    "setting": "lab-native",
@@ -2231,6 +2232,7 @@
   {
    "source": "S008",
    "citation": "Countermanding saccades in children, 2026, Atten Percept Psychophys",
+   "label": "Hodgson et al. 2026, Attention, Perception, & Psychophysics",
    "doi": "10.3758/s13414-026-03342-4",
    "source_type": "empirical",
    "setting": "lab-native",
@@ -2257,6 +2259,7 @@
   {
    "source": "S010",
    "citation": "STOP-IT jsPsych version (Verbruggen), commit 73e4654",
+   "label": "STOP-IT jsPsych version (Verbruggen), commit 73e4654",
    "doi": null,
    "source_type": "reference-impl",
    "setting": null,
@@ -2308,6 +2311,8 @@
   {
    "source": "S011",
    "citation": "Expfactory stop-signal (Eisenberg, Enkavi, Bissett, Sochat, Poldrack)",
+   "label": "Expfactory stop-signal",
+   "label_note": "Eisenberg, Enkavi, Bissett, Sochat, Poldrack",
    "doi": null,
    "source_type": "reference-impl",
    "setting": null,
@@ -2357,6 +2362,8 @@
   {
    "source": "S014",
    "citation": "PsyToolkit experiment library: Stop signal task (Stoet)",
+   "label": "PsyToolkit experiment library: Stop signal task",
+   "label_note": "Stoet",
    "doi": null,
    "source_type": "reference-impl",
    "setting": null,
@@ -2385,6 +2392,7 @@
   {
    "source": "S025",
    "citation": "Bissett et al. 2021, Sci Adv",
+   "label": "Bissett et al. 2021, Science Advances (1)",
    "doi": "10.1126/sciadv.abf4355",
    "source_type": "empirical",
    "setting": null,
@@ -2400,6 +2408,7 @@
   {
    "source": "S025",
    "citation": "Bissett et al. 2021, Sci Adv",
+   "label": "Bissett et al. 2021, Science Advances (2)",
    "doi": "10.1126/sciadv.abf4355",
    "source_type": "empirical",
    "setting": "lab-native",
@@ -2412,6 +2421,7 @@
   {
    "source": "S026",
    "citation": "Hedge, Powell & Sumner 2018, Behav Res Methods",
+   "label": "Hedge et al. 2018, Behavior Research Methods",
    "doi": "10.3758/s13428-017-0935-1",
    "source_type": "empirical",
    "setting": "lab-native",
@@ -2428,6 +2438,7 @@
   {
    "source": "S029",
    "citation": "Wadsley et al. 2023, Exp Brain Res (SeleST)",
+   "label": "Wadsley et al. 2023, Experimental Brain Research",
    "doi": "10.1007/s00221-022-06539-9",
    "source_type": "reference-impl",
    "setting": null,
@@ -2440,6 +2451,7 @@
   {
    "source": "S030",
    "citation": "Congdon et al. 2012, Front Psychol",
+   "label": "Congdon et al. 2012, Frontiers in Psychology",
    "doi": "10.3389/fpsyg.2012.00037",
    "source_type": "empirical",
    "setting": "lab-native",
@@ -2458,6 +2470,7 @@
   {
    "source": "S052",
    "citation": "An exploration of relationships between associative and non-associative measures (2025)",
+   "label": "Brudan et al. 2025, Quarterly Journal of Experimental Psychology",
    "doi": "10.1177/17470218241310859",
    "source_type": "empirical",
    "setting": "online-unsupervised",
@@ -2472,6 +2485,7 @@
   {
    "source": "S057",
    "citation": "The rollercoaster of obsessive-compulsive disorder: How chronotype and time of d (2025)",
+   "label": "Kalanthroff et al. 2025, Journal of Mood & Anxiety Disorders",
    "doi": "10.1016/j.xjmad.2025.100113",
    "source_type": "empirical",
    "setting": null,
@@ -2487,6 +2501,7 @@
   {
    "source": "S070",
    "citation": "Comparing self-other distinction across motor, cognitive and affective domains. (2024)",
+   "label": "Pronizius et al. 2024, Royal Society Open Science",
    "doi": "10.1098/rsos.240662",
    "source_type": "empirical",
    "setting": "online-unsupervised",
@@ -2511,6 +2526,7 @@
   {
    "source": "S072",
    "citation": "Modality Matters: Fasted Individuals Inhibit Food Stimuli Better Than Neutral St (2024)",
+   "label": "van den Hoek Ostende et al. 2024, Nutrients",
    "doi": "10.3390/nu16142190",
    "source_type": "empirical",
    "setting": "online-unsupervised",
@@ -2540,6 +2556,7 @@
   {
    "source": "S079",
    "citation": "The effects of conscious movement investment on inhibiting a simple response. (2024)",
+   "label": "You et al. 2024, Frontiers in Psychology",
    "doi": "10.3389/fpsyg.2024.1365420",
    "source_type": "empirical",
    "setting": "online-unsupervised",
@@ -2573,6 +2590,7 @@
   {
    "source": "S080",
    "citation": "Mindfulness and inhibitory control: Insights from the stop signal task with neut (2024)",
+   "label": "Logemann-Molnár et al. 2024, PLOS ONE",
    "doi": "10.1371/journal.pone.0303384",
    "source_type": "empirical",
    "setting": "online-unsupervised",
@@ -2596,6 +2614,7 @@
   {
    "source": "S082",
    "citation": "The effect of staircase stopping accuracy and testing environment on stop-signal (2024)",
+   "label": "Tran et al. 2023, Behavior Research Methods",
    "doi": "10.3758/s13428-022-02058-1",
    "source_type": "empirical",
    "setting": "online-unsupervised",
@@ -2629,6 +2648,7 @@
   {
    "source": "S085",
    "citation": "Failing to attend versus failing to stop: Single-trial decomposition of action-s (2023)",
+   "label": "Hannah et al. 2022, Behavior Research Methods",
    "doi": "10.3758/s13428-022-02008-x",
    "source_type": "empirical",
    "setting": "online-unsupervised",
@@ -2657,6 +2677,7 @@
   {
    "source": "S086",
    "citation": "A Novel, Expert-Endorsed, Neurocognitive Digital Assessment Tool for Addictive D (2023)",
+   "label": "Lee et al. 2023, Journal of Medical Internet Research",
    "doi": "10.2196/44414",
    "source_type": "empirical",
    "setting": "online-unsupervised",
@@ -2680,6 +2701,7 @@
   {
    "source": "S087",
    "citation": "Exploring Response Inhibition, the Behavioral Inhibition System and Possible Sex (2023)",
+   "label": "Eriksson et al. 2023, International Journal of Environmental Research and Public Health",
    "doi": "10.3390/ijerph20146340",
    "source_type": "empirical",
    "setting": "lab-native",
@@ -2692,6 +2714,7 @@
   {
    "source": "S091",
    "citation": "A dual-task approach to inform the taxonomy of inhibition-related processes. (2023)",
+   "label": "Bissett et al. 2023, Journal of Experimental Psychology: Human Perception and Performance",
    "doi": "10.1037/xhp0001073",
    "source_type": "empirical",
    "setting": "online-unsupervised",
@@ -2722,6 +2745,7 @@
   {
    "source": "S098",
    "citation": "Proactively Adjusting Stopping: Response Inhibition is Faster when Stopping Occu (2023)",
+   "label": "Doekemeijer et al. 2023, Journal of Cognition",
    "doi": "10.5334/joc.264",
    "source_type": "empirical",
    "setting": "online-unsupervised",
