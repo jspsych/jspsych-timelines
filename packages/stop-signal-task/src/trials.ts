@@ -614,7 +614,10 @@ export function createInstructions(ctx: Context) {
     })
   );
   if (hasStop) {
-    pages.push(t.instruction_stop({ signal: o.stimulus_set.stop_signal }) + strategyHtml(ctx));
+    pages.push(t.instruction_stop({ signal: o.stimulus_set.stop_signal }));
+    // The strategy gets its own page: on one page with the signal it overflowed short windows.
+    const strategy = strategyHtml(ctx);
+    if (strategy) pages.push(t.strategy_heading + strategy);
   }
   return { timeline: pages.map((p) => textPage(ctx, p, "instructions", "instruction")) };
 }

@@ -176,7 +176,7 @@ export const defaultText: TextConfig = {
     `${act(r.device) === "press" ? "Press" : act(r.device) === "tap" ? "Tap" : "Click"} ${
       r.response
     } for ${r.go_names}. Do not respond to ${r.nogo_names}.`,
-  instruction_practice_intro: `<h2>Practice</h2><p>First, a few practice trials.</p>`,
+  instruction_practice_intro: `<h2>Practice</h2><p>Now some practice at the pace of the real task. The main task starts after the practice.</p>`,
   instruction_test_intro: `<h2>Main Task</h2><p>Now the main task begins.</p>`,
   instruction_baseline_intro: `<h2>Go-only Block</h2><p>In this block every shape is a go shape: respond to each one.</p>`,
 

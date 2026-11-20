@@ -7,6 +7,11 @@
   text-align: left;
 }
 
+/* Arrows inside instruction sentences sit on the text's centre line, not its baseline. */
+.jspsych-timelines-stop-signal-task .jspsych-timelines-stop-signal-task-text p svg {
+  vertical-align: middle;
+}
+
 .jspsych-timelines-stop-signal-task .jspsych-timelines-stop-signal-task-text h2 {
   text-align: center;
 }

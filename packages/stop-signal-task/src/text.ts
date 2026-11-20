@@ -50,6 +50,8 @@ export interface TextConfig {
   /** @param r.target_accuracy the stopping rate the staircase aims for (0-1), e.g. 0.5 */
   strategy_tracking_explanation: (r: { target_accuracy: number }) => string;
   strategy_balance: string;
+  /** Heading of the strategy page, which follows the stop-signal page when `strategy_instruction` is set. */
+  strategy_heading: string;
   /** Page before the interactive walkthrough (`instruction_demonstration: "interactive"`). */
   instruction_demo_intro: string;
   /** Page before the static examples (`instruction_demonstration: "examples"`). */
@@ -166,6 +168,7 @@ export const defaultText: TextConfig = {
       r.target_accuracy * 100
     )}% of the stop trials.</p>`,
   strategy_balance: `<p>Both matter: respond quickly to the arrow, and try to stop when the signal appears.</p>`,
+  strategy_heading: `<h2>Speed and Stopping</h2>`,
   instruction_demo_intro: `<h2>Let's Try It</h2>
     <p>Here are a few examples of what you will see. Respond to each one as you would in the task.</p>
     <p>There is no time limit for the arrows. If you respond incorrectly, you will get a hint and try again.</p>`,
@@ -196,7 +199,7 @@ export const defaultText: TextConfig = {
       : `<p>When the signal appears, do not respond at all. Let's move on.</p>`;
   },
   instruction_correct: "Correct!",
-  instruction_practice_intro: `<h2>Practice</h2><p>First, a few practice trials.</p>`,
+  instruction_practice_intro: `<h2>Practice</h2><p>Now some practice at the pace of the real task. The main task starts after the practice.</p>`,
   instruction_test_intro: `<h2>Main Task</h2><p>Now the main task begins.</p>`,
   practice_repeat: `<h2>Practice Again</h2><p>Let's practice once more. Respond to the arrows quickly and accurately.</p>`,
   practice_ended: `<h2>Practice Not Passed</h2><p>The task ends here. Thank you.</p>`,

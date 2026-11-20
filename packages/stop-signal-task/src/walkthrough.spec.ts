@@ -172,7 +172,7 @@ describe("practice_criterion", () => {
       rows.filter((r) => "practice_criterion_met" in r).map((r) => r.practice_criterion_met)
     ).toEqual([false, false, false]);
     // each repeat has its own trial list and its own repeat notice
-    expect(rows.filter((r) => r.part === "instruction")).toHaveLength(3 + 2 + 1 + 1); // intro, response, stop, practice intro, 2 repeats, test intro
+    expect(rows.filter((r) => r.part === "instruction")).toHaveLength(4 + 1 + 2 + 1); // intro, response, stop, strategy, practice intro, 2 repeats, test intro
   });
 
   it("on_fail continue: records the miss and goes on without repeating", async () => {

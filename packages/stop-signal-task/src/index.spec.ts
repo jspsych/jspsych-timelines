@@ -445,3 +445,25 @@ describe("contradictions and unimplemented values throw, naming the option", () 
     expect(() => resolveAdaptive({ bounds: [500, 100] })).toThrow(/min < max/);
   });
 });
+
+describe("instruction pages", () => {
+  it("puts the strategy on its own page after the stop signal", async () => {
+    const jsPsych = initJsPsych();
+    const { timeline } = createTimeline(jsPsych, {
+      practice_trials: 0,
+      n_test_trials: 8,
+      instruction_demonstration: "none",
+    });
+    await jsPsych.simulate(timeline, "data-only");
+    const pages = jsPsych.data
+      .get()
+      .filter({ phase: "instructions", part: "instruction" })
+      .values()
+      .map((r: any) => r.stimulus as string);
+    const stop = pages.findIndex((p) => p.includes("The Stop Signal"));
+    expect(stop).toBeGreaterThan(0);
+    expect(pages[stop]).not.toContain("wait for the stop signal");
+    expect(pages[stop + 1]).toContain("Speed and Stopping");
+    expect(pages[stop + 1]).toContain("wait for the stop signal");
+  });
+});

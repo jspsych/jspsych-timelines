@@ -12,7 +12,7 @@ describe("timeouts and the response window", () => {
     "a timed-out %s trial records response and rt as null",
     async (device) => {
       const jsPsych = initJsPsych();
-      const timeline = createTimeline(jsPsych, {
+      const { timeline } = createTimeline(jsPsych, {
         response_device: device,
         practice_trials: 0,
         n_test_trials: 8,
