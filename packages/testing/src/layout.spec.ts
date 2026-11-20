@@ -66,4 +66,12 @@ describe("assessScreens", () => {
     expect(text).toContain("ALL STAGE CENTRES IDENTICAL");
     expect(typeof findChrome).toBe("function");
   });
+
+  it("fails when the mark (e.g. the fixation point) moves between screens", () => {
+    const a = { ...screen("fixation", 640, 400), mx: 640, my: 440 };
+    const b = { ...screen("array", 640, 400), mx: 640, my: 441.5 };
+    const c = { ...screen("iti", 640, 400), mx: null, my: null };
+    expect(assessScreens([a, { ...b, my: 440.4 }, c]).ok).toBe(true);
+    expect(assessScreens([a, b, c]).failures[0]).toMatch(/mark moved on "array"/);
+  });
 });

@@ -11,6 +11,8 @@ export interface LayoutConfig {
   global: string;
   stageSelector: string;
   belowSelector?: string;
+  /** an element that must not move between the screens that show it (e.g. the fixation point) */
+  markSelector?: string;
   /** serialised and run in the page: self-contained */
   screenKind: (stage: Element | null, doc: Document) => string;
   variants: LayoutVariant[];
@@ -35,6 +37,9 @@ export interface ScreenSample {
   overlap: boolean | null;
   /** something inside the stage reaches past its edges (the stage clips it) */
   clipped?: boolean | null;
+  /** centre of the markSelector element, if present */
+  mx?: number | null;
+  my?: number | null;
   done: boolean;
 }
 

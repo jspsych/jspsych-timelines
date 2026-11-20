@@ -116,10 +116,13 @@
   min-height: 80px;
 }
 
-/* Fixation kept on screen under an array shifted above or below it: centred like the fixation screen. */
+/* The fixation mark: the fixation screen and an array screen that keeps it use the same layer. */
 .jspsych-timelines-flanker .jspsych-timelines-flanker-fixation-layer {
   position: absolute;
-  inset: 0;
+  top: 50%;
+  right: 0;
+  left: 0;
+  height: 0; /* a line through the stage centre; the mark is centred on it */
   display: flex;
   align-items: center;
   justify-content: center;

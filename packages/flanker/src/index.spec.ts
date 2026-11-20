@@ -126,7 +126,8 @@ describe("flanker", () => {
       const trials = allTrials(
         createTimeline(jsPsych, { stimulus_color: "white on black" }).timeline
       );
-      const fixation = trials.find((t) => t.data.part === "fixation");
+      const f = trials.find((t) => t.data.part === "fixation");
+      const fixation = { stimulus: typeof f.stimulus === "function" ? f.stimulus() : f.stimulus };
       expect(fixation.stimulus).toContain(
         ".jspsych-display-element:has(.jspsych-timelines-flanker){background:black;color:white;}"
       );

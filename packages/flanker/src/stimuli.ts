@@ -90,8 +90,37 @@ export interface ArrayRender {
   bg: string;
   /** hide flankers (positive SOA preview) or target (negative SOA preview) but keep the layout */
   hide?: "flankers" | "target" | null;
-  /** HTML of a fixation mark kept at the stage centre while the array is shown (arrays shifted off fixation) */
+  /** HTML of a fixation mark kept on screen while the array is shown (arrays shifted off fixation) */
   fixation?: string;
+  /** vertical shift of that fixation mark from the stage centre, px (see fixationLayer) */
+  fixation_dy?: number;
+}
+
+const STAGE_PADDING = 20; // styles.css .jspsych-timelines-flanker-stage padding
+
+/**
+ * A fixation mark centred on the stage and shifted by `dy` px. The fixation screen and an array
+ * screen that keeps the fixation use this same markup, so the mark does not move between them.
+ */
+export function fixationLayer(html: string, dy = 0): string {
+  const t = dy ? ` style="transform:translateY(${dy}px);"` : "";
+  return `<div class="jspsych-timelines-flanker-fixation-layer"${t}>${html}</div>`;
+}
+
+/**
+ * Stage height that fits an array of `extent_px` shifted by `array_dy` and a fixation mark of
+ * `size_px` shifted by `fixation_dy`, both around the stage centre (which stays the display centre).
+ */
+export function stageHeightFor(
+  extent_px: number,
+  array_dy: number,
+  size_px: number,
+  fixation_dy: number
+) {
+  return (
+    2 * Math.max(Math.abs(array_dy) + extent_px / 2, Math.abs(fixation_dy) + size_px / 2) +
+    2 * STAGE_PADDING
+  );
 }
 
 /**
@@ -124,16 +153,18 @@ export function renderArray(a: ArrayRender, below = ""): string {
     ...a.flankers.map((g) => cell(g, hideF)),
   ].join("");
   const dir = a.orientation === "vertical" ? "column" : "row";
-  const fixation = a.fixation
-    ? `<div class="jspsych-timelines-flanker-fixation-layer">${a.fixation}</div>`
-    : "";
+  const fixation = a.fixation ? fixationLayer(a.fixation, a.fixation_dy ?? 0) : "";
   const stage = `<div class="jspsych-timelines-flanker-stage">${fixation}
     <div class="jspsych-timelines-flanker-array" data-orientation="${a.orientation}" style="flex-direction:${dir};gap:${a.gap_px}px;transform:translateY(${a.offset_px}px);">${items}</div>
   </div>`;
   const n = 2 * a.flankers.length + 1;
   const extent = a.orientation === "vertical" ? n * a.size_px + (n - 1) * a.gap_px : a.size_px;
-  const STAGE_PADDING = 20; // styles.css .jspsych-timelines-flanker-stage padding
-  const needed = extent + 2 * Math.abs(a.offset_px) + 2 * STAGE_PADDING;
+  const needed = stageHeightFor(
+    extent,
+    a.offset_px,
+    a.size_px,
+    a.fixation ? a.fixation_dy ?? 0 : 0
+  );
   return paintDisplay(a.fg, a.bg) + renderScreen(stage, below, needed);
 }
 
@@ -161,7 +192,13 @@ export function paintDisplay(fg: string, bg: string): string {
 }
 
 /** Stage with a centred text/shape (fixation, feedback, cue). Fixed size: see styles.css. */
-export function renderStage(inner: string, fg: string, bg: string, below = ""): string {
+export function renderStage(
+  inner: string,
+  fg: string,
+  bg: string,
+  below = "",
+  min_stage_px = 0
+): string {
   const stage = `<div class="jspsych-timelines-flanker-stage"><div class="jspsych-timelines-flanker-center">${inner}</div></div>`;
-  return paintDisplay(fg, bg) + renderScreen(stage, below);
+  return paintDisplay(fg, bg) + renderScreen(stage, below, min_stage_px);
 }

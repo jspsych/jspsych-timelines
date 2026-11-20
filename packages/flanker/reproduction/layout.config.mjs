@@ -21,6 +21,8 @@ export default {
   global: "jsPsychTimelineFlanker",
   stageSelector: ".jspsych-timelines-flanker-stage",
   belowSelector: ".jspsych-timelines-flanker-below",
+  // the fixation point must not move between fixation, cue and (shifted) array screens
+  markSelector: ".jspsych-timelines-flanker-fixation",
   // runs in the page, so it uses nothing from this file
   screenKind: (stage, doc) =>
     !stage

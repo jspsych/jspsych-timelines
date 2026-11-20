@@ -27,6 +27,8 @@ const path = require("path");
  * @property {string} global the bundle's global name, e.g. `jsPsychTimelineFlanker`
  * @property {string} stageSelector the fixed-size stage the standard anchors, e.g. `.jspsych-timelines-flanker-stage`
  * @property {string} [belowSelector] the text/button region below the stage
+ * @property {string} [markSelector] an element that must not move between the screens that show it,
+ *   e.g. the fixation point (`.jspsych-timelines-flanker-fixation`)
  * @property {(stage: Element | null, doc: Document) => string} screenKind names the screen type
  *   from the DOM. It is serialised and run in the page, so it must not use anything from this file.
  * @property {LayoutVariant[]} variants
@@ -58,6 +60,16 @@ function findChrome(explicit) {
  */
 function assessScreens(samples, { tolerancePx = 1, expectKinds = [] } = {}) {
   const failures = [];
+  const marked = samples.filter((s) => s.mx != null && s.my != null);
+  for (const s of marked) {
+    const m0 = marked[0];
+    if (Math.abs(s.mx - m0.mx) > tolerancePx || Math.abs(s.my - m0.my) > tolerancePx)
+      failures.push(
+        `mark moved on "${s.kind}": (${s.mx.toFixed(1)}, ${s.my.toFixed(1)}) vs (${m0.mx.toFixed(
+          1
+        )}, ${m0.my.toFixed(1)}) on "${m0.kind}"`
+      );
+  }
   const staged = samples.filter((s) => s.cx !== null);
   const ref = staged[0] ?? null;
   for (const s of staged) {
@@ -86,7 +98,7 @@ function assessScreens(samples, { tolerancePx = 1, expectKinds = [] } = {}) {
 }
 
 /** Runs in the page. Serialised, so it is self-contained. */
-function pageSampler(stageSelector, belowSelector, kindSource) {
+function pageSampler(stageSelector, belowSelector, kindSource, markSelector) {
   const content = document.querySelector("#jspsych-content");
   if (!content) return null;
   const stage = document.querySelector(stageSelector);
@@ -127,6 +139,12 @@ function pageSampler(stageSelector, belowSelector, kindSource) {
         })
       : null,
     done: document.body.dataset.done === "1",
+    ...(() => {
+      const mark = markSelector ? document.querySelector(markSelector) : null;
+      if (!mark) return { mx: null, my: null };
+      const m = mark.getBoundingClientRect();
+      return { mx: m.x + m.width / 2, my: m.y + m.height / 2 };
+    })(),
   };
 }
 
@@ -202,7 +220,13 @@ async function runLayoutCheck(config) {
       while (!done && Date.now() - t0 < (config.maxMs ?? 60000)) {
         await sleep(40);
         const s = await page
-          .evaluate(pageSampler, config.stageSelector, config.belowSelector ?? null, kindSource)
+          .evaluate(
+            pageSampler,
+            config.stageSelector,
+            config.belowSelector ?? null,
+            kindSource,
+            config.markSelector ?? null
+          )
           .catch(() => null);
         if (s) {
           const key = `${s.kind}|${s.txt}|btn=${s.btn}`;

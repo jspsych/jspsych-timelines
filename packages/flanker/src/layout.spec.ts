@@ -80,15 +80,16 @@ describe("flanker anchored stage layout", () => {
       size_px: 40,
       gap_px: 4,
       orientation: "horizontal",
-      offset_px: -80,
+      offset_px: -40,
       fg: "white",
       bg: "black",
       fixation: '<span class="jspsych-timelines-flanker-fixation">+</span>',
+      fixation_dy: 40,
     });
     const { screen, stage } = expectAnchored(shifted);
     expect(stage.querySelector(".jspsych-timelines-flanker-fixation")?.textContent).toBe("+");
-    // 40 (item) + 2 * 80 (offset) + 2 * 20 (padding) = 240
-    expect((screen as HTMLElement).getAttribute("style")).toContain("240px");
+    // the pair (array 40 above centre, fixation 40 below) spans 2 * (40 + 20); plus 2 * 20 padding
+    expect((screen as HTMLElement).getAttribute("style")).toContain("160px");
   });
 
   for (const [name, options] of [

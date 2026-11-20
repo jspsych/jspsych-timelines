@@ -108,11 +108,20 @@ const flankerOnly: Record<string, FlankerCheck> = {
       const html = evalStimulus(trialsOf(r, "response")[0]);
       expect(html).toContain(`data-orientation="${orientation}"`);
       expect(html).toContain(`flex-direction:${orientation === "vertical" ? "column" : "row"}`);
-      const m = /translateY\((-?[\d.]+)px\)/.exec(html)!;
+      const m = /flanker-array"[^>]*translateY\((-?[\d.]+)px\)/.exec(html)!;
       const off = parseFloat(m[1]);
-      if (pos === "above_fixation") expect(off).toBeLessThan(0);
-      else if (pos === "below_fixation") expect(off).toBeGreaterThan(0);
-      else expect(off).toBe(0);
+      // the fixation point stays on screen, on the other side of the stage centre
+      const f = /fixation-layer" style="transform:translateY\((-?[\d.]+)px\)/.exec(html);
+      if (pos === "above_fixation") {
+        expect(off).toBeLessThan(0);
+        expect(parseFloat(f![1])).toBeGreaterThan(0);
+      } else if (pos === "below_fixation") {
+        expect(off).toBeGreaterThan(0);
+        expect(parseFloat(f![1])).toBeLessThan(0);
+      } else {
+        expect(off).toBe(0);
+        expect(f).toBeNull();
+      }
     },
   },
   stimulus_set: {

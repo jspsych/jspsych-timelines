@@ -27,11 +27,13 @@ import {
 import { Mapping, TrialSpec, buildDemoSpec, buildTrialSpecs } from "./sequence";
 import {
   Glyph,
+  fixationLayer,
   paintDisplay,
   parseColors,
   renderArray,
   renderGlyph,
   renderStage,
+  stageHeightFor,
   toPx,
 } from "./stimuli";
 import { InstructionStepArgs, TextConfig, defaultText } from "./text";
@@ -229,11 +231,10 @@ export function createFixation(
     part: "fixation",
     block,
     duration: ms,
-    stimulus: renderStage(
-      `<span class="jspsych-timelines-flanker-fixation">${ctx.text.fixation}</span>`,
-      fg,
-      bg
-    ),
+    stimulus: () => {
+      const g = arrayGeometry(ctx, o);
+      return renderStage(fixationLayer(fixationHtml(ctx), g.fixation_dy), fg, bg, "", g.stage_px);
+    },
     data: { fixation_duration: ms },
   });
 }
@@ -291,6 +292,30 @@ export function createIti(ctx: Context, o: ResolvedOptions, phase: Phase, block:
 
 // -- stimulus array ---------------------------------------------------------------------------
 
+const fixationHtml = (ctx: Context) =>
+  `<span class="jspsych-timelines-flanker-fixation">${ctx.text.fixation}</span>`;
+
+/**
+ * Vertical layout of the run (`stimulus_layout.array_position`). Centred: the array is drawn at
+ * the stage centre. Above or below: the array and the fixation point are 2 item sizes apart and
+ * the pair is centred on the stage, so the fixation screen and the array screen share one
+ * stage height and the fixation point is at the same place on both.
+ */
+function arrayGeometry(ctx: Context, o: ResolvedOptions) {
+  const size = toPx(o.stimulus_size.value, o.stimulus_size.unit, pxPerDeg(ctx), viewportHeight());
+  const pos = o.stimulus_layout.array_position ?? "centre_at_fixation";
+  const half = pos === "centre_at_fixation" ? 0 : size; // half the array-fixation distance
+  const array_dy = pos === "above_fixation" ? -half : half;
+  const fixation_dy = -array_dy;
+  return {
+    size,
+    shifted: half > 0,
+    array_dy,
+    fixation_dy,
+    stage_px: half > 0 ? stageHeightFor(size, array_dy, size, fixation_dy) : 0,
+  };
+}
+
 function arrayHtml(
   ctx: Context,
   o: ResolvedOptions,
@@ -299,11 +324,9 @@ function arrayHtml(
   below = ""
 ): string {
   const { fg, bg } = parseColors(o.stimulus_color);
-  const ppd = pxPerDeg(ctx);
-  const size = toPx(o.stimulus_size.value, o.stimulus_size.unit, ppd, viewportHeight());
-  const gap = toPx(spec.gap, spec.gap_unit, ppd, viewportHeight());
-  const pos = o.stimulus_layout.array_position ?? "centre_at_fixation";
-  const offset = pos === "above_fixation" ? -2 * size : pos === "below_fixation" ? 2 * size : 0;
+  const g = arrayGeometry(ctx, o);
+  const size = g.size;
+  const gap = toPx(spec.gap, spec.gap_unit, pxPerDeg(ctx), viewportHeight());
   return renderArray(
     {
       flankers: new Array(spec.per_side).fill(spec.flanker as Glyph),
@@ -311,16 +334,14 @@ function arrayHtml(
       size_px: size,
       gap_px: gap,
       orientation: o.stimulus_layout.orientation ?? "horizontal",
-      offset_px: offset,
+      offset_px: g.array_dy,
       fg,
       bg,
       hide,
       // An array shown above or below fixation keeps the fixation mark on screen, as in Eriksen &
       // Eriksen (1974) and PsyToolkit ("letters appear above the fixation point").
-      fixation:
-        offset !== 0
-          ? `<span class="jspsych-timelines-flanker-fixation">${ctx.text.fixation}</span>`
-          : undefined,
+      fixation: g.shifted ? fixationHtml(ctx) : undefined,
+      fixation_dy: g.fixation_dy,
     },
     below
   );
