@@ -649,7 +649,7 @@ The page **MUST** be registered in `docs/sidebars.ts`.
 
 The interactive example on the reference page (`TimelineExample`) offers a Preset menu, read from `x-jspsych-presets` in `docs-meta/options.meta.json`.
 
-- **The first preset MUST be a quick demo,** with `id: "quick-demo"` and `label: "Quick demo"`. It exists so that a reader can try the task in about a minute. It is not from a study, and its description says so.
+- **The first preset MUST be a quick demo,** with `id: "quick-demo"` and `label: "Quick demo"`. It exists so that a reader can try the whole task, walkthrough to end screen. It **MUST** take at most 3 minutes for someone who responds promptly. Check this by running it in the browser once, and say how long it took in DEFAULTS.md. It is not from a study, and its description says so.
 - **It only shortens the task.** It keeps the default instructions, including the interactive walkthrough (§6a), and sets only the vocabulary's count options to small values. Typical settings are `practice_trials: 4`, `n_test_trials: 12` and `n_blocks: 1`. A task without those options uses its own length options, such as list length or number of rounds. The values **MUST** be valid for the task's design, for example a multiple of the number of conditions when proportions must be exact.
 - **The other presets are the study configurations** from the spec, after them.
 - **Regeneration MUST keep it.** Whatever code rewrites the presets (for flanker, the `onUpdate` of its reproduction test) puts the quick demo first and never drops it.
@@ -716,7 +716,7 @@ The first battery release is gated on the jsPsych release carrying the §11 CSS 
 - [ ] Scoring reports measures and never excludes or flags participants on performance
 - [ ] Withhold trials can be simulated as withheld; timeouts record `response: null`
 - [ ] Site reference page exists at `website/docs/reference/<name>.mdx` and the package is listed in `website/docs-packages.json`
-- [ ] The first preset is the tested "Quick demo" (§12)
+- [ ] The first preset is the tested "Quick demo", runs in 3 minutes or less (§12)
 - [ ] README is thin and links to the site
 - [ ] `examples/index.html` runs against a fresh build
 - [ ] A changeset exists
