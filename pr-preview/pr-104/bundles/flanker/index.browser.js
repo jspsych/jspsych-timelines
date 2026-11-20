@@ -3540,12 +3540,21 @@ var jsPsychTimelineFlanker = (function (exports) {
     if (unit === "screen_height_fraction") return value * viewportHeight2;
     return value;
   }
+  var STAGE_PADDING = 20;
+  function fixationLayer(html, dy = 0) {
+    const t = dy ? ` style="transform:translateY(${dy}px);"` : "";
+    return `<div class="jspsych-timelines-flanker-fixation-layer"${t}>${html}</div>`;
+  }
+  function stageHeightFor(extent_px, array_dy, size_px, fixation_dy) {
+    return 2 * Math.max(Math.abs(array_dy) + extent_px / 2, Math.abs(fixation_dy) + size_px / 2) + 2 * STAGE_PADDING;
+  }
   function renderScreen(stage, below = "", min_stage_px = 0) {
     const region = below ? `<div class="jspsych-timelines-flanker-below">${below}</div>` : "";
     const style = min_stage_px > 0 ? ` style="--flanker-stage-h: max(min(280px, 40vh), ${Math.ceil(min_stage_px)}px);"` : "";
     return `<div class="jspsych-timelines-flanker-screen"${style}>${stage}${region}</div>`;
   }
   function renderArray(a, below = "") {
+    var _a, _b;
     const cell = (g, hidden) => `<span class="jspsych-timelines-flanker-item" style="width:${a.size_px}px;height:${a.size_px}px;${hidden ? "visibility:hidden;" : ""}">${renderGlyph(g, a.size_px)}</span>`;
     const hideF = a.hide === "flankers";
     const hideT = a.hide === "target";
@@ -3555,14 +3564,18 @@ var jsPsychTimelineFlanker = (function (exports) {
       ...a.flankers.map((g) => cell(g, hideF))
     ].join("");
     const dir = a.orientation === "vertical" ? "column" : "row";
-    const fixation = a.fixation ? `<div class="jspsych-timelines-flanker-fixation-layer">${a.fixation}</div>` : "";
+    const fixation = a.fixation ? fixationLayer(a.fixation, (_a = a.fixation_dy) != null ? _a : 0) : "";
     const stage = `<div class="jspsych-timelines-flanker-stage">${fixation}
     <div class="jspsych-timelines-flanker-array" data-orientation="${a.orientation}" style="flex-direction:${dir};gap:${a.gap_px}px;transform:translateY(${a.offset_px}px);">${items}</div>
   </div>`;
     const n = 2 * a.flankers.length + 1;
     const extent = a.orientation === "vertical" ? n * a.size_px + (n - 1) * a.gap_px : a.size_px;
-    const STAGE_PADDING = 20;
-    const needed = extent + 2 * Math.abs(a.offset_px) + 2 * STAGE_PADDING;
+    const needed = stageHeightFor(
+      extent,
+      a.offset_px,
+      a.size_px,
+      a.fixation ? (_b = a.fixation_dy) != null ? _b : 0 : 0
+    );
     return paintDisplay(a.fg, a.bg) + renderScreen(stage, below, needed);
   }
   function parseColors(spec) {
@@ -3577,9 +3590,9 @@ var jsPsychTimelineFlanker = (function (exports) {
       throw new Error(`flanker: unsupported colour in stimulus_color ("${fg}" on "${bg}").`);
     return `<style>.jspsych-display-element:has(.jspsych-timelines-flanker){background:${bg};color:${fg};}</style>`;
   }
-  function renderStage(inner, fg, bg, below = "") {
+  function renderStage(inner, fg, bg, below = "", min_stage_px = 0) {
     const stage = `<div class="jspsych-timelines-flanker-stage"><div class="jspsych-timelines-flanker-center">${inner}</div></div>`;
-    return paintDisplay(fg, bg) + renderScreen(stage, below);
+    return paintDisplay(fg, bg) + renderScreen(stage, below, min_stage_px);
   }
 
   // src/sequence.ts
@@ -3894,7 +3907,7 @@ var jsPsychTimelineFlanker = (function (exports) {
   }
 
   // src/styles.css
-  styleInject(".jspsych-timelines-flanker .jspsych-timelines-flanker-text {\n  max-width: 600px;\n  margin: 0 auto;\n  padding: 0 20px;\n  text-align: left;\n}\n.jspsych-timelines-flanker .jspsych-timelines-flanker-text p svg {\n  vertical-align: middle;\n}\n.jspsych-timelines-flanker .jspsych-timelines-flanker-text h2 {\n  text-align: center;\n}\n.jspsych-timelines-flanker {\n  --flanker-stage-h: min(280px, 40vh);\n  --flanker-btn-reserve: 76px;\n}\n.jspsych-timelines-flanker:has(.jspsych-timelines-flanker-screen) {\n  position: relative;\n  box-sizing: border-box;\n  width: 100%;\n  max-width: none;\n  height: 100vh;\n  margin: 0;\n  overflow: hidden;\n}\n.jspsych-timelines-flanker .jspsych-timelines-flanker-screen {\n  display: contents;\n}\n.jspsych-timelines-flanker .jspsych-timelines-flanker-stage {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  transform: translate(-50%, -50%);\n  box-sizing: border-box;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 640px;\n  max-width: calc(100vw - 16px);\n  height: var(--flanker-stage-h);\n  padding: 20px;\n  overflow: hidden;\n}\n.jspsych-timelines-flanker .jspsych-timelines-flanker-below {\n  position: absolute;\n  top: calc(50% + var(--flanker-stage-h) / 2 + 8px);\n  right: 0;\n  bottom: 0;\n  left: 0;\n  overflow-y: auto;\n  overscroll-behavior: contain;\n}\n.jspsych-timelines-flanker .jspsych-timelines-flanker-below .jspsych-timelines-flanker-text {\n  text-align: center;\n  text-wrap: balance;\n}\n.jspsych-timelines-flanker:has(#jspsych-html-button-response-btngroup) .jspsych-timelines-flanker-below {\n  bottom: var(--flanker-btn-reserve);\n}\n.jspsych-timelines-flanker:has(.jspsych-timelines-flanker-screen) #jspsych-html-button-response-btngroup {\n  position: absolute;\n  right: 0;\n  bottom: 12px;\n  left: 0;\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  justify-content: center;\n  gap: 8px;\n}\n.jspsych-timelines-flanker .jspsych-timelines-flanker-array {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n.jspsych-timelines-flanker .jspsych-timelines-flanker-item {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  line-height: 1;\n}\n.jspsych-timelines-flanker .jspsych-timelines-flanker-item .letter {\n  font-family: monospace;\n  font-weight: bold;\n}\n.jspsych-timelines-flanker .jspsych-timelines-flanker-center {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  min-height: 80px;\n}\n.jspsych-timelines-flanker .jspsych-timelines-flanker-fixation-layer {\n  position: absolute;\n  inset: 0;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n.jspsych-timelines-flanker .jspsych-timelines-flanker-fixation {\n  font-size: 3em;\n}\n.jspsych-timelines-flanker .jspsych-timelines-flanker-cue {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  gap: 40px;\n}\n.jspsych-timelines-flanker .jspsych-timelines-flanker-cue .dot {\n  width: 24px;\n  height: 24px;\n  border: 3px solid currentColor;\n  border-radius: 50%;\n}\n.jspsych-timelines-flanker .jspsych-timelines-flanker-feedback {\n  font-size: 1.6em;\n}\n.jspsych-timelines-flanker .jspsych-timelines-flanker-feedback.incorrect,\n.jspsych-timelines-flanker .jspsych-timelines-flanker-feedback.timeout {\n  font-weight: bold;\n}\n");
+  styleInject(".jspsych-timelines-flanker .jspsych-timelines-flanker-text {\n  max-width: 600px;\n  margin: 0 auto;\n  padding: 0 20px;\n  text-align: left;\n}\n.jspsych-timelines-flanker .jspsych-timelines-flanker-text p svg {\n  vertical-align: middle;\n}\n.jspsych-timelines-flanker .jspsych-timelines-flanker-text h2 {\n  text-align: center;\n}\n.jspsych-timelines-flanker {\n  --flanker-stage-h: min(280px, 40vh);\n  --flanker-btn-reserve: 76px;\n}\n.jspsych-timelines-flanker:has(.jspsych-timelines-flanker-screen) {\n  position: relative;\n  box-sizing: border-box;\n  width: 100%;\n  max-width: none;\n  height: 100vh;\n  margin: 0;\n  overflow: hidden;\n}\n.jspsych-timelines-flanker .jspsych-timelines-flanker-screen {\n  display: contents;\n}\n.jspsych-timelines-flanker .jspsych-timelines-flanker-stage {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  transform: translate(-50%, -50%);\n  box-sizing: border-box;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 640px;\n  max-width: calc(100vw - 16px);\n  height: var(--flanker-stage-h);\n  padding: 20px;\n  overflow: hidden;\n}\n.jspsych-timelines-flanker .jspsych-timelines-flanker-below {\n  position: absolute;\n  top: calc(50% + var(--flanker-stage-h) / 2 + 8px);\n  right: 0;\n  bottom: 0;\n  left: 0;\n  overflow-y: auto;\n  overscroll-behavior: contain;\n}\n.jspsych-timelines-flanker .jspsych-timelines-flanker-below .jspsych-timelines-flanker-text {\n  text-align: center;\n  text-wrap: balance;\n}\n.jspsych-timelines-flanker:has(#jspsych-html-button-response-btngroup) .jspsych-timelines-flanker-below {\n  bottom: var(--flanker-btn-reserve);\n}\n.jspsych-timelines-flanker:has(.jspsych-timelines-flanker-screen) #jspsych-html-button-response-btngroup {\n  position: absolute;\n  right: 0;\n  bottom: 12px;\n  left: 0;\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  justify-content: center;\n  gap: 8px;\n}\n.jspsych-timelines-flanker .jspsych-timelines-flanker-array {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n.jspsych-timelines-flanker .jspsych-timelines-flanker-item {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  line-height: 1;\n}\n.jspsych-timelines-flanker .jspsych-timelines-flanker-item .letter {\n  font-family: monospace;\n  font-weight: bold;\n}\n.jspsych-timelines-flanker .jspsych-timelines-flanker-center {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  min-height: 80px;\n}\n.jspsych-timelines-flanker .jspsych-timelines-flanker-fixation-layer {\n  position: absolute;\n  top: 50%;\n  right: 0;\n  left: 0;\n  height: 0;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n.jspsych-timelines-flanker .jspsych-timelines-flanker-fixation {\n  font-size: 3em;\n}\n.jspsych-timelines-flanker .jspsych-timelines-flanker-cue {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  gap: 40px;\n}\n.jspsych-timelines-flanker .jspsych-timelines-flanker-cue .dot {\n  width: 24px;\n  height: 24px;\n  border: 3px solid currentColor;\n  border-radius: 50%;\n}\n.jspsych-timelines-flanker .jspsych-timelines-flanker-feedback {\n  font-size: 1.6em;\n}\n.jspsych-timelines-flanker .jspsych-timelines-flanker-feedback.incorrect,\n.jspsych-timelines-flanker .jspsych-timelines-flanker-feedback.timeout {\n  font-weight: bold;\n}\n");
 
   // ../../node_modules/jspsych/dist/index.js
   __toESM(require_auto_bind());
@@ -4913,11 +4926,10 @@ var jsPsychTimelineFlanker = (function (exports) {
       part: "fixation",
       block,
       duration: ms,
-      stimulus: renderStage(
-        `<span class="jspsych-timelines-flanker-fixation">${ctx.text.fixation}</span>`,
-        fg,
-        bg
-      ),
+      stimulus: () => {
+        const g = arrayGeometry(ctx, o);
+        return renderStage(fixationLayer(fixationHtml(ctx), g.fixation_dy), fg, bg, "", g.stage_px);
+      },
       data: { fixation_duration: ms }
     });
   }
@@ -4964,28 +4976,43 @@ var jsPsychTimelineFlanker = (function (exports) {
       stimulus: renderStage("", fg, bg)
     });
   }
-  function arrayHtml(ctx, o, spec, hide, below = "") {
-    var _a, _b;
-    const { fg, bg } = parseColors(o.stimulus_color);
-    const ppd = pxPerDeg(ctx);
-    const size = toPx(o.stimulus_size.value, o.stimulus_size.unit, ppd, viewportHeight());
-    const gap = toPx(spec.gap, spec.gap_unit, ppd, viewportHeight());
+  var fixationHtml = (ctx) => `<span class="jspsych-timelines-flanker-fixation">${ctx.text.fixation}</span>`;
+  function arrayGeometry(ctx, o) {
+    var _a;
+    const size = toPx(o.stimulus_size.value, o.stimulus_size.unit, pxPerDeg(ctx), viewportHeight());
     const pos = (_a = o.stimulus_layout.array_position) != null ? _a : "centre_at_fixation";
-    const offset = pos === "above_fixation" ? -2 * size : pos === "below_fixation" ? 2 * size : 0;
+    const half = pos === "centre_at_fixation" ? 0 : size;
+    const array_dy = pos === "above_fixation" ? -half : half;
+    const fixation_dy = -array_dy;
+    return {
+      size,
+      shifted: half > 0,
+      array_dy,
+      fixation_dy,
+      stage_px: half > 0 ? stageHeightFor(size, array_dy, size, fixation_dy) : 0
+    };
+  }
+  function arrayHtml(ctx, o, spec, hide, below = "") {
+    var _a;
+    const { fg, bg } = parseColors(o.stimulus_color);
+    const g = arrayGeometry(ctx, o);
+    const size = g.size;
+    const gap = toPx(spec.gap, spec.gap_unit, pxPerDeg(ctx), viewportHeight());
     return renderArray(
       {
         flankers: new Array(spec.per_side).fill(spec.flanker),
         target: spec.target,
         size_px: size,
         gap_px: gap,
-        orientation: (_b = o.stimulus_layout.orientation) != null ? _b : "horizontal",
-        offset_px: offset,
+        orientation: (_a = o.stimulus_layout.orientation) != null ? _a : "horizontal",
+        offset_px: g.array_dy,
         fg,
         bg,
         hide,
         // An array shown above or below fixation keeps the fixation mark on screen, as in Eriksen &
         // Eriksen (1974) and PsyToolkit ("letters appear above the fixation point").
-        fixation: offset !== 0 ? `<span class="jspsych-timelines-flanker-fixation">${ctx.text.fixation}</span>` : void 0
+        fixation: g.shifted ? fixationHtml(ctx) : void 0,
+        fixation_dy: g.fixation_dy
       },
       below
     );
