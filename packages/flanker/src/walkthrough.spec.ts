@@ -250,3 +250,25 @@ describe("instruction walkthrough (interactive)", () => {
     });
   });
 });
+
+describe("walkthrough text for neutral forms", () => {
+  it("tells instruction_step when nothing is shown beside the center", async () => {
+    const calls: any[] = [];
+    const jsPsych = initJsPsych();
+    const { timeline } = createTimeline(jsPsych, {
+      practice_trials: 0,
+      n_test_trials: 4,
+      text: {
+        instruction_step: (r) => {
+          calls.push(r);
+          return "";
+        },
+      },
+    });
+    await jsPsych.simulate(timeline, "data-only");
+    const neutral = calls.filter((r) => r.condition === "neutral");
+    // Default condition_set has neutral_dash and neutral_empty: one step each.
+    expect(neutral.map((r) => r.sides_empty).sort()).toEqual([false, true]);
+    expect(calls.filter((r) => r.condition !== "neutral").every((r) => !r.sides_empty)).toBe(true);
+  });
+});

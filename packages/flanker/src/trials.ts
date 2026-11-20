@@ -631,6 +631,7 @@ function stepArgs(ctx: Context, step: DemoStep): InstructionStepArgs {
     device: o.response_device as "keyboard" | "mouse" | "touch",
     target: nogo ? "" : groupHtml(o, spec.group),
     response: nogo ? "" : responseLabelHtml(o, labels, mapping.response_of_group[spec.group]),
+    sides_empty: spec.flanker === "blank",
   };
 }
 

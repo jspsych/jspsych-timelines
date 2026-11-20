@@ -3,6 +3,8 @@ export interface InstructionStepArgs {
   device: "keyboard" | "mouse" | "touch";
   target: string;
   response: string;
+  /** True when nothing is shown beside the center item (a neutral trial with blank flankers). */
+  sides_empty: boolean;
 }
 
 /**
@@ -40,6 +42,7 @@ export interface TextConfig {
    * @param r.device    "keyboard" | "mouse" | "touch"
    * @param r.target    HTML of the target(s) of the correct response (empty for "nogo")
    * @param r.response  label of the correct response: key or button (empty for "nogo")
+   * @param r.sides_empty true when nothing is shown beside the center item (blank neutral flankers)
    */
   instruction_step: (r: InstructionStepArgs) => string;
   /** Hint after a wrong response in a walkthrough step; the step then repeats. Same parameters as `instruction_step`. */
@@ -145,7 +148,9 @@ export const defaultText: TextConfig = {
       case "congruent":
         return `<p>The items on the sides are the same as the center one. The center is ${r.target}, so ${act} <strong>${r.response}</strong>.</p>`;
       case "neutral":
-        return `<p>The items on the sides are different from the center one, but they give no hint. The center is ${r.target}, so ${act} <strong>${r.response}</strong>.</p>`;
+        return r.sides_empty
+          ? `<p>Sometimes there is nothing on the sides, only the center item. The center is ${r.target}, so ${act} <strong>${r.response}</strong>.</p>`
+          : `<p>The items on the sides are different from the center one, but they give no hint. The center is ${r.target}, so ${act} <strong>${r.response}</strong>.</p>`;
       case "incongruent":
         return `<p>The items on the sides are different from the center one. Ignore them. The center is ${r.target}, so ${act} <strong>${r.response}</strong>.</p>`;
       case "nogo":
@@ -175,7 +180,7 @@ export const defaultText: TextConfig = {
   emphasis_speed: "Respond as quickly as you can.",
   emphasis_accuracy: "Try to be as accurate as you can.",
   emphasis_both: "Respond as quickly and as accurately as you can.",
-  instruction_practice_intro: `<h2>Practice</h2><p>First, a few practice trials.</p>`,
+  instruction_practice_intro: `<h2>Practice</h2><p>Now some practice at the pace of the real task. The main task starts after the practice.</p>`,
   instruction_test_intro: `<h2>Main Task</h2><p>Now the main task begins.</p>`,
 
   left_button: "Left",
