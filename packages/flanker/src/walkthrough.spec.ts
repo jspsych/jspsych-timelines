@@ -272,3 +272,34 @@ describe("walkthrough text for neutral forms", () => {
     expect(calls.filter((r) => r.condition !== "neutral").every((r) => !r.sides_empty)).toBe(true);
   });
 });
+
+describe("walkthrough text with letters", () => {
+  it("names the letter shown, not every letter of its response group", async () => {
+    const calls: any[] = [];
+    const jsPsych = initJsPsych();
+    const { timeline } = createTimeline(jsPsych, {
+      practice_trials: 0,
+      n_test_trials: 4,
+      condition_set: ["congruent", "incongruent"],
+      condition_proportions: { congruent: 0.5, incongruent: 0.5 },
+      stimulus_set: {
+        target: {
+          letters: [
+            ["X", "C"],
+            ["V", "B"],
+          ],
+        },
+      },
+      targets_per_response: 2,
+      text: {
+        instruction_step: (r) => {
+          calls.push(r);
+          return "";
+        },
+      },
+    });
+    await jsPsych.simulate(timeline, "data-only");
+    expect(calls.length).toBeGreaterThan(0);
+    for (const r of calls) expect(r.target).toMatch(/^<strong>[XCVB]<\/strong>$/);
+  });
+});

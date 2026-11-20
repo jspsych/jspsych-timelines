@@ -123,6 +123,11 @@ function groupText(o: ResolvedOptions, g: 0 | 1): string {
   return t.letters[g].join(" / ");
 }
 
+function isLetters(o: ResolvedOptions): boolean {
+  const t = o.stimulus_set.target;
+  return t !== "arrows" && t !== undefined;
+}
+
 function groupHtml(o: ResolvedOptions, g: 0 | 1, size = 28): string {
   const t = o.stimulus_set.target;
   if (t === "arrows" || t === undefined) return renderGlyph(g === 0 ? "left" : "right", size);
@@ -635,7 +640,8 @@ function stepArgs(ctx: Context, step: DemoStep): InstructionStepArgs {
   return {
     condition: spec.congruency,
     device: o.response_device as "keyboard" | "mouse" | "touch",
-    target: nogo ? "" : groupHtml(o, spec.group),
+    // The letter actually shown (with two letters per response, not the whole group); an arrow otherwise.
+    target: nogo ? "" : isLetters(o) ? `<strong>${spec.target}</strong>` : groupHtml(o, spec.group),
     response: nogo ? "" : responseLabelHtml(o, labels, mapping.response_of_group[spec.group]),
     sides_empty: spec.flanker === "blank",
   };
