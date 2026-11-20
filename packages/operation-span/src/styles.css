@@ -106,7 +106,7 @@
 }
 
 .jspsych-timelines-operation-span .jspsych-timelines-operation-span-notice {
-  font-size: 1.4em;
+  font-size: 1em; /* body size: only stimuli and the fixation mark are larger (standard §5) */
   text-align: center;
   text-wrap: balance;
 }

@@ -230,9 +230,9 @@ export const defaultText: TextConfig = {
       ? `<p>The letters were <strong>${r.items.join(" ")}</strong>, in that order. Let's go on.</p>`
       : `<p>The correct answer here was ${r.correct_label}. Let's go on.</p>`,
   instruction_correct: "Correct!",
-  practice_storage_intro: `<p>First, practice remembering letters. You will see a few letters, then recall them.</p>`,
-  practice_processing_intro: `<p>Now practice the math problems alone, at your own pace. Your speed here sets your time limit later.</p>`,
-  practice_combined_intro: `<p>Now practice doing both together, as in the real task.</p>`,
+  practice_storage_intro: `<p>Next, a short practice in three parts: letters alone, math alone, then both together, as in the real task.</p><p>Part 1: you will see a few letters. Recall them in order.</p>`,
+  practice_processing_intro: `<p>Part 2: the math problems alone, at your own pace. Your speed here sets your time limit later.</p>`,
+  practice_combined_intro: `<p>Part 3: both together, as in the real task.</p>`,
   instruction_test_intro: `<p>That's the end of practice. The real task is the same, with more letters to remember each time. Remember to keep solving the math problems accurately.</p>`,
   practice_repeat: ({ accuracy, criterion }) =>
     `<p>Your math accuracy was ${pct(accuracy)}; you need ${pct(

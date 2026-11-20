@@ -147,7 +147,7 @@
 }
 
 .jspsych-timelines-flanker .jspsych-timelines-flanker-feedback {
-  font-size: 1.6em;
+  font-size: 1em; /* body size: only stimuli and the fixation mark are larger (standard §5) */
 }
 
 .jspsych-timelines-flanker .jspsych-timelines-flanker-feedback.incorrect,
