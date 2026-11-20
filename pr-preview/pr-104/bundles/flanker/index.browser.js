@@ -4842,6 +4842,10 @@ var jsPsychTimelineFlanker = (function (exports) {
     if (t === "arrows" || t === void 0) return g === 0 ? "left" : "right";
     return t.letters[g].join(" / ");
   }
+  function isLetters(o) {
+    const t = o.stimulus_set.target;
+    return t !== "arrows" && t !== void 0;
+  }
   function groupHtml(o, g, size = 28) {
     const t = o.stimulus_set.target;
     if (t === "arrows" || t === void 0) return renderGlyph(g === 0 ? "left" : "right", size);
@@ -5208,7 +5212,8 @@ var jsPsychTimelineFlanker = (function (exports) {
     return {
       condition: spec.congruency,
       device: o.response_device,
-      target: nogo ? "" : groupHtml(o, spec.group),
+      // The letter actually shown (with two letters per response, not the whole group); an arrow otherwise.
+      target: nogo ? "" : isLetters(o) ? `<strong>${spec.target}</strong>` : groupHtml(o, spec.group),
       response: nogo ? "" : responseLabelHtml(o, labels, mapping.response_of_group[spec.group]),
       sides_empty: spec.flanker === "blank"
     };
