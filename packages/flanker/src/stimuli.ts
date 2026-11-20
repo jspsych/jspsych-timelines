@@ -90,6 +90,8 @@ export interface ArrayRender {
   bg: string;
   /** hide flankers (positive SOA preview) or target (negative SOA preview) but keep the layout */
   hide?: "flankers" | "target" | null;
+  /** HTML of a fixation mark kept at the stage centre while the array is shown (arrays shifted off fixation) */
+  fixation?: string;
 }
 
 /**
@@ -97,9 +99,15 @@ export interface ArrayRender {
  * the display on every task screen. Text (and the plugin's button group) belong to the region
  * below it and never move it. `below` is the optional HTML for that region.
  */
-export function renderScreen(stage: string, below = ""): string {
+export function renderScreen(stage: string, below = "", min_stage_px = 0): string {
   const region = below ? `<div class="jspsych-timelines-flanker-below">${below}</div>` : "";
-  return `<div class="jspsych-timelines-flanker-screen">${stage}${region}</div>`;
+  // A stimulus taller than the default stage (a vertical array, or one shifted above or below
+  // fixation) gets a taller stage, still centred, so it is never clipped.
+  const style =
+    min_stage_px > 0
+      ? ` style="--flanker-stage-h: max(min(280px, 40vh), ${Math.ceil(min_stage_px)}px);"`
+      : "";
+  return `<div class="jspsych-timelines-flanker-screen"${style}>${stage}${region}</div>`;
 }
 
 /** HTML of the whole stimulus panel, plus optional text for the region below the stage. */
@@ -116,10 +124,17 @@ export function renderArray(a: ArrayRender, below = ""): string {
     ...a.flankers.map((g) => cell(g, hideF)),
   ].join("");
   const dir = a.orientation === "vertical" ? "column" : "row";
-  const stage = `<div class="jspsych-timelines-flanker-stage">
+  const fixation = a.fixation
+    ? `<div class="jspsych-timelines-flanker-fixation-layer">${a.fixation}</div>`
+    : "";
+  const stage = `<div class="jspsych-timelines-flanker-stage">${fixation}
     <div class="jspsych-timelines-flanker-array" data-orientation="${a.orientation}" style="flex-direction:${dir};gap:${a.gap_px}px;transform:translateY(${a.offset_px}px);">${items}</div>
   </div>`;
-  return paintDisplay(a.fg, a.bg) + renderScreen(stage, below);
+  const n = 2 * a.flankers.length + 1;
+  const extent = a.orientation === "vertical" ? n * a.size_px + (n - 1) * a.gap_px : a.size_px;
+  const STAGE_PADDING = 20; // styles.css .jspsych-timelines-flanker-stage padding
+  const needed = extent + 2 * Math.abs(a.offset_px) + 2 * STAGE_PADDING;
+  return paintDisplay(a.fg, a.bg) + renderScreen(stage, below, needed);
 }
 
 /** Parse "<fg> on <bg>"; falls back to white on black. */

@@ -310,6 +310,12 @@ function arrayHtml(
       fg,
       bg,
       hide,
+      // An array shown above or below fixation keeps the fixation mark on screen, as in Eriksen &
+      // Eriksen (1974) and PsyToolkit ("letters appear above the fixation point").
+      fixation:
+        offset !== 0
+          ? `<span class="jspsych-timelines-flanker-fixation">${ctx.text.fixation}</span>`
+          : undefined,
     },
     below
   );

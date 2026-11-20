@@ -75,7 +75,11 @@ export interface FlankerStimulusLayout {
    * (default: { gap: 2, unit: "px" } — PEBL flanker defaults, S019)
    */
   flanker_spacing?: "adjacent" | { gap: number | number[]; unit: "px" | "deg" };
-  /** Where the array sits relative to the fixation point. (default: "centre_at_fixation" — S019/S012) */
+  /**
+   * Where the array sits relative to the fixation point. Above or below, the array is two item
+   * sizes from the centre and the fixation point stays on screen while it is shown.
+   * (default: "centre_at_fixation" — S019/S012)
+   */
   array_position?: "centre_at_fixation" | "above_fixation" | "below_fixation";
   /** Array axis. (default: "horizontal" — PEBL flanker defaults, S019) */
   orientation?: "horizontal" | "vertical";

@@ -71,6 +71,7 @@ function assessScreens(samples, { tolerancePx = 1, expectKinds = [] } = {}) {
       );
     }
     if (s.overlap) failures.push(`text region overlaps the stage on "${s.kind}"`);
+    if (s.clipped) failures.push(`content extends outside the stage (clipped) on "${s.kind}"`);
     if (s.btnsVisible === false)
       failures.push(`response buttons outside the viewport on "${s.kind}"`);
   }
@@ -112,6 +113,19 @@ function pageSampler(stageSelector, belowSelector, kindSource) {
         )
       : null,
     overlap: r && bw ? bw.top < r.bottom - 0.5 : null,
+    // Anything drawn inside the stage must fit in it: the stage clips (overflow: hidden).
+    clipped: r
+      ? [...stage.querySelectorAll("*")].some((el) => {
+          const e = el.getBoundingClientRect();
+          if (e.width === 0 || e.height === 0) return false;
+          return (
+            e.top < r.top - 0.5 ||
+            e.bottom > r.bottom + 0.5 ||
+            e.left < r.left - 0.5 ||
+            e.right > r.right + 0.5
+          );
+        })
+      : null,
     done: document.body.dataset.done === "1",
   };
 }

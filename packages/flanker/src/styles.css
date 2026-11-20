@@ -116,6 +116,15 @@
   min-height: 80px;
 }
 
+/* Fixation kept on screen under an array shifted above or below it: centred like the fixation screen. */
+.jspsych-timelines-flanker .jspsych-timelines-flanker-fixation-layer {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .jspsych-timelines-flanker .jspsych-timelines-flanker-fixation {
   font-size: 3em;
 }

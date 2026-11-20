@@ -52,5 +52,18 @@ export default {
         options: { ...options, response_device: "touch" },
       },
     ]),
+    // Arrays that are taller than the default stage: shifted above fixation, and vertical.
+    {
+      name: "above fixation 1280x460",
+      viewport: { width: 1280, height: 460 },
+      options: { ...options, stimulus_layout: { array_position: "above_fixation" } },
+      keys: { array: "q" },
+    },
+    {
+      name: "vertical 390x800",
+      viewport: { width: 390, height: 800 },
+      options: { ...options, stimulus_layout: { orientation: "vertical" } },
+      keys: { array: "q" },
+    },
   ],
 };

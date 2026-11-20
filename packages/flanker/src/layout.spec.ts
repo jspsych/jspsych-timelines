@@ -73,6 +73,24 @@ describe("flanker anchored stage layout", () => {
     expect(renderScreen("<i></i>", "")).not.toContain("flanker-below");
   });
 
+  it("an array shifted off fixation keeps the fixation mark and gets a stage tall enough for it", () => {
+    const shifted = renderArray({
+      flankers: ["left", "left"],
+      target: "right",
+      size_px: 40,
+      gap_px: 4,
+      orientation: "horizontal",
+      offset_px: -80,
+      fg: "white",
+      bg: "black",
+      fixation: '<span class="jspsych-timelines-flanker-fixation">+</span>',
+    });
+    const { screen, stage } = expectAnchored(shifted);
+    expect(stage.querySelector(".jspsych-timelines-flanker-fixation")?.textContent).toBe("+");
+    // 40 (item) + 2 * 80 (offset) + 2 * 20 (padding) = 240
+    expect((screen as HTMLElement).getAttribute("style")).toContain("240px");
+  });
+
   for (const [name, options] of [
     [
       "keyboard",

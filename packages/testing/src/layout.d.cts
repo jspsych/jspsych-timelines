@@ -33,6 +33,8 @@ export interface ScreenSample {
   stage: string;
   btnsVisible: boolean | null;
   overlap: boolean | null;
+  /** something inside the stage reaches past its edges (the stage clips it) */
+  clipped?: boolean | null;
   done: boolean;
 }
 
