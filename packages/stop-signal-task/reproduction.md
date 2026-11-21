@@ -36,20 +36,20 @@ Of all 219 rows, 165 (75.3%) are expressible and checked. The 106 checked cases 
 | Fully expressible and all values checked | 4 of 12 (33.3%) |
 | Expressible except some values | 8 |
 
-| Source | Citation | Keys | Expressible | Tied to reported value | Not expressible | Assumed, not reported |
+| Source | Study | Keys | Expressible | Tied to reported value | Not expressible | Assumed, not reported |
 |---|---|---|---|---|---|---|
-| S007 | Thakkar et al. 2011, Biol Psychiatry | 10 | 7 | 7 | `stimulus_eccentricity`, `stimulus_set.go`, `stimulus_set.stop signal` |  |
-| S008 | Countermanding saccades in children, 2026, Atten Percept Psychophys | 10 | 7 | 7 | `population_protocol`, `stimulus_eccentricity`, `stimulus_set.stop signal` |  |
+| S007 | Thakkar et al. 2011, Biological Psychiatry | 10 | 7 | 7 | `stimulus_eccentricity`, `stimulus_set.go`, `stimulus_set.stop signal` |  |
+| S008 | Hodgson et al. 2026, Attention, Perception, & Psychophysics | 10 | 7 | 7 | `population_protocol`, `stimulus_eccentricity`, `stimulus_set.stop signal` |  |
 | S010 | STOP-IT jsPsych version (Verbruggen), commit 73e4654 | 32 | 31 | 28 | `device_eligibility` | `instruction_format` |
-| S025 | Bissett et al. 2021, Sci Adv | 1 | 1 | 1 |  |  |
-| S026 | Hedge, Powell & Sumner 2018, Behav Res Methods | 5 | 4 | 3 | `stimulus_set.go` |  |
-| S029 | Wadsley et al. 2023, Exp Brain Res (SeleST) | 1 | 0 | 0 | `performance_incentive` |  |
-| S052 | An exploration of relationships between associative and non-associative measures (2025) | 3 | 3 | 2 |  |  |
-| S057 | The rollercoaster of obsessive-compulsive disorder: How chronotype and time of d (2025) | 4 | 4 | 3 |  | `difficulty_levels` |
-| S070 | Comparing self-other distinction across motor, cognitive and affective domains. (2024) | 10 | 10 | 8 |  | `instruction_format` |
-| S079 | The effects of conscious movement investment on inhibiting a simple response. (2024) | 16 | 14 | 13 | `practice_trials.go_only_practice`, `stimulus_set.go` | `trial_feedback` |
-| S086 | A Novel, Expert-Endorsed, Neurocognitive Digital Assessment Tool for Addictive D (2023) | 9 | 6 | 6 | `performance_incentive`, `stimulus_set.go`, `stimulus_set.stop signal` |  |
-| S087 | Exploring Response Inhibition, the Behavioral Inhibition System and Possible Sex (2023) | 1 | 0 | 0 | `response_device` |  |
+| S025 | Bissett et al. 2021, Science Advances (2) | 1 | 1 | 1 |  |  |
+| S026 | Hedge et al. 2018, Behavior Research Methods | 5 | 4 | 3 | `stimulus_set.go` |  |
+| S029 | Wadsley et al. 2023, Experimental Brain Research | 1 | 0 | 0 | `performance_incentive` |  |
+| S052 | Brudan et al. 2025, Quarterly Journal of Experimental Psychology | 3 | 3 | 2 |  |  |
+| S057 | Kalanthroff et al. 2025, Journal of Mood & Anxiety Disorders | 4 | 4 | 3 |  | `difficulty_levels` |
+| S070 | Pronizius et al. 2024, Royal Society Open Science | 10 | 10 | 8 |  | `instruction_format` |
+| S079 | You et al. 2024, Frontiers in Psychology | 16 | 14 | 13 | `practice_trials.go_only_practice`, `stimulus_set.go` | `trial_feedback` |
+| S086 | Lee et al. 2023, Journal of Medical Internet Research | 9 | 6 | 6 | `performance_incentive`, `stimulus_set.go`, `stimulus_set.stop signal` |  |
+| S087 | Eriksson et al. 2023, International Journal of Environmental Research and Public Health | 1 | 0 | 0 | `response_device` |  |
 
 Companion settings that a configuration needed but did not state count as expressible and are listed under "Assumed", because they are assumptions.
 

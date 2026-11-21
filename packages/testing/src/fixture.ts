@@ -86,6 +86,8 @@ export interface Case {
   value: any;
   /** the studies that used this value */
   sources: string[];
+  /** the values as the dossier reported them, one per distinct raw value (often more precise than the typed value) */
+  raws: unknown[];
   /** a `null` that means "no limit" for an option listed in `addNullOptions` */
   labelledAddition: boolean;
 }
@@ -127,8 +129,11 @@ export function collectCases(fixture: Fixture, opts: CaseOptions = {}): Cases {
         if (!keep && !addition) continue;
         const key = `${c.variation}|${JSON.stringify(ob.value)}`;
         const hit = seen.get(key);
-        if (hit) hit.sources.push(ob.source);
-        else {
+        if (hit) {
+          hit.sources.push(ob.source);
+          if (!hit.raws.some((x) => JSON.stringify(x) === JSON.stringify(ob.raw)))
+            hit.raws.push(ob.raw);
+        } else {
           const k: Case = {
             option: o.name,
             sub: sub(o.name, c.variation),
@@ -136,6 +141,7 @@ export function collectCases(fixture: Fixture, opts: CaseOptions = {}): Cases {
             phase: c.phase,
             value: ob.value,
             sources: [ob.source],
+            raws: [ob.raw],
             labelledAddition: addition,
           };
           seen.set(key, k);
@@ -145,6 +151,26 @@ export function collectCases(fixture: Fixture, opts: CaseOptions = {}): Cases {
     }
   }
   return { cases, observedTotal, typedTotal };
+}
+
+/**
+ * The raw values one source reported for a study configuration key (`option`, `option.role`,
+ * `option.field` or `practice.option`), as the dossier wrote them. An adapter uses them when the typed
+ * value lost something (a level count, a per-trial draw). Empty when the fixture has none.
+ */
+export function rawValuesFor(fixture: Fixture, source: string, key: string): unknown[] {
+  const parts = key.split(".");
+  const practice = parts[0] === "practice" && parts.length > 1;
+  const [name, sub] = practice ? [parts[1], parts[2]] : [parts[0], parts[1]];
+  const option = fixture.options.find((o) => o.name === name);
+  if (!option) return [];
+  const out: unknown[] = [];
+  for (const c of option.components) {
+    if (sub && c.role !== sub && c.field !== sub) continue;
+    if (practice && c.phase && c.phase !== "practice") continue;
+    for (const ob of c.observed) if (ob.source === source) out.push(ob.raw);
+  }
+  return out;
 }
 
 /** The observed values the spec could not type (counted in the tallies, not attempted). */

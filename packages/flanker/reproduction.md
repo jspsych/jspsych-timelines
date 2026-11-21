@@ -36,21 +36,21 @@ Of all 224 rows, 198 (88.4%) are expressible and checked. The 129 checked cases 
 | Fully expressible and all values checked | 10 of 14 (71.4%) |
 | Expressible except some values | 4 |
 
-| Source | Citation | Keys | Expressible | Tied to reported value | Not expressible | Assumed, not reported |
+| Source | Study | Keys | Expressible | Tied to reported value | Not expressible | Assumed, not reported |
 |---|---|---|---|---|---|---|
-| S004 | Lee & Pitt 2024, BRM, online spacing flanker | 24 | 24 | 22 |  |  |
-| S005 | flanker DDM psychometrics 2025, CABN | 4 | 4 | 4 |  |  |
-| S007 | Hedge, Powell & Sumner 2018, BRM, reliability paradox | 7 | 7 | 6 |  |  |
+| S004 | Lee & Pitt 2024, Behavior Research Methods | 24 | 24 | 22 |  |  |
+| S005 | Rappaport et al. 2025, Cognitive, Affective, & Behavioral Neuroscience | 4 | 4 | 4 |  |  |
+| S007 | Hedge et al. 2018, Behavior Research Methods | 7 | 7 | 6 |  |  |
 | S012 | Expfactory flanker defaults | 28 | 28 | 24 |  |  |
 | S016 | PsyToolkit arrow flanker | 1 | 1 | 1 |  |  |
-| S039 | literature-sample screening rank 6 | 3 | 3 | 3 |  |  |
-| S047 | literature-sample screening rank 14 | 11 | 11 | 11 |  |  |
-| S055 | literature-sample screening rank 22 | 3 | 3 | 3 |  |  |
-| S056 | literature-sample screening rank 23 | 6 | 6 | 6 |  |  |
-| S060 | literature-sample screening rank 27 | 14 | 13 | 12 | `concurrent_task` | `trial_feedback`, `targets_per_response` |
-| S069 | literature-sample screening rank 36 | 2 | 1 | 1 | `stimulus_set.stimulus_set` |  |
-| S119 | literature-sample screening rank 87 | 19 | 18 | 17 | `concurrent_task` | `n_blocks` |
-| S134 | Expfactory flanker CSS (letter string font styling) | 1 | 1 | 1 |  |  |
+| S039 | Sturm et al. 2026, Journal of Clinical and Experimental Neuropsychology | 3 | 3 | 3 |  |  |
+| S047 | Zhao & Cannon 2026, Schizophrenia Research: Cognition | 11 | 11 | 11 |  |  |
+| S055 | Molloy et al. 2026, Computational Brain & Behavior | 3 | 3 | 3 |  |  |
+| S056 | Osborne et al. 2026, Scientific Reports | 6 | 6 | 6 |  |  |
+| S060 | Bratzke et al. 2026, Memory & Cognition | 14 | 13 | 12 | `concurrent_task` | `trial_feedback`, `targets_per_response` |
+| S069 | Ashkenazi & Danan 2026, Frontiers in Psychology | 2 | 1 | 1 | `stimulus_set.stimulus_set` |  |
+| S119 | Ellinghaus et al. 2024, Computational Brain & Behavior | 19 | 18 | 17 | `concurrent_task` | `n_blocks` |
+| S134 | Expfactory flanker CSS | 1 | 1 | 1 |  |  |
 | S135 | PEBL responsemode auto | 1 | 0 | 0 | `response_keys` |  |
 
 Companion settings that a configuration needed but did not state count as expressible and are listed under "Assumed", because they are assumptions.

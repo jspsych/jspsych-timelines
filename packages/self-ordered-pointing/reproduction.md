@@ -36,19 +36,19 @@ Of all 85 rows, 69 (81.2%) are expressible and checked. The 38 checked cases spl
 | Fully expressible and all values checked | 7 of 11 (63.6%) |
 | Expressible except some values | 4 |
 
-| Source | Citation | Keys | Expressible | Tied to reported value | Not expressible | Assumed, not reported |
+| Source | Study | Keys | Expressible | Tied to reported value | Not expressible | Assumed, not reported |
 |---|---|---|---|---|---|---|
 | S005 | Petrides & Milner 1982, Neuropsychologia | 1 | 1 | 1 |  |  |
-| S008 | Sallum et al. 2017, Clin Neuropsychol | 2 | 0 | 0 | `instruction_language`, `population_protocol` |  |
-| S009 | Monnier et al. 2026, Dev Neuropsychol | 1 | 0 | 0 | `instruction_language` |  |
+| S008 | Sallum et al. 2017, The Clinical Neuropsychologist | 2 | 0 | 0 | `instruction_language`, `population_protocol` |  |
+| S009 | Monnier et al. 2026, Developmental Neuropsychology | 1 | 0 | 0 | `instruction_language` |  |
 | S012 | Sacchetti et al. 2008, BMC Psychiatry | 4 | 4 | 4 |  |  |
 | S014 | Cox et al. 2014, Intelligence | 7 | 7 | 7 |  |  |
 | S019 | reference implementation | 16 | 15 | 15 | `instruction_language` |  |
 | S030 | Streamlit launcher for an online SOPT (no licence file) at e3c730a | 2 | 2 | 2 |  |  |
-| S034 | Sturm et al. 2026, J Clin Exp Neuropsychol | 3 | 3 | 3 |  |  |
-| S040 | Thomas et al. 2026, Psychol Assess | 8 | 7 | 7 | `adaptive.procedure` |  |
-| S053 | Johnson et al. 2024, J Cogn | 7 | 7 | 7 |  |  |
-| S054 | Silman et al. 2022, IJERPH | 8 | 8 | 8 |  |  |
+| S034 | Sturm et al. 2026, Journal of Clinical and Experimental Neuropsychology | 3 | 3 | 3 |  |  |
+| S040 | Thomas et al. 2026, Psychological Assessment | 8 | 7 | 7 | `adaptive.procedure` |  |
+| S053 | Johnson et al. 2024, Journal of Cognition | 7 | 7 | 7 |  |  |
+| S054 | Silman et al. 2022, International Journal of Environmental Research and Public Health | 8 | 8 | 8 |  |  |
 
 Companion settings that a configuration needed but did not state count as expressible and are listed under "Assumed", because they are assumptions.
 

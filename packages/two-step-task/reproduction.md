@@ -36,20 +36,20 @@ Of all 163 rows, 138 (84.7%) are expressible and checked. The 79 checked cases s
 | Fully expressible and all values checked | 7 of 12 (58.3%) |
 | Expressible except some values | 5 |
 
-| Source | Citation | Keys | Expressible | Tied to reported value | Not expressible | Assumed, not reported |
+| Source | Study | Keys | Expressible | Tied to reported value | Not expressible | Assumed, not reported |
 |---|---|---|---|---|---|---|
-| S008 | Kool, Cushman & Gershman 2016, PLoS Comput Biol | 2 | 2 | 2 |  |  |
-| S010 | Shahar et al. 2019, PLoS Comput Biol | 2 | 2 | 2 |  |  |
-| S012 | Brown, Chen, Gillan & Price 2020, Biol Psychiatry CNNI | 1 | 1 | 1 |  |  |
-| S013 | Castro-Rodrigues et al. 2022, Nat Hum Behav | 5 | 4 | 4 | `reward_schedule.reward_schedule` |  |
+| S008 | Kool et al. 2016, PLOS Computational Biology | 2 | 2 | 2 |  |  |
+| S010 | Shahar et al. 2019, PLOS Computational Biology | 2 | 2 | 2 |  |  |
+| S012 | Brown et al. 2020, Biological Psychiatry: Cognitive Neuroscience and Neuroimaging | 1 | 1 | 1 |  |  |
+| S013 | Castro-Rodrigues et al. 2022, Nature Human Behaviour | 5 | 4 | 4 | `reward_schedule.reward_schedule` |  |
 | S024 | Expfactory two-stage-decision defaults | 24 | 24 | 23 |  |  |
 | S033 | Feher da Silva & Hare magic-carpet PsychoPy task | 6 | 5 | 5 | `instruction_framing` |  |
-| S047 | literature sample | 7 | 6 | 6 | `instruction_framing` |  |
-| S055 | literature sample (supplementary search) | 3 | 3 | 3 |  |  |
-| S059 | literature sample (supplementary search) | 1 | 1 | 1 |  |  |
-| S113 | literature sample (supplementary search 2, rank 60) | 8 | 8 | 8 |  |  |
-| S120 | literature sample (supplementary search 2, rank 69) | 9 | 7 | 7 | `comprehension_check`, `instruction_framing` |  |
-| S138 | literature sample (supplementary search 2, rank 87) | 6 | 5 | 5 | `comprehension_check` |  |
+| S047 | Onysk & Seriès 2022, PLOS ONE | 7 | 6 | 6 | `instruction_framing` |  |
+| S055 | Donegan et al. 2025, Translational Psychiatry | 3 | 3 | 3 |  |  |
+| S059 | Ramakrishnan et al. 2025, NPP—Digital Psychiatry and Neuroscience | 1 | 1 | 1 |  |  |
+| S113 | Karagoz et al. 2024, Journal of Experimental Psychology: General | 8 | 8 | 8 |  |  |
+| S120 | Hiser et al. 2023, Behaviour Research and Therapy | 9 | 7 | 7 | `comprehension_check`, `instruction_framing` |  |
+| S138 | Tashjian et al. 2022, PLOS Computational Biology | 6 | 5 | 5 | `comprehension_check` |  |
 
 Companion settings that a configuration needed but did not state count as expressible and are listed under "Assumed", because they are assumptions.
 
@@ -114,5 +114,5 @@ By class: option missing 7, plugin needed 1.
 - The `response_acknowledgement` durations of the sources (1000, 500, 1500 ms; "selection display") are recorded by the spec as the raw value of a variation whose typed value is `highlight`, so level 1 has one case for them, and the study presets cannot carry the duration. `response_acknowledgement_ms` is a package option that the spec does not have.
 - `reward_schedule` is retyped from the spec's strings (`{sd: 0.025, lower: 0.25, upper: 0.75, boundary: reflect}`) by a table in `adapter.ts` of the three walks the dossier reports; nothing is parsed from the text. The spec's `state_1` / `state_2` are read as the red and the blue state.
 - The reward-schedule check asserts that every probability stays within the bounds and that the SD of the steps is within 40% of the schedule's. The difference between `reflect` and `reverse_step` is not visible in rows at that resolution; the two rules are tested directly in `src/index.spec.ts` (`stepProbability`).
-- The shared `response_keys` check asserts that each key is some row's correct response, which this task cannot satisfy (it has no correct response), so `reproduction/checks.ts` replaces it with a check of the keys the trials listen for and the keys pressed. The shared count checks read one row per trial, which is why the scorable `response` row is a trial summary and the raw choices are `choice` rows.
+- The task has no correct response, so the contract sets `correct` and `correct_response` to `null`, and the shared `response_keys` check reads the key presses on the `choice` rows alone. `reproduction/checks.ts` extends it with which side each key chooses. The shared count checks read one row per trial, which is why the scorable `response` row is a trial summary and the raw choices are `choice` rows.
 - Level 1 adds a short run (4 practice and 40 test trials) as a companion to each single value, so the checks that need rows run quickly. Whole study configurations (level 2) keep their own length, up to 1200 trials (S013).

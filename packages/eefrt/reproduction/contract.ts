@@ -20,6 +20,8 @@ export const contract = defineContract<Eff>({
   parts: { response: "response", feedback: "completion_feedback" },
   fields: {
     correct: "completed",
+    // a choice between two tasks has no correct response: the key check reads the presses alone
+    correct_response: null,
     timeout: "timeout",
     response_window: "response_window",
     stimulus_duration: null as any,
@@ -37,5 +39,7 @@ export const contract = defineContract<Eff>({
   // the vocabulary's response window is the time to choose, read from the choice rows
   scope: {
     response_window_ms: { part: "choice", value: (eff) => eff.response_window_ms.choice },
+    // the choice keys are pressed on the `choice` screens
+    response_keys: { part: "choice" },
   },
 });

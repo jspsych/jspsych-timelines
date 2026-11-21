@@ -234,3 +234,38 @@ describe("sequence_constraints: the typed form of PACKAGE-STANDARD 2a", () => {
     await expect(fake([seq("gng")], { cycle_length: 3 })()).rejects.toThrow(/no data-level check/);
   });
 });
+
+describe("response_keys without a correct answer", () => {
+  const noAnswer = defineContract({
+    task: "mini-task",
+    fields: { correct: null, correct_response: null },
+  });
+  const run = async () => {
+    const harness = miniHarness([]);
+    return { harness, r: await harness.run({ n_test_trials: 40, response_keys: ["d", "k"] }) };
+  };
+
+  it("needs no correct_response field", () => {
+    expect(missingContract(sharedChecks.response_keys, noAnswer)).toEqual([]);
+  });
+
+  it("passes when the responses use the keys", async () => {
+    const { harness, r } = await run();
+    expect(() => sharedChecks.response_keys.fn(r, { contract: noAnswer, harness })).not.toThrow();
+  });
+
+  it("fails when a response is not one of the keys", async () => {
+    const { harness, r } = await run();
+    const row = r.rows.find((x) => x.part === "response" && x.phase === "test" && x.response)!;
+    row.response = "q";
+    expect(() => sharedChecks.response_keys.fn(r, { contract: noAnswer, harness })).toThrow();
+  });
+
+  it("fails when a key is never pressed in enough responses", async () => {
+    const { harness, r } = await run();
+    r.rows
+      .filter((x) => x.part === "response" && x.phase === "test" && x.response !== null)
+      .forEach((x) => (x.response = "d"));
+    expect(() => sharedChecks.response_keys.fn(r, { contract: noAnswer, harness })).toThrow();
+  });
+});

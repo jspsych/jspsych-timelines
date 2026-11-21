@@ -97,12 +97,39 @@ export function createAdapterKit<O extends Record<string, any> = any>(cfg: Adapt
   return { mergeOptions, combine, assumedSettings };
 }
 
+/** What level 1 tells `adapt` besides the typed value. */
+export interface AdaptContext {
+  /** the raw values behind this typed value, one per distinct raw value */
+  raws: unknown[];
+  /** the studies that used it */
+  sources: string[];
+}
+
+/** What level 2 tells `adaptConfig` besides the typed options. */
+export interface ConfigContext {
+  source: string;
+  /** the raw values the source reported for a configuration key (`option`, `option.role`, `practice.option`) */
+  raw: (key: string) => unknown[];
+}
+
 /** The adapter a package hands to `defineReproduction`. */
 export interface ReproductionAdapter<O = any> {
-  /** Retype one observed value (option, component sub-key, typed value, phase). */
-  adapt: (option: string, sub: string, value: any, phase?: string | null) => Adapted<O>;
-  /** Retype a whole study configuration (dotted keys such as `stimulus_set.flanker`). */
-  adaptConfig: (options: Record<string, any>) => ConfigEntry<O>[];
+  /**
+   * Retype one observed value (option, component sub-key, typed value, phase). `context.raws` holds the
+   * values as the dossier reported them, for when the typed value lost detail.
+   */
+  adapt: (
+    option: string,
+    sub: string,
+    value: any,
+    phase?: string | null,
+    context?: AdaptContext
+  ) => Adapted<O>;
+  /**
+   * Retype a whole study configuration (dotted keys such as `stimulus_set.flanker`). `context.raw(key)`
+   * gives the values the study's source reported for a key, as the dossier wrote them.
+   */
+  adaptConfig: (options: Record<string, any>, context?: ConfigContext) => ConfigEntry<O>[];
   combine: (entries: Adapted<O>[]) => O;
   assumedSettings: (entries: Adapted<O>[]) => string[];
   /** Canonical sub-key of an option's component, from the fixture's `variation`. Default: `main`. */

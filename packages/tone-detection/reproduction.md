@@ -36,13 +36,13 @@ Of all 107 rows, 70 (65.4%) are expressible and checked. The 60 checked cases sp
 | Fully expressible and all values checked | 2 of 5 (40.0%) |
 | Expressible except some values | 3 |
 
-| Source | Citation | Keys | Expressible | Tied to reported value | Not expressible | Assumed, not reported |
+| Source | Study | Keys | Expressible | Tied to reported value | Not expressible | Assumed, not reported |
 |---|---|---|---|---|---|---|
-| S005 | Carlini et al. 2024, BRM (PSYCHOACOUSTICS-WEB) | 9 | 6 | 6 | `adaptive.start_level`, `adaptive.step_size`, `task_variant` |  |
-| S013 | Mok et al. 2024, BRM (web-based psychoacoustics) | 10 | 7 | 7 | `adaptive.procedure`, `difficulty_levels`, `stimulus_set.tone timbre` |  |
-| S045 | literature-sample screening (rank 26), full-text methods read | 2 | 2 | 2 |  |  |
-| S053 | literature-sample screening (rank 34), full-text methods read | 2 | 2 | 2 |  |  |
-| S059 | supplementary-search screening (rank 4), full-text methods read | 9 | 6 | 6 | `difficulty_levels`, `judgment_wording`, `task_variant` |  |
+| S005 | Grassi et al. 2024, Behavior Research Methods (2) | 9 | 6 | 6 | `adaptive.start_level`, `adaptive.step_size`, `task_variant` |  |
+| S013 | Mok et al. 2023, Behavior Research Methods | 10 | 7 | 7 | `adaptive.procedure`, `difficulty_levels`, `stimulus_set.tone timbre` |  |
+| S045 | Bissmeyer et al. 2022, Frontiers in Neuroscience | 2 | 2 | 2 |  |  |
+| S053 | Mathias et al. 2021, The Journal of the Acoustical Society of America | 2 | 2 | 2 |  |  |
+| S059 | Choon et al. 2025, Perception | 9 | 6 | 6 | `difficulty_levels`, `judgment_wording`, `task_variant` |  |
 
 Companion settings that a configuration needed but did not state count as expressible and are listed under "Assumed", because they are assumptions.
 

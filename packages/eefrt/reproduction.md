@@ -36,21 +36,21 @@ Of all 112 rows, 99 (88.4%) are expressible and checked. The 61 checked cases sp
 | Fully expressible and all values checked | 12 of 13 (92.3%) |
 | Expressible except some values | 1 |
 
-| Source | Citation | Keys | Expressible | Tied to reported value | Not expressible | Assumed, not reported |
+| Source | Study | Keys | Expressible | Tied to reported value | Not expressible | Assumed, not reported |
 |---|---|---|---|---|---|---|
 | S013 | https://github.com/belieflab/eEfRT | 4 | 4 | 4 |  |  |
 | S014 | https://github.com/james-poh/eefrt | 4 | 4 | 4 |  |  |
 | S017 | https://github.com/TaskBeacon/T000019-eefrt | 7 | 7 | 7 |  |  |
-| S021 | Inquisit EEfRT defaults (proprietary; parameters only) | 16 | 16 | 16 |  |  |
-| S027 | Barch et al. 2014, J Abnorm Psychol | 5 | 5 | 4 |  |  |
-| S029 | Anderson Z 2026 | 4 | 4 | 4 |  |  |
-| S030 | Sturm ET 2026 | 4 | 4 | 3 |  |  |
-| S032 | van der Weijden-Germann M 2026 | 2 | 1 | 1 | `payout_rule` |  |
-| S033 | Gallagher MR 2025 | 2 | 2 | 2 |  |  |
-| S034 | Slaney C 2023 | 8 | 8 | 7 |  |  |
-| S039 | Boyle CC 2025 | 1 | 1 | 1 |  |  |
-| S040 | Bernacer J 2025 | 1 | 1 | 1 |  |  |
-| S042 | Online RDoC Positive Valence study lessons learned, PsyArXiv 2025 | 1 | 1 | 1 |  |  |
+| S021 | Inquisit EEfRT defaults | 16 | 16 | 16 |  |  |
+| S027 | Barch et al. 2014, Journal of Abnormal Psychology | 5 | 5 | 4 |  |  |
+| S029 | Anderson et al. 2026, Schizophrenia Research | 4 | 4 | 4 |  |  |
+| S030 | Sturm et al. 2026, Journal of Clinical and Experimental Neuropsychology | 4 | 4 | 3 |  |  |
+| S032 | van der Weijden-Germann et al. 2026, Psychological Medicine | 2 | 1 | 1 | `payout_rule` |  |
+| S033 | Gallagher et al. 2025, PLOS ONE | 2 | 2 | 2 |  |  |
+| S034 | Slaney et al. 2023, Psychological Medicine | 8 | 8 | 7 |  |  |
+| S039 | Boyle et al. 2025, Translational Psychiatry | 1 | 1 | 1 |  |  |
+| S040 | Bernacer et al. 2025, Scientific Reports | 1 | 1 | 1 |  |  |
+| S042 | Broer et al. 2025, PsyArXiv | 1 | 1 | 1 |  |  |
 
 Companion settings that a configuration needed but did not state count as expressible and are listed under "Assumed", because they are assumptions.
 
@@ -86,5 +86,5 @@ By class: option missing 6.
 - **Reward levels.** The spec types every hard-reward value as a range, `{hard: {min, max}}`. Whether a study used a list of levels, equally spaced levels or a fresh draw per trial is only in the raw text, which the adapter does not read (it receives the typed value). Every range is therefore read as the 8-level design (`n_levels: 8`), including S040's 9 irregular euro levels and S014's uniform draw. The level-1 and level-2 checks verify the range, not the number of levels. S029 (Anderson et al. 2026) types an easy reward of 100 points next to a hard range of 1.24 to 4.12: the package accepts it, but the two are on different scales, so the choice data of that preset are not meaningful. It looks like a dossier value that mixes dollars and points (`dossier value wrong`); the tally keeps it as expressible because each value alone is.
 - **Seconds and milliseconds.** The spec gives the easy and hard time limits in seconds (7, 21, 30) and the choice window in milliseconds (5000, 3000, untimed). The adapter and `reportedValue` convert, and level 2 ties the resolved `response_window_ms.easy` to 7000.
 - **Currency and fingers are text.** `outcome_type.reward_display_currency` (USD, EUR, GBP) becomes a `text.amount` function, and `response_key_mapping.effort_finger_assignment` becomes a `text.finger_instruction` function. The checks assert the displayed amounts and the instruction pages. Presets leave functions out and say so.
-- **Checks.** `response_keys` replaces the shared check, which reads `correct_response` (a choice between two tasks has none). `response_window_ms` extends the shared check, which is scoped to the choice rows by the contract, with the effort time limits. `feedback_duration_ms` has two screens, so its check runs the shared duration check twice (completion and reward rows, the second through a flattened `reward_feedback_duration_ms` in the harness's `Eff`). `n_test_trials`, `condition_proportions`, `n_blocks` and the sequence checks are not used: the task has no blocks, no condition proportions and no correct answer.
+- **Checks.** `response_keys` extends the shared check, which the contract points at the `choice` rows with `correct_response: null` (a choice between two tasks has no correct response). `response_window_ms` extends the shared check, which is scoped to the choice rows by the contract, with the effort time limits. `feedback_duration_ms` has two screens, so its check runs the shared duration check twice (completion and reward rows, the second through a flattened `reward_feedback_duration_ms` in the harness's `Eff`). `n_test_trials`, `condition_proportions`, `n_blocks` and the sequence checks are not used: the task has no blocks, no condition proportions and no correct answer.
 - **Not expressible** (the six values above): loss trials, the social-influence cue, food and candy as the reward medium, calibrated press requirements and the deceptive fixed payout. The 5 untyped values (a single hard reward with no choice, no probabilities, the maximal-pressing pretest, and "tradeoff explained" twice) are listed in the spec as such.

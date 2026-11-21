@@ -4,6 +4,8 @@ export interface LayoutVariant {
   viewport: { width: number; height: number; hasTouch?: boolean };
   /** key to press on a screen kind, e.g. `{ array: "z" }` */
   keys?: Record<string, string>;
+  /** screen kinds this variant must show; replaces the config's `expectKinds` for this variant */
+  expectKinds?: string[];
 }
 
 export interface LayoutConfig {

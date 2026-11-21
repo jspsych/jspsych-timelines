@@ -36,19 +36,19 @@ Of all 132 rows, 106 (80.3%) are expressible and checked. The 68 checked cases s
 | Fully expressible and all values checked | 9 of 11 (81.8%) |
 | Expressible except some values | 2 |
 
-| Source | Citation | Keys | Expressible | Tied to reported value | Not expressible | Assumed, not reported |
+| Source | Study | Keys | Expressible | Tied to reported value | Not expressible | Assumed, not reported |
 |---|---|---|---|---|---|---|
-| S009 | Foster et al. 2015, Mem Cogn (shortened) | 2 | 2 | 2 |  |  |
-| S011 | Draheim et al. 2018, Psych Assess (IRT; advanced) | 2 | 2 | 2 |  |  |
-| S020 | Klaus & Schriefers jsPsych reading/operation/mixed span (MIT, commit 4dc9ed6) | 9 | 8 | 8 | `stimulus_language` |  |
-| S021 | Luthra & Todd jsPsych ospan/symspan (no licence, commit c4700e7) | 8 | 8 | 8 |  |  |
-| S023 | literature sample | 1 | 1 | 1 |  |  |
-| S027 | literature sample | 15 | 12 | 12 | `stimulus_language`, `stimulus_set.memorandum`, `stimulus_set.memorandum_type` |  |
-| S028 | literature sample | 2 | 2 | 2 |  |  |
-| S034 | literature sample | 10 | 10 | 10 |  |  |
-| S036 | literature sample | 6 | 6 | 6 |  |  |
-| S043 | literature sample | 4 | 4 | 4 |  |  |
-| S045 | literature sample | 7 | 7 | 7 |  |  |
+| S009 | Foster et al. 2015, Memory & Cognition | 2 | 2 | 2 |  |  |
+| S011 | Draheim et al. 2018, Psychological Assessment | 2 | 2 | 2 |  |  |
+| S020 | Klaus & Schriefers jsPsych reading/operation/mixed span | 9 | 8 | 8 | `stimulus_language` |  |
+| S021 | Luthra & Todd jsPsych ospan/symspan | 8 | 8 | 8 |  |  |
+| S023 | Öztekin & Erçetin 2026, Journal of Psycholinguistic Research | 1 | 1 | 1 |  |  |
+| S027 | Gaspar et al. 2026, Journal of Cognition | 15 | 12 | 12 | `stimulus_language`, `stimulus_set.memorandum`, `stimulus_set.memorandum_type` |  |
+| S028 | Wereszczyński et al. 2025, Data in Brief | 2 | 2 | 2 |  |  |
+| S034 | MacMillan et al. 2024, Memory & Cognition | 10 | 10 | 10 |  |  |
+| S036 | Loaiza & Souza 2024, Memory & Cognition | 6 | 6 | 6 |  |  |
+| S043 | Wallinheimo et al. 2023, Frontiers in Artificial Intelligence | 4 | 4 | 4 |  |  |
+| S045 | Araya et al. 2022, Memory & Cognition | 7 | 7 | 7 |  |  |
 
 Companion settings that a configuration needed but did not state count as expressible and are listed under "Assumed", because they are assumptions.
 

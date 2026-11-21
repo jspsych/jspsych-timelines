@@ -450,9 +450,16 @@ const stimulus_duration_ms: Check = {
   },
 };
 
+/**
+ * The trials listen for the keys, and the recorded responses use them. With a correct response field,
+ * every row's correct response is one of the keys and every key is some row's correct response. A task
+ * without a correct answer (`fields.correct_response: null`) instead shows every key pressed at least
+ * once, when there are enough responses for that to be expected.
+ */
 const response_keys: Check = {
   kind: "behaviour",
-  requires: ["parts.response", "fields.response", "fields.correct_response", "exempt"],
+  requires: ["parts.response", "fields.response", "exempt"],
+  optional: ["fields.correct_response"],
   fn: (r, { contract: c }) => {
     const keys: string[] = r.eff.response_keys;
     // other devices use buttons instead of keys
@@ -462,15 +469,22 @@ const response_keys: Check = {
     const lower = keys.map((k) => k.toLowerCase());
     const rows = scopedRows(r, c, "response_keys", "test");
     const f = c.fields;
+    const answered = rows.filter((x) => x[f.response] !== null && x[f.response] !== undefined);
+    answered.forEach((x) => expect(lower).toContain(String(x[f.response]).toLowerCase()));
+    const cr = f.correct_response;
+    if (cr === null) {
+      // a random simulated responder presses each of k keys with p = 1/k; with 10k responses a key is
+      // missed with probability below k * (1 - 1/k)^(10k) < 0.001 for any k >= 2
+      if (answered.length >= 10 * lower.length)
+        lower.forEach((k) =>
+          expect(answered.some((x) => String(x[f.response]).toLowerCase() === k)).toBe(true)
+        );
+      return;
+    }
     rows
       .filter((x) => !c.exempt(x))
-      .forEach((x) => expect(lower).toContain(String(x[f.correct_response]).toLowerCase()));
-    lower.forEach((k) =>
-      expect(rows.some((x) => String(x[f.correct_response]).toLowerCase() === k)).toBe(true)
-    );
-    rows
-      .filter((x) => x[f.response] !== null)
-      .forEach((x) => expect(lower).toContain(String(x[f.response]).toLowerCase()));
+      .forEach((x) => expect(lower).toContain(String(x[cr]).toLowerCase()));
+    lower.forEach((k) => expect(rows.some((x) => String(x[cr]).toLowerCase() === k)).toBe(true));
   },
 };
 
@@ -528,7 +542,7 @@ const feedback_condition: Check = {
     const fb = rowsOf(r, "test", c.parts.feedback);
     const rows = testRows(r, c);
     if (r.eff.trial_feedback === "none") return expect(fb).toHaveLength(0);
-    const ok = (x: Row) => !!x[c.fields.correct];
+    const ok = (x: Row) => !!x[c.fields.correct!];
     const n =
       r.eff.feedback_condition === "all"
         ? rows.length

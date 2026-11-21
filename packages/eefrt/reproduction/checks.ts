@@ -6,8 +6,9 @@
  * - checks for the EEfRT's own options (reward and probability levels, stop rule, effort keys, payout, ...)
  * - additional assertions on shared options (`response_window_ms`: the effort time limits;
  *   `feedback_duration_ms`: the reward screen)
- * - a replacement for the shared `response_keys` check. It reads `correct_response`, and a choice between
- *   an easy and a hard task has no correct response (logged in DEFAULTS.md and the friction notes).
+ * - an extension of the shared `response_keys` check (which task each key chooses; the instructions name
+ *   the keys). A choice between two tasks has no correct response, so the contract sets
+ *   `correct_response: null` and the shared check reads the presses on the `choice` rows.
  */
 import {
   Check,
@@ -379,15 +380,9 @@ const shared: Record<string, EefrtCheck> = {
         }).fn(r, ctx),
     }
   ),
-  // the shared check reads `correct_response`, which a choice between two tasks does not have
-  response_keys: {
-    kind: "behaviour",
-    requires: ["parts.response"],
+  response_keys: extendCheck(sharedChecks.response_keys, {
     fn: (r) => {
-      const keys = r.eff.response_keys;
-      const trial = trialsOf(r, "choice").find((t) => t.data?.phase === "test")!;
-      const given = typeof trial.choices === "function" ? trial.choices() : trial.choices;
-      expect(given).toEqual(keys);
+      const keys: string[] = r.eff.response_keys;
       choices(r).forEach((x) => {
         expect(x.response_keys).toEqual(keys);
         const lower = keys.map((k) => k.toLowerCase());
@@ -404,7 +399,7 @@ const shared: Record<string, EefrtCheck> = {
         .join(" ");
       for (const k of keys) expect(pages).toContain(textOf(r).key_name(k));
     },
-  },
+  }),
 };
 
 export const CHECKS: CheckSet<EefrtOptions, Eff> = {

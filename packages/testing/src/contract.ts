@@ -23,9 +23,11 @@ export interface PartNames {
 export interface FieldNames {
   /** 1-based block number on response rows */
   block: string;
-  correct: string;
+  /** `null` for a task without a correct answer (PACKAGE-STANDARD §4) */
+  correct: string | null;
   response: string;
-  correct_response: string;
+  /** `null` for a task without a correct answer: checks then use the responses alone */
+  correct_response: string | null;
   rt: string;
   /** boolean: the participant missed the response window; `null` if the package has no field */
   timeout: string | null;

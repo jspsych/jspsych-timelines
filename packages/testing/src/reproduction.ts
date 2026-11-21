@@ -20,7 +20,7 @@ import type { Adapted, ConfigEntry, ReproductionAdapter } from "./adapter";
 import type { CheckSet } from "./checks/types";
 import { missingContract } from "./checks/types";
 import type { DataContract } from "./contract";
-import { collectCases } from "./fixture";
+import { collectCases, rawValuesFor } from "./fixture";
 import type { Case, Fixture, StudyConfiguration } from "./fixture";
 import type { Harness, Run } from "./harness";
 import { writeReproductionMd } from "./report";
@@ -48,6 +48,8 @@ export interface Level1Result extends Omit<Case, "phase"> {
 export interface Level2Result {
   source: string;
   citation: string;
+  /** the preset label ("Surname et al. 2024, Journal"), or the citation in older fixtures */
+  label?: string;
   n_options: number;
   n_keys: number;
   keys_expressible: number;
@@ -135,7 +137,10 @@ export function defineReproduction<O = any, E = any>(config: ReproductionConfig<
       )})`;
       it(label, async () => {
         const { phase, ...rest } = c;
-        const a: Adapted<O> = adapter.adapt(c.option, c.sub, c.value, phase);
+        const a: Adapted<O> = adapter.adapt(c.option, c.sub, c.value, phase, {
+          raws: c.raws,
+          sources: c.sources,
+        });
         if (isGap(a)) {
           results.level1.push({ ...rest, status: "not expressible", gap: a.gap, reason: a.reason });
           return;
@@ -154,8 +159,11 @@ export function defineReproduction<O = any, E = any>(config: ReproductionConfig<
 
   describe("level 2: fully typed study configurations", () => {
     for (const s of configs) {
-      it(`${s.source}: ${s.citation}`, async () => {
-        const entries: ConfigEntry<O>[] = adapter.adaptConfig(s.options);
+      it(`${s.source}: ${s.label ?? s.citation}`, async () => {
+        const entries: ConfigEntry<O>[] = adapter.adaptConfig(s.options, {
+          source: s.source,
+          raw: (key) => rawValuesFor(fixture, s.source, key),
+        });
         const gaps = entries.filter((e) => isGap(e.adapted));
         const opts = adapter.combine(entries.map((e) => e.adapted));
         const r = await harness.run(opts);
@@ -189,6 +197,7 @@ export function defineReproduction<O = any, E = any>(config: ReproductionConfig<
         results.level2.push({
           source: s.source,
           citation: s.citation,
+          label: s.label ?? s.citation,
           n_options: s.n_options,
           n_keys: entries.length,
           keys_expressible: entries.length - gaps.length,

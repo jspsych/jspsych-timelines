@@ -18,6 +18,9 @@
       "sources": [
         "S019"
       ],
+      "raws": [
+        250
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "recorded-parameter",
@@ -36,6 +39,9 @@
         "S040",
         "S019"
       ],
+      "raws": [
+        "none"
+      ],
       "labelledAddition": true,
       "status": "checked",
       "kind": "behaviour",
@@ -53,6 +59,9 @@
         "S014",
         "S010"
       ],
+      "raws": [
+        "fixed_grid_slots"
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -67,6 +76,9 @@
       "value": "free_positions_in_area",
       "sources": [
         "S054"
+      ],
+      "raws": [
+        "free_positions_in_area"
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -87,6 +99,9 @@
         "S054",
         "S014"
       ],
+      "raws": [
+        "abstract_designs"
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -106,6 +121,9 @@
         "S055",
         "S056"
       ],
+      "raws": [
+        "representational_drawings"
+      ],
       "labelledAddition": false,
       "status": "not expressible",
       "gap": "option missing",
@@ -119,6 +137,9 @@
       "sources": [
         "S005",
         "S010"
+      ],
+      "raws": [
+        "words"
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -136,6 +157,9 @@
       "value": "nonwords",
       "sources": [
         "S030"
+      ],
+      "raws": [
+        "nonwords"
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -155,6 +179,9 @@
         "S010",
         "S053"
       ],
+      "raws": [
+        "distinct_per_set_size"
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -171,6 +198,9 @@
       "value": "nested_first_n",
       "sources": [
         "S019"
+      ],
+      "raws": [
+        "nested_first_n"
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -192,6 +222,9 @@
         "S034",
         "S010"
       ],
+      "raws": [
+        "full_reshuffle_each_page"
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -206,6 +239,9 @@
       "value": "partial_reshuffle_each_page",
       "sources": [
         "S014"
+      ],
+      "raws": [
+        "partial_reshuffle_each_page"
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -225,6 +261,9 @@
         "S053",
         "S054"
       ],
+      "raws": [
+        "ascending"
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -239,6 +278,9 @@
       "value": "random",
       "sources": [
         "S040"
+      ],
+      "raws": [
+        "randomized_blocks"
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -260,6 +302,14 @@
       "sources": [
         "S024",
         "S019"
+      ],
+      "raws": [
+        [
+          6,
+          8,
+          10,
+          12
+        ]
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -287,6 +337,15 @@
       "sources": [
         "S010",
         "S030"
+      ],
+      "raws": [
+        [
+          4,
+          6,
+          8,
+          10,
+          12
+        ]
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -313,6 +372,13 @@
       "sources": [
         "S034"
       ],
+      "raws": [
+        [
+          6,
+          9,
+          12
+        ]
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -337,6 +403,14 @@
       "sources": [
         "S040"
       ],
+      "raws": [
+        [
+          3,
+          6,
+          9,
+          12
+        ]
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -360,6 +434,11 @@
         "S014",
         "S055"
       ],
+      "raws": [
+        [
+          12
+        ]
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -378,6 +457,11 @@
       ],
       "sources": [
         "S012"
+      ],
+      "raws": [
+        [
+          8
+        ]
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -400,6 +484,14 @@
       ],
       "sources": [
         "S053"
+      ],
+      "raws": [
+        [
+          4,
+          6,
+          8,
+          10
+        ]
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -425,6 +517,13 @@
       "sources": [
         "S054"
       ],
+      "raws": [
+        [
+          4,
+          6,
+          8
+        ]
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -449,6 +548,14 @@
       "sources": [
         "S056"
       ],
+      "raws": [
+        [
+          2,
+          3,
+          4,
+          5
+        ]
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -468,6 +575,9 @@
       "value": 3,
       "sources": [
         "S054"
+      ],
+      "raws": [
+        3
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -489,6 +599,9 @@
       "sources": [
         "S053"
       ],
+      "raws": [
+        4
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -508,6 +621,9 @@
       "value": 2,
       "sources": [
         "S056"
+      ],
+      "raws": [
+        2
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -533,6 +649,9 @@
         "S014",
         "S053"
       ],
+      "raws": [
+        3
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -549,6 +668,9 @@
         "S040",
         "S054"
       ],
+      "raws": [
+        2
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -564,6 +686,9 @@
       "sources": [
         "S012"
       ],
+      "raws": [
+        4
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -578,6 +703,9 @@
       "value": 1,
       "sources": [
         "S055"
+      ],
+      "raws": [
+        1
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -595,6 +723,9 @@
         "S019",
         "S040"
       ],
+      "raws": [
+        "mouse"
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -610,6 +741,9 @@
       "sources": [
         "S014",
         "S053"
+      ],
+      "raws": [
+        "touchscreen"
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -627,6 +761,9 @@
         "S024",
         "S019"
       ],
+      "raws": [
+        "fixed"
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "structure",
@@ -642,6 +779,9 @@
       "sources": [
         "S040"
       ],
+      "raws": [
+        "irt_cat"
+      ],
       "labelledAddition": false,
       "status": "not expressible",
       "gap": "option missing",
@@ -654,6 +794,9 @@
       "value": "ascending_until_fail",
       "sources": [
         "S056"
+      ],
+      "raws": [
+        "ascending_until_fail"
       ],
       "labelledAddition": false,
       "status": "not expressible",
@@ -670,6 +813,9 @@
         "S012",
         "S040"
       ],
+      "raws": [
+        "continue_to_n_choices"
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -684,6 +830,9 @@
       "value": 0,
       "sources": [
         "S019"
+      ],
+      "raws": [
+        "none"
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -701,6 +850,9 @@
         "S024",
         "S054"
       ],
+      "raws": [
+        2
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -716,6 +868,9 @@
       "sources": [
         "S053"
       ],
+      "raws": [
+        3
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -730,6 +885,9 @@
       "value": "none",
       "sources": [
         "S019"
+      ],
+      "raws": [
+        "none"
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -747,6 +905,9 @@
       "sources": [
         "S019"
       ],
+      "raws": [
+        "Chinese"
+      ],
       "labelledAddition": false,
       "status": "not expressible",
       "gap": "option missing",
@@ -759,6 +920,9 @@
       "value": "Portuguese",
       "sources": [
         "S008"
+      ],
+      "raws": [
+        "Portuguese"
       ],
       "labelledAddition": false,
       "status": "not expressible",
@@ -773,6 +937,9 @@
       "sources": [
         "S009"
       ],
+      "raws": [
+        "French"
+      ],
       "labelledAddition": false,
       "status": "not expressible",
       "gap": "option missing",
@@ -785,6 +952,9 @@
       "value": "standard",
       "sources": [
         "S040"
+      ],
+      "raws": [
+        false
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -802,6 +972,9 @@
         "S056",
         "S008"
       ],
+      "raws": [
+        true
+      ],
       "labelledAddition": false,
       "status": "not expressible",
       "gap": "option missing",
@@ -812,6 +985,7 @@
     {
       "source": "S005",
       "citation": "Petrides & Milner 1982, Neuropsychologia",
+      "label": "Petrides & Milner 1982, Neuropsychologia",
       "n_options": 1,
       "n_keys": 1,
       "keys_expressible": 1,
@@ -825,6 +999,7 @@
     {
       "source": "S008",
       "citation": "Sallum et al. 2017, Clin Neuropsychol",
+      "label": "Sallum et al. 2017, The Clinical Neuropsychologist",
       "n_options": 2,
       "n_keys": 2,
       "keys_expressible": 0,
@@ -847,6 +1022,7 @@
     {
       "source": "S009",
       "citation": "Monnier et al. 2026, Dev Neuropsychol",
+      "label": "Monnier et al. 2026, Developmental Neuropsychology",
       "n_options": 1,
       "n_keys": 1,
       "keys_expressible": 0,
@@ -864,6 +1040,7 @@
     {
       "source": "S012",
       "citation": "Sacchetti et al. 2008, BMC Psychiatry",
+      "label": "Sacchetti et al. 2008, BMC Psychiatry",
       "n_options": 4,
       "n_keys": 4,
       "keys_expressible": 4,
@@ -880,6 +1057,7 @@
     {
       "source": "S014",
       "citation": "Cox et al. 2014, Intelligence",
+      "label": "Cox et al. 2014, Intelligence",
       "n_options": 7,
       "n_keys": 7,
       "keys_expressible": 7,
@@ -899,6 +1077,7 @@
     {
       "source": "S019",
       "citation": "reference implementation",
+      "label": "reference implementation",
       "n_options": 16,
       "n_keys": 16,
       "keys_expressible": 15,
@@ -931,6 +1110,7 @@
     {
       "source": "S030",
       "citation": "Streamlit launcher for an online SOPT (no licence file) at e3c730a",
+      "label": "Streamlit launcher for an online SOPT (no licence file) at e3c730a",
       "n_options": 2,
       "n_keys": 2,
       "keys_expressible": 2,
@@ -945,6 +1125,7 @@
     {
       "source": "S034",
       "citation": "Sturm et al. 2026, J Clin Exp Neuropsychol",
+      "label": "Sturm et al. 2026, Journal of Clinical and Experimental Neuropsychology",
       "n_options": 3,
       "n_keys": 3,
       "keys_expressible": 3,
@@ -960,6 +1141,7 @@
     {
       "source": "S040",
       "citation": "Thomas et al. 2026, Psychol Assess",
+      "label": "Thomas et al. 2026, Psychological Assessment",
       "n_options": 8,
       "n_keys": 8,
       "keys_expressible": 7,
@@ -985,6 +1167,7 @@
     {
       "source": "S053",
       "citation": "Johnson et al. 2024, J Cogn",
+      "label": "Johnson et al. 2024, Journal of Cognition",
       "n_options": 7,
       "n_keys": 7,
       "keys_expressible": 7,
@@ -1003,6 +1186,7 @@
     {
       "source": "S054",
       "citation": "Silman et al. 2022, IJERPH",
+      "label": "Silman et al. 2022, International Journal of Environmental Research and Public Health",
       "n_options": 8,
       "n_keys": 8,
       "keys_expressible": 8,

@@ -65,7 +65,7 @@ export const contract = defineContract<ResolvedOptions>({
 });
 ```
 
-Defaults: parts `response/fixation/iti/feedback/cue/rest`; fields `block`, `correct`, `response`, `correct_response`, `rt`, `timeout`, `response_window`, `stimulus_duration`, `response_device`, `feedback_kind` (a field set to `null` says the package has none); `condition` reads `row.condition`; durations are recorded in `duration_ms`; `sequenceAcrossBlocks` is `true` (a task that orders each block on its own sets `false`); keyboard maps to `html-keyboard-response` and mouse/touch to `html-button-response`.
+Defaults: parts `response/fixation/iti/feedback/cue/rest`; fields `block`, `correct`, `response`, `correct_response`, `rt`, `timeout`, `response_window`, `stimulus_duration`, `response_device`, `feedback_kind` (a field set to `null` says the package has none: a task without a correct answer sets `correct: null, correct_response: null`, and `response_keys` then checks the responses alone); `condition` reads `row.condition`; durations are recorded in `duration_ms`; `sequenceAcrossBlocks` is `true` (a task that orders each block on its own sets `false`); keyboard maps to `html-keyboard-response` and mouse/touch to `html-button-response`.
 
 Every shared check lists the contract entries it relies on (`requires`, `optional`). If an adapter lacks one, the runner stops with the entry's name instead of failing inside an assertion.
 
@@ -79,6 +79,8 @@ case "feedback_duration_ms":
 case "concurrent_task":
   return value === "none" ? ok({ concurrent_task: "none" }) : gap("plugin needed", "needs the simon-task package");
 ```
+
+Both hooks also get the dossier's raw values, for when the typed value lost detail (a level count, a per-trial draw): `adapt(option, sub, value, phase, { raws, sources })` and `adaptConfig(options, { source, raw(key) })`. Read them for detail the typed value can't hold; don't parse free text for the value itself.
 
 `companions` are settings a single value needs in order to be observable. They are the weakest layer, explicit settings override them, and they are listed as "assumed" in level 2. `createAdapterKit({ mapOptions, dropCompanion? })` gives `mergeOptions`, `combine` and `assumedSettings` for options that are maps (`stimulus_set`, `practice`).
 
@@ -130,7 +132,7 @@ npm run build
 node ../testing/scripts/layout-check.mjs reproduction/layout.config.mjs     # from the package
 ```
 
-The config module default-exports `{ bundle, global, stageSelector, belowSelector, screenKind, variants, expectKinds }`. It serves a page running `dist/index.browser.js` with each variant's options at its viewport, steps through the task (pressing `keys[kind]` on a screen kind, clicking enabled buttons), records the stage's bounding rect per screen type, and asserts the same centre (±1 px), no overlap of the text region with the stage, and response buttons inside the viewport. `screenKind(stage, doc)` is serialised into the page, so it must be self-contained. Needs Chrome (`$CHROME_PATH` or a standard location) and `puppeteer-core` (a devDependency here). See `packages/flanker/reproduction/layout.config.mjs`.
+The config module default-exports `{ bundle, global, stageSelector, belowSelector, screenKind, variants, expectKinds }`. It serves a page running `dist/index.browser.js` with each variant's options at its viewport, steps through the task (pressing `keys[kind]` on a screen kind, clicking enabled buttons), records the stage's bounding rect per screen type, and asserts the same centre (±1 px), no overlap of the text region with the stage, and response buttons inside the viewport. `screenKind(stage, doc)` is serialised into the page, so it must be self-contained. Needs Chrome (`$CHROME_PATH` or a standard location) and `puppeteer-core` (a devDependency here). A variant may set its own `expectKinds` (it replaces the config's for that variant), e.g. a "too slow" screen that only a deadline variant reaches. On each screen the runner clicks the **first** enabled `.jspsych-btn`, so put the button that advances first, or give other buttons (such as "Listen again") a class of their own. See `packages/flanker/reproduction/layout.config.mjs`.
 
 ## Shared checks
 
@@ -149,7 +151,7 @@ The config module default-exports `{ bundle, global, stageSelector, belowSelecto
 | `fixation_duration_ms`, `iti_ms`, `feedback_duration_ms` (and `durationCheck` for any other `duration` option) | `0`: no rows; number: recorded in every field of `durationFields`, and `trial_duration` equal; `{min,max,step}`: in range, on the step grid, more than one value, same seed gives the same values | `parts.*`, `durationFields`                                             |
 | `trial_feedback`                                                                                               | feedback rows present or absent, test and practice (override), `feedback_kind`                                                                                                                    | `parts.feedback`; optional `fields.feedback_kind`                       |
 | `feedback_condition`                                                                                           | number of feedback rows by correctness                                                                                                                                                            | `fields.correct`, `parts.feedback`                                      |
-| `response_keys`                                                                                                | plugin `choices`; correct and given responses are among the keys                                                                                                                                  | `fields.response`, `fields.correct_response`, `exempt`                  |
+| `response_keys`                                                                                                | plugin `choices`; correct and given responses are among the keys; with `correct_response: null`, each key is pressed once there are 10 responses per key                                              | `fields.response`, `exempt`; optional `fields.correct_response`         |
 | `response_device`                                                                                              | `trial_type` is the device's plugin; keys are strings, buttons are indices                                                                                                                        | `plugins`, `fields.response`; optional `fields.response_device`         |
 
 `expectStandardTagging(run, contract)` asserts §4 on any run (every row has `task` and `task_version`, the scorable row is tagged). The checks of the testing package itself are in `src/*.spec.ts`; they run the shared checks against a small task (`src/__fixtures__/mini-task.ts`) that has deliberate faults, to show that a check fails when the option is not honoured.

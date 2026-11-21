@@ -36,18 +36,18 @@ Of all 121 rows, 96 (79.3%) are expressible and checked. The 93 checked cases sp
 | Fully expressible and all values checked | 6 of 10 (60.0%) |
 | Expressible except some values | 4 |
 
-| Source | Citation | Keys | Expressible | Tied to reported value | Not expressible | Assumed, not reported |
+| Source | Study | Keys | Expressible | Tied to reported value | Not expressible | Assumed, not reported |
 |---|---|---|---|---|---|---|
 | S022 | Expfactory go_nogo defaults | 26 | 26 | 24 |  |  |
 | S031 | PsyToolkit go/no-go library defaults | 2 | 2 | 1 |  |  |
-| S046 | Baumeister A, Schuurmans L, Borgmann L,  2026, Psychooncology | 7 | 6 | 6 | `stimulus_set.stimulus_set` |  |
-| S071 | Satheesan L, Shastri U, Bajaj G, Kalaiah 2026, PLoS One | 3 | 2 | 2 | `stimulus_set.stimulus_set` |  |
-| S103 | Treacy C, Andrews SC, Levenstein JM. 2025, Brain Struct Funct | 1 | 1 | 1 |  |  |
-| S118 | Simkute D, Tarailis P, Pipinis E, Grisko 2025, Behav Sci (Basel) | 1 | 0 | 0 | `stimulus_modality` |  |
-| S123 | Bolton K, Yang L. 2025, Healthcare (Basel) | 2 | 2 | 1 |  |  |
-| S157 | Allen MT, Interian A, Reddy V, Rodriguez 2025, PeerJ | 9 | 9 | 8 |  |  |
-| S175 | Park SE, Chung J, Lee J, Kim MJ, Kim J,  2024, PLOS Digit Health | 10 | 9 | 9 | `stimulus_set.stimulus_set` |  |
-| S175 | Park SE, Chung J, Lee J, Kim MJ, Kim J,  2024, PLOS Digit Health | 1 | 1 | 1 |  |  |
+| S046 | Baumeister et al. 2026, Psycho-Oncology | 7 | 6 | 6 | `stimulus_set.stimulus_set` |  |
+| S071 | Satheesan et al. 2026, PLOS ONE | 3 | 2 | 2 | `stimulus_set.stimulus_set` |  |
+| S103 | Treacy et al. 2025, Brain Structure and Function | 1 | 1 | 1 |  |  |
+| S118 | Simkute et al. 2025, Behavioral Sciences | 1 | 0 | 0 | `stimulus_modality` |  |
+| S123 | Bolton & Yang 2025, Healthcare | 2 | 2 | 1 |  |  |
+| S157 | Allen et al. 2025, PeerJ | 9 | 9 | 8 |  |  |
+| S175 | Park et al. 2024, PLOS Digital Health (1) | 10 | 9 | 9 | `stimulus_set.stimulus_set` |  |
+| S175 | Park et al. 2024, PLOS Digital Health (2) | 1 | 1 | 1 |  |  |
 
 Companion settings that a configuration needed but did not state count as expressible and are listed under "Assumed", because they are assumptions.
 

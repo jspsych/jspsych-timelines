@@ -20,6 +20,8 @@ const path = require("path");
  * @property {Object} options task options for `createTimeline`
  * @property {{width: number, height: number, hasTouch?: boolean}} viewport
  * @property {Record<string, string>} [keys] key to press on a screen kind: `{ array: "z" }`
+ * @property {string[]} [expectKinds] screen kinds this variant must show; replaces the config's
+ *   `expectKinds` for this variant (e.g. a "too slow" screen only a deadline variant reaches)
  */
 /**
  * @typedef {Object} LayoutConfig
@@ -33,6 +35,7 @@ const path = require("path");
  *   from the DOM. It is serialised and run in the page, so it must not use anything from this file.
  * @property {LayoutVariant[]} variants
  * @property {string[]} [expectKinds] screen kinds that must be seen at least once in every variant
+ *   (a variant's own `expectKinds` replaces it)
  * @property {number} [tolerancePx] default 1
  * @property {number} [maxMs] stepping time limit per variant, default 60000
  * @property {string} [jspsychJs] default: the jspsych in node_modules
@@ -247,7 +250,7 @@ async function runLayoutCheck(config) {
         finished: done,
         ...assessScreens(samples, {
           tolerancePx: config.tolerancePx,
-          expectKinds: config.expectKinds,
+          expectKinds: variant.expectKinds ?? config.expectKinds,
         }),
       });
     }

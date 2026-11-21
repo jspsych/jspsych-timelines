@@ -1,12 +1,10 @@
 /**
  * Two-step task checks. The checks for options every package shares (counts, blocks, durations,
  * response window) live in `@jspsych-timelines/testing`; the contract that points them at this
- * package's data is `./contract.ts`. This file has the checks for the task's own options, and one
- * replacement: the shared `response_keys` check asserts that every key is some row's correct response,
- * which a task without a correct answer cannot meet. This one asserts the same about the keys that were
- * pressed and the keys the trials listen for.
+ * package's data is `./contract.ts`. This file has the checks for the task's own options, and an
+ * extension of the shared `response_keys` check (which side each key chooses).
  */
-import { Check, CheckSet, sharedChecks } from "@jspsych-timelines/testing";
+import { Check, CheckSet, extendCheck, sharedChecks } from "@jspsych-timelines/testing";
 
 import { MAX_TRIAL_REPEATS } from "../src/constants";
 import type { ResolvedOptions, TwoStepTaskOptions } from "../src/options";
@@ -186,28 +184,18 @@ const taskOnly: Record<string, TwoStepCheck> = {
         .forEach((x, i) => expect(x.left).toBe(left[i]));
     },
   },
-  response_keys: {
-    requires: [],
-    kind: "behaviour",
+  // the shared check reads the `choice` rows (contract scope); this adds the side each key stands for
+  response_keys: extendCheck(sharedChecks.response_keys, {
     fn: (r) => {
-      const keys = r.eff.response_keys;
-      const lower = keys.map((k) => k.toLowerCase());
-      const choiceTrials = trialsOf(r, "choice");
-      expect(choiceTrials.length).toBeGreaterThan(0);
-      choiceTrials.forEach((t) => expect(t.choices).toEqual(keys));
-      const rows = rowsOf(r, "test", "choice");
-      rows
+      const lower = r.eff.response_keys.map((k: string) => k.toLowerCase());
+      rowsOf(r, "test", "choice")
         .filter((x) => x.response !== null)
-        .forEach((x) => {
-          expect(lower).toContain(String(x.response).toLowerCase());
-          expect(x.side).toBe(String(x.response).toLowerCase() === lower[0] ? "left" : "right");
-        });
-      lower.forEach((k) =>
-        expect(rows.some((x) => String(x.response).toLowerCase() === k)).toBe(true)
-      );
+        .forEach((x) =>
+          expect(x.side).toBe(String(x.response).toLowerCase() === lower[0] ? "left" : "right")
+        );
       test(r).forEach((x) => expect(lower).toContain(String(x.response).toLowerCase()));
     },
-  },
+  }),
   comprehension_check: {
     requires: [],
     kind: "structure",

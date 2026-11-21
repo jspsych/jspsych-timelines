@@ -106,12 +106,12 @@ export function renderReproductionMd(input: ReportInput): string {
     )}) |`,
     `| Expressible except some values | ${l2.length - fully.length} |`,
     ``,
-    `| Source | Citation | Keys | Expressible | Tied to reported value | Not expressible | Assumed, not reported |`,
+    `| Source | Study | Keys | Expressible | Tied to reported value | Not expressible | Assumed, not reported |`,
     `|---|---|---|---|---|---|---|`
   );
   for (const x of l2) {
     p(
-      `| ${x.source} | ${cell(x.citation)} | ${x.n_keys} | ${x.keys_expressible} | ${
+      `| ${x.source} | ${cell(x.label ?? x.citation)} | ${x.n_keys} | ${x.keys_expressible} | ${
         x.tied_to_reported_value
       } | ${x.gaps.length ? x.gaps.map((g) => `\`${g.key}\``).join(", ") : ""} | ${
         x.assumed.length ? x.assumed.map((a) => `\`${a}\``).join(", ") : ""

@@ -1,8 +1,8 @@
 /**
  * What the shared checks need to know about the two-step task's data (see `defineContract` in
  * `@jspsych-timelines/testing`). The scorable row is the trial's `response` row (one per trial
- * attempt); the raw choices are `choice` rows. The task has no correct answer, so the checks that
- * read `correct` and `correct_response` are replaced by this package's own (checks.ts).
+ * attempt); the raw choices are `choice` rows. The task has no correct answer (`correct` and
+ * `correct_response` are null), so the shared `response_keys` check reads the key presses alone.
  */
 import { defineContract } from "@jspsych-timelines/testing";
 
@@ -23,6 +23,11 @@ export const contract = defineContract<ResolvedOptions>({
   condition: (row) => row.condition ?? null,
   blockSizes: (eff) => splitTrials(eff.n_test_trials, eff.n_blocks),
   durationFields: (option) => DURATION_FIELDS[option] ?? ["duration_ms"],
+  fields: { correct: null, correct_response: null },
   // the window is recorded on the response row, and set on the `choice` trials
-  scope: { response_window_ms: { part: "response", builtPart: () => "choice" } },
+  scope: {
+    response_window_ms: { part: "response", builtPart: () => "choice" },
+    // the keys are pressed on the `choice` screens, one row per stage
+    response_keys: { part: "choice" },
+  },
 });

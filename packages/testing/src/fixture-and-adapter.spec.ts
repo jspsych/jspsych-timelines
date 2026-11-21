@@ -5,7 +5,7 @@ import * as path from "path";
 
 import { miniAdapter } from "./__fixtures__/mini-adapter";
 import { createAdapterKit, gap, isGap, ok } from "./adapter";
-import { collectCases, untypedValues } from "./fixture";
+import { collectCases, rawValuesFor, untypedValues } from "./fixture";
 import type { Fixture } from "./fixture";
 
 const script = path.join(__dirname, "..", "scripts", "fixture-from-spec.mjs");
@@ -99,6 +99,23 @@ describe("collectCases", () => {
       'trial_feedback="points_bank"',
     ]);
     expect(cases.find((c) => c.value === null)!.labelledAddition).toBe(true);
+  });
+
+  it("keeps the raw values behind each case", () => {
+    const { cases } = collectCases(fixture);
+    for (const c of cases) expect(c.raws.length).toBeGreaterThan(0);
+    const all = fixture.options.flatMap((o) => o.components.flatMap((c) => c.observed));
+    const c0 = cases[0];
+    const raws = all.filter((ob) => c0.sources.includes(ob.source) && ob.ok).map((ob) => ob.raw);
+    for (const raw of c0.raws) expect(raws).toContainEqual(raw);
+  });
+
+  it("finds a source's raw values for a configuration key", () => {
+    const o = fixture.options.find((x) => x.components.some((c) => c.observed.length))!;
+    const ob = o.components.flatMap((c) => c.observed)[0];
+    expect(rawValuesFor(fixture, ob.source, o.name)).toContainEqual(ob.raw);
+    expect(rawValuesFor(fixture, ob.source, "no_such_option")).toEqual([]);
+    expect(rawValuesFor(fixture, "S-none", o.name)).toEqual([]);
   });
 
   it("skips typed nulls unless the option is listed", () => {

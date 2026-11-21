@@ -18,6 +18,9 @@
       "sources": [
         "S022"
       ],
+      "raws": [
+        1000
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "recorded-parameter",
@@ -33,6 +36,9 @@
       "value": 500,
       "sources": [
         "S183"
+      ],
+      "raws": [
+        500
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -50,6 +56,9 @@
       "sources": [
         "S022"
       ],
+      "raws": [
+        0
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "recorded-parameter",
@@ -64,6 +73,9 @@
       "value": 1000,
       "sources": [
         "S028"
+      ],
+      "raws": [
+        1000
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -80,6 +92,9 @@
       "sources": [
         "S157"
       ],
+      "raws": [
+        1300
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "recorded-parameter",
@@ -94,6 +109,9 @@
       "value": 500,
       "sources": [
         "S183"
+      ],
+      "raws": [
+        500
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -110,6 +128,9 @@
       "sources": [
         "S017"
       ],
+      "raws": [
+        750
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "recorded-parameter",
@@ -125,6 +146,9 @@
       "sources": [
         "S071"
       ],
+      "raws": [
+        1700
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "recorded-parameter",
@@ -139,6 +163,9 @@
       "value": 0,
       "sources": [
         "S022"
+      ],
+      "raws": [
+        false
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -158,6 +185,9 @@
       "sources": [
         "S022"
       ],
+      "raws": [
+        "1000-1500 (jittered)"
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -176,6 +206,9 @@
       "sources": [
         "S028"
       ],
+      "raws": [
+        1450
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -190,6 +223,9 @@
       "value": 2000,
       "sources": [
         "S031"
+      ],
+      "raws": [
+        2000
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -206,6 +242,9 @@
       "sources": [
         "S175"
       ],
+      "raws": [
+        1500
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -220,6 +259,9 @@
       "value": 1000,
       "sources": [
         "S183"
+      ],
+      "raws": [
+        1000
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -236,6 +278,9 @@
       "sources": [
         "S022"
       ],
+      "raws": [
+        750
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "recorded-parameter",
@@ -250,6 +295,9 @@
       "value": 500,
       "sources": [
         "S028"
+      ],
+      "raws": [
+        500
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -266,6 +314,9 @@
       "sources": [
         "S054"
       ],
+      "raws": [
+        1000
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "recorded-parameter",
@@ -281,6 +332,9 @@
       "sources": [
         "S157"
       ],
+      "raws": [
+        200
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "recorded-parameter",
@@ -295,6 +349,9 @@
       "value": 2000,
       "sources": [
         "S169"
+      ],
+      "raws": [
+        2000
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -312,6 +369,9 @@
       "sources": [
         "S175"
       ],
+      "raws": [
+        1500
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "recorded-parameter",
@@ -327,6 +387,9 @@
       "value": 1250,
       "sources": [
         "S017"
+      ],
+      "raws": [
+        1250
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -344,6 +407,9 @@
       "sources": [
         "S071"
       ],
+      "raws": [
+        300
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "recorded-parameter",
@@ -358,6 +424,9 @@
       "value": "fixed_duration",
       "sources": [
         "S028"
+      ],
+      "raws": [
+        false
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -374,6 +443,9 @@
       "sources": [
         "S169"
       ],
+      "raws": [
+        true
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "recorded-parameter",
@@ -388,6 +460,9 @@
       "value": "center",
       "sources": [
         "S022"
+      ],
+      "raws": [
+        "center"
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -404,6 +479,9 @@
       "sources": [
         "S028"
       ],
+      "raws": [
+        "random cell of a 2x2 grid"
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "structure",
@@ -418,6 +496,9 @@
       "value": "top centre",
       "sources": [
         "S046"
+      ],
+      "raws": [
+        "top centre"
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -434,6 +515,9 @@
       "sources": [
         "S183"
       ],
+      "raws": [
+        "left/right x near/far in 3D scene"
+      ],
       "labelledAddition": false,
       "status": "not expressible",
       "gap": "option missing",
@@ -446,6 +530,9 @@
       "value": "visual",
       "sources": [
         "S022"
+      ],
+      "raws": [
+        "visual"
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -462,6 +549,9 @@
       "sources": [
         "S118"
       ],
+      "raws": [
+        "auditory"
+      ],
       "labelledAddition": false,
       "status": "not expressible",
       "gap": "plugin needed",
@@ -474,6 +564,9 @@
       "value": "coloured squares (orange/blue)",
       "sources": [
         "S022"
+      ],
+      "raws": [
+        "coloured squares (orange/blue)"
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -499,6 +592,9 @@
       "sources": [
         "S028"
       ],
+      "raws": [
+        "letters P / R"
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -521,6 +617,9 @@
       "sources": [
         "S031"
       ],
+      "raws": [
+        "words Go / No go"
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -542,6 +641,9 @@
       "value": "coloured circles (blue go / orange no-go)",
       "sources": [
         "S054"
+      ],
+      "raws": [
+        "coloured circles (blue go / orange no-go)"
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -567,6 +669,9 @@
       "sources": [
         "S046"
       ],
+      "raws": [
+        "symbol-colour conjunctions (1 go, 3 no-go)"
+      ],
       "labelledAddition": false,
       "status": "not expressible",
       "gap": "option missing",
@@ -579,6 +684,9 @@
       "value": "letters (A, B, C go; X no-go)",
       "sources": [
         "S123"
+      ],
+      "raws": [
+        "letters (A, B, C go; X no-go)"
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -610,6 +718,9 @@
       "sources": [
         "S157"
       ],
+      "raws": [
+        "green circle go / red X no-go"
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -634,6 +745,9 @@
       "sources": [
         "S169"
       ],
+      "raws": [
+        "faces: gender (cold) or emotion (hot)"
+      ],
       "labelledAddition": false,
       "status": "not expressible",
       "gap": "option missing",
@@ -646,6 +760,9 @@
       "value": "emoticon cat face x parachute colour conjunctions",
       "sources": [
         "S175"
+      ],
+      "raws": [
+        "emoticon cat face x parachute colour conjunctions"
       ],
       "labelledAddition": false,
       "status": "not expressible",
@@ -660,6 +777,9 @@
       "sources": [
         "S183"
       ],
+      "raws": [
+        "geometric shapes (square/hexagon) in pots in a rendered 3D room"
+      ],
       "labelledAddition": false,
       "status": "not expressible",
       "gap": "option missing",
@@ -672,6 +792,9 @@
       "value": "letter stream, 4 letters per block, new set each block",
       "sources": [
         "S017"
+      ],
+      "raws": [
+        "letter stream, 4 letters per block, new set each block"
       ],
       "labelledAddition": false,
       "status": "not expressible",
@@ -686,6 +809,9 @@
       "sources": [
         "S071"
       ],
+      "raws": [
+        "line drawings (car go / dog no-go)"
+      ],
       "labelledAddition": false,
       "status": "not expressible",
       "gap": "option missing",
@@ -698,6 +824,9 @@
       "value": 1,
       "sources": [
         "S022"
+      ],
+      "raws": [
+        1
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -720,6 +849,9 @@
       "value": 3,
       "sources": [
         "S123"
+      ],
+      "raws": [
+        3
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -751,6 +883,9 @@
       "sources": [
         "S175"
       ],
+      "raws": [
+        2
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -777,6 +912,9 @@
       "sources": [
         "S022"
       ],
+      "raws": [
+        1
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -798,6 +936,9 @@
       "value": 3,
       "sources": [
         "S046"
+      ],
+      "raws": [
+        3
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -828,6 +969,9 @@
       "value": 4,
       "sources": [
         "S175"
+      ],
+      "raws": [
+        4
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -863,6 +1007,9 @@
       "sources": [
         "S022"
       ],
+      "raws": [
+        "blank"
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "structure",
@@ -878,6 +1025,9 @@
       "sources": [
         "S028"
       ],
+      "raws": [
+        "placeholder grid with stars"
+      ],
       "labelledAddition": false,
       "status": "not expressible",
       "gap": "option missing",
@@ -890,6 +1040,9 @@
       "value": "fixation_cross",
       "sources": [
         "S054"
+      ],
+      "raws": [
+        "fixation_cross"
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -906,6 +1059,9 @@
       "value": 0.9,
       "sources": [
         "S022"
+      ],
+      "raws": [
+        0.9
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -925,6 +1081,9 @@
       "sources": [
         "S028"
       ],
+      "raws": [
+        0.8
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -942,6 +1101,9 @@
       "value": 0.5,
       "sources": [
         "S054"
+      ],
+      "raws": [
+        0.5
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -961,6 +1123,9 @@
       "sources": [
         "S046"
       ],
+      "raws": [
+        0.25
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -978,6 +1143,9 @@
       "value": 0.82,
       "sources": [
         "S157"
+      ],
+      "raws": [
+        0.82
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -997,6 +1165,9 @@
       "sources": [
         "S169"
       ],
+      "raws": [
+        0.75
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -1014,6 +1185,9 @@
       "value": 0.4,
       "sources": [
         "S175"
+      ],
+      "raws": [
+        0.4
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -1033,6 +1207,9 @@
       "sources": [
         "S183"
       ],
+      "raws": [
+        0.71
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -1050,6 +1227,9 @@
       "value": 0.5,
       "sources": [
         "S022"
+      ],
+      "raws": [
+        0.5
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -1071,6 +1251,9 @@
       "sources": [
         "S028"
       ],
+      "raws": [
+        0.8
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -1091,6 +1274,9 @@
       "sources": [
         "S022"
       ],
+      "raws": [
+        1
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -1105,6 +1291,9 @@
       "value": 2,
       "sources": [
         "S028"
+      ],
+      "raws": [
+        2
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -1121,6 +1310,9 @@
       "sources": [
         "S183"
       ],
+      "raws": [
+        8
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -1135,6 +1327,9 @@
       "value": 5,
       "sources": [
         "S017"
+      ],
+      "raws": [
+        5
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -1151,6 +1346,9 @@
       "sources": [
         "S022"
       ],
+      "raws": [
+        350
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -1165,6 +1363,9 @@
       "value": 320,
       "sources": [
         "S028"
+      ],
+      "raws": [
+        320
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -1181,6 +1382,9 @@
       "sources": [
         "S054"
       ],
+      "raws": [
+        40
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -1195,6 +1399,9 @@
       "value": 150,
       "sources": [
         "S157"
+      ],
+      "raws": [
+        150
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -1211,6 +1418,9 @@
       "sources": [
         "S169"
       ],
+      "raws": [
+        160
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -1225,6 +1435,9 @@
       "value": 270,
       "sources": [
         "S175"
+      ],
+      "raws": [
+        270
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -1241,6 +1454,9 @@
       "sources": [
         "S183"
       ],
+      "raws": [
+        224
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -1256,6 +1472,9 @@
       "sources": [
         "S017"
       ],
+      "raws": [
+        600
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -1270,6 +1489,9 @@
       "value": {},
       "sources": [
         "S022"
+      ],
+      "raws": [
+        "random"
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -1292,6 +1514,9 @@
       },
       "sources": [
         "S157"
+      ],
+      "raws": [
+        "fixed pseudorandom (max 2 consecutive no-go, at least 3 go between)"
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -1323,6 +1548,9 @@
       "sources": [
         "S207"
       ],
+      "raws": [
+        "fixed sequences of 1, 3 or 5 go before each no-go"
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -1350,6 +1578,9 @@
       "sources": [
         "S022"
       ],
+      "raws": [
+        false
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -1364,6 +1595,9 @@
       "value": "fixed",
       "sources": [
         "S022"
+      ],
+      "raws": [
+        "none"
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -1380,6 +1614,9 @@
       "sources": [
         "S028"
       ],
+      "raws": [
+        "reversal"
+      ],
       "labelledAddition": false,
       "status": "not expressible",
       "gap": "package fix needed",
@@ -1392,6 +1629,9 @@
       "value": "random_per_participant",
       "sources": [
         "S022"
+      ],
+      "raws": [
+        "randomized_per_participant"
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -1408,6 +1648,9 @@
       "sources": [
         "S028"
       ],
+      "raws": [
+        "fixed"
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -1423,6 +1666,9 @@
       "sources": [
         "S183"
       ],
+      "raws": [
+        "counterbalanced"
+      ],
       "labelledAddition": false,
       "status": "not expressible",
       "gap": "plugin needed",
@@ -1435,6 +1681,9 @@
       "value": "random",
       "sources": [
         "S022"
+      ],
+      "raws": [
+        "random"
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -1452,6 +1701,10 @@
         "S157",
         "S207"
       ],
+      "raws": [
+        "fixed pseudorandom (max 2 consecutive no-go, at least 3 go between)",
+        "fixed sequences of 1, 3 or 5 go before each no-go"
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -1468,6 +1721,10 @@
         "S022",
         "S183"
       ],
+      "raws": [
+        "spacebar",
+        "lateralized keys (left/right by stimulus side)"
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -1482,6 +1739,9 @@
       "value": "mouse",
       "sources": [
         "S046"
+      ],
+      "raws": [
+        "mouse_click_on_stimulus"
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -1498,6 +1758,9 @@
       "sources": [
         "S175"
       ],
+      "raws": [
+        "touchscreen"
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -1512,6 +1775,9 @@
       "value": 10,
       "sources": [
         "S022"
+      ],
+      "raws": [
+        10
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -1528,6 +1794,9 @@
       "sources": [
         "S046"
       ],
+      "raws": [
+        6
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -1542,6 +1811,9 @@
       "value": 20,
       "sources": [
         "S157"
+      ],
+      "raws": [
+        20
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -1558,6 +1830,9 @@
       "sources": [
         "S175"
       ],
+      "raws": [
+        40
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -1573,6 +1848,9 @@
       "sources": [
         "S103"
       ],
+      "raws": [
+        25
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -1587,6 +1865,9 @@
       "value": "none",
       "sources": [
         "S022"
+      ],
+      "raws": [
+        "none"
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -1604,6 +1885,9 @@
       "sources": [
         "S183"
       ],
+      "raws": [
+        "mean_go_rt"
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -1619,6 +1903,9 @@
       "value": "accuracy_rt",
       "sources": [
         "S017"
+      ],
+      "raws": [
+        "mean_rt_and_error_rate"
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -1636,6 +1923,9 @@
       "sources": [
         "S175"
       ],
+      "raws": [
+        "errors_only"
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -1651,6 +1941,9 @@
       "value": "none",
       "sources": [
         "S022"
+      ],
+      "raws": [
+        "none"
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -1668,6 +1961,10 @@
         "S028",
         "S046"
       ],
+      "raws": [
+        "response label set bold for 150 ms",
+        "clicked stimulus highlighted with a red square"
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "structure",
@@ -1682,6 +1979,9 @@
       "value": "none",
       "sources": [
         "S022"
+      ],
+      "raws": [
+        "none"
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -1698,6 +1998,9 @@
       "sources": [
         "S175"
       ],
+      "raws": [
+        "errors_only"
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -1712,6 +2015,9 @@
       "value": "on_screen",
       "sources": [
         "S028"
+      ],
+      "raws": [
+        true
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -1728,6 +2034,9 @@
       "sources": [
         "S022"
       ],
+      "raws": [
+        false
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "structure",
@@ -1742,6 +2051,9 @@
       "value": "speed",
       "sources": [
         "S157"
+      ],
+      "raws": [
+        "speed"
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -1758,6 +2070,9 @@
       "sources": [
         "S017"
       ],
+      "raws": [
+        "speed_and_accuracy"
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "structure",
@@ -1770,6 +2085,7 @@
     {
       "source": "S022",
       "citation": "Expfactory go_nogo defaults",
+      "label": "Expfactory go_nogo defaults",
       "n_options": 26,
       "n_keys": 26,
       "keys_expressible": 26,
@@ -1804,6 +2120,7 @@
     {
       "source": "S031",
       "citation": "PsyToolkit go/no-go library defaults",
+      "label": "PsyToolkit go/no-go library defaults",
       "n_options": 2,
       "n_keys": 2,
       "keys_expressible": 2,
@@ -1818,6 +2135,7 @@
     {
       "source": "S046",
       "citation": "Baumeister A, Schuurmans L, Borgmann L,  2026, Psychooncology",
+      "label": "Baumeister et al. 2026, Psycho-Oncology",
       "n_options": 7,
       "n_keys": 7,
       "keys_expressible": 6,
@@ -1842,6 +2160,7 @@
     {
       "source": "S071",
       "citation": "Satheesan L, Shastri U, Bajaj G, Kalaiah 2026, PLoS One",
+      "label": "Satheesan et al. 2026, PLOS ONE",
       "n_options": 3,
       "n_keys": 3,
       "keys_expressible": 2,
@@ -1862,6 +2181,7 @@
     {
       "source": "S103",
       "citation": "Treacy C, Andrews SC, Levenstein JM. 2025, Brain Struct Funct",
+      "label": "Treacy et al. 2025, Brain Structure and Function",
       "n_options": 1,
       "n_keys": 1,
       "keys_expressible": 1,
@@ -1875,6 +2195,7 @@
     {
       "source": "S118",
       "citation": "Simkute D, Tarailis P, Pipinis E, Grisko 2025, Behav Sci (Basel)",
+      "label": "Simkute et al. 2025, Behavioral Sciences",
       "n_options": 1,
       "n_keys": 1,
       "keys_expressible": 0,
@@ -1892,6 +2213,7 @@
     {
       "source": "S123",
       "citation": "Bolton K, Yang L. 2025, Healthcare (Basel)",
+      "label": "Bolton & Yang 2025, Healthcare",
       "n_options": 2,
       "n_keys": 2,
       "keys_expressible": 2,
@@ -1905,6 +2227,7 @@
     {
       "source": "S157",
       "citation": "Allen MT, Interian A, Reddy V, Rodriguez 2025, PeerJ",
+      "label": "Allen et al. 2025, PeerJ",
       "n_options": 9,
       "n_keys": 9,
       "keys_expressible": 9,
@@ -1926,6 +2249,7 @@
     {
       "source": "S175",
       "citation": "Park SE, Chung J, Lee J, Kim MJ, Kim J,  2024, PLOS Digit Health",
+      "label": "Park et al. 2024, PLOS Digital Health (1)",
       "n_options": 10,
       "n_keys": 10,
       "keys_expressible": 9,
@@ -1952,6 +2276,7 @@
     {
       "source": "S175",
       "citation": "Park SE, Chung J, Lee J, Kim MJ, Kim J,  2024, PLOS Digit Health",
+      "label": "Park et al. 2024, PLOS Digital Health (2)",
       "n_options": 1,
       "n_keys": 1,
       "keys_expressible": 1,

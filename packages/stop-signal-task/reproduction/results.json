@@ -19,6 +19,9 @@
         "S010",
         "S082"
       ],
+      "raws": [
+        15000
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "recorded-parameter",
@@ -33,6 +36,9 @@
       "value": 60000,
       "sources": [
         "S072"
+      ],
+      "raws": [
+        60000
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -49,6 +55,9 @@
       "sources": [
         "S011"
       ],
+      "raws": [
+        "self_paced"
+      ],
       "labelledAddition": true,
       "status": "checked",
       "kind": "recorded-parameter",
@@ -63,6 +72,9 @@
       "value": 750,
       "sources": [
         "S010"
+      ],
+      "raws": [
+        750
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -80,6 +92,9 @@
       "sources": [
         "S079"
       ],
+      "raws": [
+        1250
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "recorded-parameter",
@@ -95,6 +110,9 @@
       "value": 2000,
       "sources": [
         "S079"
+      ],
+      "raws": [
+        2000
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -113,6 +131,9 @@
         "S010",
         "S072"
       ],
+      "raws": [
+        "250"
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "recorded-parameter",
@@ -129,6 +150,9 @@
         "S011",
         "S079",
         "S082"
+      ],
+      "raws": [
+        "500"
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -147,6 +171,9 @@
       },
       "sources": [
         "S085"
+      ],
+      "raws": [
+        "1000-1500"
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -169,6 +196,9 @@
       "sources": [
         "S007"
       ],
+      "raws": [
+        "500-1000"
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "recorded-parameter",
@@ -187,6 +217,9 @@
       "sources": [
         "S008"
       ],
+      "raws": [
+        "2000"
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "recorded-parameter",
@@ -202,6 +235,9 @@
       "sources": [
         "S010"
       ],
+      "raws": [
+        "fixed 500"
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "recorded-parameter",
@@ -216,6 +252,9 @@
       "value": 1500,
       "sources": [
         "S079"
+      ],
+      "raws": [
+        "fixed 1500"
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -235,6 +274,9 @@
       "sources": [
         "S098"
       ],
+      "raws": [
+        "uniform 750-950"
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "recorded-parameter",
@@ -253,6 +295,9 @@
       "sources": [
         "S026"
       ],
+      "raws": [
+        "fixed 750"
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "recorded-parameter",
@@ -267,6 +312,9 @@
       "value": 1250,
       "sources": [
         "S010"
+      ],
+      "raws": [
+        1250
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -283,6 +331,9 @@
       "sources": [
         "S011"
       ],
+      "raws": [
+        1850
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -297,6 +348,9 @@
       "value": 500,
       "sources": [
         "S014"
+      ],
+      "raws": [
+        500
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -314,6 +368,9 @@
         "S079",
         "S008"
       ],
+      "raws": [
+        1000
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -330,6 +387,9 @@
         "S080",
         "S082"
       ],
+      "raws": [
+        1500
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -345,6 +405,9 @@
       "sources": [
         "S085"
       ],
+      "raws": [
+        1400
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -359,6 +422,9 @@
       "value": null,
       "sources": [
         "S010"
+      ],
+      "raws": [
+        "until_response"
       ],
       "labelledAddition": true,
       "status": "checked",
@@ -376,6 +442,9 @@
       "value": 850,
       "sources": [
         "S011"
+      ],
+      "raws": [
+        850
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -397,6 +466,9 @@
       "sources": [
         "S080"
       ],
+      "raws": [
+        150
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "recorded-parameter",
@@ -416,6 +488,9 @@
       "value": 600,
       "sources": [
         "S098"
+      ],
+      "raws": [
+        600
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -437,6 +512,9 @@
       "sources": [
         "S026"
       ],
+      "raws": [
+        1250
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "recorded-parameter",
@@ -457,6 +535,9 @@
       "sources": [
         "S010"
       ],
+      "raws": [
+        "until_trial_end"
+      ],
       "labelledAddition": true,
       "status": "checked",
       "kind": "recorded-parameter",
@@ -473,6 +554,9 @@
       "value": 500,
       "sources": [
         "S011"
+      ],
+      "raws": [
+        500
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -491,6 +575,9 @@
       "sources": [
         "S057"
       ],
+      "raws": [
+        75
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "recorded-parameter",
@@ -508,6 +595,9 @@
       "sources": [
         "S007"
       ],
+      "raws": [
+        8.5
+      ],
       "labelledAddition": false,
       "status": "not expressible",
       "gap": "plugin needed",
@@ -520,6 +610,9 @@
       "value": 15,
       "sources": [
         "S008"
+      ],
+      "raws": [
+        15
       ],
       "labelledAddition": false,
       "status": "not expressible",
@@ -534,6 +627,9 @@
       "sources": [
         "S010",
         "S052"
+      ],
+      "raws": [
+        "visual"
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -552,6 +648,9 @@
         "S030",
         "S025"
       ],
+      "raws": [
+        "auditory"
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "structure",
@@ -568,6 +667,9 @@
         "S010",
         "S052",
         "S070"
+      ],
+      "raws": [
+        "left/right arrows"
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -586,6 +688,9 @@
       "sources": [
         "S011"
       ],
+      "raws": [
+        "4 shapes mapped to 2 keys"
+      ],
       "labelledAddition": false,
       "status": "not expressible",
       "gap": "option missing",
@@ -598,6 +703,9 @@
       "value": "left/right arrow inside a circle",
       "sources": [
         "S014"
+      ],
+      "raws": [
+        "left/right arrow inside a circle"
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -616,6 +724,9 @@
       "sources": [
         "S072"
       ],
+      "raws": [
+        "stimulus location left/right of fixation (food/non-food pictures or words, task-irrelevant)"
+      ],
       "labelledAddition": false,
       "status": "not expressible",
       "gap": "option missing",
@@ -628,6 +739,9 @@
       "value": "green arrow in white circle",
       "sources": [
         "S079"
+      ],
+      "raws": [
+        "green arrow in white circle"
       ],
       "labelledAddition": false,
       "status": "not expressible",
@@ -642,6 +756,9 @@
       "sources": [
         "S080"
       ],
+      "raws": [
+        "image orientation portrait/landscape (stones or money)"
+      ],
       "labelledAddition": false,
       "status": "not expressible",
       "gap": "option missing",
@@ -654,6 +771,9 @@
       "value": "black arrows on grey",
       "sources": [
         "S082"
+      ],
+      "raws": [
+        "black arrows on grey"
       ],
       "labelledAddition": false,
       "status": "not expressible",
@@ -668,6 +788,9 @@
       "sources": [
         "S085"
       ],
+      "raws": [
+        "target square turns green (Exp 1) / letter T or X (Exp 2)"
+      ],
       "labelledAddition": false,
       "status": "not expressible",
       "gap": "option missing",
@@ -680,6 +803,9 @@
       "value": "game character (archer) signals left/right",
       "sources": [
         "S086"
+      ],
+      "raws": [
+        "game character (archer) signals left/right"
       ],
       "labelledAddition": false,
       "status": "not expressible",
@@ -694,6 +820,9 @@
       "sources": [
         "S091"
       ],
+      "raws": [
+        "go task of another paradigm (flanker, n-back, task switching, shape matching, directed forgetting)"
+      ],
       "labelledAddition": false,
       "status": "not expressible",
       "gap": "plugin needed",
@@ -706,6 +835,9 @@
       "value": "square/circle",
       "sources": [
         "S026"
+      ],
+      "raws": [
+        "square/circle"
       ],
       "labelledAddition": false,
       "status": "not expressible",
@@ -720,6 +852,9 @@
       "sources": [
         "S007"
       ],
+      "raws": [
+        "peripheral saccade target (left/right)"
+      ],
       "labelledAddition": false,
       "status": "not expressible",
       "gap": "plugin needed",
@@ -733,6 +868,9 @@
       "sources": [
         "S010",
         "S070"
+      ],
+      "raws": [
+        "go arrow turns red"
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -751,6 +889,9 @@
       "sources": [
         "S011"
       ],
+      "raws": [
+        "star outline around the shape"
+      ],
       "labelledAddition": false,
       "status": "not expressible",
       "gap": "option missing",
@@ -764,6 +905,9 @@
       "sources": [
         "S014",
         "S079"
+      ],
+      "raws": [
+        "surrounding circle turns red"
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -782,6 +926,9 @@
       "sources": [
         "S072"
       ],
+      "raws": [
+        "blue box around stimulus"
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "structure",
@@ -798,6 +945,9 @@
       "value": "blue 15-px border",
       "sources": [
         "S080"
+      ],
+      "raws": [
+        "blue 15-px border"
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -816,6 +966,9 @@
       "sources": [
         "S082"
       ],
+      "raws": [
+        "blue square (0.7 x 0.7 deg)"
+      ],
       "labelledAddition": false,
       "status": "not expressible",
       "gap": "option missing",
@@ -828,6 +981,9 @@
       "value": "black square (Exp 1) / red circle (Exp 2) between targets",
       "sources": [
         "S085"
+      ],
+      "raws": [
+        "black square (Exp 1) / red circle (Exp 2) between targets"
       ],
       "labelledAddition": false,
       "status": "not expressible",
@@ -842,6 +998,9 @@
       "sources": [
         "S086"
       ],
+      "raws": [
+        "game event (dragon breathes fire)"
+      ],
       "labelledAddition": false,
       "status": "not expressible",
       "gap": "option missing",
@@ -854,6 +1013,9 @@
       "value": "fixation spot re-illuminated",
       "sources": [
         "S007"
+      ],
+      "raws": [
+        "fixation spot re-illuminated"
       ],
       "labelledAddition": false,
       "status": "not expressible",
@@ -868,6 +1030,9 @@
       "sources": [
         "S008"
       ],
+      "raws": [
+        "central flower changes green to red"
+      ],
       "labelledAddition": false,
       "status": "not expressible",
       "gap": "option missing",
@@ -880,6 +1045,9 @@
       "value": "tone through closed headphones",
       "sources": [
         "S026"
+      ],
+      "raws": [
+        "tone through closed headphones"
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -897,6 +1065,9 @@
       "value": "750 Hz tone, 75 ms",
       "sources": [
         "S057"
+      ],
+      "raws": [
+        "750 Hz tone, 75 ms"
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -923,6 +1094,9 @@
         "S085",
         "S091"
       ],
+      "raws": [
+        0.25
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -940,6 +1114,9 @@
       "value": 0.2,
       "sources": [
         "S079"
+      ],
+      "raws": [
+        0.2
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -960,6 +1137,9 @@
         "S086",
         "S007"
       ],
+      "raws": [
+        0.3
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -977,6 +1157,9 @@
       "value": 0.4,
       "sources": [
         "S008"
+      ],
+      "raws": [
+        0.4
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -1000,6 +1183,9 @@
       ],
       "sources": [
         "S008"
+      ],
+      "raws": [
+        "17, 67, 117, 167"
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -1025,6 +1211,9 @@
         "S080",
         "S007"
       ],
+      "raws": [
+        4
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -1039,6 +1228,9 @@
       "value": 12,
       "sources": [
         "S011"
+      ],
+      "raws": [
+        12
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -1056,6 +1248,9 @@
         "S014",
         "S086"
       ],
+      "raws": [
+        1
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -1071,6 +1266,9 @@
       "sources": [
         "S072",
         "S082"
+      ],
+      "raws": [
+        8
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -1088,6 +1286,9 @@
       },
       "sources": [
         "S010"
+      ],
+      "raws": [
+        "randomized within repeated 8-trial design cycles"
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -1108,6 +1309,11 @@
         "S008",
         "S057"
       ],
+      "raws": [
+        "shuffled list with exact stop proportion per block",
+        "pseudo-random, no run-length control",
+        "fully random"
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -1124,6 +1330,9 @@
         "S010",
         "S070"
       ],
+      "raws": [
+        64
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -1138,6 +1347,9 @@
       "value": 50,
       "sources": [
         "S011"
+      ],
+      "raws": [
+        50
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -1155,6 +1367,9 @@
         "S014",
         "S008"
       ],
+      "raws": [
+        40
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -1171,6 +1386,9 @@
         "S072",
         "S080"
       ],
+      "raws": [
+        128
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -1185,6 +1403,9 @@
       "value": 60,
       "sources": [
         "S079"
+      ],
+      "raws": [
+        60
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -1201,6 +1422,9 @@
       "sources": [
         "S082"
       ],
+      "raws": [
+        96
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -1216,6 +1440,9 @@
       "sources": [
         "S086"
       ],
+      "raws": [
+        150
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -1230,6 +1457,9 @@
       "value": 120,
       "sources": [
         "S007"
+      ],
+      "raws": [
+        120
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -1247,6 +1477,9 @@
         "S010",
         "S070"
       ],
+      "raws": [
+        "keyboard"
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -1262,6 +1495,9 @@
       "sources": [
         "S085"
       ],
+      "raws": [
+        "mouse_reach"
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -1276,6 +1512,9 @@
       "value": "gamepad",
       "sources": [
         "S087"
+      ],
+      "raws": [
+        "gamepad"
       ],
       "labelledAddition": false,
       "status": "not expressible",
@@ -1293,6 +1532,9 @@
       "sources": [
         "S010",
         "S072"
+      ],
+      "raws": [
+        "left/right arrow keys"
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -1315,6 +1557,9 @@
       "sources": [
         "S011"
       ],
+      "raws": [
+        "Z/M"
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -1335,6 +1580,9 @@
       ],
       "sources": [
         "S014"
+      ],
+      "raws": [
+        "B/N"
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -1357,6 +1605,9 @@
       "sources": [
         "S070"
       ],
+      "raws": [
+        "V/N"
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -1378,6 +1629,9 @@
       "sources": [
         "S079"
       ],
+      "raws": [
+        "A/L"
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -1396,6 +1650,9 @@
       "sources": [
         "S010"
       ],
+      "raws": [
+        "fixed"
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -1410,6 +1667,9 @@
       "value": "random_per_participant",
       "sources": [
         "S011"
+      ],
+      "raws": [
+        "randomized_per_participant"
       ],
       "labelledAddition": false,
       "status": "not expressible",
@@ -1427,6 +1687,9 @@
         "S011",
         "S052"
       ],
+      "raws": [
+        "tracking"
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -1443,6 +1706,9 @@
       "value": "random_uniform_range",
       "sources": [
         "S014"
+      ],
+      "raws": [
+        "random_uniform_range"
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -1463,6 +1729,9 @@
       "sources": [
         "S008",
         "S025"
+      ],
+      "raws": [
+        "fixed_set"
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -1485,6 +1754,9 @@
       "sources": [
         "S057"
       ],
+      "raws": [
+        "fixed_single"
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -1505,6 +1777,9 @@
         "S072",
         "S086"
       ],
+      "raws": [
+        200
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -1524,6 +1799,9 @@
         "S080",
         "S082"
       ],
+      "raws": [
+        250
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -1540,6 +1818,9 @@
       "value": 183,
       "sources": [
         "S079"
+      ],
+      "raws": [
+        183
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -1558,6 +1839,9 @@
       "sources": [
         "S091"
       ],
+      "raws": [
+        350
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -1574,6 +1858,9 @@
       "value": 225,
       "sources": [
         "S007"
+      ],
+      "raws": [
+        225
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -1593,6 +1880,9 @@
         "S010",
         "S011",
         "S079"
+      ],
+      "raws": [
+        "50/50"
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -1614,6 +1904,9 @@
       "sources": [
         "S082"
       ],
+      "raws": [
+        "25/50"
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -1634,6 +1927,9 @@
       "sources": [
         "S085"
       ],
+      "raws": [
+        "33.3/33.3"
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -1650,6 +1946,9 @@
       "value": 47,
       "sources": [
         "S007"
+      ],
+      "raws": [
+        "47/47"
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -1670,6 +1969,9 @@
         "S010",
         "S082"
       ],
+      "raws": [
+        0.5
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -1687,6 +1989,9 @@
       "sources": [
         "S082"
       ],
+      "raws": [
+        0.667
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -1703,6 +2008,9 @@
       "value": 50,
       "sources": [
         "S010"
+      ],
+      "raws": [
+        50
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -1725,6 +2033,9 @@
         "S011",
         "S091"
       ],
+      "raws": [
+        0
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -1744,6 +2055,9 @@
       "value": 33,
       "sources": [
         "S079"
+      ],
+      "raws": [
+        33
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -1765,6 +2079,9 @@
       "sources": [
         "S085"
       ],
+      "raws": [
+        33.3
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -1784,6 +2101,9 @@
       "value": 1200,
       "sources": [
         "S010"
+      ],
+      "raws": [
+        1200
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -1805,6 +2125,9 @@
       "sources": [
         "S011"
       ],
+      "raws": [
+        850
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -1824,6 +2147,9 @@
       "value": 1000,
       "sources": [
         "S091"
+      ],
+      "raws": [
+        1000
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -1845,6 +2171,9 @@
       "sources": [
         "S098"
       ],
+      "raws": [
+        550
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -1865,6 +2194,9 @@
       "sources": [
         "S010"
       ],
+      "raws": [
+        "fullscreen; window >= 800x600; Safari excluded"
+      ],
       "labelledAddition": false,
       "status": "not expressible",
       "gap": "plugin needed",
@@ -1878,6 +2210,9 @@
       "sources": [
         "S085"
       ],
+      "raws": [
+        "instruction to use external mouse at low sensitivity; movement-duration screening task"
+      ],
       "labelledAddition": false,
       "status": "not expressible",
       "gap": "plugin needed",
@@ -1890,6 +2225,9 @@
       "value": "computer_only",
       "sources": [
         "S079"
+      ],
+      "raws": [
+        "laptop/desktop with keyboard in a quiet room (instruction only)"
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -1911,6 +2249,9 @@
       "sources": [
         "S011"
       ],
+      "raws": [
+        "median RT < 1000, go acc > 0.8, missed < 0.1; max 5 repeats"
+      ],
       "labelledAddition": false,
       "status": "not expressible",
       "gap": "option missing",
@@ -1926,6 +2267,9 @@
       },
       "sources": [
         "S086"
+      ],
+      "raws": [
+        "go acc >= 0.7, else repeat"
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -1953,6 +2297,9 @@
       "sources": [
         "S091"
       ],
+      "raws": [
+        "acc >= 0.75, stop acc 0.3-0.7, mean RT < 1000; max 3 blocks"
+      ],
       "labelledAddition": false,
       "status": "not expressible",
       "gap": "option missing",
@@ -1965,6 +2312,9 @@
       "value": 0,
       "sources": [
         "S010"
+      ],
+      "raws": [
+        "none"
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -1979,6 +2329,9 @@
       "sources": [
         "S011"
       ],
+      "raws": [
+        12
+      ],
       "labelledAddition": false,
       "status": "not expressible",
       "gap": "option missing",
@@ -1991,6 +2344,9 @@
       "value": 64,
       "sources": [
         "S079"
+      ],
+      "raws": [
+        64
       ],
       "labelledAddition": false,
       "status": "not expressible",
@@ -2005,6 +2361,9 @@
       "sources": [
         "S098"
       ],
+      "raws": [
+        8
+      ],
       "labelledAddition": false,
       "status": "not expressible",
       "gap": "option missing",
@@ -2018,6 +2377,9 @@
       "sources": [
         "S010",
         "S082"
+      ],
+      "raws": [
+        32
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -2035,6 +2397,9 @@
         "S011",
         "S079"
       ],
+      "raws": [
+        20
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -2049,6 +2414,9 @@
       "value": 16,
       "sources": [
         "S072"
+      ],
+      "raws": [
+        16
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -2065,6 +2433,9 @@
       "sources": [
         "S080"
       ],
+      "raws": [
+        64
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -2080,6 +2451,9 @@
       "sources": [
         "S086"
       ],
+      "raws": [
+        10
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -2094,6 +2468,9 @@
       "value": 60,
       "sources": [
         "S007"
+      ],
+      "raws": [
+        60
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -2114,6 +2491,10 @@
         "S072",
         "S082"
       ],
+      "raws": [
+        "performance_summary",
+        "performance_summary_with_warnings"
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -2129,6 +2510,9 @@
       "sources": [
         "S070"
       ],
+      "raws": [
+        "none"
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -2143,6 +2527,9 @@
       "value": "none",
       "sources": [
         "S010"
+      ],
+      "raws": [
+        "none"
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -2160,6 +2547,10 @@
         "S086",
         "S029"
       ],
+      "raws": [
+        "speed_points",
+        "points_per_response"
+      ],
       "labelledAddition": false,
       "status": "not expressible",
       "gap": "option missing",
@@ -2174,6 +2565,10 @@
         "S010",
         "S082",
         "S070"
+      ],
+      "raws": [
+        "practice_only",
+        "none"
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -2192,6 +2587,9 @@
         "S070",
         "S072"
       ],
+      "raws": [
+        "dont_wait"
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -2209,6 +2607,9 @@
         "S010",
         "S082"
       ],
+      "raws": [
+        "dont_wait_plus_tracking_explanation"
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
@@ -2224,6 +2625,9 @@
       "value": "balance_speed_and_stopping",
       "sources": [
         "S011"
+      ],
+      "raws": [
+        "balance_speed_and_stopping"
       ],
       "labelledAddition": false,
       "status": "checked",
@@ -2241,6 +2645,9 @@
       "sources": [
         "S010"
       ],
+      "raws": [
+        "none"
+      ],
       "labelledAddition": false,
       "status": "checked",
       "kind": "structure",
@@ -2256,6 +2663,9 @@
       "sources": [
         "S008"
       ],
+      "raws": [
+        "gamified story, 6 practice + 40 trials, fixed SSDs, sound feedback, instructions read aloud"
+      ],
       "labelledAddition": false,
       "status": "not expressible",
       "gap": "option missing",
@@ -2266,6 +2676,7 @@
     {
       "source": "S007",
       "citation": "Thakkar et al. 2011, Biol Psychiatry",
+      "label": "Thakkar et al. 2011, Biological Psychiatry",
       "n_options": 10,
       "n_keys": 10,
       "keys_expressible": 7,
@@ -2300,6 +2711,7 @@
     {
       "source": "S008",
       "citation": "Countermanding saccades in children, 2026, Atten Percept Psychophys",
+      "label": "Hodgson et al. 2026, Attention, Perception, & Psychophysics",
       "n_options": 10,
       "n_keys": 10,
       "keys_expressible": 7,
@@ -2335,6 +2747,7 @@
     {
       "source": "S010",
       "citation": "STOP-IT jsPsych version (Verbruggen), commit 73e4654",
+      "label": "STOP-IT jsPsych version (Verbruggen), commit 73e4654",
       "n_options": 32,
       "n_keys": 32,
       "keys_expressible": 31,
@@ -2378,6 +2791,7 @@
     {
       "source": "S025",
       "citation": "Bissett et al. 2021, Sci Adv",
+      "label": "Bissett et al. 2021, Science Advances (2)",
       "n_options": 1,
       "n_keys": 1,
       "keys_expressible": 1,
@@ -2391,6 +2805,7 @@
     {
       "source": "S026",
       "citation": "Hedge, Powell & Sumner 2018, Behav Res Methods",
+      "label": "Hedge et al. 2018, Behavior Research Methods",
       "n_options": 5,
       "n_keys": 5,
       "keys_expressible": 4,
@@ -2413,6 +2828,7 @@
     {
       "source": "S029",
       "citation": "Wadsley et al. 2023, Exp Brain Res (SeleST)",
+      "label": "Wadsley et al. 2023, Experimental Brain Research",
       "n_options": 1,
       "n_keys": 1,
       "keys_expressible": 0,
@@ -2430,6 +2846,7 @@
     {
       "source": "S052",
       "citation": "An exploration of relationships between associative and non-associative measures (2025)",
+      "label": "Brudan et al. 2025, Quarterly Journal of Experimental Psychology",
       "n_options": 3,
       "n_keys": 3,
       "keys_expressible": 3,
@@ -2445,6 +2862,7 @@
     {
       "source": "S057",
       "citation": "The rollercoaster of obsessive-compulsive disorder: How chronotype and time of d (2025)",
+      "label": "Kalanthroff et al. 2025, Journal of Mood & Anxiety Disorders",
       "n_options": 4,
       "n_keys": 4,
       "keys_expressible": 4,
@@ -2463,6 +2881,7 @@
     {
       "source": "S070",
       "citation": "Comparing self-other distinction across motor, cognitive and affective domains. (2024)",
+      "label": "Pronizius et al. 2024, Royal Society Open Science",
       "n_options": 10,
       "n_keys": 10,
       "keys_expressible": 10,
@@ -2486,6 +2905,7 @@
     {
       "source": "S079",
       "citation": "The effects of conscious movement investment on inhibiting a simple response. (2024)",
+      "label": "You et al. 2024, Frontiers in Psychology",
       "n_options": 16,
       "n_keys": 16,
       "keys_expressible": 14,
@@ -2523,6 +2943,7 @@
     {
       "source": "S086",
       "citation": "A Novel, Expert-Endorsed, Neurocognitive Digital Assessment Tool for Addictive D (2023)",
+      "label": "Lee et al. 2023, Journal of Medical Internet Research",
       "n_options": 9,
       "n_keys": 9,
       "keys_expressible": 6,
@@ -2557,6 +2978,7 @@
     {
       "source": "S087",
       "citation": "Exploring Response Inhibition, the Behavioral Inhibition System and Possible Sex (2023)",
+      "label": "Eriksson et al. 2023, International Journal of Environmental Research and Public Health",
       "n_options": 1,
       "n_keys": 1,
       "keys_expressible": 0,
