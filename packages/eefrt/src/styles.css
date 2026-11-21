@@ -1,0 +1,182 @@
+/* All rules are scoped under the task class (PACKAGE-STANDARD §5). All text is body size; only the
+   fixation mark is larger. */
+
+.jspsych-timelines-eefrt .jspsych-timelines-eefrt-text {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0 20px;
+  text-align: left;
+}
+
+.jspsych-timelines-eefrt .jspsych-timelines-eefrt-text h2 {
+  text-align: center;
+}
+
+/* Anchored layout. On every task screen the stage is centred on the vertical centre of the display
+   with absolute positioning, so nothing else on the screen (text, the plugin's button group) can move it.
+   Text goes in the region below the stage (scrolls if long); the plugin's button group is pinned to the
+   bottom edge and the text region stops above it. */
+.jspsych-timelines-eefrt {
+  --eefrt-stage-h: min(280px, 40vh);
+  --eefrt-stage-w: 640px;
+  --eefrt-btn-reserve: 76px;
+}
+
+.jspsych-timelines-eefrt:has(.jspsych-timelines-eefrt-screen) {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: none;
+  height: 100vh;
+  margin: 0;
+  overflow: hidden;
+}
+
+.jspsych-timelines-eefrt .jspsych-timelines-eefrt-screen {
+  display: contents;
+}
+
+.jspsych-timelines-eefrt .jspsych-timelines-eefrt-stage {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--eefrt-stage-w);
+  max-width: calc(100vw - 16px);
+  height: var(--eefrt-stage-h);
+  padding: 10px;
+  overflow: hidden;
+}
+
+.jspsych-timelines-eefrt .jspsych-timelines-eefrt-below {
+  position: absolute;
+  top: calc(50% + var(--eefrt-stage-h) / 2 + 8px);
+  right: 0;
+  bottom: 0;
+  left: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* Short text under the stage (captions, hints, notices, prompts) is centred under the stimulus. */
+.jspsych-timelines-eefrt .jspsych-timelines-eefrt-below .jspsych-timelines-eefrt-text {
+  text-align: center;
+  text-wrap: balance;
+}
+
+.jspsych-timelines-eefrt .jspsych-timelines-eefrt-below p {
+  margin: 0.4em 0;
+}
+
+.jspsych-timelines-eefrt:has(#jspsych-html-button-response-btngroup) .jspsych-timelines-eefrt-below {
+  bottom: var(--eefrt-btn-reserve);
+}
+
+.jspsych-timelines-eefrt:has(.jspsych-timelines-eefrt-screen) #jspsych-html-button-response-btngroup {
+  position: absolute;
+  right: 0;
+  bottom: 12px;
+  left: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.jspsych-timelines-eefrt .jspsych-timelines-eefrt-center {
+  text-align: center;
+}
+
+.jspsych-timelines-eefrt .jspsych-timelines-eefrt-center.win,
+.jspsych-timelines-eefrt .jspsych-timelines-eefrt-center.not-completed {
+  font-weight: bold;
+}
+
+/* The fixation mark: a layer through the stage centre. */
+.jspsych-timelines-eefrt .jspsych-timelines-eefrt-fixation-layer {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  left: 0;
+  height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.jspsych-timelines-eefrt .jspsych-timelines-eefrt-fixation {
+  font-size: 3em;
+}
+
+/* Choice screen: the chance of winning above two cards. */
+.jspsych-timelines-eefrt .jspsych-timelines-eefrt-choice {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+  width: 100%;
+}
+
+.jspsych-timelines-eefrt .jspsych-timelines-eefrt-chance {
+  min-height: 1.4em;
+  text-align: center;
+  font-weight: bold;
+}
+
+.jspsych-timelines-eefrt .jspsych-timelines-eefrt-cards {
+  display: flex;
+  gap: 12px;
+}
+
+.jspsych-timelines-eefrt .jspsych-timelines-eefrt-card {
+  flex: 1 1 0;
+  min-width: 0;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 8px;
+  text-align: center;
+  border: 2px solid currentColor;
+  border-radius: 8px;
+}
+
+.jspsych-timelines-eefrt .jspsych-timelines-eefrt-card-title {
+  font-weight: bold;
+}
+
+/* Effort screen: the bar fills as presses accumulate. */
+.jspsych-timelines-eefrt .jspsych-timelines-eefrt-effort {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.jspsych-timelines-eefrt .jspsych-timelines-eefrt-bar {
+  box-sizing: border-box;
+  width: min(100%, 480px);
+  height: 32px;
+  border: 2px solid currentColor;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.jspsych-timelines-eefrt .jspsych-timelines-eefrt-bar-fill {
+  height: 100%;
+  background: currentColor;
+}
+
+.jspsych-timelines-eefrt kbd {
+  font-family: inherit;
+  font-size: 1em;
+  padding: 0 0.35em;
+  border: 1px solid currentColor;
+  border-radius: 4px;
+}
