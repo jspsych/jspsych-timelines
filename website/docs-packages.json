@@ -15,6 +15,9 @@
     },
     {
       "task": "two-step-task"
+    },
+    {
+      "task": "tone-detection"
     }
   ]
 }

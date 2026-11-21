@@ -1,0 +1,1500 @@
+{
+  "tallies": {
+    "observed_values_total": 107,
+    "typed_values_total": 95,
+    "level1_distinct_cases": 81,
+    "level1_checked": 60,
+    "level1_not_expressible": 21,
+    "level1_labelled_additions": 0,
+    "level2_configs": 5,
+    "level2_fully_expressible": 2
+  },
+  "level1": [
+    {
+      "option": "inter_item_interval_ms",
+      "sub": "main",
+      "variation": "inter_stimulus_interval_ms",
+      "value": 250,
+      "sources": [
+        "S012"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "inter_item_interval_ms": 250
+      }
+    },
+    {
+      "option": "inter_item_interval_ms",
+      "sub": "main",
+      "variation": "inter_stimulus_interval_ms",
+      "value": 200,
+      "sources": [
+        "S044"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "inter_item_interval_ms": 200
+      }
+    },
+    {
+      "option": "inter_item_interval_ms",
+      "sub": "main",
+      "variation": "inter_stimulus_interval_ms",
+      "value": 800,
+      "sources": [
+        "S059"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "inter_item_interval_ms": 800
+      }
+    },
+    {
+      "option": "inter_item_interval_ms",
+      "sub": "main",
+      "variation": "inter_stimulus_interval_ms",
+      "value": 500,
+      "sources": [
+        "S005"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "inter_item_interval_ms": 500
+      }
+    },
+    {
+      "option": "inter_item_interval_ms",
+      "sub": "main",
+      "variation": "inter_stimulus_interval_ms",
+      "value": 2000,
+      "sources": [
+        "S053"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "inter_item_interval_ms": 2000
+      }
+    },
+    {
+      "option": "inter_item_interval_ms",
+      "sub": "main",
+      "variation": "inter_stimulus_interval_ms",
+      "value": 5000,
+      "sources": [
+        "S053"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "inter_item_interval_ms": 5000
+      }
+    },
+    {
+      "option": "inter_item_interval_ms",
+      "sub": "main",
+      "variation": "inter_stimulus_interval_ms",
+      "value": 10000,
+      "sources": [
+        "S053"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "inter_item_interval_ms": 10000
+      }
+    },
+    {
+      "option": "stimulus_duration_ms",
+      "sub": "main",
+      "variation": "tone_duration_ms",
+      "value": 250,
+      "sources": [
+        "S012"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "stimulus_duration_ms": 250
+      }
+    },
+    {
+      "option": "stimulus_duration_ms",
+      "sub": "main",
+      "variation": "tone_duration_ms",
+      "value": 400,
+      "sources": [
+        "S036"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "stimulus_duration_ms": 400
+      }
+    },
+    {
+      "option": "stimulus_duration_ms",
+      "sub": "main",
+      "variation": "tone_duration_ms",
+      "value": 200,
+      "sources": [
+        "S013"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "stimulus_duration_ms": 200
+      }
+    },
+    {
+      "option": "stimulus_duration_ms",
+      "sub": "main",
+      "variation": "tone_duration_ms",
+      "value": 500,
+      "sources": [
+        "S044"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "stimulus_duration_ms": 500
+      }
+    },
+    {
+      "option": "stimulus_duration_ms",
+      "sub": "main",
+      "variation": "tone_duration_ms",
+      "value": 100,
+      "sources": [
+        "S053"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "stimulus_duration_ms": 100
+      }
+    },
+    {
+      "option": "tone_ramp_ms",
+      "sub": "main",
+      "variation": "ramp_duration_ms",
+      "value": 10,
+      "sources": [
+        "S012"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "tone_ramp_ms": 10
+      }
+    },
+    {
+      "option": "tone_ramp_ms",
+      "sub": "main",
+      "variation": "ramp_duration_ms",
+      "value": 20,
+      "sources": [
+        "S036"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "tone_ramp_ms": 20
+      }
+    },
+    {
+      "option": "presentation_level_db",
+      "sub": "level_roving",
+      "variation": "level_roving_db",
+      "value": 6,
+      "sources": [
+        "S036"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "level roving of the tone (frequency discrimination: removes a loudness cue); the package has no roving"
+    },
+    {
+      "option": "stimulus_set",
+      "sub": "tone",
+      "variation": "carrier_type",
+      "value": "pure_tone",
+      "sources": [
+        "S012"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "stimulus_set": {
+          "tone": "pure_tone"
+        }
+      }
+    },
+    {
+      "option": "stimulus_set",
+      "sub": "tone",
+      "variation": "carrier_type",
+      "value": "harmonic_complex",
+      "sources": [
+        "S013"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "harmonic_complex: only pure tones are synthesised (complex tones and instrument notes are not)"
+    },
+    {
+      "option": "stimulus_set",
+      "sub": "tone",
+      "variation": "carrier_type",
+      "value": "inharmonic_complex",
+      "sources": [
+        "S044"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "inharmonic_complex: only pure tones are synthesised (complex tones and instrument notes are not)"
+    },
+    {
+      "option": "stimulus_set",
+      "sub": "tone",
+      "variation": "carrier_type",
+      "value": "musical_instrument_note",
+      "sources": [
+        "S027"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "musical_instrument_note: only pure tones are synthesised (complex tones and instrument notes are not)"
+    },
+    {
+      "option": "stimulus_set",
+      "sub": "masker",
+      "variation": "masker_type",
+      "value": "white_noise",
+      "sources": [
+        "S012"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "stimulus_set": {
+          "masker": "white_noise"
+        }
+      }
+    },
+    {
+      "option": "stimulus_set",
+      "sub": "masker",
+      "variation": "masker_type",
+      "value": "threshold_equalizing_noise_lowpass_6kHz",
+      "sources": [
+        "S044"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "threshold_equalizing_noise_lowpass_6kHz: only white noise is synthesised (no threshold-equalizing noise)"
+    },
+    {
+      "option": "tone_frequency_hz",
+      "sub": "frequency",
+      "variation": "standard_frequency_hz",
+      "value": 1000,
+      "sources": [
+        "S012"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "tone_frequency_hz": 1000
+      }
+    },
+    {
+      "option": "tone_frequency_hz",
+      "sub": "frequency",
+      "variation": "standard_frequency_hz",
+      "value": [
+        500,
+        1000,
+        2000
+      ],
+      "sources": [
+        "S031"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "tone_frequency_hz": [
+          500,
+          1000,
+          2000
+        ]
+      }
+    },
+    {
+      "option": "tone_frequency_hz",
+      "sub": "frequency",
+      "variation": "standard_frequency_hz",
+      "value": [
+        250,
+        1000,
+        4000
+      ],
+      "sources": [
+        "S045"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "tone_frequency_hz": [
+          250,
+          1000,
+          4000
+        ]
+      }
+    },
+    {
+      "option": "tone_frequency_hz",
+      "sub": "frequency",
+      "variation": "standard_frequency_hz",
+      "value": [
+        110,
+        220,
+        440,
+        880,
+        1760,
+        3520
+      ],
+      "sources": [
+        "S036"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "tone_frequency_hz": [
+          110,
+          220,
+          440,
+          880,
+          1760,
+          3520
+        ]
+      }
+    },
+    {
+      "option": "tone_frequency_hz",
+      "sub": "frequency",
+      "variation": "standard_frequency_hz",
+      "value": 220,
+      "sources": [
+        "S059"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "tone_frequency_hz": 220
+      }
+    },
+    {
+      "option": "tone_frequency_hz",
+      "sub": "frequency",
+      "variation": "standard_frequency_hz",
+      "value": 110,
+      "sources": [
+        "S013"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "tone_frequency_hz": 110
+      }
+    },
+    {
+      "option": "block_order",
+      "sub": "main",
+      "variation": "condition_order",
+      "value": "random_within_block",
+      "sources": [
+        "S036"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "tone_frequency_hz": [
+          500,
+          1000,
+          2000
+        ],
+        "block_order": "random_within_block"
+      }
+    },
+    {
+      "option": "difficulty_levels",
+      "sub": "main",
+      "variation": "constant_stimuli_levels",
+      "value": {
+        "n_levels": 6,
+        "spacing": "linear",
+        "range": "amplitude 0.5 +/- 0.04 steps",
+        "reps_per_level": 20
+      },
+      "sources": [
+        "S059"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "constant-stimuli levels given as a count, a spacing and a range in prose (amplitude steps, an F0 shift in Hz); the package takes a list of levels in dB"
+    },
+    {
+      "option": "difficulty_levels",
+      "sub": "main",
+      "variation": "constant_stimuli_levels",
+      "value": {
+        "spacing": "geometric",
+        "range": "F0 shift 0.05-3.2 Hz"
+      },
+      "sources": [
+        "S013"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "constant-stimuli levels given as a count, a spacing and a range in prose (amplitude steps, an F0 shift in Hz); the package takes a list of levels in dB"
+    },
+    {
+      "option": "task_variant",
+      "sub": "main",
+      "variation": "trial_format",
+      "value": "3I-3AFC_oddity",
+      "sources": [
+        "S005"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "3I-3AFC_oddity: discrimination, oddity and comparison trials are not implemented (detection variants only)"
+    },
+    {
+      "option": "task_variant",
+      "sub": "main",
+      "variation": "trial_format",
+      "value": "2I-2AFC_which_higher",
+      "sources": [
+        "S036"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "2I-2AFC_which_higher: discrimination, oddity and comparison trials are not implemented (detection variants only)"
+    },
+    {
+      "option": "task_variant",
+      "sub": "main",
+      "variation": "trial_format",
+      "value": "3I-3AFC_which_contains_tone",
+      "sources": [
+        "S012"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "task_variant": "3I-3AFC_which_contains_tone"
+      }
+    },
+    {
+      "option": "task_variant",
+      "sub": "main",
+      "variation": "trial_format",
+      "value": "2I-2AFC_which_contains_tone",
+      "sources": [
+        "S044"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "task_variant": "2I-2AFC_which_contains_tone"
+      }
+    },
+    {
+      "option": "task_variant",
+      "sub": "main",
+      "variation": "trial_format",
+      "value": "standard_then_comparison_louder_softer",
+      "sources": [
+        "S059"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "standard_then_comparison_louder_softer: discrimination, oddity and comparison trials are not implemented (detection variants only)"
+    },
+    {
+      "option": "task_variant",
+      "sub": "main",
+      "variation": "trial_format",
+      "value": "same_different",
+      "sources": [
+        "S018"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "same_different: discrimination, oddity and comparison trials are not implemented (detection variants only)"
+    },
+    {
+      "option": "task_variant",
+      "sub": "main",
+      "variation": "trial_format",
+      "value": "AXB",
+      "sources": [
+        "S018"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "AXB: discrimination, oddity and comparison trials are not implemented (detection variants only)"
+    },
+    {
+      "option": "task_variant",
+      "sub": "main",
+      "variation": "trial_format",
+      "value": "2I-2AFC_tone_sequences_oddity",
+      "sources": [
+        "S018"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "2I-2AFC_tone_sequences_oddity: discrimination, oddity and comparison trials are not implemented (detection variants only)"
+    },
+    {
+      "option": "trials_per_condition",
+      "sub": "main",
+      "variation": "tracks_per_condition",
+      "value": 3,
+      "sources": [
+        "S012"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "trials_per_condition": 3
+      }
+    },
+    {
+      "option": "trials_per_condition",
+      "sub": "main",
+      "variation": "tracks_per_condition",
+      "value": 4,
+      "sources": [
+        "S044"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "trials_per_condition": 4
+      }
+    },
+    {
+      "option": "trials_per_condition",
+      "sub": "main",
+      "variation": "tracks_per_condition",
+      "value": 1,
+      "sources": [
+        "S005"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "trials_per_condition": 1
+      }
+    },
+    {
+      "option": "response_device",
+      "sub": "main",
+      "variation": "response_input",
+      "value": "keyboard",
+      "sources": [
+        "S012",
+        "S059"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "response_device": "keyboard"
+      }
+    },
+    {
+      "option": "response_device",
+      "sub": "main",
+      "variation": "response_input",
+      "value": "mouse",
+      "sources": [
+        "S013"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "response_device": "mouse"
+      }
+    },
+    {
+      "option": "adaptive",
+      "sub": "method",
+      "variation": "psychophysical_method",
+      "value": "transformed_up_down",
+      "sources": [
+        "S005"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "adaptive": {}
+      }
+    },
+    {
+      "option": "adaptive",
+      "sub": "method",
+      "variation": "psychophysical_method",
+      "value": "weighted_up_down",
+      "sources": [
+        "S036"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "adaptive": {
+          "step_size": {
+            "up": 6,
+            "down": 2
+          },
+          "procedure": "staircase_1up_1down"
+        }
+      }
+    },
+    {
+      "option": "adaptive",
+      "sub": "method",
+      "variation": "psychophysical_method",
+      "value": "constant_stimuli",
+      "sources": [
+        "S013"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "difficulty_levels": [
+          -10,
+          -14,
+          -18
+        ],
+        "trials_per_block": 12,
+        "adaptive": null
+      }
+    },
+    {
+      "option": "adaptive",
+      "sub": "procedure",
+      "variation": "tracking_rule",
+      "value": "2down1up",
+      "sources": [
+        "S005"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "adaptive": {
+          "procedure": "staircase_1up_2down"
+        }
+      }
+    },
+    {
+      "option": "adaptive",
+      "sub": "procedure",
+      "variation": "tracking_rule",
+      "value": "3down1up",
+      "sources": [
+        "S012"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "adaptive": {
+          "procedure": "staircase_1up_3down"
+        }
+      }
+    },
+    {
+      "option": "adaptive",
+      "sub": "procedure",
+      "variation": "tracking_rule",
+      "value": "weighted_1down_3up",
+      "sources": [
+        "S036"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "adaptive": {
+          "procedure": "staircase_1up_1down",
+          "step_size": {
+            "up": 3,
+            "down": 1
+          }
+        }
+      }
+    },
+    {
+      "option": "adaptive",
+      "sub": "step_size",
+      "variation": "step_size_schedule",
+      "value": {
+        "scale": "multiplicative",
+        "steps": [
+          "x2",
+          "x sqrt2"
+        ],
+        "switch_after": "2 reversals"
+      },
+      "sources": [
+        "S005"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "steps that multiply a Hz or % difference (frequency discrimination); the package's level is in dB"
+    },
+    {
+      "option": "adaptive",
+      "sub": "step_size",
+      "variation": "step_size_schedule",
+      "value": {
+        "scale": "dB",
+        "steps": [
+          "1.5 dB descent",
+          "0.75 dB"
+        ],
+        "switch_after": "first error or -19.75 dB SNR"
+      },
+      "sources": [
+        "S012"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "adaptive": {
+          "step_size": [
+            1.5,
+            0.75
+          ]
+        }
+      }
+    },
+    {
+      "option": "adaptive",
+      "sub": "step_size",
+      "variation": "step_size_schedule",
+      "value": {
+        "scale": "dB",
+        "steps": [
+          "8 dB",
+          "2 dB",
+          "0.5 dB"
+        ],
+        "switch_after": "2 reversals, then 2 more"
+      },
+      "sources": [
+        "S044"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "adaptive": {
+          "step_size": [
+            8,
+            8,
+            2,
+            2,
+            0.5
+          ]
+        }
+      }
+    },
+    {
+      "option": "adaptive",
+      "sub": "step_size",
+      "variation": "step_size_schedule",
+      "value": {
+        "scale": "multiplicative",
+        "steps": [
+          "down x2^(-1/3), up x2"
+        ],
+        "switch_after": "fixed"
+      },
+      "sources": [
+        "S036"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "steps that multiply a Hz or % difference (frequency discrimination); the package's level is in dB"
+    },
+    {
+      "option": "adaptive",
+      "sub": "step_size",
+      "variation": "step_size_schedule",
+      "value": {
+        "scale": "dB",
+        "steps": [
+          "down 2 dB, up 6 dB"
+        ],
+        "switch_after": "fixed"
+      },
+      "sources": [
+        "S031"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "adaptive": {
+          "procedure": "staircase_1up_1down",
+          "step_size": {
+            "up": 6,
+            "down": 2
+          }
+        }
+      }
+    },
+    {
+      "option": "adaptive",
+      "sub": "start_level",
+      "variation": "starting_level",
+      "value": 100,
+      "sources": [
+        "S005",
+        "S036"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "a start level of 100 in Hz or % (frequency discrimination); the package's level is in dB"
+    },
+    {
+      "option": "adaptive",
+      "sub": "start_level",
+      "variation": "starting_level",
+      "value": -13.75,
+      "sources": [
+        "S012"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "adaptive": {
+          "start_level": -13.75
+        }
+      }
+    },
+    {
+      "option": "adaptive",
+      "sub": "discontinue_rule",
+      "variation": "stopping_rule",
+      "value": {
+        "criterion": "reversals",
+        "n": 8
+      },
+      "sources": [
+        "S005"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "adaptive": {
+          "discontinue_rule": {
+            "reversals": 8
+          }
+        }
+      }
+    },
+    {
+      "option": "adaptive",
+      "sub": "discontinue_rule",
+      "variation": "stopping_rule",
+      "value": {
+        "criterion": "reversals",
+        "n": 6
+      },
+      "sources": [
+        "S005"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "adaptive": {
+          "discontinue_rule": {
+            "reversals": 6
+          }
+        }
+      }
+    },
+    {
+      "option": "adaptive",
+      "sub": "discontinue_rule",
+      "variation": "stopping_rule",
+      "value": {
+        "criterion": "reversals",
+        "n": 10
+      },
+      "sources": [
+        "S044"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "adaptive": {
+          "discontinue_rule": {
+            "reversals": 10
+          }
+        }
+      }
+    },
+    {
+      "option": "adaptive",
+      "sub": "discontinue_rule",
+      "variation": "stopping_rule",
+      "value": {
+        "criterion": "trials",
+        "n": 40
+      },
+      "sources": [
+        "S012"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "adaptive": {
+          "discontinue_rule": {
+            "trials": 40
+          }
+        }
+      }
+    },
+    {
+      "option": "adaptive",
+      "sub": "discontinue_rule",
+      "variation": "stopping_rule",
+      "value": {
+        "criterion": "mistakes",
+        "n": 4
+      },
+      "sources": [
+        "S036"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "adaptive": {
+          "discontinue_rule": {
+            "mistakes": 4
+          }
+        }
+      }
+    },
+    {
+      "option": "adaptive",
+      "sub": "discontinue_rule",
+      "variation": "stopping_rule",
+      "value": {
+        "criterion": "mistakes",
+        "n": 3
+      },
+      "sources": [
+        "S045"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "adaptive": {
+          "discontinue_rule": {
+            "mistakes": 3
+          }
+        }
+      }
+    },
+    {
+      "option": "device_eligibility",
+      "sub": "device_restriction",
+      "variation": "device_restriction",
+      "value": "browser_restricted",
+      "sources": [
+        "S012"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "plugin needed",
+      "reason": "a browser and device restriction (a device-check plugin; excluding a browser by name is not defensible)"
+    },
+    {
+      "option": "device_eligibility",
+      "sub": "device_restriction",
+      "variation": "device_restriction",
+      "value": "none",
+      "sources": [
+        "S031"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "device_eligibility": "none"
+      }
+    },
+    {
+      "option": "device_eligibility",
+      "sub": "listener_transducer",
+      "variation": "listener_transducer",
+      "value": "hardware_required",
+      "sources": [
+        "S031",
+        "S031"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "plugin needed",
+      "reason": "a headphone or hardware requirement cannot be verified in the browser (see headphone_check for the screen)"
+    },
+    {
+      "option": "headphone_check",
+      "sub": "main",
+      "variation": "headphone_screen",
+      "value": "screening_task",
+      "sources": [
+        "S012",
+        "S044",
+        "S013"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "headphone_check": "screening_task"
+      }
+    },
+    {
+      "option": "headphone_check",
+      "sub": "main",
+      "variation": "headphone_screen",
+      "value": "none",
+      "sources": [
+        "S005"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "headphone_check": "none"
+      }
+    },
+    {
+      "option": "participant_eligibility",
+      "sub": "main",
+      "variation": "hearing_eligibility_check",
+      "value": "hearing",
+      "sources": [
+        "S044",
+        "S013"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "participant_eligibility": "hearing"
+      }
+    },
+    {
+      "option": "practice_trials",
+      "sub": "main",
+      "variation": "practice_familiarisation",
+      "value": 6,
+      "sources": [
+        "S012",
+        "S005"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 6
+      }
+    },
+    {
+      "option": "practice_trials",
+      "sub": "main",
+      "variation": "practice_familiarisation",
+      "value": 24,
+      "sources": [
+        "S059"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 24
+      }
+    },
+    {
+      "option": "volume_calibration",
+      "sub": "main",
+      "variation": "level_setting_procedure",
+      "value": "participant_adjusted",
+      "sources": [
+        "S013",
+        "S012"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "volume_calibration": "participant_adjusted"
+      }
+    },
+    {
+      "option": "feedback_condition",
+      "sub": "main",
+      "variation": "trial_feedback",
+      "value": "all",
+      "sources": [
+        "S044",
+        "S012"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "trial_feedback": "accuracy",
+        "feedback_condition": "all"
+      }
+    },
+    {
+      "option": "feedback_condition",
+      "sub": "main",
+      "variation": "trial_feedback",
+      "value": "errors_only",
+      "sources": [
+        "S059"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "trial_feedback": "accuracy",
+        "feedback_condition": "errors_only"
+      }
+    },
+    {
+      "option": "performance_incentive",
+      "sub": "main",
+      "variation": "performance_incentive",
+      "value": "bonus",
+      "sources": [
+        "S044",
+        "S012"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "a bonus tied to accuracy (payment is the researcher's; no incentive is implemented)"
+    },
+    {
+      "option": "progress_indicator",
+      "sub": "main",
+      "variation": "progress_indicator",
+      "value": "counter",
+      "sources": [
+        "S012",
+        "S013"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "structure",
+      "options": {
+        "progress_indicator": "counter"
+      }
+    },
+    {
+      "option": "trial_feedback",
+      "sub": "main",
+      "variation": "trial_feedback",
+      "value": "accuracy",
+      "sources": [
+        "S044",
+        "S059"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "trial_feedback": "accuracy"
+      }
+    },
+    {
+      "option": "trial_feedback",
+      "sub": "main",
+      "variation": "trial_feedback",
+      "value": "none",
+      "sources": [
+        "S012"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "trial_feedback": "none"
+      }
+    },
+    {
+      "option": "environment_instructions",
+      "sub": "main",
+      "variation": "listening_environment_instructions",
+      "value": "quiet_room",
+      "sources": [
+        "S044",
+        "S031"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "structure",
+      "options": {
+        "environment_instructions": "quiet_room"
+      }
+    },
+    {
+      "option": "judgment_wording",
+      "sub": "main",
+      "variation": "judgement_wording",
+      "value": "which_higher_in_pitch",
+      "sources": [
+        "S036"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "\"which_higher_in_pitch\" goes with the discrimination variants, which are not implemented"
+    },
+    {
+      "option": "judgment_wording",
+      "sub": "main",
+      "variation": "judgement_wording",
+      "value": "which_interval_contains_tone",
+      "sources": [
+        "S012"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "structure",
+      "options": {
+        "judgment_wording": "which_interval_contains_tone"
+      }
+    },
+    {
+      "option": "judgment_wording",
+      "sub": "main",
+      "variation": "judgement_wording",
+      "value": "comparison_louder_or_softer",
+      "sources": [
+        "S059"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "\"comparison_louder_or_softer\" goes with the discrimination variants, which are not implemented"
+    }
+  ],
+  "level2": [
+    {
+      "source": "S005",
+      "citation": "Carlini et al. 2024, BRM (PSYCHOACOUSTICS-WEB)",
+      "n_options": 9,
+      "n_keys": 9,
+      "keys_expressible": 6,
+      "gaps": [
+        {
+          "key": "adaptive.start_level",
+          "gap": "option missing",
+          "reason": "a start level of 100 in Hz or % (frequency discrimination); the package's level is in dB"
+        },
+        {
+          "key": "adaptive.step_size",
+          "gap": "option missing",
+          "reason": "steps that multiply a Hz or % difference (frequency discrimination); the package's level is in dB"
+        },
+        {
+          "key": "task_variant",
+          "gap": "option missing",
+          "reason": "3I-3AFC_oddity: discrimination, oddity and comparison trials are not implemented (detection variants only)"
+        }
+      ],
+      "checked_options": [
+        "adaptive",
+        "headphone_check",
+        "inter_item_interval_ms",
+        "practice_trials",
+        "trials_per_condition"
+      ],
+      "assumed": [],
+      "tied_to_reported_value": 6
+    },
+    {
+      "source": "S013",
+      "citation": "Mok et al. 2024, BRM (web-based psychoacoustics)",
+      "n_options": 10,
+      "n_keys": 10,
+      "keys_expressible": 7,
+      "gaps": [
+        {
+          "key": "adaptive.procedure",
+          "gap": "package fix needed",
+          "reason": "rule constant_stimuli"
+        },
+        {
+          "key": "difficulty_levels",
+          "gap": "option missing",
+          "reason": "constant-stimuli levels given as a count, a spacing and a range in prose (amplitude steps, an F0 shift in Hz); the package takes a list of levels in dB"
+        },
+        {
+          "key": "stimulus_set.tone timbre",
+          "gap": "option missing",
+          "reason": "harmonic_complex: only pure tones are synthesised (complex tones and instrument notes are not)"
+        }
+      ],
+      "checked_options": [
+        "headphone_check",
+        "participant_eligibility",
+        "progress_indicator",
+        "response_device",
+        "stimulus_duration_ms",
+        "tone_frequency_hz",
+        "volume_calibration"
+      ],
+      "assumed": [],
+      "tied_to_reported_value": 7
+    },
+    {
+      "source": "S045",
+      "citation": "literature-sample screening (rank 26), full-text methods read",
+      "n_options": 2,
+      "n_keys": 2,
+      "keys_expressible": 2,
+      "gaps": [],
+      "checked_options": [
+        "adaptive",
+        "tone_frequency_hz"
+      ],
+      "assumed": [],
+      "tied_to_reported_value": 2
+    },
+    {
+      "source": "S053",
+      "citation": "literature-sample screening (rank 34), full-text methods read",
+      "n_options": 2,
+      "n_keys": 2,
+      "keys_expressible": 2,
+      "gaps": [],
+      "checked_options": [
+        "inter_item_interval_ms",
+        "stimulus_duration_ms"
+      ],
+      "assumed": [],
+      "tied_to_reported_value": 2
+    },
+    {
+      "source": "S059",
+      "citation": "supplementary-search screening (rank 4), full-text methods read",
+      "n_options": 9,
+      "n_keys": 9,
+      "keys_expressible": 6,
+      "gaps": [
+        {
+          "key": "difficulty_levels",
+          "gap": "option missing",
+          "reason": "constant-stimuli levels given as a count, a spacing and a range in prose (amplitude steps, an F0 shift in Hz); the package takes a list of levels in dB"
+        },
+        {
+          "key": "judgment_wording",
+          "gap": "option missing",
+          "reason": "\"comparison_louder_or_softer\" goes with the discrimination variants, which are not implemented"
+        },
+        {
+          "key": "task_variant",
+          "gap": "option missing",
+          "reason": "standard_then_comparison_louder_softer: discrimination, oddity and comparison trials are not implemented (detection variants only)"
+        }
+      ],
+      "checked_options": [
+        "feedback_condition",
+        "inter_item_interval_ms",
+        "practice_trials",
+        "response_device",
+        "tone_frequency_hz",
+        "trial_feedback"
+      ],
+      "assumed": [],
+      "tied_to_reported_value": 6
+    }
+  ]
+}
