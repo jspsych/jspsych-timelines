@@ -90,6 +90,22 @@ describe("instruction walkthrough (interactive)", () => {
     }
   });
 
+  it("is untimed and has no position rule, whatever the task has", async () => {
+    const rows = await run(jsPsych, {
+      ...SMALL,
+      response_window_ms: 1500,
+      position_repeat_rule: "enforced",
+    });
+    const c = checks(rows);
+    expect(c).toHaveLength(3);
+    c.forEach((r) => {
+      expect(r.response_window).toBeNull();
+      expect(r.timeout).toBe(false);
+      expect(r.position_rule_violation).toBe(false);
+      expect(r.disabled_position).toBeNull();
+    });
+  });
+
   it("uses the walkthrough's own items, which the practice and the test never use under distinct pools", async () => {
     const rows = await run(jsPsych, {
       ...SMALL,

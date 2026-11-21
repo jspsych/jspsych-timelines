@@ -665,6 +665,8 @@ export function createInstructionWalkthrough(ctx: Context) {
   const t = ctx.text;
   const items = ctx.items.walkthrough;
   const state = newSeriesState();
+  // the walkthrough is untimed and has no position rule (PACKAGE-STANDARD §6a); the items, grid and response are the task's
+  const wo: ResolvedOptions = { ...o, response_window_ms: null, position_repeat_rule: "none" };
   const ti = textItems(ctx, o);
   const stepArgs = (step: StepName): StepArgs => ({
     ...ti,
@@ -679,7 +681,7 @@ export function createInstructionWalkthrough(ctx: Context) {
     const again = () => st.correct === false && st.attempt < INSTRUCTION_MAX_ATTEMPTS;
     const pick = createPickTrial({
       ctx,
-      o,
+      o: wo,
       items,
       state,
       phase: "instructions",
