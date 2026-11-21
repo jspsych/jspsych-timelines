@@ -520,7 +520,7 @@ function createFeedback(ctx: Context, phase: Phase, stage: "completion" | "rewar
 /**
  * Trials of one phase as a loop: the plan of the next trial is drawn when the previous one ends, so the number of
  * trials need not be known in advance (a `fixed_time` session). Practice ends after `practice_trials` trials; the
- * test ends on `session_duration_min` or `n_test_trials` (and never after more than MAX_SESSION_TRIALS).
+ * test ends on `session_duration_min` (and never after more than MAX_SESSION_TRIALS trials) or on `n_test_trials`.
  */
 export function createTrialLoop(ctx: Context, phase: Phase) {
   const o = phase === "practice" ? ctx.practice : ctx.test;
@@ -535,8 +535,9 @@ export function createTrialLoop(ctx: Context, phase: Phase) {
   const more = (): boolean => {
     const n = ctx.state.n_trials;
     if (phase === "practice") return n < o.practice_trials;
-    if (n >= MAX_SESSION_TRIALS) return false;
     if (o.task_end_rule === "fixed_trial_count") return n < o.n_test_trials;
+    // the cap is only for a clock that might never run out (tiny durations); a trial count is its own limit
+    if (n >= MAX_SESSION_TRIALS) return false;
     return sessionClock(ctx) < o.session_duration_min! * 60000;
   };
   return {

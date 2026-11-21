@@ -94,6 +94,16 @@ export interface TrialData {
   duration_ms?: number;
   fixation_duration?: number;
   feedback_duration?: number;
+  /** choice rows: the choice keys in force (easy first). */
+  response_keys?: [string, string];
+  /** response rows: the setting in force, and the two rewards as the participant saw them. */
+  progress_indicator?: "none" | "counter" | "progress_bar";
+  easy_reward_text?: string;
+  hard_reward_text?: string;
+  /** instruction_feedback rows: "correct" | "hint" | "reveal". */
+  feedback_kind?: string;
+  /** instruction_check rows: the key (choice steps) the step asks for. */
+  correct_response?: string;
   /** instruction_check rows */
   step?: string;
   attempt?: number;

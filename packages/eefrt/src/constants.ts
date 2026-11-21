@@ -13,8 +13,9 @@ export const INSTRUCTION_MAX_ATTEMPTS = 3;
 export const INSTRUCTION_CORRECT_MS = 900;
 
 /**
- * Hard stop on the number of test trials in a session, whatever the clock says. The session clock
- * (see `trials.ts`) ends a `fixed_time` session; this makes sure a run with tiny durations cannot go on forever.
+ * Hard stop on the number of test trials of a `fixed_time` session, whatever the clock says. The session clock
+ * (see `trials.ts`) ends the session; this makes sure a run with tiny durations cannot go on forever. A
+ * `fixed_trial_count` session is not capped: its count is its limit.
  */
 export const MAX_SESSION_TRIALS = 600;
 

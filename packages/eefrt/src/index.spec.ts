@@ -310,6 +310,21 @@ describe("eefrt", () => {
       expect(s.proportion_hard).toBeNull();
     });
 
+    it("the choice is drawn once per trial (jsPsych may evaluate simulation_options more than once)", async () => {
+      const sim = await import("./simulation");
+      const spy = jest.spyOn(sim, "simulateChoice");
+      try {
+        const { rows } = await run({
+          practice_trials: 0,
+          task_end_rule: "fixed_trial_count",
+          n_test_trials: 12,
+        });
+        expect(spy.mock.calls.length).toBe(parts(rows, "test", "choice").length);
+      } finally {
+        spy.mockRestore();
+      }
+    });
+
     it("a fast participant never times out", async () => {
       const { rows } = await run(
         { practice_trials: 0, task_end_rule: "fixed_trial_count", n_test_trials: 10 },
@@ -346,6 +361,8 @@ describe("eefrt", () => {
     let rows: any[];
     beforeAll(async () => {
       ({ rows } = await run(options, {}, "effects"));
+      // a trial count is its own limit: more than MAX_SESSION_TRIALS is honoured
+      expect(responses(rows)).toHaveLength(900);
       scores = calculateScores(new DataCollection(rows));
     });
 
