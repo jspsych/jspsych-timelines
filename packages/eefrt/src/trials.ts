@@ -311,9 +311,7 @@ function createChoice(ctx: Context, phase: Phase) {
       const p = plan(ctx);
       return renderChoice(choiceArgs(ctx, p.o, p.offer));
     },
-    choices: ((): string[] => [
-      ...(phase === "practice" ? ctx.practice : ctx.test).response_keys,
-    ]) as any,
+    choices: [...(phase === "practice" ? ctx.practice : ctx.test).response_keys],
     trial_duration: (() => plan(ctx).o.response_window_ms.choice) as any,
     data: baseData({ phase, part: "choice", block: 1 }),
     // data-only simulation: a logistic choice that rises with probability and reward (simulation.ts)
@@ -383,7 +381,7 @@ function createReady(ctx: Context, phase: Phase) {
         const p = plan(ctx);
         return renderCenterText(
           ctx.text.ready_text({ task: p.chosen_task! }),
-          "",
+          "ready",
           assignedNotice(ctx, p)
         );
       },

@@ -1,0 +1,2141 @@
+{
+ "spec": "specs/eefrt-task/spec.yaml (jspsych-timelines-paper, vocabulary 2026-11-13-std-final)",
+ "options": [
+  {
+   "name": "feedback_duration_ms",
+   "default": {
+    "value": {
+     "completion_feedback_ms": 2000,
+     "reward_feedback_ms": 2000
+    },
+    "basis": "components"
+   },
+   "components": [
+    {
+     "variation": "completion_feedback_ms",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S007",
+       "raw": 2000,
+       "value": 2000,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S021",
+       "raw": 2000,
+       "value": 2000,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S035",
+       "raw": 2000,
+       "value": 2000,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S017",
+       "raw": 1000,
+       "value": 1000,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S014",
+       "raw": 1500,
+       "value": 1500,
+       "ok": true,
+       "note": null
+      }
+     ]
+    },
+    {
+     "variation": "reward_feedback_ms",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S007",
+       "raw": 2000,
+       "value": 2000,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S027",
+       "raw": 2000,
+       "value": 2000,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S017",
+       "raw": 1000,
+       "value": 1000,
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "fixation_duration_ms",
+   "default": {
+    "value": 1000,
+    "raw": 1000,
+    "basis": "anchor",
+    "source": "S007",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "fixation_duration_ms",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S007",
+       "raw": 1000,
+       "value": 1000,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S013",
+       "raw": 1000,
+       "value": 1000,
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "pre_block_countdown_ms",
+   "default": {
+    "value": 1000,
+    "raw": 1000,
+    "basis": "anchor",
+    "source": "S007",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "ready_screen_ms",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S007",
+       "raw": 1000,
+       "value": 1000,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S021",
+       "raw": 1000,
+       "value": 1000,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S035",
+       "raw": 3000,
+       "value": 3000,
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "response_window_ms",
+   "default": {
+    "value": {
+     "choice_window_ms": 5000,
+     "easy task": 7,
+     "hard task": 21
+    },
+    "basis": "components"
+   },
+   "components": [
+    {
+     "variation": "choice_window_ms",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S007",
+       "raw": 5000,
+       "value": 5000,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S021",
+       "raw": 5000,
+       "value": 5000,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S034",
+       "raw": 5000,
+       "value": 5000,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S008",
+       "raw": 3000,
+       "value": 3000,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S008",
+       "raw": "none",
+       "value": null,
+       "ok": true,
+       "note": null
+      }
+     ]
+    },
+    {
+     "variation": "easy_time_limit_s",
+     "role": "easy task",
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S007",
+       "raw": 7,
+       "value": 7,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S021",
+       "raw": 7,
+       "value": 7,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S033",
+       "raw": 7,
+       "value": 7,
+       "ok": true,
+       "note": null
+      }
+     ]
+    },
+    {
+     "variation": "hard_time_limit_s",
+     "role": "hard task",
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S007",
+       "raw": 21,
+       "value": 21,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S021",
+       "raw": 21,
+       "value": 21,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S033",
+       "raw": 30,
+       "value": 30,
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "session_duration_min",
+   "default": {
+    "value": 20,
+    "raw": 20,
+    "basis": "anchor",
+    "source": "S007",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "session_duration_min",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S007",
+       "raw": 20,
+       "value": 20,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S034",
+       "raw": 20,
+       "value": 20,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S013",
+       "raw": 20,
+       "value": 20,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S008",
+       "raw": 15,
+       "value": 15,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S027",
+       "raw": 15,
+       "value": 15,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S039",
+       "raw": 10,
+       "value": 10,
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "difficulty_levels",
+   "default": {
+    "value": {
+     "hard task": 100,
+     "easy task": 30
+    },
+    "basis": "components"
+   },
+   "components": [
+    {
+     "variation": "hard_required_presses",
+     "role": "hard task",
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S007",
+       "raw": 100,
+       "value": 100,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S021",
+       "raw": 100,
+       "value": 100,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S034",
+       "raw": 98,
+       "value": 98,
+       "ok": true,
+       "note": null
+      }
+     ]
+    },
+    {
+     "variation": "easy_required_presses",
+     "role": "easy task",
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S007",
+       "raw": 30,
+       "value": 30,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S021",
+       "raw": 30,
+       "value": 30,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S034",
+       "raw": 30,
+       "value": 30,
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "outcome_type",
+   "default": {
+    "value": "money",
+    "raw": "money",
+    "basis": "anchor",
+    "source": "S007",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "reward_display_currency",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S007",
+       "raw": "USD",
+       "value": "USD",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S008",
+       "raw": "EUR",
+       "value": "EUR",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S034",
+       "raw": "GBP",
+       "value": "GBP",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S029",
+       "raw": "points",
+       "value": "points",
+       "ok": true,
+       "note": null
+      }
+     ]
+    },
+    {
+     "variation": "reward_medium",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S007",
+       "raw": "money",
+       "value": "money",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S029",
+       "raw": "money",
+       "value": "money",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S029",
+       "raw": "points",
+       "value": "points",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S035",
+       "raw": "points_exchanged_for_candy",
+       "value": "points_exchanged_for_candy",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S013",
+       "raw": "points",
+       "value": "points",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S008",
+       "raw": "food_portions",
+       "value": "food_portions",
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "outcome_valence",
+   "default": {
+    "value": "gain",
+    "raw": false,
+    "basis": "anchor",
+    "source": "S007",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "loss_trials",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S007",
+       "raw": false,
+       "value": "gain",
+       "ok": true,
+       "note": "Standard gain-only design."
+      },
+      {
+       "source": "S008",
+       "raw": true,
+       "value": "gain_and_loss",
+       "ok": true,
+       "note": "Byrne & Ghaiumy Anaraky 2019 via review table only; which trials carry losses and their size are not in the dossier."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "reward_magnitude",
+   "default": {
+    "value": {
+     "hard_reward_values": {
+      "hard": {
+       "min": 1.24,
+       "max": 4.3
+      }
+     },
+     "easy_reward_value": 1
+    },
+    "basis": "components"
+   },
+   "components": [
+    {
+     "variation": "hard_reward_values",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S007",
+       "raw": "$1.24-$4.30 trial-varying",
+       "value": {
+        "hard": {
+         "min": 1.24,
+         "max": 4.3
+        }
+       },
+       "ok": true,
+       "note": "Range leaf {min, max}; the 8 levels of the Treadway design are not stated here (see S021 entry). USD not typed. Easy reward ($1.00) is a sibling variation."
+      },
+      {
+       "source": "S021",
+       "raw": "8 levels $1.24-$4.30 step $0.43",
+       "value": {
+        "hard": {
+         "min": 1.24,
+         "max": 4.3
+        }
+       },
+       "ok": true,
+       "note": "Eight discrete levels with step 0.43 (does not quite reach 4.30) are lost; propose reward_magnitude leaf as number | {min, max} | {levels: [..]}. Not inventing the level values."
+      },
+      {
+       "source": "S017",
+       "raw": "8 levels 1.24-4.30",
+       "value": {
+        "hard": {
+         "min": 1.24,
+         "max": 4.3
+        }
+       },
+       "ok": true,
+       "note": "Same as the S021 value; 8-level count lost. Currency not stated."
+      },
+      {
+       "source": "S029",
+       "raw": "$1.24-$4.12",
+       "value": {
+        "hard": {
+         "min": 1.24,
+         "max": 4.12
+        }
+       },
+       "ok": true,
+       "note": "Range as published (S029, online); whether levels or continuous not stated."
+      },
+      {
+       "source": "S008",
+       "raw": "EUR 1.21-4.30",
+       "value": {
+        "hard": {
+         "min": 1.21,
+         "max": 4.3
+        }
+       },
+       "ok": true,
+       "note": "Currency (EUR) not typed; outcome_type/payout carry no currency option."
+      },
+      {
+       "source": "S034",
+       "raw": "GBP 0.58-2.00",
+       "value": {
+        "hard": {
+         "min": 0.58,
+         "max": 2
+        }
+       },
+       "ok": true,
+       "note": "Currency (GBP) not typed; rescaled range."
+      },
+      {
+       "source": "S040",
+       "raw": "9 levels EUR 1.85-4.15",
+       "value": {
+        "hard": {
+         "min": 1.85,
+         "max": 4.15
+        }
+       },
+       "ok": true,
+       "note": "Nine discrete levels lost (needs a levels leaf); currency not typed."
+      },
+      {
+       "source": "S014",
+       "raw": "uniform random $1.24-$4.30 per trial",
+       "value": {
+        "hard": {
+         "min": 1.24,
+         "max": 4.3
+        }
+       },
+       "ok": true,
+       "note": "Drawn uniformly per trial (S014), not from a fixed list; {min, max} leaf is read as a per-trial uniform draw, which is not distinguishable from a fixed range."
+      },
+      {
+       "source": "S008",
+       "raw": "fixed (single hard reward)",
+       "value": null,
+       "ok": false,
+       "note": "Ohmann modified version: reward per press, no easy/hard choice; amount not given. Separate-package variant; do not invent a value."
+      }
+     ]
+    },
+    {
+     "variation": "easy_reward_value",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S007",
+       "raw": 1,
+       "value": 1,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S034",
+       "raw": 0.5,
+       "value": 0.5,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S029",
+       "raw": 100,
+       "value": 100,
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "reward_probability",
+   "default": {
+    "value": [
+     "12%",
+     "50%",
+     "88%"
+    ],
+    "raw": [
+     "12%",
+     "50%",
+     "88%"
+    ],
+    "basis": "anchor",
+    "source": "S007",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "probability_levels",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S007",
+       "raw": [
+        "12%",
+        "50%",
+        "88%"
+       ],
+       "value": [
+        "12%",
+        "50%",
+        "88%"
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S021",
+       "raw": [
+        "12%",
+        "50%",
+        "88%"
+       ],
+       "value": [
+        "12%",
+        "50%",
+        "88%"
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S027",
+       "raw": [
+        "50%",
+        "88%"
+       ],
+       "value": [
+        "50%",
+        "88%"
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S032",
+       "raw": [
+        "50%",
+        "88%"
+       ],
+       "value": [
+        "50%",
+        "88%"
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S030",
+       "raw": [
+        "12%",
+        "55%",
+        "88%"
+       ],
+       "value": [
+        "12%",
+        "55%",
+        "88%"
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S008",
+       "raw": [
+        "50%"
+       ],
+       "value": [
+        "50%"
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S008",
+       "raw": "none",
+       "value": null,
+       "ok": false,
+       "note": "Nguyen et al. 2019 (children, review table): no probabilities, presumably certain reward, but not stated; propose vocabulary value for 'no probabilistic outcome' (reward_probability: {hard: 1})."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "trial_order",
+   "default": {
+    "value": "fixed_sequence",
+    "raw": "fixed_prerandomised_same_for_all",
+    "basis": "anchor",
+    "source": "S007",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "trial_order",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S007",
+       "raw": "fixed_prerandomised_same_for_all",
+       "value": "fixed_sequence",
+       "ok": true,
+       "note": "One pre-randomised order identical for all participants (S007); Inquisit uses two fixed lists."
+      },
+      {
+       "source": "S008",
+       "raw": "fixed_prerandomised_same_for_all",
+       "value": "fixed_sequence",
+       "ok": true,
+       "note": "One pre-randomised order identical for all participants (S007); Inquisit uses two fixed lists."
+      },
+      {
+       "source": "S021",
+       "raw": "fixed_prerandomised_same_for_all",
+       "value": "fixed_sequence",
+       "ok": true,
+       "note": "One pre-randomised order identical for all participants (S007); Inquisit uses two fixed lists."
+      },
+      {
+       "source": "S014",
+       "raw": "random_per_participant",
+       "value": "shuffled_list",
+       "ok": true,
+       "note": "Per-participant randomisation of the probability x reward offer list (S014); random (independent draws) is possible."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "social_influence_cue",
+   "default": {
+    "value": false,
+    "raw": false,
+    "basis": "anchor",
+    "source": "S007",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "social_influence_cue",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S007",
+       "raw": false,
+       "value": false,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S008",
+       "raw": true,
+       "value": true,
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "missed_response_handling",
+   "default": {
+    "value": "random_assignment",
+    "raw": "random_assignment",
+    "basis": "anchor",
+    "source": "S007",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "no_choice_handling",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S007",
+       "raw": "random_assignment",
+       "value": "random_assignment",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S021",
+       "raw": "random_assignment",
+       "value": "random_assignment",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S017",
+       "raw": "random_assignment",
+       "value": "random_assignment",
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "response_key_mapping",
+   "default": {
+    "value": {
+     "effort_key_assignment": {
+      "easy": "space",
+      "hard": "space"
+     },
+     "effort_finger_assignment": {
+      "easy": "dominant_index",
+      "hard": "nondominant_little"
+     }
+    },
+    "basis": "components"
+   },
+   "components": [
+    {
+     "variation": "effort_key_assignment",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S008",
+       "raw": "same_key_both_tasks",
+       "value": {
+        "easy": "space",
+        "hard": "space"
+       },
+       "ok": true,
+       "note": "Space bar in S008 and S021; S030 not checked for the key name."
+      },
+      {
+       "source": "S021",
+       "raw": "same_key_both_tasks",
+       "value": {
+        "easy": "space",
+        "hard": "space"
+       },
+       "ok": true,
+       "note": "Space bar in S008 and S021; S030 not checked for the key name."
+      },
+      {
+       "source": "S030",
+       "raw": "same_key_both_tasks",
+       "value": {
+        "easy": "space",
+        "hard": "space"
+       },
+       "ok": true,
+       "note": "Space bar in S008 and S021; S030 not checked for the key name."
+      },
+      {
+       "source": "S013",
+       "raw": "separate_key_per_task",
+       "value": null,
+       "ok": true,
+       "note": "Key letters not in the dossier (S013 L/S by handedness; S014 easyPressKey/hardPressKey); no typed value without inventing keys. Fixture should supply keys by hand."
+      },
+      {
+       "source": "S014",
+       "raw": "separate_key_per_task",
+       "value": null,
+       "ok": true,
+       "note": "Key letters not in the dossier (S013 L/S by handedness; S014 easyPressKey/hardPressKey); no typed value without inventing keys. Fixture should supply keys by hand."
+      }
+     ]
+    },
+    {
+     "variation": "effort_finger_assignment",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S007",
+       "raw": "easy_dominant_index_hard_nondominant_little",
+       "value": {
+        "easy": "dominant_index",
+        "hard": "nondominant_little"
+       },
+       "ok": true,
+       "note": "Finger leaves in the same map as key names; propose a separate finger map or vocabulary option response_finger_mapping. Anchor (S007) design."
+      },
+      {
+       "source": "S030",
+       "raw": "easy_dominant_index_hard_nondominant_little",
+       "value": {
+        "easy": "dominant_index",
+        "hard": "nondominant_little"
+       },
+       "ok": true,
+       "note": "Finger leaves in the same map as key names; propose a separate finger map or vocabulary option response_finger_mapping. Anchor (S007) design."
+      },
+      {
+       "source": "S008",
+       "raw": "easy_dominant_index_hard_dominant_little",
+       "value": {
+        "easy": "dominant_index",
+        "hard": "dominant_little"
+       },
+       "ok": true,
+       "note": "Same finger-in-map caveat (S008)."
+      },
+      {
+       "source": "S027",
+       "raw": "easy_nondominant_little",
+       "value": {
+        "easy": "nondominant_little"
+       },
+       "ok": true,
+       "note": "As published in S027; hard-task finger not stated and probably a wording error."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "response_keys",
+   "default": {
+    "value": [
+     "E",
+     "I"
+    ],
+    "raw": [
+     "E",
+     "I"
+    ],
+    "basis": "fill",
+    "frequency": "1/3",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "choice_keys",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S021",
+       "raw": [
+        "E",
+        "I"
+       ],
+       "value": [
+        "E",
+        "I"
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S017",
+       "raw": [
+        "F",
+        "J"
+       ],
+       "value": [
+        "F",
+        "J"
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S013",
+       "raw": [
+        "L",
+        "S"
+       ],
+       "value": [
+        "L",
+        "S"
+       ],
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "adaptive",
+   "default": {
+    "value": {
+     "procedure": "fixed"
+    },
+    "basis": "components"
+   },
+   "components": [
+    {
+     "variation": "press_requirement_calibration",
+     "role": null,
+     "phase": null,
+     "field": "procedure",
+     "observed": [
+      {
+       "source": "S007",
+       "raw": "fixed",
+       "value": "fixed",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S008",
+       "raw": "individually_calibrated",
+       "value": "individually_calibrated",
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "device_eligibility",
+   "default": {
+    "value": "computer_only",
+    "raw": "physical_keyboard_laptop_or_desktop",
+    "basis": "fill",
+    "frequency": "2/2",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "device_requirement",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S030",
+       "raw": "physical_keyboard_laptop_or_desktop",
+       "value": "computer_only",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S042",
+       "raw": "physical_keyboard_laptop_or_desktop",
+       "value": "computer_only",
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "practice_trials",
+   "default": {
+    "value": 4,
+    "raw": 4,
+    "basis": "anchor",
+    "source": "S007",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "practice_trials",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S007",
+       "raw": 4,
+       "value": 4,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S021",
+       "raw": 4,
+       "value": 4,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S035",
+       "raw": 4,
+       "value": 4,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S014",
+       "raw": 2,
+       "value": 2,
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "pretraining",
+   "default": {
+    "value": "none",
+    "raw": "none",
+    "basis": "anchor",
+    "source": "S007",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "motor_ability_pretest",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S007",
+       "raw": "none",
+       "value": "none",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S008",
+       "raw": "10 trials x 20 s maximal pressing, unrewarded, before each task version",
+       "value": null,
+       "ok": false,
+       "note": "Motor-speed covariate pretest (Ohmann S008 2.1.7); pretraining enum has no fitting value (familiarization is unfaithful). Propose vocabulary value: motor_pretest, with {trials: 10, duration_s: 20}."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "task_end_rule",
+   "default": {
+    "value": "fixed_time",
+    "raw": "time_limited_session",
+    "basis": "anchor",
+    "source": "S007",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "termination_rule",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S007",
+       "raw": "time_limited_session",
+       "value": "fixed_time",
+       "ok": true,
+       "note": "Original: 20 min limit (S007); session_duration_min carries the number."
+      },
+      {
+       "source": "S021",
+       "raw": "time_limited_session",
+       "value": "fixed_time",
+       "ok": true,
+       "note": "Original: 20 min limit (S007); session_duration_min carries the number."
+      },
+      {
+       "source": "S017",
+       "raw": "fixed_trial_count",
+       "value": "fixed_trial_count",
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "payout_rule",
+   "default": {
+    "value": "two_random_win_trials_paid",
+    "raw": "two_random_win_trials_paid",
+    "basis": "anchor",
+    "source": "S007",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "payout_rule",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S007",
+       "raw": "two_random_win_trials_paid",
+       "value": "two_random_win_trials_paid",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S027",
+       "raw": "two_random_win_trials_paid",
+       "value": "two_random_win_trials_paid",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S034",
+       "raw": "two_random_win_trials_paid",
+       "value": "two_random_win_trials_paid",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S008",
+       "raw": "percent_of_total_5",
+       "value": "percent_of_total_5",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S008",
+       "raw": "percent_of_total_10",
+       "value": "percent_of_total_10",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S032",
+       "raw": "fixed_noncontingent_with_deception",
+       "value": "fixed_noncontingent_with_deception",
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "progress_indicator",
+   "default": {
+    "value": "progress_bar",
+    "raw": "filling_bar",
+    "basis": "anchor",
+    "source": "S007",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "progress_display",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S007",
+       "raw": "filling_bar",
+       "value": "progress_bar",
+       "ok": true,
+       "note": "Virtual bar fills with presses (effort), not task progress; closest vocabulary value."
+      },
+      {
+       "source": "S021",
+       "raw": "filling_bar",
+       "value": "progress_bar",
+       "ok": true,
+       "note": "Virtual bar fills with presses (effort), not task progress; closest vocabulary value."
+      },
+      {
+       "source": "S017",
+       "raw": "bar_plus_press_count_and_countdown",
+       "value": "progress_bar",
+       "ok": true,
+       "note": "Bar plus press counter and countdown (S017); counter and countdown are lost. Propose vocabulary value: bar_with_counter."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "speed_accuracy_emphasis",
+   "default": {
+    "value": null,
+    "raw": "tradeoff_explained",
+    "basis": "anchor",
+    "source": "S007",
+    "needs_translation": true
+   },
+   "components": [
+    {
+     "variation": "time_tradeoff_instruction",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S007",
+       "raw": "tradeoff_explained",
+       "value": null,
+       "ok": false,
+       "note": "Instruction explains that hard choices cost trials in the time-limited session; not a speed-accuracy emphasis. Propose vocabulary value: opportunity_cost_explained."
+      },
+      {
+       "source": "S035",
+       "raw": "tradeoff_explained",
+       "value": null,
+       "ok": false,
+       "note": "Instruction explains that hard choices cost trials in the time-limited session; not a speed-accuracy emphasis. Propose vocabulary value: opportunity_cost_explained."
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "study_configurations": [
+  {
+   "source": "S007",
+   "citation": "Treadway et al. 2009, PLoS ONE",
+   "label": "Treadway et al. 2009, PLOS ONE",
+   "doi": "10.1371/journal.pone.0006598",
+   "source_type": "empirical",
+   "setting": "lab-native",
+   "n_options": 27,
+   "fully_typed": false,
+   "options": {
+    "adaptive.procedure": "fixed",
+    "difficulty_levels.easy task": 30,
+    "difficulty_levels.hard task": 100,
+    "feedback_duration_ms.completion_feedback_ms": 2000,
+    "feedback_duration_ms.reward_feedback_ms": 2000,
+    "fixation_duration_ms": 1000,
+    "missed_response_handling": "random_assignment",
+    "outcome_type.reward_display_currency": "USD",
+    "outcome_type.reward_medium": "money",
+    "outcome_valence": "gain",
+    "payout_rule": "two_random_win_trials_paid",
+    "practice_trials": 4,
+    "pre_block_countdown_ms": 1000,
+    "pretraining": "none",
+    "progress_indicator": "progress_bar",
+    "response_key_mapping.effort_finger_assignment": {
+     "easy": "dominant_index",
+     "hard": "nondominant_little"
+    },
+    "response_window_ms.choice_window_ms": 5000,
+    "response_window_ms.easy task": 7,
+    "response_window_ms.hard task": 21,
+    "reward_magnitude.easy_reward_value": 1,
+    "reward_magnitude.hard_reward_values": {
+     "hard": {
+      "min": 1.24,
+      "max": 4.3
+     }
+    },
+    "reward_probability": [
+     "12%",
+     "50%",
+     "88%"
+    ],
+    "session_duration_min": 20,
+    "social_influence_cue": false,
+    "speed_accuracy_emphasis": {
+     "untranslated": "tradeoff_explained"
+    },
+    "task_end_rule": "fixed_time",
+    "trial_order": "fixed_sequence"
+   }
+  },
+  {
+   "source": "S008",
+   "citation": "Ohmann et al. 2022, PLoS ONE",
+   "label": "Ohmann et al. 2022, PLOS ONE",
+   "doi": "10.1371/journal.pone.0262902",
+   "source_type": "empirical",
+   "setting": "lab-native",
+   "n_options": 8,
+   "fully_typed": false,
+   "options": {
+    "outcome_type.reward_display_currency": "EUR",
+    "payout_rule": "percent_of_total_5",
+    "pretraining": {
+     "untranslated": "10 trials x 20 s maximal pressing, unrewarded, before each task version"
+    },
+    "response_key_mapping.effort_finger_assignment": {
+     "easy": "dominant_index",
+     "hard": "dominant_little"
+    },
+    "response_key_mapping.effort_key_assignment": {
+     "easy": "space",
+     "hard": "space"
+    },
+    "reward_magnitude.hard_reward_values": {
+     "hard": {
+      "min": 1.21,
+      "max": 4.3
+     }
+    },
+    "session_duration_min": 15,
+    "trial_order": "fixed_sequence"
+   }
+  },
+  {
+   "source": "S013",
+   "citation": "https://github.com/belieflab/eEfRT",
+   "label": "https://github.com/belieflab/eEfRT",
+   "doi": null,
+   "source_type": "reference-impl",
+   "setting": null,
+   "n_options": 4,
+   "fully_typed": true,
+   "options": {
+    "fixation_duration_ms": 1000,
+    "outcome_type.reward_medium": "points",
+    "response_keys": [
+     "L",
+     "S"
+    ],
+    "session_duration_min": 20
+   }
+  },
+  {
+   "source": "S014",
+   "citation": "https://github.com/james-poh/eefrt",
+   "label": "https://github.com/james-poh/eefrt",
+   "doi": null,
+   "source_type": "reference-impl",
+   "setting": null,
+   "n_options": 4,
+   "fully_typed": true,
+   "options": {
+    "feedback_duration_ms.completion_feedback_ms": 1500,
+    "practice_trials": 2,
+    "reward_magnitude.hard_reward_values": {
+     "hard": {
+      "min": 1.24,
+      "max": 4.3
+     }
+    },
+    "trial_order": "shuffled_list"
+   }
+  },
+  {
+   "source": "S017",
+   "citation": "https://github.com/TaskBeacon/T000019-eefrt",
+   "label": "https://github.com/TaskBeacon/T000019-eefrt",
+   "doi": null,
+   "source_type": "reference-impl",
+   "setting": null,
+   "n_options": 7,
+   "fully_typed": true,
+   "options": {
+    "feedback_duration_ms.completion_feedback_ms": 1000,
+    "feedback_duration_ms.reward_feedback_ms": 1000,
+    "missed_response_handling": "random_assignment",
+    "progress_indicator": "progress_bar",
+    "response_keys": [
+     "F",
+     "J"
+    ],
+    "reward_magnitude.hard_reward_values": {
+     "hard": {
+      "min": 1.24,
+      "max": 4.3
+     }
+    },
+    "task_end_rule": "fixed_trial_count"
+   }
+  },
+  {
+   "source": "S021",
+   "citation": "Inquisit EEfRT defaults (proprietary; parameters only)",
+   "label": "Inquisit EEfRT defaults",
+   "label_note": "proprietary; parameters only",
+   "doi": null,
+   "source_type": "reference-impl",
+   "setting": null,
+   "n_options": 16,
+   "fully_typed": true,
+   "options": {
+    "difficulty_levels.easy task": 30,
+    "difficulty_levels.hard task": 100,
+    "feedback_duration_ms.completion_feedback_ms": 2000,
+    "missed_response_handling": "random_assignment",
+    "practice_trials": 4,
+    "pre_block_countdown_ms": 1000,
+    "progress_indicator": "progress_bar",
+    "response_key_mapping.effort_key_assignment": {
+     "easy": "space",
+     "hard": "space"
+    },
+    "response_keys": [
+     "E",
+     "I"
+    ],
+    "response_window_ms.choice_window_ms": 5000,
+    "response_window_ms.easy task": 7,
+    "response_window_ms.hard task": 21,
+    "reward_magnitude.hard_reward_values": {
+     "hard": {
+      "min": 1.24,
+      "max": 4.3
+     }
+    },
+    "reward_probability": [
+     "12%",
+     "50%",
+     "88%"
+    ],
+    "task_end_rule": "fixed_time",
+    "trial_order": "fixed_sequence"
+   }
+  },
+  {
+   "source": "S027",
+   "citation": "Barch et al. 2014, J Abnorm Psychol",
+   "label": "Barch et al. 2014, Journal of Abnormal Psychology",
+   "doi": "10.1037/a0036299",
+   "source_type": "empirical",
+   "setting": "lab-native",
+   "n_options": 5,
+   "fully_typed": true,
+   "options": {
+    "feedback_duration_ms.reward_feedback_ms": 2000,
+    "payout_rule": "two_random_win_trials_paid",
+    "response_key_mapping.effort_finger_assignment": {
+     "easy": "nondominant_little"
+    },
+    "reward_probability": [
+     "50%",
+     "88%"
+    ],
+    "session_duration_min": 15
+   }
+  },
+  {
+   "source": "S029",
+   "citation": "Anderson Z 2026",
+   "label": "Anderson et al. 2026, Schizophrenia Research",
+   "doi": "10.1016/j.schres.2026.07.009",
+   "source_type": "empirical",
+   "setting": "online-supervised",
+   "n_options": 4,
+   "fully_typed": true,
+   "options": {
+    "outcome_type.reward_display_currency": "points",
+    "outcome_type.reward_medium": "points",
+    "reward_magnitude.easy_reward_value": 100,
+    "reward_magnitude.hard_reward_values": {
+     "hard": {
+      "min": 1.24,
+      "max": 4.12
+     }
+    }
+   }
+  },
+  {
+   "source": "S030",
+   "citation": "Sturm ET 2026",
+   "label": "Sturm et al. 2026, Journal of Clinical and Experimental Neuropsychology",
+   "doi": "10.1080/13803395.2026.2632223",
+   "source_type": "empirical",
+   "setting": "online-unsupervised",
+   "n_options": 4,
+   "fully_typed": true,
+   "options": {
+    "device_eligibility": "computer_only",
+    "response_key_mapping.effort_finger_assignment": {
+     "easy": "dominant_index",
+     "hard": "nondominant_little"
+    },
+    "response_key_mapping.effort_key_assignment": {
+     "easy": "space",
+     "hard": "space"
+    },
+    "reward_probability": [
+     "12%",
+     "55%",
+     "88%"
+    ]
+   }
+  },
+  {
+   "source": "S032",
+   "citation": "van der Weijden-Germann M 2026",
+   "label": "van der Weijden-Germann et al. 2026, Psychological Medicine",
+   "doi": "10.1017/s0033291726103444",
+   "source_type": "empirical",
+   "setting": "online-unsupervised",
+   "n_options": 2,
+   "fully_typed": true,
+   "options": {
+    "payout_rule": "fixed_noncontingent_with_deception",
+    "reward_probability": [
+     "50%",
+     "88%"
+    ]
+   }
+  },
+  {
+   "source": "S033",
+   "citation": "Gallagher MR 2025",
+   "label": "Gallagher et al. 2025, PLOS ONE",
+   "doi": "10.1371/journal.pone.0320052",
+   "source_type": "empirical",
+   "setting": "lab-native",
+   "n_options": 2,
+   "fully_typed": true,
+   "options": {
+    "response_window_ms.easy task": 7,
+    "response_window_ms.hard task": 30
+   }
+  },
+  {
+   "source": "S034",
+   "citation": "Slaney C 2023",
+   "label": "Slaney et al. 2023, Psychological Medicine",
+   "doi": "10.1017/s0033291722001052",
+   "source_type": "empirical",
+   "setting": "lab-native",
+   "n_options": 8,
+   "fully_typed": true,
+   "options": {
+    "difficulty_levels.easy task": 30,
+    "difficulty_levels.hard task": 98,
+    "outcome_type.reward_display_currency": "GBP",
+    "payout_rule": "two_random_win_trials_paid",
+    "response_window_ms.choice_window_ms": 5000,
+    "reward_magnitude.easy_reward_value": 0.5,
+    "reward_magnitude.hard_reward_values": {
+     "hard": {
+      "min": 0.58,
+      "max": 2
+     }
+    },
+    "session_duration_min": 20
+   }
+  },
+  {
+   "source": "S035",
+   "citation": "Wilhelm RA 2021",
+   "label": "Wilhelm et al. 2021, Brain Sciences",
+   "doi": "10.3390/brainsci11111442",
+   "source_type": "empirical",
+   "setting": "lab-native",
+   "n_options": 5,
+   "fully_typed": false,
+   "options": {
+    "feedback_duration_ms.completion_feedback_ms": 2000,
+    "outcome_type.reward_medium": "points_exchanged_for_candy",
+    "practice_trials": 4,
+    "pre_block_countdown_ms": 3000,
+    "speed_accuracy_emphasis": {
+     "untranslated": "tradeoff_explained"
+    }
+   }
+  },
+  {
+   "source": "S039",
+   "citation": "Boyle CC 2025",
+   "label": "Boyle et al. 2025, Translational Psychiatry",
+   "doi": "10.1038/s41398-025-03752-2",
+   "source_type": "empirical",
+   "setting": "lab-native",
+   "n_options": 1,
+   "fully_typed": true,
+   "options": {
+    "session_duration_min": 10
+   }
+  },
+  {
+   "source": "S040",
+   "citation": "Bernacer J 2025",
+   "label": "Bernacer et al. 2025, Scientific Reports",
+   "doi": "10.1038/s41598-025-02024-9",
+   "source_type": "empirical",
+   "setting": "lab-native",
+   "n_options": 1,
+   "fully_typed": true,
+   "options": {
+    "reward_magnitude.hard_reward_values": {
+     "hard": {
+      "min": 1.85,
+      "max": 4.15
+     }
+    }
+   }
+  },
+  {
+   "source": "S042",
+   "citation": "Online RDoC Positive Valence study lessons learned, PsyArXiv 2025",
+   "label": "Broer et al. 2025, PsyArXiv",
+   "doi": "10.31234/osf.io/z489s_v1",
+   "source_type": "empirical",
+   "setting": "online-unsupervised",
+   "n_options": 1,
+   "fully_typed": true,
+   "options": {
+    "device_eligibility": "computer_only"
+   }
+  }
+ ],
+ "defaults": {
+  "source": "S007",
+  "citation": "Treadway et al. 2009, PLoS ONE",
+  "typicality": 1,
+  "coverage": 0.9,
+  "runner_up": {
+   "source": "S021",
+   "citation": "Inquisit EEfRT defaults (proprietary; parameters only)",
+   "score": 0.635
+  },
+  "lead": 0.331,
+  "disagreement_with_runner_up": 0.071
+ },
+ "translations": [
+  {
+   "variation": "loss_trials",
+   "raw": false,
+   "as": {
+    "outcome_valence": "gain"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": "Standard gain-only design."
+  },
+  {
+   "variation": "loss_trials",
+   "raw": true,
+   "as": {
+    "outcome_valence": "gain_and_loss"
+   },
+   "confidence": "medium",
+   "flag": true,
+   "note": "Byrne & Ghaiumy Anaraky 2019 via review table only; which trials carry losses and their size are not in the dossier."
+  },
+  {
+   "variation": "hard_reward_values",
+   "raw": "$1.24-$4.30 trial-varying",
+   "as": {
+    "reward_magnitude": {
+     "hard": {
+      "min": 1.24,
+      "max": 4.3
+     }
+    }
+   },
+   "confidence": "medium",
+   "flag": true,
+   "note": "Range leaf {min, max}; the 8 levels of the Treadway design are not stated here (see S021 entry). USD not typed. Easy reward ($1.00) is a sibling variation."
+  },
+  {
+   "variation": "hard_reward_values",
+   "raw": "8 levels $1.24-$4.30 step $0.43",
+   "as": {
+    "reward_magnitude": {
+     "hard": {
+      "min": 1.24,
+      "max": 4.3
+     }
+    }
+   },
+   "confidence": "low",
+   "flag": true,
+   "note": "Eight discrete levels with step 0.43 (does not quite reach 4.30) are lost; propose reward_magnitude leaf as number | {min, max} | {levels: [..]}. Not inventing the level values."
+  },
+  {
+   "variation": "hard_reward_values",
+   "raw": "8 levels 1.24-4.30",
+   "as": {
+    "reward_magnitude": {
+     "hard": {
+      "min": 1.24,
+      "max": 4.3
+     }
+    }
+   },
+   "confidence": "low",
+   "flag": true,
+   "note": "Same as the S021 value; 8-level count lost. Currency not stated."
+  },
+  {
+   "variation": "hard_reward_values",
+   "raw": "$1.24-$4.12",
+   "as": {
+    "reward_magnitude": {
+     "hard": {
+      "min": 1.24,
+      "max": 4.12
+     }
+    }
+   },
+   "confidence": "medium",
+   "flag": false,
+   "note": "Range as published (S029, online); whether levels or continuous not stated."
+  },
+  {
+   "variation": "hard_reward_values",
+   "raw": "EUR 1.21-4.30",
+   "as": {
+    "reward_magnitude": {
+     "hard": {
+      "min": 1.21,
+      "max": 4.3
+     }
+    }
+   },
+   "confidence": "medium",
+   "flag": false,
+   "note": "Currency (EUR) not typed; outcome_type/payout carry no currency option."
+  },
+  {
+   "variation": "hard_reward_values",
+   "raw": "GBP 0.58-2.00",
+   "as": {
+    "reward_magnitude": {
+     "hard": {
+      "min": 0.58,
+      "max": 2
+     }
+    }
+   },
+   "confidence": "medium",
+   "flag": false,
+   "note": "Currency (GBP) not typed; rescaled range."
+  },
+  {
+   "variation": "hard_reward_values",
+   "raw": "9 levels EUR 1.85-4.15",
+   "as": {
+    "reward_magnitude": {
+     "hard": {
+      "min": 1.85,
+      "max": 4.15
+     }
+    }
+   },
+   "confidence": "low",
+   "flag": true,
+   "note": "Nine discrete levels lost (needs a levels leaf); currency not typed."
+  },
+  {
+   "variation": "hard_reward_values",
+   "raw": "uniform random $1.24-$4.30 per trial",
+   "as": {
+    "reward_magnitude": {
+     "hard": {
+      "min": 1.24,
+      "max": 4.3
+     }
+    }
+   },
+   "confidence": "medium",
+   "flag": true,
+   "note": "Drawn uniformly per trial (S014), not from a fixed list; {min, max} leaf is read as a per-trial uniform draw, which is not distinguishable from a fixed range."
+  },
+  {
+   "variation": "hard_reward_values",
+   "raw": "fixed (single hard reward)",
+   "as": null,
+   "confidence": "low",
+   "flag": true,
+   "note": "Ohmann modified version: reward per press, no easy/hard choice; amount not given. Separate-package variant; do not invent a value."
+  },
+  {
+   "variation": "probability_levels",
+   "raw": "none",
+   "as": null,
+   "confidence": "low",
+   "flag": true,
+   "note": "Nguyen et al. 2019 (children, review table): no probabilities, presumably certain reward, but not stated; propose vocabulary value for 'no probabilistic outcome' (reward_probability: {hard: 1})."
+  },
+  {
+   "variation": "trial_order",
+   "raw": "fixed_prerandomised_same_for_all",
+   "as": {
+    "trial_order": "fixed_sequence"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": "One pre-randomised order identical for all participants (S007); Inquisit uses two fixed lists."
+  },
+  {
+   "variation": "trial_order",
+   "raw": "random_per_participant",
+   "as": {
+    "trial_order": "shuffled_list"
+   },
+   "confidence": "medium",
+   "flag": false,
+   "note": "Per-participant randomisation of the probability x reward offer list (S014); random (independent draws) is possible."
+  },
+  {
+   "variation": "effort_key_assignment",
+   "raw": "same_key_both_tasks",
+   "as": {
+    "response_key_mapping": {
+     "easy": "space",
+     "hard": "space"
+    }
+   },
+   "confidence": "medium",
+   "flag": false,
+   "note": "Space bar in S008 and S021; S030 not checked for the key name."
+  },
+  {
+   "variation": "effort_key_assignment",
+   "raw": "separate_key_per_task",
+   "as": {},
+   "confidence": "medium",
+   "flag": true,
+   "note": "Key letters not in the dossier (S013 L/S by handedness; S014 easyPressKey/hardPressKey); no typed value without inventing keys. Fixture should supply keys by hand."
+  },
+  {
+   "variation": "effort_finger_assignment",
+   "raw": "easy_dominant_index_hard_nondominant_little",
+   "as": {
+    "response_key_mapping": {
+     "easy": "dominant_index",
+     "hard": "nondominant_little"
+    }
+   },
+   "confidence": "medium",
+   "flag": true,
+   "note": "Finger leaves in the same map as key names; propose a separate finger map or vocabulary option response_finger_mapping. Anchor (S007) design."
+  },
+  {
+   "variation": "effort_finger_assignment",
+   "raw": "easy_dominant_index_hard_dominant_little",
+   "as": {
+    "response_key_mapping": {
+     "easy": "dominant_index",
+     "hard": "dominant_little"
+    }
+   },
+   "confidence": "medium",
+   "flag": true,
+   "note": "Same finger-in-map caveat (S008)."
+  },
+  {
+   "variation": "effort_finger_assignment",
+   "raw": "easy_nondominant_little",
+   "as": {
+    "response_key_mapping": {
+     "easy": "nondominant_little"
+    }
+   },
+   "confidence": "low",
+   "flag": true,
+   "note": "As published in S027; hard-task finger not stated and probably a wording error."
+  },
+  {
+   "variation": "device_requirement",
+   "raw": "physical_keyboard_laptop_or_desktop",
+   "as": {
+    "device_eligibility": "computer_only"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "motor_ability_pretest",
+   "raw": "10 trials x 20 s maximal pressing, unrewarded, before each task version",
+   "as": null,
+   "confidence": "high",
+   "flag": true,
+   "note": "Motor-speed covariate pretest (Ohmann S008 2.1.7); pretraining enum has no fitting value (familiarization is unfaithful). Propose vocabulary value: motor_pretest, with {trials: 10, duration_s: 20}."
+  },
+  {
+   "variation": "termination_rule",
+   "raw": "time_limited_session",
+   "as": {
+    "task_end_rule": "fixed_time"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": "Original: 20 min limit (S007); session_duration_min carries the number."
+  },
+  {
+   "variation": "progress_display",
+   "raw": "filling_bar",
+   "as": {
+    "progress_indicator": "progress_bar"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": "Virtual bar fills with presses (effort), not task progress; closest vocabulary value."
+  },
+  {
+   "variation": "progress_display",
+   "raw": "bar_plus_press_count_and_countdown",
+   "as": {
+    "progress_indicator": "progress_bar"
+   },
+   "confidence": "low",
+   "flag": true,
+   "note": "Bar plus press counter and countdown (S017); counter and countdown are lost. Propose vocabulary value: bar_with_counter."
+  },
+  {
+   "variation": "time_tradeoff_instruction",
+   "raw": "tradeoff_explained",
+   "as": null,
+   "confidence": "high",
+   "flag": true,
+   "note": "Instruction explains that hard choices cost trials in the time-limited session; not a speed-accuracy emphasis. Propose vocabulary value: opportunity_cost_explained."
+  }
+ ]
+}

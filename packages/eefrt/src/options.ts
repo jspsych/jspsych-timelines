@@ -400,6 +400,14 @@ export function resolveOptions(
   for (const [k, v] of Object.entries(layer)) if (v !== undefined) merged[k] = v;
   mergeMaps(layer, merged);
 
+  // the default assignments are the first of easy, hard; fewer practice trials shorten them (a list the user gives is checked)
+  if (layer.practice_forced_tasks === undefined) {
+    merged.practice_forced_tasks = DEFAULT_OPTIONS.practice_forced_tasks.slice(
+      0,
+      Math.max(0, merged.practice_trials)
+    );
+  }
+
   // the end rule: reconciled from what the user gave at the top level (practice has no end rule)
   const t = stripUndefined(top) as EefrtOptions;
   const timeGiven = t.session_duration_min !== undefined;
