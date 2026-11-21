@@ -163,8 +163,8 @@ Every row carries `task: "self-ordered-pointing"` and `task_version`. **The scor
 | `errors_by_set_size` | Per set size: `n_series`, `errors`, `mean_errors_per_series` (Geva et al., 2016: the load function) |
 | `error_rate_by_choice_order` | Repeat rate by page within the series (the first page cannot repeat) |
 | `mean_accuracy` | Proportion of picks that were new items (Sturm et al., 2026) |
-| `span_before_first_error` | Mean over series of the correct picks before the first repeat (a clean series counts its set size; Johnson et al., 2024) |
-| `max_set_size_completed` | Largest set size with an error-free series (Silman et al., 2022) |
+| `span_before_first_error` | Mean over series of the correct picks before the first repeat; a series with no repeat counts all its correct picks, so a timeout lowers it (Johnson et al., 2024) |
+| `max_set_size_completed` | Largest set size with a series in which every page picked a new item: no repeat and no timeout (Silman et al., 2022) |
 | `perseverative_errors` | Repeats of the item picked on the page just before |
 | `n_timeouts`, `n_picks`, `n_pages`, `n_series` | Counts |
 | `mean_rt` | Mean RT (ms) of the picks |
@@ -172,7 +172,7 @@ Every row carries `task: "self-ordered-pointing"` and `task_version`. **The scor
 
 Scoring methods in the spec that are not computed: points by set-size level (the preschool protocol, S056), the IRT 3PL load and guessing model (S040) and the chance-corrected selection statistic (Gillett, 2007). The first two need the child and adaptive protocols; the dossier gives no formula for the third. The rows carry the fields they need (`set_size`, `choice_index`, `is_repeat_error`).
 
-The package does not exclude participants. The literature gives no cutoff to apply on repeat errors; report them as they are. Test-retest reliability of the total error score is .82, of the span score .58 and of perseverations .12 (Ross et al., 2007; N = 93), and a small practice effect of d = .34 is reported, which argues for the same form on retest.
+The package does not exclude participants. The literature gives no cutoff to apply on repeat errors; report them as they are. Test-retest reliability of the total error score is .82, of the span score .58 and of perseverations .12 (Ross et al., 2007; N = 93, about 43 days apart, from the abstract), with a practice effect of d = .34.
 
 ## Translation
 
@@ -204,8 +204,8 @@ createTimeline(jsPsych, {
 
 - Petrides, M., & Milner, B. (1982). Deficits on subject-ordered tasks after frontal- and temporal-lobe lesions in man. *Neuropsychologia, 20*, 249-262.
 - Silman et al. (2022), *International Journal of Environmental Research and Public Health*; Sturm et al. (2026), *Journal of Clinical and Experimental Neuropsychology*: see `reproduction.md` for the DOIs.
-- Ross et al. (2007). Reliability and validity of the abstract-design self-ordered pointing task. *Archives of Clinical Neuropsychology, 22*(4), 449. https://doi.org/10.1016/j.acn.2007.01.023
-- Gillett (2007). Assessment of working memory performance in self-ordered selection tests. *Cortex.* https://doi.org/10.1016/s0010-9452(08)70702-0
+- Ross, Hanouskova, Giarla, Calhoun, et al. (2007). The reliability and validity of the self-ordered pointing task. *Archives of Clinical Neuropsychology, 22*(4), 449-458. https://doi.org/10.1016/j.acn.2007.01.023
+- Gillett, R. (2007). Assessment of working memory performance in self-ordered selection tests. *Cortex, 43*(8), 1047-1056. https://doi.org/10.1016/s0010-9452(08)70702-0
 - Geva et al. (2016). *Developmental Cognitive Neuroscience.* https://doi.org/10.1016/j.dcn.2016.06.001
 - Cox et al. (2014). *Intelligence.* https://doi.org/10.1016/j.intell.2014.05.006
 - Johnson et al. (2024). *Journal of Cognition.* https://doi.org/10.5334/joc.370

@@ -1,4 +1,4 @@
-import type { DataCollection } from "jspsych";
+import { DataCollection } from "jspsych";
 
 import { TASK_NAME, VERSION } from "./constants";
 
@@ -46,9 +46,9 @@ export interface ScoringResult {
   error_rate_by_choice_order: ChoiceOrderScore[];
   /** Proportion of picks that were new items. null if no picks. */
   mean_accuracy: number | null;
-  /** Mean over series of the correct picks before the first error (a series with no error counts its set size). null if no series. */
+  /** Mean over series of the correct picks before the first repeat (a series with no repeat counts all its correct picks, so a timeout lowers it). null if no series. */
   span_before_first_error: number | null;
-  /** The largest set size with at least one error-free series. null if none. */
+  /** The largest set size with at least one series in which every page picked a new item (no repeat, no timeout). null if none. */
   max_set_size_completed: number | null;
   /** Repeats of the item picked on the page just before. 0 if none. */
   perseverative_errors: number;
@@ -98,15 +98,15 @@ export function calculateScores(data: DataCollection): ScoringResult {
       error_rate: e / at.length,
     });
   }
+  // correct picks before the first repeat; a series with no repeat counts all its correct picks
   const spans = [...series.values()].map((p) => {
     const ordered = [...p].sort((a, b) => a.choice_index - b.choice_index);
     const first = ordered.findIndex((r) => r.is_repeat_error === true);
-    return first < 0
-      ? ordered[0].set_size
-      : ordered.slice(0, first).filter((r) => r.correct).length;
+    return (first < 0 ? ordered : ordered.slice(0, first)).filter((r) => r.correct === true).length;
   });
+  // completed: every page of the series picked a new item (a repeat or a timeout means it was not)
   const clean = [...series.values()]
-    .filter((p) => p.every((r) => r.is_repeat_error !== true))
+    .filter((p) => p.every((r) => r.correct === true))
     .map((p) => p[0].set_size as number);
   const rtRows = data
     .filter({ task: TASK_NAME, phase: "test", part: "response" })
@@ -125,7 +125,9 @@ export function calculateScores(data: DataCollection): ScoringResult {
         ? picks.filter((r) => r.is_repeat_error !== true).length / picks.length
         : null,
     span_before_first_error:
-      spans.length > 0 ? spans.reduce((a, b) => a + b, 0) / spans.length : null,
+      spans.length > 0
+        ? new DataCollection(spans.map((span) => ({ span }))).select("span").mean()
+        : null,
     max_set_size_completed: clean.length > 0 ? Math.max(...clean) : null,
     perseverative_errors: errors.filter(
       (r) => r.previous_item_id != null && r.chosen_item_id === r.previous_item_id

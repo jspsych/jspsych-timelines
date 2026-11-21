@@ -606,7 +606,7 @@ export function createInstructions(ctx: Context) {
 const phaseIntroArgs = (ctx: Context, o: ResolvedOptions, plans: SeriesPlan[], after: boolean) => ({
   ...textItems(ctx, o),
   n_series: plans.length,
-  set_sizes: [...new Set(plans.map((p) => p.set_size))],
+  set_sizes: [...new Set(plans.map((p) => p.set_size))].sort((a, b) => a - b),
   feedback: o.trial_feedback === "accuracy",
   after_practice: after,
 });
@@ -629,8 +629,7 @@ export function createPractice(ctx: Context) {
   return nodes;
 }
 
-export function createTestIntro(ctx: Context) {
-  const plans = planSeries(ctx, "test");
+export function createTestIntro(ctx: Context, plans: SeriesPlan[] = planSeries(ctx, "test")) {
   return textPage(
     ctx,
     ctx.text.test_intro(phaseIntroArgs(ctx, ctx.test, plans, ctx.test.practice_trials > 0)),
@@ -673,6 +672,7 @@ export function createInstructionWalkthrough(ctx: Context) {
     step,
     set_size: items.length,
     n_picked: state.picked.size,
+    partial_reshuffle: o.rearrangement_rule === "partial_reshuffle_each_page",
   });
   const stepNames: StepName[] = ["first", "new", "last"];
   const nodes: any[] = [textPage(ctx, t.instruction_demo_intro(ti), "instructions", "instruction")];

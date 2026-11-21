@@ -118,14 +118,12 @@ export interface SelfOrderedPointingOptions {
    * "random_within_block": `trials_per_condition` blocks, each holding one series of every set size in random order.
    * "counterbalanced" and "alternating" are not implemented.
    * (default: "ascending" — S019, S024, S053, S054; S040 randomised)
-   * @testOnly
    */
   block_order?: BlockOrder;
   /**
    * Set sizes: how many items a set has, which is also how many pages one series has.
    * Practice set sizes are `practice.set_sizes`, not this.
    * (default: [6, 8, 10, 12] — S019, S024; S010 adds 4, S034 uses 6, 9, 12)
-   * @testOnly
    */
   set_sizes?: number[];
   /**

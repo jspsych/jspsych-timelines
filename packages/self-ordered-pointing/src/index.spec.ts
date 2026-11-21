@@ -625,6 +625,25 @@ describe("utils.scoring.calculateScores", () => {
       correct: true,
       position_rule_violation: true,
     }),
+    // series 3 (set of 2): both new, nothing else
+    row({
+      series: 3,
+      set_size: 2,
+      choice_index: 1,
+      chosen_item_id: "a",
+      previous_item_id: null,
+      is_repeat_error: false,
+      correct: true,
+    }),
+    row({
+      series: 3,
+      set_size: 2,
+      choice_index: 2,
+      chosen_item_id: "b",
+      previous_item_id: "a",
+      is_repeat_error: false,
+      correct: true,
+    }),
     // never scored: practice, walkthrough, another task, a feedback row
     {
       ...row({ series: 9, set_size: 5, choice_index: 1, is_repeat_error: true }),
@@ -642,33 +661,36 @@ describe("utils.scoring.calculateScores", () => {
 
   it("counts errors, in total and by set size", () => {
     expect(s).toMatchObject({
-      n_series: 2,
-      n_pages: 7,
-      n_picks: 6,
+      n_series: 3,
+      n_pages: 9,
+      n_picks: 8,
       n_timeouts: 1,
       total_errors: 1,
     });
-    expect(s.mean_errors_per_series).toBe(0.5);
+    expect(s.mean_errors_per_series).toBeCloseTo(1 / 3);
     expect(s.errors_by_set_size).toEqual([
+      { set_size: 2, n_series: 1, errors: 0, mean_errors_per_series: 0 },
       { set_size: 3, n_series: 1, errors: 1, mean_errors_per_series: 1 },
       { set_size: 4, n_series: 1, errors: 0, mean_errors_per_series: 0 },
     ]);
   });
 
   it("scores accuracy, span before the first error, the largest clean set and perseveration", () => {
-    expect(s.mean_accuracy).toBeCloseTo(5 / 6);
-    // series 1: one correct pick before the first error; series 2 has none, so its set size counts
-    expect(s.span_before_first_error).toBe((1 + 4) / 2);
-    expect(s.max_set_size_completed).toBe(4);
+    expect(s.mean_accuracy).toBeCloseTo(7 / 8);
+    // series 1: one correct pick before the first repeat; series 2: its three correct picks (the timeout is no repeat
+    // but is no correct pick); series 3: both
+    expect(s.span_before_first_error).toBeCloseTo((1 + 3 + 2) / 3);
+    // series 2 has a timeout, so it was not completed: the largest completed set size is the clean series of 2
+    expect(s.max_set_size_completed).toBe(2);
     expect(s.perseverative_errors).toBe(1);
-    expect(s.mean_rt).toBeCloseTo((1000 * 5 + 3000) / 6);
+    expect(s.mean_rt).toBeCloseTo((1000 * 7 + 3000) / 8);
     expect(s.n_position_repeat_violations).toBe(1);
   });
 
   it("error rate by choice order skips timeouts and has the page number", () => {
     expect(s.error_rate_by_choice_order).toEqual([
-      { choice_index: 1, n_picks: 2, errors: 0, error_rate: 0 },
-      { choice_index: 2, n_picks: 2, errors: 1, error_rate: 0.5 },
+      { choice_index: 1, n_picks: 3, errors: 0, error_rate: 0 },
+      { choice_index: 2, n_picks: 3, errors: 1, error_rate: 1 / 3 },
       { choice_index: 3, n_picks: 1, errors: 0, error_rate: 0 },
       { choice_index: 4, n_picks: 1, errors: 0, error_rate: 0 },
     ]);
@@ -695,9 +717,44 @@ describe("utils.scoring.calculateScores", () => {
     expect(utils.scoring.getSummary(new DataCollection([])).task).toBe("self-ordered-pointing");
   });
 
-  it("max_set_size_completed is null when every series has an error", () => {
+  it("max_set_size_completed is null when every series has an error or a timeout", () => {
     const only = calculateScores(new DataCollection(rows.slice(0, 3)));
     expect(only.max_set_size_completed).toBeNull();
+    // a timeout is no repeat, but the series is not completed either
+    expect(calculateScores(new DataCollection(rows.slice(3, 7))).max_set_size_completed).toBeNull();
+  });
+});
+
+describe("the page before the test", () => {
+  const intro = (options: SelfOrderedPointingOptions) => {
+    const jsPsych = initJsPsych();
+    const { timeline } = createTimeline(jsPsych, options);
+    const flat: any[] = [];
+    const walk = (n: any) => {
+      if (Array.isArray(n)) n.forEach(walk);
+      else if (n?.timeline) walk(n.timeline);
+      else if (n?.type) flat.push(n);
+    };
+    walk(timeline);
+    return flat.filter((t) => /Main task/.test(typeof t.stimulus === "string" ? t.stimulus : ""));
+  };
+
+  it("lists the set sizes of the test in order, however they are ordered, and says what the test has", () => {
+    const pages = intro({ set_sizes: [12, 6, 9], trials_per_condition: 2, block_order: "random" });
+    expect(pages).toHaveLength(1);
+    expect(pages[0].stimulus).toContain("You will do 6 sets, with 6, 9, 12 designs in the sets");
+    expect(pages[0].stimulus).not.toContain("Practice is over");
+    expect(pages[0].stimulus).toContain("You will not see a message after each pick");
+  });
+
+  it("follows practice when there is one, and says whether messages follow each pick", () => {
+    const pages = intro({ set_sizes: [4], practice_trials: 1, trial_feedback: "accuracy" });
+    expect(pages[0].stimulus).toContain(
+      "Practice is over. The main task starts now, at the same pace."
+    );
+    expect(pages[0].stimulus).toContain(
+      "After each pick you will see whether it was new or a repeat"
+    );
   });
 });
 

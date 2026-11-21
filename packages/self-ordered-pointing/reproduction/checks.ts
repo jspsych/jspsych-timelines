@@ -8,7 +8,7 @@
  * The shared `response_keys` check is not used: the response is a position on screen, not a key, and the package has no
  * key option (logged in the friction report).
  */
-import { Check, CheckSet, distinct, sharedChecks } from "@jspsych-timelines/testing";
+import { Check, CheckSet, distinct, extendCheck, sharedChecks } from "@jspsych-timelines/testing";
 
 import type { ResolvedOptions, SelfOrderedPointingOptions } from "../src/options";
 import { gridDims } from "../src/stimuli";
@@ -194,10 +194,8 @@ const spanOnly: Record<string, SoptCheck> = {
       }
     },
   },
-  sequence_constraints: {
+  sequence_constraints: extendCheck(sharedChecks.sequence_constraints, {
     // the spec's untyped "position repetition rule", as the task-specific `position_repeat_rule`
-    requires: [],
-    kind: "behaviour",
     fn: (r) => {
       const rule = r.eff.position_repeat_rule;
       const max = r.eff.position_repeat_max;
@@ -214,7 +212,7 @@ const spanOnly: Record<string, SoptCheck> = {
         rule === "detect_and_remind" ? rows.filter((x) => x.position_rule_violation).length : 0
       );
     },
-  },
+  }),
   adaptive: {
     // only a fixed schedule is implemented
     requires: [],

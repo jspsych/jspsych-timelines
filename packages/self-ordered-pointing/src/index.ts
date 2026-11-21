@@ -126,8 +126,10 @@ export function createTimeline(
       timeline.push(createInstructionWalkthrough(ctx));
   }
   timeline.push(...createPractice(ctx));
-  if (o.instruction_format === "text") timeline.push(createTestIntro(ctx));
-  timeline.push(...createTest(ctx));
+  // the series are planned once, so the page before the test describes the sets the test has
+  const plans = planSeries(ctx, "test");
+  if (o.instruction_format === "text") timeline.push(createTestIntro(ctx, plans));
+  timeline.push(...createTest(ctx, plans));
   timeline.push(createCompletion(ctx));
   return { timeline };
 }

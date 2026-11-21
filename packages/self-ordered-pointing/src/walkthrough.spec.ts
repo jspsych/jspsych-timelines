@@ -206,6 +206,16 @@ describe("instruction walkthrough (interactive)", () => {
       });
       expect(displayElement.textContent).toContain("Pick any word.");
       expect(displayElement.textContent).not.toContain("design");
+      // only some of the items move between pages, and the caption of the next step and the hint say so
+      await clickTarget(displayElement.querySelector<HTMLElement>(".jspsych-btn:not([disabled])")!);
+      jest.advanceTimersByTime(1000);
+      await flushPromises();
+      expect(displayElement.textContent).toContain("Some of the words have moved");
+      const first = checks(jsPsych.data.get().values() as any[])[0];
+      await clickTarget(
+        displayElement.querySelector<HTMLElement>(`button[data-item="${first.chosen_item_id}"]`)!
+      );
+      expect(displayElement.textContent).toContain("Some of the words will move again");
       // the demo items are words, drawn by the same function as the task
       const words = Array.from(displayElement.querySelectorAll("button[data-item]")).map(
         (b) => b.textContent

@@ -32,6 +32,8 @@ export interface StepArgs extends TextItems {
   set_size: number;
   /** Number of items picked so far in the walkthrough's set. */
   n_picked: number;
+  /** True when only some of the items move between pages (`rearrangement_rule: "partial_reshuffle_each_page"`). */
+  partial_reshuffle: boolean;
 }
 
 /** Arguments of the page that opens a series. */
@@ -134,9 +136,9 @@ export const defaultText: TextConfig = {
     `<p>When you have picked every ${r.noun} in the set once, the set is done and the next one begins.</p>`,
   instruction_position_rule: (r) =>
     r.position_rule === "enforced"
-      ? `<p>Do not rely on screen position. A ${r.noun} in the same position as your last ${
-          r.position_max === 1 ? "pick" : `${r.position_max} picks`
-        } ` + `cannot be picked again: that position is switched off for one screen.</p>`
+      ? `<p>Do not rely on screen position. If your last ${
+          r.position_max === 1 ? "pick was" : `${r.position_max} picks were`
+        } in the same position, that position is switched off for the next screen.</p>`
       : r.position_rule === "detect_and_remind"
       ? `<p>Do not rely on screen position. Try not to pick the same position more than ${r.position_max} times in a row. ` +
         `If you do, you will see a reminder.</p>`
@@ -151,10 +153,14 @@ export const defaultText: TextConfig = {
     r.step === "first"
       ? `Pick any ${r.noun}.`
       : r.step === "new"
-      ? `The ${r.nouns} have moved. Pick a ${r.noun} you have not picked yet.`
+      ? `${
+          r.partial_reshuffle ? `Some of the ${r.nouns} have` : `The ${r.nouns} have`
+        } moved. Pick a ${r.noun} you have not picked yet.`
       : `You have picked ${r.n_picked} of ${r.set_size}. Pick the ${r.noun} that is left.`,
   instruction_hint: (r) =>
-    `<p>You already picked that ${r.noun}. Pick one you have <strong>not</strong> picked yet. The ${r.nouns} will move again.</p>`,
+    `<p>You already picked that ${r.noun}. Pick one you have <strong>not</strong> picked yet. ${
+      r.partial_reshuffle ? `Some of the ${r.nouns}` : `The ${r.nouns}`
+    } will move again.</p>`,
   instruction_reveal: (r) =>
     `<p>This is the ${r.noun} you had not picked yet. In the task, pick a new one each time.</p>`,
   instruction_correct: "Correct",
@@ -177,7 +183,9 @@ export const defaultText: TextConfig = {
     }The main task starts now, at the same pace. ` +
     `You will do ${r.n_series} ${r.n_series === 1 ? "set" : "sets"}, with ${r.set_sizes.join(
       ", "
-    )} ${r.nouns} ${r.set_sizes.length > 1 ? "in the sets" : "in each set"}. ` +
+    )} ${r.nouns} ${
+      r.set_sizes.length > 1 ? "in the sets" : r.n_series === 1 ? "in the set" : "in each set"
+    }. ` +
     `${
       r.feedback
         ? "After each pick you will see whether it was new or a repeat."
