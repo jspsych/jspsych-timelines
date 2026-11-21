@@ -1,0 +1,10 @@
+{
+  "observed_values_total": 107,
+  "typed_values_total": 95,
+  "level1_distinct_cases": 81,
+  "level1_checked": 60,
+  "level1_not_expressible": 21,
+  "level1_labelled_additions": 0,
+  "level2_configs": 5,
+  "level2_fully_expressible": 2
+}

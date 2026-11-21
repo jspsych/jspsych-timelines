@@ -1,0 +1,62 @@
+{
+  "name": "@jspsych-timelines/tone-detection",
+  "version": "0.0.1",
+  "description": "Pure-tone detection in noise or in quiet: interval-marked forced choice, an adaptive staircase in dB, a volume-setting screen and a headphone check, scored as a threshold from the reversals.",
+  "type": "module",
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "unpkg": "dist/index.browser.js",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jspsych/jspsych-timelines.git",
+    "directory": "packages/tone-detection"
+  },
+  "keywords": [
+    "jsPsych",
+    "tone detection",
+    "psychoacoustics",
+    "auditory threshold",
+    "staircase",
+    "tone in noise",
+    "hearing"
+  ],
+  "author": {
+    "name": "Josh de Leeuw",
+    "url": "https://github.com/jodeleeuw"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jspsych/jspsych-timelines/issues"
+  },
+  "homepage": "https://github.com/jspsych/jspsych-timelines/tree/main/packages/tone-detection#readme",
+  "peerDependencies": {
+    "jspsych": ">=8.4.0"
+  },
+  "devDependencies": {
+    "@jspsych-timelines/testing": "*",
+    "@jspsych/config": "^3.2.2",
+    "jspsych": "^8.4.0",
+    "tsup": "^8.2.4",
+    "typescript": "^5.5.4"
+  },
+  "dependencies": {
+    "@jspsych/plugin-html-button-response": "^2.1.0",
+    "@jspsych/plugin-html-keyboard-response": "^2.1.0"
+  }
+}

@@ -1,0 +1,2336 @@
+{
+ "spec": "specs/tone-detection/spec.yaml (jspsych-timelines-paper, vocabulary 2026-11-13-std-final)",
+ "options": [
+  {
+   "name": "inter_item_interval_ms",
+   "default": {
+    "value": 250,
+    "raw": 250,
+    "basis": "anchor",
+    "source": "S012",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "inter_stimulus_interval_ms",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S012",
+       "raw": 250,
+       "value": 250,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S044",
+       "raw": 200,
+       "value": 200,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S059",
+       "raw": 800,
+       "value": 800,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S005",
+       "raw": 500,
+       "value": 500,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S053",
+       "raw": 2000,
+       "value": 2000,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S053",
+       "raw": 5000,
+       "value": 5000,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S053",
+       "raw": 10000,
+       "value": 10000,
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "stimulus_duration_ms",
+   "default": {
+    "value": 250,
+    "raw": 250,
+    "basis": "anchor",
+    "source": "S012",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "tone_duration_ms",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S012",
+       "raw": 250,
+       "value": 250,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S036",
+       "raw": 400,
+       "value": 400,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S013",
+       "raw": 200,
+       "value": 200,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S044",
+       "raw": 500,
+       "value": 500,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S053",
+       "raw": 100,
+       "value": 100,
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "tone_ramp_ms",
+   "default": {
+    "value": 10,
+    "raw": 10,
+    "basis": "anchor",
+    "source": "S012",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "ramp_duration_ms",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S012",
+       "raw": 10,
+       "value": 10,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S036",
+       "raw": 20,
+       "value": 20,
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "presentation_level_db",
+   "default": {
+    "value": {
+     "level_roving_db": 6,
+     "masker": null
+    },
+    "basis": "components"
+   },
+   "components": [
+    {
+     "variation": "level_roving_db",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S036",
+       "raw": 6,
+       "value": 6,
+       "ok": true,
+       "note": null
+      }
+     ]
+    },
+    {
+     "variation": "masker_level_reference",
+     "role": "masker",
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S012",
+       "raw": "+40 dB re participant's just-detectable noise level",
+       "value": null,
+       "ok": false,
+       "note": "Masker sensation level relative to the listener's own threshold; presentation_level_db has no reference. propose vocabulary value: level reference (threshold-relative / sensation level)."
+      },
+      {
+       "source": "S044",
+       "raw": "fixed digital level, intervals normalized; 6 dB below calibration sound",
+       "value": null,
+       "ok": false,
+       "note": "Level is -6 dB re a participant-set calibration sound, not absolute; propose vocabulary value: level reference (re calibration sound)."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "stimulus_set",
+   "default": {
+    "value": {
+     "tone timbre": "pure_tone",
+     "masker": "white_noise"
+    },
+    "basis": "components"
+   },
+   "components": [
+    {
+     "variation": "carrier_type",
+     "role": "tone timbre",
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S012",
+       "raw": "pure_tone",
+       "value": "pure_tone",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S013",
+       "raw": "harmonic_complex",
+       "value": "harmonic_complex",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S044",
+       "raw": "inharmonic_complex",
+       "value": "inharmonic_complex",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S027",
+       "raw": "musical_instrument_note",
+       "value": "musical_instrument_note",
+       "ok": true,
+       "note": null
+      }
+     ]
+    },
+    {
+     "variation": "masker_type",
+     "role": "masker",
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S012",
+       "raw": "white_noise",
+       "value": "white_noise",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S044",
+       "raw": "threshold_equalizing_noise_lowpass_6kHz",
+       "value": "threshold_equalizing_noise_lowpass_6kHz",
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "tone_frequency_hz",
+   "default": {
+    "value": {
+     "standard_frequency_hz": 1000,
+     "frequency_roving": null
+    },
+    "basis": "components"
+   },
+   "components": [
+    {
+     "variation": "standard_frequency_hz",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S012",
+       "raw": [
+        1000
+       ],
+       "value": 1000,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S031",
+       "raw": [
+        500,
+        1000,
+        2000
+       ],
+       "value": [
+        500,
+        1000,
+        2000
+       ],
+       "ok": true,
+       "note": "Several frequencies tested as separate conditions; read as a per-block list (one frequency per block). Not a within-trial set."
+      },
+      {
+       "source": "S045",
+       "raw": [
+        250,
+        1000,
+        4000
+       ],
+       "value": [
+        250,
+        1000,
+        4000
+       ],
+       "ok": true,
+       "note": "Several frequencies tested as separate conditions; read as a per-block list (one frequency per block)."
+      },
+      {
+       "source": "S036",
+       "raw": [
+        110,
+        220,
+        440,
+        880,
+        1760,
+        3520
+       ],
+       "value": [
+        110,
+        220,
+        440,
+        880,
+        1760,
+        3520
+       ],
+       "ok": true,
+       "note": "Six frequencies tested as separate conditions; read as a per-block list (one frequency per block)."
+      },
+      {
+       "source": "S059",
+       "raw": [
+        220
+       ],
+       "value": 220,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S013",
+       "raw": [
+        110
+       ],
+       "value": 110,
+       "ok": true,
+       "note": null
+      }
+     ]
+    },
+    {
+     "variation": "frequency_roving",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S005",
+       "raw": "none",
+       "value": null,
+       "ok": true,
+       "note": "No roving; carries no setting of its own."
+      },
+      {
+       "source": "S036",
+       "raw": "quarter_octave_uniform",
+       "value": null,
+       "ok": false,
+       "note": "Roving range and distribution of the standard frequency; no typed form. propose vocabulary value: frequency roving (range_octaves, distribution)."
+      },
+      {
+       "source": "S044",
+       "raw": "200-267 Hz log-uniform",
+       "value": null,
+       "ok": false,
+       "note": "Log-uniform draw between 200 and 267 Hz; tone_frequency_hz is a number or per-block list, with no range or distribution form. propose vocabulary value: frequency roving."
+      },
+      {
+       "source": "S027",
+       "raw": "one_octave",
+       "value": null,
+       "ok": false,
+       "note": "One-octave roving range; no typed form. propose vocabulary value: frequency roving (range_octaves, distribution)."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "block_order",
+   "default": {
+    "value": "random_within_block",
+    "raw": "randomized_per_repetition",
+    "basis": "fill",
+    "frequency": "1/2",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "condition_order",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S036",
+       "raw": "randomized_per_repetition",
+       "value": "random_within_block",
+       "ok": true,
+       "note": "Each repetition holds every condition once, in random order."
+      },
+      {
+       "source": "S044",
+       "raw": "one_condition_blocked_others_intermixed",
+       "value": null,
+       "ok": false,
+       "note": "Pure-tone runs grouped, complex-tone runs intermixed; no matching block_order value. propose vocabulary value: partly_blocked."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "difficulty_levels",
+   "default": {
+    "value": {
+     "n_levels": 6,
+     "spacing": "linear",
+     "range": "amplitude 0.5 +/- 0.04 steps",
+     "reps_per_level": 20
+    },
+    "raw": {
+     "n_levels": 6,
+     "spacing": "linear",
+     "range": "amplitude 0.5 +/- 0.04 steps",
+     "reps_per_level": 20
+    },
+    "basis": "fill",
+    "frequency": "1/2",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "constant_stimuli_levels",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S059",
+       "raw": {
+        "n_levels": 6,
+        "spacing": "linear",
+        "range": "amplitude 0.5 +/- 0.04 steps",
+        "reps_per_level": 20
+       },
+       "value": {
+        "n_levels": 6,
+        "spacing": "linear",
+        "range": "amplitude 0.5 +/- 0.04 steps",
+        "reps_per_level": 20
+       },
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S013",
+       "raw": {
+        "spacing": "geometric",
+        "range": "F0 shift 0.05-3.2 Hz"
+       },
+       "value": {
+        "spacing": "geometric",
+        "range": "F0 shift 0.05-3.2 Hz"
+       },
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "task_variant",
+   "default": {
+    "value": "3I-3AFC_which_contains_tone",
+    "raw": "3I-3AFC_which_contains_tone",
+    "basis": "anchor",
+    "source": "S012",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "trial_format",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S005",
+       "raw": "3I-3AFC_oddity",
+       "value": "3I-3AFC_oddity",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S036",
+       "raw": "2I-2AFC_which_higher",
+       "value": "2I-2AFC_which_higher",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S012",
+       "raw": "3I-3AFC_which_contains_tone",
+       "value": "3I-3AFC_which_contains_tone",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S044",
+       "raw": "2I-2AFC_which_contains_tone",
+       "value": "2I-2AFC_which_contains_tone",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S059",
+       "raw": "standard_then_comparison_louder_softer",
+       "value": "standard_then_comparison_louder_softer",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S018",
+       "raw": "same_different",
+       "value": "same_different",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S018",
+       "raw": "AXB",
+       "value": "AXB",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S018",
+       "raw": "2I-2AFC_tone_sequences_oddity",
+       "value": "2I-2AFC_tone_sequences_oddity",
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "trials_per_condition",
+   "default": {
+    "value": 3,
+    "raw": 3,
+    "basis": "anchor",
+    "source": "S012",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "tracks_per_condition",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S012",
+       "raw": 3,
+       "value": 3,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S044",
+       "raw": 4,
+       "value": 4,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S005",
+       "raw": 1,
+       "value": 1,
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "response_device",
+   "default": {
+    "value": "keyboard",
+    "raw": "keyboard_interval_number",
+    "basis": "anchor",
+    "source": "S012",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "response_input",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S012",
+       "raw": "keyboard_interval_number",
+       "value": "keyboard",
+       "ok": true,
+       "note": "Press 1/2/3 for the interval."
+      },
+      {
+       "source": "S013",
+       "raw": "onscreen_buttons",
+       "value": "mouse",
+       "ok": true,
+       "note": "Button click (mouse/trackpad in S044, onscreen buttons in S031); touch is possible but not stated."
+      },
+      {
+       "source": "S059",
+       "raw": "keyboard_two_keys_spatial",
+       "value": "keyboard",
+       "ok": true,
+       "note": "E/P keys; key mapping not typed here."
+      },
+      {
+       "source": "S005",
+       "raw": "keyboard_mouse_or_touch",
+       "value": null,
+       "ok": false,
+       "note": "Tool accepts several devices; response_device takes one value."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "adaptive",
+   "default": {
+    "value": {
+     "procedure": "3down1up",
+     "step_size": {
+      "scale": "dB",
+      "steps": [
+       "1.5 dB descent",
+       "0.75 dB"
+      ],
+      "switch_after": "first error or -19.75 dB SNR"
+     },
+     "start_level": -13.75,
+     "discontinue_rule": {
+      "criterion": "trials",
+      "n": 40
+     }
+    },
+    "basis": "components"
+   },
+   "components": [
+    {
+     "variation": "psychophysical_method",
+     "role": null,
+     "phase": null,
+     "field": "procedure",
+     "observed": [
+      {
+       "source": "S005",
+       "raw": "transformed_up_down",
+       "value": "transformed_up_down",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S036",
+       "raw": "weighted_up_down",
+       "value": "weighted_up_down",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S013",
+       "raw": "constant_stimuli",
+       "value": "constant_stimuli",
+       "ok": true,
+       "note": null
+      }
+     ]
+    },
+    {
+     "variation": "tracking_rule",
+     "role": null,
+     "phase": null,
+     "field": "procedure",
+     "observed": [
+      {
+       "source": "S005",
+       "raw": "2down1up",
+       "value": "2down1up",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S012",
+       "raw": "3down1up",
+       "value": "3down1up",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S036",
+       "raw": "weighted_1down_3up",
+       "value": "weighted_1down_3up",
+       "ok": true,
+       "note": null
+      }
+     ]
+    },
+    {
+     "variation": "step_size_schedule",
+     "role": null,
+     "phase": null,
+     "field": "step_size",
+     "observed": [
+      {
+       "source": "S005",
+       "raw": {
+        "scale": "multiplicative",
+        "steps": [
+         "x2",
+         "x sqrt2"
+        ],
+        "switch_after": "2 reversals"
+       },
+       "value": {
+        "scale": "multiplicative",
+        "steps": [
+         "x2",
+         "x sqrt2"
+        ],
+        "switch_after": "2 reversals"
+       },
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S012",
+       "raw": {
+        "scale": "dB",
+        "steps": [
+         "1.5 dB descent",
+         "0.75 dB"
+        ],
+        "switch_after": "first error or -19.75 dB SNR"
+       },
+       "value": {
+        "scale": "dB",
+        "steps": [
+         "1.5 dB descent",
+         "0.75 dB"
+        ],
+        "switch_after": "first error or -19.75 dB SNR"
+       },
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S044",
+       "raw": {
+        "scale": "dB",
+        "steps": [
+         "8 dB",
+         "2 dB",
+         "0.5 dB"
+        ],
+        "switch_after": "2 reversals, then 2 more"
+       },
+       "value": {
+        "scale": "dB",
+        "steps": [
+         "8 dB",
+         "2 dB",
+         "0.5 dB"
+        ],
+        "switch_after": "2 reversals, then 2 more"
+       },
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S036",
+       "raw": {
+        "scale": "multiplicative",
+        "steps": [
+         "down x2^(-1/3), up x2"
+        ],
+        "switch_after": "fixed"
+       },
+       "value": {
+        "scale": "multiplicative",
+        "steps": [
+         "down x2^(-1/3), up x2"
+        ],
+        "switch_after": "fixed"
+       },
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S031",
+       "raw": {
+        "scale": "dB",
+        "steps": [
+         "down 2 dB, up 6 dB"
+        ],
+        "switch_after": "fixed"
+       },
+       "value": {
+        "scale": "dB",
+        "steps": [
+         "down 2 dB, up 6 dB"
+        ],
+        "switch_after": "fixed"
+       },
+       "ok": true,
+       "note": null
+      }
+     ]
+    },
+    {
+     "variation": "starting_level",
+     "role": null,
+     "phase": null,
+     "field": "start_level",
+     "observed": [
+      {
+       "source": "S005",
+       "raw": {
+        "value": 100,
+        "unit": "Hz delta"
+       },
+       "value": 100,
+       "ok": true,
+       "note": "Unit is the task's own (Hz difference)."
+      },
+      {
+       "source": "S036",
+       "raw": {
+        "value": 100,
+        "unit": "% frequency difference (one octave)"
+       },
+       "value": 100,
+       "ok": true,
+       "note": "Unit is percent frequency difference."
+      },
+      {
+       "source": "S012",
+       "raw": {
+        "value": -13.75,
+        "unit": "dB SNR"
+       },
+       "value": -13.75,
+       "ok": true,
+       "note": "Unit is dB SNR."
+      },
+      {
+       "source": "S031",
+       "raw": {
+        "value": "participant-set 'soft but audible'",
+        "unit": "dB re device"
+       },
+       "value": null,
+       "ok": false,
+       "note": "Start level is set by the participant, not a number; propose vocabulary value: start_level from level-setting procedure."
+      }
+     ]
+    },
+    {
+     "variation": "stopping_rule",
+     "role": null,
+     "phase": null,
+     "field": "discontinue_rule",
+     "observed": [
+      {
+       "source": "S005",
+       "raw": {
+        "criterion": "reversals",
+        "n": 8
+       },
+       "value": {
+        "criterion": "reversals",
+        "n": 8
+       },
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S005",
+       "raw": {
+        "criterion": "reversals",
+        "n": 6
+       },
+       "value": {
+        "criterion": "reversals",
+        "n": 6
+       },
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S044",
+       "raw": {
+        "criterion": "reversals",
+        "n": 10
+       },
+       "value": {
+        "criterion": "reversals",
+        "n": 10
+       },
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S012",
+       "raw": {
+        "criterion": "trials",
+        "n": 40
+       },
+       "value": {
+        "criterion": "trials",
+        "n": 40
+       },
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S036",
+       "raw": {
+        "criterion": "mistakes",
+        "n": 4
+       },
+       "value": {
+        "criterion": "mistakes",
+        "n": 4
+       },
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S045",
+       "raw": {
+        "criterion": "mistakes",
+        "n": 3
+       },
+       "value": {
+        "criterion": "mistakes",
+        "n": 3
+       },
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "device_eligibility",
+   "default": {
+    "value": "browser_restricted",
+    "raw": "laptop_or_desktop_chrome_only",
+    "basis": "anchor",
+    "source": "S012",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "device_restriction",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S012",
+       "raw": "laptop_or_desktop_chrome_only",
+       "value": "browser_restricted",
+       "ok": true,
+       "note": "Computer plus Chrome; browser_restricted is the closer fit."
+      },
+      {
+       "source": "S031",
+       "raw": "computer_tablet_or_mobile",
+       "value": "none",
+       "ok": true,
+       "note": "All device classes allowed."
+      }
+     ]
+    },
+    {
+     "variation": "listener_transducer",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S031",
+       "raw": "headphones",
+       "value": "hardware_required",
+       "ok": true,
+       "note": "Headphones required (supplied Koss UR20 in S031)."
+      },
+      {
+       "source": "S031",
+       "raw": "cochlear_implant_direct_streaming",
+       "value": "hardware_required",
+       "ok": true,
+       "note": "Population-specific setup (direct audio streaming, earplug in the other ear); only the hardware requirement is typed."
+      },
+      {
+       "source": "S036",
+       "raw": "free_field",
+       "value": null,
+       "ok": false,
+       "note": "Loudspeaker listening was a single-participant exception; no faithful enum value."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "headphone_check",
+   "default": {
+    "value": "screening_task",
+    "raw": "huggins_pitch",
+    "basis": "anchor",
+    "source": "S012",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "headphone_screen",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S012",
+       "raw": "huggins_pitch",
+       "value": "screening_task",
+       "ok": true,
+       "note": "Screen type (Huggins pitch) is not typed."
+      },
+      {
+       "source": "S044",
+       "raw": "antiphase_quietest_tone",
+       "value": "screening_task",
+       "ok": true,
+       "note": "Screen type (antiphase quietest tone) is not typed."
+      },
+      {
+       "source": "S013",
+       "raw": "antiphase_plus_NoSpi_chirp",
+       "value": "screening_task",
+       "ok": true,
+       "note": "Screen type (antiphase plus NoSpi chirp) is not typed."
+      },
+      {
+       "source": "S005",
+       "raw": "none",
+       "value": "none",
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "participant_eligibility",
+   "default": {
+    "value": "hearing",
+    "raw": "self_report_no_hearing_loss",
+    "basis": "fill",
+    "frequency": "1/2",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "hearing_eligibility_check",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S044",
+       "raw": "self_report_no_hearing_loss",
+       "value": "hearing",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S013",
+       "raw": "speech_in_noise_screen",
+       "value": "hearing",
+       "ok": true,
+       "note": "Screen type not typed."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "practice_trials",
+   "default": {
+    "value": 6,
+    "raw": "6 easy trials with feedback, no criterion",
+    "basis": "anchor",
+    "source": "S012",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "practice_familiarisation",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S012",
+       "raw": "6 easy trials with feedback, no criterion",
+       "value": 6,
+       "ok": true,
+       "note": "Feedback in practice is covered by the trial_feedback variation."
+      },
+      {
+       "source": "S005",
+       "raw": "6 trials, advance after 6 consecutive correct",
+       "value": 6,
+       "ok": true,
+       "note": "Consecutive-correct rule approximated by accuracy 1 over a window of 6; on_fail and max_repeats are not stated."
+      },
+      {
+       "source": "S036",
+       "raw": "listen-to-example interface before each run",
+       "value": null,
+       "ok": false,
+       "note": "Example listening before each run, not a trial count; propose vocabulary value: example_demo before each block."
+      },
+      {
+       "source": "S059",
+       "raw": "24-trial practice block per block type",
+       "value": 24,
+       "ok": true,
+       "note": "24 trials for each block type; a single count loses the per-type structure."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "volume_calibration",
+   "default": {
+    "value": "participant_adjusted",
+    "raw": "just_detectable_reference",
+    "basis": "anchor",
+    "source": "S012",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "level_setting_procedure",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S013",
+       "raw": "comfortable_self_adjust",
+       "value": "participant_adjusted",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S012",
+       "raw": "just_detectable_reference",
+       "value": "participant_adjusted",
+       "ok": true,
+       "note": "Level set relative to the participant's just-detectable level; reference is lost. propose vocabulary value: threshold_referenced."
+      },
+      {
+       "source": "S036",
+       "raw": "loudness_scaling_and_detection_anchor",
+       "value": null,
+       "ok": false,
+       "note": "Loudness scaling plus a detection anchor; none of the enum values fits. propose vocabulary value: loudness_scaling."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "feedback_condition",
+   "default": {
+    "value": "all",
+    "raw": "practice_only",
+    "basis": "anchor",
+    "source": "S012",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "trial_feedback",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S044",
+       "raw": "every_trial",
+       "value": "all",
+       "ok": true,
+       "note": "Feedback content not stated; accuracy assumed."
+      },
+      {
+       "source": "S012",
+       "raw": "practice_only",
+       "value": "all",
+       "ok": true,
+       "note": "No feedback during the staircase; content in practice assumed to be accuracy."
+      },
+      {
+       "source": "S059",
+       "raw": "error_only",
+       "value": "errors_only",
+       "ok": true,
+       "note": "Error message shown after errors."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "performance_incentive",
+   "default": {
+    "value": "bonus",
+    "raw": "bonus_per_track_if_accuracy_above_50pct",
+    "basis": "anchor",
+    "source": "S012",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "performance_incentive",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S044",
+       "raw": "bonus_proportional_to_correct",
+       "value": "bonus",
+       "ok": true,
+       "note": "Bonus rule not typed."
+      },
+      {
+       "source": "S012",
+       "raw": "bonus_per_track_if_accuracy_above_50pct",
+       "value": "bonus",
+       "ok": true,
+       "note": "Per-track accuracy condition not typed."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "progress_indicator",
+   "default": {
+    "value": "counter",
+    "raw": "trial_counter_in_track",
+    "basis": "anchor",
+    "source": "S012",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "progress_indicator",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S012",
+       "raw": "trial_counter_in_track",
+       "value": "counter",
+       "ok": true,
+       "note": "Shown as 'Progress: x/40'."
+      },
+      {
+       "source": "S013",
+       "raw": "study_position_pages",
+       "value": "counter",
+       "ok": true,
+       "note": "Position within informational pages; counter vs progress_bar not stated."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "trial_feedback",
+   "default": {
+    "value": "none",
+    "raw": "practice_only",
+    "basis": "anchor",
+    "source": "S012",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "trial_feedback",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S044",
+       "raw": "every_trial",
+       "value": "accuracy",
+       "ok": true,
+       "note": "Feedback content not stated; accuracy assumed."
+      },
+      {
+       "source": "S012",
+       "raw": "practice_only",
+       "value": "none",
+       "ok": true,
+       "note": "No feedback during the staircase; content in practice assumed to be accuracy."
+      },
+      {
+       "source": "S059",
+       "raw": "error_only",
+       "value": "accuracy",
+       "ok": true,
+       "note": "Error message shown after errors."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "environment_instructions",
+   "default": {
+    "value": null,
+    "raw": "turn_off_notifications",
+    "basis": "anchor",
+    "source": "S012",
+    "needs_translation": true
+   },
+   "components": [
+    {
+     "variation": "listening_environment_instructions",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S044",
+       "raw": "headphones_and_quiet_location",
+       "value": "quiet_room",
+       "ok": true,
+       "note": "Headphone instruction is not covered by the enum."
+      },
+      {
+       "source": "S031",
+       "raw": "low_ambient_noise_encouraged",
+       "value": "quiet_room",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S012",
+       "raw": "turn_off_notifications",
+       "value": null,
+       "ok": false,
+       "note": "Asks to silence notifications; no matching enum value. propose vocabulary value: no_interruptions."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "judgment_wording",
+   "default": {
+    "value": "which_interval_contains_tone",
+    "raw": "which_interval_contains_tone",
+    "basis": "anchor",
+    "source": "S012",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "judgement_wording",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S036",
+       "raw": "which_higher_in_pitch",
+       "value": "which_higher_in_pitch",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S012",
+       "raw": "which_interval_contains_tone",
+       "value": "which_interval_contains_tone",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S059",
+       "raw": "comparison_louder_or_softer",
+       "value": "comparison_louder_or_softer",
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "study_configurations": [
+  {
+   "source": "S005",
+   "citation": "Carlini et al. 2024, BRM (PSYCHOACOUSTICS-WEB)",
+   "label": "Grassi et al. 2024, Behavior Research Methods (1)",
+   "doi": "10.3758/s13428-024-02430-3",
+   "source_type": "reference-impl",
+   "setting": null,
+   "n_options": 1,
+   "fully_typed": false,
+   "options": {
+    "response_device": {
+     "untranslated": "keyboard_mouse_or_touch"
+    }
+   }
+  },
+  {
+   "source": "S005",
+   "citation": "Carlini et al. 2024, BRM (PSYCHOACOUSTICS-WEB)",
+   "label": "Grassi et al. 2024, Behavior Research Methods (2)",
+   "doi": "10.3758/s13428-024-02430-3",
+   "source_type": "reference-impl",
+   "setting": "lab-browser",
+   "n_options": 9,
+   "fully_typed": true,
+   "options": {
+    "adaptive.discontinue_rule": {
+     "criterion": "reversals",
+     "n": 6
+    },
+    "adaptive.procedure": "2down1up",
+    "adaptive.start_level": 100,
+    "adaptive.step_size": {
+     "scale": "multiplicative",
+     "steps": [
+      "x2",
+      "x sqrt2"
+     ],
+     "switch_after": "2 reversals"
+    },
+    "headphone_check": "none",
+    "inter_item_interval_ms": 500,
+    "practice_trials": 6,
+    "task_variant": "3I-3AFC_oddity",
+    "trials_per_condition": 1
+   }
+  },
+  {
+   "source": "S012",
+   "citation": "Zhao, Brown, Holt & Dick 2022, Trends in Hearing",
+   "label": "Zhao et al. 2022, Trends in Hearing",
+   "doi": "10.1177/23312165221118792",
+   "source_type": "empirical",
+   "setting": "online-unsupervised",
+   "n_options": 25,
+   "fully_typed": false,
+   "options": {
+    "adaptive.discontinue_rule": {
+     "criterion": "trials",
+     "n": 40
+    },
+    "adaptive.procedure": "3down1up",
+    "adaptive.start_level": -13.75,
+    "adaptive.step_size": {
+     "scale": "dB",
+     "steps": [
+      "1.5 dB descent",
+      "0.75 dB"
+     ],
+     "switch_after": "first error or -19.75 dB SNR"
+    },
+    "device_eligibility.device_restriction": "browser_restricted",
+    "environment_instructions": {
+     "untranslated": "turn_off_notifications"
+    },
+    "feedback_condition": "all",
+    "headphone_check": "screening_task",
+    "inter_item_interval_ms": 250,
+    "judgment_wording": "which_interval_contains_tone",
+    "performance_incentive": "bonus",
+    "practice.trial_feedback": "accuracy",
+    "practice_trials": 6,
+    "presentation_level_db.masker": {
+     "untranslated": "+40 dB re participant's just-detectable noise level"
+    },
+    "progress_indicator": "counter",
+    "response_device": "keyboard",
+    "stimulus_duration_ms": 250,
+    "stimulus_set.masker": "white_noise",
+    "stimulus_set.tone timbre": "pure_tone",
+    "task_variant": "3I-3AFC_which_contains_tone",
+    "tone_frequency_hz.standard_frequency_hz": 1000,
+    "tone_ramp_ms": 10,
+    "trial_feedback": "none",
+    "trials_per_condition": 3,
+    "volume_calibration": "participant_adjusted"
+   }
+  },
+  {
+   "source": "S013",
+   "citation": "Mok et al. 2024, BRM (web-based psychoacoustics)",
+   "label": "Mok et al. 2023, Behavior Research Methods",
+   "doi": "10.3758/s13428-023-02101-9",
+   "source_type": "empirical",
+   "setting": "online-unsupervised",
+   "n_options": 10,
+   "fully_typed": true,
+   "options": {
+    "adaptive.procedure": "constant_stimuli",
+    "difficulty_levels": {
+     "spacing": "geometric",
+     "range": "F0 shift 0.05-3.2 Hz"
+    },
+    "headphone_check": "screening_task",
+    "participant_eligibility": "hearing",
+    "progress_indicator": "counter",
+    "response_device": "mouse",
+    "stimulus_duration_ms": 200,
+    "stimulus_set.tone timbre": "harmonic_complex",
+    "tone_frequency_hz.standard_frequency_hz": 110,
+    "volume_calibration": "participant_adjusted"
+   }
+  },
+  {
+   "source": "S027",
+   "citation": "literature-sample screening (rank 7), full-text methods read",
+   "label": "O’Connell et al. 2025, Ear & Hearing",
+   "doi": "10.1097/aud.0000000000001640",
+   "source_type": "empirical",
+   "setting": "online-supervised",
+   "n_options": 2,
+   "fully_typed": false,
+   "options": {
+    "stimulus_set.tone timbre": "musical_instrument_note",
+    "tone_frequency_hz.frequency_roving": {
+     "untranslated": "one_octave"
+    }
+   }
+  },
+  {
+   "source": "S031",
+   "citation": "literature-sample screening (rank 11), full-text methods read",
+   "label": "Camarena & Goldsworthy 2024, Hearing Research",
+   "doi": "10.1016/j.heares.2024.109026",
+   "source_type": "empirical",
+   "setting": "online-unsupervised",
+   "n_options": 6,
+   "fully_typed": false,
+   "options": {
+    "adaptive.start_level": {
+     "untranslated": {
+      "value": "participant-set 'soft but audible'",
+      "unit": "dB re device"
+     }
+    },
+    "adaptive.step_size": {
+     "scale": "dB",
+     "steps": [
+      "down 2 dB, up 6 dB"
+     ],
+     "switch_after": "fixed"
+    },
+    "device_eligibility.device_restriction": "none",
+    "device_eligibility.listener_transducer": "hardware_required",
+    "environment_instructions": "quiet_room",
+    "tone_frequency_hz.standard_frequency_hz": [
+     500,
+     1000,
+     2000
+    ]
+   }
+  },
+  {
+   "source": "S036",
+   "citation": "literature-sample screening (rank 17), full-text methods read",
+   "label": "Goldsworthy & Bissmeyer 2023, Ear & Hearing",
+   "doi": "10.1097/aud.0000000000001383",
+   "source_type": "empirical",
+   "setting": "online-unsupervised",
+   "n_options": 15,
+   "fully_typed": false,
+   "options": {
+    "adaptive.discontinue_rule": {
+     "criterion": "mistakes",
+     "n": 4
+    },
+    "adaptive.procedure": "weighted_1down_3up",
+    "adaptive.start_level": 100,
+    "adaptive.step_size": {
+     "scale": "multiplicative",
+     "steps": [
+      "down x2^(-1/3), up x2"
+     ],
+     "switch_after": "fixed"
+    },
+    "block_order": "random_within_block",
+    "device_eligibility.listener_transducer": {
+     "untranslated": "free_field"
+    },
+    "judgment_wording": "which_higher_in_pitch",
+    "practice_trials": {
+     "untranslated": "listen-to-example interface before each run"
+    },
+    "presentation_level_db.level_roving_db": 6,
+    "stimulus_duration_ms": 400,
+    "task_variant": "2I-2AFC_which_higher",
+    "tone_frequency_hz.frequency_roving": {
+     "untranslated": "quarter_octave_uniform"
+    },
+    "tone_frequency_hz.standard_frequency_hz": [
+     110,
+     220,
+     440,
+     880,
+     1760,
+     3520
+    ],
+    "tone_ramp_ms": 20,
+    "volume_calibration": {
+     "untranslated": "loudness_scaling_and_detection_anchor"
+    }
+   }
+  },
+  {
+   "source": "S044",
+   "citation": "literature-sample screening (rank 25), full-text methods read",
+   "label": "McPherson et al. 2022, Attention, Perception, & Psychophysics",
+   "doi": "10.3758/s13414-021-02376-0",
+   "source_type": "empirical",
+   "setting": "online-unsupervised",
+   "n_options": 17,
+   "fully_typed": false,
+   "options": {
+    "adaptive.discontinue_rule": {
+     "criterion": "reversals",
+     "n": 10
+    },
+    "adaptive.step_size": {
+     "scale": "dB",
+     "steps": [
+      "8 dB",
+      "2 dB",
+      "0.5 dB"
+     ],
+     "switch_after": "2 reversals, then 2 more"
+    },
+    "block_order": {
+     "untranslated": "one_condition_blocked_others_intermixed"
+    },
+    "environment_instructions": "quiet_room",
+    "feedback_condition": "all",
+    "headphone_check": "screening_task",
+    "inter_item_interval_ms": 200,
+    "participant_eligibility": "hearing",
+    "performance_incentive": "bonus",
+    "presentation_level_db.masker": {
+     "untranslated": "fixed digital level, intervals normalized; 6 dB below calibration sound"
+    },
+    "stimulus_duration_ms": 500,
+    "stimulus_set.masker": "threshold_equalizing_noise_lowpass_6kHz",
+    "stimulus_set.tone timbre": "inharmonic_complex",
+    "task_variant": "2I-2AFC_which_contains_tone",
+    "tone_frequency_hz.frequency_roving": {
+     "untranslated": "200-267 Hz log-uniform"
+    },
+    "trial_feedback": "accuracy",
+    "trials_per_condition": 4
+   }
+  },
+  {
+   "source": "S045",
+   "citation": "literature-sample screening (rank 26), full-text methods read",
+   "label": "Bissmeyer et al. 2022, Frontiers in Neuroscience",
+   "doi": "10.3389/fnins.2022.903924",
+   "source_type": "empirical",
+   "setting": "online-unsupervised",
+   "n_options": 2,
+   "fully_typed": true,
+   "options": {
+    "adaptive.discontinue_rule": {
+     "criterion": "mistakes",
+     "n": 3
+    },
+    "tone_frequency_hz.standard_frequency_hz": [
+     250,
+     1000,
+     4000
+    ]
+   }
+  },
+  {
+   "source": "S053",
+   "citation": "literature-sample screening (rank 34), full-text methods read",
+   "label": "Mathias et al. 2021, The Journal of the Acoustical Society of America",
+   "doi": "10.1121/10.0002992",
+   "source_type": "empirical",
+   "setting": "lab-native",
+   "n_options": 2,
+   "fully_typed": true,
+   "options": {
+    "inter_item_interval_ms": 10000,
+    "stimulus_duration_ms": 100
+   }
+  },
+  {
+   "source": "S059",
+   "citation": "supplementary-search screening (rank 4), full-text methods read",
+   "label": "Choon et al. 2025, Perception",
+   "doi": "10.1177/03010066251361080",
+   "source_type": "empirical",
+   "setting": "online-unsupervised",
+   "n_options": 9,
+   "fully_typed": true,
+   "options": {
+    "difficulty_levels": {
+     "n_levels": 6,
+     "spacing": "linear",
+     "range": "amplitude 0.5 +/- 0.04 steps",
+     "reps_per_level": 20
+    },
+    "feedback_condition": "errors_only",
+    "inter_item_interval_ms": 800,
+    "judgment_wording": "comparison_louder_or_softer",
+    "practice_trials": 24,
+    "response_device": "keyboard",
+    "task_variant": "standard_then_comparison_louder_softer",
+    "tone_frequency_hz.standard_frequency_hz": 220,
+    "trial_feedback": "accuracy"
+   }
+  }
+ ],
+ "defaults": {
+  "source": "S012",
+  "citation": "Zhao, Brown, Holt & Dick 2022, Trends in Hearing",
+  "typicality": 0.56,
+  "coverage": 0.767,
+  "runner_up": {
+   "source": "S005",
+   "citation": "Carlini et al. 2024, BRM (PSYCHOACOUSTICS-WEB)",
+   "score": 0.292
+  },
+  "lead": 0.404,
+  "disagreement_with_runner_up": 1
+ },
+ "translations": [
+  {
+   "variation": "masker_level_reference",
+   "raw": "+40 dB re participant's just-detectable noise level",
+   "as": null,
+   "confidence": "high",
+   "flag": true,
+   "note": "Masker sensation level relative to the listener's own threshold; presentation_level_db has no reference. propose vocabulary value: level reference (threshold-relative / sensation level)."
+  },
+  {
+   "variation": "masker_level_reference",
+   "raw": "fixed digital level, intervals normalized; 6 dB below calibration sound",
+   "as": null,
+   "confidence": "medium",
+   "flag": true,
+   "note": "Level is -6 dB re a participant-set calibration sound, not absolute; propose vocabulary value: level reference (re calibration sound)."
+  },
+  {
+   "variation": "standard_frequency_hz",
+   "raw": [
+    1000
+   ],
+   "as": {
+    "tone_frequency_hz": 1000
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "standard_frequency_hz",
+   "raw": [
+    220
+   ],
+   "as": {
+    "tone_frequency_hz": 220
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "standard_frequency_hz",
+   "raw": [
+    110
+   ],
+   "as": {
+    "tone_frequency_hz": 110
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "standard_frequency_hz",
+   "raw": [
+    500,
+    1000,
+    2000
+   ],
+   "as": {
+    "tone_frequency_hz": [
+     500,
+     1000,
+     2000
+    ]
+   },
+   "confidence": "medium",
+   "flag": true,
+   "note": "Several frequencies tested as separate conditions; read as a per-block list (one frequency per block). Not a within-trial set."
+  },
+  {
+   "variation": "standard_frequency_hz",
+   "raw": [
+    250,
+    1000,
+    4000
+   ],
+   "as": {
+    "tone_frequency_hz": [
+     250,
+     1000,
+     4000
+    ]
+   },
+   "confidence": "medium",
+   "flag": true,
+   "note": "Several frequencies tested as separate conditions; read as a per-block list (one frequency per block)."
+  },
+  {
+   "variation": "standard_frequency_hz",
+   "raw": [
+    110,
+    220,
+    440,
+    880,
+    1760,
+    3520
+   ],
+   "as": {
+    "tone_frequency_hz": [
+     110,
+     220,
+     440,
+     880,
+     1760,
+     3520
+    ]
+   },
+   "confidence": "medium",
+   "flag": true,
+   "note": "Six frequencies tested as separate conditions; read as a per-block list (one frequency per block)."
+  },
+  {
+   "variation": "frequency_roving",
+   "raw": "none",
+   "as": {},
+   "confidence": "high",
+   "flag": false,
+   "note": "No roving; carries no setting of its own."
+  },
+  {
+   "variation": "frequency_roving",
+   "raw": "quarter_octave_uniform",
+   "as": null,
+   "confidence": "high",
+   "flag": true,
+   "note": "Roving range and distribution of the standard frequency; no typed form. propose vocabulary value: frequency roving (range_octaves, distribution)."
+  },
+  {
+   "variation": "frequency_roving",
+   "raw": "one_octave",
+   "as": null,
+   "confidence": "high",
+   "flag": true,
+   "note": "One-octave roving range; no typed form. propose vocabulary value: frequency roving (range_octaves, distribution)."
+  },
+  {
+   "variation": "frequency_roving",
+   "raw": "200-267 Hz log-uniform",
+   "as": null,
+   "confidence": "high",
+   "flag": true,
+   "note": "Log-uniform draw between 200 and 267 Hz; tone_frequency_hz is a number or per-block list, with no range or distribution form. propose vocabulary value: frequency roving."
+  },
+  {
+   "variation": "condition_order",
+   "raw": "randomized_per_repetition",
+   "as": {
+    "block_order": "random_within_block"
+   },
+   "confidence": "medium",
+   "flag": false,
+   "note": "Each repetition holds every condition once, in random order."
+  },
+  {
+   "variation": "condition_order",
+   "raw": "one_condition_blocked_others_intermixed",
+   "as": null,
+   "confidence": "high",
+   "flag": true,
+   "note": "Pure-tone runs grouped, complex-tone runs intermixed; no matching block_order value. propose vocabulary value: partly_blocked."
+  },
+  {
+   "variation": "response_input",
+   "raw": "keyboard_interval_number",
+   "as": {
+    "response_device": "keyboard"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": "Press 1/2/3 for the interval."
+  },
+  {
+   "variation": "response_input",
+   "raw": "keyboard_two_keys_spatial",
+   "as": {
+    "response_device": "keyboard"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": "E/P keys; key mapping not typed here."
+  },
+  {
+   "variation": "response_input",
+   "raw": "onscreen_buttons",
+   "as": {
+    "response_device": "mouse"
+   },
+   "confidence": "medium",
+   "flag": false,
+   "note": "Button click (mouse/trackpad in S044, onscreen buttons in S031); touch is possible but not stated."
+  },
+  {
+   "variation": "response_input",
+   "raw": "keyboard_mouse_or_touch",
+   "as": null,
+   "confidence": "high",
+   "flag": true,
+   "note": "Tool accepts several devices; response_device takes one value."
+  },
+  {
+   "variation": "starting_level",
+   "raw": {
+    "value": 100,
+    "unit": "Hz delta"
+   },
+   "as": {
+    "adaptive.start_level": 100
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": "Unit is the task's own (Hz difference)."
+  },
+  {
+   "variation": "starting_level",
+   "raw": {
+    "value": 100,
+    "unit": "% frequency difference (one octave)"
+   },
+   "as": {
+    "adaptive.start_level": 100
+   },
+   "confidence": "medium",
+   "flag": false,
+   "note": "Unit is percent frequency difference."
+  },
+  {
+   "variation": "starting_level",
+   "raw": {
+    "value": -13.75,
+    "unit": "dB SNR"
+   },
+   "as": {
+    "adaptive.start_level": -13.75
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": "Unit is dB SNR."
+  },
+  {
+   "variation": "starting_level",
+   "raw": {
+    "value": "participant-set 'soft but audible'",
+    "unit": "dB re device"
+   },
+   "as": null,
+   "confidence": "high",
+   "flag": true,
+   "note": "Start level is set by the participant, not a number; propose vocabulary value: start_level from level-setting procedure."
+  },
+  {
+   "variation": "device_restriction",
+   "raw": "laptop_or_desktop_chrome_only",
+   "as": {
+    "device_eligibility": "browser_restricted"
+   },
+   "confidence": "medium",
+   "flag": false,
+   "note": "Computer plus Chrome; browser_restricted is the closer fit."
+  },
+  {
+   "variation": "device_restriction",
+   "raw": "computer_tablet_or_mobile",
+   "as": {
+    "device_eligibility": "none"
+   },
+   "confidence": "medium",
+   "flag": false,
+   "note": "All device classes allowed."
+  },
+  {
+   "variation": "listener_transducer",
+   "raw": "headphones",
+   "as": {
+    "device_eligibility": "hardware_required"
+   },
+   "confidence": "medium",
+   "flag": false,
+   "note": "Headphones required (supplied Koss UR20 in S031)."
+  },
+  {
+   "variation": "listener_transducer",
+   "raw": "cochlear_implant_direct_streaming",
+   "as": {
+    "device_eligibility": "hardware_required"
+   },
+   "confidence": "medium",
+   "flag": true,
+   "note": "Population-specific setup (direct audio streaming, earplug in the other ear); only the hardware requirement is typed."
+  },
+  {
+   "variation": "listener_transducer",
+   "raw": "free_field",
+   "as": null,
+   "confidence": "high",
+   "flag": true,
+   "note": "Loudspeaker listening was a single-participant exception; no faithful enum value."
+  },
+  {
+   "variation": "headphone_screen",
+   "raw": "huggins_pitch",
+   "as": {
+    "headphone_check": "screening_task"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": "Screen type (Huggins pitch) is not typed."
+  },
+  {
+   "variation": "headphone_screen",
+   "raw": "antiphase_quietest_tone",
+   "as": {
+    "headphone_check": "screening_task"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": "Screen type (antiphase quietest tone) is not typed."
+  },
+  {
+   "variation": "headphone_screen",
+   "raw": "antiphase_plus_NoSpi_chirp",
+   "as": {
+    "headphone_check": "screening_task"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": "Screen type (antiphase plus NoSpi chirp) is not typed."
+  },
+  {
+   "variation": "hearing_eligibility_check",
+   "raw": "self_report_no_hearing_loss",
+   "as": {
+    "participant_eligibility": "hearing"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "hearing_eligibility_check",
+   "raw": "speech_in_noise_screen",
+   "as": {
+    "participant_eligibility": "hearing"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": "Screen type not typed."
+  },
+  {
+   "variation": "practice_familiarisation",
+   "raw": "6 easy trials with feedback, no criterion",
+   "as": {
+    "practice_trials": 6,
+    "practice_criterion": null
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": "Feedback in practice is covered by the trial_feedback variation."
+  },
+  {
+   "variation": "practice_familiarisation",
+   "raw": "6 trials, advance after 6 consecutive correct",
+   "as": {
+    "practice_trials": 6,
+    "practice_criterion": {
+     "accuracy": 1,
+     "window": 6,
+     "on_fail": "repeat"
+    }
+   },
+   "confidence": "medium",
+   "flag": true,
+   "note": "Consecutive-correct rule approximated by accuracy 1 over a window of 6; on_fail and max_repeats are not stated."
+  },
+  {
+   "variation": "practice_familiarisation",
+   "raw": "24-trial practice block per block type",
+   "as": {
+    "practice_trials": 24
+   },
+   "confidence": "medium",
+   "flag": true,
+   "note": "24 trials for each block type; a single count loses the per-type structure."
+  },
+  {
+   "variation": "practice_familiarisation",
+   "raw": "listen-to-example interface before each run",
+   "as": null,
+   "confidence": "high",
+   "flag": true,
+   "note": "Example listening before each run, not a trial count; propose vocabulary value: example_demo before each block."
+  },
+  {
+   "variation": "level_setting_procedure",
+   "raw": "comfortable_self_adjust",
+   "as": {
+    "volume_calibration": "participant_adjusted"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "level_setting_procedure",
+   "raw": "just_detectable_reference",
+   "as": {
+    "volume_calibration": "participant_adjusted"
+   },
+   "confidence": "medium",
+   "flag": true,
+   "note": "Level set relative to the participant's just-detectable level; reference is lost. propose vocabulary value: threshold_referenced."
+  },
+  {
+   "variation": "level_setting_procedure",
+   "raw": "loudness_scaling_and_detection_anchor",
+   "as": null,
+   "confidence": "high",
+   "flag": true,
+   "note": "Loudness scaling plus a detection anchor; none of the enum values fits. propose vocabulary value: loudness_scaling."
+  },
+  {
+   "variation": "trial_feedback",
+   "raw": "every_trial",
+   "as": {
+    "trial_feedback": "accuracy",
+    "feedback_condition": "all"
+   },
+   "confidence": "medium",
+   "flag": false,
+   "note": "Feedback content not stated; accuracy assumed."
+  },
+  {
+   "variation": "trial_feedback",
+   "raw": "practice_only",
+   "as": {
+    "trial_feedback": "none",
+    "practice.trial_feedback": "accuracy",
+    "feedback_condition": "all"
+   },
+   "confidence": "medium",
+   "flag": false,
+   "note": "No feedback during the staircase; content in practice assumed to be accuracy."
+  },
+  {
+   "variation": "trial_feedback",
+   "raw": "error_only",
+   "as": {
+    "trial_feedback": "accuracy",
+    "feedback_condition": "errors_only"
+   },
+   "confidence": "medium",
+   "flag": false,
+   "note": "Error message shown after errors."
+  },
+  {
+   "variation": "performance_incentive",
+   "raw": "bonus_proportional_to_correct",
+   "as": {
+    "performance_incentive": "bonus"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": "Bonus rule not typed."
+  },
+  {
+   "variation": "performance_incentive",
+   "raw": "bonus_per_track_if_accuracy_above_50pct",
+   "as": {
+    "performance_incentive": "bonus"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": "Per-track accuracy condition not typed."
+  },
+  {
+   "variation": "progress_indicator",
+   "raw": "trial_counter_in_track",
+   "as": {
+    "progress_indicator": "counter"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": "Shown as 'Progress: x/40'."
+  },
+  {
+   "variation": "progress_indicator",
+   "raw": "study_position_pages",
+   "as": {
+    "progress_indicator": "counter"
+   },
+   "confidence": "low",
+   "flag": true,
+   "note": "Position within informational pages; counter vs progress_bar not stated."
+  },
+  {
+   "variation": "listening_environment_instructions",
+   "raw": "headphones_and_quiet_location",
+   "as": {
+    "environment_instructions": "quiet_room"
+   },
+   "confidence": "medium",
+   "flag": false,
+   "note": "Headphone instruction is not covered by the enum."
+  },
+  {
+   "variation": "listening_environment_instructions",
+   "raw": "low_ambient_noise_encouraged",
+   "as": {
+    "environment_instructions": "quiet_room"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "listening_environment_instructions",
+   "raw": "turn_off_notifications",
+   "as": null,
+   "confidence": "high",
+   "flag": true,
+   "note": "Asks to silence notifications; no matching enum value. propose vocabulary value: no_interruptions."
+  }
+ ]
+}
