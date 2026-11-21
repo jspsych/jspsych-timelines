@@ -1,0 +1,1023 @@
+{
+  "tallies": {
+    "observed_values_total": 85,
+    "typed_values_total": 81,
+    "level1_distinct_cases": 45,
+    "level1_checked": 38,
+    "level1_not_expressible": 7,
+    "level1_labelled_additions": 1,
+    "level2_configs": 11,
+    "level2_fully_expressible": 7
+  },
+  "level1": [
+    {
+      "option": "iti_ms",
+      "sub": "main",
+      "variation": "inter_page_interval_ms",
+      "value": 250,
+      "sources": [
+        "S019"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "iti_ms": 250
+      }
+    },
+    {
+      "option": "response_window_ms",
+      "sub": "main",
+      "variation": "response_time_limit",
+      "value": null,
+      "sources": [
+        "S012",
+        "S014",
+        "S040",
+        "S019"
+      ],
+      "labelledAddition": true,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "response_window_ms": null
+      }
+    },
+    {
+      "option": "stimulus_layout",
+      "sub": "main",
+      "variation": "array_layout",
+      "value": "fixed_grid_slots",
+      "sources": [
+        "S019",
+        "S014",
+        "S010"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "stimulus_layout": "fixed_grid_slots"
+      }
+    },
+    {
+      "option": "stimulus_layout",
+      "sub": "main",
+      "variation": "array_layout",
+      "value": "free_positions_in_area",
+      "sources": [
+        "S054"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "stimulus_layout": "free_positions_in_area"
+      }
+    },
+    {
+      "option": "stimulus_set",
+      "sub": "items",
+      "variation": "item_stimulus_set",
+      "value": "abstract_designs",
+      "sources": [
+        "S019",
+        "S010",
+        "S034",
+        "S054",
+        "S014"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "stimulus_set": {
+          "items": "abstract_designs"
+        }
+      }
+    },
+    {
+      "option": "stimulus_set",
+      "sub": "items",
+      "variation": "item_stimulus_set",
+      "value": "representational_drawings",
+      "sources": [
+        "S024",
+        "S055",
+        "S056"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "no licensed drawing set is bundled (S024's drawings are proprietary); supply your own with stimulus_set.items: { images: [...] }"
+    },
+    {
+      "option": "stimulus_set",
+      "sub": "items",
+      "variation": "item_stimulus_set",
+      "value": "words",
+      "sources": [
+        "S005",
+        "S010"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "stimulus_set": {
+          "items": "words"
+        }
+      }
+    },
+    {
+      "option": "stimulus_set",
+      "sub": "items",
+      "variation": "item_stimulus_set",
+      "value": "nonwords",
+      "sources": [
+        "S030"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "stimulus_set": {
+          "items": "nonwords"
+        }
+      }
+    },
+    {
+      "option": "stimulus_set",
+      "sub": "pool",
+      "variation": "item_pool_across_set_sizes",
+      "value": "distinct_per_set_size",
+      "sources": [
+        "S010",
+        "S053"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "stimulus_set": {
+          "pool": "distinct_per_set_size"
+        }
+      }
+    },
+    {
+      "option": "stimulus_set",
+      "sub": "pool",
+      "variation": "item_pool_across_set_sizes",
+      "value": "nested_first_n",
+      "sources": [
+        "S019"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "stimulus_set": {
+          "pool": "nested_first_n"
+        }
+      }
+    },
+    {
+      "option": "rearrangement_rule",
+      "sub": "main",
+      "variation": "rearrangement_rule",
+      "value": "full_reshuffle_each_page",
+      "sources": [
+        "S024",
+        "S019",
+        "S034",
+        "S010"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "rearrangement_rule": "full_reshuffle_each_page"
+      }
+    },
+    {
+      "option": "rearrangement_rule",
+      "sub": "main",
+      "variation": "rearrangement_rule",
+      "value": "partial_reshuffle_each_page",
+      "sources": [
+        "S014"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "rearrangement_rule": "partial_reshuffle_each_page"
+      }
+    },
+    {
+      "option": "block_order",
+      "sub": "main",
+      "variation": "set_size_order",
+      "value": "ascending",
+      "sources": [
+        "S024",
+        "S019",
+        "S053",
+        "S054"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "block_order": "ascending"
+      }
+    },
+    {
+      "option": "block_order",
+      "sub": "main",
+      "variation": "set_size_order",
+      "value": "random",
+      "sources": [
+        "S040"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "block_order": "random"
+      }
+    },
+    {
+      "option": "set_sizes",
+      "sub": "main",
+      "variation": "set_sizes",
+      "value": [
+        6,
+        8,
+        10,
+        12
+      ],
+      "sources": [
+        "S024",
+        "S019"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "set_sizes": [
+          6,
+          8,
+          10,
+          12
+        ]
+      }
+    },
+    {
+      "option": "set_sizes",
+      "sub": "main",
+      "variation": "set_sizes",
+      "value": [
+        4,
+        6,
+        8,
+        10,
+        12
+      ],
+      "sources": [
+        "S010",
+        "S030"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "set_sizes": [
+          4,
+          6,
+          8,
+          10,
+          12
+        ]
+      }
+    },
+    {
+      "option": "set_sizes",
+      "sub": "main",
+      "variation": "set_sizes",
+      "value": [
+        6,
+        9,
+        12
+      ],
+      "sources": [
+        "S034"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "set_sizes": [
+          6,
+          9,
+          12
+        ]
+      }
+    },
+    {
+      "option": "set_sizes",
+      "sub": "main",
+      "variation": "set_sizes",
+      "value": [
+        3,
+        6,
+        9,
+        12
+      ],
+      "sources": [
+        "S040"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "set_sizes": [
+          3,
+          6,
+          9,
+          12
+        ]
+      }
+    },
+    {
+      "option": "set_sizes",
+      "sub": "main",
+      "variation": "set_sizes",
+      "value": [
+        12
+      ],
+      "sources": [
+        "S014",
+        "S055"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "set_sizes": [
+          12
+        ]
+      }
+    },
+    {
+      "option": "set_sizes",
+      "sub": "main",
+      "variation": "set_sizes",
+      "value": [
+        8
+      ],
+      "sources": [
+        "S012"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "set_sizes": [
+          8
+        ]
+      }
+    },
+    {
+      "option": "set_sizes",
+      "sub": "main",
+      "variation": "set_sizes",
+      "value": [
+        4,
+        6,
+        8,
+        10
+      ],
+      "sources": [
+        "S053"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "set_sizes": [
+          4,
+          6,
+          8,
+          10
+        ]
+      }
+    },
+    {
+      "option": "set_sizes",
+      "sub": "main",
+      "variation": "set_sizes",
+      "value": [
+        4,
+        6,
+        8
+      ],
+      "sources": [
+        "S054"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "set_sizes": [
+          4,
+          6,
+          8
+        ]
+      }
+    },
+    {
+      "option": "set_sizes",
+      "sub": "main",
+      "variation": "set_sizes",
+      "value": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "sources": [
+        "S056"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "set_sizes": [
+          2,
+          3,
+          4,
+          5
+        ]
+      }
+    },
+    {
+      "option": "set_sizes",
+      "sub": "practice",
+      "variation": "practice_set_size",
+      "value": 3,
+      "sources": [
+        "S054"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 2,
+        "practice": {
+          "set_sizes": [
+            3
+          ]
+        }
+      }
+    },
+    {
+      "option": "set_sizes",
+      "sub": "practice",
+      "variation": "practice_set_size",
+      "value": 4,
+      "sources": [
+        "S053"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 2,
+        "practice": {
+          "set_sizes": [
+            4
+          ]
+        }
+      }
+    },
+    {
+      "option": "set_sizes",
+      "sub": "practice",
+      "variation": "practice_set_size",
+      "value": 2,
+      "sources": [
+        "S056"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 2,
+        "practice": {
+          "set_sizes": [
+            2
+          ]
+        }
+      }
+    },
+    {
+      "option": "trials_per_condition",
+      "sub": "main",
+      "variation": "trials_per_set_size",
+      "value": 3,
+      "sources": [
+        "S024",
+        "S019",
+        "S010",
+        "S014",
+        "S053"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "trials_per_condition": 3
+      }
+    },
+    {
+      "option": "trials_per_condition",
+      "sub": "main",
+      "variation": "trials_per_set_size",
+      "value": 2,
+      "sources": [
+        "S040",
+        "S054"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "trials_per_condition": 2
+      }
+    },
+    {
+      "option": "trials_per_condition",
+      "sub": "main",
+      "variation": "trials_per_set_size",
+      "value": 4,
+      "sources": [
+        "S012"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "trials_per_condition": 4
+      }
+    },
+    {
+      "option": "trials_per_condition",
+      "sub": "main",
+      "variation": "trials_per_set_size",
+      "value": 1,
+      "sources": [
+        "S055"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "trials_per_condition": 1
+      }
+    },
+    {
+      "option": "response_device",
+      "sub": "main",
+      "variation": "response_device",
+      "value": "mouse",
+      "sources": [
+        "S019",
+        "S040"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "response_device": "mouse"
+      }
+    },
+    {
+      "option": "response_device",
+      "sub": "main",
+      "variation": "response_device",
+      "value": "touch",
+      "sources": [
+        "S014",
+        "S053"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "response_device": "touch"
+      }
+    },
+    {
+      "option": "adaptive",
+      "sub": "main",
+      "variation": "load_schedule",
+      "value": "fixed",
+      "sources": [
+        "S024",
+        "S019"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "structure",
+      "options": {
+        "adaptive": null
+      }
+    },
+    {
+      "option": "adaptive",
+      "sub": "main",
+      "variation": "load_schedule",
+      "value": "irt_cat",
+      "sources": [
+        "S040"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "\"irt_cat\" needs an item bank (irt_cat) or a discontinue rule with no count in the spec (ascending_until_fail)"
+    },
+    {
+      "option": "adaptive",
+      "sub": "main",
+      "variation": "load_schedule",
+      "value": "ascending_until_fail",
+      "sources": [
+        "S056"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "\"ascending_until_fail\" needs an item bank (irt_cat) or a discontinue rule with no count in the spec (ascending_until_fail)"
+    },
+    {
+      "option": "error_correction_procedure",
+      "sub": "main",
+      "variation": "error_handling_within_trial",
+      "value": "none",
+      "sources": [
+        "S019",
+        "S012",
+        "S040"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "error_correction_procedure": "none"
+      }
+    },
+    {
+      "option": "practice_trials",
+      "sub": "main",
+      "variation": "practice_trials",
+      "value": 0,
+      "sources": [
+        "S019"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 0
+      }
+    },
+    {
+      "option": "practice_trials",
+      "sub": "main",
+      "variation": "practice_trials",
+      "value": 2,
+      "sources": [
+        "S024",
+        "S054"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 2
+      }
+    },
+    {
+      "option": "practice_trials",
+      "sub": "main",
+      "variation": "practice_trials",
+      "value": 3,
+      "sources": [
+        "S053"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 3
+      }
+    },
+    {
+      "option": "trial_feedback",
+      "sub": "main",
+      "variation": "correctness_feedback",
+      "value": "none",
+      "sources": [
+        "S019"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 2,
+        "trial_feedback": "none"
+      }
+    },
+    {
+      "option": "instruction_language",
+      "sub": "main",
+      "variation": "instruction_language",
+      "value": "Chinese",
+      "sources": [
+        "S019"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "\"Chinese\": the language of the instructions is the `text` option; no translation is bundled"
+    },
+    {
+      "option": "instruction_language",
+      "sub": "main",
+      "variation": "instruction_language",
+      "value": "Portuguese",
+      "sources": [
+        "S008"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "\"Portuguese\": the language of the instructions is the `text` option; no translation is bundled"
+    },
+    {
+      "option": "instruction_language",
+      "sub": "main",
+      "variation": "instruction_language",
+      "value": "French",
+      "sources": [
+        "S009"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "\"French\": the language of the instructions is the `text` option; no translation is bundled"
+    },
+    {
+      "option": "population_protocol",
+      "sub": "main",
+      "variation": "preschool_adaptation",
+      "value": "standard",
+      "sources": [
+        "S040"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "structure",
+      "options": {
+        "population_protocol": "standard"
+      }
+    },
+    {
+      "option": "population_protocol",
+      "sub": "main",
+      "variation": "preschool_adaptation",
+      "value": "child",
+      "sources": [
+        "S056",
+        "S008"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "\"child\": the preschool protocol needs picture cards, pre-training and a discontinue rule with no count in the spec"
+    }
+  ],
+  "level2": [
+    {
+      "source": "S005",
+      "citation": "Petrides & Milner 1982, Neuropsychologia",
+      "n_options": 1,
+      "n_keys": 1,
+      "keys_expressible": 1,
+      "gaps": [],
+      "checked_options": [
+        "stimulus_set"
+      ],
+      "assumed": [],
+      "tied_to_reported_value": 1
+    },
+    {
+      "source": "S008",
+      "citation": "Sallum et al. 2017, Clin Neuropsychol",
+      "n_options": 2,
+      "n_keys": 2,
+      "keys_expressible": 0,
+      "gaps": [
+        {
+          "key": "instruction_language",
+          "gap": "option missing",
+          "reason": "\"Portuguese\": the language of the instructions is the `text` option; no translation is bundled"
+        },
+        {
+          "key": "population_protocol",
+          "gap": "option missing",
+          "reason": "\"child\": the preschool protocol needs picture cards, pre-training and a discontinue rule with no count in the spec"
+        }
+      ],
+      "checked_options": [],
+      "assumed": [],
+      "tied_to_reported_value": 0
+    },
+    {
+      "source": "S009",
+      "citation": "Monnier et al. 2026, Dev Neuropsychol",
+      "n_options": 1,
+      "n_keys": 1,
+      "keys_expressible": 0,
+      "gaps": [
+        {
+          "key": "instruction_language",
+          "gap": "option missing",
+          "reason": "\"French\": the language of the instructions is the `text` option; no translation is bundled"
+        }
+      ],
+      "checked_options": [],
+      "assumed": [],
+      "tied_to_reported_value": 0
+    },
+    {
+      "source": "S012",
+      "citation": "Sacchetti et al. 2008, BMC Psychiatry",
+      "n_options": 4,
+      "n_keys": 4,
+      "keys_expressible": 4,
+      "gaps": [],
+      "checked_options": [
+        "error_correction_procedure",
+        "response_window_ms",
+        "set_sizes",
+        "trials_per_condition"
+      ],
+      "assumed": [],
+      "tied_to_reported_value": 4
+    },
+    {
+      "source": "S014",
+      "citation": "Cox et al. 2014, Intelligence",
+      "n_options": 7,
+      "n_keys": 7,
+      "keys_expressible": 7,
+      "gaps": [],
+      "checked_options": [
+        "rearrangement_rule",
+        "response_device",
+        "response_window_ms",
+        "set_sizes",
+        "stimulus_layout",
+        "stimulus_set",
+        "trials_per_condition"
+      ],
+      "assumed": [],
+      "tied_to_reported_value": 7
+    },
+    {
+      "source": "S019",
+      "citation": "reference implementation",
+      "n_options": 16,
+      "n_keys": 16,
+      "keys_expressible": 15,
+      "gaps": [
+        {
+          "key": "instruction_language",
+          "gap": "option missing",
+          "reason": "\"Chinese\": the language of the instructions is the `text` option; no translation is bundled"
+        }
+      ],
+      "checked_options": [
+        "adaptive",
+        "block_order",
+        "error_correction_procedure",
+        "iti_ms",
+        "practice_trials",
+        "rearrangement_rule",
+        "response_device",
+        "response_window_ms",
+        "sequence_constraints",
+        "set_sizes",
+        "stimulus_layout",
+        "stimulus_set",
+        "trial_feedback",
+        "trials_per_condition"
+      ],
+      "assumed": [],
+      "tied_to_reported_value": 15
+    },
+    {
+      "source": "S030",
+      "citation": "Streamlit launcher for an online SOPT (no licence file) at e3c730a",
+      "n_options": 2,
+      "n_keys": 2,
+      "keys_expressible": 2,
+      "gaps": [],
+      "checked_options": [
+        "set_sizes",
+        "stimulus_set"
+      ],
+      "assumed": [],
+      "tied_to_reported_value": 2
+    },
+    {
+      "source": "S034",
+      "citation": "Sturm et al. 2026, J Clin Exp Neuropsychol",
+      "n_options": 3,
+      "n_keys": 3,
+      "keys_expressible": 3,
+      "gaps": [],
+      "checked_options": [
+        "rearrangement_rule",
+        "set_sizes",
+        "stimulus_set"
+      ],
+      "assumed": [],
+      "tied_to_reported_value": 3
+    },
+    {
+      "source": "S040",
+      "citation": "Thomas et al. 2026, Psychol Assess",
+      "n_options": 8,
+      "n_keys": 8,
+      "keys_expressible": 7,
+      "gaps": [
+        {
+          "key": "adaptive.procedure",
+          "gap": "option missing",
+          "reason": "\"irt_cat\" needs an item bank (irt_cat) or a discontinue rule with no count in the spec (ascending_until_fail)"
+        }
+      ],
+      "checked_options": [
+        "block_order",
+        "error_correction_procedure",
+        "population_protocol",
+        "response_device",
+        "response_window_ms",
+        "set_sizes",
+        "trials_per_condition"
+      ],
+      "assumed": [],
+      "tied_to_reported_value": 7
+    },
+    {
+      "source": "S053",
+      "citation": "Johnson et al. 2024, J Cogn",
+      "n_options": 7,
+      "n_keys": 7,
+      "keys_expressible": 7,
+      "gaps": [],
+      "checked_options": [
+        "block_order",
+        "set_sizes",
+        "practice_trials",
+        "response_device",
+        "stimulus_set",
+        "trials_per_condition"
+      ],
+      "assumed": [],
+      "tied_to_reported_value": 7
+    },
+    {
+      "source": "S054",
+      "citation": "Silman et al. 2022, IJERPH",
+      "n_options": 8,
+      "n_keys": 8,
+      "keys_expressible": 8,
+      "gaps": [],
+      "checked_options": [
+        "block_order",
+        "set_sizes",
+        "practice_trials",
+        "sequence_constraints",
+        "stimulus_layout",
+        "stimulus_set",
+        "trials_per_condition"
+      ],
+      "assumed": [],
+      "tied_to_reported_value": 8
+    }
+  ]
+}
