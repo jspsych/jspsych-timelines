@@ -18,6 +18,9 @@
     },
     {
       "task": "tone-detection"
+    },
+    {
+      "task": "self-ordered-pointing"
     }
   ]
 }
