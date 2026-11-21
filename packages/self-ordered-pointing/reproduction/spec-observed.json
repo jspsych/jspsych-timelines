@@ -1,0 +1,1480 @@
+{
+ "spec": "specs/self-ordered-pointing/spec.yaml (jspsych-timelines-paper, vocabulary 2026-11-13-std-final)",
+ "options": [
+  {
+   "name": "iti_ms",
+   "default": {
+    "value": 250,
+    "raw": 250,
+    "basis": "anchor",
+    "source": "S019",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "inter_page_interval_ms",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S019",
+       "raw": 250,
+       "value": 250,
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "response_window_ms",
+   "default": {
+    "value": null,
+    "raw": "none",
+    "basis": "anchor",
+    "source": "S019",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "response_time_limit",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S012",
+       "raw": "none",
+       "value": null,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S014",
+       "raw": "none",
+       "value": null,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S040",
+       "raw": "none",
+       "value": null,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S019",
+       "raw": "none",
+       "value": null,
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "stimulus_layout",
+   "default": {
+    "value": "fixed_grid_slots",
+    "raw": "fixed_grid_slots",
+    "basis": "anchor",
+    "source": "S019",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "array_layout",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S019",
+       "raw": "fixed_grid_slots",
+       "value": "fixed_grid_slots",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S014",
+       "raw": "fixed_grid_slots",
+       "value": "fixed_grid_slots",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S010",
+       "raw": "fixed_grid_slots",
+       "value": "fixed_grid_slots",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S054",
+       "raw": "free_positions_in_area",
+       "value": "free_positions_in_area",
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "stimulus_set",
+   "default": {
+    "value": "abstract_designs",
+    "raw": "abstract_designs",
+    "basis": "anchor",
+    "source": "S019",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "item_stimulus_set",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S019",
+       "raw": "abstract_designs",
+       "value": "abstract_designs",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S010",
+       "raw": "abstract_designs",
+       "value": "abstract_designs",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S034",
+       "raw": "abstract_designs",
+       "value": "abstract_designs",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S054",
+       "raw": "abstract_designs",
+       "value": "abstract_designs",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S014",
+       "raw": "abstract_designs",
+       "value": "abstract_designs",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S024",
+       "raw": "representational_drawings",
+       "value": "representational_drawings",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S055",
+       "raw": "representational_drawings",
+       "value": "representational_drawings",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S056",
+       "raw": "representational_drawings",
+       "value": "representational_drawings",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S005",
+       "raw": "words",
+       "value": "words",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S010",
+       "raw": "words",
+       "value": "words",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S030",
+       "raw": "nonwords",
+       "value": "nonwords",
+       "ok": true,
+       "note": null
+      }
+     ]
+    },
+    {
+     "variation": "item_pool_across_set_sizes",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S010",
+       "raw": "distinct_per_set_size",
+       "value": "distinct_per_set_size",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S053",
+       "raw": "distinct_per_set_size",
+       "value": "distinct_per_set_size",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S019",
+       "raw": "nested_first_n",
+       "value": "nested_first_n",
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "rearrangement_rule",
+   "default": {
+    "value": "full_reshuffle_each_page",
+    "raw": "full_reshuffle_each_page",
+    "basis": "anchor",
+    "source": "S019",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "rearrangement_rule",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S024",
+       "raw": "full_reshuffle_each_page",
+       "value": "full_reshuffle_each_page",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S019",
+       "raw": "full_reshuffle_each_page",
+       "value": "full_reshuffle_each_page",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S034",
+       "raw": "full_reshuffle_each_page",
+       "value": "full_reshuffle_each_page",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S010",
+       "raw": "full_reshuffle_each_page",
+       "value": "full_reshuffle_each_page",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S014",
+       "raw": "partial_reshuffle_each_page",
+       "value": "partial_reshuffle_each_page",
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "block_order",
+   "default": {
+    "value": "ascending",
+    "raw": "ascending",
+    "basis": "anchor",
+    "source": "S019",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "set_size_order",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S024",
+       "raw": "ascending",
+       "value": "ascending",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S019",
+       "raw": "ascending",
+       "value": "ascending",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S053",
+       "raw": "ascending",
+       "value": "ascending",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S054",
+       "raw": "ascending",
+       "value": "ascending",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S040",
+       "raw": "randomized_blocks",
+       "value": "random",
+       "ok": true,
+       "note": "S040: 'eight randomized blocks' (4 sizes x 2 trials). Whole-block order random; could be random_within_block if each block holds every size once. Dossier does not say."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "sequence_constraints",
+   "default": {
+    "value": null,
+    "raw": "none",
+    "basis": "anchor",
+    "source": "S019",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "position_repetition_rule",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S054",
+       "raw": "none",
+       "value": null,
+       "ok": true,
+       "note": "No position rule; absent value of sequence_constraints."
+      },
+      {
+       "source": "S019",
+       "raw": "none",
+       "value": null,
+       "ok": true,
+       "note": "No position rule; absent value of sequence_constraints."
+      },
+      {
+       "source": "S010",
+       "raw": "instructed_max_2_same_location",
+       "value": null,
+       "ok": false,
+       "note": "Instruction to participant not to point to the same screen position more than twice in a row (S010); not enforced. sequence_constraints is about generated trial order, and the constrained thing is the response position. propose vocabulary value: position_repeat_rule {none, instructed, enforced, detect_and_remind} with max_repeat 2."
+      },
+      {
+       "source": "S055",
+       "raw": "enforced_max_2_same_position",
+       "value": null,
+       "ok": false,
+       "note": "S055: program prevents more than two consecutive pages with the pick at the same position. Constrains the participant's response, not the sequence; max_run keys on trial conditions. propose vocabulary value: position_repeat_rule enforced, max_repeat 2."
+      },
+      {
+       "source": "S024",
+       "raw": "detect_strategy_and_remind",
+       "value": null,
+       "ok": false,
+       "note": "S024 (Inquisit, proprietary): position/alphabet strategy checks trigger a reminder. propose vocabulary value: position_repeat_rule detect_and_remind (threshold not given)."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "set_sizes",
+   "default": {
+    "value": [
+     6,
+     8,
+     10,
+     12
+    ],
+    "raw": [
+     6,
+     8,
+     10,
+     12
+    ],
+    "basis": "anchor",
+    "source": "S019",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "set_sizes",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S024",
+       "raw": [
+        6,
+        8,
+        10,
+        12
+       ],
+       "value": [
+        6,
+        8,
+        10,
+        12
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S019",
+       "raw": [
+        6,
+        8,
+        10,
+        12
+       ],
+       "value": [
+        6,
+        8,
+        10,
+        12
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S010",
+       "raw": [
+        4,
+        6,
+        8,
+        10,
+        12
+       ],
+       "value": [
+        4,
+        6,
+        8,
+        10,
+        12
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S034",
+       "raw": [
+        6,
+        9,
+        12
+       ],
+       "value": [
+        6,
+        9,
+        12
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S040",
+       "raw": [
+        3,
+        6,
+        9,
+        12
+       ],
+       "value": [
+        3,
+        6,
+        9,
+        12
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S014",
+       "raw": [
+        12
+       ],
+       "value": [
+        12
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S055",
+       "raw": [
+        12
+       ],
+       "value": [
+        12
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S012",
+       "raw": [
+        8
+       ],
+       "value": [
+        8
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S053",
+       "raw": [
+        4,
+        6,
+        8,
+        10
+       ],
+       "value": [
+        4,
+        6,
+        8,
+        10
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S054",
+       "raw": [
+        4,
+        6,
+        8
+       ],
+       "value": [
+        4,
+        6,
+        8
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S056",
+       "raw": [
+        2,
+        3,
+        4,
+        5
+       ],
+       "value": [
+        2,
+        3,
+        4,
+        5
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S030",
+       "raw": [
+        4,
+        6,
+        8,
+        10,
+        12
+       ],
+       "value": [
+        4,
+        6,
+        8,
+        10,
+        12
+       ],
+       "ok": true,
+       "note": null
+      }
+     ]
+    },
+    {
+     "variation": "practice_set_size",
+     "role": null,
+     "phase": "practice",
+     "field": null,
+     "observed": [
+      {
+       "source": "S054",
+       "raw": 3,
+       "value": 3,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S053",
+       "raw": 4,
+       "value": 4,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S056",
+       "raw": 2,
+       "value": 2,
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "trials_per_condition",
+   "default": {
+    "value": 3,
+    "raw": 3,
+    "basis": "anchor",
+    "source": "S019",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "trials_per_set_size",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S024",
+       "raw": 3,
+       "value": 3,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S019",
+       "raw": 3,
+       "value": 3,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S010",
+       "raw": 3,
+       "value": 3,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S014",
+       "raw": 3,
+       "value": 3,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S053",
+       "raw": 3,
+       "value": 3,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S040",
+       "raw": 2,
+       "value": 2,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S054",
+       "raw": 2,
+       "value": 2,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S012",
+       "raw": 4,
+       "value": 4,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S055",
+       "raw": 1,
+       "value": 1,
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "response_device",
+   "default": {
+    "value": "mouse",
+    "raw": "mouse",
+    "basis": "anchor",
+    "source": "S019",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "response_device",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S019",
+       "raw": "mouse",
+       "value": "mouse",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S040",
+       "raw": "mouse",
+       "value": "mouse",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S014",
+       "raw": "touchscreen",
+       "value": "touch",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S053",
+       "raw": "touchscreen",
+       "value": "touch",
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "adaptive",
+   "default": {
+    "value": {
+     "procedure": "fixed"
+    },
+    "basis": "components"
+   },
+   "components": [
+    {
+     "variation": "load_schedule",
+     "role": null,
+     "phase": null,
+     "field": "procedure",
+     "observed": [
+      {
+       "source": "S024",
+       "raw": "fixed",
+       "value": "fixed",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S019",
+       "raw": "fixed",
+       "value": "fixed",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S040",
+       "raw": "irt_cat",
+       "value": "irt_cat",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S056",
+       "raw": "ascending_until_fail",
+       "value": "ascending_until_fail",
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "error_correction_procedure",
+   "default": {
+    "value": "none",
+    "raw": "continue_to_n_choices",
+    "basis": "anchor",
+    "source": "S019",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "error_handling_within_trial",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S019",
+       "raw": "continue_to_n_choices",
+       "value": "none",
+       "ok": true,
+       "note": "Errors do not end the series; no retry or correction. The fixed number of choices equals the set size (see set_sizes)."
+      },
+      {
+       "source": "S012",
+       "raw": "continue_to_n_choices",
+       "value": "none",
+       "ok": true,
+       "note": "Errors do not end the series; no retry or correction. The fixed number of choices equals the set size (see set_sizes)."
+      },
+      {
+       "source": "S040",
+       "raw": "continue_to_n_choices",
+       "value": "none",
+       "ok": true,
+       "note": "Errors do not end the series; no retry or correction. The fixed number of choices equals the set size (see set_sizes)."
+      },
+      {
+       "source": "S056",
+       "raw": "terminate_on_repeat",
+       "value": null,
+       "ok": false,
+       "note": "S056: trial set ended after repeated errors (child version). A discontinue rule, count not given. propose vocabulary value: error_correction_procedure terminate_on_repeat_errors."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "practice_trials",
+   "default": {
+    "value": 0,
+    "raw": "none",
+    "basis": "anchor",
+    "source": "S019",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "practice_trials",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S019",
+       "raw": "none",
+       "value": 0,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S024",
+       "raw": 2,
+       "value": 2,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S054",
+       "raw": 2,
+       "value": 2,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S053",
+       "raw": 3,
+       "value": 3,
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "trial_feedback",
+   "default": {
+    "value": "none",
+    "raw": "none",
+    "basis": "anchor",
+    "source": "S019",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "correctness_feedback",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S019",
+       "raw": "none",
+       "value": "none",
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "instruction_language",
+   "default": {
+    "value": "Chinese",
+    "raw": "Chinese",
+    "basis": "anchor",
+    "source": "S019",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "instruction_language",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S019",
+       "raw": "Chinese",
+       "value": "Chinese",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S008",
+       "raw": "Portuguese",
+       "value": "Portuguese",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S009",
+       "raw": "French",
+       "value": "French",
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "population_protocol",
+   "default": {
+    "value": "child",
+    "raw": true,
+    "basis": "fill",
+    "frequency": "2/3",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "preschool_adaptation",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S040",
+       "raw": false,
+       "value": "standard",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S056",
+       "raw": true,
+       "value": "child",
+       "ok": true,
+       "note": "Ages 2-5 preschool version (S056, S008): small sets, picture cards, pre-training, discontinue rule."
+      },
+      {
+       "source": "S008",
+       "raw": true,
+       "value": "child",
+       "ok": true,
+       "note": "Ages 2-5 preschool version (S056, S008): small sets, picture cards, pre-training, discontinue rule."
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "study_configurations": [
+  {
+   "source": "S005",
+   "citation": "Petrides & Milner 1982, Neuropsychologia",
+   "label": "Petrides & Milner 1982, Neuropsychologia",
+   "doi": "10.1016/0028-3932(82)90100-2",
+   "source_type": "empirical",
+   "setting": null,
+   "n_options": 1,
+   "fully_typed": true,
+   "options": {
+    "stimulus_set.item_stimulus_set": "words"
+   }
+  },
+  {
+   "source": "S008",
+   "citation": "Sallum et al. 2017, Clin Neuropsychol",
+   "label": "Sallum et al. 2017, The Clinical Neuropsychologist",
+   "doi": "10.1080/13854046.2016.1275818",
+   "source_type": "empirical",
+   "setting": null,
+   "n_options": 2,
+   "fully_typed": true,
+   "options": {
+    "instruction_language": "Portuguese",
+    "population_protocol": "child"
+   }
+  },
+  {
+   "source": "S009",
+   "citation": "Monnier et al. 2026, Dev Neuropsychol",
+   "label": "Monnier et al. 2026, Developmental Neuropsychology",
+   "doi": "10.1080/87565641.2026.2666909",
+   "source_type": "empirical",
+   "setting": null,
+   "n_options": 1,
+   "fully_typed": true,
+   "options": {
+    "instruction_language": "French"
+   }
+  },
+  {
+   "source": "S010",
+   "citation": "Geva et al. 2016, Dev Cogn Neurosci",
+   "label": "Geva et al. 2016, Developmental Cognitive Neuroscience",
+   "doi": "10.1016/j.dcn.2016.06.001",
+   "source_type": "empirical",
+   "setting": "lab-native",
+   "n_options": 7,
+   "fully_typed": false,
+   "options": {
+    "rearrangement_rule": "full_reshuffle_each_page",
+    "sequence_constraints": {
+     "untranslated": "instructed_max_2_same_location"
+    },
+    "set_sizes.set_sizes": [
+     4,
+     6,
+     8,
+     10,
+     12
+    ],
+    "stimulus_layout": "fixed_grid_slots",
+    "stimulus_set.item_pool_across_set_sizes": "distinct_per_set_size",
+    "stimulus_set.item_stimulus_set": "abstract_designs",
+    "trials_per_condition": 3
+   }
+  },
+  {
+   "source": "S012",
+   "citation": "Sacchetti et al. 2008, BMC Psychiatry",
+   "label": "Sacchetti et al. 2008, BMC Psychiatry",
+   "doi": "10.1186/1471-244x-8-6",
+   "source_type": "empirical",
+   "setting": "lab-native",
+   "n_options": 4,
+   "fully_typed": true,
+   "options": {
+    "error_correction_procedure": "none",
+    "response_window_ms": null,
+    "set_sizes.set_sizes": [
+     8
+    ],
+    "trials_per_condition": 4
+   }
+  },
+  {
+   "source": "S014",
+   "citation": "Cox et al. 2014, Intelligence",
+   "label": "Cox et al. 2014, Intelligence",
+   "doi": "10.1016/j.intell.2014.05.006",
+   "source_type": "empirical",
+   "setting": "lab-native",
+   "n_options": 7,
+   "fully_typed": true,
+   "options": {
+    "rearrangement_rule": "partial_reshuffle_each_page",
+    "response_device": "touch",
+    "response_window_ms": null,
+    "set_sizes.set_sizes": [
+     12
+    ],
+    "stimulus_layout": "fixed_grid_slots",
+    "stimulus_set.item_stimulus_set": "abstract_designs",
+    "trials_per_condition": 3
+   }
+  },
+  {
+   "source": "S019",
+   "citation": "reference implementation",
+   "label": "reference implementation",
+   "doi": null,
+   "source_type": "reference-impl",
+   "setting": null,
+   "n_options": 16,
+   "fully_typed": true,
+   "options": {
+    "adaptive.procedure": "fixed",
+    "block_order": "ascending",
+    "error_correction_procedure": "none",
+    "instruction_language": "Chinese",
+    "iti_ms": 250,
+    "practice_trials": 0,
+    "rearrangement_rule": "full_reshuffle_each_page",
+    "response_device": "mouse",
+    "response_window_ms": null,
+    "sequence_constraints": null,
+    "set_sizes.set_sizes": [
+     6,
+     8,
+     10,
+     12
+    ],
+    "stimulus_layout": "fixed_grid_slots",
+    "stimulus_set.item_pool_across_set_sizes": "nested_first_n",
+    "stimulus_set.item_stimulus_set": "abstract_designs",
+    "trial_feedback": "none",
+    "trials_per_condition": 3
+   }
+  },
+  {
+   "source": "S024",
+   "citation": "Inquisit SOPT (proprietary, licence-included)",
+   "label": "Inquisit SOPT",
+   "label_note": "proprietary, licence-included",
+   "doi": null,
+   "source_type": "reference-impl",
+   "setting": null,
+   "n_options": 8,
+   "fully_typed": false,
+   "options": {
+    "adaptive.procedure": "fixed",
+    "block_order": "ascending",
+    "practice_trials": 2,
+    "rearrangement_rule": "full_reshuffle_each_page",
+    "sequence_constraints": {
+     "untranslated": "detect_strategy_and_remind"
+    },
+    "set_sizes.set_sizes": [
+     6,
+     8,
+     10,
+     12
+    ],
+    "stimulus_set.item_stimulus_set": "representational_drawings",
+    "trials_per_condition": 3
+   }
+  },
+  {
+   "source": "S030",
+   "citation": "Streamlit launcher for an online SOPT (no licence file) at e3c730a",
+   "label": "Streamlit launcher for an online SOPT (no licence file) at e3c730a",
+   "doi": null,
+   "source_type": "reference-impl",
+   "setting": null,
+   "n_options": 2,
+   "fully_typed": true,
+   "options": {
+    "set_sizes.set_sizes": [
+     4,
+     6,
+     8,
+     10,
+     12
+    ],
+    "stimulus_set.item_stimulus_set": "nonwords"
+   }
+  },
+  {
+   "source": "S034",
+   "citation": "Sturm et al. 2026, J Clin Exp Neuropsychol",
+   "label": "Sturm et al. 2026, Journal of Clinical and Experimental Neuropsychology",
+   "doi": "10.1080/13803395.2026.2632223",
+   "source_type": "empirical",
+   "setting": "online-unsupervised",
+   "n_options": 3,
+   "fully_typed": true,
+   "options": {
+    "rearrangement_rule": "full_reshuffle_each_page",
+    "set_sizes.set_sizes": [
+     6,
+     9,
+     12
+    ],
+    "stimulus_set.item_stimulus_set": "abstract_designs"
+   }
+  },
+  {
+   "source": "S040",
+   "citation": "Thomas et al. 2026, Psychol Assess",
+   "label": "Thomas et al. 2026, Psychological Assessment",
+   "doi": "10.1037/pas0001501",
+   "source_type": "empirical",
+   "setting": null,
+   "n_options": 8,
+   "fully_typed": true,
+   "options": {
+    "adaptive.procedure": "irt_cat",
+    "block_order": "random",
+    "error_correction_procedure": "none",
+    "population_protocol": "standard",
+    "response_device": "mouse",
+    "response_window_ms": null,
+    "set_sizes.set_sizes": [
+     3,
+     6,
+     9,
+     12
+    ],
+    "trials_per_condition": 2
+   }
+  },
+  {
+   "source": "S053",
+   "citation": "Johnson et al. 2024, J Cogn",
+   "label": "Johnson et al. 2024, Journal of Cognition",
+   "doi": "10.5334/joc.370",
+   "source_type": "empirical",
+   "setting": "lab-native",
+   "n_options": 7,
+   "fully_typed": true,
+   "options": {
+    "block_order": "ascending",
+    "practice.set_sizes.practice_set_size": 4,
+    "practice_trials": 3,
+    "response_device": "touch",
+    "set_sizes.set_sizes": [
+     4,
+     6,
+     8,
+     10
+    ],
+    "stimulus_set.item_pool_across_set_sizes": "distinct_per_set_size",
+    "trials_per_condition": 3
+   }
+  },
+  {
+   "source": "S054",
+   "citation": "Silman et al. 2022, IJERPH",
+   "label": "Silman et al. 2022, International Journal of Environmental Research and Public Health",
+   "doi": "10.3390/ijerph191710989",
+   "source_type": "empirical",
+   "setting": "lab-native",
+   "n_options": 8,
+   "fully_typed": true,
+   "options": {
+    "block_order": "ascending",
+    "practice.set_sizes.practice_set_size": 3,
+    "practice_trials": 2,
+    "sequence_constraints": null,
+    "set_sizes.set_sizes": [
+     4,
+     6,
+     8
+    ],
+    "stimulus_layout": "free_positions_in_area",
+    "stimulus_set.item_stimulus_set": "abstract_designs",
+    "trials_per_condition": 2
+   }
+  },
+  {
+   "source": "S055",
+   "citation": "Hahn et al. 2012, Dev Sci",
+   "label": "Hahn et al. 2012, Developmental Science",
+   "doi": "10.1111/j.1467-7687.2012.01137.x",
+   "source_type": "empirical",
+   "setting": "lab-native",
+   "n_options": 4,
+   "fully_typed": false,
+   "options": {
+    "sequence_constraints": {
+     "untranslated": "enforced_max_2_same_position"
+    },
+    "set_sizes.set_sizes": [
+     12
+    ],
+    "stimulus_set.item_stimulus_set": "representational_drawings",
+    "trials_per_condition": 1
+   }
+  },
+  {
+   "source": "S056",
+   "citation": "Deng et al. 2025, Front Psychol",
+   "label": "Deng et al. 2025, Frontiers in Psychology",
+   "doi": "10.3389/fpsyg.2025.1660305",
+   "source_type": "empirical",
+   "setting": "lab-native",
+   "n_options": 6,
+   "fully_typed": false,
+   "options": {
+    "adaptive.procedure": "ascending_until_fail",
+    "error_correction_procedure": {
+     "untranslated": "terminate_on_repeat"
+    },
+    "population_protocol": "child",
+    "practice.set_sizes.practice_set_size": 2,
+    "set_sizes.set_sizes": [
+     2,
+     3,
+     4,
+     5
+    ],
+    "stimulus_set.item_stimulus_set": "representational_drawings"
+   }
+  }
+ ],
+ "defaults": {
+  "source": "S019",
+  "citation": "reference implementation",
+  "typicality": 0.91,
+  "coverage": 0.889,
+  "runner_up": {
+   "source": "S024",
+   "citation": "Inquisit SOPT (proprietary, licence-included)",
+   "score": 0.481
+  },
+  "lead": 0.439,
+  "disagreement_with_runner_up": 0.375
+ },
+ "translations": [
+  {
+   "variation": "set_size_order",
+   "raw": "randomized_blocks",
+   "as": {
+    "block_order": "random"
+   },
+   "confidence": "medium",
+   "flag": true,
+   "note": "S040: 'eight randomized blocks' (4 sizes x 2 trials). Whole-block order random; could be random_within_block if each block holds every size once. Dossier does not say."
+  },
+  {
+   "variation": "position_repetition_rule",
+   "raw": "none",
+   "as": {
+    "sequence_constraints": null
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": "No position rule; absent value of sequence_constraints."
+  },
+  {
+   "variation": "position_repetition_rule",
+   "raw": "instructed_max_2_same_location",
+   "as": null,
+   "confidence": "high",
+   "flag": true,
+   "note": "Instruction to participant not to point to the same screen position more than twice in a row (S010); not enforced. sequence_constraints is about generated trial order, and the constrained thing is the response position. propose vocabulary value: position_repeat_rule {none, instructed, enforced, detect_and_remind} with max_repeat 2."
+  },
+  {
+   "variation": "position_repetition_rule",
+   "raw": "enforced_max_2_same_position",
+   "as": null,
+   "confidence": "high",
+   "flag": true,
+   "note": "S055: program prevents more than two consecutive pages with the pick at the same position. Constrains the participant's response, not the sequence; max_run keys on trial conditions. propose vocabulary value: position_repeat_rule enforced, max_repeat 2."
+  },
+  {
+   "variation": "position_repetition_rule",
+   "raw": "detect_strategy_and_remind",
+   "as": null,
+   "confidence": "high",
+   "flag": true,
+   "note": "S024 (Inquisit, proprietary): position/alphabet strategy checks trigger a reminder. propose vocabulary value: position_repeat_rule detect_and_remind (threshold not given)."
+  },
+  {
+   "variation": "response_device",
+   "raw": "touchscreen",
+   "as": {
+    "response_device": "touch"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "error_handling_within_trial",
+   "raw": "continue_to_n_choices",
+   "as": {
+    "error_correction_procedure": "none"
+   },
+   "confidence": "medium",
+   "flag": false,
+   "note": "Errors do not end the series; no retry or correction. The fixed number of choices equals the set size (see set_sizes)."
+  },
+  {
+   "variation": "error_handling_within_trial",
+   "raw": "terminate_on_repeat",
+   "as": null,
+   "confidence": "high",
+   "flag": true,
+   "note": "S056: trial set ended after repeated errors (child version). A discontinue rule, count not given. propose vocabulary value: error_correction_procedure terminate_on_repeat_errors."
+  },
+  {
+   "variation": "preschool_adaptation",
+   "raw": false,
+   "as": {
+    "population_protocol": "standard"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "preschool_adaptation",
+   "raw": true,
+   "as": {
+    "population_protocol": "child"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": "Ages 2-5 preschool version (S056, S008): small sets, picture cards, pre-training, discontinue rule."
+  }
+ ]
+}

@@ -1,0 +1,592 @@
+import type { DataContract } from "../contract";
+import { rowsOf, trialsOf } from "../harness";
+import type { Run } from "../harness";
+/**
+ * Shared checks for vocabulary options whose effect is observable in the standard data fields.
+ *
+ * Each check is keyed by the vocabulary option name, declares the contract entries it needs in
+ * `requires`, and is written against `r.eff` (the package's resolved options) and the rows. A
+ * package's adapter supplies the `DataContract`; task-specific options get task-specific checks.
+ */
+import { byBlock, distinct, filterRows } from "../rows";
+import type { DurationSpec, Row } from "../types";
+import type { Check, CheckContext, CheckSet } from "./types";
+
+const phaseRows = (r: Run, c: DataContract, phase: "test" | "practice") =>
+  rowsOf(r, phase, c.parts.response);
+
+const partName = (c: DataContract, part: string) =>
+  (c.parts as unknown as Record<string, string>)[part] ?? part;
+
+/** Rows a check of `option` reads: the contract's scope for it, or the scorable rows. */
+function scopedRows(r: Run, c: DataContract, option: string, phase: "test" | "practice") {
+  const s = c.scope[option];
+  if (!s) return phaseRows(r, c, phase);
+  const rows = rowsOf(r, phase, partName(c, s.part));
+  return s.filter ? rows.filter(s.filter) : rows;
+}
+/** Built trials a check of `option` reads the plugin parameters of. */
+function scopedTrials(r: Run, c: DataContract, option: string) {
+  const s = c.scope[option];
+  return trialsOf(r, s ? partName(c, s.builtPart ? s.builtPart(r.eff) : s.part) : c.parts.response);
+}
+/** The resolved value of `option` for the scoped part. */
+const scopedValue = (r: Run, c: DataContract, option: string): any =>
+  c.scope[option]?.value ? c.scope[option].value!(r.eff) : r.eff[option];
+const testRows = (r: Run, c: DataContract) => phaseRows(r, c, "test");
+
+const isSpec = (v: unknown): v is { min: number; max: number; step?: number } =>
+  typeof v === "object" && v !== null && "min" in v;
+
+function levelsOf(v: { min: number; max: number; step?: number }): number {
+  const step = v.step && v.step > 0 ? v.step : 1;
+  return Math.floor((v.max - v.min) / step + 1e-9) + 1;
+}
+
+/** Every value is in [min, max] and on the `min + k * step` grid. */
+function expectOnGrid(values: number[], v: { min: number; max: number; step?: number }) {
+  const step = v.step && v.step > 0 ? v.step : 1;
+  for (const x of values) {
+    expect(x).toBeGreaterThanOrEqual(v.min);
+    expect(x).toBeLessThanOrEqual(v.max);
+    expect(Math.abs(Math.round((x - v.min) / step) * step - (x - v.min))).toBeLessThan(1e-9);
+  }
+}
+
+// -- durations -----------------------------------------------------------------------------------
+
+export interface DurationCheckSpec {
+  /** vocabulary option name, e.g. `fixation_duration_ms` */
+  option: string;
+  /** the part whose rows record the duration (a key of `contract.parts`, or a literal part name) */
+  part: string;
+  /**
+   * `per_response`: one such row for every response row (fixation, iti);
+   * `some`: at least one, because the screen only appears for some trials (feedback).
+   */
+  count: "per_response" | "some";
+  /** The screen only exists when this holds; otherwise no rows are expected. Default: always. */
+  activeWhen?: (eff: any) => boolean;
+}
+
+/**
+ * Check of a `duration` option (PACKAGE-STANDARD 2a), written once for every such option:
+ * - `0` (or an inactive screen): no such rows
+ * - a number: every row records it, in every field of `contract.durationFields(option)`, and the
+ *   built trials' `trial_duration` equals it
+ * - `{min, max, step?}`: every recorded value lies in the range on the step grid, more than one
+ *   value occurs, the fields agree, and the same seed gives the same values
+ */
+export function durationCheck(spec: DurationCheckSpec): Check {
+  return {
+    kind: "recorded-parameter",
+    requires: ["parts.response"],
+    fn: async (r, { contract: c, harness }) => {
+      const part = (c.parts as unknown as Record<string, string>)[spec.part] ?? spec.part;
+      const v = r.eff[spec.option] as DurationSpec | null | undefined;
+      const rows = rowsOf(r, "test", part);
+      const resp = testRows(r, c);
+      const active = spec.activeWhen ? spec.activeWhen(r.eff) : true;
+      if (!active || v === 0 || v === null || v === undefined) {
+        expect(rows).toHaveLength(0);
+        return;
+      }
+      if (spec.count === "per_response") expect(rows).toHaveLength(resp.length);
+      else expect(rows.length).toBeGreaterThan(0);
+      const fields = c.durationFields(spec.option);
+      const builtDurations = trialsOf(r, part)
+        .filter((t) => t.data?.phase === "test")
+        .map((t) => t.trial_duration)
+        .filter((d) => typeof d === "number") as number[];
+      if (typeof v === "number") {
+        for (const f of fields) rows.forEach((x) => expect(x[f]).toBe(v));
+        builtDurations.forEach((d) => expect(d).toBe(v));
+        return;
+      }
+      for (const f of fields)
+        expectOnGrid(
+          rows.map((x) => x[f]),
+          v
+        );
+      expectOnGrid(builtDurations, v);
+      // all fields describe the same sampled value
+      rows.forEach((x) => fields.forEach((f) => expect(x[f]).toBe(x[fields[0]])));
+      if (levelsOf(v) > 1 && rows.length >= 10) {
+        expect(distinct(rows.map((x) => x[fields[0]])).length).toBeGreaterThan(1);
+      }
+      // seeded: the same seed reproduces the same durations
+      const again = await harness.run(r.opts);
+      expect(rowsOf(again, "test", part).map((x) => x[fields[0]])).toEqual(
+        rows.map((x) => x[fields[0]])
+      );
+    },
+  };
+}
+
+// -- counts --------------------------------------------------------------------------------------
+
+function blockCounts(r: Run, c: DataContract, phase: "test" | "practice" = "test") {
+  const out = byBlock(phaseRows(r, c, phase), c.fields.block);
+  return [...out.entries()].sort((a, b) => a[0] - b[0]);
+}
+
+function expectedCountsPerBlock(r: Run, c: DataContract, block: number): Record<string, number> {
+  const sizes = c.blockSizes(r.eff);
+  const keys = c.proportionKeys(r.eff);
+  const proportions = c.proportionsFor(r.eff, block);
+  const counts = c.allocate(
+    keys.map((k) => proportions[k]),
+    sizes[block - 1]
+  );
+  return Object.fromEntries(keys.map((k, i) => [k, counts[i]]));
+}
+
+function observedCountsPerBlock(r: Run, c: DataContract, block: number): Record<string, number> {
+  const rows = testRows(r, c).filter((x) => x[c.fields.block] === block);
+  return Object.fromEntries(
+    c.proportionKeys(r.eff).map((k) => [k, rows.filter((x) => c.rowMatchesKey(x, k)).length])
+  );
+}
+
+const blocksOf = (r: Run, c: DataContract) => c.blockSizes(r.eff).length;
+
+const n_test_trials: Check = {
+  kind: "behaviour",
+  requires: ["parts.response"],
+  fn: (r, { contract: c }) => expect(testRows(r, c)).toHaveLength(r.eff.n_test_trials),
+};
+
+const practice_trials: Check = {
+  kind: "behaviour",
+  requires: ["parts.response"],
+  fn: (r, { contract: c }) =>
+    expect(scopedRows(r, c, "practice_trials", "practice")).toHaveLength(r.eff.practice_trials),
+};
+
+const n_blocks: Check = {
+  kind: "behaviour",
+  requires: ["parts.response", "fields.block", "blockSizes"],
+  fn: (r, { contract: c }) => {
+    const n = r.eff.n_blocks ?? 1;
+    const sizes = c.blockSizes(r.eff);
+    expect(sizes).toHaveLength(n);
+    const seen = blockCounts(r, c);
+    expect(seen.map(([b]) => b)).toEqual(Array.from({ length: n }, (_, i) => i + 1));
+    expect(seen.map(([, rows]) => rows.length)).toEqual(sizes);
+  },
+};
+
+const trials_per_block: Check = {
+  kind: "behaviour",
+  requires: ["parts.response", "fields.block", "blockSizes"],
+  fn: (r, { contract: c }) => {
+    const per = r.eff.trials_per_block;
+    const seen = blockCounts(r, c);
+    expect(seen.map(([, rows]) => rows.length)).toEqual(c.blockSizes(r.eff));
+    // when the total divides evenly, every block has exactly `trials_per_block` trials
+    const total = seen.reduce((a, [, rows]) => a + rows.length, 0);
+    if (total % per === 0) seen.forEach(([, rows]) => expect(rows).toHaveLength(per));
+    else seen.forEach(([, rows]) => expect(rows.length).toBeLessThanOrEqual(per));
+  },
+};
+
+const condition_proportions: Check = {
+  kind: "behaviour",
+  requires: [
+    "parts.response",
+    "fields.block",
+    "condition",
+    "proportionKeys",
+    "allocate",
+    "blockSizes",
+  ],
+  fn: (r, { contract: c }) => {
+    // with random order the draws are independent, so the proportions only hold in expectation
+    if (r.eff.trial_order === "random") return;
+    for (let b = 1; b <= blocksOf(r, c); b++) {
+      expect(observedCountsPerBlock(r, c, b)).toEqual(expectedCountsPerBlock(r, c, b));
+    }
+  },
+};
+
+const condition_set: Check = {
+  kind: "behaviour",
+  requires: ["parts.response", "condition", "normaliseCondition"],
+  fn: (r, { contract: c }) => {
+    const fold = (xs: (string | null)[]) =>
+      distinct(xs.filter((x): x is string => x !== null).map(c.normaliseCondition)).sort();
+    expect(fold(testRows(r, c).map((x) => c.condition(x)))).toEqual(fold(r.eff.condition_set));
+  },
+};
+
+// -- order ---------------------------------------------------------------------------------------
+
+const conditionSeq = (rows: Row[], c: DataContract) => rows.map((x) => c.condition(x));
+
+const trial_order: Check = {
+  kind: "behaviour",
+  requires: [
+    "parts.response",
+    "fields.block",
+    "condition",
+    "proportionKeys",
+    "allocate",
+    "blockSizes",
+  ],
+  fn: async (r, { contract: c, harness }) => {
+    const order = r.eff.trial_order;
+    const blocks = blocksOf(r, c);
+    const exact = (b: number) =>
+      JSON.stringify(observedCountsPerBlock(r, c, b)) ===
+      JSON.stringify(expectedCountsPerBlock(r, c, b));
+    const allExact = Array.from({ length: blocks }, (_, i) => i + 1).every(exact);
+    if (order === "random") {
+      // independent draws: proportions are only approximate (deterministic under the fixed seed)
+      expect(testRows(r, c)).toHaveLength(r.eff.n_test_trials);
+      if (c.proportionKeys(r.eff).length > 1) {
+        // exact counts by chance are possible (about 1 in 8 for a 90/10 split of 350 trials): any of several seeds will do
+        const others = await harness.runSeeds(r.opts, [
+          "random-a",
+          "random-b",
+          "random-c",
+          "random-d",
+        ]);
+        const exactIn = (run: Run) =>
+          Array.from({ length: blocksOf(run, c) }, (_, i) => i + 1).every(
+            (b) =>
+              JSON.stringify(observedCountsPerBlock(run, c, b)) ===
+              JSON.stringify(expectedCountsPerBlock(run, c, b))
+          );
+        expect([r, ...others].some((run) => !exactIn(run))).toBe(true);
+      }
+    } else if (order === "shuffled_list") {
+      expect(allExact).toBe(true);
+      // shuffled: the first block is not grouped by condition
+      const seq = conditionSeq(
+        testRows(r, c).filter((x) => x[c.fields.block] === 1),
+        c
+      );
+      const runs = seq.filter((x, i) => i > 0 && x !== seq[i - 1]).length;
+      if (seq.length >= 8) expect(runs).toBeGreaterThan(distinct(seq).length);
+    } else if (order === "fixed_sequence") {
+      // a fixed sequence does not depend on the seed
+      const [a, b] = await harness.runSeeds(r.opts, ["fixed-a", "fixed-b"]);
+      expect(conditionSeq(testRows(a, c), c)).toEqual(conditionSeq(testRows(b, c), c));
+    }
+  },
+};
+
+const MAX_RUN_SEEDS = ["seq-a", "seq-b", "seq-c", "seq-d", "seq-e"];
+
+/** Runs of equal values in order: `{ value, length }`. */
+function runsOf(seq: unknown[]): Array<{ value: unknown; length: number }> {
+  const out: Array<{ value: unknown; length: number }> = [];
+  for (const x of seq) {
+    if (out.length && out[out.length - 1].value === x) out[out.length - 1].length++;
+    else out.push({ value: x, length: 1 });
+  }
+  return out;
+}
+
+/** Numbers of other trials between consecutive trials of `value`. */
+function gapsOf(seq: unknown[], value: unknown): number[] {
+  const idx = seq.flatMap((x, i) => (x === value ? [i] : []));
+  return idx.slice(1).map((i, k) => i - idx[k] - 1);
+}
+
+const asRecord = (v: unknown, keys: unknown[]): Record<string, number> =>
+  typeof v === "object" && v !== null
+    ? (v as Record<string, number>)
+    : Object.fromEntries(keys.map((k) => [String(k), v as number]));
+
+/**
+ * Data-level checks of the typed `sequence_constraints` keys (PACKAGE-STANDARD 2a) that need only the
+ * trial types in order: `max_run` (a number, or a map by condition), `min_gap`, `max_gap`, `run_length`,
+ * `start_with`, `no_immediate_repeat` (`true`, or a list of row fields). The neighbour rules run over the
+ * whole test sequence, so they hold across block boundaries; `start_with` runs per block. A key the shared
+ * check does not cover (`balanced_transitions`, `cycle_length`) needs a handler in
+ * `contract.sequenceConstraints`, which overrides the shared one for that key.
+ */
+function checkConstraint(key: string, value: any, blocks: Row[][], c: DataContract) {
+  // neighbour rules look across block boundaries (the standard); a task that orders blocks separately opts out
+  if (!c.sequenceAcrossBlocks && blocks.length > 1 && key !== "start_with") {
+    blocks.forEach((rows) => checkConstraint(key, value, [rows], c));
+    return;
+  }
+  const all = blocks.flat();
+  const seq = conditionSeq(all, c);
+  const override = c.sequenceConstraints[key];
+  if (override) {
+    blocks.forEach((rows) => override(rows, value, c));
+    return;
+  }
+  const runs = runsOf(seq);
+  switch (key) {
+    case "max_run":
+      for (const [cond, n] of Object.entries(asRecord(value, distinct(seq)))) {
+        runs
+          .filter((r) => r.value === cond)
+          .forEach((r) => expect(r.length).toBeLessThanOrEqual(n));
+      }
+      return;
+    case "min_gap":
+      for (const [cond, n] of Object.entries(value as Record<string, number>))
+        gapsOf(seq, cond).forEach((g) => expect(g).toBeGreaterThanOrEqual(n));
+      return;
+    case "max_gap":
+      for (const [cond, n] of Object.entries(value as Record<string, number>))
+        gapsOf(seq, cond).forEach((g) => expect(g).toBeLessThanOrEqual(n));
+      return;
+    case "run_length":
+      // the last run of the whole sequence is exempt: nothing follows it
+      for (const [cond, allowed] of Object.entries(value as Record<string, number[]>))
+        runs
+          .slice(0, -1)
+          .filter((r) => r.value === cond)
+          .forEach((r) => expect(allowed).toContain(r.length));
+      return;
+    case "start_with":
+      for (const [cond, n] of Object.entries(value as Record<string, number>))
+        blocks.forEach((rows) =>
+          conditionSeq(rows.slice(0, n), c).forEach((x) => expect(x).toBe(cond))
+        );
+      return;
+    case "no_immediate_repeat":
+      if (value === true) runs.forEach((r) => expect(r.length).toBe(1));
+      else if (Array.isArray(value))
+        for (const field of value)
+          all.slice(1).forEach((row, i) => expect(row[field]).not.toBe(all[i][field]));
+      return;
+    default:
+      throw new Error(
+        `no data-level check for sequence_constraints.${key}: add a handler to the contract`
+      );
+  }
+}
+
+const sequence_constraints: Check = {
+  kind: "behaviour",
+  requires: ["parts.response", "fields.block", "condition"],
+  fn: async (r, { contract: c, harness }) => {
+    const sc = r.eff.sequence_constraints as Record<string, any> | null;
+    if (!sc) return;
+    // several seeds: one lucky sequence would satisfy a constraint that is not applied
+    const runs = [r, ...(await harness.runSeeds(r.opts, MAX_RUN_SEEDS))];
+    for (const run of runs) {
+      const blocks = [...byBlock(testRows(run, c), c.fields.block).values()];
+      for (const [key, value] of Object.entries(sc)) checkConstraint(key, value, blocks, c);
+    }
+  },
+};
+
+// -- response ------------------------------------------------------------------------------------
+
+const response_window_ms: Check = {
+  kind: "behaviour",
+  requires: ["parts.response", "fields.timeout", "exempt"],
+  optional: ["fields.response_window"],
+  fn: async (r, { contract: c, harness }) => {
+    const raw = scopedValue(r, c, "response_window_ms");
+    // a computed value (PACKAGE-STANDARD 2a): each row records what the function returned
+    const computed = typeof raw === "function";
+    const v = (computed ? 1 : raw) as DurationSpec | null;
+    const rows = scopedRows(r, c, "response_window_ms", "test");
+    const f = c.fields;
+    if (f.response_window && computed) {
+      rows.forEach((x) =>
+        expect(x[f.response_window!] === null || typeof x[f.response_window!] === "number").toBe(
+          true
+        )
+      );
+    } else if (f.response_window) {
+      if (isSpec(v))
+        expectOnGrid(
+          rows.map((x) => x[f.response_window!]),
+          v
+        );
+      else rows.forEach((x) => expect(x[f.response_window!]).toBe(v));
+    }
+    const built = scopedTrials(r, c, "response_window_ms").filter((t) => t.data?.phase === "test");
+    built.forEach((t) => {
+      if (typeof t.trial_duration === "function") return;
+      if (isSpec(v)) expectOnGrid([t.trial_duration], v);
+      else expect(t.trial_duration).toBe(v);
+    });
+    // a participant slower than the window times out; with no window nobody does
+    const slow = await harness.runSlow(r.opts);
+    const slowRows = scopedRows(slow, c, "response_window_ms", "test").filter((x) => !c.exempt(x));
+    expect(slowRows.length).toBeGreaterThan(0);
+    slowRows.forEach((x) => expect(x[f.timeout!]).toBe(v !== null));
+    // a fast participant does not, whatever the window (when the window is longer than the RT)
+    const shortest = isSpec(v) ? v.min : v;
+    if (shortest !== null && shortest > 100) {
+      const fast = await harness.run(r.opts, { default: { data: { rt: 50 } } });
+      scopedRows(fast, c, "response_window_ms", "test")
+        .filter((x) => !c.exempt(x))
+        .forEach((x) => expect(x[f.timeout!]).toBe(false));
+    }
+  },
+};
+
+const stimulus_duration_ms: Check = {
+  kind: "recorded-parameter",
+  requires: ["parts.response", "fields.stimulus_duration"],
+  fn: (r, { contract: c }) => {
+    const v = scopedValue(r, c, "stimulus_duration_ms");
+    const rows = scopedRows(r, c, "stimulus_duration_ms", "test");
+    // a jitter range: every row records a value of the range
+    if (typeof v === "object" && v !== null) {
+      expectOnGrid(
+        rows.map((x) => x[c.fields.stimulus_duration!]),
+        v
+      );
+      scopedTrials(r, c, "stimulus_duration_ms").forEach((t) =>
+        expectOnGrid([t.stimulus_duration], v)
+      );
+      return;
+    }
+    rows.forEach((x) => expect(x[c.fields.stimulus_duration!]).toBe(v));
+    scopedTrials(r, c, "stimulus_duration_ms").forEach((t) => expect(t.stimulus_duration).toBe(v));
+  },
+};
+
+/**
+ * The trials listen for the keys, and the recorded responses use them. With a correct response field,
+ * every row's correct response is one of the keys and every key is some row's correct response. A task
+ * without a correct answer (`fields.correct_response: null`) instead shows every key pressed at least
+ * once, when there are enough responses for that to be expected.
+ */
+const response_keys: Check = {
+  kind: "behaviour",
+  requires: ["parts.response", "fields.response", "exempt"],
+  optional: ["fields.correct_response"],
+  fn: (r, { contract: c }) => {
+    const keys: string[] = r.eff.response_keys;
+    // other devices use buttons instead of keys
+    const device = scopedValue(r, c, "response_device");
+    if (device && device !== "keyboard") return;
+    expect(scopedTrials(r, c, "response_keys")[0].choices).toEqual(keys);
+    const lower = keys.map((k) => k.toLowerCase());
+    const rows = scopedRows(r, c, "response_keys", "test");
+    const f = c.fields;
+    const answered = rows.filter((x) => x[f.response] !== null && x[f.response] !== undefined);
+    answered.forEach((x) => expect(lower).toContain(String(x[f.response]).toLowerCase()));
+    const cr = f.correct_response;
+    if (cr === null) {
+      // a random simulated responder presses each of k keys with p = 1/k; with 10k responses a key is
+      // missed with probability below k * (1 - 1/k)^(10k) < 0.001 for any k >= 2
+      if (answered.length >= 10 * lower.length)
+        lower.forEach((k) =>
+          expect(answered.some((x) => String(x[f.response]).toLowerCase() === k)).toBe(true)
+        );
+      return;
+    }
+    rows
+      .filter((x) => !c.exempt(x))
+      .forEach((x) => expect(lower).toContain(String(x[cr]).toLowerCase()));
+    lower.forEach((k) => expect(rows.some((x) => String(x[cr]).toLowerCase() === k)).toBe(true));
+  },
+};
+
+const response_device: Check = {
+  kind: "behaviour",
+  requires: ["parts.response", "plugins", "fields.response"],
+  optional: ["fields.response_device"],
+  fn: (r, { contract: c }) => {
+    const device: string = scopedValue(r, c, "response_device");
+    const plugin = c.plugins[device];
+    expect(plugin).toBeDefined();
+    const f = c.fields;
+    scopedRows(r, c, "response_device", "test").forEach((x) => {
+      expect(x.trial_type).toBe(plugin);
+      if (f.response_device) expect(x[f.response_device]).toBe(device);
+      // keyboard plugins record the key (string), button plugins the button index (number)
+      if (plugin.includes("keyboard"))
+        expect(typeof x[f.response] === "string" || x[f.response] === null).toBe(true);
+      if (plugin.includes("button"))
+        expect(typeof x[f.response] === "number" || x[f.response] === null).toBe(true);
+    });
+    const choices = scopedTrials(r, c, "response_device")[0].choices;
+    if (plugin.includes("button") && r.eff.response_keys && !c.scope.response_device) {
+      expect(choices).toHaveLength(r.eff.response_keys.length);
+    }
+  },
+};
+
+// -- feedback ------------------------------------------------------------------------------------
+
+const trial_feedback: Check = {
+  kind: "behaviour",
+  requires: ["parts.response", "parts.feedback"],
+  optional: ["fields.feedback_kind"],
+  fn: (r, { contract: c }) => {
+    const kind = c.fields.feedback_kind;
+    for (const [phase, eff] of [
+      ["test", r.eff],
+      ["practice", r.effP],
+    ] as const) {
+      const fb = rowsOf(r, phase, c.parts.feedback);
+      if (eff.trial_feedback === "none") expect(fb).toHaveLength(0);
+      else {
+        expect(fb.length).toBeGreaterThan(0);
+        if (kind) fb.forEach((x) => expect(x[kind]).toBe(eff.trial_feedback));
+      }
+    }
+  },
+};
+
+const feedback_condition: Check = {
+  kind: "behaviour",
+  requires: ["parts.response", "parts.feedback", "fields.correct"],
+  fn: (r, { contract: c }) => {
+    const fb = rowsOf(r, "test", c.parts.feedback);
+    const rows = testRows(r, c);
+    if (r.eff.trial_feedback === "none") return expect(fb).toHaveLength(0);
+    const ok = (x: Row) => !!x[c.fields.correct!];
+    const n =
+      r.eff.feedback_condition === "all"
+        ? rows.length
+        : r.eff.feedback_condition === "errors_only"
+        ? rows.filter((x) => !ok(x)).length
+        : rows.filter(ok).length;
+    expect(fb).toHaveLength(n);
+  },
+};
+
+// -- registry ------------------------------------------------------------------------------------
+
+/** All shared checks, keyed by vocabulary option name. */
+export const sharedChecks: CheckSet = {
+  n_test_trials,
+  practice_trials,
+  n_blocks,
+  trials_per_block,
+  condition_proportions,
+  condition_set,
+  trial_order,
+  sequence_constraints,
+  response_window_ms,
+  stimulus_duration_ms,
+  fixation_duration_ms: durationCheck({
+    option: "fixation_duration_ms",
+    part: "fixation",
+    count: "per_response",
+  }),
+  iti_ms: durationCheck({ option: "iti_ms", part: "iti", count: "per_response" }),
+  feedback_duration_ms: durationCheck({
+    option: "feedback_duration_ms",
+    part: "feedback",
+    count: "some",
+    activeWhen: (eff) => eff.trial_feedback !== "none",
+  }),
+  trial_feedback,
+  feedback_condition,
+  response_keys,
+  response_device,
+};
+
+/** Rows of one phase/part with the task filter, for packages' own checks. */
+export const rowsOfTask = (r: Run, c: DataContract, phase: string, part: string) =>
+  filterRows(r.rows, { task: c.task, phase, part });
+
+export type { CheckContext };

@@ -1,0 +1,2204 @@
+{
+  "tallies": {
+    "observed_values_total": 163,
+    "typed_values_total": 153,
+    "level1_distinct_cases": 87,
+    "level1_checked": 79,
+    "level1_not_expressible": 8,
+    "level1_labelled_additions": 1,
+    "level2_configs": 12,
+    "level2_fully_expressible": 7
+  },
+  "level1": [
+    {
+      "option": "feedback_duration_ms",
+      "sub": "main",
+      "variation": "feedback_duration_ms",
+      "value": 500,
+      "sources": [
+        "S024",
+        "S025"
+      ],
+      "raws": [
+        500
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 40,
+        "feedback_duration_ms": 500
+      }
+    },
+    {
+      "option": "feedback_duration_ms",
+      "sub": "main",
+      "variation": "feedback_duration_ms",
+      "value": 1000,
+      "sources": [
+        "S029"
+      ],
+      "raws": [
+        1000
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 40,
+        "feedback_duration_ms": 1000
+      }
+    },
+    {
+      "option": "feedback_duration_ms",
+      "sub": "main",
+      "variation": "feedback_duration_ms",
+      "value": 1200,
+      "sources": [
+        "S026"
+      ],
+      "raws": [
+        1200
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 40,
+        "feedback_duration_ms": 1200
+      }
+    },
+    {
+      "option": "feedback_duration_ms",
+      "sub": "main",
+      "variation": "feedback_duration_ms",
+      "value": 1500,
+      "sources": [
+        "S113"
+      ],
+      "raws": [
+        1500
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 40,
+        "feedback_duration_ms": 1500
+      }
+    },
+    {
+      "option": "feedback_duration_ms",
+      "sub": "main",
+      "variation": "feedback_duration_ms",
+      "value": 2500,
+      "sources": [
+        "S138"
+      ],
+      "raws": [
+        2500
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 40,
+        "feedback_duration_ms": 2500
+      }
+    },
+    {
+      "option": "fixation_duration_ms",
+      "sub": "main",
+      "variation": "pre_stage_fixation_ms",
+      "value": 0,
+      "sources": [
+        "S024",
+        "S029"
+      ],
+      "raws": [
+        "none"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 40,
+        "fixation_duration_ms": 0
+      }
+    },
+    {
+      "option": "fixation_duration_ms",
+      "sub": "main",
+      "variation": "pre_stage_fixation_ms",
+      "value": {
+        "min": 2000,
+        "max": 4000
+      },
+      "sources": [
+        "S134"
+      ],
+      "raws": [
+        "uniform 2000-4000 before each stage"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 40,
+        "fixation_duration_ms": {
+          "min": 2000,
+          "max": 4000
+        }
+      }
+    },
+    {
+      "option": "iti_ms",
+      "sub": "main",
+      "variation": "iti_ms",
+      "value": 1000,
+      "sources": [
+        "S024",
+        "S025"
+      ],
+      "raws": [
+        "1000"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 40,
+        "iti_ms": 1000
+      }
+    },
+    {
+      "option": "iti_ms",
+      "sub": "main",
+      "variation": "iti_ms",
+      "value": 500,
+      "sources": [
+        "S113"
+      ],
+      "raws": [
+        "500"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 40,
+        "iti_ms": 500
+      }
+    },
+    {
+      "option": "iti_ms",
+      "sub": "main",
+      "variation": "iti_ms",
+      "value": {
+        "min": 1000,
+        "max": 2000
+      },
+      "sources": [
+        "S010"
+      ],
+      "raws": [
+        "uniform 1000-2000"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 40,
+        "iti_ms": {
+          "min": 1000,
+          "max": 2000
+        }
+      }
+    },
+    {
+      "option": "iti_ms",
+      "sub": "main",
+      "variation": "iti_ms",
+      "value": {
+        "min": 3000,
+        "max": 5000
+      },
+      "sources": [
+        "S134"
+      ],
+      "raws": [
+        "uniform 3000-5000"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 40,
+        "iti_ms": {
+          "min": 3000,
+          "max": 5000
+        }
+      }
+    },
+    {
+      "option": "response_window_ms",
+      "sub": "main",
+      "variation": "choice_deadline_ms",
+      "value": 2000,
+      "sources": [
+        "S007",
+        "S024",
+        "S025",
+        "S029",
+        "S134"
+      ],
+      "raws": [
+        2000
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 40,
+        "response_window_ms": 2000
+      }
+    },
+    {
+      "option": "response_window_ms",
+      "sub": "main",
+      "variation": "choice_deadline_ms",
+      "value": 2500,
+      "sources": [
+        "S011",
+        "S055"
+      ],
+      "raws": [
+        2500
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 40,
+        "response_window_ms": 2500
+      }
+    },
+    {
+      "option": "response_window_ms",
+      "sub": "main",
+      "variation": "choice_deadline_ms",
+      "value": 3000,
+      "sources": [
+        "S022"
+      ],
+      "raws": [
+        3000
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 40,
+        "response_window_ms": 3000
+      }
+    },
+    {
+      "option": "response_window_ms",
+      "sub": "main",
+      "variation": "choice_deadline_ms",
+      "value": 10000,
+      "sources": [
+        "S026"
+      ],
+      "raws": [
+        10000
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 40,
+        "response_window_ms": 10000
+      }
+    },
+    {
+      "option": "response_window_ms",
+      "sub": "main",
+      "variation": "choice_deadline_ms",
+      "value": 1500,
+      "sources": [
+        "S113",
+        "S138"
+      ],
+      "raws": [
+        1500
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 40,
+        "response_window_ms": 1500
+      }
+    },
+    {
+      "option": "response_window_ms",
+      "sub": "main",
+      "variation": "choice_deadline_ms",
+      "value": null,
+      "sources": [
+        "S013",
+        "S062"
+      ],
+      "raws": [
+        "none"
+      ],
+      "labelledAddition": true,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 40,
+        "response_window_ms": null
+      }
+    },
+    {
+      "option": "timeout_message_ms",
+      "sub": "main",
+      "variation": "timeout_message_ms",
+      "value": 1500,
+      "sources": [
+        "S025"
+      ],
+      "raws": [
+        1500
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 40,
+        "timeout_message_ms": 1500
+      }
+    },
+    {
+      "option": "timeout_message_ms",
+      "sub": "main",
+      "variation": "timeout_message_ms",
+      "value": 1000,
+      "sources": [
+        "S029"
+      ],
+      "raws": [
+        1000
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 40,
+        "timeout_message_ms": 1000
+      }
+    },
+    {
+      "option": "n_blocks",
+      "sub": "main",
+      "variation": "block_structure",
+      "value": 3,
+      "sources": [
+        "S007",
+        "S033"
+      ],
+      "raws": [
+        "3x67"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 4,
+        "n_blocks": 3
+      }
+    },
+    {
+      "option": "n_blocks",
+      "sub": "main",
+      "variation": "block_structure",
+      "value": 2,
+      "sources": [
+        "S024",
+        "S113"
+      ],
+      "raws": [
+        "2x100",
+        "2x128 (optional break)"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 4,
+        "n_blocks": 2
+      }
+    },
+    {
+      "option": "n_blocks",
+      "sub": "main",
+      "variation": "block_structure",
+      "value": 4,
+      "sources": [
+        "S022",
+        "S047"
+      ],
+      "raws": [
+        "4x50",
+        "2x75 per condition"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 4,
+        "n_blocks": 4
+      }
+    },
+    {
+      "option": "n_blocks",
+      "sub": "main",
+      "variation": "block_structure",
+      "value": 8,
+      "sources": [
+        "S120"
+      ],
+      "raws": [
+        "8x40"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 4,
+        "n_blocks": 8
+      }
+    },
+    {
+      "option": "n_test_trials",
+      "sub": "main",
+      "variation": "n_main_trials",
+      "value": 201,
+      "sources": [
+        "S007",
+        "S026",
+        "S033"
+      ],
+      "raws": [
+        201
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 201
+      }
+    },
+    {
+      "option": "n_test_trials",
+      "sub": "main",
+      "variation": "n_main_trials",
+      "value": 200,
+      "sources": [
+        "S024",
+        "S011",
+        "S022",
+        "S059",
+        "S134"
+      ],
+      "raws": [
+        200
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 200
+      }
+    },
+    {
+      "option": "n_test_trials",
+      "sub": "main",
+      "variation": "n_main_trials",
+      "value": 150,
+      "sources": [
+        "S055"
+      ],
+      "raws": [
+        150
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 150
+      }
+    },
+    {
+      "option": "n_test_trials",
+      "sub": "main",
+      "variation": "n_main_trials",
+      "value": 125,
+      "sources": [
+        "S025"
+      ],
+      "raws": [
+        125
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 125
+      }
+    },
+    {
+      "option": "n_test_trials",
+      "sub": "main",
+      "variation": "n_main_trials",
+      "value": 121,
+      "sources": [
+        "S010"
+      ],
+      "raws": [
+        121
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 121
+      }
+    },
+    {
+      "option": "n_test_trials",
+      "sub": "main",
+      "variation": "n_main_trials",
+      "value": 100,
+      "sources": [
+        "S012",
+        "S029"
+      ],
+      "raws": [
+        100
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 100
+      }
+    },
+    {
+      "option": "n_test_trials",
+      "sub": "main",
+      "variation": "n_main_trials",
+      "value": 256,
+      "sources": [
+        "S113"
+      ],
+      "raws": [
+        256
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 256
+      }
+    },
+    {
+      "option": "n_test_trials",
+      "sub": "main",
+      "variation": "n_main_trials",
+      "value": 300,
+      "sources": [
+        "S047"
+      ],
+      "raws": [
+        300
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 300
+      }
+    },
+    {
+      "option": "n_test_trials",
+      "sub": "main",
+      "variation": "n_main_trials",
+      "value": 320,
+      "sources": [
+        "S120"
+      ],
+      "raws": [
+        320
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 320
+      }
+    },
+    {
+      "option": "n_test_trials",
+      "sub": "main",
+      "variation": "n_main_trials",
+      "value": 1200,
+      "sources": [
+        "S013"
+      ],
+      "raws": [
+        1200
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 1200
+      }
+    },
+    {
+      "option": "reward_probability",
+      "sub": "main",
+      "variation": "initial_reward_probs",
+      "value": {
+        "state_1": {
+          "option_1": {
+            "min": 0.25,
+            "max": 0.75
+          },
+          "option_2": {
+            "min": 0.25,
+            "max": 0.75
+          }
+        },
+        "state_2": {
+          "option_1": {
+            "min": 0.25,
+            "max": 0.75
+          },
+          "option_2": {
+            "min": 0.25,
+            "max": 0.75
+          }
+        }
+      },
+      "sources": [
+        "S024",
+        "S029"
+      ],
+      "raws": [
+        "uniform 0.25-0.75 each"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 40,
+        "reward_probability": {
+          "red": {
+            "option_1": {
+              "min": 0.25,
+              "max": 0.75
+            },
+            "option_2": {
+              "min": 0.25,
+              "max": 0.75
+            }
+          },
+          "blue": {
+            "option_1": {
+              "min": 0.25,
+              "max": 0.75
+            },
+            "option_2": {
+              "min": 0.25,
+              "max": 0.75
+            }
+          }
+        }
+      }
+    },
+    {
+      "option": "reward_probability",
+      "sub": "main",
+      "variation": "initial_reward_probs",
+      "value": {
+        "state_1": {
+          "option_1": 0.25,
+          "option_2": 0.75
+        },
+        "state_2": {
+          "option_1": 0.4,
+          "option_2": 0.6
+        }
+      },
+      "sources": [
+        "S025"
+      ],
+      "raws": [
+        "one pair 0.25/0.75, other 0.4/0.6 (shuffled)"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 40,
+        "reward_probability": {
+          "red": {
+            "option_1": 0.25,
+            "option_2": 0.75
+          },
+          "blue": {
+            "option_1": 0.4,
+            "option_2": 0.6
+          }
+        }
+      }
+    },
+    {
+      "option": "reward_probability",
+      "sub": "main",
+      "variation": "initial_reward_probs",
+      "value": {
+        "state_1": {
+          "option_1": {
+            "min": 0.58,
+            "max": 0.72
+          },
+          "option_2": {
+            "min": 0.58,
+            "max": 0.72
+          }
+        },
+        "state_2": {
+          "option_1": {
+            "min": 0.31,
+            "max": 0.45
+          },
+          "option_2": {
+            "min": 0.31,
+            "max": 0.45
+          }
+        }
+      },
+      "sources": [
+        "S047"
+      ],
+      "raws": [
+        "one pair in [0.58,0.72], other in [0.31,0.45]"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 40,
+        "reward_probability": {
+          "red": {
+            "option_1": {
+              "min": 0.58,
+              "max": 0.72
+            },
+            "option_2": {
+              "min": 0.58,
+              "max": 0.72
+            }
+          },
+          "blue": {
+            "option_1": {
+              "min": 0.31,
+              "max": 0.45
+            },
+            "option_2": {
+              "min": 0.31,
+              "max": 0.45
+            }
+          }
+        }
+      }
+    },
+    {
+      "option": "reward_schedule",
+      "sub": "walk",
+      "variation": "reward_walk",
+      "value": "{sd: 0.025, lower: 0.25, upper: 0.75, boundary: reflect}",
+      "sources": [
+        "S007",
+        "S029",
+        "S025"
+      ],
+      "raws": [
+        "{sd: 0.025, lower: 0.25, upper: 0.75, boundary: reflect}"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 4,
+        "reward_schedule": {
+          "kind": "random_walk",
+          "sd": 0.025,
+          "bounds": [
+            0.25,
+            0.75
+          ],
+          "boundary": "reflect"
+        }
+      }
+    },
+    {
+      "option": "reward_schedule",
+      "sub": "walk",
+      "variation": "reward_walk",
+      "value": "{sd: 0.025, lower: 0.25, upper: 0.75, boundary: reverse_step}",
+      "sources": [
+        "S024"
+      ],
+      "raws": [
+        "{sd: 0.025, lower: 0.25, upper: 0.75, boundary: reverse_step}"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 4,
+        "reward_schedule": {
+          "kind": "random_walk",
+          "sd": 0.025,
+          "bounds": [
+            0.25,
+            0.75
+          ],
+          "boundary": "reverse_step"
+        }
+      }
+    },
+    {
+      "option": "reward_schedule",
+      "sub": "walk",
+      "variation": "reward_walk",
+      "value": "{sd: 0.0275, lower: 0.25, upper: 0.75, boundary: reflect}",
+      "sources": [
+        "S047"
+      ],
+      "raws": [
+        "{sd: 0.0275, lower: 0.25, upper: 0.75, boundary: reflect}"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 4,
+        "reward_schedule": {
+          "kind": "random_walk",
+          "sd": 0.0275,
+          "bounds": [
+            0.25,
+            0.75
+          ],
+          "boundary": "reflect"
+        }
+      }
+    },
+    {
+      "option": "reward_schedule",
+      "sub": "kind",
+      "variation": "reward_schedule",
+      "value": "walk_generated_per_participant",
+      "sources": [
+        "S025",
+        "S024"
+      ],
+      "raws": [
+        "walk_generated_per_participant"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "reward_schedule": {
+          "kind": "random_walk",
+          "sd": 0.025,
+          "bounds": [
+            0.25,
+            0.75
+          ],
+          "boundary": "reverse_step"
+        }
+      }
+    },
+    {
+      "option": "reward_schedule",
+      "sub": "kind",
+      "variation": "reward_schedule",
+      "value": "pregenerated_walk_sets",
+      "sources": [
+        "S026",
+        "S062"
+      ],
+      "raws": [
+        "pregenerated_walk_sets"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "reward_schedule kind \"pregenerated_walk_sets\" (fixed walk sets or block alternation) is not implemented"
+    },
+    {
+      "option": "reward_schedule",
+      "sub": "kind",
+      "variation": "reward_schedule",
+      "value": "block_alternating",
+      "sources": [
+        "S013"
+      ],
+      "raws": [
+        "block_alternating"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "reward_schedule kind \"block_alternating\" (fixed walk sets or block alternation) is not implemented"
+    },
+    {
+      "option": "sequence_constraints",
+      "sub": "main",
+      "variation": "transition_sequence_rule",
+      "value": {},
+      "sources": [
+        "S024",
+        "S029"
+      ],
+      "raws": [
+        "independent_per_trial"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "structure",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 40,
+        "sequence_constraints": {}
+      }
+    },
+    {
+      "option": "trials_per_block",
+      "sub": "main",
+      "variation": "block_structure",
+      "value": 67,
+      "sources": [
+        "S007",
+        "S033"
+      ],
+      "raws": [
+        "3x67"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 4,
+        "trials_per_block": 67
+      }
+    },
+    {
+      "option": "trials_per_block",
+      "sub": "main",
+      "variation": "block_structure",
+      "value": 100,
+      "sources": [
+        "S024"
+      ],
+      "raws": [
+        "2x100"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 4,
+        "trials_per_block": 100
+      }
+    },
+    {
+      "option": "trials_per_block",
+      "sub": "main",
+      "variation": "block_structure",
+      "value": 50,
+      "sources": [
+        "S022"
+      ],
+      "raws": [
+        "4x50"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 4,
+        "trials_per_block": 50
+      }
+    },
+    {
+      "option": "trials_per_block",
+      "sub": "main",
+      "variation": "block_structure",
+      "value": 75,
+      "sources": [
+        "S047"
+      ],
+      "raws": [
+        "2x75 per condition"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 4,
+        "trials_per_block": 75
+      }
+    },
+    {
+      "option": "trials_per_block",
+      "sub": "main",
+      "variation": "block_structure",
+      "value": 40,
+      "sources": [
+        "S120"
+      ],
+      "raws": [
+        "8x40"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 4,
+        "trials_per_block": 40
+      }
+    },
+    {
+      "option": "trials_per_block",
+      "sub": "main",
+      "variation": "block_structure",
+      "value": 128,
+      "sources": [
+        "S113"
+      ],
+      "raws": [
+        "2x128 (optional break)"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 4,
+        "trials_per_block": 128
+      }
+    },
+    {
+      "option": "common_transition_prob",
+      "sub": "main",
+      "variation": "common_transition_prob",
+      "value": 0.7,
+      "sources": [
+        "S007",
+        "S024",
+        "S029",
+        "S026",
+        "S120"
+      ],
+      "raws": [
+        0.7
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 40,
+        "common_transition_prob": 0.7
+      }
+    },
+    {
+      "option": "common_transition_prob",
+      "sub": "main",
+      "variation": "common_transition_prob",
+      "value": 0.8,
+      "sources": [
+        "S013",
+        "S009",
+        "S062"
+      ],
+      "raws": [
+        0.8
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 40,
+        "common_transition_prob": 0.8
+      }
+    },
+    {
+      "option": "missed_response_handling",
+      "sub": "main",
+      "variation": "missed_response_handling",
+      "value": "skip_trial",
+      "sources": [
+        "S007",
+        "S024",
+        "S029"
+      ],
+      "raws": [
+        "skip_trial"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 40,
+        "missed_response_handling": "skip_trial"
+      }
+    },
+    {
+      "option": "missed_response_handling",
+      "sub": "main",
+      "variation": "missed_response_handling",
+      "value": "repeat_trial",
+      "sources": [
+        "S026",
+        "S134",
+        "S033"
+      ],
+      "raws": [
+        "repeat_trial"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 40,
+        "missed_response_handling": "repeat_trial"
+      }
+    },
+    {
+      "option": "missed_response_handling",
+      "sub": "abort",
+      "variation": "missed_trial_abort_threshold",
+      "value": "none",
+      "sources": [
+        "S024"
+      ],
+      "raws": [
+        "none"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 40
+      }
+    },
+    {
+      "option": "option_side_assignment",
+      "sub": "main",
+      "variation": "option_position_rule",
+      "value": "random_per_trial",
+      "sources": [
+        "S007",
+        "S008",
+        "S120"
+      ],
+      "raws": [
+        "randomized_per_trial"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 40,
+        "option_side_assignment": "random_per_trial"
+      }
+    },
+    {
+      "option": "option_side_assignment",
+      "sub": "main",
+      "variation": "option_position_rule",
+      "value": "fixed",
+      "sources": [
+        "S022",
+        "S026"
+      ],
+      "raws": [
+        "fixed_per_participant"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 40,
+        "option_side_assignment": "fixed"
+      }
+    },
+    {
+      "option": "response_keys",
+      "sub": "main",
+      "variation": "response_keys",
+      "value": [
+        "f",
+        "j"
+      ],
+      "sources": [
+        "S025",
+        "S113",
+        "S138"
+      ],
+      "raws": [
+        "F/J"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 40,
+        "response_keys": [
+          "f",
+          "j"
+        ]
+      }
+    },
+    {
+      "option": "response_keys",
+      "sub": "main",
+      "variation": "response_keys",
+      "value": [
+        "e",
+        "i"
+      ],
+      "sources": [
+        "S011"
+      ],
+      "raws": [
+        "E/I"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 40,
+        "response_keys": [
+          "e",
+          "i"
+        ]
+      }
+    },
+    {
+      "option": "response_keys",
+      "sub": "main",
+      "variation": "response_keys",
+      "value": [
+        "1",
+        "0"
+      ],
+      "sources": [
+        "S022"
+      ],
+      "raws": [
+        "1/0"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 40,
+        "response_keys": [
+          "1",
+          "0"
+        ]
+      }
+    },
+    {
+      "option": "response_keys",
+      "sub": "main",
+      "variation": "response_keys",
+      "value": [
+        "ArrowLeft",
+        "ArrowRight"
+      ],
+      "sources": [
+        "S024",
+        "S026"
+      ],
+      "raws": [
+        "ArrowLeft/ArrowRight"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 40,
+        "response_keys": [
+          "ArrowLeft",
+          "ArrowRight"
+        ]
+      }
+    },
+    {
+      "option": "response_keys",
+      "sub": "main",
+      "variation": "response_keys",
+      "value": [
+        "z",
+        "m"
+      ],
+      "sources": [
+        "S029"
+      ],
+      "raws": [
+        "Z/M"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 40,
+        "response_keys": [
+          "z",
+          "m"
+        ]
+      }
+    },
+    {
+      "option": "comprehension_check",
+      "sub": "main",
+      "variation": "comprehension_check",
+      "value": "none",
+      "sources": [
+        "S024"
+      ],
+      "raws": [
+        "none"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "structure",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 40,
+        "comprehension_check": "none"
+      }
+    },
+    {
+      "option": "comprehension_check",
+      "sub": "main",
+      "variation": "comprehension_check",
+      "value": "quiz_with_repeat",
+      "sources": [
+        "S011",
+        "S026"
+      ],
+      "raws": [
+        "{items: 3, on_fail: repeat_instructions}",
+        "{items: quiz, on_fail: repeat_instructions (max 10 loops)}"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "comprehension_check \"quiz_with_repeat\": the walkthrough has its own check questions"
+    },
+    {
+      "option": "comprehension_check",
+      "sub": "main",
+      "variation": "comprehension_check",
+      "value": "quiz",
+      "sources": [
+        "S022",
+        "S120",
+        "S138"
+      ],
+      "raws": [
+        "{items: 3, on_fail: continue}",
+        "{items: 7, on_fail: exclude (<4 correct)}",
+        "{items: 10, on_fail: exclude (<50%)}"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "comprehension_check \"quiz\": the walkthrough has its own check questions"
+    },
+    {
+      "option": "fullscreen_enforcement",
+      "sub": "main",
+      "variation": "browser_focus_monitoring",
+      "value": "none",
+      "sources": [
+        "S024"
+      ],
+      "raws": [
+        "none"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "structure",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 40,
+        "fullscreen_enforcement": "none"
+      }
+    },
+    {
+      "option": "manipulation_check",
+      "sub": "main",
+      "variation": "post_task_transition_probe",
+      "value": "none",
+      "sources": [
+        "S024"
+      ],
+      "raws": [
+        "none"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 40,
+        "manipulation_check": "none"
+      }
+    },
+    {
+      "option": "manipulation_check",
+      "sub": "main",
+      "variation": "post_task_transition_probe",
+      "value": "questionnaire",
+      "sources": [
+        "S022",
+        "S026"
+      ],
+      "raws": [
+        true
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 40,
+        "manipulation_check": "questionnaire"
+      }
+    },
+    {
+      "option": "practice_trials",
+      "sub": "main",
+      "variation": "practice_trials",
+      "value": 50,
+      "sources": [
+        "S007",
+        "S024",
+        "S033"
+      ],
+      "raws": [
+        50
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "n_test_trials": 40,
+        "practice_trials": 50
+      }
+    },
+    {
+      "option": "practice_trials",
+      "sub": "main",
+      "variation": "practice_trials",
+      "value": 25,
+      "sources": [
+        "S025",
+        "S047",
+        "S138"
+      ],
+      "raws": [
+        25
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "n_test_trials": 40,
+        "practice_trials": 25
+      }
+    },
+    {
+      "option": "practice_trials",
+      "sub": "main",
+      "variation": "practice_trials",
+      "value": 22,
+      "sources": [
+        "S120"
+      ],
+      "raws": [
+        22
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "n_test_trials": 40,
+        "practice_trials": 22
+      }
+    },
+    {
+      "option": "practice_trials",
+      "sub": "main",
+      "variation": "practice_trials",
+      "value": 20,
+      "sources": [
+        "S022",
+        "S138"
+      ],
+      "raws": [
+        20
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "n_test_trials": 40,
+        "practice_trials": 20
+      }
+    },
+    {
+      "option": "practice_trials",
+      "sub": "main",
+      "variation": "practice_trials",
+      "value": 5,
+      "sources": [
+        "S134"
+      ],
+      "raws": [
+        5
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "n_test_trials": 40,
+        "practice_trials": 5
+      }
+    },
+    {
+      "option": "rest_breaks",
+      "sub": "main",
+      "variation": "break_progress_message",
+      "value": "none",
+      "sources": [
+        "S024"
+      ],
+      "raws": [
+        "none"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 40,
+        "rest_breaks": "none"
+      }
+    },
+    {
+      "option": "response_acknowledgement",
+      "sub": "main",
+      "variation": "selection_display_ms",
+      "value": "highlight",
+      "sources": [
+        "S024",
+        "S025",
+        "S029",
+        "S113",
+        "S138"
+      ],
+      "raws": [
+        1000,
+        500,
+        1500
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 40,
+        "response_acknowledgement": "highlight"
+      }
+    },
+    {
+      "option": "running_score_display",
+      "sub": "main",
+      "variation": "running_score_display",
+      "value": "running_total",
+      "sources": [
+        "S025"
+      ],
+      "raws": [
+        true
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 40,
+        "running_score_display": "running_total"
+      }
+    },
+    {
+      "option": "running_score_display",
+      "sub": "main",
+      "variation": "running_score_display",
+      "value": "none",
+      "sources": [
+        "S029"
+      ],
+      "raws": [
+        "none"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 40,
+        "running_score_display": "none"
+      }
+    },
+    {
+      "option": "contingency_disclosure",
+      "sub": "main",
+      "variation": "transition_structure_instruction",
+      "value": "partial",
+      "sources": [
+        "S007"
+      ],
+      "raws": [
+        "told_structure_not_mapping"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 40,
+        "contingency_disclosure": "partial"
+      }
+    },
+    {
+      "option": "contingency_disclosure",
+      "sub": "main",
+      "variation": "transition_structure_instruction",
+      "value": "full",
+      "sources": [
+        "S008",
+        "S120"
+      ],
+      "raws": [
+        "extensive_instruction",
+        "story_based_explicit"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 40,
+        "contingency_disclosure": "full"
+      }
+    },
+    {
+      "option": "contingency_disclosure",
+      "sub": "main",
+      "variation": "transition_structure_instruction",
+      "value": "none",
+      "sources": [
+        "S013"
+      ],
+      "raws": [
+        "minimal"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 40,
+        "contingency_disclosure": "none"
+      }
+    },
+    {
+      "option": "instruction_format",
+      "sub": "main",
+      "variation": "instruction_audio",
+      "value": "audio",
+      "sources": [
+        "S022"
+      ],
+      "raws": [
+        true
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "plugin needed",
+      "reason": "instruction_format \"audio\" needs recorded media"
+    },
+    {
+      "option": "instruction_format",
+      "sub": "main",
+      "variation": "instruction_audio",
+      "value": "text",
+      "sources": [
+        "S024"
+      ],
+      "raws": [
+        "none"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 40,
+        "instruction_format": "text"
+      }
+    },
+    {
+      "option": "instruction_framing",
+      "sub": "main",
+      "variation": "cover_story_stimuli",
+      "value": "abstract_symbols",
+      "sources": [
+        "S007",
+        "S011",
+        "S024",
+        "S134"
+      ],
+      "raws": [
+        "abstract_symbols"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "structure",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 40,
+        "instruction_framing": "abstract_symbols"
+      }
+    },
+    {
+      "option": "instruction_framing",
+      "sub": "main",
+      "variation": "cover_story_stimuli",
+      "value": "spaceship_planet_alien",
+      "sources": [
+        "S025",
+        "S022",
+        "S026",
+        "S055"
+      ],
+      "raws": [
+        "spaceship_planet_alien"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "structure",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 40,
+        "instruction_framing": "spaceship_planet_alien"
+      }
+    },
+    {
+      "option": "instruction_framing",
+      "sub": "main",
+      "variation": "cover_story_stimuli",
+      "value": "magic_carpet_mountain_genie",
+      "sources": [
+        "S120",
+        "S033"
+      ],
+      "raws": [
+        "magic_carpet_mountain_genie"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "the \"magic_carpet_mountain_genie\" cover story is not drawn"
+    },
+    {
+      "option": "instruction_framing",
+      "sub": "main",
+      "variation": "cover_story_stimuli",
+      "value": "ship_island_chest",
+      "sources": [
+        "S047"
+      ],
+      "raws": [
+        "ship_island_chest"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "the \"ship_island_chest\" cover story is not drawn"
+    },
+    {
+      "option": "population_protocol",
+      "sub": "main",
+      "variation": "developmental_protocol",
+      "value": "standard",
+      "sources": [
+        "S024"
+      ],
+      "raws": [
+        "adult_standard"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "structure",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 40,
+        "population_protocol": "standard"
+      }
+    },
+    {
+      "option": "population_protocol",
+      "sub": "main",
+      "variation": "developmental_protocol",
+      "value": "child",
+      "sources": [
+        "S022"
+      ],
+      "raws": [
+        "child_friendly"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "population_protocol \"child\" is a bundle of other options"
+    }
+  ],
+  "level2": [
+    {
+      "source": "S008",
+      "citation": "Kool, Cushman & Gershman 2016, PLoS Comput Biol",
+      "label": "Kool et al. 2016, PLOS Computational Biology",
+      "n_options": 2,
+      "n_keys": 2,
+      "keys_expressible": 2,
+      "gaps": [],
+      "checked_options": [
+        "contingency_disclosure",
+        "option_side_assignment"
+      ],
+      "assumed": [],
+      "tied_to_reported_value": 2
+    },
+    {
+      "source": "S010",
+      "citation": "Shahar et al. 2019, PLoS Comput Biol",
+      "label": "Shahar et al. 2019, PLOS Computational Biology",
+      "n_options": 2,
+      "n_keys": 2,
+      "keys_expressible": 2,
+      "gaps": [],
+      "checked_options": [
+        "iti_ms",
+        "n_test_trials"
+      ],
+      "assumed": [],
+      "tied_to_reported_value": 2
+    },
+    {
+      "source": "S012",
+      "citation": "Brown, Chen, Gillan & Price 2020, Biol Psychiatry CNNI",
+      "label": "Brown et al. 2020, Biological Psychiatry: Cognitive Neuroscience and Neuroimaging",
+      "n_options": 1,
+      "n_keys": 1,
+      "keys_expressible": 1,
+      "gaps": [],
+      "checked_options": [
+        "n_test_trials"
+      ],
+      "assumed": [],
+      "tied_to_reported_value": 1
+    },
+    {
+      "source": "S013",
+      "citation": "Castro-Rodrigues et al. 2022, Nat Hum Behav",
+      "label": "Castro-Rodrigues et al. 2022, Nature Human Behaviour",
+      "n_options": 5,
+      "n_keys": 5,
+      "keys_expressible": 4,
+      "gaps": [
+        {
+          "key": "reward_schedule.reward_schedule",
+          "gap": "option missing",
+          "reason": "reward_schedule kind \"block_alternating\" (fixed walk sets or block alternation) is not implemented"
+        }
+      ],
+      "checked_options": [
+        "common_transition_prob",
+        "contingency_disclosure",
+        "n_test_trials",
+        "response_window_ms"
+      ],
+      "assumed": [],
+      "tied_to_reported_value": 4
+    },
+    {
+      "source": "S024",
+      "citation": "Expfactory two-stage-decision defaults",
+      "label": "Expfactory two-stage-decision defaults",
+      "n_options": 24,
+      "n_keys": 24,
+      "keys_expressible": 24,
+      "gaps": [],
+      "checked_options": [
+        "common_transition_prob",
+        "comprehension_check",
+        "feedback_duration_ms",
+        "fixation_duration_ms",
+        "fullscreen_enforcement",
+        "instruction_format",
+        "instruction_framing",
+        "iti_ms",
+        "manipulation_check",
+        "missed_response_handling",
+        "n_blocks",
+        "n_test_trials",
+        "population_protocol",
+        "practice_trials",
+        "response_acknowledgement",
+        "response_keys",
+        "response_window_ms",
+        "rest_breaks",
+        "reward_probability",
+        "reward_schedule",
+        "sequence_constraints",
+        "trials_per_block"
+      ],
+      "assumed": [],
+      "tied_to_reported_value": 23
+    },
+    {
+      "source": "S033",
+      "citation": "Feher da Silva & Hare magic-carpet PsychoPy task",
+      "label": "Feher da Silva & Hare magic-carpet PsychoPy task",
+      "n_options": 6,
+      "n_keys": 6,
+      "keys_expressible": 5,
+      "gaps": [
+        {
+          "key": "instruction_framing",
+          "gap": "option missing",
+          "reason": "the \"magic_carpet_mountain_genie\" cover story is not drawn"
+        }
+      ],
+      "checked_options": [
+        "missed_response_handling",
+        "n_blocks",
+        "n_test_trials",
+        "practice_trials",
+        "trials_per_block"
+      ],
+      "assumed": [],
+      "tied_to_reported_value": 5
+    },
+    {
+      "source": "S047",
+      "citation": "literature sample",
+      "label": "Onysk & Seriès 2022, PLOS ONE",
+      "n_options": 7,
+      "n_keys": 7,
+      "keys_expressible": 6,
+      "gaps": [
+        {
+          "key": "instruction_framing",
+          "gap": "option missing",
+          "reason": "the \"ship_island_chest\" cover story is not drawn"
+        }
+      ],
+      "checked_options": [
+        "n_blocks",
+        "n_test_trials",
+        "practice_trials",
+        "reward_probability",
+        "reward_schedule",
+        "trials_per_block"
+      ],
+      "assumed": [],
+      "tied_to_reported_value": 6
+    },
+    {
+      "source": "S055",
+      "citation": "literature sample (supplementary search)",
+      "label": "Donegan et al. 2025, Translational Psychiatry",
+      "n_options": 3,
+      "n_keys": 3,
+      "keys_expressible": 3,
+      "gaps": [],
+      "checked_options": [
+        "instruction_framing",
+        "n_test_trials",
+        "response_window_ms"
+      ],
+      "assumed": [],
+      "tied_to_reported_value": 3
+    },
+    {
+      "source": "S059",
+      "citation": "literature sample (supplementary search)",
+      "label": "Ramakrishnan et al. 2025, NPP—Digital Psychiatry and Neuroscience",
+      "n_options": 1,
+      "n_keys": 1,
+      "keys_expressible": 1,
+      "gaps": [],
+      "checked_options": [
+        "n_test_trials"
+      ],
+      "assumed": [],
+      "tied_to_reported_value": 1
+    },
+    {
+      "source": "S113",
+      "citation": "literature sample (supplementary search 2, rank 60)",
+      "label": "Karagoz et al. 2024, Journal of Experimental Psychology: General",
+      "n_options": 8,
+      "n_keys": 8,
+      "keys_expressible": 8,
+      "gaps": [],
+      "checked_options": [
+        "feedback_duration_ms",
+        "iti_ms",
+        "n_blocks",
+        "n_test_trials",
+        "response_acknowledgement",
+        "response_keys",
+        "response_window_ms",
+        "trials_per_block"
+      ],
+      "assumed": [],
+      "tied_to_reported_value": 8
+    },
+    {
+      "source": "S120",
+      "citation": "literature sample (supplementary search 2, rank 69)",
+      "label": "Hiser et al. 2023, Behaviour Research and Therapy",
+      "n_options": 9,
+      "n_keys": 9,
+      "keys_expressible": 7,
+      "gaps": [
+        {
+          "key": "comprehension_check",
+          "gap": "option missing",
+          "reason": "comprehension_check \"quiz\": the walkthrough has its own check questions"
+        },
+        {
+          "key": "instruction_framing",
+          "gap": "option missing",
+          "reason": "the \"magic_carpet_mountain_genie\" cover story is not drawn"
+        }
+      ],
+      "checked_options": [
+        "common_transition_prob",
+        "contingency_disclosure",
+        "n_blocks",
+        "n_test_trials",
+        "option_side_assignment",
+        "practice_trials",
+        "trials_per_block"
+      ],
+      "assumed": [],
+      "tied_to_reported_value": 7
+    },
+    {
+      "source": "S138",
+      "citation": "literature sample (supplementary search 2, rank 87)",
+      "label": "Tashjian et al. 2022, PLOS Computational Biology",
+      "n_options": 6,
+      "n_keys": 6,
+      "keys_expressible": 5,
+      "gaps": [
+        {
+          "key": "comprehension_check",
+          "gap": "option missing",
+          "reason": "comprehension_check \"quiz\": the walkthrough has its own check questions"
+        }
+      ],
+      "checked_options": [
+        "feedback_duration_ms",
+        "practice_trials",
+        "response_acknowledgement",
+        "response_keys",
+        "response_window_ms"
+      ],
+      "assumed": [],
+      "tied_to_reported_value": 5
+    }
+  ]
+}

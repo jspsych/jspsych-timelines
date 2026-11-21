@@ -1,0 +1,135 @@
+/* All rules are scoped under the task class (PACKAGE-STANDARD §5). */
+
+.jspsych-timelines-tone-detection .jspsych-timelines-tone-detection-text {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0 20px;
+  text-align: left;
+}
+
+.jspsych-timelines-tone-detection .jspsych-timelines-tone-detection-text h2 {
+  text-align: center;
+}
+
+/* Anchored layout (PACKAGE-STANDARD section 5). On every task screen with a stage, the stage is centred on the
+   vertical centre of the display with absolute positioning, so nothing else on the screen (text, the plugin's
+   button group) can move it. Text goes in the region below the stage (scrolls if long); the plugin's button
+   group is pinned to the bottom edge, and the text region stops above it. */
+.jspsych-timelines-tone-detection {
+  --td-stage-h: min(200px, 34vh);
+  --td-btn-reserve: 76px;
+}
+
+.jspsych-timelines-tone-detection:has(.jspsych-timelines-tone-detection-screen) {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: none;
+  height: 100vh;
+  margin: 0;
+  overflow: hidden;
+}
+
+.jspsych-timelines-tone-detection .jspsych-timelines-tone-detection-screen {
+  display: contents;
+}
+
+.jspsych-timelines-tone-detection .jspsych-timelines-tone-detection-stage {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 480px;
+  max-width: calc(100vw - 16px);
+  height: var(--td-stage-h);
+  padding: 20px;
+  overflow: hidden;
+}
+
+.jspsych-timelines-tone-detection .jspsych-timelines-tone-detection-below {
+  position: absolute;
+  top: calc(50% + var(--td-stage-h) / 2 + 8px);
+  right: 0;
+  bottom: 0;
+  left: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* Short text under the stage (captions, hints, feedback, progress) is centred under the stage; full-page
+   instructions stay left-aligned for reading. */
+.jspsych-timelines-tone-detection
+  .jspsych-timelines-tone-detection-below
+  .jspsych-timelines-tone-detection-text {
+  text-align: center;
+  text-wrap: balance;
+}
+
+.jspsych-timelines-tone-detection:has(#jspsych-html-button-response-btngroup)
+  .jspsych-timelines-tone-detection-below {
+  bottom: var(--td-btn-reserve);
+}
+
+.jspsych-timelines-tone-detection:has(.jspsych-timelines-tone-detection-screen)
+  #jspsych-html-button-response-btngroup {
+  position: absolute;
+  right: 0;
+  bottom: 12px;
+  left: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* The interval markers: one box per interval, the same on every screen of a trial. The box of the interval that is playing is filled. */
+.jspsych-timelines-tone-detection .jspsych-timelines-tone-detection-markers {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+}
+
+.jspsych-timelines-tone-detection .jspsych-timelines-tone-detection-marker {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  border: 3px solid currentColor;
+  border-radius: 8px;
+  font-size: 2em;
+  opacity: 0.55;
+}
+
+.jspsych-timelines-tone-detection .jspsych-timelines-tone-detection-marker.jspsych-timelines-tone-detection-lit {
+  background: #2f6fed;
+  border-color: #2f6fed;
+  color: #ffffff;
+  opacity: 1;
+}
+
+/* Feedback is body size (standard §5.6); emphasis is weight, not size. */
+.jspsych-timelines-tone-detection .jspsych-timelines-tone-detection-feedback {
+  font-size: 1em;
+}
+
+.jspsych-timelines-tone-detection .jspsych-timelines-tone-detection-feedback.incorrect {
+  font-weight: bold;
+}
+
+/* The sound button of the volume-setting page (not a jspsych-btn: that class is the plugin's response button). */
+.jspsych-timelines-tone-detection .jspsych-timelines-tone-detection-sound {
+  display: block;
+  min-width: 140px;
+  margin: 0 auto;
+  padding: 8px 16px;
+  font: inherit;
+  cursor: pointer;
+}

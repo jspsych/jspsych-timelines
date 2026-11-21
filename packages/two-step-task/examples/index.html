@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Two-Step Task Example</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/jspsych@8"></script>
+    <script src="../dist/index.browser.js"></script>
+    <!-- Once published: <script src="https://unpkg.com/@jspsych-timelines/two-step-task"></script> -->
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/jspsych@8/css/jspsych.css" />
+  </head>
+
+  <body></body>
+  <script>
+    const jsPsych = initJsPsych({
+      on_finish: () => {
+        // Display data
+        jsPsych.data.displayData();
+
+        // Calculate and display scores
+        const scores = jsPsychTimelineTwoStepTask.utils.scoring.getSummary(jsPsych.data.get());
+        console.log("Two-step task results:", scores);
+      },
+    });
+
+    // Create the task with default settings (Expfactory two-stage-decision: 50 practice and 200 test trials).
+    // For a shorter demo, reduce trial counts and pace:
+    const task = jsPsychTimelineTwoStepTask.createTimeline(jsPsych, {
+      practice_trials: 4,
+      n_test_trials: 24,
+      n_blocks: 1,
+      response_acknowledgement_ms: 400,
+      iti_ms: 300,
+    });
+
+    jsPsych.run([task]);
+  </script>
+</html>

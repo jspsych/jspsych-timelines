@@ -1,0 +1,2997 @@
+{
+  "tallies": {
+    "observed_values_total": 219,
+    "typed_values_total": 204,
+    "level1_distinct_cases": 135,
+    "level1_checked": 106,
+    "level1_not_expressible": 29,
+    "level1_labelled_additions": 3,
+    "level2_configs": 12,
+    "level2_fully_expressible": 4
+  },
+  "level1": [
+    {
+      "option": "break_duration_ms",
+      "sub": "main",
+      "variation": "break_duration_ms",
+      "value": 15000,
+      "sources": [
+        "S010",
+        "S082"
+      ],
+      "raws": [
+        15000
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "break_duration_ms": 15000
+      }
+    },
+    {
+      "option": "break_duration_ms",
+      "sub": "main",
+      "variation": "break_duration_ms",
+      "value": 60000,
+      "sources": [
+        "S072"
+      ],
+      "raws": [
+        60000
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "break_duration_ms": 60000
+      }
+    },
+    {
+      "option": "break_duration_ms",
+      "sub": "main",
+      "variation": "break_duration_ms",
+      "value": null,
+      "sources": [
+        "S011"
+      ],
+      "raws": [
+        "self_paced"
+      ],
+      "labelledAddition": true,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "break_duration_ms": null
+      }
+    },
+    {
+      "option": "feedback_duration_ms",
+      "sub": "main",
+      "variation": "trial_feedback_duration_ms",
+      "value": 750,
+      "sources": [
+        "S010"
+      ],
+      "raws": [
+        750
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "trial_feedback": "accuracy",
+        "feedback_duration_ms": 750
+      }
+    },
+    {
+      "option": "feedback_duration_ms",
+      "sub": "main",
+      "variation": "trial_feedback_duration_ms",
+      "value": 1250,
+      "sources": [
+        "S079"
+      ],
+      "raws": [
+        1250
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "trial_feedback": "accuracy",
+        "feedback_duration_ms": 1250
+      }
+    },
+    {
+      "option": "feedback_duration_ms",
+      "sub": "main",
+      "variation": "trial_feedback_duration_ms",
+      "value": 2000,
+      "sources": [
+        "S079"
+      ],
+      "raws": [
+        2000
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "trial_feedback": "accuracy",
+        "feedback_duration_ms": 2000
+      }
+    },
+    {
+      "option": "fixation_duration_ms",
+      "sub": "main",
+      "variation": "fixation_duration_ms",
+      "value": 250,
+      "sources": [
+        "S010",
+        "S072"
+      ],
+      "raws": [
+        "250"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "fixation_duration_ms": 250
+      }
+    },
+    {
+      "option": "fixation_duration_ms",
+      "sub": "main",
+      "variation": "fixation_duration_ms",
+      "value": 500,
+      "sources": [
+        "S011",
+        "S079",
+        "S082"
+      ],
+      "raws": [
+        "500"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "fixation_duration_ms": 500
+      }
+    },
+    {
+      "option": "fixation_duration_ms",
+      "sub": "main",
+      "variation": "fixation_duration_ms",
+      "value": {
+        "min": 1000,
+        "max": 1500
+      },
+      "sources": [
+        "S085"
+      ],
+      "raws": [
+        "1000-1500"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "fixation_duration_ms": {
+          "min": 1000,
+          "max": 1500
+        }
+      }
+    },
+    {
+      "option": "fixation_duration_ms",
+      "sub": "main",
+      "variation": "fixation_duration_ms",
+      "value": {
+        "min": 500,
+        "max": 1000
+      },
+      "sources": [
+        "S007"
+      ],
+      "raws": [
+        "500-1000"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "fixation_duration_ms": {
+          "min": 500,
+          "max": 1000
+        }
+      }
+    },
+    {
+      "option": "fixation_duration_ms",
+      "sub": "main",
+      "variation": "fixation_duration_ms",
+      "value": 2000,
+      "sources": [
+        "S008"
+      ],
+      "raws": [
+        "2000"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "fixation_duration_ms": 2000
+      }
+    },
+    {
+      "option": "iti_ms",
+      "sub": "main",
+      "variation": "iti_ms",
+      "value": 500,
+      "sources": [
+        "S010"
+      ],
+      "raws": [
+        "fixed 500"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "iti_ms": 500
+      }
+    },
+    {
+      "option": "iti_ms",
+      "sub": "main",
+      "variation": "iti_ms",
+      "value": 1500,
+      "sources": [
+        "S079"
+      ],
+      "raws": [
+        "fixed 1500"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "iti_ms": 1500
+      }
+    },
+    {
+      "option": "iti_ms",
+      "sub": "main",
+      "variation": "iti_ms",
+      "value": {
+        "min": 750,
+        "max": 950
+      },
+      "sources": [
+        "S098"
+      ],
+      "raws": [
+        "uniform 750-950"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "iti_ms": {
+          "min": 750,
+          "max": 950
+        }
+      }
+    },
+    {
+      "option": "iti_ms",
+      "sub": "main",
+      "variation": "iti_ms",
+      "value": 750,
+      "sources": [
+        "S026"
+      ],
+      "raws": [
+        "fixed 750"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "iti_ms": 750
+      }
+    },
+    {
+      "option": "response_window_ms",
+      "sub": "main",
+      "variation": "response_window_ms",
+      "value": 1250,
+      "sources": [
+        "S010"
+      ],
+      "raws": [
+        1250
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "response_window_ms": 1250
+      }
+    },
+    {
+      "option": "response_window_ms",
+      "sub": "main",
+      "variation": "response_window_ms",
+      "value": 1850,
+      "sources": [
+        "S011"
+      ],
+      "raws": [
+        1850
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "response_window_ms": 1850
+      }
+    },
+    {
+      "option": "response_window_ms",
+      "sub": "main",
+      "variation": "response_window_ms",
+      "value": 500,
+      "sources": [
+        "S014"
+      ],
+      "raws": [
+        500
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "response_window_ms": 500
+      }
+    },
+    {
+      "option": "response_window_ms",
+      "sub": "main",
+      "variation": "response_window_ms",
+      "value": 1000,
+      "sources": [
+        "S079",
+        "S008"
+      ],
+      "raws": [
+        1000
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "response_window_ms": 1000
+      }
+    },
+    {
+      "option": "response_window_ms",
+      "sub": "main",
+      "variation": "response_window_ms",
+      "value": 1500,
+      "sources": [
+        "S080",
+        "S082"
+      ],
+      "raws": [
+        1500
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "response_window_ms": 1500
+      }
+    },
+    {
+      "option": "response_window_ms",
+      "sub": "main",
+      "variation": "response_window_ms",
+      "value": 1400,
+      "sources": [
+        "S085"
+      ],
+      "raws": [
+        1400
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "response_window_ms": 1400
+      }
+    },
+    {
+      "option": "stimulus_duration_ms",
+      "sub": "go",
+      "variation": "go_stimulus_duration_ms",
+      "value": null,
+      "sources": [
+        "S010"
+      ],
+      "raws": [
+        "until_response"
+      ],
+      "labelledAddition": true,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "stimulus_duration_ms": {
+          "go": null
+        }
+      }
+    },
+    {
+      "option": "stimulus_duration_ms",
+      "sub": "go",
+      "variation": "go_stimulus_duration_ms",
+      "value": 850,
+      "sources": [
+        "S011"
+      ],
+      "raws": [
+        850
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "stimulus_set": {
+          "stop_signal": "border"
+        },
+        "stimulus_duration_ms": {
+          "go": 850
+        }
+      }
+    },
+    {
+      "option": "stimulus_duration_ms",
+      "sub": "go",
+      "variation": "go_stimulus_duration_ms",
+      "value": 150,
+      "sources": [
+        "S080"
+      ],
+      "raws": [
+        150
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "stimulus_set": {
+          "stop_signal": "border"
+        },
+        "stimulus_duration_ms": {
+          "go": 150
+        }
+      }
+    },
+    {
+      "option": "stimulus_duration_ms",
+      "sub": "go",
+      "variation": "go_stimulus_duration_ms",
+      "value": 600,
+      "sources": [
+        "S098"
+      ],
+      "raws": [
+        600
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "stimulus_set": {
+          "stop_signal": "border"
+        },
+        "stimulus_duration_ms": {
+          "go": 600
+        }
+      }
+    },
+    {
+      "option": "stimulus_duration_ms",
+      "sub": "go",
+      "variation": "go_stimulus_duration_ms",
+      "value": 1250,
+      "sources": [
+        "S026"
+      ],
+      "raws": [
+        1250
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "stimulus_set": {
+          "stop_signal": "border"
+        },
+        "stimulus_duration_ms": {
+          "go": 1250
+        }
+      }
+    },
+    {
+      "option": "stimulus_duration_ms",
+      "sub": "stop_signal",
+      "variation": "stop_signal_duration_ms",
+      "value": null,
+      "sources": [
+        "S010"
+      ],
+      "raws": [
+        "until_trial_end"
+      ],
+      "labelledAddition": true,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "stimulus_duration_ms": {
+          "stop_signal": null
+        }
+      }
+    },
+    {
+      "option": "stimulus_duration_ms",
+      "sub": "stop_signal",
+      "variation": "stop_signal_duration_ms",
+      "value": 500,
+      "sources": [
+        "S011"
+      ],
+      "raws": [
+        500
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "stimulus_duration_ms": {
+          "stop_signal": 500
+        }
+      }
+    },
+    {
+      "option": "stimulus_duration_ms",
+      "sub": "stop_signal",
+      "variation": "stop_signal_duration_ms",
+      "value": 75,
+      "sources": [
+        "S057"
+      ],
+      "raws": [
+        75
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "recorded-parameter",
+      "options": {
+        "stimulus_duration_ms": {
+          "stop_signal": 75
+        }
+      }
+    },
+    {
+      "option": "stimulus_eccentricity",
+      "sub": "main",
+      "variation": "target_eccentricity_deg",
+      "value": 8.5,
+      "sources": [
+        "S007"
+      ],
+      "raws": [
+        8.5
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "plugin needed",
+      "reason": "saccade countermanding: degrees of eccentricity of a saccade target (deferred)"
+    },
+    {
+      "option": "stimulus_eccentricity",
+      "sub": "main",
+      "variation": "target_eccentricity_deg",
+      "value": 15,
+      "sources": [
+        "S008"
+      ],
+      "raws": [
+        15
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "plugin needed",
+      "reason": "saccade countermanding: degrees of eccentricity of a saccade target (deferred)"
+    },
+    {
+      "option": "stimulus_modality",
+      "sub": "main",
+      "variation": "stop_signal_modality",
+      "value": "visual",
+      "sources": [
+        "S010",
+        "S052"
+      ],
+      "raws": [
+        "visual"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "structure",
+      "options": {
+        "stimulus_modality": "visual"
+      }
+    },
+    {
+      "option": "stimulus_modality",
+      "sub": "main",
+      "variation": "stop_signal_modality",
+      "value": "auditory",
+      "sources": [
+        "S026",
+        "S030",
+        "S025"
+      ],
+      "raws": [
+        "auditory"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "structure",
+      "options": {
+        "stimulus_modality": "auditory"
+      }
+    },
+    {
+      "option": "stimulus_set",
+      "sub": "go",
+      "variation": "go_stimulus_set",
+      "value": "left/right arrows",
+      "sources": [
+        "S010",
+        "S052",
+        "S070"
+      ],
+      "raws": [
+        "left/right arrows"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "structure",
+      "options": {
+        "stimulus_set": {
+          "go": "arrows"
+        }
+      }
+    },
+    {
+      "option": "stimulus_set",
+      "sub": "go",
+      "variation": "go_stimulus_set",
+      "value": "4 shapes mapped to 2 keys",
+      "sources": [
+        "S011"
+      ],
+      "raws": [
+        "4 shapes mapped to 2 keys"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "shape stimuli with a key mapping"
+    },
+    {
+      "option": "stimulus_set",
+      "sub": "go",
+      "variation": "go_stimulus_set",
+      "value": "left/right arrow inside a circle",
+      "sources": [
+        "S014"
+      ],
+      "raws": [
+        "left/right arrow inside a circle"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "structure",
+      "options": {
+        "stimulus_set": {
+          "go": "arrows_in_circle"
+        }
+      }
+    },
+    {
+      "option": "stimulus_set",
+      "sub": "go",
+      "variation": "go_stimulus_set",
+      "value": "stimulus location left/right of fixation (food/non-food pictures or words, task-irrelevant)",
+      "sources": [
+        "S072"
+      ],
+      "raws": [
+        "stimulus location left/right of fixation (food/non-food pictures or words, task-irrelevant)"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "picture and word stimuli at a location"
+    },
+    {
+      "option": "stimulus_set",
+      "sub": "go",
+      "variation": "go_stimulus_set",
+      "value": "green arrow in white circle",
+      "sources": [
+        "S079"
+      ],
+      "raws": [
+        "green arrow in white circle"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "arrow and circle colours (no colour option in the spec)"
+    },
+    {
+      "option": "stimulus_set",
+      "sub": "go",
+      "variation": "go_stimulus_set",
+      "value": "image orientation portrait/landscape (stones or money)",
+      "sources": [
+        "S080"
+      ],
+      "raws": [
+        "image orientation portrait/landscape (stones or money)"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "image stimuli"
+    },
+    {
+      "option": "stimulus_set",
+      "sub": "go",
+      "variation": "go_stimulus_set",
+      "value": "black arrows on grey",
+      "sources": [
+        "S082"
+      ],
+      "raws": [
+        "black arrows on grey"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "stimulus colours (no stimulus_color in the spec)"
+    },
+    {
+      "option": "stimulus_set",
+      "sub": "go",
+      "variation": "go_stimulus_set",
+      "value": "target square turns green (Exp 1) / letter T or X (Exp 2)",
+      "sources": [
+        "S085"
+      ],
+      "raws": [
+        "target square turns green (Exp 1) / letter T or X (Exp 2)"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "square and letter stimuli"
+    },
+    {
+      "option": "stimulus_set",
+      "sub": "go",
+      "variation": "go_stimulus_set",
+      "value": "game character (archer) signals left/right",
+      "sources": [
+        "S086"
+      ],
+      "raws": [
+        "game character (archer) signals left/right"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "gamified stimuli (population_protocol gamified_child)"
+    },
+    {
+      "option": "stimulus_set",
+      "sub": "go",
+      "variation": "go_stimulus_set",
+      "value": "go task of another paradigm (flanker, n-back, task switching, shape matching, directed forgetting)",
+      "sources": [
+        "S091"
+      ],
+      "raws": [
+        "go task of another paradigm (flanker, n-back, task switching, shape matching, directed forgetting)"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "plugin needed",
+      "reason": "the stop-signal dual tasks need the other task's package"
+    },
+    {
+      "option": "stimulus_set",
+      "sub": "go",
+      "variation": "go_stimulus_set",
+      "value": "square/circle",
+      "sources": [
+        "S026"
+      ],
+      "raws": [
+        "square/circle"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "shape discrimination instead of arrow direction"
+    },
+    {
+      "option": "stimulus_set",
+      "sub": "go",
+      "variation": "go_stimulus_set",
+      "value": "peripheral saccade target (left/right)",
+      "sources": [
+        "S007"
+      ],
+      "raws": [
+        "peripheral saccade target (left/right)"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "plugin needed",
+      "reason": "saccade countermanding (deferred: needs an eye-tracker plugin)"
+    },
+    {
+      "option": "stimulus_set",
+      "sub": "stop_signal",
+      "variation": "stop_signal_stimulus",
+      "value": "go arrow turns red",
+      "sources": [
+        "S010",
+        "S070"
+      ],
+      "raws": [
+        "go arrow turns red"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "structure",
+      "options": {
+        "stimulus_set": {
+          "stop_signal": "arrow_turns_red"
+        }
+      }
+    },
+    {
+      "option": "stimulus_set",
+      "sub": "stop_signal",
+      "variation": "stop_signal_stimulus",
+      "value": "star outline around the shape",
+      "sources": [
+        "S011"
+      ],
+      "raws": [
+        "star outline around the shape"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "star-outline signal"
+    },
+    {
+      "option": "stimulus_set",
+      "sub": "stop_signal",
+      "variation": "stop_signal_stimulus",
+      "value": "surrounding circle turns red",
+      "sources": [
+        "S014",
+        "S079"
+      ],
+      "raws": [
+        "surrounding circle turns red"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "structure",
+      "options": {
+        "stimulus_set": {
+          "stop_signal": "circle_turns_red"
+        }
+      }
+    },
+    {
+      "option": "stimulus_set",
+      "sub": "stop_signal",
+      "variation": "stop_signal_stimulus",
+      "value": "blue box around stimulus",
+      "sources": [
+        "S072"
+      ],
+      "raws": [
+        "blue box around stimulus"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "structure",
+      "options": {
+        "stimulus_set": {
+          "stop_signal": "border"
+        }
+      }
+    },
+    {
+      "option": "stimulus_set",
+      "sub": "stop_signal",
+      "variation": "stop_signal_stimulus",
+      "value": "blue 15-px border",
+      "sources": [
+        "S080"
+      ],
+      "raws": [
+        "blue 15-px border"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "structure",
+      "options": {
+        "stimulus_set": {
+          "stop_signal": "border"
+        }
+      }
+    },
+    {
+      "option": "stimulus_set",
+      "sub": "stop_signal",
+      "variation": "stop_signal_stimulus",
+      "value": "blue square (0.7 x 0.7 deg)",
+      "sources": [
+        "S082"
+      ],
+      "raws": [
+        "blue square (0.7 x 0.7 deg)"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "square signal sized in degrees"
+    },
+    {
+      "option": "stimulus_set",
+      "sub": "stop_signal",
+      "variation": "stop_signal_stimulus",
+      "value": "black square (Exp 1) / red circle (Exp 2) between targets",
+      "sources": [
+        "S085"
+      ],
+      "raws": [
+        "black square (Exp 1) / red circle (Exp 2) between targets"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "signal between two targets"
+    },
+    {
+      "option": "stimulus_set",
+      "sub": "stop_signal",
+      "variation": "stop_signal_stimulus",
+      "value": "game event (dragon breathes fire)",
+      "sources": [
+        "S086"
+      ],
+      "raws": [
+        "game event (dragon breathes fire)"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "gamified signal"
+    },
+    {
+      "option": "stimulus_set",
+      "sub": "stop_signal",
+      "variation": "stop_signal_stimulus",
+      "value": "fixation spot re-illuminated",
+      "sources": [
+        "S007"
+      ],
+      "raws": [
+        "fixation spot re-illuminated"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "plugin needed",
+      "reason": "saccade countermanding"
+    },
+    {
+      "option": "stimulus_set",
+      "sub": "stop_signal",
+      "variation": "stop_signal_stimulus",
+      "value": "central flower changes green to red",
+      "sources": [
+        "S008"
+      ],
+      "raws": [
+        "central flower changes green to red"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "child-friendly flower stimulus"
+    },
+    {
+      "option": "stimulus_set",
+      "sub": "stop_signal",
+      "variation": "stop_signal_stimulus",
+      "value": "tone through closed headphones",
+      "sources": [
+        "S026"
+      ],
+      "raws": [
+        "tone through closed headphones"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "structure",
+      "options": {
+        "stimulus_set": {
+          "stop_signal": "tone"
+        }
+      }
+    },
+    {
+      "option": "stimulus_set",
+      "sub": "stop_signal",
+      "variation": "stop_signal_stimulus",
+      "value": "750 Hz tone, 75 ms",
+      "sources": [
+        "S057"
+      ],
+      "raws": [
+        "750 Hz tone, 75 ms"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "structure",
+      "options": {
+        "stimulus_set": {
+          "stop_signal": "tone"
+        }
+      }
+    },
+    {
+      "option": "condition_proportions",
+      "sub": "stop_probability",
+      "variation": "stop_signal_probability",
+      "value": 0.25,
+      "sources": [
+        "S001",
+        "S010",
+        "S014",
+        "S070",
+        "S072",
+        "S080",
+        "S082",
+        "S085",
+        "S091"
+      ],
+      "raws": [
+        0.25
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "condition_proportions": {
+          "stop": 0.25,
+          "go": 0.75
+        }
+      }
+    },
+    {
+      "option": "condition_proportions",
+      "sub": "stop_probability",
+      "variation": "stop_signal_probability",
+      "value": 0.2,
+      "sources": [
+        "S079"
+      ],
+      "raws": [
+        0.2
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "condition_proportions": {
+          "stop": 0.2,
+          "go": 0.8
+        }
+      }
+    },
+    {
+      "option": "condition_proportions",
+      "sub": "stop_probability",
+      "variation": "stop_signal_probability",
+      "value": 0.3,
+      "sources": [
+        "S086",
+        "S007"
+      ],
+      "raws": [
+        0.3
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "condition_proportions": {
+          "stop": 0.3,
+          "go": 0.7
+        }
+      }
+    },
+    {
+      "option": "condition_proportions",
+      "sub": "stop_probability",
+      "variation": "stop_signal_probability",
+      "value": 0.4,
+      "sources": [
+        "S008"
+      ],
+      "raws": [
+        0.4
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "condition_proportions": {
+          "stop": 0.4,
+          "go": 0.6
+        }
+      }
+    },
+    {
+      "option": "difficulty_levels",
+      "sub": "main",
+      "variation": "ssd_fixed_values_ms",
+      "value": [
+        17,
+        67,
+        117,
+        167
+      ],
+      "sources": [
+        "S008"
+      ],
+      "raws": [
+        "17, 67, 117, 167"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "difficulty_levels": [
+          17,
+          67,
+          117,
+          167
+        ]
+      }
+    },
+    {
+      "option": "n_blocks",
+      "sub": "main",
+      "variation": "num_test_blocks",
+      "value": 4,
+      "sources": [
+        "S010",
+        "S070",
+        "S079",
+        "S080",
+        "S007"
+      ],
+      "raws": [
+        4
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "n_blocks": 4
+      }
+    },
+    {
+      "option": "n_blocks",
+      "sub": "main",
+      "variation": "num_test_blocks",
+      "value": 12,
+      "sources": [
+        "S011"
+      ],
+      "raws": [
+        12
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "n_blocks": 12
+      }
+    },
+    {
+      "option": "n_blocks",
+      "sub": "main",
+      "variation": "num_test_blocks",
+      "value": 1,
+      "sources": [
+        "S014",
+        "S086"
+      ],
+      "raws": [
+        1
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "n_blocks": 1
+      }
+    },
+    {
+      "option": "n_blocks",
+      "sub": "main",
+      "variation": "num_test_blocks",
+      "value": 8,
+      "sources": [
+        "S072",
+        "S082"
+      ],
+      "raws": [
+        8
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "n_blocks": 8
+      }
+    },
+    {
+      "option": "sequence_constraints",
+      "sub": "main",
+      "variation": "trial_order_constraint",
+      "value": {
+        "cycle_length": 8
+      },
+      "sources": [
+        "S010"
+      ],
+      "raws": [
+        "randomized within repeated 8-trial design cycles"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "sequence_constraints": {
+          "cycle_length": 8
+        }
+      }
+    },
+    {
+      "option": "sequence_constraints",
+      "sub": "main",
+      "variation": "trial_order_constraint",
+      "value": {},
+      "sources": [
+        "S011",
+        "S008",
+        "S057"
+      ],
+      "raws": [
+        "shuffled list with exact stop proportion per block",
+        "pseudo-random, no run-length control",
+        "fully random"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "sequence_constraints": {}
+      }
+    },
+    {
+      "option": "trials_per_block",
+      "sub": "main",
+      "variation": "trials_per_block",
+      "value": 64,
+      "sources": [
+        "S010",
+        "S070"
+      ],
+      "raws": [
+        64
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "trials_per_block": 64
+      }
+    },
+    {
+      "option": "trials_per_block",
+      "sub": "main",
+      "variation": "trials_per_block",
+      "value": 50,
+      "sources": [
+        "S011"
+      ],
+      "raws": [
+        50
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "trials_per_block": 50
+      }
+    },
+    {
+      "option": "trials_per_block",
+      "sub": "main",
+      "variation": "trials_per_block",
+      "value": 40,
+      "sources": [
+        "S014",
+        "S008"
+      ],
+      "raws": [
+        40
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "trials_per_block": 40
+      }
+    },
+    {
+      "option": "trials_per_block",
+      "sub": "main",
+      "variation": "trials_per_block",
+      "value": 128,
+      "sources": [
+        "S072",
+        "S080"
+      ],
+      "raws": [
+        128
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "trials_per_block": 128
+      }
+    },
+    {
+      "option": "trials_per_block",
+      "sub": "main",
+      "variation": "trials_per_block",
+      "value": 60,
+      "sources": [
+        "S079"
+      ],
+      "raws": [
+        60
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "trials_per_block": 60
+      }
+    },
+    {
+      "option": "trials_per_block",
+      "sub": "main",
+      "variation": "trials_per_block",
+      "value": 96,
+      "sources": [
+        "S082"
+      ],
+      "raws": [
+        96
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "trials_per_block": 96
+      }
+    },
+    {
+      "option": "trials_per_block",
+      "sub": "main",
+      "variation": "trials_per_block",
+      "value": 150,
+      "sources": [
+        "S086"
+      ],
+      "raws": [
+        150
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "trials_per_block": 150
+      }
+    },
+    {
+      "option": "trials_per_block",
+      "sub": "main",
+      "variation": "trials_per_block",
+      "value": 120,
+      "sources": [
+        "S007"
+      ],
+      "raws": [
+        120
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "trials_per_block": 120
+      }
+    },
+    {
+      "option": "response_device",
+      "sub": "main",
+      "variation": "response_input_mode",
+      "value": "keyboard",
+      "sources": [
+        "S010",
+        "S070"
+      ],
+      "raws": [
+        "keyboard"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "response_device": "keyboard"
+      }
+    },
+    {
+      "option": "response_device",
+      "sub": "main",
+      "variation": "response_input_mode",
+      "value": "mouse",
+      "sources": [
+        "S085"
+      ],
+      "raws": [
+        "mouse_reach"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "response_device": "mouse"
+      }
+    },
+    {
+      "option": "response_device",
+      "sub": "main",
+      "variation": "response_input_mode",
+      "value": "gamepad",
+      "sources": [
+        "S087"
+      ],
+      "raws": [
+        "gamepad"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "plugin needed",
+      "reason": "gamepad responses"
+    },
+    {
+      "option": "response_keys",
+      "sub": "main",
+      "variation": "response_keys",
+      "value": [
+        "ArrowLeft",
+        "ArrowRight"
+      ],
+      "sources": [
+        "S010",
+        "S072"
+      ],
+      "raws": [
+        "left/right arrow keys"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "response_keys": [
+          "ArrowLeft",
+          "ArrowRight"
+        ]
+      }
+    },
+    {
+      "option": "response_keys",
+      "sub": "main",
+      "variation": "response_keys",
+      "value": [
+        "z",
+        "m"
+      ],
+      "sources": [
+        "S011"
+      ],
+      "raws": [
+        "Z/M"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "response_keys": [
+          "z",
+          "m"
+        ]
+      }
+    },
+    {
+      "option": "response_keys",
+      "sub": "main",
+      "variation": "response_keys",
+      "value": [
+        "b",
+        "n"
+      ],
+      "sources": [
+        "S014"
+      ],
+      "raws": [
+        "B/N"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "response_keys": [
+          "b",
+          "n"
+        ]
+      }
+    },
+    {
+      "option": "response_keys",
+      "sub": "main",
+      "variation": "response_keys",
+      "value": [
+        "v",
+        "n"
+      ],
+      "sources": [
+        "S070"
+      ],
+      "raws": [
+        "V/N"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "response_keys": [
+          "v",
+          "n"
+        ]
+      }
+    },
+    {
+      "option": "response_keys",
+      "sub": "main",
+      "variation": "response_keys",
+      "value": [
+        "a",
+        "l"
+      ],
+      "sources": [
+        "S079"
+      ],
+      "raws": [
+        "A/L"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "response_keys": [
+          "a",
+          "l"
+        ]
+      }
+    },
+    {
+      "option": "response_mapping_counterbalancing",
+      "sub": "main",
+      "variation": "key_mapping_assignment",
+      "value": "fixed",
+      "sources": [
+        "S010"
+      ],
+      "raws": [
+        "fixed"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "response_mapping_counterbalancing": "fixed"
+      }
+    },
+    {
+      "option": "response_mapping_counterbalancing",
+      "sub": "main",
+      "variation": "key_mapping_assignment",
+      "value": "random_per_participant",
+      "sources": [
+        "S011"
+      ],
+      "raws": [
+        "randomized_per_participant"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "random key assignment only makes sense for non-spatial stimuli (shapes mapped to two keys); the arrows here point left or right"
+    },
+    {
+      "option": "adaptive",
+      "sub": "procedure",
+      "variation": "ssd_procedure",
+      "value": "tracking",
+      "sources": [
+        "S001",
+        "S010",
+        "S011",
+        "S052"
+      ],
+      "raws": [
+        "tracking"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "adaptive": {
+          "procedure": "staircase_1up_1down"
+        }
+      }
+    },
+    {
+      "option": "adaptive",
+      "sub": "procedure",
+      "variation": "ssd_procedure",
+      "value": "random_uniform_range",
+      "sources": [
+        "S014"
+      ],
+      "raws": [
+        "random_uniform_range"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "difficulty_levels": {
+          "min": 100,
+          "max": 450
+        },
+        "adaptive": null
+      }
+    },
+    {
+      "option": "adaptive",
+      "sub": "procedure",
+      "variation": "ssd_procedure",
+      "value": "fixed_set",
+      "sources": [
+        "S008",
+        "S025"
+      ],
+      "raws": [
+        "fixed_set"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "difficulty_levels": [
+          17,
+          67,
+          117,
+          167
+        ],
+        "adaptive": null
+      }
+    },
+    {
+      "option": "adaptive",
+      "sub": "procedure",
+      "variation": "ssd_procedure",
+      "value": "fixed_single",
+      "sources": [
+        "S057"
+      ],
+      "raws": [
+        "fixed_single"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "difficulty_levels": [
+          250
+        ],
+        "adaptive": null
+      }
+    },
+    {
+      "option": "adaptive",
+      "sub": "start_level",
+      "variation": "ssd_initial_ms",
+      "value": 200,
+      "sources": [
+        "S010",
+        "S072",
+        "S086"
+      ],
+      "raws": [
+        200
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "adaptive": {
+          "start_level": 200
+        }
+      }
+    },
+    {
+      "option": "adaptive",
+      "sub": "start_level",
+      "variation": "ssd_initial_ms",
+      "value": 250,
+      "sources": [
+        "S011",
+        "S080",
+        "S082"
+      ],
+      "raws": [
+        250
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "adaptive": {
+          "start_level": 250
+        }
+      }
+    },
+    {
+      "option": "adaptive",
+      "sub": "start_level",
+      "variation": "ssd_initial_ms",
+      "value": 183,
+      "sources": [
+        "S079"
+      ],
+      "raws": [
+        183
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "adaptive": {
+          "start_level": 183
+        }
+      }
+    },
+    {
+      "option": "adaptive",
+      "sub": "start_level",
+      "variation": "ssd_initial_ms",
+      "value": 350,
+      "sources": [
+        "S091"
+      ],
+      "raws": [
+        350
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "adaptive": {
+          "start_level": 350
+        }
+      }
+    },
+    {
+      "option": "adaptive",
+      "sub": "start_level",
+      "variation": "ssd_initial_ms",
+      "value": 225,
+      "sources": [
+        "S007"
+      ],
+      "raws": [
+        225
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "adaptive": {
+          "start_level": 225
+        }
+      }
+    },
+    {
+      "option": "adaptive",
+      "sub": "step_size",
+      "variation": "ssd_step_ms",
+      "value": 50,
+      "sources": [
+        "S010",
+        "S011",
+        "S079"
+      ],
+      "raws": [
+        "50/50"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "adaptive": {
+          "step_size": 50
+        }
+      }
+    },
+    {
+      "option": "adaptive",
+      "sub": "step_size",
+      "variation": "ssd_step_ms",
+      "value": {
+        "up": 25,
+        "down": 50
+      },
+      "sources": [
+        "S082"
+      ],
+      "raws": [
+        "25/50"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "adaptive": {
+          "step_size": {
+            "up": 25,
+            "down": 50
+          }
+        }
+      }
+    },
+    {
+      "option": "adaptive",
+      "sub": "step_size",
+      "variation": "ssd_step_ms",
+      "value": 33.3,
+      "sources": [
+        "S085"
+      ],
+      "raws": [
+        "33.3/33.3"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "adaptive": {
+          "step_size": 33.3
+        }
+      }
+    },
+    {
+      "option": "adaptive",
+      "sub": "step_size",
+      "variation": "ssd_step_ms",
+      "value": 47,
+      "sources": [
+        "S007"
+      ],
+      "raws": [
+        "47/47"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "adaptive": {
+          "step_size": 47
+        }
+      }
+    },
+    {
+      "option": "adaptive",
+      "sub": "target_accuracy",
+      "variation": "tracking_target_stop_rate",
+      "value": 0.5,
+      "sources": [
+        "S001",
+        "S010",
+        "S082"
+      ],
+      "raws": [
+        0.5
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "adaptive": {
+          "target_accuracy": 0.5
+        }
+      }
+    },
+    {
+      "option": "adaptive",
+      "sub": "target_accuracy",
+      "variation": "tracking_target_stop_rate",
+      "value": 0.667,
+      "sources": [
+        "S082"
+      ],
+      "raws": [
+        0.667
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "adaptive": {
+          "target_accuracy": 0.667
+        }
+      }
+    },
+    {
+      "option": "adaptive",
+      "sub": "bounds_min",
+      "variation": "ssd_min_ms",
+      "value": 50,
+      "sources": [
+        "S010"
+      ],
+      "raws": [
+        50
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "adaptive": {
+          "bounds": [
+            50,
+            null
+          ]
+        }
+      }
+    },
+    {
+      "option": "adaptive",
+      "sub": "bounds_min",
+      "variation": "ssd_min_ms",
+      "value": 0,
+      "sources": [
+        "S011",
+        "S091"
+      ],
+      "raws": [
+        0
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "adaptive": {
+          "bounds": [
+            0,
+            null
+          ]
+        }
+      }
+    },
+    {
+      "option": "adaptive",
+      "sub": "bounds_min",
+      "variation": "ssd_min_ms",
+      "value": 33,
+      "sources": [
+        "S079"
+      ],
+      "raws": [
+        33
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "adaptive": {
+          "bounds": [
+            33,
+            null
+          ]
+        }
+      }
+    },
+    {
+      "option": "adaptive",
+      "sub": "bounds_min",
+      "variation": "ssd_min_ms",
+      "value": 33.3,
+      "sources": [
+        "S085"
+      ],
+      "raws": [
+        33.3
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "adaptive": {
+          "bounds": [
+            33.3,
+            null
+          ]
+        }
+      }
+    },
+    {
+      "option": "adaptive",
+      "sub": "bounds_max",
+      "variation": "ssd_max_ms",
+      "value": 1200,
+      "sources": [
+        "S010"
+      ],
+      "raws": [
+        1200
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "adaptive": {
+          "bounds": [
+            0,
+            1200
+          ]
+        }
+      }
+    },
+    {
+      "option": "adaptive",
+      "sub": "bounds_max",
+      "variation": "ssd_max_ms",
+      "value": 850,
+      "sources": [
+        "S011"
+      ],
+      "raws": [
+        850
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "adaptive": {
+          "bounds": [
+            0,
+            850
+          ]
+        }
+      }
+    },
+    {
+      "option": "adaptive",
+      "sub": "bounds_max",
+      "variation": "ssd_max_ms",
+      "value": 1000,
+      "sources": [
+        "S091"
+      ],
+      "raws": [
+        1000
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "adaptive": {
+          "bounds": [
+            0,
+            1000
+          ]
+        }
+      }
+    },
+    {
+      "option": "adaptive",
+      "sub": "bounds_max",
+      "variation": "ssd_max_ms",
+      "value": 550,
+      "sources": [
+        "S098"
+      ],
+      "raws": [
+        550
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "adaptive": {
+          "bounds": [
+            0,
+            550
+          ]
+        }
+      }
+    },
+    {
+      "option": "device_eligibility",
+      "sub": "main",
+      "variation": "device_and_environment_checks",
+      "value": "browser_restricted",
+      "sources": [
+        "S010"
+      ],
+      "raws": [
+        "fullscreen; window >= 800x600; Safari excluded"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "plugin needed",
+      "reason": "fullscreen, window size and browser checks (a device-check plugin)"
+    },
+    {
+      "option": "device_eligibility",
+      "sub": "main",
+      "variation": "device_and_environment_checks",
+      "value": "hardware_required",
+      "sources": [
+        "S085"
+      ],
+      "raws": [
+        "instruction to use external mouse at low sensitivity; movement-duration screening task"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "plugin needed",
+      "reason": "a hardware requirement cannot be verified in the browser"
+    },
+    {
+      "option": "device_eligibility",
+      "sub": "main",
+      "variation": "device_and_environment_checks",
+      "value": "computer_only",
+      "sources": [
+        "S079"
+      ],
+      "raws": [
+        "laptop/desktop with keyboard in a quiet room (instruction only)"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "structure",
+      "options": {
+        "device_eligibility": "computer_only"
+      }
+    },
+    {
+      "option": "practice_criterion",
+      "sub": "main",
+      "variation": "practice_advance_criterion",
+      "value": {
+        "go_rt_median_max_ms": 1000,
+        "go_accuracy_min": 0.8,
+        "go_omission_rate_max": 0.1,
+        "on_fail": "repeat"
+      },
+      "sources": [
+        "S011"
+      ],
+      "raws": [
+        "median RT < 1000, go acc > 0.8, missed < 0.1; max 5 repeats"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "criterion on go_rt_median_max_ms, go_omission_rate_max (the vocabulary's practice_criterion has accuracy, window, on_fail, max_repeats; the spec typed it with other field names)"
+    },
+    {
+      "option": "practice_criterion",
+      "sub": "main",
+      "variation": "practice_advance_criterion",
+      "value": {
+        "go_accuracy_min": 0.7,
+        "on_fail": "repeat"
+      },
+      "sources": [
+        "S086"
+      ],
+      "raws": [
+        "go acc >= 0.7, else repeat"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_criterion": {
+          "accuracy": 0.7,
+          "on_fail": "repeat"
+        }
+      }
+    },
+    {
+      "option": "practice_criterion",
+      "sub": "main",
+      "variation": "practice_advance_criterion",
+      "value": {
+        "accuracy_min": 0.75,
+        "stop_accuracy": [
+          0.3,
+          0.7
+        ],
+        "rt_mean_max_ms": 1000,
+        "on_fail": "repeat"
+      },
+      "sources": [
+        "S091"
+      ],
+      "raws": [
+        "acc >= 0.75, stop acc 0.3-0.7, mean RT < 1000; max 3 blocks"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "criterion on accuracy_min, stop_accuracy, rt_mean_max_ms (the vocabulary's practice_criterion has accuracy, window, on_fail, max_repeats; the spec typed it with other field names)"
+    },
+    {
+      "option": "practice_trials",
+      "sub": "go_only",
+      "variation": "go_only_practice",
+      "value": 0,
+      "sources": [
+        "S010"
+      ],
+      "raws": [
+        "none"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {}
+    },
+    {
+      "option": "practice_trials",
+      "sub": "go_only",
+      "variation": "go_only_practice",
+      "value": 12,
+      "sources": [
+        "S011"
+      ],
+      "raws": [
+        12
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "a go-only practice block before the mixed practice (one practice block only)"
+    },
+    {
+      "option": "practice_trials",
+      "sub": "go_only",
+      "variation": "go_only_practice",
+      "value": 64,
+      "sources": [
+        "S079"
+      ],
+      "raws": [
+        64
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "a go-only practice block before the mixed practice (one practice block only)"
+    },
+    {
+      "option": "practice_trials",
+      "sub": "go_only",
+      "variation": "go_only_practice",
+      "value": 8,
+      "sources": [
+        "S098"
+      ],
+      "raws": [
+        8
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "a go-only practice block before the mixed practice (one practice block only)"
+    },
+    {
+      "option": "practice_trials",
+      "sub": "main",
+      "variation": "practice_trials",
+      "value": 32,
+      "sources": [
+        "S010",
+        "S082"
+      ],
+      "raws": [
+        32
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 32
+      }
+    },
+    {
+      "option": "practice_trials",
+      "sub": "main",
+      "variation": "practice_trials",
+      "value": 20,
+      "sources": [
+        "S011",
+        "S079"
+      ],
+      "raws": [
+        20
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 20
+      }
+    },
+    {
+      "option": "practice_trials",
+      "sub": "main",
+      "variation": "practice_trials",
+      "value": 16,
+      "sources": [
+        "S072"
+      ],
+      "raws": [
+        16
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 16
+      }
+    },
+    {
+      "option": "practice_trials",
+      "sub": "main",
+      "variation": "practice_trials",
+      "value": 64,
+      "sources": [
+        "S080"
+      ],
+      "raws": [
+        64
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 64
+      }
+    },
+    {
+      "option": "practice_trials",
+      "sub": "main",
+      "variation": "practice_trials",
+      "value": 10,
+      "sources": [
+        "S086"
+      ],
+      "raws": [
+        10
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 10
+      }
+    },
+    {
+      "option": "practice_trials",
+      "sub": "main",
+      "variation": "practice_trials",
+      "value": 60,
+      "sources": [
+        "S007"
+      ],
+      "raws": [
+        60
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "practice_trials": 60
+      }
+    },
+    {
+      "option": "block_feedback",
+      "sub": "main",
+      "variation": "block_feedback",
+      "value": "accuracy_rt",
+      "sources": [
+        "S001",
+        "S010",
+        "S011",
+        "S072",
+        "S082"
+      ],
+      "raws": [
+        "performance_summary",
+        "performance_summary_with_warnings"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "block_feedback": "accuracy_rt"
+      }
+    },
+    {
+      "option": "block_feedback",
+      "sub": "main",
+      "variation": "block_feedback",
+      "value": "none",
+      "sources": [
+        "S070"
+      ],
+      "raws": [
+        "none"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "block_feedback": "none"
+      }
+    },
+    {
+      "option": "performance_incentive",
+      "sub": "main",
+      "variation": "performance_incentive",
+      "value": "none",
+      "sources": [
+        "S010"
+      ],
+      "raws": [
+        "none"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "structure",
+      "options": {
+        "performance_incentive": "none"
+      }
+    },
+    {
+      "option": "performance_incentive",
+      "sub": "main",
+      "variation": "performance_incentive",
+      "value": "points_only",
+      "sources": [
+        "S086",
+        "S029"
+      ],
+      "raws": [
+        "speed_points",
+        "points_per_response"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "points per response (no points in this task)"
+    },
+    {
+      "option": "trial_feedback",
+      "sub": "main",
+      "variation": "trial_feedback_phases",
+      "value": "none",
+      "sources": [
+        "S010",
+        "S082",
+        "S070"
+      ],
+      "raws": [
+        "practice_only",
+        "none"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "trial_feedback": "none"
+      }
+    },
+    {
+      "option": "strategy_instruction",
+      "sub": "main",
+      "variation": "waiting_instruction",
+      "value": "dont_wait",
+      "sources": [
+        "S001",
+        "S070",
+        "S072"
+      ],
+      "raws": [
+        "dont_wait"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "instruction_format": "text",
+        "strategy_instruction": "dont_wait"
+      }
+    },
+    {
+      "option": "strategy_instruction",
+      "sub": "main",
+      "variation": "waiting_instruction",
+      "value": "dont_wait_plus_tracking_explanation",
+      "sources": [
+        "S010",
+        "S082"
+      ],
+      "raws": [
+        "dont_wait_plus_tracking_explanation"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "instruction_format": "text",
+        "strategy_instruction": "dont_wait_plus_tracking_explanation"
+      }
+    },
+    {
+      "option": "strategy_instruction",
+      "sub": "main",
+      "variation": "waiting_instruction",
+      "value": "balance_speed_and_stopping",
+      "sources": [
+        "S011"
+      ],
+      "raws": [
+        "balance_speed_and_stopping"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "instruction_format": "text",
+        "strategy_instruction": "balance_speed_and_stopping"
+      }
+    },
+    {
+      "option": "population_protocol",
+      "sub": "main",
+      "variation": "child_protocol",
+      "value": "standard",
+      "sources": [
+        "S010"
+      ],
+      "raws": [
+        "none"
+      ],
+      "labelledAddition": false,
+      "status": "checked",
+      "kind": "structure",
+      "options": {
+        "population_protocol": "standard"
+      }
+    },
+    {
+      "option": "population_protocol",
+      "sub": "main",
+      "variation": "child_protocol",
+      "value": "gamified_child",
+      "sources": [
+        "S008"
+      ],
+      "raws": [
+        "gamified story, 6 practice + 40 trials, fixed SSDs, sound feedback, instructions read aloud"
+      ],
+      "labelledAddition": false,
+      "status": "not expressible",
+      "gap": "option missing",
+      "reason": "gamified child protocol (story, sounds, flower stimuli)"
+    }
+  ],
+  "level2": [
+    {
+      "source": "S007",
+      "citation": "Thakkar et al. 2011, Biol Psychiatry",
+      "label": "Thakkar et al. 2011, Biological Psychiatry",
+      "n_options": 10,
+      "n_keys": 10,
+      "keys_expressible": 7,
+      "gaps": [
+        {
+          "key": "stimulus_eccentricity",
+          "gap": "plugin needed",
+          "reason": "saccade countermanding: degrees of eccentricity of a saccade target (deferred)"
+        },
+        {
+          "key": "stimulus_set.go",
+          "gap": "plugin needed",
+          "reason": "saccade countermanding (deferred: needs an eye-tracker plugin)"
+        },
+        {
+          "key": "stimulus_set.stop signal",
+          "gap": "plugin needed",
+          "reason": "saccade countermanding"
+        }
+      ],
+      "checked_options": [
+        "adaptive",
+        "condition_proportions",
+        "fixation_duration_ms",
+        "n_blocks",
+        "practice_trials",
+        "trials_per_block"
+      ],
+      "assumed": [],
+      "tied_to_reported_value": 7
+    },
+    {
+      "source": "S008",
+      "citation": "Countermanding saccades in children, 2026, Atten Percept Psychophys",
+      "label": "Hodgson et al. 2026, Attention, Perception, & Psychophysics",
+      "n_options": 10,
+      "n_keys": 10,
+      "keys_expressible": 7,
+      "gaps": [
+        {
+          "key": "population_protocol",
+          "gap": "option missing",
+          "reason": "gamified child protocol (story, sounds, flower stimuli)"
+        },
+        {
+          "key": "stimulus_eccentricity",
+          "gap": "plugin needed",
+          "reason": "saccade countermanding: degrees of eccentricity of a saccade target (deferred)"
+        },
+        {
+          "key": "stimulus_set.stop signal",
+          "gap": "option missing",
+          "reason": "child-friendly flower stimulus"
+        }
+      ],
+      "checked_options": [
+        "adaptive",
+        "condition_proportions",
+        "difficulty_levels",
+        "fixation_duration_ms",
+        "response_window_ms",
+        "sequence_constraints",
+        "trials_per_block"
+      ],
+      "assumed": [],
+      "tied_to_reported_value": 7
+    },
+    {
+      "source": "S010",
+      "citation": "STOP-IT jsPsych version (Verbruggen), commit 73e4654",
+      "label": "STOP-IT jsPsych version (Verbruggen), commit 73e4654",
+      "n_options": 32,
+      "n_keys": 32,
+      "keys_expressible": 31,
+      "gaps": [
+        {
+          "key": "device_eligibility",
+          "gap": "plugin needed",
+          "reason": "fullscreen, window size and browser checks (a device-check plugin)"
+        }
+      ],
+      "checked_options": [
+        "adaptive",
+        "block_feedback",
+        "break_duration_ms",
+        "condition_proportions",
+        "feedback_duration_ms",
+        "fixation_duration_ms",
+        "iti_ms",
+        "n_blocks",
+        "performance_incentive",
+        "population_protocol",
+        "trial_feedback",
+        "practice_criterion",
+        "practice_trials",
+        "response_device",
+        "response_keys",
+        "response_mapping_counterbalancing",
+        "response_window_ms",
+        "sequence_constraints",
+        "stimulus_duration_ms",
+        "stimulus_modality",
+        "stimulus_set",
+        "strategy_instruction",
+        "trials_per_block"
+      ],
+      "assumed": [
+        "instruction_format"
+      ],
+      "tied_to_reported_value": 28
+    },
+    {
+      "source": "S025",
+      "citation": "Bissett et al. 2021, Sci Adv",
+      "label": "Bissett et al. 2021, Science Advances (2)",
+      "n_options": 1,
+      "n_keys": 1,
+      "keys_expressible": 1,
+      "gaps": [],
+      "checked_options": [
+        "stimulus_modality"
+      ],
+      "assumed": [],
+      "tied_to_reported_value": 1
+    },
+    {
+      "source": "S026",
+      "citation": "Hedge, Powell & Sumner 2018, Behav Res Methods",
+      "label": "Hedge et al. 2018, Behavior Research Methods",
+      "n_options": 5,
+      "n_keys": 5,
+      "keys_expressible": 4,
+      "gaps": [
+        {
+          "key": "stimulus_set.go",
+          "gap": "option missing",
+          "reason": "shape discrimination instead of arrow direction"
+        }
+      ],
+      "checked_options": [
+        "iti_ms",
+        "stimulus_duration_ms",
+        "stimulus_modality",
+        "stimulus_set"
+      ],
+      "assumed": [],
+      "tied_to_reported_value": 3
+    },
+    {
+      "source": "S029",
+      "citation": "Wadsley et al. 2023, Exp Brain Res (SeleST)",
+      "label": "Wadsley et al. 2023, Experimental Brain Research",
+      "n_options": 1,
+      "n_keys": 1,
+      "keys_expressible": 0,
+      "gaps": [
+        {
+          "key": "performance_incentive",
+          "gap": "option missing",
+          "reason": "points per response (no points in this task)"
+        }
+      ],
+      "checked_options": [],
+      "assumed": [],
+      "tied_to_reported_value": 0
+    },
+    {
+      "source": "S052",
+      "citation": "An exploration of relationships between associative and non-associative measures (2025)",
+      "label": "Brudan et al. 2025, Quarterly Journal of Experimental Psychology",
+      "n_options": 3,
+      "n_keys": 3,
+      "keys_expressible": 3,
+      "gaps": [],
+      "checked_options": [
+        "adaptive",
+        "stimulus_modality",
+        "stimulus_set"
+      ],
+      "assumed": [],
+      "tied_to_reported_value": 2
+    },
+    {
+      "source": "S057",
+      "citation": "The rollercoaster of obsessive-compulsive disorder: How chronotype and time of d (2025)",
+      "label": "Kalanthroff et al. 2025, Journal of Mood & Anxiety Disorders",
+      "n_options": 4,
+      "n_keys": 4,
+      "keys_expressible": 4,
+      "gaps": [],
+      "checked_options": [
+        "adaptive",
+        "sequence_constraints",
+        "stimulus_duration_ms",
+        "stimulus_set"
+      ],
+      "assumed": [
+        "difficulty_levels"
+      ],
+      "tied_to_reported_value": 3
+    },
+    {
+      "source": "S070",
+      "citation": "Comparing self-other distinction across motor, cognitive and affective domains. (2024)",
+      "label": "Pronizius et al. 2024, Royal Society Open Science",
+      "n_options": 10,
+      "n_keys": 10,
+      "keys_expressible": 10,
+      "gaps": [],
+      "checked_options": [
+        "block_feedback",
+        "condition_proportions",
+        "n_blocks",
+        "response_device",
+        "response_keys",
+        "stimulus_set",
+        "strategy_instruction",
+        "trial_feedback",
+        "trials_per_block"
+      ],
+      "assumed": [
+        "instruction_format"
+      ],
+      "tied_to_reported_value": 8
+    },
+    {
+      "source": "S079",
+      "citation": "The effects of conscious movement investment on inhibiting a simple response. (2024)",
+      "label": "You et al. 2024, Frontiers in Psychology",
+      "n_options": 16,
+      "n_keys": 16,
+      "keys_expressible": 14,
+      "gaps": [
+        {
+          "key": "practice_trials.go_only_practice",
+          "gap": "option missing",
+          "reason": "a go-only practice block before the mixed practice (one practice block only)"
+        },
+        {
+          "key": "stimulus_set.go",
+          "gap": "option missing",
+          "reason": "arrow and circle colours (no colour option in the spec)"
+        }
+      ],
+      "checked_options": [
+        "adaptive",
+        "condition_proportions",
+        "device_eligibility",
+        "feedback_duration_ms",
+        "fixation_duration_ms",
+        "iti_ms",
+        "n_blocks",
+        "practice_trials",
+        "response_keys",
+        "response_window_ms",
+        "stimulus_set",
+        "trials_per_block"
+      ],
+      "assumed": [
+        "trial_feedback"
+      ],
+      "tied_to_reported_value": 13
+    },
+    {
+      "source": "S086",
+      "citation": "A Novel, Expert-Endorsed, Neurocognitive Digital Assessment Tool for Addictive D (2023)",
+      "label": "Lee et al. 2023, Journal of Medical Internet Research",
+      "n_options": 9,
+      "n_keys": 9,
+      "keys_expressible": 6,
+      "gaps": [
+        {
+          "key": "performance_incentive",
+          "gap": "option missing",
+          "reason": "points per response (no points in this task)"
+        },
+        {
+          "key": "stimulus_set.go",
+          "gap": "option missing",
+          "reason": "gamified stimuli (population_protocol gamified_child)"
+        },
+        {
+          "key": "stimulus_set.stop signal",
+          "gap": "option missing",
+          "reason": "gamified signal"
+        }
+      ],
+      "checked_options": [
+        "adaptive",
+        "condition_proportions",
+        "n_blocks",
+        "practice_criterion",
+        "practice_trials",
+        "trials_per_block"
+      ],
+      "assumed": [],
+      "tied_to_reported_value": 6
+    },
+    {
+      "source": "S087",
+      "citation": "Exploring Response Inhibition, the Behavioral Inhibition System and Possible Sex (2023)",
+      "label": "Eriksson et al. 2023, International Journal of Environmental Research and Public Health",
+      "n_options": 1,
+      "n_keys": 1,
+      "keys_expressible": 0,
+      "gaps": [
+        {
+          "key": "response_device",
+          "gap": "plugin needed",
+          "reason": "gamepad responses"
+        }
+      ],
+      "checked_options": [],
+      "assumed": [],
+      "tied_to_reported_value": 0
+    }
+  ]
+}

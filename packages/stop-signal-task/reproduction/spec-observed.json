@@ -1,0 +1,3368 @@
+{
+ "spec": "specs/countermanding/spec.yaml (jspsych-timelines-paper, vocabulary 2026-11-13-std-final)",
+ "options": [
+  {
+   "name": "break_duration_ms",
+   "default": {
+    "value": 15000,
+    "raw": 15000,
+    "basis": "anchor",
+    "source": "S010",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "break_duration_ms",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S010",
+       "raw": 15000,
+       "value": 15000,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S072",
+       "raw": 60000,
+       "value": 60000,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S082",
+       "raw": 15000,
+       "value": 15000,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S011",
+       "raw": "self_paced",
+       "value": null,
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "feedback_duration_ms",
+   "default": {
+    "value": 750,
+    "raw": 750,
+    "basis": "anchor",
+    "source": "S010",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "trial_feedback_duration_ms",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S010",
+       "raw": 750,
+       "value": 750,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S079",
+       "raw": 1250,
+       "value": 1250,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S079",
+       "raw": 2000,
+       "value": 2000,
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "fixation_duration_ms",
+   "default": {
+    "value": 250,
+    "raw": "250",
+    "basis": "anchor",
+    "source": "S010",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "fixation_duration_ms",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S010",
+       "raw": "250",
+       "value": 250,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S011",
+       "raw": "500",
+       "value": 500,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S072",
+       "raw": "250",
+       "value": 250,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S079",
+       "raw": "500",
+       "value": 500,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S082",
+       "raw": "500",
+       "value": 500,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S085",
+       "raw": "1000-1500",
+       "value": {
+        "min": 1000,
+        "max": 1500
+       },
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S007",
+       "raw": "500-1000",
+       "value": {
+        "min": 500,
+        "max": 1000
+       },
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S008",
+       "raw": "2000",
+       "value": 2000,
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "iti_ms",
+   "default": {
+    "value": 500,
+    "raw": "fixed 500",
+    "basis": "anchor",
+    "source": "S010",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "iti_ms",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S010",
+       "raw": "fixed 500",
+       "value": 500,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S080",
+       "raw": "fixed 1500 (go) / 1700 (stop)",
+       "value": null,
+       "ok": false,
+       "note": "ITI differs by trial type (1500 go, 1700 stop); no typed form for trial-type-specific ITI."
+      },
+      {
+       "source": "S079",
+       "raw": "fixed 1500",
+       "value": 1500,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S098",
+       "raw": "uniform 750-950",
+       "value": {
+        "min": 750,
+        "max": 950
+       },
+       "ok": true,
+       "note": "Uniform draw; step not stated, omitted."
+      },
+      {
+       "source": "S026",
+       "raw": "fixed 750",
+       "value": 750,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S030",
+       "raw": "exponential 500-4000, mean 1000-1750",
+       "value": null,
+       "ok": false,
+       "note": "Exponentially distributed jitter (fMRI null events); propose vocabulary value: duration distribution (exponential) for iti_ms."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "response_window_ms",
+   "default": {
+    "value": 1250,
+    "raw": 1250,
+    "basis": "anchor",
+    "source": "S010",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "response_window_ms",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S010",
+       "raw": 1250,
+       "value": 1250,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S011",
+       "raw": 1850,
+       "value": 1850,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S014",
+       "raw": 500,
+       "value": 500,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S079",
+       "raw": 1000,
+       "value": 1000,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S080",
+       "raw": 1500,
+       "value": 1500,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S082",
+       "raw": 1500,
+       "value": 1500,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S085",
+       "raw": 1400,
+       "value": 1400,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S008",
+       "raw": 1000,
+       "value": 1000,
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "stimulus_duration_ms",
+   "default": {
+    "value": null,
+    "raw": "until_response",
+    "basis": "anchor",
+    "source": "S010",
+    "needs_translation": true
+   },
+   "components": [
+    {
+     "variation": "go_stimulus_duration_ms",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S010",
+       "raw": "until_response",
+       "value": null,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S011",
+       "raw": 850,
+       "value": 850,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S080",
+       "raw": 150,
+       "value": 150,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S098",
+       "raw": 600,
+       "value": 600,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S026",
+       "raw": 1250,
+       "value": 1250,
+       "ok": true,
+       "note": null
+      }
+     ]
+    },
+    {
+     "variation": "stop_signal_duration_ms",
+     "role": "stop signal",
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S010",
+       "raw": "until_trial_end",
+       "value": null,
+       "ok": true,
+       "note": "Signal stays on until the trial ends (no separate offset); null = unbounded."
+      },
+      {
+       "source": "S011",
+       "raw": 500,
+       "value": 500,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S057",
+       "raw": 75,
+       "value": 75,
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "stimulus_eccentricity",
+   "default": {
+    "value": 8.5,
+    "raw": 8.5,
+    "basis": "fill",
+    "frequency": "1/2",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "target_eccentricity_deg",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S007",
+       "raw": 8.5,
+       "value": 8.5,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S008",
+       "raw": 15,
+       "value": 15,
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "stimulus_modality",
+   "default": {
+    "value": {
+     "stop signal": "visual"
+    },
+    "basis": "components"
+   },
+   "components": [
+    {
+     "variation": "stop_signal_modality",
+     "role": "stop signal",
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S010",
+       "raw": "visual",
+       "value": "visual",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S052",
+       "raw": "visual",
+       "value": "visual",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S026",
+       "raw": "auditory",
+       "value": "auditory",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S030",
+       "raw": "auditory",
+       "value": "auditory",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S025",
+       "raw": "auditory",
+       "value": "auditory",
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "stimulus_set",
+   "default": {
+    "value": {
+     "go": "left/right arrows",
+     "stop signal": "go arrow turns red"
+    },
+    "basis": "components"
+   },
+   "components": [
+    {
+     "variation": "go_stimulus_set",
+     "role": "go",
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S010",
+       "raw": "left/right arrows",
+       "value": "left/right arrows",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S011",
+       "raw": "4 shapes mapped to 2 keys",
+       "value": "4 shapes mapped to 2 keys",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S014",
+       "raw": "left/right arrow inside a circle",
+       "value": "left/right arrow inside a circle",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S052",
+       "raw": "left/right arrows",
+       "value": "left/right arrows",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S070",
+       "raw": "left/right arrows",
+       "value": "left/right arrows",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S072",
+       "raw": "stimulus location left/right of fixation (food/non-food pictures or words, task-irrelevant)",
+       "value": "stimulus location left/right of fixation (food/non-food pictures or words, task-irrelevant)",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S079",
+       "raw": "green arrow in white circle",
+       "value": "green arrow in white circle",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S080",
+       "raw": "image orientation portrait/landscape (stones or money)",
+       "value": "image orientation portrait/landscape (stones or money)",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S082",
+       "raw": "black arrows on grey",
+       "value": "black arrows on grey",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S085",
+       "raw": "target square turns green (Exp 1) / letter T or X (Exp 2)",
+       "value": "target square turns green (Exp 1) / letter T or X (Exp 2)",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S086",
+       "raw": "game character (archer) signals left/right",
+       "value": "game character (archer) signals left/right",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S091",
+       "raw": "go task of another paradigm (flanker, n-back, task switching, shape matching, directed forgetting)",
+       "value": "go task of another paradigm (flanker, n-back, task switching, shape matching, directed forgetting)",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S026",
+       "raw": "square/circle",
+       "value": "square/circle",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S007",
+       "raw": "peripheral saccade target (left/right)",
+       "value": "peripheral saccade target (left/right)",
+       "ok": true,
+       "note": null
+      }
+     ]
+    },
+    {
+     "variation": "stop_signal_stimulus",
+     "role": "stop signal",
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S010",
+       "raw": "go arrow turns red",
+       "value": "go arrow turns red",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S011",
+       "raw": "star outline around the shape",
+       "value": "star outline around the shape",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S014",
+       "raw": "surrounding circle turns red",
+       "value": "surrounding circle turns red",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S070",
+       "raw": "go arrow turns red",
+       "value": "go arrow turns red",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S072",
+       "raw": "blue box around stimulus",
+       "value": "blue box around stimulus",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S079",
+       "raw": "surrounding circle turns red",
+       "value": "surrounding circle turns red",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S080",
+       "raw": "blue 15-px border",
+       "value": "blue 15-px border",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S082",
+       "raw": "blue square (0.7 x 0.7 deg)",
+       "value": "blue square (0.7 x 0.7 deg)",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S085",
+       "raw": "black square (Exp 1) / red circle (Exp 2) between targets",
+       "value": "black square (Exp 1) / red circle (Exp 2) between targets",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S086",
+       "raw": "game event (dragon breathes fire)",
+       "value": "game event (dragon breathes fire)",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S007",
+       "raw": "fixation spot re-illuminated",
+       "value": "fixation spot re-illuminated",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S008",
+       "raw": "central flower changes green to red",
+       "value": "central flower changes green to red",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S026",
+       "raw": "tone through closed headphones",
+       "value": "tone through closed headphones",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S057",
+       "raw": "750 Hz tone, 75 ms",
+       "value": "750 Hz tone, 75 ms",
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "condition_proportions",
+   "default": {
+    "value": {
+     "stop_signal_probability": 0.25,
+     "stop_probability_blocks": null
+    },
+    "basis": "components"
+   },
+   "components": [
+    {
+     "variation": "stop_signal_probability",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S001",
+       "raw": 0.25,
+       "value": 0.25,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S010",
+       "raw": 0.25,
+       "value": 0.25,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S014",
+       "raw": 0.25,
+       "value": 0.25,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S070",
+       "raw": 0.25,
+       "value": 0.25,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S072",
+       "raw": 0.25,
+       "value": 0.25,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S079",
+       "raw": 0.2,
+       "value": 0.2,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S080",
+       "raw": 0.25,
+       "value": 0.25,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S082",
+       "raw": 0.25,
+       "value": 0.25,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S085",
+       "raw": 0.25,
+       "value": 0.25,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S086",
+       "raw": 0.3,
+       "value": 0.3,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S091",
+       "raw": 0.25,
+       "value": 0.25,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S007",
+       "raw": 0.3,
+       "value": 0.3,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S008",
+       "raw": 0.4,
+       "value": 0.4,
+       "ok": true,
+       "note": null
+      }
+     ]
+    },
+    {
+     "variation": "stop_probability_blocks",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S010",
+       "raw": "none",
+       "value": null,
+       "ok": true,
+       "note": "No block-wise variation; the single proportion is in stop_signal_probability."
+      },
+      {
+       "source": "S011",
+       "raw": "0.4 vs 0.2, two counterbalanced halves of 6 blocks",
+       "value": null,
+       "ok": false,
+       "note": "Block-level stop proportions (0.4 / 0.2) counterbalanced in order; propose vocabulary value: per-block condition_proportions."
+      },
+      {
+       "source": "S070",
+       "raw": "none",
+       "value": null,
+       "ok": true,
+       "note": "No block-wise variation; the single proportion is in stop_signal_probability."
+      },
+      {
+       "source": "S098",
+       "raw": "0.5 vs 0.2, alternating (Exp 1) or clustered (Exp 2), informed",
+       "value": null,
+       "ok": false,
+       "note": "Block-level stop proportions (0.5 / 0.2), alternating or clustered order, announced to participants; propose vocabulary value: per-block condition_proportions."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "difficulty_levels",
+   "default": {
+    "value": null,
+    "raw": "random 100-450",
+    "basis": "fill",
+    "frequency": "1/3",
+    "needs_translation": true
+   },
+   "components": [
+    {
+     "variation": "ssd_fixed_values_ms",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S014",
+       "raw": "random 100-450",
+       "value": null,
+       "ok": false,
+       "note": "Random uniform draw over a range, not a list; propose vocabulary value: range form for difficulty_levels."
+      },
+      {
+       "source": "S008",
+       "raw": "17, 67, 117, 167",
+       "value": [
+        17,
+        67,
+        117,
+        167
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S025",
+       "raw": "11 values 0-500",
+       "value": null,
+       "ok": false,
+       "note": "Values not listed (likely 0,50,...,500 but not stated); not inventing."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "n_blocks",
+   "default": {
+    "value": 4,
+    "raw": 4,
+    "basis": "anchor",
+    "source": "S010",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "num_test_blocks",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S010",
+       "raw": 4,
+       "value": 4,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S011",
+       "raw": 12,
+       "value": 12,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S014",
+       "raw": 1,
+       "value": 1,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S070",
+       "raw": 4,
+       "value": 4,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S072",
+       "raw": 8,
+       "value": 8,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S079",
+       "raw": 4,
+       "value": 4,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S080",
+       "raw": 4,
+       "value": 4,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S082",
+       "raw": 8,
+       "value": 8,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S086",
+       "raw": 1,
+       "value": 1,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S007",
+       "raw": 4,
+       "value": 4,
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "sequence_constraints",
+   "default": {
+    "value": {
+     "cycle_length": 8
+    },
+    "raw": "randomized within repeated 8-trial design cycles",
+    "basis": "anchor",
+    "source": "S010",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "trial_order_constraint",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S010",
+       "raw": "randomized within repeated 8-trial design cycles",
+       "value": {
+        "cycle_length": 8
+       },
+       "ok": true,
+       "note": "Each 8-trial design cycle holds the block's proportions, order randomized within."
+      },
+      {
+       "source": "S011",
+       "raw": "shuffled list with exact stop proportion per block",
+       "value": {},
+       "ok": true,
+       "note": "Exact proportion is already implied by shuffled_list; no run constraint."
+      },
+      {
+       "source": "S008",
+       "raw": "pseudo-random, no run-length control",
+       "value": {},
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S057",
+       "raw": "fully random",
+       "value": {},
+       "ok": true,
+       "note": "Unconstrained; implies trial_order random (not a block-exact list), outside this option."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "trials_per_block",
+   "default": {
+    "value": 64,
+    "raw": 64,
+    "basis": "anchor",
+    "source": "S010",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "trials_per_block",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S010",
+       "raw": 64,
+       "value": 64,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S011",
+       "raw": 50,
+       "value": 50,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S014",
+       "raw": 40,
+       "value": 40,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S070",
+       "raw": 64,
+       "value": 64,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S072",
+       "raw": 128,
+       "value": 128,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S079",
+       "raw": 60,
+       "value": 60,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S080",
+       "raw": 128,
+       "value": 128,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S082",
+       "raw": 96,
+       "value": 96,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S086",
+       "raw": 150,
+       "value": 150,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S007",
+       "raw": 120,
+       "value": 120,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S008",
+       "raw": 40,
+       "value": 40,
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "response_device",
+   "default": {
+    "value": "keyboard",
+    "raw": "keyboard",
+    "basis": "anchor",
+    "source": "S010",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "response_input_mode",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S010",
+       "raw": "keyboard",
+       "value": "keyboard",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S070",
+       "raw": "keyboard",
+       "value": "keyboard",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S085",
+       "raw": "mouse_reach",
+       "value": "mouse",
+       "ok": true,
+       "note": "Continuous cursor reach with stop detected from kinematics (new plugin); mouse captures device only."
+      },
+      {
+       "source": "S087",
+       "raw": "gamepad",
+       "value": "gamepad",
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "response_keys",
+   "default": {
+    "value": [
+     "ArrowLeft",
+     "ArrowRight"
+    ],
+    "raw": "left/right arrow keys",
+    "basis": "anchor",
+    "source": "S010",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "response_keys",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S010",
+       "raw": "left/right arrow keys",
+       "value": [
+        "ArrowLeft",
+        "ArrowRight"
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S011",
+       "raw": "Z/M",
+       "value": [
+        "z",
+        "m"
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S014",
+       "raw": "B/N",
+       "value": [
+        "b",
+        "n"
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S070",
+       "raw": "V/N",
+       "value": [
+        "v",
+        "n"
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S079",
+       "raw": "A/L",
+       "value": [
+        "a",
+        "l"
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S072",
+       "raw": "left/right arrow keys",
+       "value": [
+        "ArrowLeft",
+        "ArrowRight"
+       ],
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "response_mapping_counterbalancing",
+   "default": {
+    "value": "fixed",
+    "raw": "fixed",
+    "basis": "anchor",
+    "source": "S010",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "key_mapping_assignment",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S010",
+       "raw": "fixed",
+       "value": "fixed",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S011",
+       "raw": "randomized_per_participant",
+       "value": "random_per_participant",
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "adaptive",
+   "default": {
+    "value": {
+     "procedure": "tracking",
+     "start_level": 200,
+     "step_size": 50,
+     "target_accuracy": 0.5,
+     "bounds": [
+      50,
+      1200
+     ]
+    },
+    "basis": "components"
+   },
+   "components": [
+    {
+     "variation": "ssd_procedure",
+     "role": null,
+     "phase": null,
+     "field": "procedure",
+     "observed": [
+      {
+       "source": "S001",
+       "raw": "tracking",
+       "value": "tracking",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S010",
+       "raw": "tracking",
+       "value": "tracking",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S011",
+       "raw": "tracking",
+       "value": "tracking",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S014",
+       "raw": "random_uniform_range",
+       "value": "random_uniform_range",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S052",
+       "raw": "tracking",
+       "value": "tracking",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S008",
+       "raw": "fixed_set",
+       "value": "fixed_set",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S025",
+       "raw": "fixed_set",
+       "value": "fixed_set",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S057",
+       "raw": "fixed_single",
+       "value": "fixed_single",
+       "ok": true,
+       "note": null
+      }
+     ]
+    },
+    {
+     "variation": "ssd_initial_ms",
+     "role": null,
+     "phase": null,
+     "field": "start_level",
+     "observed": [
+      {
+       "source": "S010",
+       "raw": 200,
+       "value": 200,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S011",
+       "raw": 250,
+       "value": 250,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S072",
+       "raw": 200,
+       "value": 200,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S079",
+       "raw": 183,
+       "value": 183,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S080",
+       "raw": 250,
+       "value": 250,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S082",
+       "raw": 250,
+       "value": 250,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S086",
+       "raw": 200,
+       "value": 200,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S091",
+       "raw": 350,
+       "value": 350,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S007",
+       "raw": 225,
+       "value": 225,
+       "ok": true,
+       "note": null
+      }
+     ]
+    },
+    {
+     "variation": "ssd_step_ms",
+     "role": null,
+     "phase": null,
+     "field": "step_size",
+     "observed": [
+      {
+       "source": "S010",
+       "raw": "50/50",
+       "value": 50,
+       "ok": true,
+       "note": "Symmetric step (up = down = 50 ms)."
+      },
+      {
+       "source": "S011",
+       "raw": "50/50",
+       "value": 50,
+       "ok": true,
+       "note": "Symmetric step (up = down = 50 ms)."
+      },
+      {
+       "source": "S079",
+       "raw": "50/50",
+       "value": 50,
+       "ok": true,
+       "note": "Symmetric step (up = down = 50 ms)."
+      },
+      {
+       "source": "S082",
+       "raw": "25/50",
+       "value": {
+        "up": 25,
+        "down": 50
+       },
+       "ok": true,
+       "note": "Up (after successful stop) 25, down (after failed stop) 50; fits the 66.67% staircase (50/75)."
+      },
+      {
+       "source": "S085",
+       "raw": "33.3/33.3",
+       "value": 33.3,
+       "ok": true,
+       "note": "Symmetric, 2 frames."
+      },
+      {
+       "source": "S007",
+       "raw": "47/47",
+       "value": 47,
+       "ok": true,
+       "note": "Symmetric step."
+      }
+     ]
+    },
+    {
+     "variation": "tracking_target_stop_rate",
+     "role": null,
+     "phase": null,
+     "field": "target_accuracy",
+     "observed": [
+      {
+       "source": "S001",
+       "raw": 0.5,
+       "value": 0.5,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S010",
+       "raw": 0.5,
+       "value": 0.5,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S082",
+       "raw": 0.5,
+       "value": 0.5,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S082",
+       "raw": 0.667,
+       "value": 0.667,
+       "ok": true,
+       "note": null
+      }
+     ]
+    },
+    {
+     "variation": "ssd_min_ms",
+     "role": null,
+     "phase": null,
+     "field": "bounds",
+     "observed": [
+      {
+       "source": "S010",
+       "raw": 50,
+       "value": 50,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S011",
+       "raw": 0,
+       "value": 0,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S079",
+       "raw": 33,
+       "value": 33,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S085",
+       "raw": 33.3,
+       "value": 33.3,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S091",
+       "raw": 0,
+       "value": 0,
+       "ok": true,
+       "note": null
+      }
+     ]
+    },
+    {
+     "variation": "ssd_max_ms",
+     "role": null,
+     "phase": null,
+     "field": "bounds",
+     "observed": [
+      {
+       "source": "S010",
+       "raw": 1200,
+       "value": 1200,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S011",
+       "raw": 850,
+       "value": 850,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S091",
+       "raw": 1000,
+       "value": 1000,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S085",
+       "raw": "none",
+       "value": null,
+       "ok": false,
+       "note": "No upper SSD limit; bounds is [min, max] set jointly with ssd_min_ms, so max=null cannot be set alone."
+      },
+      {
+       "source": "S098",
+       "raw": 550,
+       "value": 550,
+       "ok": true,
+       "note": null
+      }
+     ]
+    },
+    {
+     "variation": "ssd_staircase_structure",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S010",
+       "raw": "single",
+       "value": null,
+       "ok": true,
+       "note": "One global staircase is the bundle's baseline; no field for tracks."
+      },
+      {
+       "source": "S072",
+       "raw": "per_condition",
+       "value": null,
+       "ok": false,
+       "note": "Separate staircase per condition (4 modality x stimulus-type); propose vocabulary value: adaptive.tracks field."
+      },
+      {
+       "source": "S085",
+       "raw": "two_independent_criteria",
+       "value": null,
+       "ok": false,
+       "note": "Two staircases with different criteria (home vs target); propose vocabulary value: adaptive.tracks field."
+      },
+      {
+       "source": "S030",
+       "raw": "two_interleaved",
+       "value": null,
+       "ok": false,
+       "note": "Two interleaved staircases with different starts (250/350 ms); propose vocabulary value: adaptive.tracks field."
+      }
+     ]
+    },
+    {
+     "variation": "ssd_reset_policy",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S010",
+       "raw": "continuous",
+       "value": null,
+       "ok": true,
+       "note": "SSD carries across blocks and phases; baseline, no field for reset scope."
+      },
+      {
+       "source": "S011",
+       "raw": "reset_per_condition",
+       "value": null,
+       "ok": false,
+       "note": "SSD reset at each condition; propose vocabulary value: adaptive.reset_policy field."
+      },
+      {
+       "source": "S082",
+       "raw": "reset_per_phase",
+       "value": null,
+       "ok": false,
+       "note": "SSD reset at each phase; propose vocabulary value: adaptive.reset_policy field."
+      },
+      {
+       "source": "S091",
+       "raw": "continuous",
+       "value": null,
+       "ok": true,
+       "note": "SSD carries across blocks and phases; baseline, no field for reset scope."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "device_eligibility",
+   "default": {
+    "value": "browser_restricted",
+    "raw": "fullscreen; window >= 800x600; Safari excluded",
+    "basis": "anchor",
+    "source": "S010",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "device_and_environment_checks",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S010",
+       "raw": "fullscreen; window >= 800x600; Safari excluded",
+       "value": "browser_restricted",
+       "ok": true,
+       "note": "Lossy: fullscreen and window-size requirements have no value; Safari exclusion maps to browser_restricted."
+      },
+      {
+       "source": "S085",
+       "raw": "instruction to use external mouse at low sensitivity; movement-duration screening task",
+       "value": "hardware_required",
+       "ok": true,
+       "note": "External mouse is only instructed, plus a screening task; mouse sensitivity and screening not representable."
+      },
+      {
+       "source": "S079",
+       "raw": "laptop/desktop with keyboard in a quiet room (instruction only)",
+       "value": "computer_only",
+       "ok": true,
+       "note": "Quiet-room instruction not representable."
+      },
+      {
+       "source": "S098",
+       "raw": "browser-focus monitoring (exclusion)",
+       "value": null,
+       "ok": false,
+       "note": "propose vocabulary value: focus_monitoring"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "practice_criterion",
+   "default": {
+    "value": null,
+    "basis": "components"
+   },
+   "components": [
+    {
+     "variation": "practice_advance_criterion",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S010",
+       "raw": "none",
+       "value": null,
+       "ok": true,
+       "note": "Fixed-length practice."
+      },
+      {
+       "source": "S011",
+       "raw": "median RT < 1000, go acc > 0.8, missed < 0.1; max 5 repeats",
+       "value": {
+        "go_rt_median_max_ms": 1000,
+        "go_accuracy_min": 0.8,
+        "go_omission_rate_max": 0.1,
+        "on_fail": "repeat"
+       },
+       "ok": true,
+       "note": "Structure keys are my own (vocabulary gives none); strict inequalities not distinguished."
+      },
+      {
+       "source": "S086",
+       "raw": "go acc >= 0.7, else repeat",
+       "value": {
+        "go_accuracy_min": 0.7,
+        "on_fail": "repeat"
+       },
+       "ok": true,
+       "note": "Structure keys are my own; no repeat limit stated."
+      },
+      {
+       "source": "S091",
+       "raw": "acc >= 0.75, stop acc 0.3-0.7, mean RT < 1000; max 3 blocks",
+       "value": {
+        "accuracy_min": 0.75,
+        "stop_accuracy": [
+         0.3,
+         0.7
+        ],
+        "rt_mean_max_ms": 1000,
+        "on_fail": "repeat"
+       },
+       "ok": true,
+       "note": "Structure keys are my own; 'max 3 blocks' may mean 3 total (2 repeats)."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "practice_trials",
+   "default": {
+    "value": 32,
+    "raw": 32,
+    "basis": "anchor",
+    "source": "S010",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "go_only_practice",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S010",
+       "raw": "none",
+       "value": 0,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S011",
+       "raw": 12,
+       "value": 12,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S014",
+       "raw": "1 block",
+       "value": null,
+       "ok": false,
+       "note": "Go-only practice length given in blocks, trial count unknown; practice_trials is a count."
+      },
+      {
+       "source": "S079",
+       "raw": 64,
+       "value": 64,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S098",
+       "raw": 8,
+       "value": 8,
+       "ok": true,
+       "note": null
+      }
+     ]
+    },
+    {
+     "variation": "practice_trials",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S010",
+       "raw": 32,
+       "value": 32,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S011",
+       "raw": 20,
+       "value": 20,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S072",
+       "raw": 16,
+       "value": 16,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S079",
+       "raw": 20,
+       "value": 20,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S080",
+       "raw": 64,
+       "value": 64,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S082",
+       "raw": 32,
+       "value": 32,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S086",
+       "raw": 10,
+       "value": 10,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S007",
+       "raw": 60,
+       "value": 60,
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "block_feedback",
+   "default": {
+    "value": "accuracy_rt",
+    "raw": "performance_summary",
+    "basis": "anchor",
+    "source": "S010",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "block_feedback",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S001",
+       "raw": "performance_summary",
+       "value": "accuracy_rt",
+       "ok": true,
+       "note": "Summary of go RT, omissions, p(respond|signal); closest enum value."
+      },
+      {
+       "source": "S010",
+       "raw": "performance_summary",
+       "value": "accuracy_rt",
+       "ok": true,
+       "note": "Summary of go RT, omissions, p(respond|signal); closest enum value."
+      },
+      {
+       "source": "S011",
+       "raw": "performance_summary_with_warnings",
+       "value": "accuracy_rt",
+       "ok": true,
+       "note": "Warnings (e.g. slow, waiting) have no typed form; propose vocabulary value: warnings."
+      },
+      {
+       "source": "S072",
+       "raw": "performance_summary",
+       "value": "accuracy_rt",
+       "ok": true,
+       "note": "Summary of go RT, omissions, p(respond|signal); closest enum value."
+      },
+      {
+       "source": "S082",
+       "raw": "performance_summary",
+       "value": "accuracy_rt",
+       "ok": true,
+       "note": "Summary of go RT, omissions, p(respond|signal); closest enum value."
+      },
+      {
+       "source": "S091",
+       "raw": "conditional_warnings",
+       "value": null,
+       "ok": false,
+       "note": "Only performance-conditional warnings; propose vocabulary value: warnings."
+      },
+      {
+       "source": "S070",
+       "raw": "none",
+       "value": "none",
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "performance_incentive",
+   "default": {
+    "value": "none",
+    "raw": "none",
+    "basis": "anchor",
+    "source": "S010",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "performance_incentive",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S010",
+       "raw": "none",
+       "value": "none",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S086",
+       "raw": "speed_points",
+       "value": "points_only",
+       "ok": true,
+       "note": "Up to 25 points for fast correct go; no monetary payoff stated."
+      },
+      {
+       "source": "S029",
+       "raw": "points_per_response",
+       "value": "points_only",
+       "ok": true,
+       "note": "Points by go-RT window and stop success."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "trial_feedback",
+   "default": {
+    "value": "none",
+    "raw": "practice_only",
+    "basis": "anchor",
+    "source": "S010",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "trial_feedback_phases",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S010",
+       "raw": "practice_only",
+       "value": "none",
+       "ok": true,
+       "note": "Content (accuracy) assumed; dossier gives phase only, not content."
+      },
+      {
+       "source": "S082",
+       "raw": "practice_only",
+       "value": "none",
+       "ok": true,
+       "note": "Content (accuracy) assumed; dossier gives phase only, not content."
+      },
+      {
+       "source": "S079",
+       "raw": "all_phases",
+       "value": null,
+       "ok": true,
+       "note": "Phase only; content varies by source (accuracy messages, points, beeps), so trial_feedback not set."
+      },
+      {
+       "source": "S086",
+       "raw": "all_phases",
+       "value": null,
+       "ok": true,
+       "note": "Phase only; content varies by source (accuracy messages, points, beeps), so trial_feedback not set."
+      },
+      {
+       "source": "S070",
+       "raw": "none",
+       "value": "none",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S008",
+       "raw": "all_phases",
+       "value": null,
+       "ok": true,
+       "note": "Phase only; content varies by source (accuracy messages, points, beeps), so trial_feedback not set."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "strategy_instruction",
+   "default": {
+    "value": "dont_wait_plus_tracking_explanation",
+    "raw": "dont_wait_plus_tracking_explanation",
+    "basis": "anchor",
+    "source": "S010",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "waiting_instruction",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S001",
+       "raw": "dont_wait",
+       "value": "dont_wait",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S010",
+       "raw": "dont_wait_plus_tracking_explanation",
+       "value": "dont_wait_plus_tracking_explanation",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S070",
+       "raw": "dont_wait",
+       "value": "dont_wait",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S072",
+       "raw": "dont_wait",
+       "value": "dont_wait",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S082",
+       "raw": "dont_wait_plus_tracking_explanation",
+       "value": "dont_wait_plus_tracking_explanation",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S011",
+       "raw": "balance_speed_and_stopping",
+       "value": "balance_speed_and_stopping",
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "population_protocol",
+   "default": {
+    "value": "standard",
+    "raw": "none",
+    "basis": "anchor",
+    "source": "S010",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "child_protocol",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S010",
+       "raw": "none",
+       "value": "standard",
+       "ok": true,
+       "note": "Adult default."
+      },
+      {
+       "source": "S008",
+       "raw": "gamified story, 6 practice + 40 trials, fixed SSDs, sound feedback, instructions read aloud",
+       "value": "gamified_child",
+       "ok": true,
+       "note": "Practice/trial counts, fixed SSDs and sound feedback belong to other options."
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "study_configurations": [
+  {
+   "source": "S007",
+   "citation": "Thakkar et al. 2011, Biol Psychiatry",
+   "label": "Thakkar et al. 2011, Biological Psychiatry",
+   "doi": "10.1016/j.biopsych.2010.08.016",
+   "source_type": "empirical",
+   "setting": "lab-native",
+   "n_options": 10,
+   "fully_typed": true,
+   "options": {
+    "adaptive.start_level": 225,
+    "adaptive.step_size": 47,
+    "condition_proportions.stop_signal_probability": 0.3,
+    "fixation_duration_ms": {
+     "min": 500,
+     "max": 1000
+    },
+    "n_blocks": 4,
+    "practice_trials.practice_trials": 60,
+    "stimulus_eccentricity": 8.5,
+    "stimulus_set.go": "peripheral saccade target (left/right)",
+    "stimulus_set.stop signal": "fixation spot re-illuminated",
+    "trials_per_block": 120
+   }
+  },
+  {
+   "source": "S008",
+   "citation": "Countermanding saccades in children, 2026, Atten Percept Psychophys",
+   "label": "Hodgson et al. 2026, Attention, Perception, & Psychophysics",
+   "doi": "10.3758/s13414-026-03342-4",
+   "source_type": "empirical",
+   "setting": "lab-native",
+   "n_options": 10,
+   "fully_typed": true,
+   "options": {
+    "adaptive.procedure": "fixed_set",
+    "condition_proportions.stop_signal_probability": 0.4,
+    "difficulty_levels": [
+     17,
+     67,
+     117,
+     167
+    ],
+    "fixation_duration_ms": 2000,
+    "population_protocol": "gamified_child",
+    "response_window_ms": 1000,
+    "sequence_constraints": {},
+    "stimulus_eccentricity": 15,
+    "stimulus_set.stop signal": "central flower changes green to red",
+    "trials_per_block": 40
+   }
+  },
+  {
+   "source": "S010",
+   "citation": "STOP-IT jsPsych version (Verbruggen), commit 73e4654",
+   "label": "STOP-IT jsPsych version (Verbruggen), commit 73e4654",
+   "doi": null,
+   "source_type": "reference-impl",
+   "setting": null,
+   "n_options": 32,
+   "fully_typed": true,
+   "options": {
+    "adaptive.bounds": [
+     50,
+     1200
+    ],
+    "adaptive.procedure": "tracking",
+    "adaptive.start_level": 200,
+    "adaptive.step_size": 50,
+    "adaptive.target_accuracy": 0.5,
+    "block_feedback": "accuracy_rt",
+    "break_duration_ms": 15000,
+    "condition_proportions.stop_signal_probability": 0.25,
+    "device_eligibility": "browser_restricted",
+    "feedback_duration_ms": 750,
+    "fixation_duration_ms": 250,
+    "iti_ms": 500,
+    "n_blocks": 4,
+    "performance_incentive": "none",
+    "population_protocol": "standard",
+    "practice.trial_feedback": "accuracy",
+    "practice_criterion": null,
+    "practice_trials.go_only_practice": 0,
+    "practice_trials.practice_trials": 32,
+    "response_device": "keyboard",
+    "response_keys": [
+     "ArrowLeft",
+     "ArrowRight"
+    ],
+    "response_mapping_counterbalancing": "fixed",
+    "response_window_ms": 1250,
+    "sequence_constraints": {
+     "cycle_length": 8
+    },
+    "stimulus_duration_ms.go_stimulus_duration_ms": null,
+    "stimulus_duration_ms.stop signal": null,
+    "stimulus_modality.stop signal": "visual",
+    "stimulus_set.go": "left/right arrows",
+    "stimulus_set.stop signal": "go arrow turns red",
+    "strategy_instruction": "dont_wait_plus_tracking_explanation",
+    "trial_feedback": "none",
+    "trials_per_block": 64
+   }
+  },
+  {
+   "source": "S011",
+   "citation": "Expfactory stop-signal (Eisenberg, Enkavi, Bissett, Sochat, Poldrack)",
+   "label": "Expfactory stop-signal",
+   "label_note": "Eisenberg, Enkavi, Bissett, Sochat, Poldrack",
+   "doi": null,
+   "source_type": "reference-impl",
+   "setting": null,
+   "n_options": 23,
+   "fully_typed": false,
+   "options": {
+    "adaptive.bounds": [
+     0,
+     850
+    ],
+    "adaptive.procedure": "tracking",
+    "adaptive.ssd_reset_policy": {
+     "untranslated": "reset_per_condition"
+    },
+    "adaptive.start_level": 250,
+    "adaptive.step_size": 50,
+    "block_feedback": "accuracy_rt",
+    "break_duration_ms": null,
+    "condition_proportions.stop_probability_blocks": {
+     "untranslated": "0.4 vs 0.2, two counterbalanced halves of 6 blocks"
+    },
+    "fixation_duration_ms": 500,
+    "n_blocks": 12,
+    "practice_criterion": {
+     "go_rt_median_max_ms": 1000,
+     "go_accuracy_min": 0.8,
+     "go_omission_rate_max": 0.1,
+     "on_fail": "repeat"
+    },
+    "practice_trials.go_only_practice": 12,
+    "practice_trials.practice_trials": 20,
+    "response_keys": [
+     "z",
+     "m"
+    ],
+    "response_mapping_counterbalancing": "random_per_participant",
+    "response_window_ms": 1850,
+    "sequence_constraints": {},
+    "stimulus_duration_ms.go_stimulus_duration_ms": 850,
+    "stimulus_duration_ms.stop signal": 500,
+    "stimulus_set.go": "4 shapes mapped to 2 keys",
+    "stimulus_set.stop signal": "star outline around the shape",
+    "strategy_instruction": "balance_speed_and_stopping",
+    "trials_per_block": 50
+   }
+  },
+  {
+   "source": "S014",
+   "citation": "PsyToolkit experiment library: Stop signal task (Stoet)",
+   "label": "PsyToolkit experiment library: Stop signal task",
+   "label_note": "Stoet",
+   "doi": null,
+   "source_type": "reference-impl",
+   "setting": null,
+   "n_options": 10,
+   "fully_typed": false,
+   "options": {
+    "adaptive.procedure": "random_uniform_range",
+    "condition_proportions.stop_signal_probability": 0.25,
+    "difficulty_levels": {
+     "untranslated": "random 100-450"
+    },
+    "n_blocks": 1,
+    "practice_trials.go_only_practice": {
+     "untranslated": "1 block"
+    },
+    "response_keys": [
+     "b",
+     "n"
+    ],
+    "response_window_ms": 500,
+    "stimulus_set.go": "left/right arrow inside a circle",
+    "stimulus_set.stop signal": "surrounding circle turns red",
+    "trials_per_block": 40
+   }
+  },
+  {
+   "source": "S025",
+   "citation": "Bissett et al. 2021, Sci Adv",
+   "label": "Bissett et al. 2021, Science Advances (1)",
+   "doi": "10.1126/sciadv.abf4355",
+   "source_type": "empirical",
+   "setting": null,
+   "n_options": 2,
+   "fully_typed": false,
+   "options": {
+    "adaptive.procedure": "fixed_set",
+    "difficulty_levels": {
+     "untranslated": "11 values 0-500"
+    }
+   }
+  },
+  {
+   "source": "S025",
+   "citation": "Bissett et al. 2021, Sci Adv",
+   "label": "Bissett et al. 2021, Science Advances (2)",
+   "doi": "10.1126/sciadv.abf4355",
+   "source_type": "empirical",
+   "setting": "lab-native",
+   "n_options": 1,
+   "fully_typed": true,
+   "options": {
+    "stimulus_modality.stop signal": "auditory"
+   }
+  },
+  {
+   "source": "S026",
+   "citation": "Hedge, Powell & Sumner 2018, Behav Res Methods",
+   "label": "Hedge et al. 2018, Behavior Research Methods",
+   "doi": "10.3758/s13428-017-0935-1",
+   "source_type": "empirical",
+   "setting": "lab-native",
+   "n_options": 5,
+   "fully_typed": true,
+   "options": {
+    "iti_ms": 750,
+    "stimulus_duration_ms.go_stimulus_duration_ms": 1250,
+    "stimulus_modality.stop signal": "auditory",
+    "stimulus_set.go": "square/circle",
+    "stimulus_set.stop signal": "tone through closed headphones"
+   }
+  },
+  {
+   "source": "S029",
+   "citation": "Wadsley et al. 2023, Exp Brain Res (SeleST)",
+   "label": "Wadsley et al. 2023, Experimental Brain Research",
+   "doi": "10.1007/s00221-022-06539-9",
+   "source_type": "reference-impl",
+   "setting": null,
+   "n_options": 1,
+   "fully_typed": true,
+   "options": {
+    "performance_incentive": "points_only"
+   }
+  },
+  {
+   "source": "S030",
+   "citation": "Congdon et al. 2012, Front Psychol",
+   "label": "Congdon et al. 2012, Frontiers in Psychology",
+   "doi": "10.3389/fpsyg.2012.00037",
+   "source_type": "empirical",
+   "setting": "lab-native",
+   "n_options": 3,
+   "fully_typed": false,
+   "options": {
+    "adaptive.ssd_staircase_structure": {
+     "untranslated": "two_interleaved"
+    },
+    "iti_ms": {
+     "untranslated": "exponential 500-4000, mean 1000-1750"
+    },
+    "stimulus_modality.stop signal": "auditory"
+   }
+  },
+  {
+   "source": "S052",
+   "citation": "An exploration of relationships between associative and non-associative measures (2025)",
+   "label": "Brudan et al. 2025, Quarterly Journal of Experimental Psychology",
+   "doi": "10.1177/17470218241310859",
+   "source_type": "empirical",
+   "setting": "online-unsupervised",
+   "n_options": 3,
+   "fully_typed": true,
+   "options": {
+    "adaptive.procedure": "tracking",
+    "stimulus_modality.stop signal": "visual",
+    "stimulus_set.go": "left/right arrows"
+   }
+  },
+  {
+   "source": "S057",
+   "citation": "The rollercoaster of obsessive-compulsive disorder: How chronotype and time of d (2025)",
+   "label": "Kalanthroff et al. 2025, Journal of Mood & Anxiety Disorders",
+   "doi": "10.1016/j.xjmad.2025.100113",
+   "source_type": "empirical",
+   "setting": null,
+   "n_options": 4,
+   "fully_typed": true,
+   "options": {
+    "adaptive.procedure": "fixed_single",
+    "sequence_constraints": {},
+    "stimulus_duration_ms.stop signal": 75,
+    "stimulus_set.stop signal": "750 Hz tone, 75 ms"
+   }
+  },
+  {
+   "source": "S070",
+   "citation": "Comparing self-other distinction across motor, cognitive and affective domains. (2024)",
+   "label": "Pronizius et al. 2024, Royal Society Open Science",
+   "doi": "10.1098/rsos.240662",
+   "source_type": "empirical",
+   "setting": "online-unsupervised",
+   "n_options": 10,
+   "fully_typed": true,
+   "options": {
+    "block_feedback": "none",
+    "condition_proportions.stop_signal_probability": 0.25,
+    "n_blocks": 4,
+    "response_device": "keyboard",
+    "response_keys": [
+     "v",
+     "n"
+    ],
+    "stimulus_set.go": "left/right arrows",
+    "stimulus_set.stop signal": "go arrow turns red",
+    "strategy_instruction": "dont_wait",
+    "trial_feedback": "none",
+    "trials_per_block": 64
+   }
+  },
+  {
+   "source": "S072",
+   "citation": "Modality Matters: Fasted Individuals Inhibit Food Stimuli Better Than Neutral St (2024)",
+   "label": "van den Hoek Ostende et al. 2024, Nutrients",
+   "doi": "10.3390/nu16142190",
+   "source_type": "empirical",
+   "setting": "online-unsupervised",
+   "n_options": 13,
+   "fully_typed": false,
+   "options": {
+    "adaptive.ssd_staircase_structure": {
+     "untranslated": "per_condition"
+    },
+    "adaptive.start_level": 200,
+    "block_feedback": "accuracy_rt",
+    "break_duration_ms": 60000,
+    "condition_proportions.stop_signal_probability": 0.25,
+    "fixation_duration_ms": 250,
+    "n_blocks": 8,
+    "practice_trials.practice_trials": 16,
+    "response_keys": [
+     "ArrowLeft",
+     "ArrowRight"
+    ],
+    "stimulus_set.go": "stimulus location left/right of fixation (food/non-food pictures or words, task-irrelevant)",
+    "stimulus_set.stop signal": "blue box around stimulus",
+    "strategy_instruction": "dont_wait",
+    "trials_per_block": 128
+   }
+  },
+  {
+   "source": "S079",
+   "citation": "The effects of conscious movement investment on inhibiting a simple response. (2024)",
+   "label": "You et al. 2024, Frontiers in Psychology",
+   "doi": "10.3389/fpsyg.2024.1365420",
+   "source_type": "empirical",
+   "setting": "online-unsupervised",
+   "n_options": 16,
+   "fully_typed": true,
+   "options": {
+    "adaptive.bounds": [
+     33,
+     null
+    ],
+    "adaptive.start_level": 183,
+    "adaptive.step_size": 50,
+    "condition_proportions.stop_signal_probability": 0.2,
+    "device_eligibility": "computer_only",
+    "feedback_duration_ms": 2000,
+    "fixation_duration_ms": 500,
+    "iti_ms": 1500,
+    "n_blocks": 4,
+    "practice_trials.go_only_practice": 64,
+    "practice_trials.practice_trials": 20,
+    "response_keys": [
+     "a",
+     "l"
+    ],
+    "response_window_ms": 1000,
+    "stimulus_set.go": "green arrow in white circle",
+    "stimulus_set.stop signal": "surrounding circle turns red",
+    "trials_per_block": 60
+   }
+  },
+  {
+   "source": "S080",
+   "citation": "Mindfulness and inhibitory control: Insights from the stop signal task with neut (2024)",
+   "label": "Logemann-Molnár et al. 2024, PLOS ONE",
+   "doi": "10.1371/journal.pone.0303384",
+   "source_type": "empirical",
+   "setting": "online-unsupervised",
+   "n_options": 10,
+   "fully_typed": false,
+   "options": {
+    "adaptive.start_level": 250,
+    "condition_proportions.stop_signal_probability": 0.25,
+    "iti_ms": {
+     "untranslated": "fixed 1500 (go) / 1700 (stop)"
+    },
+    "n_blocks": 4,
+    "practice_trials.practice_trials": 64,
+    "response_window_ms": 1500,
+    "stimulus_duration_ms.go_stimulus_duration_ms": 150,
+    "stimulus_set.go": "image orientation portrait/landscape (stones or money)",
+    "stimulus_set.stop signal": "blue 15-px border",
+    "trials_per_block": 128
+   }
+  },
+  {
+   "source": "S082",
+   "citation": "The effect of staircase stopping accuracy and testing environment on stop-signal (2024)",
+   "label": "Tran et al. 2023, Behavior Research Methods",
+   "doi": "10.3758/s13428-022-02058-1",
+   "source_type": "empirical",
+   "setting": "online-unsupervised",
+   "n_options": 17,
+   "fully_typed": false,
+   "options": {
+    "adaptive.ssd_reset_policy": {
+     "untranslated": "reset_per_phase"
+    },
+    "adaptive.start_level": 250,
+    "adaptive.step_size": {
+     "up": 25,
+     "down": 50
+    },
+    "adaptive.target_accuracy": 0.667,
+    "block_feedback": "accuracy_rt",
+    "break_duration_ms": 15000,
+    "condition_proportions.stop_signal_probability": 0.25,
+    "fixation_duration_ms": 500,
+    "n_blocks": 8,
+    "practice.trial_feedback": "accuracy",
+    "practice_trials.practice_trials": 32,
+    "response_window_ms": 1500,
+    "stimulus_set.go": "black arrows on grey",
+    "stimulus_set.stop signal": "blue square (0.7 x 0.7 deg)",
+    "strategy_instruction": "dont_wait_plus_tracking_explanation",
+    "trial_feedback": "none",
+    "trials_per_block": 96
+   }
+  },
+  {
+   "source": "S085",
+   "citation": "Failing to attend versus failing to stop: Single-trial decomposition of action-s (2023)",
+   "label": "Hannah et al. 2022, Behavior Research Methods",
+   "doi": "10.3758/s13428-022-02008-x",
+   "source_type": "empirical",
+   "setting": "online-unsupervised",
+   "n_options": 10,
+   "fully_typed": false,
+   "options": {
+    "adaptive.bounds": {
+     "untranslated": "none"
+    },
+    "adaptive.ssd_staircase_structure": {
+     "untranslated": "two_independent_criteria"
+    },
+    "adaptive.step_size": 33.3,
+    "condition_proportions.stop_signal_probability": 0.25,
+    "device_eligibility": "hardware_required",
+    "fixation_duration_ms": {
+     "min": 1000,
+     "max": 1500
+    },
+    "response_device": "mouse",
+    "response_window_ms": 1400,
+    "stimulus_set.go": "target square turns green (Exp 1) / letter T or X (Exp 2)",
+    "stimulus_set.stop signal": "black square (Exp 1) / red circle (Exp 2) between targets"
+   }
+  },
+  {
+   "source": "S086",
+   "citation": "A Novel, Expert-Endorsed, Neurocognitive Digital Assessment Tool for Addictive D (2023)",
+   "label": "Lee et al. 2023, Journal of Medical Internet Research",
+   "doi": "10.2196/44414",
+   "source_type": "empirical",
+   "setting": "online-unsupervised",
+   "n_options": 9,
+   "fully_typed": true,
+   "options": {
+    "adaptive.start_level": 200,
+    "condition_proportions.stop_signal_probability": 0.3,
+    "n_blocks": 1,
+    "performance_incentive": "points_only",
+    "practice_criterion": {
+     "go_accuracy_min": 0.7,
+     "on_fail": "repeat"
+    },
+    "practice_trials.practice_trials": 10,
+    "stimulus_set.go": "game character (archer) signals left/right",
+    "stimulus_set.stop signal": "game event (dragon breathes fire)",
+    "trials_per_block": 150
+   }
+  },
+  {
+   "source": "S087",
+   "citation": "Exploring Response Inhibition, the Behavioral Inhibition System and Possible Sex (2023)",
+   "label": "Eriksson et al. 2023, International Journal of Environmental Research and Public Health",
+   "doi": "10.3390/ijerph20146340",
+   "source_type": "empirical",
+   "setting": "lab-native",
+   "n_options": 1,
+   "fully_typed": true,
+   "options": {
+    "response_device": "gamepad"
+   }
+  },
+  {
+   "source": "S091",
+   "citation": "A dual-task approach to inform the taxonomy of inhibition-related processes. (2023)",
+   "label": "Bissett et al. 2023, Journal of Experimental Psychology: Human Perception and Performance",
+   "doi": "10.1037/xhp0001073",
+   "source_type": "empirical",
+   "setting": "online-unsupervised",
+   "n_options": 6,
+   "fully_typed": false,
+   "options": {
+    "adaptive.bounds": [
+     0,
+     1000
+    ],
+    "adaptive.start_level": 350,
+    "block_feedback": {
+     "untranslated": "conditional_warnings"
+    },
+    "condition_proportions.stop_signal_probability": 0.25,
+    "practice_criterion": {
+     "accuracy_min": 0.75,
+     "stop_accuracy": [
+      0.3,
+      0.7
+     ],
+     "rt_mean_max_ms": 1000,
+     "on_fail": "repeat"
+    },
+    "stimulus_set.go": "go task of another paradigm (flanker, n-back, task switching, shape matching, directed forgetting)"
+   }
+  },
+  {
+   "source": "S098",
+   "citation": "Proactively Adjusting Stopping: Response Inhibition is Faster when Stopping Occu (2023)",
+   "label": "Doekemeijer et al. 2023, Journal of Cognition",
+   "doi": "10.5334/joc.264",
+   "source_type": "empirical",
+   "setting": "online-unsupervised",
+   "n_options": 6,
+   "fully_typed": false,
+   "options": {
+    "adaptive.bounds": [
+     null,
+     550
+    ],
+    "condition_proportions.stop_probability_blocks": {
+     "untranslated": "0.5 vs 0.2, alternating (Exp 1) or clustered (Exp 2), informed"
+    },
+    "device_eligibility": {
+     "untranslated": "browser-focus monitoring (exclusion)"
+    },
+    "iti_ms": {
+     "min": 750,
+     "max": 950
+    },
+    "practice_trials.go_only_practice": 8,
+    "stimulus_duration_ms.go_stimulus_duration_ms": 600
+   }
+  }
+ ],
+ "defaults": {
+  "source": "S010",
+  "citation": "STOP-IT jsPsych version (Verbruggen), commit 73e4654",
+  "typicality": 0.847,
+  "coverage": 0.946,
+  "runner_up": {
+   "source": "S070",
+   "citation": "Comparing self-other distinction across motor, cognitive and affective domains. (2024)",
+   "score": 0.409
+  },
+  "lead": 0.504,
+  "disagreement_with_runner_up": 0.364
+ },
+ "translations": [
+  {
+   "variation": "iti_ms",
+   "raw": "fixed 500",
+   "as": {
+    "iti_ms": 500
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "iti_ms",
+   "raw": "fixed 1500 (go) / 1700 (stop)",
+   "as": null,
+   "confidence": "high",
+   "flag": true,
+   "note": "ITI differs by trial type (1500 go, 1700 stop); no typed form for trial-type-specific ITI."
+  },
+  {
+   "variation": "iti_ms",
+   "raw": "fixed 1500",
+   "as": {
+    "iti_ms": 1500
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "iti_ms",
+   "raw": "uniform 750-950",
+   "as": {
+    "iti_ms": {
+     "min": 750,
+     "max": 950
+    }
+   },
+   "confidence": "medium",
+   "flag": false,
+   "note": "Uniform draw; step not stated, omitted."
+  },
+  {
+   "variation": "iti_ms",
+   "raw": "fixed 750",
+   "as": {
+    "iti_ms": 750
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "iti_ms",
+   "raw": "exponential 500-4000, mean 1000-1750",
+   "as": null,
+   "confidence": "high",
+   "flag": true,
+   "note": "Exponentially distributed jitter (fMRI null events); propose vocabulary value: duration distribution (exponential) for iti_ms."
+  },
+  {
+   "variation": "stop_signal_duration_ms",
+   "raw": "until_trial_end",
+   "as": {
+    "stimulus_duration_ms": null
+   },
+   "confidence": "medium",
+   "flag": false,
+   "note": "Signal stays on until the trial ends (no separate offset); null = unbounded."
+  },
+  {
+   "variation": "stop_probability_blocks",
+   "raw": "none",
+   "as": {},
+   "confidence": "high",
+   "flag": false,
+   "note": "No block-wise variation; the single proportion is in stop_signal_probability."
+  },
+  {
+   "variation": "stop_probability_blocks",
+   "raw": "0.4 vs 0.2, two counterbalanced halves of 6 blocks",
+   "as": null,
+   "confidence": "high",
+   "flag": true,
+   "note": "Block-level stop proportions (0.4 / 0.2) counterbalanced in order; propose vocabulary value: per-block condition_proportions."
+  },
+  {
+   "variation": "stop_probability_blocks",
+   "raw": "0.5 vs 0.2, alternating (Exp 1) or clustered (Exp 2), informed",
+   "as": null,
+   "confidence": "high",
+   "flag": true,
+   "note": "Block-level stop proportions (0.5 / 0.2), alternating or clustered order, announced to participants; propose vocabulary value: per-block condition_proportions."
+  },
+  {
+   "variation": "ssd_fixed_values_ms",
+   "raw": "random 100-450",
+   "as": null,
+   "confidence": "high",
+   "flag": true,
+   "note": "Random uniform draw over a range, not a list; propose vocabulary value: range form for difficulty_levels."
+  },
+  {
+   "variation": "ssd_fixed_values_ms",
+   "raw": "17, 67, 117, 167",
+   "as": {
+    "difficulty_levels": [
+     17,
+     67,
+     117,
+     167
+    ]
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "ssd_fixed_values_ms",
+   "raw": "11 values 0-500",
+   "as": null,
+   "confidence": "medium",
+   "flag": true,
+   "note": "Values not listed (likely 0,50,...,500 but not stated); not inventing."
+  },
+  {
+   "variation": "trial_order_constraint",
+   "raw": "randomized within repeated 8-trial design cycles",
+   "as": {
+    "sequence_constraints": {
+     "cycle_length": 8
+    }
+   },
+   "confidence": "medium",
+   "flag": false,
+   "note": "Each 8-trial design cycle holds the block's proportions, order randomized within."
+  },
+  {
+   "variation": "trial_order_constraint",
+   "raw": "shuffled list with exact stop proportion per block",
+   "as": {
+    "sequence_constraints": {}
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": "Exact proportion is already implied by shuffled_list; no run constraint."
+  },
+  {
+   "variation": "trial_order_constraint",
+   "raw": "pseudo-random, no run-length control",
+   "as": {
+    "sequence_constraints": {}
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "trial_order_constraint",
+   "raw": "fully random",
+   "as": {
+    "sequence_constraints": {}
+   },
+   "confidence": "medium",
+   "flag": false,
+   "note": "Unconstrained; implies trial_order random (not a block-exact list), outside this option."
+  },
+  {
+   "variation": "response_input_mode",
+   "raw": "mouse_reach",
+   "as": {
+    "response_device": "mouse"
+   },
+   "confidence": "medium",
+   "flag": true,
+   "note": "Continuous cursor reach with stop detected from kinematics (new plugin); mouse captures device only."
+  },
+  {
+   "variation": "response_keys",
+   "raw": "left/right arrow keys",
+   "as": {
+    "response_keys": [
+     "ArrowLeft",
+     "ArrowRight"
+    ]
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "response_keys",
+   "raw": "Z/M",
+   "as": {
+    "response_keys": [
+     "z",
+     "m"
+    ]
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "response_keys",
+   "raw": "B/N",
+   "as": {
+    "response_keys": [
+     "b",
+     "n"
+    ]
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "response_keys",
+   "raw": "V/N",
+   "as": {
+    "response_keys": [
+     "v",
+     "n"
+    ]
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "response_keys",
+   "raw": "A/L",
+   "as": {
+    "response_keys": [
+     "a",
+     "l"
+    ]
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "key_mapping_assignment",
+   "raw": "randomized_per_participant",
+   "as": {
+    "response_mapping_counterbalancing": "random_per_participant"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "ssd_step_ms",
+   "raw": "50/50",
+   "as": {
+    "adaptive.step_size": 50
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": "Symmetric step (up = down = 50 ms)."
+  },
+  {
+   "variation": "ssd_step_ms",
+   "raw": "25/50",
+   "as": {
+    "adaptive.step_size": {
+     "up": 25,
+     "down": 50
+    }
+   },
+   "confidence": "medium",
+   "flag": false,
+   "note": "Up (after successful stop) 25, down (after failed stop) 50; fits the 66.67% staircase (50/75)."
+  },
+  {
+   "variation": "ssd_step_ms",
+   "raw": "33.3/33.3",
+   "as": {
+    "adaptive.step_size": 33.3
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": "Symmetric, 2 frames."
+  },
+  {
+   "variation": "ssd_step_ms",
+   "raw": "47/47",
+   "as": {
+    "adaptive.step_size": 47
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": "Symmetric step."
+  },
+  {
+   "variation": "ssd_max_ms",
+   "raw": "none",
+   "as": null,
+   "confidence": "medium",
+   "flag": true,
+   "note": "No upper SSD limit; bounds is [min, max] set jointly with ssd_min_ms, so max=null cannot be set alone."
+  },
+  {
+   "variation": "ssd_staircase_structure",
+   "raw": "single",
+   "as": {},
+   "confidence": "medium",
+   "flag": false,
+   "note": "One global staircase is the bundle's baseline; no field for tracks."
+  },
+  {
+   "variation": "ssd_staircase_structure",
+   "raw": "per_condition",
+   "as": null,
+   "confidence": "high",
+   "flag": true,
+   "note": "Separate staircase per condition (4 modality x stimulus-type); propose vocabulary value: adaptive.tracks field."
+  },
+  {
+   "variation": "ssd_staircase_structure",
+   "raw": "two_independent_criteria",
+   "as": null,
+   "confidence": "high",
+   "flag": true,
+   "note": "Two staircases with different criteria (home vs target); propose vocabulary value: adaptive.tracks field."
+  },
+  {
+   "variation": "ssd_staircase_structure",
+   "raw": "two_interleaved",
+   "as": null,
+   "confidence": "high",
+   "flag": true,
+   "note": "Two interleaved staircases with different starts (250/350 ms); propose vocabulary value: adaptive.tracks field."
+  },
+  {
+   "variation": "ssd_reset_policy",
+   "raw": "continuous",
+   "as": {},
+   "confidence": "medium",
+   "flag": false,
+   "note": "SSD carries across blocks and phases; baseline, no field for reset scope."
+  },
+  {
+   "variation": "ssd_reset_policy",
+   "raw": "reset_per_condition",
+   "as": null,
+   "confidence": "high",
+   "flag": true,
+   "note": "SSD reset at each condition; propose vocabulary value: adaptive.reset_policy field."
+  },
+  {
+   "variation": "ssd_reset_policy",
+   "raw": "reset_per_phase",
+   "as": null,
+   "confidence": "high",
+   "flag": true,
+   "note": "SSD reset at each phase; propose vocabulary value: adaptive.reset_policy field."
+  },
+  {
+   "variation": "device_and_environment_checks",
+   "raw": "fullscreen; window >= 800x600; Safari excluded",
+   "as": {
+    "device_eligibility": "browser_restricted"
+   },
+   "confidence": "medium",
+   "flag": true,
+   "note": "Lossy: fullscreen and window-size requirements have no value; Safari exclusion maps to browser_restricted."
+  },
+  {
+   "variation": "device_and_environment_checks",
+   "raw": "instruction to use external mouse at low sensitivity; movement-duration screening task",
+   "as": {
+    "device_eligibility": "hardware_required"
+   },
+   "confidence": "low",
+   "flag": true,
+   "note": "External mouse is only instructed, plus a screening task; mouse sensitivity and screening not representable."
+  },
+  {
+   "variation": "device_and_environment_checks",
+   "raw": "laptop/desktop with keyboard in a quiet room (instruction only)",
+   "as": {
+    "device_eligibility": "computer_only"
+   },
+   "confidence": "medium",
+   "flag": false,
+   "note": "Quiet-room instruction not representable."
+  },
+  {
+   "variation": "device_and_environment_checks",
+   "raw": "browser-focus monitoring (exclusion)",
+   "as": null,
+   "confidence": "high",
+   "flag": true,
+   "note": "propose vocabulary value: focus_monitoring"
+  },
+  {
+   "variation": "practice_advance_criterion",
+   "raw": "none",
+   "as": {
+    "practice_criterion": null
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": "Fixed-length practice."
+  },
+  {
+   "variation": "practice_advance_criterion",
+   "raw": "median RT < 1000, go acc > 0.8, missed < 0.1; max 5 repeats",
+   "as": {
+    "practice_criterion": {
+     "go_rt_median_max_ms": 1000,
+     "go_accuracy_min": 0.8,
+     "go_omission_rate_max": 0.1,
+     "on_fail": "repeat"
+    },
+    "practice_max_repeats": 5
+   },
+   "confidence": "medium",
+   "flag": true,
+   "note": "Structure keys are my own (vocabulary gives none); strict inequalities not distinguished."
+  },
+  {
+   "variation": "practice_advance_criterion",
+   "raw": "go acc >= 0.7, else repeat",
+   "as": {
+    "practice_criterion": {
+     "go_accuracy_min": 0.7,
+     "on_fail": "repeat"
+    }
+   },
+   "confidence": "medium",
+   "flag": true,
+   "note": "Structure keys are my own; no repeat limit stated."
+  },
+  {
+   "variation": "practice_advance_criterion",
+   "raw": "acc >= 0.75, stop acc 0.3-0.7, mean RT < 1000; max 3 blocks",
+   "as": {
+    "practice_criterion": {
+     "accuracy_min": 0.75,
+     "stop_accuracy": [
+      0.3,
+      0.7
+     ],
+     "rt_mean_max_ms": 1000,
+     "on_fail": "repeat"
+    },
+    "practice_max_repeats": 3
+   },
+   "confidence": "low",
+   "flag": true,
+   "note": "Structure keys are my own; 'max 3 blocks' may mean 3 total (2 repeats)."
+  },
+  {
+   "variation": "go_only_practice",
+   "raw": "1 block",
+   "as": null,
+   "confidence": "high",
+   "flag": true,
+   "note": "Go-only practice length given in blocks, trial count unknown; practice_trials is a count."
+  },
+  {
+   "variation": "block_feedback",
+   "raw": "performance_summary",
+   "as": {
+    "block_feedback": "accuracy_rt"
+   },
+   "confidence": "medium",
+   "flag": false,
+   "note": "Summary of go RT, omissions, p(respond|signal); closest enum value."
+  },
+  {
+   "variation": "block_feedback",
+   "raw": "performance_summary_with_warnings",
+   "as": {
+    "block_feedback": "accuracy_rt"
+   },
+   "confidence": "medium",
+   "flag": true,
+   "note": "Warnings (e.g. slow, waiting) have no typed form; propose vocabulary value: warnings."
+  },
+  {
+   "variation": "block_feedback",
+   "raw": "conditional_warnings",
+   "as": null,
+   "confidence": "medium",
+   "flag": true,
+   "note": "Only performance-conditional warnings; propose vocabulary value: warnings."
+  },
+  {
+   "variation": "performance_incentive",
+   "raw": "speed_points",
+   "as": {
+    "performance_incentive": "points_only"
+   },
+   "confidence": "medium",
+   "flag": false,
+   "note": "Up to 25 points for fast correct go; no monetary payoff stated."
+  },
+  {
+   "variation": "performance_incentive",
+   "raw": "points_per_response",
+   "as": {
+    "performance_incentive": "points_only"
+   },
+   "confidence": "medium",
+   "flag": false,
+   "note": "Points by go-RT window and stop success."
+  },
+  {
+   "variation": "trial_feedback_phases",
+   "raw": "practice_only",
+   "as": {
+    "trial_feedback": "none",
+    "practice.trial_feedback": "accuracy"
+   },
+   "confidence": "medium",
+   "flag": true,
+   "note": "Content (accuracy) assumed; dossier gives phase only, not content."
+  },
+  {
+   "variation": "trial_feedback_phases",
+   "raw": "all_phases",
+   "as": {},
+   "confidence": "low",
+   "flag": true,
+   "note": "Phase only; content varies by source (accuracy messages, points, beeps), so trial_feedback not set."
+  },
+  {
+   "variation": "waiting_instruction",
+   "raw": "dont_wait",
+   "as": {
+    "strategy_instruction": "dont_wait"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": "Vocabulary value added after the pilot."
+  },
+  {
+   "variation": "waiting_instruction",
+   "raw": "dont_wait_plus_tracking_explanation",
+   "as": {
+    "strategy_instruction": "dont_wait_plus_tracking_explanation"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": "Vocabulary value added after the pilot."
+  },
+  {
+   "variation": "waiting_instruction",
+   "raw": "balance_speed_and_stopping",
+   "as": {
+    "strategy_instruction": "balance_speed_and_stopping"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": "Vocabulary value added after the pilot."
+  },
+  {
+   "variation": "child_protocol",
+   "raw": "none",
+   "as": {
+    "population_protocol": "standard"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": "Adult default."
+  },
+  {
+   "variation": "child_protocol",
+   "raw": "gamified story, 6 practice + 40 trials, fixed SSDs, sound feedback, instructions read aloud",
+   "as": {
+    "population_protocol": "gamified_child"
+   },
+   "confidence": "medium",
+   "flag": false,
+   "note": "Practice/trial counts, fixed SSDs and sound feedback belong to other options."
+  }
+ ]
+}

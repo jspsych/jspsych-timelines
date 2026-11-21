@@ -1,0 +1,50 @@
+{
+  "name": "@jspsych-timelines/testing",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Dev-only test harness for timeline packages: literature-reproduction runners, shared checks for vocabulary options, fixture generator and browser layout check.",
+  "type": "module",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./layout": {
+      "types": "./src/layout.d.cts",
+      "default": "./src/layout.cjs"
+    },
+    "./scripts/*": "./scripts/*"
+  },
+  "scripts": {
+    "build": "tsc --noEmit",
+    "test": "jest"
+  },
+  "bin": {
+    "jspsych-timelines-fixture-from-spec": "./scripts/fixture-from-spec.mjs",
+    "jspsych-timelines-layout-check": "./scripts/layout-check.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jspsych/jspsych-timelines.git",
+    "directory": "packages/testing"
+  },
+  "author": {
+    "name": "Josh de Leeuw",
+    "url": "https://github.com/jodeleeuw"
+  },
+  "license": "MIT",
+  "peerDependencies": {
+    "jspsych": ">=8.3.0"
+  },
+  "dependencies": {
+    "@jspsych/test-utils": "^1.3.0",
+    "yaml": "^2.6.0"
+  },
+  "devDependencies": {
+    "@jspsych/config": "^3.2.2",
+    "@jspsych/plugin-html-button-response": "^2.1.0",
+    "@jspsych/plugin-html-keyboard-response": "^2.1.0",
+    "jspsych": "^8.3.0",
+    "puppeteer-core": "^23.11.1",
+    "typescript": "^5.5.4"
+  }
+}

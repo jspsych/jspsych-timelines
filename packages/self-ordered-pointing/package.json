@@ -1,0 +1,62 @@
+{
+  "name": "@jspsych-timelines/self-ordered-pointing",
+  "version": "0.0.1",
+  "description": "Self-ordered pointing task (Petrides & Milner, 1982) for working memory and executive monitoring: on each of N screens of N items, pick an item not picked before in the set; repeat errors by set size.",
+  "type": "module",
+  "main": "dist/index.cjs",
+  "types": "dist/index.d.ts",
+  "unpkg": "dist/index.browser.js",
+  "scripts": {
+    "build": "tsup",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jspsych/jspsych-timelines.git",
+    "directory": "packages/self-ordered-pointing"
+  },
+  "keywords": [
+    "jsPsych",
+    "self-ordered pointing",
+    "SOPT",
+    "working memory",
+    "executive function",
+    "monitoring",
+    "cognitive"
+  ],
+  "author": {
+    "name": "Josh de Leeuw",
+    "url": "https://github.com/jodeleeuw"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jspsych/jspsych-timelines/issues"
+  },
+  "homepage": "https://github.com/jspsych/jspsych-timelines/tree/main/packages/self-ordered-pointing#readme",
+  "peerDependencies": {
+    "jspsych": ">=8.3.0"
+  },
+  "devDependencies": {
+    "@jspsych-timelines/testing": "*",
+    "@jspsych/config": "^3.2.2",
+    "jspsych": "^8.3.0",
+    "tsup": "^8.2.4",
+    "typescript": "^5.5.4"
+  },
+  "dependencies": {
+    "@jspsych/plugin-html-button-response": "^2.1.0",
+    "@jspsych/plugin-html-keyboard-response": "^2.1.0"
+  },
+  "module": "dist/index.js",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "src"
+  ]
+}

@@ -20,6 +20,7 @@ function getPackageInfo(packageDir) {
   if (!fs.existsSync(packageJsonPath)) return null;
 
   const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf-8"));
+  if (packageJson.private) return null; // dev-only packages (e.g. @jspsych-timelines/testing)
   return {
     name: packageJson.name,
     description: packageJson.description,

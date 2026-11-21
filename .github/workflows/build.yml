@@ -22,8 +22,9 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
 
-      - name: Install npm@v9
-        run: npm install -g npm@9
+      # Match the npm major used to maintain package-lock.json (npm 10).
+      - name: Install npm@v10
+        run: npm install -g npm@10
 
       - name: Install dependencies
         run: npm ci

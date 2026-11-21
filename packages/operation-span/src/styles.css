@@ -1,264 +1,222 @@
-/* Operation Span Task Styles */
+/* All rules are scoped under the task class (PACKAGE-STANDARD §5). */
 
-/* Instructions container */
-.jspsych-operation-span .ospan-instructions {
+.jspsych-timelines-operation-span .jspsych-timelines-operation-span-text {
   max-width: 600px;
   margin: 0 auto;
   padding: 0 20px;
   text-align: left;
 }
 
-.jspsych-operation-span .ospan-instructions h2,
-.jspsych-operation-span .ospan-instructions h3 {
+.jspsych-timelines-operation-span .jspsych-timelines-operation-span-text h2 {
   text-align: center;
 }
 
-/* Container */
-.jspsych-operation-span .ospan-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
-  padding: 20px;
+/* Anchored layout (PACKAGE-STANDARD section 5), for a task whose trial has several parts. Every screen
+   with a stage (problem, answer, memorandum, gap, feedback, notice and the recall panel) puts the
+   stage on the vertical centre of the display with absolute positioning, so nothing else on the
+   screen can move it. The recall panel is a taller stage on the same centre. Text goes in the region
+   below the stage (scrolls if long); the plugin's button group is pinned to the bottom edge. */
+.jspsych-timelines-operation-span {
+  --ospan-stage-h: min(240px, 38vh);
+  --ospan-recall-h: min(330px, 66vh);
+  --ospan-btn-reserve: 76px;
 }
 
-/* Math problem display */
-.jspsych-operation-span .ospan-math {
-  font-size: 32px;
-  font-weight: bold;
-  padding: 30px;
-  background: #f5f5f5;
-  border-radius: 8px;
-  min-width: 300px;
+.jspsych-timelines-operation-span:has(.jspsych-timelines-operation-span-screen) {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: none;
+  height: 100vh;
+  margin: 0;
+  overflow: hidden;
+}
+
+.jspsych-timelines-operation-span .jspsych-timelines-operation-span-screen {
+  display: contents;
+}
+
+.jspsych-timelines-operation-span .jspsych-timelines-operation-span-stage {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 640px;
+  max-width: calc(100vw - 16px);
+  height: var(--ospan-stage-h);
+  padding: 8px;
+  overflow: hidden;
+}
+
+.jspsych-timelines-operation-span .jspsych-timelines-operation-span-screen-recall {
+  --ospan-stage-h: var(--ospan-recall-h);
+}
+
+.jspsych-timelines-operation-span .jspsych-timelines-operation-span-below {
+  position: absolute;
+  top: calc(50% + var(--ospan-stage-h) / 2 + 8px);
+  right: 0;
+  bottom: 0;
+  left: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* Short text under the stage (prompts, hints, step explanations) is centred under the stimulus;
+   full-page instructions stay left-aligned for reading. */
+.jspsych-timelines-operation-span
+  .jspsych-timelines-operation-span-below
+  .jspsych-timelines-operation-span-text {
   text-align: center;
+  text-wrap: balance;
 }
 
-.jspsych-operation-span .ospan-math-prompt {
-  font-size: 18px;
-  color: #666;
-  margin-top: 15px;
+.jspsych-timelines-operation-span:has(#jspsych-html-button-response-btngroup)
+  .jspsych-timelines-operation-span-below {
+  bottom: var(--ospan-btn-reserve);
 }
 
-/* Letter display */
-.jspsych-operation-span .ospan-letter {
-  font-size: 72px;
-  font-weight: bold;
-  padding: 40px 60px;
-  background: #e3f2fd;
-  border-radius: 8px;
-  color: #1565c0;
-}
-
-/* Recall grid */
-.jspsych-operation-span .ospan-recall-container {
+.jspsych-timelines-operation-span:has(.jspsych-timelines-operation-span-screen)
+  #jspsych-html-button-response-btngroup {
+  position: absolute;
+  right: 0;
+  bottom: 12px;
+  left: 0;
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 20px;
-}
-
-.jspsych-operation-span .ospan-recall-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  justify-content: center;
   gap: 8px;
 }
 
-.jspsych-operation-span .ospan-recall-btn {
-  width: 60px;
-  height: 60px;
-  font-size: 24px;
-  font-weight: bold;
-  border: 2px solid #333;
-  border-radius: 8px;
-  background: white;
-  cursor: pointer;
-  transition: all 0.1s;
-}
-
-.jspsych-operation-span .ospan-recall-btn:hover:not(:disabled) {
-  background: #e3f2fd;
-  transform: scale(1.05);
-}
-
-.jspsych-operation-span .ospan-recall-btn:disabled {
-  background: #ccc;
-  color: #666;
-  cursor: not-allowed;
-}
-
-.jspsych-operation-span .ospan-recall-btn.ospan-selected {
-  background: #1565c0;
-  color: white;
-  border-color: #1565c0;
-}
-
-/* Response display */
-.jspsych-operation-span .ospan-response-display {
-  display: flex;
-  gap: 10px;
-  min-height: 50px;
-  padding: 10px 20px;
-  background: #f5f5f5;
-  border-radius: 8px;
-  min-width: 200px;
-  justify-content: center;
-  align-items: center;
-}
-
-.jspsych-operation-span .ospan-response-letter {
-  font-size: 28px;
-  font-weight: bold;
-  padding: 5px 10px;
-  background: white;
-  border-radius: 4px;
-  border: 1px solid #ddd;
-}
-
-.jspsych-operation-span .ospan-response-letter.ospan-blank {
-  color: #999;
-}
-
-/* Control buttons */
-.jspsych-operation-span .ospan-controls {
-  display: flex;
-  gap: 10px;
-  margin-top: 10px;
-}
-
-.jspsych-operation-span .ospan-control-btn {
-  padding: 10px 20px;
-  font-size: 16px;
-  border: 2px solid #333;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.1s;
-}
-
-.jspsych-operation-span .ospan-control-btn.ospan-clear {
-  background: #ffebee;
-  border-color: #c62828;
-  color: #c62828;
-}
-
-.jspsych-operation-span .ospan-control-btn.ospan-blank {
-  background: #fff3e0;
-  border-color: #ef6c00;
-  color: #ef6c00;
-}
-
-.jspsych-operation-span .ospan-control-btn.ospan-done {
-  background: #e8f5e9;
-  border-color: #2e7d32;
-  color: #2e7d32;
-}
-
-.jspsych-operation-span .ospan-control-btn:hover {
-  transform: scale(1.05);
-}
-
-/* Prompt */
-.jspsych-operation-span .ospan-prompt {
-  font-size: 18px;
-  color: #666;
-  margin: 0;
-}
-
-/* Feedback */
-.jspsych-operation-span .ospan-feedback {
-  font-size: 24px;
-  font-weight: bold;
-  padding: 20px;
-}
-
-.jspsych-operation-span .ospan-feedback.ospan-feedback-correct {
-  color: #2e7d32;
-}
-
-.jspsych-operation-span .ospan-feedback.ospan-feedback-incorrect {
-  color: #c62828;
-}
-
-/* Set size announcement */
-.jspsych-operation-span .ospan-announcement {
-  font-size: 28px;
-  font-weight: bold;
-  padding: 40px;
-  color: #1565c0;
-}
-
-/* Trial results */
-.jspsych-operation-span .ospan-results {
+.jspsych-timelines-operation-span .jspsych-timelines-operation-span-problem {
+  font-size: 2.2em;
   text-align: center;
-  padding: 20px;
+  white-space: nowrap;
 }
 
-.jspsych-operation-span .ospan-results-letters {
-  font-size: 20px;
-  margin: 10px 0;
+.jspsych-timelines-operation-span .jspsych-timelines-operation-span-memorandum {
+  font-size: 4.5em;
+  font-weight: bold;
+  line-height: 1;
 }
 
-.jspsych-operation-span .ospan-results-math {
-  font-size: 16px;
-  color: #666;
+.jspsych-timelines-operation-span .jspsych-timelines-operation-span-notice {
+  font-size: 1em; /* body size: only stimuli and the fixation mark are larger (standard §5) */
+  text-align: center;
+  text-wrap: balance;
 }
 
-/* Mobile/touch device optimizations */
-@media (pointer: coarse) {
-  .jspsych-operation-span .ospan-recall-container {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 16px;
-    background: inherit;
-  }
+.jspsych-timelines-operation-span .jspsych-timelines-operation-span-notice p {
+  margin: 0.3em 0;
+}
 
-  .jspsych-operation-span .ospan-recall-grid {
-    max-width: 100%;
-    gap: 12px;
-  }
+.jspsych-timelines-operation-span .jspsych-timelines-operation-span-notice.incorrect,
+.jspsych-timelines-operation-span .jspsych-timelines-operation-span-notice.timeout {
+  font-weight: bold;
+}
 
-  .jspsych-operation-span .ospan-recall-btn {
-    min-height: 60px;
-    font-size: 20px;
-  }
+/* Recall panel */
+.jspsych-timelines-operation-span .jspsych-timelines-operation-span-recall {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
 
-  .jspsych-operation-span .ospan-control-btn {
-    min-height: 48px;
-    font-size: 18px;
-    padding: 10px 16px;
-  }
+.jspsych-timelines-operation-span .jspsych-timelines-operation-span-recall-prompt {
+  font-size: 1.05em;
+}
 
-  .jspsych-operation-span .ospan-math {
-    min-width: auto;
-    width: 90%;
-  }
+.jspsych-timelines-operation-span .jspsych-timelines-operation-span-slots,
+.jspsych-timelines-operation-span .jspsych-timelines-operation-span-boxes {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+}
 
-  .jspsych-operation-span .ospan-letter {
-    padding: 30px 40px;
-  }
+.jspsych-timelines-operation-span .jspsych-timelines-operation-span-slot {
+  box-sizing: border-box;
+  min-width: 40px;
+  height: 40px;
+  padding: 0 6px;
+  border: 2px solid currentColor;
+  border-radius: 6px;
+  font-size: 1.3em;
+  font-weight: bold;
+  line-height: 36px;
+  text-align: center;
+}
 
-  .jspsych-operation-span #jspsych-html-button-response-btngroup {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 16px;
-    background: inherit;
-    display: flex;
-    gap: 16px;
-    justify-content: center;
-  }
+.jspsych-timelines-operation-span .jspsych-timelines-operation-span-box {
+  box-sizing: border-box;
+  width: 64px;
+  height: 40px;
+  font-size: 1.2em;
+  text-align: center;
+  text-transform: none;
+}
 
-  .jspsych-operation-span #jspsych-html-button-response-btngroup .jspsych-btn {
-    min-height: 60px;
-    min-width: 120px;
-    font-size: 18px;
-    flex: 1;
-    max-width: 200px;
-  }
+.jspsych-timelines-operation-span .jspsych-timelines-operation-span-grid {
+  display: grid;
+  gap: 6px;
+  width: min(320px, 100%);
+}
 
-  .jspsych-operation-span {
-    padding-bottom: 250px;
+.jspsych-timelines-operation-span .jspsych-timelines-operation-span-key,
+.jspsych-timelines-operation-span .jspsych-timelines-operation-span-control {
+  box-sizing: border-box;
+  min-height: 42px;
+  padding: 0 10px;
+  border: 1px solid #888;
+  border-radius: 6px;
+  background: #f4f4f4;
+  color: #111;
+  font-size: 1.1em;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.jspsych-timelines-operation-span .jspsych-timelines-operation-span-key:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.jspsych-timelines-operation-span .jspsych-timelines-operation-span-controls {
+  display: flex;
+  gap: 8px;
+}
+
+@media (max-height: 520px) {
+  .jspsych-timelines-operation-span .jspsych-timelines-operation-span-slot {
+    height: 32px;
+    line-height: 28px;
+  }
+  .jspsych-timelines-operation-span .jspsych-timelines-operation-span-key,
+  .jspsych-timelines-operation-span .jspsych-timelines-operation-span-control {
+    min-height: 34px;
+  }
+  .jspsych-timelines-operation-span .jspsych-timelines-operation-span-grid {
+    gap: 4px;
+  }
+}
+
+@media (max-width: 420px) {
+  .jspsych-timelines-operation-span .jspsych-timelines-operation-span-slots,
+  .jspsych-timelines-operation-span .jspsych-timelines-operation-span-boxes {
+    gap: 4px;
+  }
+  .jspsych-timelines-operation-span .jspsych-timelines-operation-span-slot {
+    min-width: 30px;
+    padding: 0 3px;
+  }
+  .jspsych-timelines-operation-span .jspsych-timelines-operation-span-box {
+    width: 40px;
   }
 }

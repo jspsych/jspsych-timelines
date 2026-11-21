@@ -1,0 +1,265 @@
+---
+title: Two-step task
+sidebar_label: Two-step task
+---
+
+import {TimelineExample} from '@jspsych/docusaurus-theme/components';
+import ParamsTable from '@site/src/components/ParamsTable';
+import schema from '@site/src/schemas/two-step-task.schema.json';
+import manifest from '@site/src/schemas/manifest.json';
+
+# Two-step task
+
+Package: `@jspsych-timelines/two-step-task` ([source](https://github.com/jspsych/jspsych-timelines/tree/main/packages/two-step-task)). Version documented here: <code>{manifest['two-step-task'].version}</code>.
+
+## Overview
+
+The two-step (two-stage) Markov decision task separates model-based from model-free control of choice. On each trial the participant makes two choices. The first choice, between two options, usually leads to one of two second-stage states and sometimes to the other. In the second stage they choose between two options, and the chosen option pays a coin with a probability that changes slowly over the task. A model-free learner repeats a first-stage choice that was just rewarded, whatever the transition. A model-based learner uses the transitions: after a rare transition a reward says the *other* first-stage option is the better route to that state. The usual measures are the probability of repeating the first-stage choice by previous reward and transition, a model-free index (the effect of reward), a model-based index (the reward by transition interaction), and, in hybrid reinforcement learning models, the weight `w` on the model-based values.
+
+The defaults follow the Expfactory two-stage-decision task (S024 in the spec): 50 practice trials, 200 test trials in 2 blocks, 70% common transitions, 2000 ms for each choice, abstract symbols, a reward walk with SD 0.025 inside 0.25 to 0.75, and a 1000 ms highlight of each choice. Studies differ most in the number of trials, the transition probability, the reward walk and how much of the structure the instructions disclose, so the package has options for all of them.
+
+**Canonical citation:** Daw, N. D., Gershman, S. J., Seymour, B., Dayan, P., & Dolan, R. J. (2011). Model-based influences on humans' choices and striatal prediction errors. *Neuron, 69*(6), 1204-1215.
+
+## Installation
+
+```bash
+npm install @jspsych-timelines/two-step-task
+```
+
+From a CDN:
+
+```html
+<script src="https://unpkg.com/jspsych@8"></script>
+<script src="https://unpkg.com/@jspsych-timelines/two-step-task"></script>
+<link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css" />
+```
+
+## Quick Start
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://unpkg.com/jspsych@8"></script>
+    <script src="https://unpkg.com/@jspsych-timelines/two-step-task"></script>
+    <link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css" />
+  </head>
+  <body></body>
+  <script>
+    const jsPsych = initJsPsych();
+    const task = jsPsychTimelineTwoStepTask.createTimeline(jsPsych);
+    jsPsych.run([task]);
+  </script>
+</html>
+```
+
+## Task Description
+
+**A trial.** An optional fixation (`fixation_duration_ms`, 0 by default). Two first-stage options appear, left and right (by default two abstract symbols; `instruction_framing: "spaceship_planet_alien"` draws a rocket and a flying saucer). The participant presses the left or the right key within `response_window_ms`. The chosen option is highlighted (`response_acknowledgement_ms`). The screen then changes to one of two second-stage states, a red one or a blue one, which the first-stage option usually leads to (`common_transition_prob`): option A to red, option B to blue. Two second-stage options appear, and the same two keys choose one. The chosen option is highlighted, and the outcome (a coin or no coin) is shown for `feedback_duration_ms` with the running total of coins (`running_score_display`). After `iti_ms` the next trial starts.
+
+**There is no correct answer.** Rewards are random. Nothing in the data says that a choice was right or wrong, and the package writes neither `correct` nor `correct_response`. What the task measures is how the choice depends on what happened before.
+
+**The schedule.** Everything that is generated is drawn when `createTimeline` is called, through `jsPsych.randomization`, so a seeded run has the same schedule whatever the participant (or a simulated participant) chooses: the common or rare transition of each trial, the reward probability of each of the four second-stage options (a Gaussian random walk from a starting value), whether each option would pay a coin on that trial, which option is on which side, and jittered durations. The probabilities are recorded on every trial (`reward_probs`), so analyses can use the true values (S009's correction to the stay analysis needs them). Practice has its own walk. A trial that is missed keeps its place in the walk: with `missed_response_handling: "skip_trial"` the walk moves on, with `"repeat_trial"` the same trial is run again, with the same probabilities and outcomes.
+
+### Reward schedule
+
+`reward_schedule` is a typed object. Only `kind: "random_walk"` is implemented; the other kinds of the spec (`block_alternating`, `pregenerated_walk_sets`) throw when the timeline is built.
+
+```javascript
+reward_schedule: {
+  kind: "random_walk",
+  sd: 0.025,               // SD of the Gaussian step, per trial and option
+  bounds: [0.25, 0.75],    // lower and upper limit
+  boundary: "reverse_step" // or "reflect"
+}
+```
+
+The two boundary rules differ at the limits. `reflect` folds a step that would cross a limit back inside (Daw et al., 2011; S025, S029, S047): from 0.74, a step of +0.03 gives 0.73. `reverse_step` takes the step in the opposite direction instead (Expfactory, S024): from 0.74, a step of +0.03 gives 0.71. The default is the anchor's (`reverse_step`), although four of the five walks in the spec reflect.
+
+`reward_probability` sets the starting values by state (`red`, `blue`) and option (`option_1`, `option_2`): a number, or `{ min, max }` for a uniform draw once per run. The default draws all four uniformly from 0.25 to 0.75. Starting values must lie within `reward_schedule.bounds`.
+
+```javascript
+// Kool et al. (S025): one state starts at 0.25 / 0.75, the other at 0.4 / 0.6; Daw et al. walk (reflect)
+createTimeline(jsPsych, {
+  reward_probability: { red: { option_1: 0.25, option_2: 0.75 }, blue: { option_1: 0.4, option_2: 0.6 } },
+  reward_schedule: { kind: "random_walk", sd: 0.025, bounds: [0.25, 0.75], boundary: "reflect" },
+});
+```
+
+### Counts
+
+`n_test_trials`, `n_blocks` and `trials_per_block` must agree: give any one and the others follow (from the defaults of the rest), give two and the third follows, give all three and they must satisfy `n_test_trials = n_blocks * trials_per_block`, otherwise the timeline throws. When `n_test_trials` does not divide evenly, the blocks differ by one trial, and `trials_per_block` is the size of the largest. Practice is one block of `practice_trials`.
+
+### Missed choices
+
+A choice not made within `response_window_ms` is a missed trial. The "too slow" message is shown for `timeout_message_ms` and the trial ends. `missed_response_handling` says whether it is skipped or repeated. A repeated trial that is missed again is repeated up to 5 more times and then skipped (a package constant: without a limit, a participant who never answers would be shown the same trial for ever). Missed trials are recorded (`missed`, `missed_stage`), and the package never stops the task for missed trials. The literature's abort after N missed trials (S026) is a data-quality rule, and so are the exclusion criteria below.
+
+### Instructions
+
+The instruction pages are followed by an interactive walkthrough (`instruction_demonstration: "interactive"`, the default). A task without a correct answer has nothing to repeat until correct, so the steps ask for what the pages just said, using the task's own screens and keys:
+
+1. a scripted first choice (the option on the left, pressing the left key), then the screen of the state it led to;
+2. a scripted second choice (the option on the right), and the coin it gives;
+3. by `contingency_disclosure`: `full`: for each first-stage option, which state it usually leads to (the two states are shown, one on each side, and the answer alternates between the sides); `partial`: whether a first-stage option always goes to the same state, or usually but not always (two sentences, one on each side); `none`: nothing;
+4. for `partial` and `full`: whether the reward chances of the second-stage options stay the same or change slowly.
+
+A wrong answer shows a hint and repeats the step, up to 3 attempts, after which the answer is shown and the walkthrough moves on. Rows are `part: "instruction_check"` (with `step`, `correct` and `attempt`) and `instruction_feedback`; they are never scored. The page before practice says that trials now run at the real pace and that the main task follows.
+
+`contingency_disclosure: "partial"` (told that each option mostly leads to one state, not which) is the default. The walkthrough shows one scripted transition, so a participant sees one option lead to its state before practice. `full` also tells which state each option usually leads to, and checks it. `none` tells only the keys and that coins are the reward.
+
+### Questionnaire
+
+`manipulation_check: "questionnaire"` asks, after the main task, for each first-stage option which state it mostly led to (`part: "manipulation_check"`, with `answer`, `common_state` and `correct`).
+
+### Simulation
+
+Under `jsPsych.simulate(timeline, "data-only")` the package uses a hybrid reinforcement-learning participant: model-free first-stage values (TD(1)) mixed with model-based values by a weight `w`, softmax choice, one learning rate, ex-Gaussian RTs, and a slower second-stage RT after a rare transition. Its stay pattern is the expected one (a model-based learner has a positive model-based index, a model-free learner a positive reward effect). A global forced RT (`{ default: { data: { rt: 400 } } }`) wins over the model, and the choices are then random. Set the parameters with `utils.simulation.setSimulatedAgent({ w: 1, alpha: 0.5, beta: 6 })` (`null` restores the defaults). It affects only simulated runs.
+
+## Parameters
+
+Pick an option on the left, or search by name or description. Each option shows its default and where that default came from, what turns it off, whether practice can use a different value, and the values used in the studies behind the spec. Link to one with `#param-<name>`, e.g. [`#param-reward_schedule`](#param-reward_schedule).
+
+<ParamsTable schema={schema} />
+
+## Try it
+
+For a short run, pick "Quick demo" in the Preset menu (the walkthrough, 4 practice and 20 test trials at a faster pace) and press Run. The other presets are study configurations from the literature; values the package cannot express are noted in each preset's description. The task runs from the bundle built from this repository. The options are kept in the URL hash, so you can share a configuration.
+
+<TimelineExample
+  schema={schema}
+  bundle="/bundles/two-step-task/index.browser.js"
+  globalName={manifest['two-step-task'].globalName}
+  syncToUrl
+  hashKey="two-step-task"
+  height={460}
+/>
+
+## Examples
+
+Daw et al. (2011) in the lab: 70% transitions, a reflecting walk, three blocks of 67 trials, 2 s per choice, 50 practice trials:
+
+```javascript
+createTimeline(jsPsych, {
+  n_blocks: 3,
+  trials_per_block: 67,
+  practice_trials: 50,
+  reward_schedule: { kind: "random_walk", sd: 0.025, bounds: [0.25, 0.75], boundary: "reflect" },
+  contingency_disclosure: "partial",
+});
+```
+
+Spaceships and aliens, with fixed sides per participant, repeated misses and a questionnaire at the end:
+
+```javascript
+createTimeline(jsPsych, {
+  instruction_framing: "spaceship_planet_alien",
+  option_side_assignment: "fixed",
+  missed_response_handling: "repeat_trial",
+  response_window_ms: 3000,
+  manipulation_check: "questionnaire",
+});
+```
+
+A faster task with 80% common transitions, no highlight and a jittered interval:
+
+```javascript
+createTimeline(jsPsych, {
+  common_transition_prob: 0.8,
+  response_acknowledgement: "none",
+  iti_ms: { min: 500, max: 1000, step: 100 },
+  n_test_trials: 150,
+  n_blocks: 3,
+});
+```
+
+## Data Output
+
+Every row carries `task: "two-step-task"` and `task_version`. A trial has two kinds of rows. **The `response` row** (`part: "response"`, one per trial attempt, written after the last display of the trial) is the scorable row and carries everything an analysis needs. The **`choice` rows** (`part: "choice"`, one per stage) are the raw record of each key press.
+
+| Field | Type | Description |
+|---|---|---|
+| `phase` | string | `"practice"` or `"test"` |
+| `block` | number | Block number, 1-indexed (practice is block 1) |
+| `trial_index_in_block` | number | Position within the block, 1-indexed |
+| `attempt` | number | 1, or more when a missed trial is repeated |
+| `condition`, `transition` | `"common"` or `"rare"`, or null | The transition (null when the first choice was missed) |
+| `planned_transition` | `"common"` or `"rare"` | The transition drawn for the trial, also when it did not happen |
+| `stage1_choice` | `"A"` or `"B"`, or null | The first-stage option chosen (identity, not side); A usually leads to `red`, B to `blue` |
+| `stage1_key`, `stage1_side`, `stage1_rt` | | The key, its side (`left` or `right`) and the RT of the first choice, ms |
+| `stage1_left` | `"A"` or `"B"` | The first-stage option that was on the left |
+| `stage2_state` | `"red"` or `"blue"`, or null | The state reached |
+| `stage2_choice` | `"option_1"` or `"option_2"`, or null | The second-stage option chosen |
+| `stage2_key`, `stage2_side`, `stage2_rt`, `stage2_left` | | As for the first stage |
+| `reward` | 0, 1 or null | Whether the chosen option paid a coin; null when a choice was missed |
+| `reward_probs` | object | The reward probability of each option on this trial: `{ red: { option_1, option_2 }, blue: { ... } }` |
+| `reward_walk` | string | The schedule, e.g. `random_walk sd=0.025 bounds=[0.25,0.75] boundary=reverse_step` |
+| `common_transition_prob` | number | The probability of the common transition |
+| `missed`, `missed_stage` | boolean, 1, 2 or null | A choice was missed, and which |
+| `response`, `rt`, `timeout` | | The first choice's key and RT, and `timeout` = `missed`, so a battery-wide filter on `part: "response"` finds a response. `null` when missed |
+| `response_window` | number or null | The window of this trial, ms |
+
+**`choice` rows** have `stage` (1 or 2), `left` and `right` (the options on screen), `choice`, `side`, `state` (second stage), the native `response` and `rt` (`null` when missed), `timeout`, `response_window` and `condition`.
+
+**`part` values the package writes:** `instruction`, `instruction_example`, `instruction_check`, `instruction_feedback`, `fixation`, `choice`, `acknowledgement`, `feedback` (the outcome; also `reward` and `running_total`), `timeout_message`, `response`, `iti`, `rest`, `manipulation_check_intro`, `manipulation_check`, `transition`, `completion`. `phase` is `instructions`, `practice`, `test` or `completion`. Display rows record the sampled duration as `duration_ms` and under the option's name without `_ms` (`fixation_duration`, `iti`, `feedback_duration`, `response_acknowledgement`, `timeout_message`).
+
+## Scoring
+
+```javascript
+import { utils } from "@jspsych-timelines/two-step-task";
+
+const scores = utils.scoring.getSummary(jsPsych.data.get());
+const trials = utils.scoring.trialTable(jsPsych.data.get(), "test"); // one record per response row
+```
+
+Scores use the test phase's `response` rows. With no data, counts are `0` and every rate, mean and index is `null`. The stay measures use pairs of consecutive trials in the same block, and drop a pair when either trial has a missed choice.
+
+| Metric | Description | Interpretation |
+|---|---|---|
+| `stay_common_rewarded`, `stay_common_unrewarded`, `stay_rare_rewarded`, `stay_rare_unrewarded` | Probability of repeating the first-stage choice, by the previous trial's transition and reward | A model-based learner stays after common rewards and rare non-rewards; a model-free learner stays after any reward |
+| `n_stay_*`, `n_stay_pairs`, `stay_probability` | The number of pairs behind each probability, and the overall stay probability | |
+| `mf_index` | (stay after reward) minus (stay after no reward), averaged over the two transitions | Positive: choices follow reward (model-free) |
+| `mb_index` | ((common rewarded - common unrewarded) - (rare rewarded - rare unrewarded)) / 2 | Positive: choices use the transition structure (model-based) |
+| `mb_rt_index` | Mean second-stage RT after rare minus after common transitions, ms | Positive: slower after surprising transitions (Shahar et al., 2019) |
+| `total_reward`, `reward_rate` | Coins earned, and per completed trial | |
+| `stage2_best_option_rate` | Share of second-stage choices of the option with the higher current probability (ties left out) | Learning of the second-stage values |
+| `common_transition_rate` | Realised share of common transitions | |
+| `stage1_mean_rt`, `stage2_mean_rt` | Mean RT of each stage, ms | |
+| `n_trials`, `n_completed`, `n_missed`, `n_missed_stage_1`, `n_missed_stage_2` | Counts (`n_trials` includes repeated attempts) | |
+
+The two indices are cell-mean contrasts on the probability scale, not the coefficients of the logistic regression of the literature. **Not in the package:** the logistic regression (and its hierarchical version), the hybrid reinforcement-learning model with the weight `w`, and RT-based models (DDM-RL). They need model fitting, which belongs in analysis, and the data has what they need (`trialTable`, or the `response` rows directly). A regression with the true reward probabilities as a predictor (S009) can use `reward_probs`.
+
+**Exclusion is analysis, not the package.** The package never excludes anything. The criteria in the literature are for the analyst: Expfactory's credit rules (missed trials under 40%, median RT over 200 ms, key diversity under 85%), an abort after 6 missed trials (S026), and comprehension-quiz scores (S120, S138). The stay measures are unreliable with few trials (the split-half reliability of the model-based index was .41 at 25 trials and .71 at 300 in S062), so analysts should consider the number of usable pairs, `n_stay_pairs`.
+
+## Translation
+
+Pass a `text` object to replace interface strings; partial objects are merged with the defaults. The keys, from `src/text.ts`, where each function documents its named parameters:
+
+- **Strings:** `instruction_test_intro`, `instruction_correct`, `continue_button`, `fixation`, `too_slow`, `outcome_coin`, `outcome_none`, `questionnaire_intro`, `task_complete`.
+- **Functions** (they can only be set from code):
+  - the instruction pages: `instruction_intro`, `instruction_response`, `instruction_transitions`, `instruction_drift`, `instruction_demo_intro`, `instruction_practice_intro`;
+  - the walkthrough, each with a prompt, a hint after a wrong answer and the answer after the last attempt: `step_first`, `step_first_hint`, `step_first_reveal`, `step_second`, `step_second_hint`, `step_second_reveal`, `check_mapping`, `check_mapping_hint`, `check_mapping_reveal`, `check_statement`, `check_statement_hint`, `check_statement_reveal`; and `step_outcome`, `statement_transitions_true`, `statement_transitions_false`, `statement_drift_true`, `statement_drift_false`;
+  - during and after the task: `running_total`, `block_complete`, `questionnaire_question`, `result_summary`;
+  - `framing_words`, which returns the nouns for a cover story (`first`, `first_plural`, `second`, `second_plural`, `state`, `state_plural`, and how each option and state is named in a sentence, `first_name` and `state_name`). A translation returns them for both `abstract_symbols` and `spaceship_planet_alien`.
+
+The instruction functions receive the resolved options that change what they say (the key names, the time allowed, whether a missed trial is repeated, whether the options change places), so a translation can reproduce those sentences.
+
+```javascript
+createTimeline(jsPsych, {
+  text: { too_slow: "Te langzaam", continue_button: "Verder", outcome_coin: "Je kreeg een munt" },
+});
+```
+
+## Timeline Units
+
+`timelineUnits` exports factories for the individual pieces. Most take the object from `timelineUnits.createContext(jsPsych, options)`: `createInstructions`, `createInstructionWalkthrough`, `createPracticeIntro`, `createTestIntro`, `createSchedule` (the generated plans of a phase), `createBlock`, `createTrial`, `createDisplayTrial`, `createTransition`, `createRestBreak`, `createQuestionnaire` and `createCompletion`.
+
+## References
+
+- Daw, N. D., Gershman, S. J., Seymour, B., Dayan, P., & Dolan, R. J. (2011). Model-based influences on humans' choices and striatal prediction errors. *Neuron, 69*(6), 1204-1215.
+- Sochat, V. V., et al. (2016). The Experiment Factory: Standardizing behavioral experiments. *Frontiers in Psychology, 7*, 610. (The Expfactory two-stage-decision task is the anchor of the defaults; cited from memory; verify.)
+- Kool, W., Cushman, F. A., & Gershman, S. J. (2016). When does model-based control pay off? *PLoS Computational Biology, 12*(8), e1005090.
+- Shahar, N., et al. (2019). Improving the reliability of model-based decision-making estimates in the two-stage decision task with reaction-times and drift-diffusion modeling. *PLoS Computational Biology, 15*(2), e1006803.
+- Brown, V. M., Chen, J., Gillan, C. M., & Price, R. B. (2020). Improving the reliability of computational analyses: Model-based planning and its relationship with compulsivity. *Biological Psychiatry: Cognitive Neuroscience and Neuroimaging, 5*(6), 601-609.
+- Akam, T., Costa, R., & Dayan, P. (2015). Simple plans or sophisticated habits? State, transition and learning interactions in the two-step task. *PLoS Computational Biology, 11*(12), e1004648. (S009; the correction to the stay analysis that uses the reward probabilities; cited from memory; verify.)
+- See the spec for the full list of studies behind each option.

@@ -1,0 +1,2901 @@
+{
+ "spec": "specs/2-step-task/spec.yaml (jspsych-timelines-paper, vocabulary 2026-11-13-std-final)",
+ "options": [
+  {
+   "name": "feedback_duration_ms",
+   "default": {
+    "value": 500,
+    "raw": 500,
+    "basis": "anchor",
+    "source": "S024",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "feedback_duration_ms",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S024",
+       "raw": 500,
+       "value": 500,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S025",
+       "raw": 500,
+       "value": 500,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S029",
+       "raw": 1000,
+       "value": 1000,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S026",
+       "raw": 1200,
+       "value": 1200,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S113",
+       "raw": 1500,
+       "value": 1500,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S138",
+       "raw": 2500,
+       "value": 2500,
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "fixation_duration_ms",
+   "default": {
+    "value": 0,
+    "raw": "none",
+    "basis": "anchor",
+    "source": "S024",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "pre_stage_fixation_ms",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S024",
+       "raw": "none",
+       "value": 0,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S029",
+       "raw": "none",
+       "value": 0,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S134",
+       "raw": "uniform 2000-4000 before each stage",
+       "value": {
+        "min": 2000,
+        "max": 4000
+       },
+       "ok": true,
+       "note": "Jittered fixation before each of the two stages (S134); step not stated, so default 1 ms. The option holds one value, so 'before each stage' (twice per trial) is not typed."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "iti_ms",
+   "default": {
+    "value": 1000,
+    "raw": "1000",
+    "basis": "anchor",
+    "source": "S024",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "iti_ms",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S024",
+       "raw": "1000",
+       "value": 1000,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S025",
+       "raw": "1000",
+       "value": 1000,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S113",
+       "raw": "500",
+       "value": 500,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S010",
+       "raw": "uniform 1000-2000",
+       "value": {
+        "min": 1000,
+        "max": 2000
+       },
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S134",
+       "raw": "uniform 3000-5000",
+       "value": {
+        "min": 3000,
+        "max": 5000
+       },
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S007",
+       "raw": "randomized, mean about 1 TR",
+       "value": null,
+       "ok": false,
+       "note": "fMRI jitter given only as a mean tied to the scanner TR; no min/max stated. propose vocabulary value: duration distribution with a mean."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "response_window_ms",
+   "default": {
+    "value": 2000,
+    "raw": 2000,
+    "basis": "anchor",
+    "source": "S024",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "choice_deadline_ms",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S007",
+       "raw": 2000,
+       "value": 2000,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S024",
+       "raw": 2000,
+       "value": 2000,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S025",
+       "raw": 2000,
+       "value": 2000,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S029",
+       "raw": 2000,
+       "value": 2000,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S134",
+       "raw": 2000,
+       "value": 2000,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S011",
+       "raw": 2500,
+       "value": 2500,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S055",
+       "raw": 2500,
+       "value": 2500,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S022",
+       "raw": 3000,
+       "value": 3000,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S026",
+       "raw": 10000,
+       "value": 10000,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S113",
+       "raw": 1500,
+       "value": 1500,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S138",
+       "raw": 1500,
+       "value": 1500,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S013",
+       "raw": "none",
+       "value": null,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S062",
+       "raw": "none",
+       "value": null,
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "timeout_message_ms",
+   "default": {
+    "value": 1500,
+    "raw": 1500,
+    "basis": "fill",
+    "frequency": "1/2",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "timeout_message_ms",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S025",
+       "raw": 1500,
+       "value": 1500,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S029",
+       "raw": 1000,
+       "value": 1000,
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "n_blocks",
+   "default": {
+    "value": 2,
+    "raw": "2x100",
+    "basis": "anchor",
+    "source": "S024",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "block_structure",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S007",
+       "raw": "3x67",
+       "value": 3,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S033",
+       "raw": "3x67",
+       "value": 3,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S024",
+       "raw": "2x100",
+       "value": 2,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S022",
+       "raw": "4x50",
+       "value": 4,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S047",
+       "raw": "2x75 per condition",
+       "value": 4,
+       "ok": true,
+       "note": "Two between-block conditions x 150 trials, each as 2 blocks of 75 (S047 used_for note); the condition is outside this option, so n_blocks counts all four blocks."
+      },
+      {
+       "source": "S120",
+       "raw": "8x40",
+       "value": 8,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S113",
+       "raw": "2x128 (optional break)",
+       "value": 2,
+       "ok": true,
+       "note": "Break between the two blocks is optional; no rest_breaks value stated."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "n_test_trials",
+   "default": {
+    "value": 200,
+    "raw": 200,
+    "basis": "anchor",
+    "source": "S024",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "n_main_trials",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S007",
+       "raw": 201,
+       "value": 201,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S026",
+       "raw": 201,
+       "value": 201,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S033",
+       "raw": 201,
+       "value": 201,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S024",
+       "raw": 200,
+       "value": 200,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S011",
+       "raw": 200,
+       "value": 200,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S022",
+       "raw": 200,
+       "value": 200,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S059",
+       "raw": 200,
+       "value": 200,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S134",
+       "raw": 200,
+       "value": 200,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S055",
+       "raw": 150,
+       "value": 150,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S025",
+       "raw": 125,
+       "value": 125,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S010",
+       "raw": 121,
+       "value": 121,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S012",
+       "raw": 100,
+       "value": 100,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S029",
+       "raw": 100,
+       "value": 100,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S113",
+       "raw": 256,
+       "value": 256,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S047",
+       "raw": 300,
+       "value": 300,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S120",
+       "raw": 320,
+       "value": 320,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S013",
+       "raw": 1200,
+       "value": 1200,
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "reward_probability",
+   "default": {
+    "value": {
+     "state_1": {
+      "option_1": {
+       "min": 0.25,
+       "max": 0.75
+      },
+      "option_2": {
+       "min": 0.25,
+       "max": 0.75
+      }
+     },
+     "state_2": {
+      "option_1": {
+       "min": 0.25,
+       "max": 0.75
+      },
+      "option_2": {
+       "min": 0.25,
+       "max": 0.75
+      }
+     }
+    },
+    "raw": "uniform 0.25-0.75 each",
+    "basis": "anchor",
+    "source": "S024",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "initial_reward_probs",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S024",
+       "raw": "uniform 0.25-0.75 each",
+       "value": {
+        "state_1": {
+         "option_1": {
+          "min": 0.25,
+          "max": 0.75
+         },
+         "option_2": {
+          "min": 0.25,
+          "max": 0.75
+         }
+        },
+        "state_2": {
+         "option_1": {
+          "min": 0.25,
+          "max": 0.75
+         },
+         "option_2": {
+          "min": 0.25,
+          "max": 0.75
+         }
+        }
+       },
+       "ok": true,
+       "note": "Each of the 4 second-stage options starts at an independent uniform draw. Map keyed state > option; a {min, max} leaf means drawn uniformly per participant. propose: reward_probability leaves as number | {min, max}."
+      },
+      {
+       "source": "S029",
+       "raw": "uniform 0.25-0.75 each",
+       "value": {
+        "state_1": {
+         "option_1": {
+          "min": 0.25,
+          "max": 0.75
+         },
+         "option_2": {
+          "min": 0.25,
+          "max": 0.75
+         }
+        },
+        "state_2": {
+         "option_1": {
+          "min": 0.25,
+          "max": 0.75
+         },
+         "option_2": {
+          "min": 0.25,
+          "max": 0.75
+         }
+        }
+       },
+       "ok": true,
+       "note": "Each of the 4 second-stage options starts at an independent uniform draw. Map keyed state > option; a {min, max} leaf means drawn uniformly per participant. propose: reward_probability leaves as number | {min, max}."
+      },
+      {
+       "source": "S025",
+       "raw": "one pair 0.25/0.75, other 0.4/0.6 (shuffled)",
+       "value": {
+        "state_1": {
+         "option_1": 0.25,
+         "option_2": 0.75
+        },
+        "state_2": {
+         "option_1": 0.4,
+         "option_2": 0.6
+        }
+       },
+       "ok": true,
+       "note": "Reads as one second-stage state's pair 0.25/0.75, the other's 0.4/0.6; the shuffle (which pair, which option) is not typed and 'pair' could mean something else."
+      },
+      {
+       "source": "S047",
+       "raw": "one pair in [0.58,0.72], other in [0.31,0.45]",
+       "value": {
+        "state_1": {
+         "option_1": {
+          "min": 0.58,
+          "max": 0.72
+         },
+         "option_2": {
+          "min": 0.58,
+          "max": 0.72
+         }
+        },
+        "state_2": {
+         "option_1": {
+          "min": 0.31,
+          "max": 0.45
+         },
+         "option_2": {
+          "min": 0.31,
+          "max": 0.45
+         }
+        }
+       },
+       "ok": true,
+       "note": "Start ranges per pair of options (S047); which options form a pair and whether assignment to states is shuffled is not stated."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "reward_schedule",
+   "default": {
+    "value": {
+     "reward_walk": "{sd: 0.025, lower: 0.25, upper: 0.75, boundary: reverse_step}",
+     "reward_schedule": "walk_generated_per_participant"
+    },
+    "basis": "components"
+   },
+   "components": [
+    {
+     "variation": "reward_walk",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S007",
+       "raw": "{sd: 0.025, lower: 0.25, upper: 0.75, boundary: reflect}",
+       "value": "{sd: 0.025, lower: 0.25, upper: 0.75, boundary: reflect}",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S029",
+       "raw": "{sd: 0.025, lower: 0.25, upper: 0.75, boundary: reflect}",
+       "value": "{sd: 0.025, lower: 0.25, upper: 0.75, boundary: reflect}",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S025",
+       "raw": "{sd: 0.025, lower: 0.25, upper: 0.75, boundary: reflect}",
+       "value": "{sd: 0.025, lower: 0.25, upper: 0.75, boundary: reflect}",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S024",
+       "raw": "{sd: 0.025, lower: 0.25, upper: 0.75, boundary: reverse_step}",
+       "value": "{sd: 0.025, lower: 0.25, upper: 0.75, boundary: reverse_step}",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S047",
+       "raw": "{sd: 0.0275, lower: 0.25, upper: 0.75, boundary: reflect}",
+       "value": "{sd: 0.0275, lower: 0.25, upper: 0.75, boundary: reflect}",
+       "ok": true,
+       "note": null
+      }
+     ]
+    },
+    {
+     "variation": "reward_schedule",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S025",
+       "raw": "walk_generated_per_participant",
+       "value": "walk_generated_per_participant",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S024",
+       "raw": "walk_generated_per_participant",
+       "value": "walk_generated_per_participant",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S026",
+       "raw": "pregenerated_walk_sets",
+       "value": "pregenerated_walk_sets",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S062",
+       "raw": "pregenerated_walk_sets",
+       "value": "pregenerated_walk_sets",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S013",
+       "raw": "block_alternating",
+       "value": "block_alternating",
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "sequence_constraints",
+   "default": {
+    "value": {},
+    "raw": "independent_per_trial",
+    "basis": "anchor",
+    "source": "S024",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "transition_sequence_rule",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S024",
+       "raw": "independent_per_trial",
+       "value": {},
+       "ok": true,
+       "note": "Each transition drawn independently with common_transition_prob; no ordering rule."
+      },
+      {
+       "source": "S029",
+       "raw": "independent_per_trial",
+       "value": {},
+       "ok": true,
+       "note": "Each transition drawn independently with common_transition_prob; no ordering rule."
+      },
+      {
+       "source": "S026",
+       "raw": "resample_until_realized_common_in_0.6_0.8",
+       "value": null,
+       "ok": false,
+       "note": "Sequence is redrawn until the realized common-transition share lies in [0.6, 0.8]. No sequence_constraints key for a realized-proportion window; propose vocabulary value: realized_proportion_bounds."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "trials_per_block",
+   "default": {
+    "value": 100,
+    "raw": "2x100",
+    "basis": "anchor",
+    "source": "S024",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "block_structure",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S007",
+       "raw": "3x67",
+       "value": 67,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S033",
+       "raw": "3x67",
+       "value": 67,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S024",
+       "raw": "2x100",
+       "value": 100,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S022",
+       "raw": "4x50",
+       "value": 50,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S047",
+       "raw": "2x75 per condition",
+       "value": 75,
+       "ok": true,
+       "note": "Two between-block conditions x 150 trials, each as 2 blocks of 75 (S047 used_for note); the condition is outside this option, so n_blocks counts all four blocks."
+      },
+      {
+       "source": "S120",
+       "raw": "8x40",
+       "value": 40,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S113",
+       "raw": "2x128 (optional break)",
+       "value": 128,
+       "ok": true,
+       "note": "Break between the two blocks is optional; no rest_breaks value stated."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "common_transition_prob",
+   "default": {
+    "value": 0.7,
+    "raw": 0.7,
+    "basis": "anchor",
+    "source": "S024",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "common_transition_prob",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S007",
+       "raw": 0.7,
+       "value": 0.7,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S024",
+       "raw": 0.7,
+       "value": 0.7,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S029",
+       "raw": 0.7,
+       "value": 0.7,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S026",
+       "raw": 0.7,
+       "value": 0.7,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S120",
+       "raw": 0.7,
+       "value": 0.7,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S013",
+       "raw": 0.8,
+       "value": 0.8,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S009",
+       "raw": 0.8,
+       "value": 0.8,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S062",
+       "raw": 0.8,
+       "value": 0.8,
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "missed_response_handling",
+   "default": {
+    "value": "skip_trial",
+    "raw": "skip_trial",
+    "basis": "anchor",
+    "source": "S024",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "missed_response_handling",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S007",
+       "raw": "skip_trial",
+       "value": "skip_trial",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S024",
+       "raw": "skip_trial",
+       "value": "skip_trial",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S029",
+       "raw": "skip_trial",
+       "value": "skip_trial",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S026",
+       "raw": "repeat_trial",
+       "value": "repeat_trial",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S134",
+       "raw": "repeat_trial",
+       "value": "repeat_trial",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S033",
+       "raw": "repeat_trial",
+       "value": "repeat_trial",
+       "ok": true,
+       "note": null
+      }
+     ]
+    },
+    {
+     "variation": "missed_trial_abort_threshold",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S024",
+       "raw": "none",
+       "value": "none",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S026",
+       "raw": 6,
+       "value": null,
+       "ok": false,
+       "note": "Abort the experiment after 6 missed trials: a performance-based exclusion/termination, not built into packages (missed_response_handling only has none/repeat_trial/skip_trial). Report as analysis guidance."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "option_side_assignment",
+   "default": {
+    "value": "random_per_trial",
+    "raw": "randomized_per_trial",
+    "basis": "fill",
+    "frequency": "3/5",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "option_position_rule",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S007",
+       "raw": "randomized_per_trial",
+       "value": "random_per_trial",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S008",
+       "raw": "randomized_per_trial",
+       "value": "random_per_trial",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S120",
+       "raw": "randomized_per_trial",
+       "value": "random_per_trial",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S022",
+       "raw": "fixed_per_participant",
+       "value": "fixed",
+       "ok": true,
+       "note": "Side fixed within a participant, randomized across participants; the enum has no per-participant randomization marker."
+      },
+      {
+       "source": "S026",
+       "raw": "fixed_per_participant",
+       "value": "fixed",
+       "ok": true,
+       "note": "Side fixed within a participant, randomized across participants; the enum has no per-participant randomization marker."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "response_keys",
+   "default": {
+    "value": [
+     "ArrowLeft",
+     "ArrowRight"
+    ],
+    "raw": "ArrowLeft/ArrowRight",
+    "basis": "anchor",
+    "source": "S024",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "response_keys",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S025",
+       "raw": "F/J",
+       "value": [
+        "f",
+        "j"
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S113",
+       "raw": "F/J",
+       "value": [
+        "f",
+        "j"
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S138",
+       "raw": "F/J",
+       "value": [
+        "f",
+        "j"
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S011",
+       "raw": "E/I",
+       "value": [
+        "e",
+        "i"
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S022",
+       "raw": "1/0",
+       "value": [
+        "1",
+        "0"
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S024",
+       "raw": "ArrowLeft/ArrowRight",
+       "value": [
+        "ArrowLeft",
+        "ArrowRight"
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S026",
+       "raw": "ArrowLeft/ArrowRight",
+       "value": [
+        "ArrowLeft",
+        "ArrowRight"
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S029",
+       "raw": "Z/M",
+       "value": [
+        "z",
+        "m"
+       ],
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S007",
+       "raw": "button_box",
+       "value": null,
+       "ok": false,
+       "note": "MR button box has no key names; a response_device concern (not an option in this spec)."
+      },
+      {
+       "source": "S062",
+       "raw": "touch",
+       "value": null,
+       "ok": false,
+       "note": "Touch (smartphone app) has no key names; a response_device concern (not an option in this spec)."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "comprehension_check",
+   "default": {
+    "value": "none",
+    "raw": "none",
+    "basis": "anchor",
+    "source": "S024",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "comprehension_check",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S024",
+       "raw": "none",
+       "value": "none",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S011",
+       "raw": "{items: 3, on_fail: repeat_instructions}",
+       "value": "quiz_with_repeat",
+       "ok": true,
+       "note": "Item count not an option."
+      },
+      {
+       "source": "S022",
+       "raw": "{items: 3, on_fail: continue}",
+       "value": "quiz",
+       "ok": true,
+       "note": "Item count not an option."
+      },
+      {
+       "source": "S026",
+       "raw": "{items: quiz, on_fail: repeat_instructions (max 10 loops)}",
+       "value": "quiz_with_repeat",
+       "ok": true,
+       "note": "Loop cap of 10 not typed."
+      },
+      {
+       "source": "S120",
+       "raw": "{items: 7, on_fail: exclude (<4 correct)}",
+       "value": "quiz",
+       "ok": true,
+       "note": "Exclusion on quiz score is data processing, not built in (no-performance-exclusion rule); only the quiz is kept."
+      },
+      {
+       "source": "S138",
+       "raw": "{items: 10, on_fail: exclude (<50%)}",
+       "value": "quiz",
+       "ok": true,
+       "note": "Exclusion on quiz score is data processing, not built in; only the quiz is kept."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "fullscreen_enforcement",
+   "default": {
+    "value": "none",
+    "raw": "none",
+    "basis": "anchor",
+    "source": "S024",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "browser_focus_monitoring",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S022",
+       "raw": true,
+       "value": null,
+       "ok": false,
+       "note": "Browser interactions were logged, not enforced; fullscreen_enforcement has no logging-only value. propose vocabulary value: focus_logging."
+      },
+      {
+       "source": "S024",
+       "raw": "none",
+       "value": "none",
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "manipulation_check",
+   "default": {
+    "value": "none",
+    "raw": "none",
+    "basis": "anchor",
+    "source": "S024",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "post_task_transition_probe",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S024",
+       "raw": "none",
+       "value": "none",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S022",
+       "raw": true,
+       "value": "questionnaire",
+       "ok": true,
+       "note": "Post-task question on which spaceship mostly went to which planet; a transition-knowledge probe, closest to questionnaire."
+      },
+      {
+       "source": "S026",
+       "raw": true,
+       "value": "questionnaire",
+       "ok": true,
+       "note": "Post-task question on which spaceship mostly went to which planet; a transition-knowledge probe, closest to questionnaire."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "practice_trials",
+   "default": {
+    "value": 50,
+    "raw": 50,
+    "basis": "anchor",
+    "source": "S024",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "practice_trials",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S007",
+       "raw": 50,
+       "value": 50,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S024",
+       "raw": 50,
+       "value": 50,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S033",
+       "raw": 50,
+       "value": 50,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S025",
+       "raw": 25,
+       "value": 25,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S047",
+       "raw": 25,
+       "value": 25,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S138",
+       "raw": 25,
+       "value": 25,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S120",
+       "raw": 22,
+       "value": 22,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S022",
+       "raw": 20,
+       "value": 20,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S138",
+       "raw": 20,
+       "value": 20,
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S134",
+       "raw": 5,
+       "value": 5,
+       "ok": true,
+       "note": null
+      }
+     ]
+    },
+    {
+     "variation": "training_sequence",
+     "role": null,
+     "phase": "practice",
+     "field": null,
+     "observed": [
+      {
+       "source": "S024",
+       "raw": "full_practice_only",
+       "value": null,
+       "ok": true,
+       "note": "Plain practice; the count is in practice_trials."
+      },
+      {
+       "source": "S025",
+       "raw": "staged_stage2_then_transitions_then_full",
+       "value": null,
+       "ok": false,
+       "note": "Component-wise tutorial (reward practice, then transition practice, then full trials); practice_trials is a single count. propose vocabulary value: staged practice structure."
+      },
+      {
+       "source": "S011",
+       "raw": "staged_stage2_then_transitions_then_full",
+       "value": null,
+       "ok": false,
+       "note": "Component-wise tutorial (reward practice, then transition practice, then full trials); practice_trials is a single count. propose vocabulary value: staged practice structure."
+      },
+      {
+       "source": "S029",
+       "raw": "staged_stage2_then_transitions_then_full",
+       "value": null,
+       "ok": false,
+       "note": "Component-wise tutorial (reward practice, then transition practice, then full trials); practice_trials is a single count. propose vocabulary value: staged practice structure."
+      },
+      {
+       "source": "S134",
+       "raw": "observe_only_demo",
+       "value": null,
+       "ok": false,
+       "note": "5 observe-only demo trials (S134), no responses; practice_trials cannot mark observe-only. propose vocabulary value: observe-only practice."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "rest_breaks",
+   "default": {
+    "value": "none",
+    "raw": "none",
+    "basis": "anchor",
+    "source": "S024",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "break_progress_message",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S022",
+       "raw": true,
+       "value": null,
+       "ok": true,
+       "note": "Break screens state the proportion completed (content only); rest_breaks has no content value and the break schedule is not given. propose vocabulary value: break content (progress)."
+      },
+      {
+       "source": "S024",
+       "raw": "none",
+       "value": "none",
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "response_acknowledgement",
+   "default": {
+    "value": "highlight",
+    "raw": 1000,
+    "basis": "anchor",
+    "source": "S024",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "selection_display_ms",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S024",
+       "raw": 1000,
+       "value": "highlight",
+       "ok": true,
+       "note": "Chosen option stays shown (moves up in S007) for 1000 ms; the enum holds the form but not the duration. propose option: response_acknowledgement_ms."
+      },
+      {
+       "source": "S025",
+       "raw": 1000,
+       "value": "highlight",
+       "ok": true,
+       "note": "Chosen option stays shown (moves up in S007) for 1000 ms; the enum holds the form but not the duration. propose option: response_acknowledgement_ms."
+      },
+      {
+       "source": "S029",
+       "raw": 500,
+       "value": "highlight",
+       "ok": true,
+       "note": "Chosen option shown for 500 ms; duration has no option. propose option: response_acknowledgement_ms."
+      },
+      {
+       "source": "S113",
+       "raw": 500,
+       "value": "highlight",
+       "ok": true,
+       "note": "Chosen option shown for 500 ms; duration has no option. propose option: response_acknowledgement_ms."
+      },
+      {
+       "source": "S138",
+       "raw": 1500,
+       "value": "highlight",
+       "ok": true,
+       "note": "S138 shows the final creature for 1500 ms; duration has no option. propose option: response_acknowledgement_ms."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "running_score_display",
+   "default": {
+    "value": "running_total",
+    "raw": true,
+    "basis": "fill",
+    "frequency": "1/2",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "running_score_display",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S025",
+       "raw": true,
+       "value": "running_total",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S029",
+       "raw": "none",
+       "value": "none",
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "contingency_disclosure",
+   "default": {
+    "value": "partial",
+    "raw": "told_structure_not_mapping",
+    "basis": "fill",
+    "frequency": "1/4",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "transition_structure_instruction",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S007",
+       "raw": "told_structure_not_mapping",
+       "value": "partial",
+       "ok": true,
+       "note": "Told each option mainly leads to one state, not which."
+      },
+      {
+       "source": "S008",
+       "raw": "extensive_instruction",
+       "value": "full",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S120",
+       "raw": "story_based_explicit",
+       "value": "full",
+       "ok": true,
+       "note": "Explicit via a cover story (magic carpet); framing itself is not typed here."
+      },
+      {
+       "source": "S013",
+       "raw": "minimal",
+       "value": "none",
+       "ok": true,
+       "note": "Only told keys and that coins are reward."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "instruction_format",
+   "default": {
+    "value": "text",
+    "raw": "none",
+    "basis": "anchor",
+    "source": "S024",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "instruction_audio",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S022",
+       "raw": true,
+       "value": "audio",
+       "ok": true,
+       "note": "Audio track read the instructions aloud; text may have been shown too."
+      },
+      {
+       "source": "S024",
+       "raw": "none",
+       "value": "text",
+       "ok": true,
+       "note": "Text instructions (S024)."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "instruction_framing",
+   "default": {
+    "value": "abstract_symbols",
+    "raw": "abstract_symbols",
+    "basis": "anchor",
+    "source": "S024",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "cover_story_stimuli",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S007",
+       "raw": "abstract_symbols",
+       "value": "abstract_symbols",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S011",
+       "raw": "abstract_symbols",
+       "value": "abstract_symbols",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S024",
+       "raw": "abstract_symbols",
+       "value": "abstract_symbols",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S134",
+       "raw": "abstract_symbols",
+       "value": "abstract_symbols",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S025",
+       "raw": "spaceship_planet_alien",
+       "value": "spaceship_planet_alien",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S022",
+       "raw": "spaceship_planet_alien",
+       "value": "spaceship_planet_alien",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S026",
+       "raw": "spaceship_planet_alien",
+       "value": "spaceship_planet_alien",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S055",
+       "raw": "spaceship_planet_alien",
+       "value": "spaceship_planet_alien",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S120",
+       "raw": "magic_carpet_mountain_genie",
+       "value": "magic_carpet_mountain_genie",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S033",
+       "raw": "magic_carpet_mountain_genie",
+       "value": "magic_carpet_mountain_genie",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S047",
+       "raw": "ship_island_chest",
+       "value": "ship_island_chest",
+       "ok": true,
+       "note": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "population_protocol",
+   "default": {
+    "value": "standard",
+    "raw": "adult_standard",
+    "basis": "anchor",
+    "source": "S024",
+    "needs_translation": false
+   },
+   "components": [
+    {
+     "variation": "developmental_protocol",
+     "role": null,
+     "phase": null,
+     "field": null,
+     "observed": [
+      {
+       "source": "S024",
+       "raw": "adult_standard",
+       "value": "standard",
+       "ok": true,
+       "note": null
+      },
+      {
+       "source": "S022",
+       "raw": "child_friendly",
+       "value": "child",
+       "ok": true,
+       "note": "Bundle of 3 s deadline, audio, tutorial and progress breaks (S022); the parts are separate options."
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "study_configurations": [
+  {
+   "source": "S007",
+   "citation": "Daw et al. 2011, Neuron",
+   "label": "Daw et al. 2011, Neuron",
+   "doi": "10.1016/j.neuron.2011.02.027",
+   "source_type": "empirical",
+   "setting": "lab-native",
+   "n_options": 13,
+   "fully_typed": false,
+   "options": {
+    "common_transition_prob": 0.7,
+    "contingency_disclosure": "partial",
+    "instruction_framing": "abstract_symbols",
+    "iti_ms": {
+     "untranslated": "randomized, mean about 1 TR"
+    },
+    "missed_response_handling.missed_response_handling": "skip_trial",
+    "n_blocks": 3,
+    "n_test_trials": 201,
+    "option_side_assignment": "random_per_trial",
+    "practice_trials.practice_trials": 50,
+    "response_keys": {
+     "untranslated": "button_box"
+    },
+    "response_window_ms": 2000,
+    "reward_schedule.reward_walk": "{sd: 0.025, lower: 0.25, upper: 0.75, boundary: reflect}",
+    "trials_per_block": 67
+   }
+  },
+  {
+   "source": "S008",
+   "citation": "Kool, Cushman & Gershman 2016, PLoS Comput Biol",
+   "label": "Kool et al. 2016, PLOS Computational Biology",
+   "doi": "10.1371/journal.pcbi.1005090",
+   "source_type": "empirical",
+   "setting": "online-unsupervised",
+   "n_options": 2,
+   "fully_typed": true,
+   "options": {
+    "contingency_disclosure": "full",
+    "option_side_assignment": "random_per_trial"
+   }
+  },
+  {
+   "source": "S010",
+   "citation": "Shahar et al. 2019, PLoS Comput Biol",
+   "label": "Shahar et al. 2019, PLOS Computational Biology",
+   "doi": "10.1371/journal.pcbi.1006803",
+   "source_type": "empirical",
+   "setting": "lab-native",
+   "n_options": 2,
+   "fully_typed": true,
+   "options": {
+    "iti_ms": {
+     "min": 1000,
+     "max": 2000
+    },
+    "n_test_trials": 121
+   }
+  },
+  {
+   "source": "S011",
+   "citation": "Gillan et al. 2016, eLife",
+   "label": "Gillan et al. 2016, eLife",
+   "doi": "10.7554/elife.11305",
+   "source_type": "empirical",
+   "setting": "online-unsupervised",
+   "n_options": 6,
+   "fully_typed": false,
+   "options": {
+    "comprehension_check": "quiz_with_repeat",
+    "instruction_framing": "abstract_symbols",
+    "n_test_trials": 200,
+    "practice.practice_trials.training_sequence": {
+     "untranslated": "staged_stage2_then_transitions_then_full"
+    },
+    "response_keys": [
+     "e",
+     "i"
+    ],
+    "response_window_ms": 2500
+   }
+  },
+  {
+   "source": "S012",
+   "citation": "Brown, Chen, Gillan & Price 2020, Biol Psychiatry CNNI",
+   "label": "Brown et al. 2020, Biological Psychiatry: Cognitive Neuroscience and Neuroimaging",
+   "doi": "10.1016/j.bpsc.2019.12.019",
+   "source_type": "empirical",
+   "setting": "lab-native",
+   "n_options": 1,
+   "fully_typed": true,
+   "options": {
+    "n_test_trials": 100
+   }
+  },
+  {
+   "source": "S013",
+   "citation": "Castro-Rodrigues et al. 2022, Nat Hum Behav",
+   "label": "Castro-Rodrigues et al. 2022, Nature Human Behaviour",
+   "doi": "10.1038/s41562-022-01346-2",
+   "source_type": "empirical",
+   "setting": "lab-native",
+   "n_options": 5,
+   "fully_typed": true,
+   "options": {
+    "common_transition_prob": 0.8,
+    "contingency_disclosure": "none",
+    "n_test_trials": 1200,
+    "response_window_ms": null,
+    "reward_schedule.reward_schedule": "block_alternating"
+   }
+  },
+  {
+   "source": "S022",
+   "citation": "Nussenbaum et al. 2020 preprint (published as Collabra 10.1525/collabra.17213)",
+   "label": "Nussenbaum et al. 2020, OSF Preprints",
+   "doi": "10.31219/osf.io/vewyq",
+   "source_type": "empirical",
+   "setting": "online-unsupervised",
+   "n_options": 13,
+   "fully_typed": false,
+   "options": {
+    "comprehension_check": "quiz",
+    "fullscreen_enforcement": {
+     "untranslated": true
+    },
+    "instruction_format": "audio",
+    "instruction_framing": "spaceship_planet_alien",
+    "manipulation_check": "questionnaire",
+    "n_blocks": 4,
+    "n_test_trials": 200,
+    "option_side_assignment": "fixed",
+    "population_protocol": "child",
+    "practice_trials.practice_trials": 20,
+    "response_keys": [
+     "1",
+     "0"
+    ],
+    "response_window_ms": 3000,
+    "trials_per_block": 50
+   }
+  },
+  {
+   "source": "S024",
+   "citation": "Expfactory two-stage-decision defaults",
+   "label": "Expfactory two-stage-decision defaults",
+   "doi": null,
+   "source_type": "reference-impl",
+   "setting": null,
+   "n_options": 24,
+   "fully_typed": true,
+   "options": {
+    "common_transition_prob": 0.7,
+    "comprehension_check": "none",
+    "feedback_duration_ms": 500,
+    "fixation_duration_ms": 0,
+    "fullscreen_enforcement": "none",
+    "instruction_format": "text",
+    "instruction_framing": "abstract_symbols",
+    "iti_ms": 1000,
+    "manipulation_check": "none",
+    "missed_response_handling.missed_response_handling": "skip_trial",
+    "missed_response_handling.missed_trial_abort_threshold": "none",
+    "n_blocks": 2,
+    "n_test_trials": 200,
+    "population_protocol": "standard",
+    "practice_trials.practice_trials": 50,
+    "response_acknowledgement": "highlight",
+    "response_keys": [
+     "ArrowLeft",
+     "ArrowRight"
+    ],
+    "response_window_ms": 2000,
+    "rest_breaks": "none",
+    "reward_probability": {
+     "state_1": {
+      "option_1": {
+       "min": 0.25,
+       "max": 0.75
+      },
+      "option_2": {
+       "min": 0.25,
+       "max": 0.75
+      }
+     },
+     "state_2": {
+      "option_1": {
+       "min": 0.25,
+       "max": 0.75
+      },
+      "option_2": {
+       "min": 0.25,
+       "max": 0.75
+      }
+     }
+    },
+    "reward_schedule.reward_schedule": "walk_generated_per_participant",
+    "reward_schedule.reward_walk": "{sd: 0.025, lower: 0.25, upper: 0.75, boundary: reverse_step}",
+    "sequence_constraints": {},
+    "trials_per_block": 100
+   }
+  },
+  {
+   "source": "S025",
+   "citation": "Kool space_daw_task jsPsych",
+   "label": "Kool space_daw_task jsPsych",
+   "doi": null,
+   "source_type": "reference-impl",
+   "setting": null,
+   "n_options": 14,
+   "fully_typed": false,
+   "options": {
+    "feedback_duration_ms": 500,
+    "instruction_framing": "spaceship_planet_alien",
+    "iti_ms": 1000,
+    "n_test_trials": 125,
+    "practice.practice_trials.training_sequence": {
+     "untranslated": "staged_stage2_then_transitions_then_full"
+    },
+    "practice_trials.practice_trials": 25,
+    "response_acknowledgement": "highlight",
+    "response_keys": [
+     "f",
+     "j"
+    ],
+    "response_window_ms": 2000,
+    "reward_probability": {
+     "state_1": {
+      "option_1": 0.25,
+      "option_2": 0.75
+     },
+     "state_2": {
+      "option_1": 0.4,
+      "option_2": 0.6
+     }
+    },
+    "reward_schedule.reward_schedule": "walk_generated_per_participant",
+    "reward_schedule.reward_walk": "{sd: 0.025, lower: 0.25, upper: 0.75, boundary: reflect}",
+    "running_score_display": "running_total",
+    "timeout_message_ms": 1500
+   }
+  },
+  {
+   "source": "S026",
+   "citation": "Niv lab jsPsych two-step",
+   "label": "Niv lab jsPsych two-step",
+   "doi": null,
+   "source_type": "reference-impl",
+   "setting": null,
+   "n_options": 13,
+   "fully_typed": false,
+   "options": {
+    "common_transition_prob": 0.7,
+    "comprehension_check": "quiz_with_repeat",
+    "feedback_duration_ms": 1200,
+    "instruction_framing": "spaceship_planet_alien",
+    "manipulation_check": "questionnaire",
+    "missed_response_handling.missed_response_handling": "repeat_trial",
+    "missed_response_handling.missed_trial_abort_threshold": {
+     "untranslated": 6
+    },
+    "n_test_trials": 201,
+    "option_side_assignment": "fixed",
+    "response_keys": [
+     "ArrowLeft",
+     "ArrowRight"
+    ],
+    "response_window_ms": 10000,
+    "reward_schedule.reward_schedule": "pregenerated_walk_sets",
+    "sequence_constraints": {
+     "untranslated": "resample_until_realized_common_in_0.6_0.8"
+    }
+   }
+  },
+  {
+   "source": "S029",
+   "citation": "kinleyid jsPsych 7 two-step module",
+   "label": "kinleyid jsPsych 7 two-step module",
+   "doi": null,
+   "source_type": "reference-impl",
+   "setting": null,
+   "n_options": 14,
+   "fully_typed": false,
+   "options": {
+    "common_transition_prob": 0.7,
+    "feedback_duration_ms": 1000,
+    "fixation_duration_ms": 0,
+    "missed_response_handling.missed_response_handling": "skip_trial",
+    "n_test_trials": 100,
+    "practice.practice_trials.training_sequence": {
+     "untranslated": "staged_stage2_then_transitions_then_full"
+    },
+    "response_acknowledgement": "highlight",
+    "response_keys": [
+     "z",
+     "m"
+    ],
+    "response_window_ms": 2000,
+    "reward_probability": {
+     "state_1": {
+      "option_1": {
+       "min": 0.25,
+       "max": 0.75
+      },
+      "option_2": {
+       "min": 0.25,
+       "max": 0.75
+      }
+     },
+     "state_2": {
+      "option_1": {
+       "min": 0.25,
+       "max": 0.75
+      },
+      "option_2": {
+       "min": 0.25,
+       "max": 0.75
+      }
+     }
+    },
+    "reward_schedule.reward_walk": "{sd: 0.025, lower: 0.25, upper: 0.75, boundary: reflect}",
+    "running_score_display": "none",
+    "sequence_constraints": {},
+    "timeout_message_ms": 1000
+   }
+  },
+  {
+   "source": "S033",
+   "citation": "Feher da Silva & Hare magic-carpet PsychoPy task",
+   "label": "Feher da Silva & Hare magic-carpet PsychoPy task",
+   "doi": null,
+   "source_type": "reference-impl",
+   "setting": null,
+   "n_options": 6,
+   "fully_typed": true,
+   "options": {
+    "instruction_framing": "magic_carpet_mountain_genie",
+    "missed_response_handling.missed_response_handling": "repeat_trial",
+    "n_blocks": 3,
+    "n_test_trials": 201,
+    "practice_trials.practice_trials": 50,
+    "trials_per_block": 67
+   }
+  },
+  {
+   "source": "S047",
+   "citation": "literature sample",
+   "label": "Onysk & Seriès 2022, PLOS ONE",
+   "doi": "10.1371/journal.pone.0276750",
+   "source_type": "empirical",
+   "setting": "online-unsupervised",
+   "n_options": 7,
+   "fully_typed": true,
+   "options": {
+    "instruction_framing": "ship_island_chest",
+    "n_blocks": 4,
+    "n_test_trials": 300,
+    "practice_trials.practice_trials": 25,
+    "reward_probability": {
+     "state_1": {
+      "option_1": {
+       "min": 0.58,
+       "max": 0.72
+      },
+      "option_2": {
+       "min": 0.58,
+       "max": 0.72
+      }
+     },
+     "state_2": {
+      "option_1": {
+       "min": 0.31,
+       "max": 0.45
+      },
+      "option_2": {
+       "min": 0.31,
+       "max": 0.45
+      }
+     }
+    },
+    "reward_schedule.reward_walk": "{sd: 0.0275, lower: 0.25, upper: 0.75, boundary: reflect}",
+    "trials_per_block": 75
+   }
+  },
+  {
+   "source": "S055",
+   "citation": "literature sample (supplementary search)",
+   "label": "Donegan et al. 2025, Translational Psychiatry",
+   "doi": "10.1038/s41398-025-03722-8",
+   "source_type": "empirical",
+   "setting": "online-unsupervised",
+   "n_options": 3,
+   "fully_typed": true,
+   "options": {
+    "instruction_framing": "spaceship_planet_alien",
+    "n_test_trials": 150,
+    "response_window_ms": 2500
+   }
+  },
+  {
+   "source": "S059",
+   "citation": "literature sample (supplementary search)",
+   "label": "Ramakrishnan et al. 2025, NPP—Digital Psychiatry and Neuroscience",
+   "doi": "10.1038/s44277-024-00023-8",
+   "source_type": "empirical",
+   "setting": "online-unsupervised",
+   "n_options": 1,
+   "fully_typed": true,
+   "options": {
+    "n_test_trials": 200
+   }
+  },
+  {
+   "source": "S062",
+   "citation": "literature sample (supplementary search)",
+   "label": "Donegan et al. 2023, Communications Psychology",
+   "doi": "10.1038/s44271-023-00031-y",
+   "source_type": "empirical",
+   "setting": "tablet",
+   "n_options": 4,
+   "fully_typed": false,
+   "options": {
+    "common_transition_prob": 0.8,
+    "response_keys": {
+     "untranslated": "touch"
+    },
+    "response_window_ms": null,
+    "reward_schedule.reward_schedule": "pregenerated_walk_sets"
+   }
+  },
+  {
+   "source": "S113",
+   "citation": "literature sample (supplementary search 2, rank 60)",
+   "label": "Karagoz et al. 2024, Journal of Experimental Psychology: General",
+   "doi": "10.1037/xge0001491",
+   "source_type": "empirical",
+   "setting": "online-unsupervised",
+   "n_options": 8,
+   "fully_typed": true,
+   "options": {
+    "feedback_duration_ms": 1500,
+    "iti_ms": 500,
+    "n_blocks": 2,
+    "n_test_trials": 256,
+    "response_acknowledgement": "highlight",
+    "response_keys": [
+     "f",
+     "j"
+    ],
+    "response_window_ms": 1500,
+    "trials_per_block": 128
+   }
+  },
+  {
+   "source": "S120",
+   "citation": "literature sample (supplementary search 2, rank 69)",
+   "label": "Hiser et al. 2023, Behaviour Research and Therapy",
+   "doi": "10.1016/j.brat.2023.104361",
+   "source_type": "empirical",
+   "setting": "online-unsupervised",
+   "n_options": 9,
+   "fully_typed": true,
+   "options": {
+    "common_transition_prob": 0.7,
+    "comprehension_check": "quiz",
+    "contingency_disclosure": "full",
+    "instruction_framing": "magic_carpet_mountain_genie",
+    "n_blocks": 8,
+    "n_test_trials": 320,
+    "option_side_assignment": "random_per_trial",
+    "practice_trials.practice_trials": 22,
+    "trials_per_block": 40
+   }
+  },
+  {
+   "source": "S134",
+   "citation": "literature sample (supplementary search 2, rank 83)",
+   "label": "Oguchi et al. 2023, Scientific Reports",
+   "doi": "10.1038/s41598-023-27609-0",
+   "source_type": "empirical",
+   "setting": "online-unsupervised",
+   "n_options": 8,
+   "fully_typed": false,
+   "options": {
+    "fixation_duration_ms": {
+     "min": 2000,
+     "max": 4000
+    },
+    "instruction_framing": "abstract_symbols",
+    "iti_ms": {
+     "min": 3000,
+     "max": 5000
+    },
+    "missed_response_handling.missed_response_handling": "repeat_trial",
+    "n_test_trials": 200,
+    "practice.practice_trials.training_sequence": {
+     "untranslated": "observe_only_demo"
+    },
+    "practice_trials.practice_trials": 5,
+    "response_window_ms": 2000
+   }
+  },
+  {
+   "source": "S138",
+   "citation": "literature sample (supplementary search 2, rank 87)",
+   "label": "Tashjian et al. 2022, PLOS Computational Biology",
+   "doi": "10.1371/journal.pcbi.1010805",
+   "source_type": "empirical",
+   "setting": "online-unsupervised",
+   "n_options": 6,
+   "fully_typed": true,
+   "options": {
+    "comprehension_check": "quiz",
+    "feedback_duration_ms": 2500,
+    "practice_trials.practice_trials": 20,
+    "response_acknowledgement": "highlight",
+    "response_keys": [
+     "f",
+     "j"
+    ],
+    "response_window_ms": 1500
+   }
+  }
+ ],
+ "defaults": {
+  "source": "S024",
+  "citation": "Expfactory two-stage-decision defaults",
+  "typicality": 0.746,
+  "coverage": 0.857,
+  "runner_up": {
+   "source": "S007",
+   "citation": "Daw et al. 2011, Neuron",
+   "score": 0.441
+  },
+  "lead": 0.362,
+  "disagreement_with_runner_up": 0.5
+ },
+ "translations": [
+  {
+   "variation": "pre_stage_fixation_ms",
+   "raw": "uniform 2000-4000 before each stage",
+   "as": {
+    "fixation_duration_ms": {
+     "min": 2000,
+     "max": 4000
+    }
+   },
+   "confidence": "medium",
+   "flag": false,
+   "note": "Jittered fixation before each of the two stages (S134); step not stated, so default 1 ms. The option holds one value, so 'before each stage' (twice per trial) is not typed."
+  },
+  {
+   "variation": "iti_ms",
+   "raw": "uniform 1000-2000",
+   "as": {
+    "iti_ms": {
+     "min": 1000,
+     "max": 2000
+    }
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "iti_ms",
+   "raw": "uniform 3000-5000",
+   "as": {
+    "iti_ms": {
+     "min": 3000,
+     "max": 5000
+    }
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "iti_ms",
+   "raw": "randomized, mean about 1 TR",
+   "as": null,
+   "confidence": "high",
+   "flag": true,
+   "note": "fMRI jitter given only as a mean tied to the scanner TR; no min/max stated. propose vocabulary value: duration distribution with a mean."
+  },
+  {
+   "variation": "block_structure",
+   "raw": "3x67",
+   "as": {
+    "n_blocks": 3,
+    "trials_per_block": 67
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "block_structure",
+   "raw": "2x100",
+   "as": {
+    "n_blocks": 2,
+    "trials_per_block": 100
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "block_structure",
+   "raw": "4x50",
+   "as": {
+    "n_blocks": 4,
+    "trials_per_block": 50
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "block_structure",
+   "raw": "2x75 per condition",
+   "as": {
+    "n_blocks": 4,
+    "trials_per_block": 75
+   },
+   "confidence": "medium",
+   "flag": true,
+   "note": "Two between-block conditions x 150 trials, each as 2 blocks of 75 (S047 used_for note); the condition is outside this option, so n_blocks counts all four blocks."
+  },
+  {
+   "variation": "block_structure",
+   "raw": "8x40",
+   "as": {
+    "n_blocks": 8,
+    "trials_per_block": 40
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "block_structure",
+   "raw": "2x128 (optional break)",
+   "as": {
+    "n_blocks": 2,
+    "trials_per_block": 128
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": "Break between the two blocks is optional; no rest_breaks value stated."
+  },
+  {
+   "variation": "initial_reward_probs",
+   "raw": "uniform 0.25-0.75 each",
+   "as": {
+    "reward_probability": {
+     "state_1": {
+      "option_1": {
+       "min": 0.25,
+       "max": 0.75
+      },
+      "option_2": {
+       "min": 0.25,
+       "max": 0.75
+      }
+     },
+     "state_2": {
+      "option_1": {
+       "min": 0.25,
+       "max": 0.75
+      },
+      "option_2": {
+       "min": 0.25,
+       "max": 0.75
+      }
+     }
+    }
+   },
+   "confidence": "medium",
+   "flag": true,
+   "note": "Each of the 4 second-stage options starts at an independent uniform draw. Map keyed state > option; a {min, max} leaf means drawn uniformly per participant. propose: reward_probability leaves as number | {min, max}."
+  },
+  {
+   "variation": "initial_reward_probs",
+   "raw": "one pair 0.25/0.75, other 0.4/0.6 (shuffled)",
+   "as": {
+    "reward_probability": {
+     "state_1": {
+      "option_1": 0.25,
+      "option_2": 0.75
+     },
+     "state_2": {
+      "option_1": 0.4,
+      "option_2": 0.6
+     }
+    }
+   },
+   "confidence": "low",
+   "flag": true,
+   "note": "Reads as one second-stage state's pair 0.25/0.75, the other's 0.4/0.6; the shuffle (which pair, which option) is not typed and 'pair' could mean something else."
+  },
+  {
+   "variation": "initial_reward_probs",
+   "raw": "one pair in [0.58,0.72], other in [0.31,0.45]",
+   "as": {
+    "reward_probability": {
+     "state_1": {
+      "option_1": {
+       "min": 0.58,
+       "max": 0.72
+      },
+      "option_2": {
+       "min": 0.58,
+       "max": 0.72
+      }
+     },
+     "state_2": {
+      "option_1": {
+       "min": 0.31,
+       "max": 0.45
+      },
+      "option_2": {
+       "min": 0.31,
+       "max": 0.45
+      }
+     }
+    }
+   },
+   "confidence": "low",
+   "flag": true,
+   "note": "Start ranges per pair of options (S047); which options form a pair and whether assignment to states is shuffled is not stated."
+  },
+  {
+   "variation": "transition_sequence_rule",
+   "raw": "independent_per_trial",
+   "as": {
+    "sequence_constraints": {}
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": "Each transition drawn independently with common_transition_prob; no ordering rule."
+  },
+  {
+   "variation": "transition_sequence_rule",
+   "raw": "resample_until_realized_common_in_0.6_0.8",
+   "as": null,
+   "confidence": "high",
+   "flag": true,
+   "note": "Sequence is redrawn until the realized common-transition share lies in [0.6, 0.8]. No sequence_constraints key for a realized-proportion window; propose vocabulary value: realized_proportion_bounds."
+  },
+  {
+   "variation": "option_position_rule",
+   "raw": "randomized_per_trial",
+   "as": {
+    "option_side_assignment": "random_per_trial"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "option_position_rule",
+   "raw": "fixed_per_participant",
+   "as": {
+    "option_side_assignment": "fixed"
+   },
+   "confidence": "medium",
+   "flag": false,
+   "note": "Side fixed within a participant, randomized across participants; the enum has no per-participant randomization marker."
+  },
+  {
+   "variation": "response_keys",
+   "raw": "F/J",
+   "as": {
+    "response_keys": [
+     "f",
+     "j"
+    ]
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "response_keys",
+   "raw": "E/I",
+   "as": {
+    "response_keys": [
+     "e",
+     "i"
+    ]
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "response_keys",
+   "raw": "1/0",
+   "as": {
+    "response_keys": [
+     "1",
+     "0"
+    ]
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "response_keys",
+   "raw": "ArrowLeft/ArrowRight",
+   "as": {
+    "response_keys": [
+     "ArrowLeft",
+     "ArrowRight"
+    ]
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "response_keys",
+   "raw": "Z/M",
+   "as": {
+    "response_keys": [
+     "z",
+     "m"
+    ]
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "response_keys",
+   "raw": "button_box",
+   "as": null,
+   "confidence": "high",
+   "flag": true,
+   "note": "MR button box has no key names; a response_device concern (not an option in this spec)."
+  },
+  {
+   "variation": "response_keys",
+   "raw": "touch",
+   "as": null,
+   "confidence": "high",
+   "flag": true,
+   "note": "Touch (smartphone app) has no key names; a response_device concern (not an option in this spec)."
+  },
+  {
+   "variation": "missed_trial_abort_threshold",
+   "raw": 6,
+   "as": null,
+   "confidence": "high",
+   "flag": true,
+   "note": "Abort the experiment after 6 missed trials: a performance-based exclusion/termination, not built into packages (missed_response_handling only has none/repeat_trial/skip_trial). Report as analysis guidance."
+  },
+  {
+   "variation": "comprehension_check",
+   "raw": "{items: 3, on_fail: repeat_instructions}",
+   "as": {
+    "comprehension_check": "quiz_with_repeat"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": "Item count not an option."
+  },
+  {
+   "variation": "comprehension_check",
+   "raw": "{items: 3, on_fail: continue}",
+   "as": {
+    "comprehension_check": "quiz"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": "Item count not an option."
+  },
+  {
+   "variation": "comprehension_check",
+   "raw": "{items: quiz, on_fail: repeat_instructions (max 10 loops)}",
+   "as": {
+    "comprehension_check": "quiz_with_repeat"
+   },
+   "confidence": "medium",
+   "flag": false,
+   "note": "Loop cap of 10 not typed."
+  },
+  {
+   "variation": "comprehension_check",
+   "raw": "{items: 7, on_fail: exclude (<4 correct)}",
+   "as": {
+    "comprehension_check": "quiz"
+   },
+   "confidence": "medium",
+   "flag": false,
+   "note": "Exclusion on quiz score is data processing, not built in (no-performance-exclusion rule); only the quiz is kept."
+  },
+  {
+   "variation": "comprehension_check",
+   "raw": "{items: 10, on_fail: exclude (<50%)}",
+   "as": {
+    "comprehension_check": "quiz"
+   },
+   "confidence": "medium",
+   "flag": false,
+   "note": "Exclusion on quiz score is data processing, not built in; only the quiz is kept."
+  },
+  {
+   "variation": "browser_focus_monitoring",
+   "raw": true,
+   "as": null,
+   "confidence": "medium",
+   "flag": true,
+   "note": "Browser interactions were logged, not enforced; fullscreen_enforcement has no logging-only value. propose vocabulary value: focus_logging."
+  },
+  {
+   "variation": "post_task_transition_probe",
+   "raw": true,
+   "as": {
+    "manipulation_check": "questionnaire"
+   },
+   "confidence": "medium",
+   "flag": false,
+   "note": "Post-task question on which spaceship mostly went to which planet; a transition-knowledge probe, closest to questionnaire."
+  },
+  {
+   "variation": "training_sequence",
+   "raw": "full_practice_only",
+   "as": {},
+   "confidence": "high",
+   "flag": false,
+   "note": "Plain practice; the count is in practice_trials."
+  },
+  {
+   "variation": "training_sequence",
+   "raw": "staged_stage2_then_transitions_then_full",
+   "as": null,
+   "confidence": "high",
+   "flag": true,
+   "note": "Component-wise tutorial (reward practice, then transition practice, then full trials); practice_trials is a single count. propose vocabulary value: staged practice structure."
+  },
+  {
+   "variation": "training_sequence",
+   "raw": "observe_only_demo",
+   "as": null,
+   "confidence": "high",
+   "flag": true,
+   "note": "5 observe-only demo trials (S134), no responses; practice_trials cannot mark observe-only. propose vocabulary value: observe-only practice."
+  },
+  {
+   "variation": "break_progress_message",
+   "raw": true,
+   "as": {},
+   "confidence": "medium",
+   "flag": true,
+   "note": "Break screens state the proportion completed (content only); rest_breaks has no content value and the break schedule is not given. propose vocabulary value: break content (progress)."
+  },
+  {
+   "variation": "selection_display_ms",
+   "raw": 1000,
+   "as": {
+    "response_acknowledgement": "highlight"
+   },
+   "confidence": "medium",
+   "flag": true,
+   "note": "Chosen option stays shown (moves up in S007) for 1000 ms; the enum holds the form but not the duration. propose option: response_acknowledgement_ms."
+  },
+  {
+   "variation": "selection_display_ms",
+   "raw": 500,
+   "as": {
+    "response_acknowledgement": "highlight"
+   },
+   "confidence": "medium",
+   "flag": true,
+   "note": "Chosen option shown for 500 ms; duration has no option. propose option: response_acknowledgement_ms."
+  },
+  {
+   "variation": "selection_display_ms",
+   "raw": 1500,
+   "as": {
+    "response_acknowledgement": "highlight"
+   },
+   "confidence": "medium",
+   "flag": true,
+   "note": "S138 shows the final creature for 1500 ms; duration has no option. propose option: response_acknowledgement_ms."
+  },
+  {
+   "variation": "running_score_display",
+   "raw": true,
+   "as": {
+    "running_score_display": "running_total"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "transition_structure_instruction",
+   "raw": "told_structure_not_mapping",
+   "as": {
+    "contingency_disclosure": "partial"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": "Told each option mainly leads to one state, not which."
+  },
+  {
+   "variation": "transition_structure_instruction",
+   "raw": "extensive_instruction",
+   "as": {
+    "contingency_disclosure": "full"
+   },
+   "confidence": "medium",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "transition_structure_instruction",
+   "raw": "story_based_explicit",
+   "as": {
+    "contingency_disclosure": "full"
+   },
+   "confidence": "medium",
+   "flag": false,
+   "note": "Explicit via a cover story (magic carpet); framing itself is not typed here."
+  },
+  {
+   "variation": "transition_structure_instruction",
+   "raw": "minimal",
+   "as": {
+    "contingency_disclosure": "none"
+   },
+   "confidence": "medium",
+   "flag": false,
+   "note": "Only told keys and that coins are reward."
+  },
+  {
+   "variation": "instruction_audio",
+   "raw": true,
+   "as": {
+    "instruction_format": "audio"
+   },
+   "confidence": "medium",
+   "flag": false,
+   "note": "Audio track read the instructions aloud; text may have been shown too."
+  },
+  {
+   "variation": "instruction_audio",
+   "raw": "none",
+   "as": {
+    "instruction_format": "text"
+   },
+   "confidence": "medium",
+   "flag": false,
+   "note": "Text instructions (S024)."
+  },
+  {
+   "variation": "developmental_protocol",
+   "raw": "adult_standard",
+   "as": {
+    "population_protocol": "standard"
+   },
+   "confidence": "high",
+   "flag": false,
+   "note": ""
+  },
+  {
+   "variation": "developmental_protocol",
+   "raw": "child_friendly",
+   "as": {
+    "population_protocol": "child"
+   },
+   "confidence": "medium",
+   "flag": false,
+   "note": "Bundle of 3 s deadline, audio, tutorial and progress breaks (S022); the parts are separate options."
+  }
+ ]
+}

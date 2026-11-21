@@ -1,0 +1,235 @@
+---
+title: EEfRT
+sidebar_label: EEfRT
+---
+
+import {TimelineExample} from '@jspsych/docusaurus-theme/components';
+import ParamsTable from '@site/src/components/ParamsTable';
+import schema from '@site/src/schemas/eefrt.schema.json';
+import manifest from '@site/src/schemas/manifest.json';
+
+# EEfRT (Effort Expenditure for Rewards Task)
+
+Package: `@jspsych-timelines/eefrt` ([source](https://github.com/jspsych/jspsych-timelines/tree/main/packages/eefrt)). Version documented here: <code>{manifest['eefrt'].version}</code>.
+
+## Overview
+
+The EEfRT measures willingness to expend effort for reward, and is used to study motivation (for example anhedonia and amotivation). On every trial the participant chooses between an easy task and a hard task. Both tasks are the same kind of effort, many rapid key presses against a time limit, but the hard task needs more presses and pays more. The reward is not certain: the participant is told the chance that the trial pays out (12%, 50% or 88%), the chance is the same for both tasks, and a reward needs a completed task and a winning trial. Nothing in the choice is correct. The measure is how the choice depends on the offer, mainly the proportion of hard-task choices by probability and by reward.
+
+In the original the session has a fixed length of 20 minutes, so choosing the hard task costs trials. The defaults follow Treadway et al. (2009, S007), with the 8-level reward list of the Inquisit version.
+
+**Canonical citation:** Treadway, M. T., Buckholtz, J. W., Schwartzman, A. N., Lambert, W. E., & Zald, D. H. (2009). Worth the "EEfRT"? The effort expenditure for rewards task as an objective measure of motivation and anhedonia. *PLoS ONE, 4*(8), e6598.
+
+## Installation
+
+```bash
+npm install @jspsych-timelines/eefrt
+```
+
+From a CDN:
+
+```html
+<script src="https://unpkg.com/jspsych@8"></script>
+<script src="https://unpkg.com/@jspsych-timelines/eefrt"></script>
+<link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css" />
+```
+
+## Quick Start
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://unpkg.com/jspsych@8"></script>
+    <script src="https://unpkg.com/@jspsych-timelines/eefrt"></script>
+    <link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css" />
+  </head>
+  <body></body>
+  <script>
+    const jsPsych = initJsPsych();
+    const task = jsPsychTimelineEefrt.createTimeline(jsPsych);
+    jsPsych.run([task]);
+  </script>
+</html>
+```
+
+The default run takes about 30 minutes (the interactive walkthrough, 4 practice trials and a 20-minute test). It needs a physical keyboard (`device_eligibility: "computer_only"` ends the experiment on a touch-only device).
+
+## Task Description
+
+Each trial has these screens:
+
+1. **Fixation** (1000 ms).
+2. **Choice** (up to 5000 ms). The chance of winning is shown above two cards, one for the easy task and one for the hard task, each with its reward, its press count and time limit, and its choice key (E for the easy task, I for the hard task by default). If no key is pressed in time, the task is assigned at random and the trial is flagged (`choice_forced`).
+3. **Ready** (1000 ms).
+4. **Effort.** The participant presses a key (the space bar for both tasks by default) as fast as possible: 30 presses in 7 s for the easy task, 100 presses in 21 s for the hard task. A bar fills with the presses. The screen ends when the target is reached or the time is up. Every press time is recorded.
+5. **Completion feedback** (2000 ms): the task was completed or not.
+6. **Reward feedback** (2000 ms): the amount won, no win, or no reward because the task was not completed.
+
+The easy reward is fixed ($1.00). The hard reward is one of 8 equally spaced levels from $1.24 to $4.30, crossed with the three probabilities (24 cells). The order of the cells (`trial_order`) is the same for every participant by default, as in the original; `"shuffled_list"` shuffles each pass through the 24 cells for each participant and `"random"` draws each offer on its own. Whether a trial is a win trial is decided in advance (balanced within each probability level in the list orders), so the outcome is drawn at random through `jsPsych.randomization` (or fixed, for `fixed_sequence`) and the participant sees it only as a chance before choosing.
+
+**The test ends on a clock or a count.** `task_end_rule: "fixed_time"` (the default) ends the test after `session_duration_min` minutes. A trial that starts before the time is up is completed, so a session can run past the limit by up to one trial. The session clock adds up the durations of the screens (fixation, choice, ready, effort, feedback) and is never behind the wall clock; that is what makes a data-only simulation end, because jsPsych has no simulated clock. `task_end_rule: "fixed_trial_count"` ends after `n_test_trials`. When only one of the two numbers is given it sets the rule; giving both without a rule, or a number that belongs to the other rule, throws. With `fixed_time`, a hard stop of 600 test trials means a run with tiny durations still ends; a trial count is not capped.
+
+**Practice.** Four practice trials at the real pace, not paid and not part of the clock. The first two are assigned (the easy task, then the hard task) so participants feel both; the rest are free choices (`practice_forced_tasks`). Practice offers are random draws. `practice` overrides (feedback durations, windows, press counts, rewards) apply to practice only.
+
+**Instructions.** Seven short pages (the tasks and their fingers, the rewards, the chance of winning, how to choose, how long the session is and that the hard task costs trials, the payout), then an interactive walkthrough (`instruction_demonstration: "interactive"`, the default): the real choice screen is shown twice (choose the easy task, then the hard one), then the easy task is done with its real press count and time limit. A choice has no correct answer, so each step asks for its key by instruction; a wrong key shows a hint and repeats the step (at most 3 attempts), and so does an easy task that was not completed. The hard effort task is not demonstrated: practice has an assigned hard trial. The instruction text is built from the resolved options, so it describes the configured design (the press counts, keys, rewards, probabilities, window and stop rule).
+
+**The effort screen is a plugin.** jsPsych's keyboard plugin ends on one key press, and a custom `on_load` screen would never run under data-only simulation and could not end the trial itself. The package therefore has a small plugin (`utils.plugins.EffortPressPlugin`) that ends on the press count or the time limit, ignores key auto-repeat, records every press time, and has its own `simulate`. It is a candidate for jspsych-contrib.
+
+**Effort keys and fingers.** `response_key_mapping` holds keys only (`{ easy: "space", hard: "space" }`; two different keys let software check which finger was used). Which finger presses is an instruction, not an option: set `text.finger_instruction` (default: the index finger of the dominant hand for the easy task, the little finger of the non-dominant hand for the hard task, as in S007).
+
+## Parameters
+
+Pick an option on the left, or search by name or description. Each option shows its default and where that default came from, what turns it off, whether practice can use a different value, and the values used in the studies behind the spec. Link to one with `#param-<name>`, e.g. [`#param-reward_magnitude`](#param-reward_magnitude).
+
+Typed shapes worth knowing:
+
+- `reward_magnitude: { easy, hard }`. `hard` is `{ levels: [1.24, 2.5, 4.3] }`, `{ min, max, n_levels }` (equally spaced, to cents) or `{ uniform: { min, max } }` (a fresh amount on every trial, S014). Currency is text: set `text.amount`.
+- `reward_probability` is a list of proportions (`[0.12, 0.5, 0.88]`). `[1]` means every trial pays and no probability is shown.
+- `response_window_ms` is `{ choice, easy, hard }` in milliseconds: the time to choose (`null` = untimed) and the time allowed for the presses of each task. A number or `null` alone is the choice window.
+- `difficulty_levels` is `{ easy, hard }`, the presses required.
+- `feedback_duration_ms` is one duration for both feedback screens, or `{ completion, reward }`.
+
+<ParamsTable schema={schema} />
+
+## Try it
+
+For a short run, pick "Quick demo" in the Preset menu (the walkthrough, 2 practice trials and 6 test trials, with 10 and 25 presses instead of 30 and 100; about 2 minutes) and press Run. The other presets are study configurations from the literature; values the package cannot express, and values that need code (the `text` functions for currency and fingers), are listed in each preset's description. The task runs from the bundle built from this repository. The options are kept in the URL hash, so you can share a configuration.
+
+<TimelineExample
+  schema={schema}
+  bundle="/bundles/eefrt/index.browser.js"
+  globalName={manifest['eefrt'].globalName}
+  syncToUrl
+  hashKey="eefrt"
+  height={520}
+/>
+
+## Examples
+
+The original with a shuffled order per participant, the reward drawn fresh on every trial and the 12% level dropped, as in some clinical studies:
+
+```javascript
+const { timeline } = createTimeline(jsPsych, {
+  trial_order: "shuffled_list",
+  reward_magnitude: { hard: { uniform: { min: 1.24, max: 4.3 } } },
+  reward_probability: [0.5, 0.88],
+});
+```
+
+A 15-minute session with the choice untimed, points instead of money, 98 hard presses and a separate key for each task:
+
+```javascript
+const { timeline } = createTimeline(jsPsych, {
+  session_duration_min: 15,
+  response_window_ms: { choice: null },
+  outcome_type: "points",
+  reward_magnitude: { easy: 100, hard: { min: 124, max: 430, n_levels: 8 } },
+  difficulty_levels: { easy: 30, hard: 98 },
+  response_key_mapping: { easy: "f", hard: "j" },
+});
+```
+
+A fixed number of trials in euros, with the finger instructions translated:
+
+```javascript
+const { timeline } = createTimeline(jsPsych, {
+  task_end_rule: "fixed_trial_count",
+  n_test_trials: 48,
+  text: {
+    amount: ({ value }) => `${value.toFixed(2).replace(".", ",")} €`,
+    finger_instruction: ({ task }) =>
+      task === "easy" ? "mit dem Zeigefinger der dominanten Hand" : "mit dem kleinen Finger der anderen Hand",
+  },
+});
+```
+
+## Data Output
+
+Every trial carries `task: "eefrt"` and `task_version`. There is no correct answer, so the scorable row has no `correct`; it has `completed`. The row that records the response of a trial (`phase: "practice"` or `"test"`, `part: "response"`) is the **effort** row. It carries the offer, the choice and the outcome:
+
+| Field | Type | Description |
+|---|---|---|
+| `phase` | string | `"practice"` or `"test"` |
+| `block` | number | Always 1 (the task has no blocks) |
+| `trial_index_in_block` | number | Position within the phase (1-indexed) |
+| `win_probability` | number | Chance that the trial pays, 0-1 |
+| `hard_reward`, `easy_reward` | number | The two rewards on offer |
+| `win` | boolean | The trial is a win trial (a reward needs this and a completed task) |
+| `choice` | string | `"easy"` or `"hard"` as chosen, `"none"` when the task was assigned |
+| `choice_forced` | boolean | The task was assigned: at random after no choice in time, or as a practice assignment |
+| `forced_by` | string or null | `"timeout"`, `"practice"` or null |
+| `chosen_task` | string | The task done, after any assignment |
+| `choice_rt` | number or null | Time to choose, ms; null when none was made |
+| `required_presses` | number | Presses needed |
+| `response_window` | number | Time allowed for the presses, ms |
+| `press_count` | number | Presses made |
+| `press_times` | list | The time of every press, ms from the start of the screen |
+| `effort_key` | string | The key that presses (`" "` for the space bar) |
+| `completed` | boolean | The target was reached in time |
+| `task_duration_ms` | number | Time to the last required press, or the time limit |
+| `rt` | number or null | Time of the first press, ms; null if none (jsPsych's own column) |
+| `reward_won` | number | The reward earned: the reward of the chosen task if the task was completed and the trial was a win trial, else 0 |
+| `reward_won_prev` | number | The previous trial's `reward_won` (0 on the first) |
+| `session_elapsed_ms` | number | The session clock when the trial started (test only), ms |
+| `progress_indicator`, `easy_reward_text`, `hard_reward_text` | | The setting in force, and the amounts as the participant saw them |
+
+The **choice** row (`part: "choice"`, absent on assigned trials) has the offer, `response` (the key, or null), `rt`, `timeout` (no key in time), `choice`, `choice_forced`, `forced_by`, `chosen_task`, `response_window` (the choice window, ms or null) and `response_keys`. Display rows record their planned duration as `duration_ms` and the sampled value under the option's name: `fixation_duration` (fixation rows) and `feedback_duration` (both feedback rows), with `feedback_stage` (`"completion"` or `"reward"`) on feedback rows.
+
+**`part` values the package writes:** `instruction`, `instruction_check`, `instruction_feedback` (walkthrough rows: `phase: "instructions"`, with `step`, `attempt` and `correct`, never scored), `device_check`, `fixation`, `choice`, `ready`, `response`, `completion_feedback`, `reward_feedback`, `completion`. The completion row (`phase: "completion"`) holds `payout_rule`, `paid_trials` and `payout`.
+
+## Scoring
+
+```javascript
+import { utils } from "@jspsych-timelines/eefrt";
+
+const scores = utils.scoring.calculateScores(jsPsych.data.get());
+```
+
+Scores come from the test phase. Counts are 0 and every proportion, rate and mean is `null` on empty data (never `NaN`). Choices that the task assigned after a missed choice window are flagged (`choice_forced`) and left out of the choice proportions, as in the original analysis.
+
+| Metric | Description | Interpretation |
+|---|---|---|
+| `proportion_hard` | Hard choices over free choices | The main measure: willingness to expend effort. |
+| `proportion_hard_first_n` (`first_n`, default 50) | The same over the first n trials | Several studies analyse only the first 50 trials, to equalise trial numbers in a time-limited session (S007, S034). |
+| `proportion_hard_by_probability` | Per probability level: free choices and the proportion of hard ones | Rises with the chance of winning. |
+| `proportion_hard_by_reward_bin` | Per third of the range of hard rewards offered (low, mid, high; Ohmann et al. 2022 binned $1.24-$4.30 at 2.30 and 3.30) | Rises with the reward. |
+| `proportion_hard_by_probability_and_reward_bin` | The same, crossed | Input for a reward slope per probability (S032) or a logistic model. |
+| `mean_expected_value_chosen` | Mean of probability x reward of the chosen task over free choices | |
+| `completion_rate`, `completion_rate_easy`, `completion_rate_hard` | Tasks completed, over all tasks and by task done | Low hard completion confounds motivation with motor ability. |
+| `mean_press_rate_easy`, `mean_press_rate_hard` | Presses per second of the effort phase | Motor speed; see S035. |
+| `n_trials`, `n_forced`, `n_valid_choices`, `n_hard_chosen`, `n_easy_tasks`, `n_hard_tasks`, `n_completed`, `n_wins` | Counts | |
+| `total_reward`, `payout`, `payout_rule` | Rewards won, and the earnings under `payout_rule` | `payout` for `two_random_win_trials_paid` needs the paid trials, which are drawn on the completion screen and recorded in the completion row. |
+
+The package does not judge or exclude sessions. The studies usually exclude participants with too few valid choices, those who fail to complete many tasks (a hard completion rate that is low suggests the press requirement was too high for them), and those who respond the same way on every trial; the fields above have what those checks need, so apply them in the analysis. The package pays nothing: `payout` is an amount to pay.
+
+## Translation
+
+Pass a `text` object to replace interface strings; partial objects are merged with the defaults. The plain strings are `continue_button`, `ok_button`, `fixation`, `feedback_completed`, `feedback_not_completed`, `reward_no_win`, `reward_not_completed`, `instruction_correct`, `device_not_supported` and `task_complete`. Everything that interpolates a value is a function (and so can only be set from code). Two functions are where design-specific wording lives:
+
+- `amount({ value, outcome_type })` writes an amount: the currency symbol and number format are translatable text, not an option (default `$1.24`, or `100 points`).
+- `finger_instruction({ task })` says which finger presses (default: index finger of the dominant hand for the easy task, little finger of the non-dominant hand for the hard task).
+
+The instruction pages (`instruction_intro`, `instruction_tasks`, `instruction_rewards`, `instruction_chance`, `instruction_choice`, `instruction_session_length`, `instruction_payout`, `instruction_demo_intro`, `instruction_practice_intro`, `instruction_test_intro`) and the walkthrough strings are functions of the resolved options (`TaskFacts`: the press counts, seconds, keys as `<kbd>` markup, formatted amounts, probabilities, window, stop rule, payout rule), so a translation follows the configured design. Functions can only be set from code.
+
+```javascript
+createTimeline(jsPsych, {
+  text: { continue_button: "Weiter", fixation: "+", feedback_completed: "Aufgabe geschafft" },
+});
+```
+
+## Timeline Units
+
+`timelineUnits` exports factories for the individual pieces. Most take the context from `createContext(jsPsych, options)`: `createInstructions`, `createInstructionWalkthrough`, `createPracticeIntro`, `createTestIntro`, `createDeviceCheck`, `createDisplayTrial`, `createTrialLoop(ctx, "practice" | "test")` (the trials of a phase, with the offers, the session clock and the stop rule) and `createCompletion`. `utils` also has `utils.offers` (`OfferStream`, `rewardLevels`, `fixedOrder`), `utils.simulation` (the participant model), `utils.plugins.EffortPressPlugin` and `utils.scoring.payoutFor`.
+
+## Simulation
+
+Under `jsPsych.simulate(timeline, "data-only")` the participant chooses the hard task with a probability that rises with the win probability and with the hard reward relative to the easy one (`utils.constants.SIMULATION`), takes about 1.5 s to choose, and misses the choice window on 2% of trials (which flags the trial and assigns a task). Press rates are drawn per trial (easy about 5.8 per second, hard about 5.3), so about 1.5% of easy and 16% of hard tasks are not completed. A global `default: { data: { rt } }` simulation option overrides the choice RT, which is how the timeout checks run. The session clock is the sum of the screens' durations, so a 20-minute session ends after about 64 simulated trials.
+
+## References
+
+- Treadway, M. T., Buckholtz, J. W., Schwartzman, A. N., Lambert, W. E., & Zald, D. H. (2009). Worth the "EEfRT"? The effort expenditure for rewards task as an objective measure of motivation and anhedonia. *PLoS ONE, 4*(8), e6598.
+- Ohmann, H. A., et al. (2022). *PLoS ONE* (the modified EEfRT and the maximal-pressing pretest; S008).
+- Fervaha, G., et al. (2013). Motivational deficits in early schizophrenia: prevalent, persistent, and key determinants of functional outcome (individually calibrated press requirements).
+- The literature behind each default, and what could not be expressed, is in `packages/eefrt/reproduction.md` and `packages/eefrt/DEFAULTS.md`.
