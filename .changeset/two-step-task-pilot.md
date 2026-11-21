@@ -1,0 +1,5 @@
+---
+"@jspsych-timelines/two-step-task": minor
+---
+
+New timeline for the two-step (two-stage) Markov decision task (Daw et al., 2011), built from the literature-derived spec: Expfactory two-stage-decision defaults and 27 options. Two choices per trial (a first-stage option that usually, but not always, leads to one of two second-stage states, then an option there that pays a coin with a drifting probability). The reward walk is a typed `reward_schedule` (`random_walk` with `reflect` or `reverse_step` at the bounds), and the whole schedule (transitions, probabilities, rewards, sides) is drawn when the timeline is built through `jsPsych.randomization` and recorded in the data. Scoring gives the stay probabilities by previous reward and transition, the model-free and model-based indices and the second-stage RT index; model fitting is left to analysis. An interactive walkthrough teaches the keys and, by `contingency_disclosure`, the transition structure.

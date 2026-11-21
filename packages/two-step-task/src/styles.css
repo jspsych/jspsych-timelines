@@ -1,0 +1,171 @@
+/* All rules are scoped under the task class (PACKAGE-STANDARD section 5). */
+
+.jspsych-timelines-two-step-task .ts-text {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0 20px;
+  text-align: left;
+}
+
+.jspsych-timelines-two-step-task .ts-text h2 {
+  text-align: center;
+}
+
+/* Pictures inside a sentence sit on the text's centre line, not its baseline. */
+.jspsych-timelines-two-step-task .ts-text svg,
+.jspsych-timelines-two-step-task .ts-inline svg {
+  vertical-align: middle;
+}
+
+/* Anchored layout (PACKAGE-STANDARD section 5): on every task screen with a stage, the stage is
+   centred on the vertical centre of the display with absolute positioning, so nothing else on the
+   screen (text, the plugin's button group) can move it. Text goes in the region below the stage
+   (scrolls if long). The task colours are painted on the whole display (see paintDisplay). */
+.jspsych-timelines-two-step-task {
+  --ts-stage-h: min(280px, 40vh);
+  --ts-btn-reserve: 76px;
+}
+
+.jspsych-timelines-two-step-task:has(.ts-screen) {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: none;
+  height: 100vh;
+  margin: 0;
+  overflow: hidden;
+}
+
+.jspsych-timelines-two-step-task .ts-screen {
+  display: contents;
+}
+
+.jspsych-timelines-two-step-task .ts-stage {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 640px;
+  max-width: calc(100vw - 16px);
+  height: var(--ts-stage-h);
+  padding: 12px;
+  overflow: hidden;
+}
+
+.jspsych-timelines-two-step-task .ts-below {
+  position: absolute;
+  top: calc(50% + var(--ts-stage-h) / 2 + 8px);
+  right: 0;
+  bottom: 0;
+  left: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* Short text under the stage (captions, hints, outcome) is centred under the stimulus. */
+.jspsych-timelines-two-step-task .ts-below .ts-text {
+  text-align: center;
+  text-wrap: balance;
+}
+
+.jspsych-timelines-two-step-task .ts-below .ts-text p {
+  margin: 0.4em 0;
+}
+
+.jspsych-timelines-two-step-task:has(#jspsych-html-button-response-btngroup) .ts-below {
+  bottom: var(--ts-btn-reserve);
+}
+
+.jspsych-timelines-two-step-task:has(.ts-screen) #jspsych-html-button-response-btngroup {
+  position: absolute;
+  right: 0;
+  bottom: 12px;
+  left: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.jspsych-timelines-two-step-task .ts-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.jspsych-timelines-two-step-task .ts-pair {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: min(160px, 20vw);
+}
+
+.jspsych-timelines-two-step-task .ts-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border: 3px solid transparent;
+  border-radius: 12px;
+  line-height: 0;
+}
+
+.jspsych-timelines-two-step-task .ts-item svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* The chosen option is outlined, the other dimmed. */
+.jspsych-timelines-two-step-task .ts-item.ts-chosen {
+  border-color: #f4c430;
+}
+
+.jspsych-timelines-two-step-task .ts-item.ts-dim {
+  opacity: 0.3;
+}
+
+.jspsych-timelines-two-step-task .ts-outcome {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  line-height: 0;
+}
+
+/* Two sentences side by side need less room between them than two pictures. */
+.jspsych-timelines-two-step-task .ts-pair:has(.ts-statement) {
+  gap: 16px;
+}
+
+/* Options of a check question that are sentences (the walkthrough). Body size, like all text. */
+.jspsych-timelines-two-step-task .ts-statement {
+  box-sizing: border-box;
+  width: min(250px, calc(50vw - 40px));
+  padding: 10px;
+  border: 2px solid currentColor;
+  border-radius: 8px;
+  font-size: 1em;
+  line-height: 1.3;
+  text-align: center;
+  text-wrap: balance;
+}
+
+/* The fixation mark is the one text that is larger than body size. */
+.jspsych-timelines-two-step-task .ts-fixation {
+  font-size: 3em;
+}
+
+.jspsych-timelines-two-step-task .ts-message {
+  font-size: 1em; /* body size: only stimuli and the fixation mark are larger (standard section 5) */
+  font-weight: bold;
+}
+
+.jspsych-timelines-two-step-task .ts-outcome-text {
+  font-weight: bold;
+}
