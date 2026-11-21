@@ -154,7 +154,13 @@ describe("validateOptions", () => {
     expect(build({ response_keys: ["e", "i"], response_key_mapping: { easy: "I" } })).toThrow(
       /effort key/
     );
-    expect(build({ practice_trials: 1 })).toThrow(/practice_forced_tasks/);
+    expect(build({ practice_trials: 1, practice_forced_tasks: ["easy", "hard"] })).toThrow(
+      /practice_forced_tasks/
+    );
+    // the default assignments are cut to the number of practice trials
+    expect(resolveOptions({ practice_trials: 1 }).practice_forced_tasks).toEqual(["easy"]);
+    expect(resolveOptions({ practice_trials: 0 }).practice_forced_tasks).toEqual([]);
+    expect(build({ practice_trials: 1 })).not.toThrow();
     expect(build({ practice_trials: 1, practice_forced_tasks: ["hard"] })).not.toThrow();
     expect(build({ practice_forced_tasks: ["medium" as any] })).toThrow(/practice_forced_tasks/);
   });

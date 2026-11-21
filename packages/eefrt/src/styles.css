@@ -10,6 +10,7 @@
 
 .jspsych-timelines-eefrt .jspsych-timelines-eefrt-text h2 {
   text-align: center;
+  font-size: 1em; /* body size: a heading differs by weight, not size (standard §5) */
 }
 
 /* Anchored layout. On every task screen the stage is centred on the vertical centre of the display

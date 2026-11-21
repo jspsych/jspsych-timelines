@@ -25,7 +25,7 @@ import expected from "../reproduction/expected-tallies.json";
 import { harness } from "../reproduction/harness";
 import fixtureJson from "../reproduction/spec-observed.json";
 import { rewardRange } from "./offers";
-import { DEFAULT_OPTIONS, PHASE_OPTIONS, resolveOptions } from "./options";
+import { DEFAULT_OPTIONS, EefrtOptions, PHASE_OPTIONS, resolveOptions } from "./options";
 import { createTimeline } from ".";
 
 const fixture = fixtureJson as unknown as Fixture;
@@ -37,21 +37,23 @@ const reproductionDir = path.join(__dirname, "..", "reproduction");
  * 6 test trials (a trial count in place of the 20-minute clock), smaller press requirements and shorter
  * screens (DEFAULTS.md has the measured time).
  */
+const QUICK_DEMO_OPTIONS: EefrtOptions = {
+  practice_trials: 2,
+  task_end_rule: "fixed_trial_count",
+  n_test_trials: 6,
+  difficulty_levels: { easy: 10, hard: 25 },
+  response_window_ms: { choice: 5000, easy: 4000, hard: 8000 },
+  fixation_duration_ms: 500,
+  pre_block_countdown_ms: 500,
+  feedback_duration_ms: 1000,
+};
+
 export const QUICK_DEMO_PRESET = {
   id: "quick-demo",
   label: "Quick demo",
   description:
     "A short run for trying the task: the walkthrough, 2 practice trials (the easy and the hard task) and 6 test trials, with 10 and 25 presses instead of 30 and 100 and shorter screens. Not from a study.",
-  options: {
-    practice_trials: 2,
-    task_end_rule: "fixed_trial_count",
-    n_test_trials: 6,
-    difficulty_levels: { easy: 10, hard: 25 },
-    response_window_ms: { choice: 5000, easy: 4000, hard: 8000 },
-    fixation_duration_ms: 500,
-    pre_block_countdown_ms: 500,
-    feedback_duration_ms: 1000,
-  },
+  options: QUICK_DEMO_OPTIONS,
 };
 
 /** Percent strings of a typed probability list ("12%") as proportions. */
