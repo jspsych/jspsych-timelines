@@ -235,6 +235,81 @@ describe("two-step-task", () => {
       expect(responses(rows).every((x) => x.attempt === 1 && !x.missed)).toBe(true);
     });
 
+    describe("a participant who is sometimes too slow (the simulated learner with a window near its RT)", () => {
+      const sometimes = async (handling: "skip_trial" | "repeat_trial") => {
+        const p = initJsPsych();
+        p.randomization.setSeed("misses-" + handling);
+        const { timeline } = createTimeline(p, {
+          instruction_format: "experimenter",
+          practice_trials: 0,
+          n_test_trials: 80,
+          n_blocks: 1,
+          response_window_ms: 560,
+          missed_response_handling: handling,
+        });
+        const { getData, expectFinished } = await simulateTimeline(timeline, "data-only", {}, p);
+        await expectFinished();
+        return getData().values() as any[];
+      };
+
+      it("skip_trial: a missed second stage has no reward, no outcome display, and the next trial goes on", async () => {
+        const rows = await sometimes("skip_trial");
+        const r = responses(rows);
+        expect(r).toHaveLength(80);
+        const stage1 = r.filter((x) => x.missed_stage === 1);
+        const stage2 = r.filter((x) => x.missed_stage === 2);
+        const done = r.filter((x) => !x.missed);
+        expect(stage1.length).toBeGreaterThan(3);
+        expect(stage2.length).toBeGreaterThan(3);
+        expect(done.length).toBeGreaterThan(3);
+        for (const x of stage2) {
+          // the first choice and the transition happened; the second choice did not
+          expect(x.stage1_choice).not.toBeNull();
+          expect(x.transition).not.toBeNull();
+          expect(x.stage2_state).not.toBeNull();
+          expect(x).toMatchObject({
+            stage2_choice: null,
+            stage2_rt: null,
+            reward: null,
+            timeout: true,
+          });
+        }
+        // an outcome is shown for completed trials only; the "too slow" message for the others
+        expect(rows.filter((x) => x.part === "feedback")).toHaveLength(done.length);
+        expect(rows.filter((x) => x.part === "timeout_message")).toHaveLength(80 - done.length);
+        expect(rows.filter((x) => x.part === "timeout_message" && x.stage === 2)).toHaveLength(
+          stage2.length
+        );
+        // a miss ends the trial: no second-stage choice after a stage-1 miss
+        const choiceRows = rows.filter((x) => x.part === "choice" && x.stage === 2);
+        expect(choiceRows).toHaveLength(80 - stage1.length);
+      });
+
+      it("repeat_trial: a trial missed at either stage is run again, and the repeat can be answered", async () => {
+        const rows = await sometimes("repeat_trial");
+        const r = responses(rows);
+        const repeats = r.filter((x) => x.attempt > 1);
+        expect(repeats.length).toBeGreaterThan(3);
+        // some repeated trials end up completed
+        expect(repeats.some((x) => !x.missed)).toBe(true);
+        // every trial number ends with a completed attempt, or the cap
+        const last = new Map<number, any>();
+        r.forEach((x) => last.set(x.trial_index_in_block, x));
+        expect(last.size).toBe(80);
+        for (const x of last.values())
+          expect(!x.missed || x.attempt === 1 + MAX_TRIAL_REPEATS).toBe(true);
+        // the same trial keeps its schedule across attempts
+        const first = r.filter((x) => x.trial_index_in_block === repeats[0].trial_index_in_block);
+        expect(new Set(first.map((x) => JSON.stringify(x.reward_probs))).size).toBe(1);
+        expect(new Set(first.map((x) => x.planned_transition)).size).toBe(1);
+        // scores count the attempts, and the completed trials
+        const s = calculateScores(new DataCollection(r));
+        expect(s.n_trials).toBe(r.length);
+        expect(s.n_completed + s.n_missed).toBe(r.length);
+        expect(s.n_missed).toBe(r.filter((x) => x.missed).length);
+      });
+    });
+
     it("response rows record the window and the walk", async () => {
       const rows = await simulate(jsPsych, {
         practice_trials: 0,
@@ -272,6 +347,26 @@ describe("two-step-task", () => {
       other.randomization.setSeed("different");
       const c = responses(await simulate(other, { practice_trials: 0, n_test_trials: 30 }));
       expect(c.map((x) => x.reward_probs)).not.toEqual(a.map((x) => x.reward_probs));
+    });
+
+    it("does not depend on durations, jitter or the instructions", async () => {
+      const probs = async (o: TwoStepTaskOptions) => {
+        const p = initJsPsych();
+        p.randomization.setSeed("independent");
+        return responses(await simulate(p, { practice_trials: 3, n_test_trials: 12, ...o })).map(
+          (x) => [x.reward_probs, x.planned_transition, x.stage1_left]
+        );
+      };
+      const plain = await probs({});
+      expect(
+        await probs({
+          iti_ms: { min: 100, max: 900 },
+          fixation_duration_ms: { min: 200, max: 500 },
+        })
+      ).toEqual(plain);
+      expect(await probs({ instruction_format: "experimenter", feedback_duration_ms: 0 })).toEqual(
+        plain
+      );
     });
 
     it("the reward walk stays within its bounds and steps with the schedule's SD", () => {
@@ -613,6 +708,20 @@ describe("two-step-task", () => {
         ["B", "blue"],
       ]);
       q.forEach((r) => expect(r.correct).toBe(r.answer === r.common_state));
+      // the question names both keys
+      const { timeline } = createTimeline(initJsPsych(), {
+        practice_trials: 0,
+        n_test_trials: 1,
+        manipulation_check: "questionnaire",
+        response_keys: ["f", "j"],
+      });
+      const html = allTrials(timeline)
+        .filter((t) => t.data?.part === "manipulation_check")
+        .map((t) => t.stimulus)
+        .join("");
+      expect(html).toContain(
+        "<kbd>F</kbd> for the one on the left, or <kbd>J</kbd> for the one on the right"
+      );
     });
   });
 
@@ -823,6 +932,71 @@ describe("two-step-task", () => {
     it("a global forced RT wins over the simulated learner (choices are then random)", async () => {
       const rows = await simulate(initJsPsych(), { practice_trials: 0, n_test_trials: 10 });
       for (const x of responses(rows)) expect(x.stage1_rt).toBe(400);
+    });
+  });
+
+  describe("instruction text follows the configuration", () => {
+    const pages = (o: TwoStepTaskOptions) => {
+      const { timeline } = createTimeline(initJsPsych(), {
+        practice_trials: 2,
+        n_test_trials: 2,
+        ...o,
+      });
+      return allTrials(timeline)
+        .filter((t) => t.data?.part === "instruction" && typeof t.stimulus === "string")
+        .map((t) => t.stimulus as string)
+        .join("\n");
+    };
+
+    it("says what happens to a slow trial, by missed_response_handling", () => {
+      expect(pages({})).toContain("the trial is skipped");
+      expect(pages({ missed_response_handling: "repeat_trial" })).toContain(
+        "you get the same trial again"
+      );
+      expect(pages({ missed_response_handling: "repeat_trial" })).not.toContain("is skipped");
+      // no window: nothing about being too slow
+      expect(pages({ response_window_ms: null })).not.toContain("too slow");
+      expect(pages({ response_window_ms: null })).not.toContain("limited time");
+      expect(pages({})).toContain("limited time");
+    });
+
+    it("says that the options change places only when they do", () => {
+      expect(pages({})).toContain("not always on the same side");
+      expect(pages({})).toContain("change places");
+      const fixed = pages({ option_side_assignment: "fixed" });
+      expect(fixed).not.toContain("same side");
+      expect(fixed).not.toContain("change places");
+      expect(fixed).toContain("pace of the real task");
+    });
+
+    it("reads correctly for the framing, with no article before a vowel", () => {
+      for (const framing of ["abstract_symbols", "spaceship_planet_alien"] as const) {
+        const text = pages({ instruction_framing: framing, contingency_disclosure: "full" });
+        expect(text).not.toMatch(/\ban (symbol|alien)/i);
+        expect(text).toContain(
+          framing === "abstract_symbols"
+            ? "How likely the symbols are"
+            : "How likely the aliens are"
+        );
+      }
+    });
+
+    it("the framing words are a function, so a translation can give both framings", () => {
+      const words = defaultText.framing_words({ framing: "spaceship_planet_alien" });
+      expect(words.state_name.red).toBe("the red planet");
+      const { timeline } = createTimeline(initJsPsych(), {
+        practice_trials: 0,
+        n_test_trials: 1,
+        text: {
+          framing_words: ({ framing }) => ({
+            ...defaultText.framing_words({ framing }),
+            first: "teken",
+          }),
+        },
+      });
+      expect(JSON.stringify(allTrials(timeline).map((t) => t.stimulus ?? ""))).toContain(
+        "to choose the teken on the left"
+      );
     });
   });
 

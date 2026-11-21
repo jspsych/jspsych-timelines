@@ -124,8 +124,9 @@ function drawSides(
 
 /**
  * The plans of `n` trials of one phase. `block_sizes` (summing to `n`) only matters for balancing the
- * sides within a block. The order of draws is fixed (start values, walk, then per trial: transition,
- * rewards), so the schedule of a seed does not depend on which options are switched on.
+ * sides within a block. The order of draws is fixed (start values, walk, sides, then per trial: transition,
+ * rewards), so the schedule of a seed depends on the options that define it (counts, probabilities, walk, side
+ * assignment, `common_transition_prob`) and on nothing the participant does.
  */
 export function buildSchedule(
   jsPsych: JsPsych,

@@ -7,7 +7,11 @@
   text-align: left;
 }
 
+/* The heading of the end screen is body size too (standard section 5.6): weight, not size, marks it. */
 .jspsych-timelines-two-step-task .ts-text h2 {
+  margin: 0 0 0.6em;
+  font-size: 1em;
+  font-weight: bold;
   text-align: center;
 }
 
@@ -22,8 +26,8 @@
    screen (text, the plugin's button group) can move it. Text goes in the region below the stage
    (scrolls if long). The task colours are painted on the whole display (see paintDisplay). */
 .jspsych-timelines-two-step-task {
-  --ts-stage-h: min(280px, 40vh);
-  --ts-btn-reserve: 76px;
+  --ts-stage-h: min(280px, 34vh);
+  --ts-btn-reserve: 62px;
 }
 
 .jspsych-timelines-two-step-task:has(.ts-screen) {
@@ -134,7 +138,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   line-height: 0;
 }
 

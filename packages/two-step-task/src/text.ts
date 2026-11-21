@@ -31,8 +31,12 @@ export interface StepArgs {
  * Functions that interpolate runtime values take named parameters; see each doc comment.
  */
 export interface TextConfig {
-  /** Words for the parts of the task, by `instruction_framing` (`abstract_symbols`, `spaceship_planet_alien`). */
-  framing_words: Record<"abstract_symbols" | "spaceship_planet_alien", FramingWords>;
+  /**
+   * Words for the parts of the task, by `instruction_framing` (`abstract_symbols`, `spaceship_planet_alien`). A
+   * translation returns the words for both.
+   * @param r.framing the cover story
+   */
+  framing_words: (r: { framing: "abstract_symbols" | "spaceship_planet_alien" }) => FramingWords;
 
   // -- instruction pages --
   /** First page: what the task is. */
@@ -42,12 +46,16 @@ export interface TextConfig {
    * @param r.left_key  name of the key for the left option ("left arrow", "F")
    * @param r.right_key name of the key for the right option
    * @param r.window_seconds time allowed for each choice in seconds, or null for no limit
+   * @param r.repeat_missed true when a missed trial is run again (`missed_response_handling: "repeat_trial"`), false when it is skipped
+   * @param r.sides_vary false when the options keep their sides (`option_side_assignment: "fixed"`)
    */
   instruction_response: (r: {
     words: FramingWords;
     left_key: string;
     right_key: string;
     window_seconds: number | null;
+    repeat_missed: boolean;
+    sides_vary: boolean;
   }) => string;
   /**
    * Page on the transition structure (`contingency_disclosure: "partial"` or `"full"`).
@@ -63,8 +71,16 @@ export interface TextConfig {
   instruction_drift: (r: { words: FramingWords }) => string;
   /** Page before the interactive walkthrough. */
   instruction_demo_intro: (r: { words: FramingWords }) => string;
-  /** Shown before practice: what changes, and that the main task follows. */
-  instruction_practice_intro: (r: { words: FramingWords }) => string;
+  /**
+   * Shown before practice: what changes, and that the main task follows.
+   * @param r.timed true when each choice has a time limit
+   * @param r.sides_vary false when the options keep their sides
+   */
+  instruction_practice_intro: (r: {
+    words: FramingWords;
+    timed: boolean;
+    sides_vary: boolean;
+  }) => string;
   /** Shown before the main task, after practice (or after the instructions when there is no practice). */
   instruction_test_intro: string;
 
@@ -128,8 +144,16 @@ export interface TextConfig {
   /** @param r.block block just finished, r.n_blocks number of blocks */
   block_complete: (r: { block: number; n_blocks: number }) => string;
   questionnaire_intro: string;
-  /** @param r.first_name the option ("the rocket"), r.words the framing words */
-  questionnaire_question: (r: { words: FramingWords; first_name: string }) => string;
+  /**
+   * The questionnaire question, with the two states shown one on each side.
+   * @param r.first_name the option ("the rocket"), r.words the framing words, r.left_key and r.right_key the key names
+   */
+  questionnaire_question: (r: {
+    words: FramingWords;
+    first_name: string;
+    left_key: string;
+    right_key: string;
+  }) => string;
   task_complete: string;
   /** @param r.coins coins earned in the main task, r.n_trials trials, r.n_missed missed trials */
   result_summary: (r: { coins: number; n_trials: number; n_missed: number }) => string;
@@ -160,21 +184,34 @@ const spaceship: FramingWords = {
 const sideOf = (s: "left" | "right") => s;
 
 export const defaultText: TextConfig = {
-  framing_words: { abstract_symbols: abstract, spaceship_planet_alien: spaceship },
+  framing_words: ({ framing }) => (framing === "abstract_symbols" ? abstract : spaceship),
 
   instruction_intro: ({ words: w }) =>
     `<p>In this task you collect coins. Every trial has two steps. In the first step you choose one of two ${w.first_plural}. It takes you to one of two ${w.state_plural}, a red one or a blue one. There you choose one of two ${w.second_plural}, and the ${w.second} you choose may give you a coin.</p><p>Collect as many coins as you can.</p>`,
-  instruction_response: ({ words: w, left_key, right_key, window_seconds }) =>
+  instruction_response: ({
+    words: w,
+    left_key,
+    right_key,
+    window_seconds,
+    repeat_missed,
+    sides_vary,
+  }) =>
     `<p>Press <kbd>${left_key}</kbd> to choose the ${
       w.first
     } on the left, and <kbd>${right_key}</kbd> to choose the one on the right. You use the same two keys for the ${
       w.second_plural
-    }. The two ${w.first_plural} are not always on the same side, so look before you choose.</p>${
+    }.${
+      sides_vary
+        ? ` The two options are not always on the same side, so look before you choose.`
+        : ""
+    }</p>${
       window_seconds === null
         ? ""
         : `<p>You have ${window_seconds} ${
             window_seconds === 1 ? "second" : "seconds"
-          } for each choice. If you are too slow, the trial is skipped.</p>`
+          } for each choice. If you are too slow, ${
+            repeat_missed ? "you get the same trial again" : "the trial is skipped"
+          }.</p>`
     }`,
   instruction_transitions: ({ words: w, common_percent, mapping }) =>
     `<p>Each ${w.first} usually takes you to the same ${
@@ -189,11 +226,19 @@ export const defaultText: TextConfig = {
         : `<p>You will have to find out which ${w.state} each ${w.first} usually takes you to.</p>`
     }`,
   instruction_drift: ({ words: w }) =>
-    `<p>How likely an ${w.second} is to give a coin changes slowly during the task. An ${w.second} that is good now may get worse later, and one that is poor now may get better. Keep an eye on which ones give coins.</p>`,
+    `<p>How likely the ${w.second_plural} are to give a coin changes slowly during the task. One that is good now may get worse later, and one that is poor now may get better. Keep an eye on which ones give coins.</p>`,
   instruction_demo_intro: ({ words: w }) =>
-    `<p>Let's try one trial. You will choose a ${w.first}, see where it takes you, and then choose an ${w.second}. This trial is for learning the keys, so which one you choose does not matter.</p>`,
-  instruction_practice_intro: ({ words: w }) =>
-    `<p>Now you will practice. The trials run at the pace of the real task: you have a limited time for each choice, and the two options of each choice change places from trial to trial. The coins you get in practice are not counted.</p><p>When practice is over, the main task starts.</p>`,
+    `<p>Let's try one trial. You will choose a ${w.first}, see where it takes you, and then choose one of two ${w.second_plural}. This trial is for learning the keys, so which one you choose does not matter.</p>`,
+  instruction_practice_intro: ({ timed, sides_vary }) =>
+    `<p>Now you will practice. The trials run at the pace of the real task${
+      timed ? `: you have a limited time for each choice` : ""
+    }${
+      sides_vary
+        ? `${
+            timed ? ", and" : ": "
+          } the two options of each choice change places from trial to trial`
+        : ""
+    }. The coins you get in practice are not counted.</p><p>When practice is over, the main task starts.</p>`,
   instruction_test_intro: `<p>Practice is over. Now the main task starts. Collect as many coins as you can.</p>`,
 
   step_first: ({ words: w, side, key }) =>
@@ -226,9 +271,9 @@ export const defaultText: TextConfig = {
   statement_transitions_false: ({ words: w }) =>
     `A ${w.first} takes you to either ${w.state} equally often.`,
   statement_drift_true: ({ words: w }) =>
-    `The chance of a coin from an ${w.second} changes slowly.`,
+    `How likely the ${w.second_plural} are to give a coin changes slowly.`,
   statement_drift_false: ({ words: w }) =>
-    `The chance of a coin from an ${w.second} never changes.`,
+    `How likely the ${w.second_plural} are to give a coin never changes.`,
   instruction_correct: "Correct!",
 
   continue_button: "Continue",
@@ -242,8 +287,8 @@ export const defaultText: TextConfig = {
   block_complete: ({ block, n_blocks }) =>
     `<p>You have finished block ${block} of ${n_blocks}. Take a short break if you like.</p>`,
   questionnaire_intro: `<p>One last question about the task.</p>`,
-  questionnaire_question: ({ words: w, first_name }) =>
-    `Which ${w.state} did ${first_name} take you to most of the time?`,
+  questionnaire_question: ({ words: w, first_name, left_key, right_key }) =>
+    `Which ${w.state} did ${first_name} take you to most of the time? Press <kbd>${left_key}</kbd> for the one on the left, or <kbd>${right_key}</kbd> for the one on the right.`,
   task_complete: "Task complete",
   result_summary: ({ coins, n_trials, n_missed }) =>
     `<p>You collected ${coins} coins in ${n_trials} trials${

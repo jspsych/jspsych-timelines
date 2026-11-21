@@ -198,10 +198,9 @@ export interface TwoStepTaskOptions {
 
   /**
    * Overrides for the practice phase (the values of these options win over the main options during practice).
-   * (default: {})
    */
   practice?: Partial<Omit<TwoStepTaskOptions, "practice" | "text">>;
-  /** Custom text strings for translation. Partial objects are merged with defaults. (default: {}) */
+  /** Custom text strings for translation. Partial objects are merged with defaults. */
   text?: Partial<TextConfig>;
 }
 

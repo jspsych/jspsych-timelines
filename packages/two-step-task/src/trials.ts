@@ -8,7 +8,6 @@ import {
   COMMON_STATE,
   INSTRUCTION_CORRECT_MS,
   INSTRUCTION_MAX_ATTEMPTS,
-  INSTRUCTION_OUTCOME_MS,
   MAX_TRIAL_REPEATS,
   TASK_CLASS,
   TASK_NAME,
@@ -87,7 +86,7 @@ export function createContext(jsPsych: JsPsych, options: TwoStepTaskOptions = {}
     user: options,
     practice,
     test,
-    words: text.framing_words[framing],
+    words: text.framing_words({ framing }),
     state: { total: { practice: 0, test: 0 } },
     agent: new HybridAgent(jsPsych, test.common_transition_prob),
   };
@@ -418,8 +417,8 @@ function outcomeHtml(
       framingOf(o),
       st.state as StateId,
       id as OptionId,
-      80
-    )}${renderCoin(rewarded, 44)}</div>`,
+      72
+    )}${renderCoin(rewarded, 40)}</div>`,
     framingOf(o),
     st.state,
     caption
@@ -473,7 +472,8 @@ function createSummary(a: TrialArgs, st: TrialState, d: Durations) {
   return {
     type: jsPsychHtmlKeyboardResponse,
     css_classes: [TASK_CLASS],
-    stimulus: "",
+    // a blank, painted display (as the ITI): an empty one could flash the page colour for a frame
+    stimulus: renderStage("", framingOf(o), null),
     choices: "NO_KEYS",
     trial_duration: 0,
     data: baseData({
@@ -634,6 +634,8 @@ export function createInstructions(ctx: Context) {
       words,
       left_key: keyName(o.response_keys[0]),
       right_key: keyName(o.response_keys[1]),
+      repeat_missed: o.missed_response_handling === "repeat_trial",
+      sides_vary: o.option_side_assignment !== "fixed",
       window_seconds:
         o.response_window_ms === null
           ? null
@@ -880,10 +882,10 @@ export function createInstructionWalkthrough(ctx: Context) {
       loop_function: again,
     });
 
-    // after the second choice of the scripted trial: show the outcome
+    // after the second choice of the scripted trial: show the outcome (untimed, with a sentence to read)
     if (step.id === "second_choice") {
       nodes.push({
-        type: jsPsychHtmlKeyboardResponse,
+        type: jsPsychHtmlButtonResponse,
         css_classes: [TASK_CLASS],
         stimulus: () => {
           const st = newTrialState(plan);
@@ -898,8 +900,7 @@ export function createInstructionWalkthrough(ctx: Context) {
             textHtml(`<p>${t.step_outcome({ words: ctx.words })}</p>`)
           );
         },
-        choices: "NO_KEYS",
-        trial_duration: INSTRUCTION_OUTCOME_MS,
+        choices: [t.continue_button],
         data: baseData({ phase: "instructions", part: "instruction_example", step: "outcome" }),
         on_finish: (d: any) => {
           delete d.stimulus;
@@ -913,7 +914,11 @@ export function createInstructionWalkthrough(ctx: Context) {
 export function createPracticeIntro(ctx: Context) {
   return textPage(
     ctx,
-    ctx.text.instruction_practice_intro({ words: ctx.words }),
+    ctx.text.instruction_practice_intro({
+      words: ctx.words,
+      timed: ctx.practice.response_window_ms !== null,
+      sides_vary: ctx.practice.option_side_assignment !== "fixed",
+    }),
     "instructions",
     "instruction"
   );
@@ -951,6 +956,8 @@ export function createQuestionnaire(ctx: Context) {
     )}</span> ${t.questionnaire_question({
       words: ctx.words,
       first_name: ctx.words.first_name[ship],
+      left_key: keyLabel(o, "left"),
+      right_key: keyLabel(o, "right"),
     })}</p></div>`;
     return {
       type: jsPsychHtmlKeyboardResponse,

@@ -17,8 +17,6 @@ export const COMMON_STATE = { A: "red", B: "blue" } as const;
 export const INSTRUCTION_MAX_ATTEMPTS = 3;
 /** Duration of the "Correct!" confirmation in the walkthrough, ms. */
 export const INSTRUCTION_CORRECT_MS = 900;
-/** How long the walkthrough shows the coin (or no coin) after its scripted second-stage choice, ms. */
-export const INSTRUCTION_OUTCOME_MS = 1200;
 
 /**
  * With `missed_response_handling: "repeat_trial"`, a trial that is missed again and again is skipped after this many

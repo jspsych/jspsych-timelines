@@ -1,7 +1,7 @@
 {
   "name": "@jspsych-timelines/two-step-task",
   "version": "0.0.1",
-  "description": "Two-step (two-stage) Markov decision task (model-based and model-free control), built from the literature-derived spec: Expfactory defaults and 26 options.",
+  "description": "Two-step (two-stage) Markov decision task (model-based and model-free control), built from the literature-derived spec: Expfactory defaults and 28 options.",
   "type": "module",
   "main": "dist/index.cjs",
   "module": "dist/index.js",

@@ -12,6 +12,9 @@
     },
     {
       "task": "operation-span"
+    },
+    {
+      "task": "two-step-task"
     }
   ]
 }

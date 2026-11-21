@@ -155,13 +155,16 @@ export function createTimeline(
     timeline.push(createInstructions(ctx));
     if (o.instruction_demonstration !== "none") timeline.push(createInstructionWalkthrough(ctx));
   }
+  // both schedules are drawn before anything else is, so they do not depend on the durations, jitter or instructions
+  const practicePlans = createSchedule(ctx, "practice");
+  const plans = createSchedule(ctx, "test");
+
   if (o.practice_trials > 0) {
     if (instructed) timeline.push(createPracticeIntro(ctx));
-    timeline.push(createBlock(ctx, "practice", 1, createSchedule(ctx, "practice")));
+    timeline.push(createBlock(ctx, "practice", 1, practicePlans));
   }
   if (instructed) timeline.push(createTestIntro(ctx));
 
-  const plans = createSchedule(ctx, "test");
   let start = 0;
   blockSizes(o).forEach((n, i) => {
     const block = i + 1;
