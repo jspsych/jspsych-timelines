@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Tone Detection Example</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://unpkg.com/jspsych@8.4.0"></script>
+    <script src="../dist/index.browser.js"></script>
+    <!-- Once published: <script src="https://unpkg.com/@jspsych-timelines/tone-detection"></script> -->
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/jspsych@8.4.0/css/jspsych.css" />
+  </head>
+
+  <body></body>
+  <script>
+    const jsPsych = initJsPsych({
+      on_finish: () => {
+        jsPsych.data.displayData();
+        const scores = jsPsychTimelineToneDetection.utils.scoring.getSummary(jsPsych.data.get());
+        console.log("Tone detection results:", scores);
+      },
+    });
+
+    // The defaults follow Zhao et al. (2022): three 40-trial tracks at 1000 Hz in white noise, 3-down/1-up in dB SNR,
+    // a volume screen and a headphone check. For a short demo: one track of 20 trials that starts nearer the threshold.
+    // Put on headphones: the sounds are made in the browser and play after your first click.
+    const task = jsPsychTimelineToneDetection.createTimeline(jsPsych, {
+      practice_trials: 4,
+      headphone_check_trials: 3,
+      trials_per_condition: 1,
+      adaptive: { start_level: -15, step_size: [3, 1.5], discontinue_rule: { trials: 20 } },
+    });
+
+    jsPsych.run([task]);
+  </script>
+</html>

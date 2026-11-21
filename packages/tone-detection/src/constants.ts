@@ -69,9 +69,9 @@ export const INSTRUCTION_CORRECT_MS = 900;
  */
 export const SIMULATION = {
   /** level at which the unlapsed observer is at its 50% point between guessing and perfect, with a masker (dB SNR) */
-  threshold_snr_db: -17,
+  threshold_snr_db: -21,
   /** the same in quiet (dB FS) */
-  threshold_quiet_db: -55,
+  threshold_quiet_db: -60,
   /** logistic scale, dB */
   slope_db: 1.5,
   lapse_rate: 0.02,

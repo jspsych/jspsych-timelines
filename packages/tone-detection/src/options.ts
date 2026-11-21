@@ -84,14 +84,14 @@ export interface AdaptiveOptions {
     | "quest"
     | "rt_based";
   /**
-   * Level of the first trial, dB. (default: -13.75 dB SNR with a masker — S012; -30 dB FS in quiet — the package's choice, see DEFAULTS.md)
+   * Level of the first trial, dB. (default: -13.75 dB SNR with a masker — S012; -40 dB FS in quiet — the package's choice, 20 dB above the calibration sound, see DEFAULTS.md)
    */
   start_level?: number;
   /**
    * Step in dB: a number (both directions), `{ up, down }` (up = after a wrong answer, down = after a correct run), or a list of these
    * indexed by the number of reversals so far (the first entry until the first reversal, the second after it, ...; the last entry from then on).
    * With `staircase_1up_1down`, `{ up, down }` steps imply a target of up / (up + down) (S031: down 2 and up 6 give 75%).
-   * (default: [1.5, 0.75] — S012; the anchor also switches at -19.75 dB SNR, which is not implemented, see DEFAULTS.md)
+   * (default: [1.5, 0.75] — S012; the anchor also switches at -19.75 dB SNR, which is not implemented, see DEFAULTS.md. In quiet: [3, 1.5], the package's choice: the descent from the start level is longer)
    */
   step_size?: StepSizeSpec | StepSizeSpec[];
   /** The proportion correct the staircase converges on, for `staircase_1up_1down` with a single step size. (default: implied by the procedure) */
@@ -270,8 +270,9 @@ export interface ToneDetectionOptions {
   /**
    * Overrides for the practice phase. Honoured: trial_feedback, feedback_condition, feedback_duration_ms, iti_ms, inter_item_interval_ms,
    * stimulus_duration_ms, tone_ramp_ms, presentation_level_db, adaptive, difficulty_levels, progress_indicator. Other keys are ignored in practice.
-   * (default: { trial_feedback: "accuracy", adaptive: null } — S012: practice at a fixed level, the staircase's start level, with feedback. It
-   * applies unless the key is set at the top level or in `practice`.)
+   * (default: { trial_feedback: "accuracy", adaptive: null } — S012: practice at a fixed level, the staircase's start level, with feedback.
+   * `trial_feedback` applies unless it is set at the top level or in `practice`. `adaptive` and `difficulty_levels` describe the test and
+   * reach practice only when given inside `practice`.)
    */
   practice?: Partial<ToneDetectionOptions>;
   /** Custom text strings for translation. Partial objects are merged with defaults. */
@@ -354,7 +355,14 @@ export const DEFAULT_ADAPTIVE: ResolvedAdaptive = {
 };
 
 /** The staircase defaults in quiet, where the level is the tone's level in dB FS. */
-export const DEFAULT_ADAPTIVE_QUIET = { start_level: -30, bounds: [-100, -6] as [number, number] };
+export const DEFAULT_ADAPTIVE_QUIET = {
+  start_level: -40,
+  bounds: [-100, -6] as [number, number],
+  step_sizes: [
+    { up: 3, down: 3 },
+    { up: 1.5, down: 1.5 },
+  ],
+};
 
 export const DEFAULT_PRACTICE_CRITERION: Required<PracticeCriterion> = {
   accuracy: 0.8,
@@ -564,11 +572,14 @@ export function resolveAdaptive(user: AdaptiveOptions, masker: boolean): Resolve
     );
   }
   const proc = procedure as ResolvedAdaptive["procedure"];
+  const defaultSteps = (
+    masker ? DEFAULT_ADAPTIVE.step_sizes : DEFAULT_ADAPTIVE_QUIET.step_sizes
+  ).map((s) => s.up);
   const rawSteps = Array.isArray(user.step_size)
     ? user.step_size
     : user.step_size !== undefined
     ? [user.step_size]
-    : DEFAULT_ADAPTIVE.step_sizes.map((s) => s.up);
+    : defaultSteps;
   if (rawSteps.length === 0)
     throw new Error("tone-detection: adaptive.step_size must not be an empty list.");
   const resolved = rawSteps.map((s, i) =>
@@ -661,10 +672,11 @@ export function resolveOptions(
   const f = layer.tone_frequency_hz ?? DEFAULT_OPTIONS.tone_frequency_hz;
   merged.tone_frequency_hz = Array.isArray(f) ? [...f] : [f];
 
-  // -- staircase or fixed levels. Layers, highest precedence first: the user's practice values (practice phase), the user's top level,
-  // the package's practice default. The first layer that says anything about the level decides.
+  // -- staircase or fixed levels. `adaptive` and `difficulty_levels` describe the test's design (a staircase that ends by its own rule is
+  // not how six practice trials run), so like `sequence_constraints` they reach practice only through `practice`. Layers, highest
+  // precedence first: the test: the top level; practice: the user's practice values, then the package's practice default (fixed levels).
   const layers: Array<Partial<ToneDetectionOptions>> =
-    phase === "practice" ? [practice ?? {}, top, DEFAULT_OPTIONS.practice] : [top];
+    phase === "practice" ? [practice ?? {}, DEFAULT_OPTIONS.practice] : [top];
   let fixed: boolean | null = null;
   let levels: number[] | null = null;
   let adaptiveInput: AdaptiveOptions = {};

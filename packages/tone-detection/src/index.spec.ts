@@ -51,8 +51,8 @@ describe("createTimeline", () => {
       true
     );
     expect(test.every((r) => r.level_unit === "dB FS" && r.masker_level_db === null)).toBe(true);
-    expect(test[0].level).toBe(-30); // the quiet default start level
-    expect(test[0].tone_level_db).toBe(-30);
+    expect(test[0].level).toBe(-40); // the quiet default start level
+    expect(test[0].tone_level_db).toBe(-40);
     expect(rows.filter((r) => r.part === "volume_calibration")).toHaveLength(0);
     expect(rows.filter((r) => r.part === "headphone_check")).toHaveLength(0);
   });

@@ -297,7 +297,7 @@ function buildPair(c: PairConfig) {
     on_finish: (d: any) => {
       delete d.stimulus;
       const p = ensure();
-      p.playback?.stop();
+      // the buffer plays to its end by itself: stopping it here, when the screen's timer fires, could cut the last milliseconds
       d.target_interval = p.target_interval;
       d.tone_frequency = p.frequency_hz;
       d.condition = p.condition;
@@ -668,6 +668,10 @@ function textPage(ctx: Context, html: string, phase: string, part: string, label
     stimulus: textBlock(html),
     choices: [label ?? ctx.text.continue_button],
     data: baseData({ phase, part }),
+    // a click is the moment the browser lets audio start: ask for the context now (jsPsych resumes it), so the first sound is not left waiting
+    on_finish: () => {
+      audioContextOf(ctx.jsPsych);
+    },
   };
 }
 

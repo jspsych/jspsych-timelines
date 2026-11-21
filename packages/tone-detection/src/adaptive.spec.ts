@@ -110,7 +110,14 @@ describe("step schedules, bounds and the other procedures", () => {
 
   it("the default start level, bounds and step depend on whether there is a masker", () => {
     expect(resolveAdaptive({}, true)).toMatchObject({ start_level: -13.75, bounds: [-60, 10] });
-    expect(resolveAdaptive({}, false)).toMatchObject({ start_level: -30, bounds: [-100, -6] });
+    expect(resolveAdaptive({}, false)).toMatchObject({
+      start_level: -40,
+      bounds: [-100, -6],
+      step_sizes: [
+        { up: 3, down: 3 },
+        { up: 1.5, down: 1.5 },
+      ],
+    });
   });
 });
 
@@ -235,14 +242,24 @@ describe("the track in the data", () => {
     expect(scores.tracks[0].n_reversals).toBe(own.length);
   });
 
-  it("practice at fixed levels uses the staircase's start level; a practice staircase has no stop rule", () => {
-    const o = resolveOptions({ adaptive: { start_level: -10 } }, "practice");
-    // the user's top-level adaptive flows into practice (precedence), a staircase of practice_trials trials
-    expect(o.adaptive?.start_level).toBe(-10);
+  it("practice runs at fixed levels, the test's start level; the test's staircase does not flow into practice, only a practice override does", () => {
+    // the user's top-level adaptive describes the test: practice stays at fixed levels, at the staircase's start level
+    const o = resolveOptions(
+      { adaptive: { start_level: -10, discontinue_rule: { trials: 8 } } },
+      "practice"
+    );
+    expect(o.adaptive).toBeNull();
+    expect(o.difficulty_levels).toEqual([-10]);
+    expect(resolveOptions({ adaptive: { start_level: -10 } }, "test").adaptive?.start_level).toBe(
+      -10
+    );
     const d = resolveOptions({}, "practice");
     expect(d.adaptive).toBeNull();
     expect(d.difficulty_levels).toEqual([-13.75]);
     const q = resolveOptions({ stimulus_set: { masker: "none" } }, "practice");
-    expect(q.difficulty_levels).toEqual([-30]);
+    expect(q.difficulty_levels).toEqual([-40]);
+    // a staircase in practice only when given inside practice: it runs practice_trials trials and ignores its stop rule
+    const p = resolveOptions({ practice: { adaptive: { start_level: -8 } } }, "practice");
+    expect(p.adaptive?.start_level).toBe(-8);
   });
 });
