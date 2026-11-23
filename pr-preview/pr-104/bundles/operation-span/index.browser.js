@@ -624,7 +624,7 @@ var jsPsychTimelineOperationSpan = (function (exports) {
   var require_seedrandom = __commonJS({
     "../../node_modules/seedrandom/seedrandom.js"(exports, module) {
       (function(global, pool, math) {
-        var width = 256, chunks = 6, digits = 52, rngname = "random", startdenom = math.pow(width, chunks), significance = math.pow(2, digits), overflow = significance * 2, mask = width - 1, nodecrypto;
+        var width = 256, chunks = 6, digits2 = 52, rngname = "random", startdenom = math.pow(width, chunks), significance = math.pow(2, digits2), overflow = significance * 2, mask = width - 1, nodecrypto;
         function seedrandom2(seed, options, callback) {
           var key = [];
           options = options == true ? { entropy: true } : options || {};
@@ -2746,7 +2746,7 @@ var jsPsychTimelineOperationSpan = (function (exports) {
         "zoo",
         "zulu"
       ];
-      function words(options) {
+      function words2(options) {
         const random = (options == null ? void 0 : options.seed) ? new seedrandom2(options.seed) : null;
         function word() {
           if (options && options.maxLength > 1) {
@@ -2814,8 +2814,8 @@ var jsPsychTimelineOperationSpan = (function (exports) {
         }
         return results;
       }
-      module.exports = words;
-      words.wordList = wordList;
+      module.exports = words2;
+      words2.wordList = wordList;
     }
   });
 
@@ -2906,6 +2906,96 @@ var jsPsychTimelineOperationSpan = (function (exports) {
     }
   };
 
+  // src/sets.ts
+  var letters = {
+    name: "letters",
+    noun: { singular: "letter", plural: "letters" },
+    items: LETTERS
+  };
+  var words = {
+    name: "words",
+    noun: { singular: "word", plural: "words" },
+    items: [
+      "apple",
+      "bread",
+      "chair",
+      "dance",
+      "eagle",
+      "flame",
+      "grape",
+      "house",
+      "ivory",
+      "jelly",
+      "knife",
+      "lemon",
+      "mouse",
+      "night",
+      "ocean",
+      "plant"
+    ]
+  };
+  var digits = {
+    name: "digits",
+    noun: { singular: "digit", plural: "digits" },
+    items: DIGITS
+  };
+  var normText = (x) => String(x != null ? x : "").trim().toLowerCase();
+  function asStimulusSet(v) {
+    if (Array.isArray(v)) return { items: v };
+    if (typeof v === "object" && v !== null && Array.isArray(v.items))
+      return v;
+    return null;
+  }
+  function setProblems(set) {
+    const out = [];
+    if (set.items.length === 0) out.push("the set has no items");
+    set.items.forEach((s, i) => {
+      if (typeof s === "string") {
+        if (s.trim() === "") out.push(`item ${i + 1} is empty`);
+        return;
+      }
+      const r = s;
+      if (typeof (r == null ? void 0 : r.image) === "string" || typeof (r == null ? void 0 : r.svg) === "string") {
+        out.push(
+          `item ${i + 1} is an ${typeof r.image === "string" ? "image" : "SVG"}; memoranda must be text, because recall names them (the matrix labels, typed and key-press recall, the feedback)`
+        );
+      } else if (typeof (r == null ? void 0 : r.text) !== "string" || r.text.trim() === "") {
+        out.push(`item ${i + 1} must be a string or an object with a text`);
+      }
+    });
+    if (out.length === 0) {
+      const pool = buildPool(set);
+      const ids = pool.map((it) => it.id);
+      const dupId = ids.find((id, i) => ids.indexOf(id) !== i);
+      if (dupId !== void 0)
+        out.push(`two items have the id "${dupId}"; give each item its own id`);
+      const texts = pool.map((it) => normText(it.text));
+      const at = texts.findIndex((t, i) => texts.indexOf(t) !== i);
+      if (at >= 0) {
+        const first = texts.indexOf(texts[at]);
+        out.push(
+          `items ${first + 1} and ${at + 1} read the same ("${pool[first].text}", "${pool[at].text}": recall ignores case and surrounding spaces); give each item its own text`
+        );
+      }
+    }
+    return out;
+  }
+  function buildPool(set) {
+    return set.items.map((s) => {
+      var _a;
+      if (typeof s === "string") return { id: s, text: s };
+      return { id: (_a = s.id) != null ? _a : s.text, text: s.text };
+    });
+  }
+  function itemNouns(set) {
+    var _a;
+    return (_a = set.noun) != null ? _a : { singular: "item", plural: "items" };
+  }
+  var setName = (set) => {
+    var _a;
+    return (_a = set.name) != null ? _a : "custom";
+  };
+
   // src/options.ts
   var PHASE_OPTIONS = [
     "trial_feedback",
@@ -2922,7 +3012,7 @@ var jsPsychTimelineOperationSpan = (function (exports) {
     response_window_ms: deadlines.meanPlusSd(2.5),
     stimulus_duration_ms: 800,
     stimulus_language: null,
-    stimulus_set: { memorandum: "letters", memorandum_source: "separate_item" },
+    stimulus_set: { memorandum: letters, memorandum_source: "separate_item" },
     processing_display_format: "problem_then_answer_screens",
     block_order: "random",
     n_test_trials: 15,
@@ -3003,7 +3093,7 @@ var jsPsychTimelineOperationSpan = (function (exports) {
     return setSizeLists(s).reduce((a, l) => a + l.length, 0);
   }
   function resolveOptions(user = {}, phase = "test") {
-    var _b;
+    var _b, _c;
     const _a = user, { practice, text: _text } = _a, top = __objRest(_a, ["practice", "text"]);
     const topKeys = new Set(Object.keys(top).filter((k) => top[k] !== void 0));
     let layer = __spreadValues({}, top);
@@ -3021,6 +3111,7 @@ var jsPsychTimelineOperationSpan = (function (exports) {
     delete merged.practice;
     for (const [k, v] of Object.entries(layer)) if (v !== void 0) merged[k] = v;
     merged.stimulus_set = __spreadValues(__spreadValues({}, DEFAULT_OPTIONS.stimulus_set), (_b = layer.stimulus_set) != null ? _b : {});
+    merged.stimulus_set.memorandum = (_c = asStimulusSet(merged.stimulus_set.memorandum)) != null ? _c : merged.stimulus_set.memorandum;
     merged.response_device = normaliseDevice(layer.response_device, DEFAULT_OPTIONS.response_device);
     if (phase === "test") {
       const cells = cellCount(merged.set_sizes);
@@ -3057,8 +3148,17 @@ var jsPsychTimelineOperationSpan = (function (exports) {
     }
     if (o.stimulus_language !== null) {
       throw new Error(
-        `operation-span: stimulus_language: "${o.stimulus_language}" is not implemented (no word lists are bundled; give your own with stimulus_set.memorandum: { words: [...] }).`
+        `operation-span: stimulus_language: "${o.stimulus_language}" is not implemented (no word lists are bundled; give your own words as a set in stimulus_set.memorandum).`
       );
+    }
+    if (!asStimulusSet(o.stimulus_set.memorandum)) {
+      throw new Error(
+        "operation-span: stimulus_set.memorandum must be a set ({ name?, noun?, items }) or an array of items, e.g. utils.stimuli.letters."
+      );
+    }
+    const setIssues = setProblems(o.stimulus_set.memorandum);
+    if (setIssues.length) {
+      throw new Error(`operation-span: stimulus_set.memorandum: ${setIssues.join("; ")}.`);
     }
     if (o.stimulus_set.memorandum_source === "sentence_final_word") {
       throw new Error(
@@ -3088,7 +3188,7 @@ var jsPsychTimelineOperationSpan = (function (exports) {
         'operation-span: recall_omission_handling "question_mark_key" needs response_device recall "keyboard".'
       );
     }
-    if (o.response_format === "single_response" && typeof o.stimulus_set.memorandum === "object" && o.stimulus_set.memorandum.words.some((w) => w.length !== 1)) {
+    if (o.response_format === "single_response" && buildPool(o.stimulus_set.memorandum).some((it) => it.text.trim().length !== 1)) {
       throw new Error(
         'operation-span: response_format "single_response" is one key per item and needs single-character memoranda.'
       );
@@ -3112,11 +3212,16 @@ var jsPsychTimelineOperationSpan = (function (exports) {
       );
     }
     const biggest = Math.max(...lists.flat());
-    const m = o.stimulus_set.memorandum;
-    const pool = m === "digits" ? 9 : m === "letters" || m === void 0 ? 12 : m.words.length;
+    const pool = o.stimulus_set.memorandum.items.length;
     if (biggest > pool) {
       throw new Error(
         `operation-span: set size ${biggest} needs ${biggest} different memoranda but the pool has ${pool}.`
+      );
+    }
+    const walkthrough = o.instruction_format === "text" && o.instruction_demonstration !== "none";
+    if (walkthrough && pool < INSTRUCTION_RECALL_SET_SIZE) {
+      throw new Error(
+        `operation-span: the walkthrough's recall step needs ${INSTRUCTION_RECALL_SET_SIZE} different memoranda but the pool has ${pool}.`
       );
     }
     if (isNested(o.set_sizes) && o.block_order === "random_within_block") {
@@ -3280,16 +3385,19 @@ var jsPsychTimelineOperationSpan = (function (exports) {
     }
     return { text: `(${a} ${op1} ${b}) ${op2} ${c}`, value, shown, is_true: truth };
   }
-  function memorandumPool(o) {
-    var _a;
-    const m = (_a = o.stimulus_set.memorandum) != null ? _a : "letters";
-    if (m === "letters") return [...LETTERS];
-    if (m === "digits") return [...DIGITS];
-    return [...m.words];
-  }
+  var poolOf = (o) => buildPool(o.stimulus_set.memorandum);
+  var poolTexts = (o) => poolOf(o).map((it) => it.text);
   function drawMemoranda(jsPsych, o, n) {
-    return jsPsych.randomization.sampleWithoutReplacement(memorandumPool(o), n);
+    return jsPsych.randomization.sampleWithoutReplacement(poolTexts(o), n);
   }
+  function idOf(o) {
+    const ids = new Map(poolOf(o).map((it) => [normText(it.text), it.id]));
+    return (text) => {
+      var _a;
+      return text === null ? null : (_a = ids.get(normText(text))) != null ? _a : null;
+    };
+  }
+  var escapeAttr = (x) => x.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
   function renderScreen(stage, below = "", wide = false) {
     return `<div class="${cls("screen")}${wide ? ` ${cls("screen-recall")}` : ""}"><div class="${cls("stage")}">${stage}</div>` + (below ? `<div class="${cls("below")}">${below}</div>` : "") + `</div>`;
   }
@@ -3314,7 +3422,9 @@ var jsPsychTimelineOperationSpan = (function (exports) {
     const prompt = `<div class="${cls("recall-prompt")}">${text.recall_prompt({
     format: spec.format,
     order: spec.order,
-    set_size: spec.set_size
+    set_size: spec.set_size,
+    noun: spec.noun,
+    nouns: spec.nouns
   })}</div>`;
     const blankLabel = spec.omission === "skip_button" ? text.skip_button : text.blank_button;
     const blankButton = spec.omission === "blank_button" || spec.omission === "skip_button" ? `<button type="button" class="${cls("control")}" data-action="blank">${blankLabel}</button>` : "";
@@ -3336,7 +3446,11 @@ var jsPsychTimelineOperationSpan = (function (exports) {
     ).join("");
     const grid = spec.format === "n_afc" ? `<div class="${cls(
     "grid"
-  )}" style="grid-template-columns: repeat(${GRID_COLUMNS}, minmax(0, 1fr));">${spec.pool.map((x) => `<button type="button" class="${cls("key")}" data-item="${x}">${x}</button>`).join("")}</div>` : "";
+  )}" style="grid-template-columns: repeat(${GRID_COLUMNS}, minmax(0, 1fr));">${spec.pool.map(
+    (x) => `<button type="button" class="${cls("key")}" data-item="${escapeAttr(
+      x
+    )}">${x}</button>`
+  ).join("")}</div>` : "";
     return `<div class="${cls("recall")}">${prompt}<div class="${cls(
     "slots"
   )}">${slots}</div>${grid}<div class="${cls(
@@ -3350,7 +3464,7 @@ var jsPsychTimelineOperationSpan = (function (exports) {
     touched: false,
     cleanup: null
   });
-  var norm2 = (x) => String(x != null ? x : "").trim().toLowerCase();
+  var norm2 = normText;
   function finalItems(state, spec) {
     const raw = state.read ? state.read() : state.items;
     return Array.from({ length: spec.set_size }, (_, i) => {
@@ -3452,9 +3566,14 @@ var jsPsychTimelineOperationSpan = (function (exports) {
   // src/text.ts
   var pct = (x) => x === null ? "-" : `${Math.round(x * 100)}%`;
   var defaultText = {
-    instruction_intro: ({ memorandum_first, items_per_memorandum }) => `<h2>Operation Span</h2>
-    <p>This task has two parts that you do at the same time: solving math problems and remembering letters.</p>
-    <p>You will see a ${items_per_memorandum > 1 ? "series of problems" : "math problem"} and a letter${memorandum_first ? ", starting with the letter" : ", starting with the problem"}, over and over. Remember the letters in the order they appear. After a few of each, you will be asked to recall the letters.</p>`,
+    instruction_intro: ({
+      memorandum_first,
+      items_per_memorandum,
+      noun,
+      nouns
+    }) => `<h2>Operation Span</h2>
+    <p>This task has two parts that you do at the same time: solving math problems and remembering ${nouns}.</p>
+    <p>You will see a ${items_per_memorandum > 1 ? "series of problems" : "math problem"} and one ${noun}${memorandum_first ? `, starting with the ${noun}` : ", starting with the problem"}, over and over. Remember the ${nouns} in the order they appear. After a few of each, you will be asked to recall the ${nouns}.</p>`,
     instruction_processing: (r) => {
       const answer = r.device === "keyboard" ? `Press ${r.true_label} if the answer shown is correct, or ${r.false_label} if it is wrong.` : `Click <strong>${r.true_label}</strong> if the answer shown is correct, or <strong>${r.false_label}</strong> if it is wrong.`;
       const limit = r.timed ? " There is a time limit, so work quickly." : "";
@@ -3466,37 +3585,39 @@ var jsPsychTimelineOperationSpan = (function (exports) {
       <p>Then a number is shown, for example <strong>7</strong>. ${answer}</p>`;
     },
     instruction_recall: (r) => {
-      const blank = r.omission === "blank_button" || r.omission === "skip_button" ? ` If you can't remember a letter, click <strong>${r.blank_label}</strong> to leave its place empty.` : r.omission === "question_mark_key" ? " If you can't remember one, press <kbd>?</kbd> to leave its place empty." : " Fill every place, guessing if you have to.";
+      const blank = r.omission === "blank_button" || r.omission === "skip_button" ? ` If you can't remember one, click <strong>${r.blank_label}</strong> to leave its place empty.` : r.omission === "question_mark_key" ? " If you can't remember one, press <kbd>?</kbd> to leave its place empty." : " Fill every place, guessing if you have to.";
       const order = r.order === "serial" ? "in the order they were shown" : "in any order";
       if (r.format === "n_afc") {
-        return `<p>After the last letter, a grid of letters appears. Click the letters you saw, ${order}.${blank}</p>`;
+        return `<p>After the last ${r.noun}, a grid of ${r.nouns} appears. Click the ${r.nouns} you saw, ${order}.${blank}</p>`;
       }
       if (r.format === "free_text") {
-        return `<p>After the last letter, a row of boxes appears. Type the letters you saw, one per box, ${order}.${blank}</p>`;
+        return `<p>After the last ${r.noun}, a row of boxes appears. Type the ${r.nouns} you saw, one per box, ${order}.${blank}</p>`;
       }
-      return `<p>After the last letter, press the keys of the letters you saw, one at a time, ${order}.${blank}</p>`;
+      return `<p>After the last ${r.noun}, press the keys of the ${r.nouns} you saw, one at a time, ${order}.${blank}</p>`;
     },
     emphasis_speed: "<p>Answer the math problems as quickly as you can.</p>",
     emphasis_accuracy: ({ criterion_percent }) => `<p>It is important that you work as quickly and accurately as you can on the math problems. Keep your math accuracy at ${criterion_percent}% or higher. You will see your accuracy during the task.</p>`,
-    emphasis_both: "<p>Work quickly and accurately on both parts: the math problems and the letters.</p>",
+    emphasis_both: ({ nouns }) => `<p>Work quickly and accurately on both parts: the math problems and the ${nouns}.</p>`,
     read_aloud: "<p>Read each math problem out loud as you solve it.</p>",
     instruction_demo_intro: `<p>Now let's try each part, one step at a time. A wrong answer repeats the step with a hint.</p>`,
     instruction_examples_intro: `<p>Here is what each part looks like.</p>`,
     instruction_step: (r) => {
       if (r.step === "recall") {
-        return `<p>Remember these ${r.items.length} letters in order, then recall them.</p>`;
+        return `<p>Remember these ${r.items.length} ${r.nouns} in order, then recall them.</p>`;
       }
       const truth = r.step === "processing_true" ? "is correct" : "is wrong";
       const how = r.device === "keyboard" ? `Press ${r.step === "processing_true" ? r.true_label : r.false_label}` : `Click <strong>${r.step === "processing_true" ? r.true_label : r.false_label}</strong>`;
       return `<p>Check the problem. The answer shown ${truth}. ${how}.</p>`;
     },
-    instruction_hint: (r) => r.step === "recall" ? `<p>Not quite. Try again: remember the letters in the order they were shown.</p>` : `<p>Not quite. Work out the problem, then decide: if the number shown is the answer, it is ${r.true_label}; if not, ${r.false_label}.</p>`,
-    instruction_reveal: (r) => r.step === "recall" ? `<p>The letters were <strong>${r.items.join(" ")}</strong>, in that order. Let's go on.</p>` : `<p>The correct answer here was ${r.correct_label}. Let's go on.</p>`,
+    instruction_hint: (r) => r.step === "recall" ? `<p>Not quite. Try again: remember the ${r.nouns} in the order they were shown.</p>` : `<p>Not quite. Work out the problem, then decide: if the number shown is the answer, it is ${r.true_label}; if not, ${r.false_label}.</p>`,
+    instruction_reveal: (r) => r.step === "recall" ? `<p>The ${r.nouns} were <strong>${r.items.join(
+    " "
+  )}</strong>, in that order. Let's go on.</p>` : `<p>The correct answer here was ${r.correct_label}. Let's go on.</p>`,
     instruction_correct: "Correct!",
-    practice_storage_intro: `<p>Next, a short practice in three parts: letters alone, math alone, then both together, as in the real task.</p><p>Part 1: you will see a few letters. Recall them in order.</p>`,
+    practice_storage_intro: ({ nouns }) => `<p>Next, a short practice in three parts: ${nouns} alone, math alone, then both together, as in the real task.</p><p>Part 1: you will see a few ${nouns}. Recall them in order.</p>`,
     practice_processing_intro: `<p>Part 2: the math problems alone, at your own pace. Your speed here sets your time limit later.</p>`,
     practice_combined_intro: `<p>Part 3: both together, as in the real task.</p>`,
-    instruction_test_intro: `<p>That's the end of practice. The real task is the same, with more letters to remember each time. Remember to keep solving the math problems accurately.</p>`,
+    instruction_test_intro: ({ nouns }) => `<p>That's the end of practice. The real task is the same, with more ${nouns} to remember each time. Remember to keep solving the math problems accurately.</p>`,
     practice_repeat: ({ accuracy, criterion }) => `<p>Your math accuracy was ${pct(accuracy)}; you need ${pct(
     criterion
   )}. Let's practice the math problems again.</p>`,
@@ -3512,13 +3633,13 @@ var jsPsychTimelineOperationSpan = (function (exports) {
     clear_button: "Clear",
     solve_prompt: ({ device, solved_label }) => device === "keyboard" ? `<p>Solve it, then press ${solved_label}.</p>` : `<p>Solve it, then click <strong>${solved_label}</strong>.</p>`,
     verify_prompt: ({ device, true_label, false_label }) => device === "keyboard" ? `<p>Is this the answer? ${true_label} = true, ${false_label} = false.</p>` : `<p>Is this the answer?</p>`,
-    recall_prompt: ({ format, order, set_size }) => format === "n_afc" ? `Select the ${set_size} letters${order === "serial" ? " in the order shown" : ""}` : format === "free_text" ? `Type the ${set_size} letters${order === "serial" ? " in the order shown" : ""}` : `Press the keys of the ${set_size} letters${order === "serial" ? " in the order shown" : ""}`,
+    recall_prompt: ({ format, order, set_size, nouns }) => format === "n_afc" ? `Select the ${set_size} ${nouns}${order === "serial" ? " in the order shown" : ""}` : format === "free_text" ? `Type the ${set_size} ${nouns}${order === "serial" ? " in the order shown" : ""}` : `Press the keys of the ${set_size} ${nouns}${order === "serial" ? " in the order shown" : ""}`,
     recall_box_label: ({ position }) => `Item ${position}`,
     correct_feedback: "Correct",
     incorrect_feedback: "Incorrect",
     timeout_feedback: "Too slow",
     recall_feedback: ({ n_correct, set_size, math_errors, math_accuracy }) => `<p>You recalled <strong>${n_correct}</strong> of ${set_size} correctly.</p>` + (math_errors === null ? "" : `<p>You made ${math_errors} math error${math_errors === 1 ? "" : "s"} on this trial.${math_accuracy === null ? "" : ` Math accuracy so far: ${pct(math_accuracy)}.`}</p>`),
-    feedback_correct_answer: ({ items }) => `<p>The letters were: ${items.join(" ")}</p>`,
+    feedback_correct_answer: ({ items, nouns }) => `<p>The ${nouns} were: ${items.join(" ")}</p>`,
     task_complete: "Task complete",
     result_summary: (r) => `<p>Your score: ${r.partial_score} of ${r.total_items} recalled in the correct position.${r.processing_accuracy === null ? "" : ` Math accuracy: ${pct(r.processing_accuracy)}.`}</p>` + (r.summary ? `<p>${r.perfect_trials} of ${r.n_trials} trials recalled perfectly (absolute score ${r.absolute_score}).</p>` : "")
   };
@@ -4044,6 +4165,10 @@ var jsPsychTimelineOperationSpan = (function (exports) {
   }
   var noResponse = (d) => typeof d.rt !== "number";
   var buttonHtml = (choice) => `<button class="jspsych-btn">${choice}</button>`;
+  function nounsOf(o) {
+    const n = itemNouns(o.stimulus_set.memorandum);
+    return { noun: n.singular, nouns: n.plural };
+  }
   function processingArgs(ctx, o, timed) {
     const device = o.response_device.processing;
     const t = ctx.text;
@@ -4057,21 +4182,21 @@ var jsPsychTimelineOperationSpan = (function (exports) {
     };
   }
   function recallArgs(ctx, o) {
-    return {
+    return __spreadValues({
       format: o.response_format,
       order: o.response_order,
       omission: o.recall_omission_handling,
       blank_label: o.recall_omission_handling === "skip_button" ? ctx.text.skip_button : ctx.text.blank_button
-    };
+    }, nounsOf(o));
   }
   function recallSpec(o, set_size) {
-    return {
+    return __spreadValues({
       format: o.response_format,
       order: o.response_order,
       omission: o.recall_omission_handling,
       set_size,
-      pool: memorandumPool(o)
-    };
+      pool: poolTexts(o)
+    }, nounsOf(o));
   }
   function createDisplayTrial(a) {
     var _a;
@@ -4220,7 +4345,12 @@ var jsPsychTimelineOperationSpan = (function (exports) {
       duration: ms,
       stimulus_duration: ms,
       stimulus: renderScreen(renderMemorandum(a.item)),
-      data: __spreadProps(__spreadValues({}, a.data), { memorandum: a.item, stimulus_duration: ms })
+      data: __spreadProps(__spreadValues({}, a.data), {
+        memorandum: a.item,
+        memorandum_id: idOf(o)(a.item),
+        stimulus_set: setName(o.stimulus_set.memorandum),
+        stimulus_duration: ms
+      })
     });
   }
   function createInterItem(ctx, o, a) {
@@ -4238,6 +4368,7 @@ var jsPsychTimelineOperationSpan = (function (exports) {
     const spec = recallSpec(o, a.presented.length);
     const t = ctx.text;
     const state = ctx.state.recall;
+    const id = idOf(o);
     return {
       type: HtmlButtonResponsePlugin,
       css_classes: [TASK_CLASS],
@@ -4249,6 +4380,8 @@ var jsPsychTimelineOperationSpan = (function (exports) {
         part: a.part,
         set_size: a.presented.length,
         presented_items: a.presented,
+        presented_item_ids: a.presented.map(id),
+        stimulus_set: setName(o.stimulus_set.memorandum),
         response_order: o.response_order,
         response_format: o.response_format,
         response_device: o.response_device.recall
@@ -4266,6 +4399,7 @@ var jsPsychTimelineOperationSpan = (function (exports) {
         const score = scoreRecall(a.presented, recalled, spec.order);
         d.recall_rt = d.rt;
         d.recalled_items = recalled;
+        d.recalled_item_ids = recalled.map(id);
         d.recall_correct_positions = score.correct_positions;
         d.n_correct_positions = score.n_correct;
         d.proportion_correct = a.presented.length ? score.n_correct / a.presented.length : null;
@@ -4292,7 +4426,7 @@ var jsPsychTimelineOperationSpan = (function (exports) {
       math_errors: out.math_errors,
       math_accuracy: out.math_errors === null ? null : runningAccuracy(ctx, out.phase, out.phase === "practice" ? out.practice_part : void 0)
     });
-    return body + (o.trial_feedback === "correct_answer" ? t.feedback_correct_answer({ items: out.presented }) : "");
+    return body + (o.trial_feedback === "correct_answer" ? t.feedback_correct_answer(__spreadValues({ items: out.presented }, nounsOf(o))) : "");
   }
   function createRecallFeedback(ctx, o, phase) {
     const ms = sampleDuration(ctx.jsPsych, o.feedback_duration_ms);
@@ -4469,7 +4603,7 @@ var jsPsychTimelineOperationSpan = (function (exports) {
     return parts;
   }
   function practiceIntro(ctx, part) {
-    const html = part === "storage" ? ctx.text.practice_storage_intro : part === "processing_only" ? ctx.text.practice_processing_intro : ctx.text.practice_combined_intro;
+    const html = part === "storage" ? ctx.text.practice_storage_intro(nounsOf(ctx.test)) : part === "processing_only" ? ctx.text.practice_processing_intro : ctx.text.practice_combined_intro;
     return textPage(ctx, html, "instructions", "instruction");
   }
   function createPracticePart(ctx, part, finish) {
@@ -4621,14 +4755,14 @@ var jsPsychTimelineOperationSpan = (function (exports) {
     if (o.instruction_format === "experimenter") return { timeline: [] };
     const t = ctx.text;
     const timed = o.response_window_ms !== null;
-    const emphasis = o.speed_accuracy_emphasis === "speed" ? t.emphasis_speed : o.speed_accuracy_emphasis === "accuracy" ? t.emphasis_accuracy({ criterion_percent: Math.round(PROCESSING_ACCURACY_TARGET * 100) }) : o.speed_accuracy_emphasis === "both" ? t.emphasis_both : "";
+    const emphasis = o.speed_accuracy_emphasis === "speed" ? t.emphasis_speed : o.speed_accuracy_emphasis === "accuracy" ? t.emphasis_accuracy({ criterion_percent: Math.round(PROCESSING_ACCURACY_TARGET * 100) }) : o.speed_accuracy_emphasis === "both" ? t.emphasis_both(nounsOf(o)) : "";
     const pages = [];
     if (o.processing_items_per_memorandum > 0) {
       pages.push(
-        t.instruction_intro({
+        t.instruction_intro(__spreadValues({
           memorandum_first: o.memorandum_order_in_pair === "memorandum_first",
           items_per_memorandum: o.processing_items_per_memorandum
-        })
+        }, nounsOf(o)))
       );
       pages.push(
         t.instruction_processing(processingArgs(ctx, o, timed)) + (o.processing_read_aloud ? t.read_aloud : "") + emphasis
@@ -4637,15 +4771,15 @@ var jsPsychTimelineOperationSpan = (function (exports) {
     pages.push(t.instruction_recall(recallArgs(ctx, o)));
     return { timeline: pages.map((p) => textPage(ctx, p, "instructions", "instruction")) };
   }
-  var createTestIntro = (ctx) => textPage(ctx, ctx.text.instruction_test_intro, "instructions", "instruction");
+  var createTestIntro = (ctx) => textPage(ctx, ctx.text.instruction_test_intro(nounsOf(ctx.test)), "instructions", "instruction");
   function demoArgs(ctx, o, step, items) {
     const p = processingArgs(ctx, o, false);
-    return __spreadProps(__spreadValues({}, p), {
+    return __spreadValues(__spreadProps(__spreadValues({}, p), {
       step,
       correct_label: step === "processing_false" ? p.false_label : p.true_label,
       items,
       recall: recallArgs(ctx, o)
-    });
+    }), nounsOf(o));
   }
   function createInstructionWalkthrough(ctx) {
     const o = ctx.test;
@@ -4859,7 +4993,10 @@ var jsPsychTimelineOperationSpan = (function (exports) {
     },
     text: { defaultText },
     deadlines: __spreadProps(__spreadValues({}, deadlines), { calibrationRts, resolve: resolveWindow }),
-    stimuli: { generateProblem, memorandumPool },
+    /** The bundled memorandum sets, and the helpers that read a set and generate problems. */
+    stimuli: { letters, digits, words, generateProblem },
+    /** Reads a memorandum set: its items, normalised to `{ id, text }`, in order. */
+    items: { buildPool },
     sequence: { scheduleBlocks, fixedOrder, practiceSetSizes },
     options: { resolveOptions, validateOptions }
   };

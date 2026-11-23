@@ -3483,6 +3483,18 @@ var jsPsychTimelineFlanker = (function (exports) {
     const t = rotate ? ` transform="rotate(${rotate} 24 24)"` : "";
     return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 48 48"><g fill="currentColor"${t}>${inner}</g></svg>`;
   }
+  var GLYPH_NAMES = [
+    "left",
+    "right",
+    "up",
+    "dash",
+    "line",
+    "square",
+    "plus",
+    "diamond",
+    "cross",
+    "blank"
+  ];
   function renderGlyph(glyph, size) {
     switch (glyph) {
       case "left":
@@ -4814,6 +4826,21 @@ var jsPsychTimelineFlanker = (function (exports) {
         if (t.letters.length !== 2 || t.letters.some((g) => g.length !== o.targets_per_response)) {
           throw new Error(
             "flanker: stimulus_set.target.letters needs two groups, each with targets_per_response letters."
+          );
+        }
+        const all = t.letters.flat();
+        const bad = all.find((l) => typeof l !== "string" || l === "" || GLYPH_NAMES.includes(l));
+        if (bad !== void 0) {
+          throw new Error(
+            `flanker: stimulus_set.target.letters: ${JSON.stringify(
+            bad
+          )} is not a usable letter (a non-empty string that is not a glyph name such as "left" or "dash").`
+          );
+        }
+        const twice = all.find((l, i) => all.indexOf(l) !== i);
+        if (twice !== void 0) {
+          throw new Error(
+            `flanker: stimulus_set.target.letters: "${twice}" appears twice; each letter belongs to one response.`
           );
         }
       } else if (o.targets_per_response !== 1) {

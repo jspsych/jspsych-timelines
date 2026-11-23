@@ -3376,6 +3376,54 @@ var jsPsychTimelineGoNogo = (function (exports) {
     if (x === void 0) return fallback;
     return Array.isArray(x) ? x : [x];
   }
+  var FORMS = ["shape", "text", "image", "svg"];
+  var SHAPES = ["square", "circle", "triangle", "diamond", "cross"];
+  function resolveItems(set) {
+    let pictures = 0;
+    const seen = /* @__PURE__ */ new Map();
+    const one = (role, x, i) => {
+      const where = `stimulus_set.${role}[${i}]`;
+      if (typeof x === "string") x = { text: x };
+      if (typeof x !== "object" || x === null || Array.isArray(x)) {
+        throw new Error(
+          `go-nogo: ${where} must be a string or an object with shape, text, image or svg.`
+        );
+      }
+      const given = FORMS.filter((k) => x[k] !== void 0);
+      if (given.length !== 1) {
+        throw new Error(
+          `go-nogo: ${where} needs exactly one of shape, text, image or svg${given.length ? ` (it has ${given.join(" and ")})` : ""}.`
+        );
+      }
+      const form = given[0];
+      const value = x[form];
+      if (typeof value !== "string" || value === "") {
+        throw new Error(`go-nogo: ${where}.${form} must be a non-empty string.`);
+      }
+      if (form === "shape" && !SHAPES.includes(value)) {
+        throw new Error(`go-nogo: ${where}.shape "${value}" is not one of ${SHAPES.join(", ")}.`);
+      }
+      if ((form === "image" || form === "svg") && x.color !== void 0) {
+        throw new Error(`go-nogo: ${where}: color applies to a shape or text, not to ${form}.`);
+      }
+      const color = x.color;
+      if (form === "image" || form === "svg") pictures++;
+      const named = x.id !== void 0;
+      const id = named ? String(x.id) : form === "shape" ? [value, color].filter(Boolean).join("_") : form === "text" ? value : `picture-${pictures}`;
+      const prev = seen.get(id);
+      if (prev !== void 0) {
+        throw new Error(
+          prev !== role ? `go-nogo: stimulus_set: "${id}" is both a go and a no-go stimulus (ids must be unique).` : `go-nogo: stimulus_set.${role}: the id "${id}" is used twice (ids must be unique).`
+        );
+      }
+      seen.set(id, role);
+      return __spreadValues({ id, named, [form]: value }, color !== void 0 ? { color } : {});
+    };
+    return {
+      go: set.go.map((x, i) => one("go", x, i)),
+      nogo: set.nogo.map((x, i) => one("nogo", x, i))
+    };
+  }
   function resolveOptions(user = {}, phase = "test") {
     var _b, _c, _d, _e;
     const _a = user, { practice, text: _text } = _a, top = __objRest(_a, ["practice", "text"]);
@@ -3393,10 +3441,10 @@ var jsPsychTimelineGoNogo = (function (exports) {
     const merged = __spreadValues({}, DEFAULT_OPTIONS);
     delete merged.practice;
     for (const [k, v] of Object.entries(layer)) if (v !== void 0) merged[k] = v;
-    merged.stimulus_set = {
+    merged.stimulus_set = resolveItems({
       go: asList((_b = layer.stimulus_set) == null ? void 0 : _b.go, DEFAULT_OPTIONS.stimulus_set.go),
       nogo: asList((_c = layer.stimulus_set) == null ? void 0 : _c.nogo, DEFAULT_OPTIONS.stimulus_set.nogo)
-    };
+    });
     const props = layer.condition_proportions;
     if (props !== void 0) {
       if (Array.isArray(props)) {
@@ -3425,10 +3473,6 @@ var jsPsychTimelineGoNogo = (function (exports) {
     }
     return merged;
   }
-  var stimulusKey = (i) => {
-    var _a;
-    return (_a = i.label) != null ? _a : JSON.stringify([i.shape, i.color, i.text]);
-  };
   function validateOptions(o) {
     for (const [key, values, why] of NOT_IMPLEMENTED) {
       if (values.includes(o[key])) {
@@ -3457,12 +3501,6 @@ var jsPsychTimelineGoNogo = (function (exports) {
     }
     if (o.stimulus_set.go.length === 0 || o.stimulus_set.nogo.length === 0) {
       throw new Error("go-nogo: stimulus_set needs at least one go and one no-go stimulus.");
-    }
-    const overlap = o.stimulus_set.go.filter(
-      (g2) => o.stimulus_set.nogo.some((n) => stimulusKey(n) === stimulusKey(g2))
-    );
-    if (overlap.length) {
-      throw new Error("go-nogo: stimulus_set: a stimulus is both a go and a no-go stimulus.");
     }
     const w = o.response_window_ms;
     const termination = o.trial_termination_rule;
@@ -4296,22 +4334,36 @@ var jsPsychTimelineGoNogo = (function (exports) {
   }
   var escapeHtml = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
   function stimulusId(item) {
-    if (item.label) return item.label;
-    return [item.shape, item.color, item.text].filter(Boolean).join("_") || "stimulus";
+    return item.id;
   }
   function stimulusName(item, text) {
-    if (item.label) return item.label;
-    if (item.text) return item.text;
-    const shape = item.shape ? text.shape_names[item.shape] : "";
-    return item.color && shape ? text.stimulus_name({ color: item.color, shape }) : shape || item.color || "";
+    if (item.named) return item.id;
+    if (item.text !== void 0) return item.text;
+    if (item.shape !== void 0) {
+      const shape = text.shape_names[item.shape];
+      return item.color ? text.stimulus_name({ color: item.color, shape }) : shape;
+    }
+    return text.picture_name;
   }
   function namesOf(items, text) {
     return items.map((i) => stimulusName(i, text)).join(` ${text.list_or} `);
   }
-  function renderItem(item, size) {
-    var _a, _b, _c, _d;
+  var isResolved = (x) => typeof x === "object" && x !== null && "named" in x;
+  function renderItem(given, size) {
+    var _a, _b;
+    const item = isResolved(given) ? given : resolveItems({ go: [given], nogo: [] }).go[0];
+    if (item.image !== void 0) {
+      return `<img class="jspsych-timelines-go-nogo-picture" src="${escapeHtml(
+      item.image
+    )}" alt="${escapeHtml(item.id)}" style="width:${size}px;height:${size}px">`;
+    }
+    if (item.svg !== void 0) {
+      return `<span class="jspsych-timelines-go-nogo-picture" role="img" aria-label="${escapeHtml(
+      item.id
+    )}" style="width:${size}px;height:${size}px">${item.svg}</span>`;
+    }
     const color = checkColor((_a = item.color) != null ? _a : "currentColor");
-    if (item.text !== void 0 && item.shape === void 0) {
+    if (item.text !== void 0) {
       return `<span class="jspsych-timelines-go-nogo-letter" style="font-size:${Math.round(
       size * 0.7
     )}px;color:${color}">${escapeHtml(item.text)}</span>`;
@@ -4336,7 +4388,7 @@ var jsPsychTimelineGoNogo = (function (exports) {
         break;
     }
     return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 48 48" role="img" aria-label="${escapeHtml(
-    (_d = (_c = item.label) != null ? _c : item.shape) != null ? _d : ""
+    item.id
   )}">${inner}</svg>`;
   }
   var GRID_CELLS = ["top_left", "top_right", "bottom_left", "bottom_right"];
@@ -4676,6 +4728,7 @@ var jsPsychTimelineGoNogo = (function (exports) {
     },
     list_or: "or",
     stimulus_name: (r) => `${r.color} ${r.shape}`,
+    picture_name: "picture",
     go_button: "Respond",
     continue_button: "Continue",
     correct_feedback: "Correct",
@@ -4734,7 +4787,7 @@ var jsPsychTimelineGoNogo = (function (exports) {
   }
 
   // src/styles.css
-  styleInject('.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-text {\n  max-width: 600px;\n  margin: 0 auto;\n  padding: 0 20px;\n  text-align: left;\n}\n.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-text h2 {\n  text-align: center;\n}\n.jspsych-timelines-go-nogo {\n  --go-nogo-stage-h: min(280px, 40vh);\n  --go-nogo-btn-reserve: 76px;\n}\n.jspsych-timelines-go-nogo:has(.jspsych-timelines-go-nogo-screen) {\n  position: relative;\n  box-sizing: border-box;\n  width: 100%;\n  max-width: none;\n  height: 100vh;\n  margin: 0;\n  overflow: hidden;\n}\n.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-screen {\n  display: contents;\n}\n.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-stage {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  transform: translate(-50%, -50%);\n  box-sizing: border-box;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 640px;\n  max-width: calc(100vw - 16px);\n  height: var(--go-nogo-stage-h);\n  padding: 20px;\n  overflow: hidden;\n}\n.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-below {\n  position: absolute;\n  top: calc(50% + var(--go-nogo-stage-h) / 2 + 8px);\n  right: 0;\n  bottom: 0;\n  left: 0;\n  overflow-y: auto;\n  overscroll-behavior: contain;\n}\n.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-below .jspsych-timelines-go-nogo-text {\n  text-align: center;\n  text-wrap: balance;\n}\n.jspsych-timelines-go-nogo:has(#jspsych-html-button-response-btngroup) .jspsych-timelines-go-nogo-below {\n  bottom: var(--go-nogo-btn-reserve);\n}\n.jspsych-timelines-go-nogo:has(.jspsych-timelines-go-nogo-screen) #jspsych-html-button-response-btngroup {\n  position: absolute;\n  right: 0;\n  bottom: 12px;\n  left: 0;\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  justify-content: center;\n  gap: 8px;\n}\n.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-field {\n  position: relative;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 100%;\n  height: 100%;\n}\n.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-field[data-location=top_center] {\n  align-items: flex-start;\n}\n.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-field.grid {\n  display: grid;\n  grid-template-columns: 1fr 1fr;\n  grid-template-rows: 1fr 1fr;\n}\n.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-cell {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-item {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  line-height: 1;\n}\n.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-item svg {\n  display: block;\n}\n.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-item.acknowledge-highlight {\n  outline: 4px solid red;\n  outline-offset: 6px;\n}\n.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-item.acknowledge-mark::after {\n  content: "\\2713";\n  position: absolute;\n  bottom: 4px;\n  left: 50%;\n  transform: translateX(-50%);\n  font-size: 1.4em;\n}\n.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-letter {\n  font-family: monospace;\n  font-weight: bold;\n}\n.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-inline {\n  display: inline-block;\n  vertical-align: middle;\n  margin: 0 4px;\n}\n.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-center {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  min-height: 80px;\n}\n.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-fixation {\n  font-size: 3em;\n}\n.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-bgfix {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  transform: translate(-50%, -50%);\n  visibility: hidden;\n}\n.jspsych-timelines-go-nogo:has([id$=-stimulus][style*=hidden]) .jspsych-timelines-go-nogo-bgfix {\n  visibility: visible;\n}\n.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-feedback {\n  font-size: 1em;\n}\n.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-feedback.incorrect {\n  font-weight: bold;\n}\n');
+  styleInject('.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-text {\n  max-width: 600px;\n  margin: 0 auto;\n  padding: 0 20px;\n  text-align: left;\n}\n.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-text h2 {\n  text-align: center;\n}\n.jspsych-timelines-go-nogo {\n  --go-nogo-stage-h: min(280px, 40vh);\n  --go-nogo-btn-reserve: 76px;\n}\n.jspsych-timelines-go-nogo:has(.jspsych-timelines-go-nogo-screen) {\n  position: relative;\n  box-sizing: border-box;\n  width: 100%;\n  max-width: none;\n  height: 100vh;\n  margin: 0;\n  overflow: hidden;\n}\n.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-screen {\n  display: contents;\n}\n.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-stage {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  transform: translate(-50%, -50%);\n  box-sizing: border-box;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 640px;\n  max-width: calc(100vw - 16px);\n  height: var(--go-nogo-stage-h);\n  padding: 20px;\n  overflow: hidden;\n}\n.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-below {\n  position: absolute;\n  top: calc(50% + var(--go-nogo-stage-h) / 2 + 8px);\n  right: 0;\n  bottom: 0;\n  left: 0;\n  overflow-y: auto;\n  overscroll-behavior: contain;\n}\n.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-below .jspsych-timelines-go-nogo-text {\n  text-align: center;\n  text-wrap: balance;\n}\n.jspsych-timelines-go-nogo:has(#jspsych-html-button-response-btngroup) .jspsych-timelines-go-nogo-below {\n  bottom: var(--go-nogo-btn-reserve);\n}\n.jspsych-timelines-go-nogo:has(.jspsych-timelines-go-nogo-screen) #jspsych-html-button-response-btngroup {\n  position: absolute;\n  right: 0;\n  bottom: 12px;\n  left: 0;\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  justify-content: center;\n  gap: 8px;\n}\n.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-field {\n  position: relative;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 100%;\n  height: 100%;\n}\n.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-field[data-location=top_center] {\n  align-items: flex-start;\n}\n.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-field.grid {\n  display: grid;\n  grid-template-columns: 1fr 1fr;\n  grid-template-rows: 1fr 1fr;\n}\n.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-cell {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-item {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  line-height: 1;\n}\n.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-item svg {\n  display: block;\n}\n.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-item.acknowledge-highlight {\n  outline: 4px solid red;\n  outline-offset: 6px;\n}\n.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-item.acknowledge-mark::after {\n  content: "\\2713";\n  position: absolute;\n  bottom: 4px;\n  left: 50%;\n  transform: translateX(-50%);\n  font-size: 1.4em;\n}\n.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-picture {\n  display: block;\n  object-fit: contain;\n}\n.jspsych-timelines-go-nogo span.jspsych-timelines-go-nogo-picture > svg {\n  width: 100%;\n  height: 100%;\n}\n.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-letter {\n  font-family: monospace;\n  font-weight: bold;\n}\n.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-inline {\n  display: inline-block;\n  vertical-align: middle;\n  margin: 0 4px;\n}\n.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-center {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  min-height: 80px;\n}\n.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-fixation {\n  font-size: 3em;\n}\n.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-bgfix {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  transform: translate(-50%, -50%);\n  visibility: hidden;\n}\n.jspsych-timelines-go-nogo:has([id$=-stimulus][style*=hidden]) .jspsych-timelines-go-nogo-bgfix {\n  visibility: visible;\n}\n.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-feedback {\n  font-size: 1em;\n}\n.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-feedback.incorrect {\n  font-weight: bold;\n}\n');
 
   // ../../node_modules/@jspsych/plugin-html-button-response/dist/index.js
   var version2 = "2.1.0";

@@ -13,20 +13,20 @@ var jsPsychTimelineTwoStepTask = (function (exports) {
   var __propIsEnum = Object.prototype.propertyIsEnumerable;
   var __pow = Math.pow;
   var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-  var __spreadValues = (a, b) => {
+  var __spreadValues = (a2, b) => {
     for (var prop in b || (b = {}))
       if (__hasOwnProp.call(b, prop))
-        __defNormalProp(a, prop, b[prop]);
+        __defNormalProp(a2, prop, b[prop]);
     if (__getOwnPropSymbols)
       for (var prop of __getOwnPropSymbols(b)) {
         if (__propIsEnum.call(b, prop))
-          __defNormalProp(a, prop, b[prop]);
+          __defNormalProp(a2, prop, b[prop]);
       }
-    return a;
+    return a2;
   };
-  var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+  var __spreadProps = (a2, b) => __defProps(a2, __getOwnPropDescs(b));
   var __require = /* @__PURE__ */ ((x) => typeof require !== "undefined" ? require : typeof Proxy !== "undefined" ? new Proxy(x, {
-    get: (a, b) => (typeof require !== "undefined" ? require : a)[b]
+    get: (a2, b) => (typeof require !== "undefined" ? require : a2)[b]
   }) : x)(function(x) {
     if (typeof require !== "undefined") return require.apply(this, arguments);
     throw Error('Dynamic require of "' + x + '" is not supported');
@@ -550,15 +550,15 @@ var jsPsychTimelineTwoStepTask = (function (exports) {
         function XorGen(seed) {
           var me = this, strseed = "";
           me.next = function() {
-            var b = me.b, c = me.c, d = me.d, a = me.a;
+            var b = me.b, c = me.c, d = me.d, a2 = me.a;
             b = b << 25 ^ b >>> 7 ^ c;
             c = c - d | 0;
-            d = d << 24 ^ d >>> 8 ^ a;
-            a = a - b | 0;
+            d = d << 24 ^ d >>> 8 ^ a2;
+            a2 = a2 - b | 0;
             me.b = b = b << 20 ^ b >>> 12 ^ c;
             me.c = c = c - d | 0;
-            me.d = d << 16 ^ c >>> 16 ^ a;
-            return me.a = a - b | 0;
+            me.d = d << 16 ^ c >>> 16 ^ a2;
+            return me.a = a2 - b | 0;
           };
           me.a = 0;
           me.b = 0;
@@ -739,8 +739,8 @@ var jsPsychTimelineTwoStepTask = (function (exports) {
             return [+/* @__PURE__ */ new Date(), global, plugins, global.screen, tostring(pool)];
           }
         }
-        function tostring(a) {
-          return String.fromCharCode.apply(0, a);
+        function tostring(a2) {
+          return String.fromCharCode.apply(0, a2);
         }
         mixkey(math.random(), pool);
         if (typeof module == "object" && module.exports) {
@@ -2847,6 +2847,308 @@ var jsPsychTimelineTwoStepTask = (function (exports) {
     rare_rt_cost: 80
   };
 
+  // src/drawings.ts
+  function drawing(inner) {
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" aria-hidden="true">${inner}</svg>`;
+  }
+  var ABSTRACT = {
+    ring: `<circle cx="50" cy="50" r="32" fill="none" stroke="#ffd166" stroke-width="12"/>`,
+    cross: `<path d="M50 14v72M14 50h72" stroke="#06d6a0" stroke-width="14" stroke-linecap="butt"/>`,
+    circle: `<circle cx="50" cy="50" r="34" fill="#ffd6a5"/>`,
+    square: `<rect x="18" y="18" width="64" height="64" fill="#caffbf"/>`,
+    triangle: `<path d="M50 14 88 82H12Z" fill="#bdb2ff"/>`,
+    diamond: `<path d="M50 10 90 50 50 90 10 50Z" fill="#9bf6ff"/>`,
+    red_screen: `<rect x="14" y="14" width="72" height="72" rx="6" fill="#b23a48"/>`,
+    blue_screen: `<rect x="14" y="14" width="72" height="72" rx="6" fill="#3a6ea5"/>`
+  };
+  var planet = (color) => `<circle cx="50" cy="50" r="38" fill="${color}"/><ellipse cx="50" cy="52" rx="48" ry="10" fill="none" stroke="#f1f5f9" stroke-width="3" opacity=".7"/>`;
+  var SPACE = {
+    rocket: `<path d="M50 8C64 24 68 44 66 68H34C32 44 36 24 50 8Z" fill="#ff8c42"/><path d="M34 52 20 76l14-4ZM66 52l14 24-14-4Z" fill="#d1495b"/><circle cx="50" cy="42" r="8" fill="#f1f5f9"/><path d="M42 68h16l-8 22Z" fill="#ffd166"/>`,
+    saucer: `<ellipse cx="50" cy="60" rx="42" ry="14" fill="#2ec4b6"/><path d="M30 56C32 30 68 30 70 56Z" fill="#a8dadc"/><circle cx="26" cy="62" r="3" fill="#ffd166"/><circle cx="50" cy="66" r="3" fill="#ffd166"/><circle cx="74" cy="62" r="3" fill="#ffd166"/>`,
+    red_planet: planet("#b23a48"),
+    blue_planet: planet("#3a6ea5"),
+    green_alien: `<circle cx="50" cy="54" r="34" fill="#7bd88f"/><circle cx="50" cy="50" r="12" fill="#f1f5f9"/><circle cx="50" cy="50" r="5" fill="#16202e"/>`,
+    yellow_alien: `<rect x="20" y="24" width="60" height="58" rx="8" fill="#ffd166"/><circle cx="38" cy="46" r="6" fill="#16202e"/><circle cx="62" cy="46" r="6" fill="#16202e"/><rect x="38" y="64" width="24" height="5" fill="#16202e"/><path d="M50 24V10" stroke="#ffd166" stroke-width="5"/>`,
+    pink_alien: `<path d="M50 14 90 84H10Z" fill="#ff8fab"/><circle cx="40" cy="62" r="6" fill="#16202e"/><circle cx="60" cy="62" r="6" fill="#16202e"/><path d="M38 14 30 4M62 14 70 4" stroke="#ff8fab" stroke-width="5"/>`,
+    purple_alien: `<ellipse cx="50" cy="54" rx="26" ry="38" fill="#b388eb"/><circle cx="38" cy="44" r="5" fill="#f1f5f9"/><circle cx="62" cy="44" r="5" fill="#f1f5f9"/><circle cx="50" cy="62" r="5" fill="#f1f5f9"/>`
+  };
+  var REWARD = {
+    coin: `<circle cx="50" cy="50" r="42" fill="#f4c430" stroke="#b8860b" stroke-width="6"/><circle cx="50" cy="50" r="26" fill="none" stroke="#b8860b" stroke-width="5"/>`,
+    no_coin: `<circle cx="50" cy="50" r="40" fill="none" stroke="#94a3b8" stroke-width="6" stroke-dasharray="10 8"/><path d="M26 74 74 26" stroke="#94a3b8" stroke-width="6"/>`
+  };
+
+  // src/sets.ts
+  var svgItem = (id, inner, name) => __spreadProps(__spreadValues({
+    id
+  }, name ? { name } : {}), {
+    svg: drawing(inner)
+  });
+  var abstractSymbols = {
+    name: "abstract_symbols",
+    noun: {
+      first: { singular: "symbol", plural: "symbols" },
+      second: { singular: "symbol", plural: "symbols" },
+      state: { singular: "screen", plural: "screens" },
+      reward: { singular: "coin", plural: "coins" }
+    },
+    first_stage: [
+      svgItem("ring", ABSTRACT.ring, "the ring"),
+      svgItem("cross", ABSTRACT.cross, "the cross")
+    ],
+    states: [
+      {
+        id: "red_screen",
+        name: "the red screen",
+        items: [svgItem("circle", ABSTRACT.circle), svgItem("square", ABSTRACT.square)],
+        picture: svgItem("red_screen", ABSTRACT.red_screen),
+        background: "#3a1520",
+        foreground: "#f1f5f9",
+        color: "#b23a48"
+      },
+      {
+        id: "blue_screen",
+        name: "the blue screen",
+        items: [svgItem("triangle", ABSTRACT.triangle), svgItem("diamond", ABSTRACT.diamond)],
+        picture: svgItem("blue_screen", ABSTRACT.blue_screen),
+        background: "#102a4c",
+        foreground: "#f1f5f9",
+        color: "#3a6ea5"
+      }
+    ],
+    reward: {
+      rewarded: svgItem("coin", REWARD.coin),
+      unrewarded: svgItem("no_coin", REWARD.no_coin)
+    },
+    background: "#17181d",
+    foreground: "#f1f5f9"
+  };
+  var spaceshipPlanetAlien = {
+    name: "spaceship_planet_alien",
+    noun: {
+      first: { singular: "spaceship", plural: "spaceships" },
+      second: { singular: "alien", plural: "aliens" },
+      state: { singular: "planet", plural: "planets" },
+      reward: { singular: "coin", plural: "coins" }
+    },
+    first_stage: [
+      svgItem("rocket", SPACE.rocket, "the rocket"),
+      svgItem("saucer", SPACE.saucer, "the flying saucer")
+    ],
+    states: [
+      {
+        id: "red_planet",
+        name: "the red planet",
+        items: [
+          svgItem("green_alien", SPACE.green_alien),
+          svgItem("yellow_alien", SPACE.yellow_alien)
+        ],
+        picture: svgItem("red_planet", SPACE.red_planet),
+        background: "#3a1520",
+        foreground: "#f1f5f9",
+        color: "#b23a48",
+        horizon: true
+      },
+      {
+        id: "blue_planet",
+        name: "the blue planet",
+        items: [svgItem("pink_alien", SPACE.pink_alien), svgItem("purple_alien", SPACE.purple_alien)],
+        picture: svgItem("blue_planet", SPACE.blue_planet),
+        background: "#102a4c",
+        foreground: "#f1f5f9",
+        color: "#3a6ea5",
+        horizon: true
+      }
+    ],
+    reward: {
+      rewarded: svgItem("coin", REWARD.coin),
+      unrewarded: svgItem("no_coin", REWARD.no_coin)
+    },
+    background: "#17181d",
+    foreground: "#f1f5f9"
+  };
+  var stimuli = { abstractSymbols, spaceshipPlanetAlien };
+  var ROLE_COLORS = {
+    red: { bg: "#3a1520", color: "#b23a48" },
+    blue: { bg: "#102a4c", color: "#3a6ea5" }
+  };
+  var SPACE_BG = "#17181d";
+  var TEXT_FG = "#f1f5f9";
+  var STATE_ROLES = ["red", "blue"];
+  var SAFE_COLOR = /^[#a-zA-Z0-9(),.%\s-]+$/;
+  var ORDINAL = ["first", "second"];
+  var isObject = (v) => typeof v === "object" && v !== null && !Array.isArray(v);
+  function toItem(s, fallbackId) {
+    var _a;
+    if (typeof s === "string") return { id: s, kind: "text", content: s };
+    const kind = typeof s.text === "string" ? "text" : typeof s.image === "string" ? "image" : "svg";
+    const content = kind === "text" ? s.text : kind === "image" ? s.image : s.svg;
+    return __spreadValues({
+      id: (_a = s.id) != null ? _a : kind === "text" ? content : fallbackId,
+      kind,
+      content
+    }, s.name ? { name: s.name } : {});
+  }
+  var squarePicture = (id, color) => ({
+    id,
+    kind: "svg",
+    content: drawing(`<rect x="14" y="14" width="72" height="72" rx="6" fill="${color}"/>`)
+  });
+  var isTextItem = (s) => typeof s === "string" || typeof s.text === "string";
+  function defaultNoun(items) {
+    return items.every(isTextItem) ? { singular: "word", plural: "words" } : { singular: "picture", plural: "pictures" };
+  }
+  var prepared = /* @__PURE__ */ new WeakMap();
+  function prepareSet(set) {
+    var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k, _l;
+    const hit = prepared.get(set);
+    if (hit) return hit;
+    const name = (_a = set.name) != null ? _a : "custom";
+    const noun = (_b = set.noun) != null ? _b : {};
+    const secondItems = set.states.flatMap((s) => s.items);
+    const first = (_c = noun.first) != null ? _c : defaultNoun(set.first_stage);
+    const second = (_d = noun.second) != null ? _d : defaultNoun(secondItems);
+    const state = (_e = noun.state) != null ? _e : { singular: "screen", plural: "screens" };
+    const reward = (_f = noun.reward) != null ? _f : { singular: "coin", plural: "coins" };
+    const firstItems = {
+      A: toItem(set.first_stage[0], `${name}-first-1`),
+      B: toItem(set.first_stage[1], `${name}-first-2`)
+    };
+    const states = {};
+    STATE_ROLES.forEach((role, j) => {
+      var _a2, _b2, _c2, _d2;
+      const s = set.states[j];
+      const color = (_a2 = s.color) != null ? _a2 : ROLE_COLORS[role].color;
+      const id = (_b2 = s.id) != null ? _b2 : `${name}-state-${j + 1}`;
+      states[role] = {
+        id,
+        items: {
+          option_1: toItem(s.items[0], `${name}-state-${j + 1}-option-1`),
+          option_2: toItem(s.items[1], `${name}-state-${j + 1}-option-2`)
+        },
+        picture: s.picture ? toItem(s.picture, id) : squarePicture(id, color),
+        bg: (_c2 = s.background) != null ? _c2 : ROLE_COLORS[role].bg,
+        fg: (_d2 = s.foreground) != null ? _d2 : TEXT_FG,
+        color,
+        horizon: s.horizon === true
+      };
+    });
+    const out = {
+      name,
+      words: {
+        first: first.singular,
+        first_plural: first.plural,
+        second: second.singular,
+        second_plural: second.plural,
+        state: state.singular,
+        state_plural: state.plural,
+        reward: reward.singular,
+        reward_plural: reward.plural,
+        first_name: {
+          A: (_g = firstItems.A.name) != null ? _g : `the ${ORDINAL[0]} ${first.singular}`,
+          B: (_h = firstItems.B.name) != null ? _h : `the ${ORDINAL[1]} ${first.singular}`
+        },
+        state_name: {
+          red: (_i = set.states[0].name) != null ? _i : `the ${ORDINAL[0]} ${state.singular}`,
+          blue: (_j = set.states[1].name) != null ? _j : `the ${ORDINAL[1]} ${state.singular}`
+        }
+      },
+      first: firstItems,
+      states,
+      reward: {
+        rewarded: set.reward ? toItem(set.reward.rewarded, `${name}-reward`) : DEFAULT_REWARD.rewarded,
+        unrewarded: set.reward ? toItem(set.reward.unrewarded, `${name}-no-reward`) : DEFAULT_REWARD.unrewarded
+      },
+      bg: (_k = set.background) != null ? _k : SPACE_BG,
+      fg: (_l = set.foreground) != null ? _l : TEXT_FG
+    };
+    prepared.set(set, out);
+    return out;
+  }
+  var DEFAULT_REWARD = {
+    rewarded: { id: "coin", kind: "svg", content: drawing(REWARD.coin) },
+    unrewarded: { id: "no_coin", kind: "svg", content: drawing(REWARD.no_coin) }
+  };
+  function itemProblem(where, s) {
+    if (typeof s === "string") return s.length ? null : `${where} is an empty string`;
+    if (!isObject(s)) return `${where} must be a string or an object with one of text, image or svg`;
+    const given = ["text", "image", "svg"].filter((k) => typeof s[k] === "string");
+    if (given.length !== 1) return `${where} must give exactly one of text, image or svg`;
+    if (s.id !== void 0 && (typeof s.id !== "string" || !s.id))
+      return `${where}.id must be a non-empty string`;
+    return null;
+  }
+  function pairProblems(where, v) {
+    if (!Array.isArray(v) || v.length !== 2) return [`${where} must be a list of exactly two items`];
+    return v.map((s, i) => itemProblem(`${where}[${i}]`, s)).filter((p) => p !== null);
+  }
+  function colorProblem(where, v) {
+    if (v === void 0) return null;
+    return typeof v === "string" && SAFE_COLOR.test(v) ? null : `${where} must be a CSS colour ("#3a1520", "rgb(58, 21, 32)", "darkred")`;
+  }
+  function setProblems(set) {
+    if (typeof set === "string")
+      return [
+        `"${set}" is a name, not a set; pass a set such as utils.stimuli.abstractSymbols or utils.stimuli.spaceshipPlanetAlien, or your own`
+      ];
+    if (!isObject(set))
+      return [
+        "must be a stimulus set: { name?, noun?, first_stage: [two items], states: [two states], reward? }"
+      ];
+    const out = [];
+    out.push(...pairProblems("first_stage", set.first_stage));
+    if (!Array.isArray(set.states) || set.states.length !== 2) {
+      out.push("states must be a list of exactly two states, each { items: [two items], ... }");
+    } else {
+      set.states.forEach((s, j) => {
+        if (!isObject(s)) return void out.push(`states[${j}] must be an object with items`);
+        out.push(...pairProblems(`states[${j}].items`, s.items));
+        if (s.picture !== void 0) {
+          const p = itemProblem(`states[${j}].picture`, s.picture);
+          if (p) out.push(p);
+        }
+        for (const k of ["background", "foreground", "color"]) {
+          const p = colorProblem(`states[${j}].${k}`, s[k]);
+          if (p) out.push(p);
+        }
+      });
+    }
+    if (set.reward !== void 0) {
+      if (!isObject(set.reward)) out.push("reward must be { rewarded, unrewarded }");
+      else
+        for (const k of ["rewarded", "unrewarded"]) {
+          const p = itemProblem(`reward.${k}`, set.reward[k]);
+          if (p) out.push(p);
+        }
+    }
+    for (const k of ["background", "foreground"]) {
+      const p = colorProblem(k, set[k]);
+      if (p) out.push(p);
+    }
+    if (set.noun !== void 0) {
+      if (!isObject(set.noun)) out.push("noun must be { first?, second?, state?, reward? }");
+      else
+        for (const [k, v] of Object.entries(set.noun)) {
+          if (!["first", "second", "state", "reward"].includes(k))
+            out.push(`noun.${k} is not a role (first, second, state, reward)`);
+          else if (!isObject(v) || typeof v.singular !== "string" || typeof v.plural !== "string")
+            out.push(`noun.${k} must be { singular, plural }`);
+        }
+    }
+    if (out.length === 0) {
+      const p = prepareSet(set);
+      const ids = [
+        p.first.A.id,
+        p.first.B.id,
+        ...STATE_ROLES.flatMap((r) => [p.states[r].items.option_1.id, p.states[r].items.option_2.id])
+      ];
+      const dup = ids.find((id, i) => ids.indexOf(id) !== i);
+      if (dup !== void 0) out.push(`two items have the id "${dup}"; give each item its own id`);
+      if (p.states.red.id === p.states.blue.id)
+        out.push(`the two states have the id "${p.states.red.id}"; give each state its own id`);
+    }
+    return out;
+  }
+
   // src/options.ts
   var FULL_RANGE = { min: 0.25, max: 0.75 };
   var DEFAULT_OPTIONS = {
@@ -2884,7 +3186,7 @@ var jsPsychTimelineTwoStepTask = (function (exports) {
     contingency_disclosure: "partial",
     instruction_format: "text",
     instruction_demonstration: "interactive",
-    instruction_framing: "abstract_symbols",
+    stimulus_set: abstractSymbols,
     population_protocol: "standard",
     practice: {}
   };
@@ -2990,11 +3292,6 @@ var jsPsychTimelineTwoStepTask = (function (exports) {
       "no media is bundled; supply your own instruction trials"
     ],
     [
-      "instruction_framing",
-      ["magic_carpet_mountain_genie", "ship_island_chest"],
-      "only abstract_symbols and spaceship_planet_alien are drawn"
-    ],
-    [
       "population_protocol",
       ["child", "gamified_child", "clinical"],
       "it bundles a deadline, audio, a tutorial and breaks; set those options one by one"
@@ -3014,6 +3311,15 @@ var jsPsychTimelineTwoStepTask = (function (exports) {
     }
   }
   function validateOptions(o) {
+    if ("instruction_framing" in o) {
+      throw new Error(
+        "two-step-task: instruction_framing was replaced by stimulus_set, which carries the pictures and the words of the cover story: stimulus_set: utils.stimuli.spaceshipPlanetAlien (or your own set)."
+      );
+    }
+    const problems = setProblems(o.stimulus_set);
+    if (problems.length) {
+      throw new Error(`two-step-task: stimulus_set: ${problems.join("; ")}.`);
+    }
     for (const [key, values, why] of NOT_IMPLEMENTED) {
       if (values.includes(o[key])) {
         throw new Error(`two-step-task: ${key}: "${o[key]}" is not implemented (${why}).`);
@@ -3177,7 +3483,7 @@ var jsPsychTimelineTwoStepTask = (function (exports) {
       };
     });
   }
-  var mean = (xs) => xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : null;
+  var mean = (xs) => xs.length ? xs.reduce((a2, b) => a2 + b, 0) / xs.length : null;
   function columnMean(rows, field, keep = () => true) {
     const col = rows.filterCustom((r) => keep(r) && typeof r[field] === "number").select(field);
     return col.count() > 0 ? col.mean() : null;
@@ -3197,14 +3503,14 @@ var jsPsychTimelineTwoStepTask = (function (exports) {
     };
     const all = [];
     for (let i = 0; i + 1 < trials.length; i++) {
-      const a = trials[i];
+      const a2 = trials[i];
       const b = trials[i + 1];
-      if (a.missed || b.missed || a.block !== b.block) continue;
-      if (!a.stage1_choice || !b.stage1_choice || a.transition === null || a.reward === null)
+      if (a2.missed || b.missed || a2.block !== b.block) continue;
+      if (!a2.stage1_choice || !b.stage1_choice || a2.transition === null || a2.reward === null)
         continue;
-      const stay = a.stage1_choice === b.stage1_choice ? 1 : 0;
+      const stay = a2.stage1_choice === b.stage1_choice ? 1 : 0;
       all.push(stay);
-      cells[`${a.transition}_${a.reward ? "rewarded" : "unrewarded"}`].push(
+      cells[`${a2.transition}_${a2.reward ? "rewarded" : "unrewarded"}`].push(
         stay
       );
     }
@@ -3284,8 +3590,8 @@ var jsPsychTimelineTwoStepTask = (function (exports) {
       return this.jsPsych.randomization.randomInt(0, __pow(2, 30) - 1) / __pow(2, 30);
     }
     /** Probability of choosing the first of two options with values (a, b). */
-    softmax(a, b) {
-      return 1 / (1 + Math.exp(-params.beta * (a - b)));
+    softmax(a2, b) {
+      return 1 / (1 + Math.exp(-params.beta * (a2 - b)));
     }
     best(state) {
       return Math.max(this.q2[state].option_1, this.q2[state].option_2);
@@ -3320,131 +3626,80 @@ var jsPsychTimelineTwoStepTask = (function (exports) {
   };
 
   // src/stimuli.ts
-  var SAFE_COLOR = /^[#a-zA-Z0-9(),.%\s-]+$/;
-  var COLORS = {
-    space: { bg: "#17181d", fg: "#f1f5f9" },
-    red: { bg: "#3a1520", fg: "#f1f5f9", planet: "#b23a48" },
-    blue: { bg: "#102a4c", fg: "#f1f5f9", planet: "#3a6ea5" }
-  };
-  function svg(inner, size) {
-    return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 100 100" aria-hidden="true">${inner}</svg>`;
+  var SAFE_COLOR2 = /^[#a-zA-Z0-9(),.%\s-]+$/;
+  var escapeHtml = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  var P = (set) => "words" in set && "first" in set ? set : prepareSet(set);
+  function renderItem(item, size = 96) {
+    const box = `width:${size}px;height:${size}px`;
+    const id = ` data-item="${escapeHtml(item.id)}"`;
+    if (item.kind === "svg") return `<span class="ts-pic"${id} style="${box}">${item.content}</span>`;
+    if (item.kind === "image")
+      return `<span class="ts-pic"${id} style="${box}"><img src="${escapeHtml(
+      item.content
+    )}" alt=""></span>`;
+    return `<span class="ts-pic ts-pic-text"${id} style="min-width:${size}px;height:${size}px;font-size:${Math.round(
+    size * 0.3
+  )}px">${escapeHtml(item.content)}</span>`;
   }
-  var SHIPS = {
-    abstract_symbols: {
-      A: `<circle cx="50" cy="50" r="32" fill="none" stroke="#ffd166" stroke-width="12"/>`,
-      B: `<path d="M50 14v72M14 50h72" stroke="#06d6a0" stroke-width="14" stroke-linecap="butt"/>`
-    },
-    spaceship_planet_alien: {
-      A: `<path d="M50 8C64 24 68 44 66 68H34C32 44 36 24 50 8Z" fill="#ff8c42"/><path d="M34 52 20 76l14-4ZM66 52l14 24-14-4Z" fill="#d1495b"/><circle cx="50" cy="42" r="8" fill="#f1f5f9"/><path d="M42 68h16l-8 22Z" fill="#ffd166"/>`,
-      B: `<ellipse cx="50" cy="60" rx="42" ry="14" fill="#2ec4b6"/><path d="M30 56C32 30 68 30 70 56Z" fill="#a8dadc"/><circle cx="26" cy="62" r="3" fill="#ffd166"/><circle cx="50" cy="66" r="3" fill="#ffd166"/><circle cx="74" cy="62" r="3" fill="#ffd166"/>`
-    }
-  };
-  var OPTIONS = {
-    abstract_symbols: {
-      red: {
-        option_1: `<circle cx="50" cy="50" r="34" fill="#ffd6a5"/>`,
-        option_2: `<rect x="18" y="18" width="64" height="64" fill="#caffbf"/>`
-      },
-      blue: {
-        option_1: `<path d="M50 14 88 82H12Z" fill="#bdb2ff"/>`,
-        option_2: `<path d="M50 10 90 50 50 90 10 50Z" fill="#9bf6ff"/>`
-      }
-    },
-    spaceship_planet_alien: {
-      red: {
-        option_1: `<circle cx="50" cy="54" r="34" fill="#7bd88f"/><circle cx="50" cy="50" r="12" fill="#f1f5f9"/><circle cx="50" cy="50" r="5" fill="#16202e"/>`,
-        option_2: `<rect x="20" y="24" width="60" height="58" rx="8" fill="#ffd166"/><circle cx="38" cy="46" r="6" fill="#16202e"/><circle cx="62" cy="46" r="6" fill="#16202e"/><rect x="38" y="64" width="24" height="5" fill="#16202e"/><path d="M50 24V10" stroke="#ffd166" stroke-width="5"/>`
-      },
-      blue: {
-        option_1: `<path d="M50 14 90 84H10Z" fill="#ff8fab"/><circle cx="40" cy="62" r="6" fill="#16202e"/><circle cx="60" cy="62" r="6" fill="#16202e"/><path d="M38 14 30 4M62 14 70 4" stroke="#ff8fab" stroke-width="5"/>`,
-        option_2: `<ellipse cx="50" cy="54" rx="26" ry="38" fill="#b388eb"/><circle cx="38" cy="44" r="5" fill="#f1f5f9"/><circle cx="62" cy="44" r="5" fill="#f1f5f9"/><circle cx="50" cy="62" r="5" fill="#f1f5f9"/>`
-      }
-    }
-  };
-  function renderShip(framing, ship, size = 96) {
-    return svg(SHIPS[framing][ship], size);
+  function renderShip(set, ship, size = 96) {
+    return renderItem(P(set).first[ship], size);
   }
-  function renderOption(framing, state, option, size = 96) {
-    return svg(OPTIONS[framing][state][option], size);
+  function renderOption(set, state, option, size = 96) {
+    return renderItem(P(set).states[state].items[option], size);
   }
-  function renderState(framing, state, size = 96) {
-    const c = COLORS[state].planet;
-    return framing === "spaceship_planet_alien" ? svg(
-      `<circle cx="50" cy="50" r="38" fill="${c}"/><ellipse cx="50" cy="52" rx="48" ry="10" fill="none" stroke="#f1f5f9" stroke-width="3" opacity=".7"/>`,
-      size
-    ) : svg(`<rect x="14" y="14" width="72" height="72" rx="6" fill="${c}"/>`, size);
+  function renderState(set, state, size = 96) {
+    return renderItem(P(set).states[state].picture, size);
   }
-  function renderCoin(rewarded, size = 40) {
-    return rewarded ? svg(
-      `<circle cx="50" cy="50" r="42" fill="#f4c430" stroke="#b8860b" stroke-width="6"/><circle cx="50" cy="50" r="26" fill="none" stroke="#b8860b" stroke-width="5"/>`,
-      size
-    ) : svg(
-      `<circle cx="50" cy="50" r="40" fill="none" stroke="#94a3b8" stroke-width="6" stroke-dasharray="10 8"/><path d="M26 74 74 26" stroke="#94a3b8" stroke-width="6"/>`,
-      size
-    );
+  function renderCoin(set, rewarded, size = 40) {
+    const r = P(set).reward;
+    return renderItem(rewarded ? r.rewarded : r.unrewarded, size);
   }
-  function paintDisplay(colors, framing, state) {
+  function paintDisplay(set, state) {
+    const p = P(set);
+    const colors = colorsFor(p, state);
     for (const c of [colors.bg, colors.fg]) {
-      if (!SAFE_COLOR.test(c)) throw new Error(`two-step-task: unsupported colour "${c}".`);
+      if (!SAFE_COLOR2.test(c)) throw new Error(`two-step-task: unsupported colour "${c}".`);
     }
-    const planet = state !== null && framing === "spaceship_planet_alien" ? `radial-gradient(ellipse 130% 30% at 50% 108%, ${COLORS[state].planet} 0 62%, transparent 64%), ` : "";
-    return `<style>.jspsych-display-element:has(.jspsych-timelines-two-step-task){background:${planet}${colors.bg};color:${colors.fg};}</style>`;
+    const s = state === null ? null : p.states[state];
+    const horizon = s !== null && s.horizon ? `radial-gradient(ellipse 130% 30% at 50% 108%, ${s.color} 0 62%, transparent 64%), ` : "";
+    return `<style>.jspsych-display-element:has(.jspsych-timelines-two-step-task){background:${horizon}${colors.bg};color:${colors.fg};}</style>`;
   }
-  function colorsFor(state) {
-    return state === null ? COLORS.space : COLORS[state];
+  function colorsFor(set, state) {
+    const p = P(set);
+    return state === null ? { bg: p.bg, fg: p.fg } : { bg: p.states[state].bg, fg: p.states[state].fg };
   }
   function renderScreen(stage, below = "") {
     const region = below ? `<div class="ts-below">${below}</div>` : "";
     return `<div class="ts-screen">${stage}${region}</div>`;
   }
-  function renderStage(inner, framing, state, below = "") {
-    return paintDisplay(colorsFor(state), framing, state) + renderScreen(`<div class="ts-stage"><div class="ts-center">${inner}</div></div>`, below);
+  function renderStage(inner, set, state, below = "") {
+    return paintDisplay(set, state) + renderScreen(`<div class="ts-stage"><div class="ts-center">${inner}</div></div>`, below);
   }
-  function renderPair(a) {
+  function renderPair(a2) {
     var _a;
     const cell = (side, html) => {
-      const cls = a.chosen == null ? "ts-item" : a.chosen === side ? "ts-item ts-chosen" : "ts-item ts-dim";
+      const cls = a2.chosen == null ? "ts-item" : a2.chosen === side ? "ts-item ts-chosen" : "ts-item ts-dim";
       return `<div class="${cls}" data-side="${side}">${html}</div>`;
     };
     return renderStage(
-      `<div class="ts-pair">${cell("left", a.left)}${cell("right", a.right)}</div>`,
-      a.framing,
-      a.state,
-      (_a = a.below) != null ? _a : ""
+      `<div class="ts-pair">${cell("left", a2.left)}${cell("right", a2.right)}</div>`,
+      a2.set,
+      a2.state,
+      (_a = a2.below) != null ? _a : ""
     );
   }
-  function renderFixation(framing, mark) {
-    return renderStage(`<span class="ts-fixation">${mark}</span>`, framing, null);
+  function renderFixation(set, mark) {
+    return renderStage(`<span class="ts-fixation">${mark}</span>`, set, null);
   }
-  function renderMessage(framing, state, text) {
-    return renderStage(`<div class="ts-message">${text}</div>`, framing, state);
+  function renderMessage(set, state, text) {
+    return renderStage(`<div class="ts-message">${text}</div>`, set, state);
   }
 
   // src/text.ts
-  var abstract = {
-    first: "symbol",
-    first_plural: "symbols",
-    second: "symbol",
-    second_plural: "symbols",
-    state: "screen",
-    state_plural: "screens",
-    first_name: { A: "the ring", B: "the cross" },
-    state_name: { red: "the red screen", blue: "the blue screen" }
-  };
-  var spaceship = {
-    first: "spaceship",
-    first_plural: "spaceships",
-    second: "alien",
-    second_plural: "aliens",
-    state: "planet",
-    state_plural: "planets",
-    first_name: { A: "the rocket", B: "the flying saucer" },
-    state_name: { red: "the red planet", blue: "the blue planet" }
-  };
   var sideOf = (s) => s;
   var defaultText = {
-    framing_words: ({ framing }) => framing === "abstract_symbols" ? abstract : spaceship,
-    instruction_intro: ({ words: w }) => `<p>In this task you collect coins. Every trial has two steps. In the first step you choose one of two ${w.first_plural}. It takes you to one of two ${w.state_plural}, a red one or a blue one. There you choose one of two ${w.second_plural}, and the ${w.second} you choose may give you a coin.</p><p>Collect as many coins as you can.</p>`,
+    framing_words: ({ words }) => words,
+    instruction_intro: ({ words: w }) => `<p>In this task you collect ${w.reward_plural}. Every trial has two steps. In the first step you choose one of two ${w.first_plural}. It takes you to one of two ${w.state_plural}: ${w.state_name.red} or ${w.state_name.blue}. There you choose one of two ${w.second_plural}, and the ${w.second} you choose may give you ${a(w.reward)}.</p><p>Collect as many ${w.reward_plural} as you can.</p>`,
     instruction_response: ({
       words: w,
       left_key,
@@ -3456,40 +3711,47 @@ var jsPsychTimelineTwoStepTask = (function (exports) {
     instruction_transitions: ({ words: w, common_percent, mapping }) => `<p>Each ${w.first} usually takes you to the same ${w.state}: about ${common_percent} times out of 100. The rest of the time it takes you to the other ${w.state}.</p>${mapping ? `<p>${cap(w.first_name.A)} usually takes you to ${w.state_name.red}. ${cap(
     w.first_name.B
   )} usually takes you to ${w.state_name.blue}.</p>` : `<p>You will have to find out which ${w.state} each ${w.first} usually takes you to.</p>`}`,
-    instruction_drift: ({ words: w }) => `<p>How likely the ${w.second_plural} are to give a coin changes slowly during the task. One that is good now may get worse later, and one that is poor now may get better. Keep an eye on which ones give coins.</p>`,
-    instruction_demo_intro: ({ words: w }) => `<p>Let's try one trial. You will choose a ${w.first}, see where it takes you, and then choose one of two ${w.second_plural}. This trial is for learning the keys, so which one you choose does not matter.</p>`,
-    instruction_practice_intro: ({ timed, sides_vary }) => `<p>Now you will practice. The trials run at the pace of the real task${timed ? `: you have a limited time for each choice` : ""}${sides_vary ? `${timed ? ", and" : ": "} the two options of each choice change places from trial to trial` : ""}. The coins you get in practice are not counted.</p><p>When practice is over, the main task starts.</p>`,
-    instruction_test_intro: `<p>Practice is over. Now the main task starts. Collect as many coins as you can.</p>`,
+    instruction_drift: ({ words: w }) => `<p>How likely the ${w.second_plural} are to give ${a(
+    w.reward
+  )} changes slowly during the task. One that is good now may get worse later, and one that is poor now may get better. Keep an eye on which ones give ${w.reward_plural}.</p>`,
+    instruction_demo_intro: ({ words: w }) => `<p>Let's try one trial. You will choose ${a(
+    w.first
+  )}, see where it takes you, and then choose one of two ${w.second_plural}. This trial is for learning the keys, so which one you choose does not matter.</p>`,
+    instruction_practice_intro: ({ words: w, timed, sides_vary }) => `<p>Now you will practice. The trials run at the pace of the real task${timed ? `: you have a limited time for each choice` : ""}${sides_vary ? `${timed ? ", and" : ": "} the two options of each choice change places from trial to trial` : ""}. The ${w.reward_plural} you get in practice are not counted.</p><p>When practice is over, the main task starts.</p>`,
+    instruction_test_intro: ({ words: w }) => `<p>Practice is over. Now the main task starts. Collect as many ${w.reward_plural} as you can.</p>`,
     step_first: ({ words: w, side, key }) => `Choose the ${w.first} on the ${sideOf(side)}: press <kbd>${key}</kbd>.`,
     step_first_hint: ({ words: w, side, key }) => `That was the other one. Choose the ${w.first} on the ${side}: press <kbd>${key}</kbd>.`,
     step_first_reveal: ({ words: w, side, key }) => `Press <kbd>${key}</kbd> to choose the ${w.first} on the ${side}.`,
     step_second: ({ words: w, side, key, state_name }) => `The ${w.first} took you to ${state_name}. Choose the ${w.second} on the ${side}: press <kbd>${key}</kbd>.`,
     step_second_hint: ({ words: w, side, key }) => `That was the other one. Choose the ${w.second} on the ${side}: press <kbd>${key}</kbd>.`,
     step_second_reveal: ({ words: w, side, key }) => `Press <kbd>${key}</kbd> to choose the ${w.second} on the ${side}.`,
-    step_outcome: ({ words: w }) => `This ${w.second} gave you a coin. Not every choice does.`,
+    step_outcome: ({ words: w }) => `This ${w.second} gave you ${a(w.reward)}. Not every choice does.`,
     check_mapping: ({ words: w, first_name, left_key, right_key }) => `Which ${w.state} does ${first_name} usually take you to? Press <kbd>${left_key}</kbd> for the one on the left, or <kbd>${right_key}</kbd> for the one on the right.`,
     check_mapping_hint: ({ first_name, state_name, side, key }) => `Not quite: ${first_name} usually takes you to ${state_name}. It is on the ${side}: press <kbd>${key}</kbd>.`,
     check_mapping_reveal: ({ first_name, state_name }) => `${cap(first_name)} usually takes you to ${state_name}.`,
     check_statement: ({ left_key, right_key }) => `Which sentence is true? Press <kbd>${left_key}</kbd> for the one on the left, or <kbd>${right_key}</kbd> for the one on the right.`,
     check_statement_hint: ({ side, key }) => `Not quite. The true sentence is on the ${side}: press <kbd>${key}</kbd>.`,
     check_statement_reveal: ({ side }) => `The true sentence is the one on the ${side}.`,
-    statement_transitions_true: ({ words: w }) => `A ${w.first} usually takes you to the same ${w.state}, but not always.`,
-    statement_transitions_false: ({ words: w }) => `A ${w.first} takes you to either ${w.state} equally often.`,
-    statement_drift_true: ({ words: w }) => `How likely the ${w.second_plural} are to give a coin changes slowly.`,
-    statement_drift_false: ({ words: w }) => `How likely the ${w.second_plural} are to give a coin never changes.`,
+    statement_transitions_true: ({ words: w }) => `${cap(a(w.first))} usually takes you to the same ${w.state}, but not always.`,
+    statement_transitions_false: ({ words: w }) => `${cap(a(w.first))} takes you to either ${w.state} equally often.`,
+    statement_drift_true: ({ words: w }) => `How likely the ${w.second_plural} are to give ${a(w.reward)} changes slowly.`,
+    statement_drift_false: ({ words: w }) => `How likely the ${w.second_plural} are to give ${a(w.reward)} never changes.`,
     instruction_correct: "Correct!",
     continue_button: "Continue",
     fixation: "+",
     too_slow: "Too slow",
-    outcome_coin: "You got a coin",
-    outcome_none: "No coin",
-    running_total: ({ total }) => `Coins: ${total}`,
+    outcome_coin: ({ words: w }) => `You got ${a(w.reward)}`,
+    outcome_none: ({ words: w }) => `No ${w.reward}`,
+    running_total: ({ words: w, total }) => `${cap(w.reward_plural)}: ${total}`,
     block_complete: ({ block, n_blocks }) => `<p>You have finished block ${block} of ${n_blocks}. Take a short break if you like.</p>`,
     questionnaire_intro: `<p>One last question about the task.</p>`,
     questionnaire_question: ({ words: w, first_name, left_key, right_key }) => `Which ${w.state} did ${first_name} take you to most of the time? Press <kbd>${left_key}</kbd> for the one on the left, or <kbd>${right_key}</kbd> for the one on the right.`,
     task_complete: "Task complete",
-    result_summary: ({ coins, n_trials, n_missed }) => `<p>You collected ${coins} coins in ${n_trials} trials${n_missed > 0 ? ` (${n_missed} ${n_missed === 1 ? "trial was" : "trials were"} missed)` : ""}.</p>`
+    result_summary: ({ words: w, coins, n_trials, n_missed }) => `<p>You collected ${coins} ${coins === 1 ? w.reward : w.reward_plural} in ${n_trials} trials${n_missed > 0 ? ` (${n_missed} ${n_missed === 1 ? "trial was" : "trials were"} missed)` : ""}.</p>`
   };
+  function a(noun) {
+    return `${/^[aeiou]/i.test(noun) ? "an" : "a"} ${noun}`;
+  }
   function cap(s) {
     return s.charAt(0).toUpperCase() + s.slice(1);
   }
@@ -3517,7 +3779,7 @@ var jsPsychTimelineTwoStepTask = (function (exports) {
   }
 
   // src/styles.css
-  styleInject(".jspsych-timelines-two-step-task .ts-text {\n  max-width: 600px;\n  margin: 0 auto;\n  padding: 0 20px;\n  text-align: left;\n}\n.jspsych-timelines-two-step-task .ts-text h2 {\n  margin: 0 0 0.6em;\n  font-size: 1em;\n  font-weight: bold;\n  text-align: center;\n}\n.jspsych-timelines-two-step-task .ts-text svg,\n.jspsych-timelines-two-step-task .ts-inline svg {\n  vertical-align: middle;\n}\n.jspsych-timelines-two-step-task {\n  --ts-stage-h: min(280px, 34vh);\n  --ts-btn-reserve: 62px;\n}\n.jspsych-timelines-two-step-task:has(.ts-screen) {\n  position: relative;\n  box-sizing: border-box;\n  width: 100%;\n  max-width: none;\n  height: 100vh;\n  margin: 0;\n  overflow: hidden;\n}\n.jspsych-timelines-two-step-task .ts-screen {\n  display: contents;\n}\n.jspsych-timelines-two-step-task .ts-stage {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  transform: translate(-50%, -50%);\n  box-sizing: border-box;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 640px;\n  max-width: calc(100vw - 16px);\n  height: var(--ts-stage-h);\n  padding: 12px;\n  overflow: hidden;\n}\n.jspsych-timelines-two-step-task .ts-below {\n  position: absolute;\n  top: calc(50% + var(--ts-stage-h) / 2 + 8px);\n  right: 0;\n  bottom: 0;\n  left: 0;\n  overflow-y: auto;\n  overscroll-behavior: contain;\n}\n.jspsych-timelines-two-step-task .ts-below .ts-text {\n  text-align: center;\n  text-wrap: balance;\n}\n.jspsych-timelines-two-step-task .ts-below .ts-text p {\n  margin: 0.4em 0;\n}\n.jspsych-timelines-two-step-task:has(#jspsych-html-button-response-btngroup) .ts-below {\n  bottom: var(--ts-btn-reserve);\n}\n.jspsych-timelines-two-step-task:has(.ts-screen) #jspsych-html-button-response-btngroup {\n  position: absolute;\n  right: 0;\n  bottom: 12px;\n  left: 0;\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  justify-content: center;\n  gap: 8px;\n}\n.jspsych-timelines-two-step-task .ts-center {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 100%;\n}\n.jspsych-timelines-two-step-task .ts-pair {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  gap: min(160px, 20vw);\n}\n.jspsych-timelines-two-step-task .ts-item {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  padding: 6px;\n  border: 3px solid transparent;\n  border-radius: 12px;\n  line-height: 0;\n}\n.jspsych-timelines-two-step-task .ts-item svg {\n  max-width: 100%;\n  height: auto;\n}\n.jspsych-timelines-two-step-task .ts-item.ts-chosen {\n  border-color: #f4c430;\n}\n.jspsych-timelines-two-step-task .ts-item.ts-dim {\n  opacity: 0.3;\n}\n.jspsych-timelines-two-step-task .ts-outcome {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  gap: 6px;\n  line-height: 0;\n}\n.jspsych-timelines-two-step-task .ts-pair:has(.ts-statement) {\n  gap: 16px;\n}\n.jspsych-timelines-two-step-task .ts-statement {\n  box-sizing: border-box;\n  width: min(250px, calc(50vw - 40px));\n  padding: 10px;\n  border: 2px solid currentColor;\n  border-radius: 8px;\n  font-size: 1em;\n  line-height: 1.3;\n  text-align: center;\n  text-wrap: balance;\n}\n.jspsych-timelines-two-step-task .ts-fixation {\n  font-size: 3em;\n}\n.jspsych-timelines-two-step-task .ts-message {\n  font-size: 1em;\n  font-weight: bold;\n}\n.jspsych-timelines-two-step-task .ts-outcome-text {\n  font-weight: bold;\n}\n");
+  styleInject(".jspsych-timelines-two-step-task .ts-text {\n  max-width: 600px;\n  margin: 0 auto;\n  padding: 0 20px;\n  text-align: left;\n}\n.jspsych-timelines-two-step-task .ts-text h2 {\n  margin: 0 0 0.6em;\n  font-size: 1em;\n  font-weight: bold;\n  text-align: center;\n}\n.jspsych-timelines-two-step-task .ts-text svg,\n.jspsych-timelines-two-step-task .ts-inline svg {\n  vertical-align: middle;\n}\n.jspsych-timelines-two-step-task {\n  --ts-stage-h: min(280px, 34vh);\n  --ts-btn-reserve: 62px;\n}\n.jspsych-timelines-two-step-task:has(.ts-screen) {\n  position: relative;\n  box-sizing: border-box;\n  width: 100%;\n  max-width: none;\n  height: 100vh;\n  margin: 0;\n  overflow: hidden;\n}\n.jspsych-timelines-two-step-task .ts-screen {\n  display: contents;\n}\n.jspsych-timelines-two-step-task .ts-stage {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  transform: translate(-50%, -50%);\n  box-sizing: border-box;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 640px;\n  max-width: calc(100vw - 16px);\n  height: var(--ts-stage-h);\n  padding: 12px;\n  overflow: hidden;\n}\n.jspsych-timelines-two-step-task .ts-below {\n  position: absolute;\n  top: calc(50% + var(--ts-stage-h) / 2 + 8px);\n  right: 0;\n  bottom: 0;\n  left: 0;\n  overflow-y: auto;\n  overscroll-behavior: contain;\n}\n.jspsych-timelines-two-step-task .ts-below .ts-text {\n  text-align: center;\n  text-wrap: balance;\n}\n.jspsych-timelines-two-step-task .ts-below .ts-text p {\n  margin: 0.4em 0;\n}\n.jspsych-timelines-two-step-task:has(#jspsych-html-button-response-btngroup) .ts-below {\n  bottom: var(--ts-btn-reserve);\n}\n.jspsych-timelines-two-step-task:has(.ts-screen) #jspsych-html-button-response-btngroup {\n  position: absolute;\n  right: 0;\n  bottom: 12px;\n  left: 0;\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  justify-content: center;\n  gap: 8px;\n}\n.jspsych-timelines-two-step-task .ts-center {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 100%;\n}\n.jspsych-timelines-two-step-task .ts-pair {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  gap: min(160px, 20vw);\n}\n.jspsych-timelines-two-step-task .ts-item {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  padding: 6px;\n  border: 3px solid transparent;\n  border-radius: 12px;\n  line-height: 0;\n}\n.jspsych-timelines-two-step-task .ts-pic {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  box-sizing: border-box;\n  max-width: 100%;\n  vertical-align: middle;\n}\n.jspsych-timelines-two-step-task .ts-pic > svg,\n.jspsych-timelines-two-step-task .ts-pic > img {\n  display: block;\n  width: 100%;\n  height: 100%;\n  object-fit: contain;\n}\n.jspsych-timelines-two-step-task .ts-pic-text {\n  padding: 0 0.3em;\n  font-weight: bold;\n  line-height: 1.2;\n  white-space: nowrap;\n}\n.jspsych-timelines-two-step-task .ts-item.ts-chosen {\n  border-color: #f4c430;\n}\n.jspsych-timelines-two-step-task .ts-item.ts-dim {\n  opacity: 0.3;\n}\n.jspsych-timelines-two-step-task .ts-outcome {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  gap: 6px;\n  line-height: 0;\n}\n.jspsych-timelines-two-step-task .ts-pair:has(.ts-statement) {\n  gap: 16px;\n}\n.jspsych-timelines-two-step-task .ts-statement {\n  box-sizing: border-box;\n  width: min(250px, calc(50vw - 40px));\n  padding: 10px;\n  border: 2px solid currentColor;\n  border-radius: 8px;\n  font-size: 1em;\n  line-height: 1.3;\n  text-align: center;\n  text-wrap: balance;\n}\n.jspsych-timelines-two-step-task .ts-fixation {\n  font-size: 3em;\n}\n.jspsych-timelines-two-step-task .ts-message {\n  font-size: 1em;\n  font-weight: bold;\n}\n.jspsych-timelines-two-step-task .ts-outcome-text {\n  font-weight: bold;\n}\n");
 
   // ../../node_modules/jspsych/dist/index.js
   __toESM(require_auto_bind());
@@ -3982,14 +4244,19 @@ var jsPsychTimelineTwoStepTask = (function (exports) {
     const practice = resolveOptions(options, "practice");
     validateOptions(test);
     validateOptions(practice);
-    const framing = test.instruction_framing;
+    if (practice.stimulus_set !== test.stimulus_set) {
+      throw new Error(
+        "two-step-task: practice.stimulus_set differs from stimulus_set; the instructions name one set's pictures, so practice and test use the same set."
+      );
+    }
+    const set = prepareSet(test.stimulus_set);
     return {
       jsPsych,
       text,
       user: options,
       practice,
       test,
-      words: text.framing_words({ framing }),
+      words: text.framing_words({ words: set.words, set: set.name }),
       state: { total: { practice: 0, test: 0 } },
       agent: new HybridAgent(jsPsych, test.common_transition_prob)
     };
@@ -4016,11 +4283,11 @@ var jsPsychTimelineTwoStepTask = (function (exports) {
     const step = (_a = v.step) != null ? _a : 1;
     return v.min + step * jsPsych.randomization.randomInt(0, Math.floor((v.max - v.min) / step));
   }
-  var other = (a, pair) => a === pair[0] ? pair[1] : pair[0];
-  var SHIPS2 = ["A", "B"];
-  var OPTIONS2 = ["option_1", "option_2"];
+  var other = (a2, pair) => a2 === pair[0] ? pair[1] : pair[0];
+  var SHIPS = ["A", "B"];
+  var OPTIONS = ["option_1", "option_2"];
   var STATES = ["red", "blue"];
-  var framingOf = (o) => o.instruction_framing;
+  var setOf = (o) => prepareSet(o.stimulus_set);
   function sideOfKey(o, key) {
     if (key === null) return null;
     return key.toLowerCase() === o.response_keys[0].toLowerCase() ? "left" : "right";
@@ -4043,46 +4310,46 @@ var jsPsychTimelineTwoStepTask = (function (exports) {
   }
   function shipsHtml(o, plan, chosen = null, below = "") {
     const left = plan.ship_left;
-    const right = other(left, SHIPS2);
+    const right = other(left, SHIPS);
     return renderPair({
-      left: renderShip(framingOf(o), left),
-      right: renderShip(framingOf(o), right),
+      left: renderShip(setOf(o), left),
+      right: renderShip(setOf(o), right),
       chosen,
-      framing: framingOf(o),
+      set: setOf(o),
       state: null,
       below
     });
   }
   function optionsHtml(o, plan, state, chosen = null, below = "") {
     const left = plan.alien_left[state];
-    const right = other(left, OPTIONS2);
+    const right = other(left, OPTIONS);
     return renderPair({
-      left: renderOption(framingOf(o), state, left),
-      right: renderOption(framingOf(o), state, right),
+      left: renderOption(setOf(o), state, left),
+      right: renderOption(setOf(o), state, right),
       chosen,
-      framing: framingOf(o),
+      set: setOf(o),
       state,
       below
     });
   }
-  function createDisplayTrial(a) {
+  function createDisplayTrial(a2) {
     var _a, _b;
     return {
       type: HtmlKeyboardResponsePlugin,
       css_classes: [TASK_CLASS],
-      stimulus: a.stimulus,
+      stimulus: a2.stimulus,
       choices: "NO_KEYS",
-      trial_duration: a.duration,
+      trial_duration: a2.duration,
       data: baseData(__spreadValues({
-        phase: a.phase,
-        part: a.part,
-        block: (_a = a.block) != null ? _a : null,
-        duration_ms: a.duration
-      }, (_b = a.data) != null ? _b : {})),
+        phase: a2.phase,
+        part: a2.part,
+        block: (_a = a2.block) != null ? _a : null,
+        duration_ms: a2.duration
+      }, (_b = a2.data) != null ? _b : {})),
       on_finish: (d) => {
         var _a2;
         delete d.stimulus;
-        (_a2 = a.on_finish) == null ? void 0 : _a2.call(a, d);
+        (_a2 = a2.on_finish) == null ? void 0 : _a2.call(a2, d);
       }
     };
   }
@@ -4101,13 +4368,13 @@ var jsPsychTimelineTwoStepTask = (function (exports) {
     const s = o.reward_schedule;
     return `random_walk sd=${s.sd} bounds=[${s.bounds[0]},${s.bounds[1]}] boundary=${s.boundary}`;
   }
-  function createChoice(a, st, d, stage) {
-    const { ctx, o, plan } = a;
+  function createChoice(a2, st, d, stage) {
+    const { ctx, o, plan } = a2;
     const keys = [...o.response_keys];
     const idsOnScreen = () => {
-      if (stage === 1) return { left: plan.ship_left, right: other(plan.ship_left, SHIPS2) };
+      if (stage === 1) return { left: plan.ship_left, right: other(plan.ship_left, SHIPS) };
       const left = plan.alien_left[st.state];
-      return { left, right: other(left, OPTIONS2) };
+      return { left, right: other(left, OPTIONS) };
     };
     return {
       type: HtmlKeyboardResponsePlugin,
@@ -4116,11 +4383,11 @@ var jsPsychTimelineTwoStepTask = (function (exports) {
       choices: keys,
       trial_duration: d.window,
       data: baseData({
-        phase: a.phase,
+        phase: a2.phase,
         part: "choice",
         stage,
-        block: a.block,
-        trial_index_in_block: a.trial_index_in_block,
+        block: a2.block,
+        trial_index_in_block: a2.trial_index_in_block,
         response_window: d.window
       }),
       on_start: () => {
@@ -4143,6 +4410,13 @@ var jsPsychTimelineTwoStepTask = (function (exports) {
         row.right = ids.right;
         row.choice = choice;
         row.state = stage === 1 ? null : st.state;
+        const set = setOf(o);
+        const itemId = (role) => stage === 1 ? set.first[role].id : set.states[st.state].items[role].id;
+        row.stimulus_set = set.name;
+        row.state_id = stage === 1 ? null : set.states[st.state].id;
+        row.left_item_id = itemId(ids.left);
+        row.right_item_id = itemId(ids.right);
+        row.chosen_item_id = choice === null ? null : itemId(choice);
         row.condition = st.transition;
         if (stage === 1) {
           st.stage1 = { choice, key, side, rt: row.rt };
@@ -4161,7 +4435,7 @@ var jsPsychTimelineTwoStepTask = (function (exports) {
           } else {
             const reward = plan.rewards[st.state][choice] ? 1 : 0;
             st.reward = reward;
-            ctx.state.total[a.phase] += reward;
+            ctx.state.total[a2.phase] += reward;
             ctx.agent.update(
               st.stage1.choice,
               st.state,
@@ -4191,18 +4465,18 @@ var jsPsychTimelineTwoStepTask = (function (exports) {
       }
     };
   }
-  function createAcknowledgement(a, st, ms, stage) {
-    const { o, plan } = a;
+  function createAcknowledgement(a2, st, ms, stage) {
+    const { o, plan } = a2;
     return createDisplayTrial({
-      phase: a.phase,
+      phase: a2.phase,
       part: "acknowledgement",
-      block: a.block,
+      block: a2.block,
       stimulus: () => {
         const side = stage === 1 ? st.stage1.side : st.stage2.side;
         return stage === 1 ? shipsHtml(o, plan, side) : optionsHtml(o, plan, st.state, side);
       },
       duration: ms,
-      data: { stage, trial_index_in_block: a.trial_index_in_block, response_acknowledgement: ms },
+      data: { stage, trial_index_in_block: a2.trial_index_in_block, response_acknowledgement: ms },
       on_finish: (row) => {
         row.attempt = st.attempt;
       }
@@ -4213,68 +4487,68 @@ var jsPsychTimelineTwoStepTask = (function (exports) {
     const rewarded = st.reward === 1;
     const side = st.stage2.side;
     const left = st.plan.alien_left[st.state];
-    const id = side === "left" ? left : other(left, OPTIONS2);
-    const total = o.running_score_display === "running_total" ? `<p>${t.running_total({ total: ctx.state.total[phase] })}</p>` : "";
-    const caption = captionHtml != null ? captionHtml : `<div class="ts-text"><p class="ts-outcome-text">${rewarded ? t.outcome_coin : t.outcome_none}</p>${total}</div>`;
+    const id = side === "left" ? left : other(left, OPTIONS);
+    const total = o.running_score_display === "running_total" ? `<p>${t.running_total({ words: ctx.words, total: ctx.state.total[phase] })}</p>` : "";
+    const caption = captionHtml != null ? captionHtml : `<div class="ts-text"><p class="ts-outcome-text">${rewarded ? t.outcome_coin({ words: ctx.words }) : t.outcome_none({ words: ctx.words })}</p>${total}</div>`;
     return renderStage(
       `<div class="ts-outcome">${renderOption(
-      framingOf(o),
+      setOf(o),
       st.state,
       id,
       72
-    )}${renderCoin(rewarded, 40)}</div>`,
-      framingOf(o),
+    )}${renderCoin(setOf(o), rewarded, 40)}</div>`,
+      setOf(o),
       st.state,
       caption
     );
   }
-  function createOutcome(a, st, ms) {
+  function createOutcome(a2, st, ms) {
     return createDisplayTrial({
-      phase: a.phase,
+      phase: a2.phase,
       part: "feedback",
-      block: a.block,
-      stimulus: () => outcomeHtml(a.ctx, a.o, st, a.phase),
+      block: a2.block,
+      stimulus: () => outcomeHtml(a2.ctx, a2.o, st, a2.phase),
       duration: ms,
       data: {
-        trial_index_in_block: a.trial_index_in_block,
+        trial_index_in_block: a2.trial_index_in_block,
         feedback_duration: ms,
         feedback_kind: "outcome"
       },
       on_finish: (row) => {
         row.attempt = st.attempt;
         row.reward = st.reward;
-        row.running_total = a.o.running_score_display === "running_total" ? a.ctx.state.total[a.phase] : null;
+        row.running_total = a2.o.running_score_display === "running_total" ? a2.ctx.state.total[a2.phase] : null;
       }
     });
   }
-  function createTimeoutMessage(a, st, ms) {
+  function createTimeoutMessage(a2, st, ms) {
     return createDisplayTrial({
-      phase: a.phase,
+      phase: a2.phase,
       part: "timeout_message",
-      block: a.block,
-      stimulus: () => renderMessage(framingOf(a.o), st.missed_stage === 2 ? st.state : null, a.ctx.text.too_slow),
+      block: a2.block,
+      stimulus: () => renderMessage(setOf(a2.o), st.missed_stage === 2 ? st.state : null, a2.ctx.text.too_slow),
       duration: ms,
-      data: { trial_index_in_block: a.trial_index_in_block, timeout_message: ms },
+      data: { trial_index_in_block: a2.trial_index_in_block, timeout_message: ms },
       on_finish: (row) => {
         row.attempt = st.attempt;
         row.stage = st.missed_stage;
       }
     });
   }
-  function createSummary(a, st, d) {
-    const { o, plan } = a;
+  function createSummary(a2, st, d) {
+    const { o, plan } = a2;
     return {
       type: HtmlKeyboardResponsePlugin,
       css_classes: [TASK_CLASS],
       // a blank, painted display (as the ITI): an empty one could flash the page colour for a frame
-      stimulus: renderStage("", framingOf(o), null),
+      stimulus: renderStage("", setOf(o), null),
       choices: "NO_KEYS",
       trial_duration: 0,
       data: baseData({
-        phase: a.phase,
+        phase: a2.phase,
         part: "response",
-        block: a.block,
-        trial_index_in_block: a.trial_index_in_block,
+        block: a2.block,
+        trial_index_in_block: a2.trial_index_in_block,
         response_window: d.window,
         common_transition_prob: o.common_transition_prob,
         reward_walk: scheduleLabel(o)
@@ -4296,6 +4570,11 @@ var jsPsychTimelineTwoStepTask = (function (exports) {
         row.stage2_side = st.stage2.side;
         row.stage2_rt = st.stage2.rt;
         row.stage2_left = st.state === null ? null : plan.alien_left[st.state];
+        const set = setOf(o);
+        row.stimulus_set = set.name;
+        row.stage1_item_id = st.stage1.choice === null ? null : set.first[st.stage1.choice].id;
+        row.stage2_state_id = st.state === null ? null : set.states[st.state].id;
+        row.stage2_item_id = st.state === null || st.stage2.choice === null ? null : set.states[st.state].items[st.stage2.choice].id;
         row.reward = st.reward;
         row.reward_probs = plan.probs;
         row.planned_transition = plan.common ? "common" : "rare";
@@ -4307,61 +4586,61 @@ var jsPsychTimelineTwoStepTask = (function (exports) {
       }
     };
   }
-  function createTrial(a) {
-    const { ctx, o } = a;
+  function createTrial(a2) {
+    const { ctx, o } = a2;
     const d = drawDurations(ctx.jsPsych, o);
-    const st = newTrialState(a.plan);
+    const st = newTrialState(a2.plan);
     const ack = o.response_acknowledgement === "highlight";
     const nodes = [];
     if (d.fixation > 0) {
       nodes.push(
         createDisplayTrial({
-          phase: a.phase,
+          phase: a2.phase,
           part: "fixation",
-          block: a.block,
-          stimulus: renderFixation(framingOf(o), ctx.text.fixation),
+          block: a2.block,
+          stimulus: renderFixation(setOf(o), ctx.text.fixation),
           duration: d.fixation,
-          data: { trial_index_in_block: a.trial_index_in_block, fixation_duration: d.fixation }
+          data: { trial_index_in_block: a2.trial_index_in_block, fixation_duration: d.fixation }
         })
       );
     }
-    nodes.push(createChoice(a, st, d, 1));
+    nodes.push(createChoice(a2, st, d, 1));
     if (ack && d.acknowledgement_1 > 0) {
       nodes.push({
-        timeline: [createAcknowledgement(a, st, d.acknowledgement_1, 1)],
+        timeline: [createAcknowledgement(a2, st, d.acknowledgement_1, 1)],
         conditional_function: () => st.stage1.choice !== null
       });
     }
-    const second = [createChoice(a, st, d, 2)];
+    const second = [createChoice(a2, st, d, 2)];
     if (ack && d.acknowledgement_2 > 0) {
       second.push({
-        timeline: [createAcknowledgement(a, st, d.acknowledgement_2, 2)],
+        timeline: [createAcknowledgement(a2, st, d.acknowledgement_2, 2)],
         conditional_function: () => st.stage2.choice !== null
       });
     }
     if (d.feedback > 0) {
       second.push({
-        timeline: [createOutcome(a, st, d.feedback)],
+        timeline: [createOutcome(a2, st, d.feedback)],
         conditional_function: () => st.stage2.choice !== null
       });
     }
     nodes.push({ timeline: second, conditional_function: () => st.stage1.choice !== null });
     if (d.timeout_message > 0) {
       nodes.push({
-        timeline: [createTimeoutMessage(a, st, d.timeout_message)],
+        timeline: [createTimeoutMessage(a2, st, d.timeout_message)],
         conditional_function: () => st.missed_stage !== null
       });
     }
-    nodes.push(createSummary(a, st, d));
+    nodes.push(createSummary(a2, st, d));
     if (d.iti > 0) {
       nodes.push(
         createDisplayTrial({
-          phase: a.phase,
+          phase: a2.phase,
           part: "iti",
-          block: a.block,
-          stimulus: renderStage("", framingOf(o), null),
+          block: a2.block,
+          stimulus: renderStage("", setOf(o), null),
           duration: d.iti,
-          data: { trial_index_in_block: a.trial_index_in_block, iti: d.iti }
+          data: { trial_index_in_block: a2.trial_index_in_block, iti: d.iti }
         })
       );
     }
@@ -4452,7 +4731,7 @@ var jsPsychTimelineTwoStepTask = (function (exports) {
     const o = ctx.test;
     const t = ctx.text;
     const words = ctx.words;
-    const framing = framingOf(o);
+    const set = setOf(o);
     const plan = demoPlan();
     const key = (side) => keyLabel(o, side);
     const steps = [];
@@ -4476,25 +4755,25 @@ var jsPsychTimelineTwoStepTask = (function (exports) {
       reveal: t.step_second_reveal(s2)
     });
     if (o.contingency_disclosure === "full") {
-      SHIPS2.forEach((ship, i) => {
+      SHIPS.forEach((ship, i) => {
         const side = i === 0 ? "right" : "left";
         const common = COMMON_STATE[ship];
         const names = { first_name: words.first_name[ship], state_name: words.state_name[common] };
-        const a = __spreadValues({ words, side, key: key(side) }, names);
+        const a2 = __spreadValues({ words, side, key: key(side) }, names);
         const q = {
           words,
           first_name: names.first_name,
           left_key: key("left"),
           right_key: key("right")
         };
-        const picture = `<span class="ts-inline">${renderShip(framing, ship, 40)}</span> `;
+        const picture = `<span class="ts-inline">${renderShip(set, ship, 40)}</span> `;
         const pair = (cap2) => {
           const left = side === "left" ? common : other(common, STATES);
           const right = other(left, STATES);
           return renderPair({
-            left: renderState(framing, left),
-            right: renderState(framing, right),
-            framing,
+            left: renderState(set, left),
+            right: renderState(set, right),
+            set,
             state: null,
             below: cap2
           });
@@ -4504,46 +4783,46 @@ var jsPsychTimelineTwoStepTask = (function (exports) {
           render: (cap2) => pair(cap2),
           side,
           prompt: picture + t.check_mapping(q),
-          hint: picture + t.check_mapping_hint(a),
-          reveal: picture + t.check_mapping_reveal(a)
+          hint: picture + t.check_mapping_hint(a2),
+          reveal: picture + t.check_mapping_reveal(a2)
         });
       });
     } else if (o.contingency_disclosure === "partial") {
       const side = "left";
-      const a = { words, side, key: key(side) };
+      const a2 = { words, side, key: key(side) };
       const q = { words, left_key: key("left"), right_key: key("right") };
       steps.push({
         id: "statement_transitions",
         render: (cap2) => renderPair({
           left: statement(t.statement_transitions_true({ words })),
           right: statement(t.statement_transitions_false({ words })),
-          framing,
+          set,
           state: null,
           below: cap2
         }),
         side,
         prompt: t.check_statement(q),
-        hint: t.check_statement_hint(a),
-        reveal: t.check_statement_reveal(a)
+        hint: t.check_statement_hint(a2),
+        reveal: t.check_statement_reveal(a2)
       });
     }
     if (o.contingency_disclosure !== "none") {
       const side = "right";
-      const a = { words, side, key: key(side) };
+      const a2 = { words, side, key: key(side) };
       const q = { words, left_key: key("left"), right_key: key("right") };
       steps.push({
         id: "statement_drift",
         render: (cap2) => renderPair({
           left: statement(t.statement_drift_false({ words })),
           right: statement(t.statement_drift_true({ words })),
-          framing,
+          set,
           state: null,
           below: cap2
         }),
         side,
         prompt: t.check_statement(q),
-        hint: t.check_statement_hint(a),
-        reveal: t.check_statement_reveal(a)
+        hint: t.check_statement_hint(a2),
+        reveal: t.check_statement_reveal(a2)
       });
     }
     return steps;
@@ -4658,7 +4937,12 @@ var jsPsychTimelineTwoStepTask = (function (exports) {
     );
   }
   function createTestIntro(ctx) {
-    return textPage(ctx, ctx.text.instruction_test_intro, "instructions", "instruction");
+    return textPage(
+      ctx,
+      ctx.text.instruction_test_intro({ words: ctx.words }),
+      "instructions",
+      "instruction"
+    );
   }
   function createRestBreak(ctx, block) {
     return textPage(
@@ -4670,14 +4954,14 @@ var jsPsychTimelineTwoStepTask = (function (exports) {
   }
   function createQuestionnaire(ctx) {
     const o = ctx.test;
-    const framing = framingOf(o);
+    const set = setOf(o);
     const t = ctx.text;
-    const trials = SHIPS2.map((ship, i) => {
+    const trials = SHIPS.map((ship, i) => {
       const common = COMMON_STATE[ship];
       const trueSide = i === 0 ? "left" : "right";
       const left = trueSide === "left" ? common : other(common, STATES);
       const caption = `<div class="ts-text"><p><span class="ts-inline">${renderShip(
-      framing,
+      set,
       ship,
       40
     )}</span> ${t.questionnaire_question({
@@ -4690,9 +4974,9 @@ var jsPsychTimelineTwoStepTask = (function (exports) {
         type: HtmlKeyboardResponsePlugin,
         css_classes: [TASK_CLASS],
         stimulus: renderPair({
-          left: renderState(framing, left),
-          right: renderState(framing, other(left, STATES)),
-          framing,
+          left: renderState(set, left),
+          right: renderState(set, other(left, STATES)),
+          set,
           state: null,
           below: caption
         }),
@@ -4707,6 +4991,9 @@ var jsPsychTimelineTwoStepTask = (function (exports) {
           d.rt = key === null ? null : d.rt;
           d.answer = answer;
           d.common_state = common;
+          d.stimulus_set = set.name;
+          d.item_id = set.first[ship].id;
+          d.answer_state_id = answer === null ? null : set.states[answer].id;
           d.correct = answer === common;
         }
       };
@@ -4723,6 +5010,7 @@ var jsPsychTimelineTwoStepTask = (function (exports) {
         const s = calculate(ctx.jsPsych.data.get());
         return textHtml(
           `<h2>${ctx.text.task_complete}</h2>${ctx.text.result_summary({
+          words: ctx.words,
           coins: s.total_reward,
           n_trials: s.n_trials,
           n_missed: s.n_missed
@@ -4797,11 +5085,46 @@ var jsPsychTimelineTwoStepTask = (function (exports) {
       SIMULATION
     },
     text: { defaultText },
-    stimuli: { renderShip, renderOption, renderState, renderCoin, renderPair, keyName },
+    /**
+     * The bundled stimulus sets (`abstractSymbols`, `spaceshipPlanetAlien`), as values for `stimulus_set`, beside the
+     * helpers that draw any set (bundled or your own) and check one (`setProblems`).
+     */
+    stimuli: __spreadProps(__spreadValues({}, stimuli), {
+      prepareSet,
+      setProblems,
+      renderItem,
+      renderShip,
+      renderOption,
+      renderState,
+      renderCoin,
+      renderPair,
+      paintDisplay,
+      keyName
+    }),
     schedule: { buildSchedule, generateWalk, stepProbability, splitTrials },
     simulation: { setSimulatedAgent, getSimulatedAgent, HybridAgent },
     options: { resolveOptions, validateOptions }
   };
+  /**
+   * @license Drawings original to @jspsych-timelines/two-step-task (abstract symbols, spaceships, planets, aliens,
+   * coin), MIT License:
+   *
+   * Copyright (c) 2023 jspsych (the repository licence; drawings added in 2026)
+   *
+   * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+   * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+   * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and
+   * to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+   *
+   * The above copyright notice and this permission notice shall be included in all copies or substantial portions of
+   * the Software.
+   *
+   * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+   * THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+   * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
+   * CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+   * IN THE SOFTWARE.
+   */
 
   exports.createTimeline = createTimeline;
   exports.timelineUnits = timelineUnits;
