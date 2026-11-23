@@ -49,6 +49,8 @@ export type { TextConfig }
 
 ### `createTimeline`
 
+It returns `{ timeline: [...] }`, which is a jsPsych timeline node: examples and docs use the result as is (`const task = createTimeline(jsPsych, options); jsPsych.run([task]);`, or beside other trials), never `const { timeline } = ...`. The object form leaves room to return more later without breaking callers.
+
 The signature is `(jsPsych, options)` where `options` is a **single named interface with all-optional properties**, not inline destructured defaults.
 
 ```ts
