@@ -1,4 +1,4 @@
-import type { StimulusItem, StimulusLayout } from "./options";
+import type { ResolvedItem, StimulusLayout } from "./options";
 import type { TextConfig } from "./text";
 
 const SAFE_COLOR = /^[#a-zA-Z0-9(),.%\s-]+$/;
@@ -12,31 +12,41 @@ export function checkColor(color: string): string {
 const escapeHtml = (s: string) =>
   s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
-/** Identifier of a stimulus in the data: its label, else "<shape>_<color>" or the text. */
-export function stimulusId(item: StimulusItem): string {
-  if (item.label) return item.label;
-  return [item.shape, item.color, item.text].filter(Boolean).join("_") || "stimulus";
+/** Identifier of a stimulus in the data (see `StimulusItem`). */
+export function stimulusId(item: ResolvedItem): string {
+  return item.id;
 }
 
-/** Name of a stimulus in the instructions ("blue square", or the text). */
-export function stimulusName(item: StimulusItem, text: TextConfig): string {
-  if (item.label) return item.label;
-  if (item.text) return item.text;
-  const shape = item.shape ? text.shape_names[item.shape] : "";
-  return item.color && shape
-    ? text.stimulus_name({ color: item.color, shape })
-    : shape || item.color || "";
+/** Name of a stimulus in the instructions: its given id, "blue square", the text, or "picture". */
+export function stimulusName(item: ResolvedItem, text: TextConfig): string {
+  if (item.named) return item.id;
+  if (item.text !== undefined) return item.text;
+  if (item.shape !== undefined) {
+    const shape = text.shape_names[item.shape];
+    return item.color ? text.stimulus_name({ color: item.color, shape }) : shape;
+  }
+  return text.picture_name;
 }
 
 /** "blue square or orange square". */
-export function namesOf(items: StimulusItem[], text: TextConfig): string {
+export function namesOf(items: ResolvedItem[], text: TextConfig): string {
   return items.map((i) => stimulusName(i, text)).join(` ${text.list_or} `);
 }
 
-/** SVG or text for one stimulus, `size` px. */
-export function renderItem(item: StimulusItem, size: number): string {
+/** SVG, picture or text for one stimulus, `size` px. */
+export function renderItem(item: ResolvedItem, size: number): string {
+  if (item.image !== undefined) {
+    return `<img class="jspsych-timelines-go-nogo-picture" src="${escapeHtml(
+      item.image
+    )}" alt="${escapeHtml(item.id)}" style="width:${size}px;height:${size}px">`;
+  }
+  if (item.svg !== undefined) {
+    return `<span class="jspsych-timelines-go-nogo-picture" role="img" aria-label="${escapeHtml(
+      item.id
+    )}" style="width:${size}px;height:${size}px">${item.svg}</span>`;
+  }
   const color = checkColor(item.color ?? "currentColor");
-  if (item.text !== undefined && item.shape === undefined) {
+  if (item.text !== undefined) {
     return `<span class="jspsych-timelines-go-nogo-letter" style="font-size:${Math.round(
       size * 0.7
     )}px;color:${color}">${escapeHtml(item.text)}</span>`;
@@ -61,7 +71,7 @@ export function renderItem(item: StimulusItem, size: number): string {
       break;
   }
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 48 48" role="img" aria-label="${escapeHtml(
-    item.label ?? item.shape ?? ""
+    item.id
   )}">${inner}</svg>`;
 }
 

@@ -66,7 +66,7 @@ export interface TrialData {
   trial_index_in_block?: number;
   /** go | nogo | go_control (go-only baseline block). */
   condition?: string;
-  /** Identifier of the stimulus shown: its label, "<shape>_<color>", or its text. */
+  /** Identifier of the stimulus shown: its `id`, else "<shape>_<color>", its text, or "picture-<n>". */
   stimulus?: string;
   /** center | top_center | top_left | top_right | bottom_left | bottom_right */
   stimulus_location?: string;
@@ -181,3 +181,4 @@ export const utils = {
 };
 
 export type { GoNogoOptions, ScoringResult, TextConfig };
+export type { StimulusItem, ResolvedItem, StimulusShape } from "./options";

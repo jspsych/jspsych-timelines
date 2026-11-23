@@ -82,6 +82,8 @@ export interface TextConfig {
    * @param r.shape  the translated shape name
    */
   stimulus_name: (r: { color: string; shape: string }) => string;
+  /** Name of an image or SVG stimulus that has no `id` (give an id, e.g. "car", to name it). */
+  picture_name: string;
 
   // -- buttons --
   /** Label of the response button for the mouse and touch devices. */
@@ -189,6 +191,7 @@ export const defaultText: TextConfig = {
   },
   list_or: "or",
   stimulus_name: (r) => `${r.color} ${r.shape}`,
+  picture_name: "picture",
 
   go_button: "Respond",
   continue_button: "Continue",

@@ -751,7 +751,7 @@
       "labelledAddition": false,
       "status": "not expressible",
       "gap": "option missing",
-      "reason": "picture stimuli (faces: gender (cold) or emotion (hot)) are not drawn by this package"
+      "reason": "no bundled pictures for \"faces: gender (cold) or emotion (hot)\"; pass the study's pictures as image items in stimulus_set.go and stimulus_set.nogo"
     },
     {
       "option": "stimulus_set",
@@ -767,7 +767,7 @@
       "labelledAddition": false,
       "status": "not expressible",
       "gap": "option missing",
-      "reason": "picture stimuli (emoticon cat face x parachute colour conjunctions) are not drawn by this package"
+      "reason": "no bundled pictures for \"emoticon cat face x parachute colour conjunctions\"; pass the study's pictures as image items in stimulus_set.go and stimulus_set.nogo"
     },
     {
       "option": "stimulus_set",
@@ -815,7 +815,7 @@
       "labelledAddition": false,
       "status": "not expressible",
       "gap": "option missing",
-      "reason": "picture stimuli (line drawings (car go / dog no-go)) are not drawn by this package"
+      "reason": "no bundled pictures for \"line drawings (car go / dog no-go)\"; pass the study's pictures as image items in stimulus_set.go and stimulus_set.nogo"
     },
     {
       "option": "stimulus_set",
@@ -2168,7 +2168,7 @@
         {
           "key": "stimulus_set.stimulus_set",
           "gap": "option missing",
-          "reason": "picture stimuli (line drawings (car go / dog no-go)) are not drawn by this package"
+          "reason": "no bundled pictures for \"line drawings (car go / dog no-go)\"; pass the study's pictures as image items in stimulus_set.go and stimulus_set.nogo"
         }
       ],
       "checked_options": [
@@ -2257,7 +2257,7 @@
         {
           "key": "stimulus_set.stimulus_set",
           "gap": "option missing",
-          "reason": "picture stimuli (emoticon cat face x parachute colour conjunctions) are not drawn by this package"
+          "reason": "no bundled pictures for \"emoticon cat face x parachute colour conjunctions\"; pass the study's pictures as image items in stimulus_set.go and stimulus_set.nogo"
         }
       ],
       "checked_options": [

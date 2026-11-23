@@ -21,6 +21,11 @@ const options = {
   pre_block_countdown_ms: 300,
 };
 
+const STAR =
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M50 5 61 39H97L68 60 79 95 50 74 21 95 32 60 3 39H39Z" fill="#2a7"/></svg>';
+const RING =
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="none" stroke="#c40" stroke-width="12"/></svg>';
+
 export default {
   bundle: "dist/index.browser.js",
   global: "jsPsychTimelineGoNogo",
@@ -53,6 +58,19 @@ export default {
         name: `grid ${viewport.width}x${viewport.height}`,
         viewport,
         options: { ...options, stimulus_layout: "random_2x2_grid" },
+        keys: { stimulus: " " },
+      },
+      {
+        // a researcher's own pictures (SVG items), drawn at the stimulus size
+        name: `own svg items ${viewport.width}x${viewport.height}`,
+        viewport,
+        options: {
+          ...options,
+          stimulus_set: {
+            go: { id: "star", svg: STAR },
+            nogo: { id: "ring", svg: RING },
+          },
+        },
         keys: { stimulus: " " },
       },
       {

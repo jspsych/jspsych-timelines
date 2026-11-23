@@ -20,16 +20,31 @@ export type DurationOrJitter = number | { min: number; max: number; step?: numbe
 export type StimulusShape = "square" | "circle" | "triangle" | "diamond" | "cross";
 
 /**
- * One stimulus: a shape in a colour, or text (a letter or word). Text can have a colour too.
- * `label` names the stimulus in the data and the instructions; without it the name is built from
- * the colour and shape ("blue square") or is the text.
+ * One stimulus. A string is a text item. An object gives exactly one of `shape` (drawn by the package, in `color`),
+ * `text` (a letter or word, optionally in `color`), `image` (a URL) or `svg` (SVG markup), and optionally an `id`.
+ * The id is recorded as `stimulus` in the data and is what the instructions call the stimulus. Without one, the id is
+ * "<shape>_<color>" for a shape, the text for a text item, and "picture-<n>" for an image or SVG (n counts the
+ * pictures of the set, go stimuli first, as given); the instructions then say "blue square", the text, or "picture".
+ * Ids must be unique across the go and no-go stimuli.
  */
-export interface StimulusItem {
+export type StimulusItem =
+  | string
+  | { shape: StimulusShape; color?: string; id?: string; text?: never; image?: never; svg?: never }
+  | { text: string; color?: string; id?: string; shape?: never; image?: never; svg?: never }
+  | { image: string; id?: string; shape?: never; text?: never; svg?: never; color?: never }
+  | { svg: string; id?: string; shape?: never; text?: never; image?: never; color?: never };
+
+/** A stimulus as the screens use it: an object with exactly one form and its id. */
+export interface ResolvedItem {
+  /** Recorded as `stimulus`. */
+  id: string;
+  /** Whether the id was given (it then names the stimulus in the instructions). */
+  named: boolean;
   shape?: StimulusShape;
-  /** Any CSS colour. */
   color?: string;
   text?: string;
-  label?: string;
+  image?: string;
+  svg?: string;
 }
 
 /** Stimuli of each trial type: one item, or a list that is cycled through (balanced within a block). */
@@ -285,9 +300,17 @@ export const PHASE_OPTIONS = [
 
 export type PhaseOptionKey = (typeof PHASE_OPTIONS)[number];
 
-export type ResolvedOptions = Required<Omit<GoNogoOptions, "practice" | "text">> & {
-  stimulus_set: { go: StimulusItem[]; nogo: StimulusItem[] };
+export type ResolvedOptions = Required<
+  Omit<GoNogoOptions, "practice" | "text" | "stimulus_set">
+> & {
+  stimulus_set: { go: ResolvedItem[]; nogo: ResolvedItem[] };
   condition_proportions: Record<GoNogoCondition, number>;
+};
+
+/** The default stimuli as given (drawn shapes, so no bundled set): a blue and an orange square (S022). */
+export const DEFAULT_STIMULI: { go: StimulusItem[]; nogo: StimulusItem[] } = {
+  go: [{ shape: "square", color: "blue" }],
+  nogo: [{ shape: "square", color: "orange" }],
 };
 
 export const DEFAULT_OPTIONS: ResolvedOptions & { practice: Partial<GoNogoOptions> } = {
@@ -301,8 +324,8 @@ export const DEFAULT_OPTIONS: ResolvedOptions & { practice: Partial<GoNogoOption
   stimulus_layout: "center",
   stimulus_modality: "visual",
   stimulus_set: {
-    go: [{ shape: "square", color: "blue" }],
-    nogo: [{ shape: "square", color: "orange" }],
+    go: [{ id: "square_blue", named: false, shape: "square", color: "blue" }],
+    nogo: [{ id: "square_orange", named: false, shape: "square", color: "orange" }],
   },
   condition_proportions: { go: 0.9, nogo: 0.1 },
   n_blocks: 1,
@@ -371,6 +394,73 @@ function asList(
   return Array.isArray(x) ? x : [x];
 }
 
+const FORMS = ["shape", "text", "image", "svg"] as const;
+const SHAPES: StimulusShape[] = ["square", "circle", "triangle", "diamond", "cross"];
+
+/**
+ * Check the go and no-go stimuli and give each its id. Throws on an item that is not one of the
+ * forms, on an unknown shape and on a duplicate id.
+ */
+export function resolveItems(set: { go: StimulusItem[]; nogo: StimulusItem[] }): {
+  go: ResolvedItem[];
+  nogo: ResolvedItem[];
+} {
+  let pictures = 0;
+  const seen = new Map<string, string>();
+  const one = (role: "go" | "nogo", x: StimulusItem, i: number): ResolvedItem => {
+    const where = `stimulus_set.${role}[${i}]`;
+    if (typeof x === "string") x = { text: x };
+    if (typeof x !== "object" || x === null || Array.isArray(x)) {
+      throw new Error(
+        `go-nogo: ${where} must be a string or an object with shape, text, image or svg.`
+      );
+    }
+    const given = FORMS.filter((k) => (x as any)[k] !== undefined);
+    if (given.length !== 1) {
+      throw new Error(
+        `go-nogo: ${where} needs exactly one of shape, text, image or svg${
+          given.length ? ` (it has ${given.join(" and ")})` : ""
+        }.`
+      );
+    }
+    const form = given[0];
+    const value = (x as any)[form];
+    if (typeof value !== "string" || value === "") {
+      throw new Error(`go-nogo: ${where}.${form} must be a non-empty string.`);
+    }
+    if (form === "shape" && !SHAPES.includes(value as StimulusShape)) {
+      throw new Error(`go-nogo: ${where}.shape "${value}" is not one of ${SHAPES.join(", ")}.`);
+    }
+    if ((form === "image" || form === "svg") && (x as any).color !== undefined) {
+      throw new Error(`go-nogo: ${where}: color applies to a shape or text, not to ${form}.`);
+    }
+    const color = (x as any).color as string | undefined;
+    if (form === "image" || form === "svg") pictures++;
+    const named = x.id !== undefined;
+    const id = named
+      ? String(x.id)
+      : form === "shape"
+      ? [value, color].filter(Boolean).join("_")
+      : form === "text"
+      ? value
+      : `picture-${pictures}`;
+    const prev = seen.get(id);
+    if (prev !== undefined) {
+      throw new Error(
+        prev !== role
+          ? `go-nogo: stimulus_set: "${id}" is both a go and a no-go stimulus (ids must be unique).`
+          : `go-nogo: stimulus_set.${role}: the id "${id}" is used twice (ids must be unique).`
+      );
+    }
+    seen.set(id, role);
+    return { id, named, [form]: value, ...(color !== undefined ? { color } : {}) };
+  };
+  return {
+    go: set.go.map((x, i) => one("go", x, i)),
+    nogo: set.nogo.map((x, i) => one("nogo", x, i)),
+  };
+}
+
 /**
  * Resolve user options into complete options for one phase. Precedence, highest first: the user's
  * `practice` value, the user's top-level value, the package's practice default, the package's default.
@@ -397,10 +487,10 @@ export function resolveOptions(
   const merged: any = { ...DEFAULT_OPTIONS };
   delete merged.practice;
   for (const [k, v] of Object.entries(layer)) if (v !== undefined) merged[k] = v;
-  merged.stimulus_set = {
-    go: asList(layer.stimulus_set?.go, DEFAULT_OPTIONS.stimulus_set.go),
-    nogo: asList(layer.stimulus_set?.nogo, DEFAULT_OPTIONS.stimulus_set.nogo),
-  };
+  merged.stimulus_set = resolveItems({
+    go: asList(layer.stimulus_set?.go, DEFAULT_STIMULI.go),
+    nogo: asList(layer.stimulus_set?.nogo, DEFAULT_STIMULI.nogo),
+  });
   const props = layer.condition_proportions;
   if (props !== undefined) {
     if (Array.isArray(props)) {
@@ -432,8 +522,6 @@ export function resolveOptions(
   return merged as ResolvedOptions;
 }
 
-const stimulusKey = (i: StimulusItem) => i.label ?? JSON.stringify([i.shape, i.color, i.text]);
-
 /** Throw on values the package cannot honour or combinations that contradict each other. */
 export function validateOptions(o: ResolvedOptions): void {
   for (const [key, values, why] of NOT_IMPLEMENTED) {
@@ -463,12 +551,6 @@ export function validateOptions(o: ResolvedOptions): void {
   }
   if (o.stimulus_set.go.length === 0 || o.stimulus_set.nogo.length === 0) {
     throw new Error("go-nogo: stimulus_set needs at least one go and one no-go stimulus.");
-  }
-  const overlap = o.stimulus_set.go.filter((g) =>
-    o.stimulus_set.nogo.some((n) => stimulusKey(n) === stimulusKey(g))
-  );
-  if (overlap.length) {
-    throw new Error("go-nogo: stimulus_set: a stimulus is both a go and a no-go stimulus.");
   }
   const w = o.response_window_ms;
   const termination = o.trial_termination_rule;
