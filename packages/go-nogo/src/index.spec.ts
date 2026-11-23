@@ -382,6 +382,90 @@ describe("go-nogo", () => {
       expect(count("X")).toBe(20);
     });
 
+    it("accepts a researcher's own pictures, SVG and string items, and records their ids", async () => {
+      const own: GoNogoOptions = {
+        practice_trials: 0,
+        n_test_trials: 20,
+        stimulus_role_assignment: "fixed",
+        condition_proportions: { go: 0.5, nogo: 0.5 },
+        stimulus_set: {
+          go: [{ image: "img/car.png", id: "car" }, "P"],
+          nogo: [{ svg: '<svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="4"/></svg>' }],
+        },
+      };
+      const rows = await simulate(jsPsych, own);
+      const t = rows.filter((r) => r.phase === "test" && r.part === "response");
+      expect(new Set(t.map((r) => r.stimulus))).toEqual(new Set(["car", "P", "picture-2"]));
+
+      const ctx = timelineUnits.createContext(initJsPsych(), own);
+      const html = [...ctx.stimulus_set.go, ...ctx.stimulus_set.nogo]
+        .map((item) =>
+          timelineUnits.createResponseTrial(
+            ctx,
+            ctx.test,
+            { condition: "go", item, stimulus: item.id, stimulus_location: "center" },
+            "test",
+            1,
+            1
+          )
+        )
+        .map((tr: any) => tr.stimulus ?? tr.timeline?.[0]?.stimulus)
+        .join("");
+      expect(html).toContain('src="img/car.png"');
+      expect(html).toContain('<circle cx="5"');
+    });
+
+    it("names the stimuli in the instructions by id, text, colour and shape, or 'picture'", () => {
+      const ctx = timelineUnits.createContext(initJsPsych(), {
+        stimulus_role_assignment: "fixed",
+        instruction_demonstration: "none",
+        stimulus_set: {
+          go: [
+            { image: "img/car.png", id: "car" },
+            { shape: "circle", color: "green" },
+          ],
+          nogo: [{ image: "img/dog.png" }],
+        },
+      });
+      const html = JSON.stringify(timelineUnits.createInstructions(ctx));
+      expect(html).toContain("(car or green circle)");
+      expect(html).toContain("(picture)");
+    });
+
+    it("keeps the default stimuli in the given form, so they can be passed back as options", () => {
+      expect(utils.constants.DEFAULT_OPTIONS.stimulus_set.go).toEqual([
+        { shape: "square", color: "blue" },
+      ]);
+      const ctx = timelineUnits.createContext(initJsPsych(), {
+        stimulus_role_assignment: "fixed",
+        stimulus_set: utils.constants.DEFAULT_OPTIONS.stimulus_set,
+      });
+      expect(ctx.stimulus_set.go[0].id).toBe("square_blue");
+      expect(JSON.stringify(timelineUnits.createInstructions(ctx))).toContain("(blue square)");
+    });
+
+    it("utils.stimuli.renderItem draws an item as given or resolved", () => {
+      expect(utils.stimuli.renderItem({ shape: "square", color: "blue" }, 40)).toContain(
+        'aria-label="square_blue"'
+      );
+      expect(utils.stimuli.renderItem("P", 40)).toContain(">P</span>");
+      expect(utils.stimuli.renderItem({ image: "a.png", id: "a" }, 40)).toContain('src="a.png"');
+    });
+
+    it("throws a clear error for a malformed item or a duplicate id", () => {
+      const make = (stimulus_set: any) => () => createTimeline(initJsPsych(), { stimulus_set });
+      expect(make({ go: { shape: "square", text: "A" } })).toThrow(
+        /stimulus_set.go\[0\] needs exactly one of shape, text, image or svg \(it has shape and text\)/
+      );
+      expect(make({ go: { color: "red" } })).toThrow(/needs exactly one of shape, text, image/);
+      expect(make({ go: { shape: "star" } })).toThrow(/shape "star" is not one of/);
+      expect(make({ go: { image: "a.png", color: "red" } })).toThrow(/color applies to a shape/);
+      expect(make({ go: ["A", { text: "B", id: "A" }] })).toThrow(/the id "A" is used twice/);
+      expect(make({ go: "A", nogo: { image: "x.png", id: "A" } })).toThrow(
+        /"A" is both a go and a no-go stimulus/
+      );
+    });
+
     it("random_2x2_grid draws a cell per trial and records it", async () => {
       const rows = await simulate(jsPsych, {
         practice_trials: 0,

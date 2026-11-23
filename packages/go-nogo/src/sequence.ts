@@ -18,9 +18,9 @@ import { SEQUENCE_KEYS } from "./options";
 import type {
   DurationOrJitter,
   GoNogoCondition,
+  ResolvedItem,
   ResolvedOptions,
   SequenceConstraints,
-  StimulusItem,
 } from "./options";
 import { locationsOf, stimulusId } from "./stimuli";
 import type { Location } from "./stimuli";
@@ -29,7 +29,7 @@ import type { Location } from "./stimuli";
 export interface TrialSpec {
   /** "go", "nogo", or "go_control" in a go-only baseline block. */
   condition: GoNogoCondition | "go_control";
-  item: StimulusItem;
+  item: ResolvedItem;
   /** Identifier of the stimulus in the data. */
   stimulus: string;
   stimulus_location: Location;
@@ -198,7 +198,7 @@ interface Ctx {
   jsPsych: JsPsych;
   o: ResolvedOptions;
   /** the stimulus sets after role assignment (defaults to `o.stimulus_set`) */
-  stimulus_set?: { go: StimulusItem[]; nogo: StimulusItem[] };
+  stimulus_set?: { go: ResolvedItem[]; nogo: ResolvedItem[] };
 }
 
 /** Cycles through a (shuffled) list of items, reshuffling at each pass, so uses are balanced. */
@@ -219,7 +219,7 @@ class Deck<T> {
 
 function combosOf(
   cond: TrialSpec["condition"],
-  items: StimulusItem[],
+  items: ResolvedItem[],
   locations: Location[]
 ): TrialSpec[] {
   const out: TrialSpec[] = [];

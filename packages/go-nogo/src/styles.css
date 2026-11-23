@@ -137,6 +137,16 @@
   font-size: 1.4em;
 }
 
+.jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-picture {
+  display: block;
+  object-fit: contain;
+}
+
+.jspsych-timelines-go-nogo span.jspsych-timelines-go-nogo-picture > svg {
+  width: 100%;
+  height: 100%;
+}
+
 .jspsych-timelines-go-nogo .jspsych-timelines-go-nogo-letter {
   font-family: monospace;
   font-weight: bold;

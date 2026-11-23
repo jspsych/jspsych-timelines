@@ -2,6 +2,8 @@
 
 The go/no-go task measures response inhibition and sustained attention: respond to frequent "go" stimuli and withhold the response to rare "no-go" stimuli. Errors of commission (responding to a no-go stimulus), errors of omission, go RT and d' are the usual measures. The default configuration follows the Experiment Factory go_nogo task (Sochat et al., 2016; cited from memory, verify); every option, its default and the evidence behind it is on the documentation site. A methods reference to check before citing: Gomez, Ratcliff & Perea (2007), *Journal of Experimental Psychology: General*, 136, 389-413 (listed as unread in the dossier).
 
+The default stimuli are a blue and an orange square, drawn by the package. `stimulus_set: { go, nogo }` takes your own: shapes in colours, text, images (URLs) or SVG markup, each with an optional `id` that is recorded as `stimulus`.
+
 ## Installation
 
 ```bash

@@ -11,7 +11,7 @@ import type {
   ConfigEntry as GenericConfigEntry,
 } from "@jspsych-timelines/testing";
 
-import type { GoNogoOptions, StimulusItem } from "../src/options";
+import type { GoNogoOptions, StimulusItem, StimulusShape } from "../src/options";
 
 export type Adapted = GenericAdapted<GoNogoOptions>;
 export type ConfigEntry = GenericConfigEntry<GoNogoOptions>;
@@ -48,7 +48,7 @@ export const subFromVariation = (option: string, variation: string): string =>
 export const subFromRole = (option: string, role: string): string =>
   SUB_BY_ROLE[role] && HAS_SUBS.includes(option) ? SUB_BY_ROLE[role] : "main";
 
-const shape = (shape: StimulusItem["shape"], color: string): StimulusItem => ({ shape, color });
+const shape = (shape: StimulusShape, color: string): StimulusItem => ({ shape, color });
 const text = (t: string): StimulusItem => ({ text: t });
 
 /** The stimulus sets the spec describes in words, as `stimulus_set` fragments. */
@@ -135,7 +135,12 @@ export function adapt(
     case "stimulus_set":
       if (sub === "material") {
         if (MATERIAL[value]) return ok({ stimulus_set: MATERIAL[value] });
-        if (IMAGE_SETS.includes(value) || /3D room/.test(value))
+        if (IMAGE_SETS.includes(value))
+          return gap(
+            "option missing",
+            `no bundled pictures for "${value}"; pass the study's pictures as image items in stimulus_set.go and stimulus_set.nogo`
+          );
+        if (/3D room/.test(value))
           return gap("option missing", `picture stimuli (${value}) are not drawn by this package`);
         return gap(
           "option missing",

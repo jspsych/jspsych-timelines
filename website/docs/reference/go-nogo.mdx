@@ -157,6 +157,18 @@ createTimeline(jsPsych, {
 });
 ```
 
+Your own pictures: an item is a string (text), or one of `{ shape, color }`, `{ text, color }`, `{ image: url }` or `{ svg: markup }`, with an optional `id`. The id is recorded as `stimulus` and is what the instructions call the stimulus; without one, a picture is recorded as `picture-<n>` and called "picture". Ids must be unique across the go and no-go stimuli. The package bundles no pictures; preload image files with a `preload` trial before the timeline.
+
+```javascript
+createTimeline(jsPsych, {
+  stimulus_set: {
+    go: { image: "img/car.png", id: "car" },
+    nogo: { image: "img/dog.png", id: "dog" },
+  },
+  stimulus_role_assignment: "fixed",
+});
+```
+
 Practice with RT feedback only after errors, none in the test:
 
 ```javascript
@@ -176,7 +188,7 @@ Every trial carries `task: "go-nogo"` and `task_version`. The trial that records
 | `block` | number or null | Block number, 1-indexed (practice is block 1); `null` in go-only baseline blocks |
 | `trial_index_in_block` | number | Position within the block, 1-indexed |
 | `condition` | string | `"go"`, `"nogo"`, or `"go_control"` (a go-only baseline trial) |
-| `stimulus` | string | Identifier of the stimulus: its label, `<shape>_<color>`, or its text |
+| `stimulus` | string | Identifier of the stimulus: its `id`, else `<shape>_<color>`, its text, or `picture-<n>` |
 | `stimulus_location` | string | `center`, `top_center`, `top_left`, `top_right`, `bottom_left` or `bottom_right` |
 | `baseline_block` | number | Baseline rows: which go-only block |
 | `correct_response` | string, number or null | The key (or button index 0); `null` on no-go trials |

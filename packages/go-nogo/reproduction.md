@@ -62,11 +62,11 @@ Classes: package fix needed, option missing, plugin needed, dossier value wrong,
 | `stimulus_layout: left/right x near/far in 3D scene` | S183 | option missing | a rendered 3D scene is not a layout this package draws |
 | `stimulus_modality: auditory` | S118 | plugin needed | auditory stimuli need an audio plugin trial type |
 | `stimulus_set: symbol-colour conjunctions (1 go, 3 no-go)` | S046 | option missing | the dossier gives no symbols for "symbol-colour conjunctions (1 go, 3 no-go)", so the stimuli cannot be built |
-| `stimulus_set: faces: gender (cold) or emotion (hot)` | S169 | option missing | picture stimuli (faces: gender (cold) or emotion (hot)) are not drawn by this package |
-| `stimulus_set: emoticon cat face x parachute colour conjunctions` | S175 | option missing | picture stimuli (emoticon cat face x parachute colour conjunctions) are not drawn by this package |
+| `stimulus_set: faces: gender (cold) or emotion (hot)` | S169 | option missing | no bundled pictures for "faces: gender (cold) or emotion (hot)"; pass the study's pictures as image items in stimulus_set.go and stimulus_set.nogo |
+| `stimulus_set: emoticon cat face x parachute colour conjunctions` | S175 | option missing | no bundled pictures for "emoticon cat face x parachute colour conjunctions"; pass the study's pictures as image items in stimulus_set.go and stimulus_set.nogo |
 | `stimulus_set: geometric shapes (square/hexagon) in pots in a rendered 3D room` | S183 | option missing | picture stimuli (geometric shapes (square/hexagon) in pots in a rendered 3D room) are not drawn by this package |
 | `stimulus_set: letter stream, 4 letters per block, new set each block` | S017 | option missing | the dossier gives no symbols for "letter stream, 4 letters per block, new set each block", so the stimuli cannot be built |
-| `stimulus_set: line drawings (car go / dog no-go)` | S071 | option missing | picture stimuli (line drawings (car go / dog no-go)) are not drawn by this package |
+| `stimulus_set: line drawings (car go / dog no-go)` | S071 | option missing | no bundled pictures for "line drawings (car go / dog no-go)"; pass the study's pictures as image items in stimulus_set.go and stimulus_set.nogo |
 | `inter_trial_display: placeholder grid with stars` | S028 | option missing | a placeholder grid with stars is not implemented |
 | `stimulus_role_assignment: rotated` | S028 | package fix needed | a reversal of the go mapping between blocks (rotated) is not implemented |
 | `stimulus_role_assignment: counterbalanced` | S183 | plugin needed | counterbalancing needs a participant counter from outside jsPsych |
@@ -119,6 +119,6 @@ By class: package fix needed 1, option missing 8, plugin needed 2.
 
 - **Not browser-verified:** the fixation cross that appears once the stimulus is hidden (a CSS `:has([style*="hidden"])` rule on jsPsych's inline style) and the response acknowledgement (a keydown or click listener). jsdom tests cover the markup and the listener; the layout check runs the `fixation_cross` variant but does not assert the cross's visibility.
 - **`S022` trial order.** The spec types S022's order as `random`, but the dossier locator (`experiment.js L148 jsPsych.randomization.repeat`) is a shuffled list with exact counts. The level 1 case `trial_order: random` is checked as typed; the package default is `shuffled_list` (DEFAULTS.md).
-- Data-only simulation ignores time, so windows, durations and the fixation cross shown after the stimulus are shown through data fields and plugin parameters, not measured durations. The browser layout check (`reproduction/layout.config.mjs`) passes on the built bundle: the stage centre is identical on every screen type, at 1280 and 390 px wide, for keyboard, 2x2 grid and touch.
+- Data-only simulation ignores time, so windows, durations and the fixation cross shown after the stimulus are shown through data fields and plugin parameters, not measured durations. The browser layout check (`reproduction/layout.config.mjs`) passes on the built bundle: the stage centre is identical on every screen type, at 1280 and 390 px wide, for keyboard, 2x2 grid, a researcher's own SVG items, and touch.
 - The `random` trial-order check asserts that block counts are not exactly balanced under some seed.
-- The picture stimuli (faces, line drawings, emoticons, a 3D room) are gaps: `stimulus_set` draws shapes and text.
+- The studies' picture stimuli (faces, line drawings, emoticons) are gaps because the package bundles no pictures: `stimulus_set` takes a researcher's own pictures as `image` or `svg` items, but the check has no pictures to give it. The 3D room is a gap of its own (a rendered scene, not a stimulus).

@@ -18,8 +18,8 @@ import {
   DEFAULT_OPTIONS,
   GoNogoOptions,
   OptionContext,
+  ResolvedItem,
   ResolvedOptions,
-  StimulusItem,
   resolveOptions,
   validateOptions,
 } from "./options";
@@ -53,7 +53,7 @@ export interface Context {
   practice: ResolvedOptions;
   test: ResolvedOptions;
   /** go and no-go stimulus sets after the role assignment (drawn once per participant) */
-  stimulus_set: { go: StimulusItem[]; nogo: StimulusItem[] };
+  stimulus_set: { go: ResolvedItem[]; nogo: ResolvedItem[] };
   state: { last: Outcome | null };
 }
 
@@ -103,7 +103,7 @@ function responseLabel(ctx: Context, o: ResolvedOptions): string {
   return isKeyboard(o) ? `<kbd>${keyName(o.response_keys[0])}</kbd>` : ctx.text.go_button;
 }
 
-function itemHtml(item: StimulusItem, size = STIMULUS_SIZE_PX) {
+function itemHtml(item: ResolvedItem, size = STIMULUS_SIZE_PX) {
   return renderItem(item, size);
 }
 
@@ -495,7 +495,7 @@ export function createInstructions(ctx: Context) {
   const o = ctx.test;
   if (o.instruction_format === "experimenter") return { timeline: [] as any[] };
   const t = ctx.text;
-  const small = (items: StimulusItem[]) =>
+  const small = (items: ResolvedItem[]) =>
     items
       .map((i) => `<span class="jspsych-timelines-go-nogo-inline">${itemHtml(i, 36)}</span>`)
       .join(" ");
@@ -533,7 +533,7 @@ export interface DemoStep {
 export function demoSteps(ctx: Context): DemoStep[] {
   const o = ctx.test;
   const location = locationsOf(o.stimulus_layout)[0];
-  const mk = (condition: "go" | "nogo", item: StimulusItem): DemoStep => ({
+  const mk = (condition: "go" | "nogo", item: ResolvedItem): DemoStep => ({
     spec: { condition, item, stimulus: stimulusId(item), stimulus_location: location },
   });
   const go = ctx.stimulus_set.go.map((i) => mk("go", i));
