@@ -86,7 +86,7 @@ For a short run, pick "Quick demo" in the Preset menu (the walkthrough, 4 practi
 Congruent and incongruent trials only, in two blocks of 48 with a self-paced break, a jittered fixation and a longer response window:
 
 ```javascript
-const { timeline } = createTimeline(jsPsych, {
+const task = createTimeline(jsPsych, {
   condition_set: ["congruent", "incongruent"],
   n_test_trials: 96,
   n_blocks: 2,
@@ -99,7 +99,7 @@ const { timeline } = createTimeline(jsPsych, {
 Letter flankers as in Eriksen & Eriksen (1974), two letters per response:
 
 ```javascript
-const { timeline } = createTimeline(jsPsych, {
+const task = createTimeline(jsPsych, {
   stimulus_set: { target: { letters: [["H", "K"], ["S", "C"]] } },
   targets_per_response: 2,
   response_keys: ["f", "j"],
@@ -109,7 +109,7 @@ const { timeline } = createTimeline(jsPsych, {
 A warning cue on half of the trials, crossed with congruency:
 
 ```javascript
-const { timeline } = createTimeline(jsPsych, {
+const task = createTimeline(jsPsych, {
   stimulus_set: { cue: "circles" },
   cue_target_interval_ms: 500,
   condition_proportions: {
@@ -122,7 +122,7 @@ const { timeline } = createTimeline(jsPsych, {
 PEBL's practice feedback, with the response time as well as correct/incorrect:
 
 ```javascript
-const { timeline } = createTimeline(jsPsych, {
+const task = createTimeline(jsPsych, {
   practice: { trial_feedback: "accuracy_rt" },
 });
 ```

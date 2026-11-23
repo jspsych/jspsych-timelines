@@ -141,7 +141,7 @@ A wrong answer shows a hint and repeats the step, up to 3 attempts, after which 
 
 ### Simulation
 
-Under `jsPsych.simulate(timeline, "data-only")` the package uses a hybrid reinforcement-learning participant: model-free first-stage values (TD(1)) mixed with model-based values by a weight `w`, softmax choice, one learning rate, ex-Gaussian RTs, and a slower second-stage RT after a rare transition. Its stay pattern is the expected one (a model-based learner has a positive model-based index, a model-free learner a positive reward effect). A global forced RT (`{ default: { data: { rt: 400 } } }`) wins over the model, and the choices are then random. Set the parameters with `utils.simulation.setSimulatedAgent({ w: 1, alpha: 0.5, beta: 6 })` (`null` restores the defaults). It affects only simulated runs.
+Under `jsPsych.simulate([task], "data-only")` the package uses a hybrid reinforcement-learning participant: model-free first-stage values (TD(1)) mixed with model-based values by a weight `w`, softmax choice, one learning rate, ex-Gaussian RTs, and a slower second-stage RT after a rare transition. Its stay pattern is the expected one (a model-based learner has a positive model-based index, a model-free learner a positive reward effect). A global forced RT (`{ default: { data: { rt: 400 } } }`) wins over the model, and the choices are then random. Set the parameters with `utils.simulation.setSimulatedAgent({ w: 1, alpha: 0.5, beta: 6 })` (`null` restores the defaults). It affects only simulated runs.
 
 ## Parameters
 

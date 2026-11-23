@@ -111,7 +111,7 @@ For a short run, pick "Quick demo" in the Preset menu (the walkthrough, 2 practi
 The original with a shuffled order per participant, the reward drawn fresh on every trial and the 12% level dropped, as in some clinical studies:
 
 ```javascript
-const { timeline } = createTimeline(jsPsych, {
+const task = createTimeline(jsPsych, {
   trial_order: "shuffled_list",
   reward_magnitude: { hard: { uniform: { min: 1.24, max: 4.3 } } },
   reward_probability: [0.5, 0.88],
@@ -121,7 +121,7 @@ const { timeline } = createTimeline(jsPsych, {
 A 15-minute session with the choice untimed, points instead of money, 98 hard presses and a separate key for each task:
 
 ```javascript
-const { timeline } = createTimeline(jsPsych, {
+const task = createTimeline(jsPsych, {
   session_duration_min: 15,
   response_window_ms: { choice: null },
   outcome_type: "points",
@@ -134,7 +134,7 @@ const { timeline } = createTimeline(jsPsych, {
 A fixed number of trials in euros, with the finger instructions translated:
 
 ```javascript
-const { timeline } = createTimeline(jsPsych, {
+const task = createTimeline(jsPsych, {
   task_end_rule: "fixed_trial_count",
   n_test_trials: 48,
   text: {
@@ -225,7 +225,7 @@ createTimeline(jsPsych, {
 
 ## Simulation
 
-Under `jsPsych.simulate(timeline, "data-only")` the participant chooses the hard task with a probability that rises with the win probability and with the hard reward relative to the easy one (`utils.constants.SIMULATION`), takes about 1.5 s to choose, and misses the choice window on 2% of trials (which flags the trial and assigns a task). Press rates are drawn per trial (easy about 5.8 per second, hard about 5.3), so about 1.5% of easy and 16% of hard tasks are not completed. A global `default: { data: { rt } }` simulation option overrides the choice RT, which is how the timeout checks run. The session clock is the sum of the screens' durations, so a 20-minute session ends after about 64 simulated trials.
+Under `jsPsych.simulate([task], "data-only")` the participant chooses the hard task with a probability that rises with the win probability and with the hard reward relative to the easy one (`utils.constants.SIMULATION`), takes about 1.5 s to choose, and misses the choice window on 2% of trials (which flags the trial and assigns a task). Press rates are drawn per trial (easy about 5.8 per second, hard about 5.3), so about 1.5% of easy and 16% of hard tasks are not completed. A global `default: { data: { rt } }` simulation option overrides the choice RT, which is how the timeout checks run. The session clock is the sum of the screens' durations, so a 20-minute session ends after about 64 simulated trials.
 
 ## References
 

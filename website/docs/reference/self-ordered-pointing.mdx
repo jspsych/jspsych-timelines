@@ -112,7 +112,7 @@ For a short run, pick "Quick demo" in the Preset menu (the walkthrough, 2 practi
 Fewer, different set sizes with separate items per size and a touch screen (Johnson et al., 2024):
 
 ```javascript
-const { timeline } = createTimeline(jsPsych, {
+const task = createTimeline(jsPsych, {
   set_sizes: [4, 6, 8, 10],
   practice_trials: 3,
   response_device: "touch",
@@ -124,7 +124,7 @@ A Petrides and Milner style position rule, enforced by the program, with words:
 
 ```javascript
 const { createTimeline, utils } = jsPsychTimelineSelfOrderedPointing;
-const { timeline } = createTimeline(jsPsych, {
+const task = createTimeline(jsPsych, {
   stimulus_set: { items: utils.stimuli.words },
   position_repeat_rule: "enforced",
   position_repeat_max: 2,
@@ -134,7 +134,7 @@ const { timeline } = createTimeline(jsPsych, {
 Your own pictures, with their own ids, and the instructions calling them "photos":
 
 ```javascript
-const { timeline } = createTimeline(jsPsych, {
+const task = createTimeline(jsPsych, {
   stimulus_set: {
     items: {
       name: "my_photos",
@@ -152,7 +152,7 @@ const { timeline } = createTimeline(jsPsych, {
 Each block holds every set size once in random order, three blocks, with a 6 s limit per pick:
 
 ```javascript
-const { timeline } = createTimeline(jsPsych, {
+const task = createTimeline(jsPsych, {
   set_sizes: [3, 6, 9, 12],
   trials_per_condition: 3,
   block_order: "random_within_block",

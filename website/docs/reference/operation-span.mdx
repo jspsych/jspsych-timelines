@@ -103,7 +103,7 @@ For a short run, pick "Quick demo" in the Preset menu (the walkthrough, 2 letter
 A fixed 6 s deadline (as in S021 and S026) and shorter set sizes:
 
 ```javascript
-const { timeline } = createTimeline(jsPsych, {
+const task = createTimeline(jsPsych, {
   set_sizes: [2, 3, 4, 5],
   response_window_ms: 6000,
   processing_display_format: "equation_with_answer_single_screen",
@@ -114,7 +114,7 @@ const { timeline } = createTimeline(jsPsych, {
 Each block holds every set size once, in random order, three blocks:
 
 ```javascript
-const { timeline } = createTimeline(jsPsych, {
+const task = createTimeline(jsPsych, {
   set_sizes: [3, 4, 5, 6],
   trials_per_condition: 3,
   block_order: "random_within_block",
@@ -124,7 +124,7 @@ const { timeline } = createTimeline(jsPsych, {
 The calibrated deadline with a different rule and bounds, and an 85% practice criterion with one repeat:
 
 ```javascript
-const { timeline } = createTimeline(jsPsych, {
+const task = createTimeline(jsPsych, {
   response_window_ms: utils.deadlines.meanPlusSd(2, { min: 2500, max: 8000 }),
   practice_criterion: { accuracy: 0.85, window: 10, on_fail: "repeat", max_repeats: 1 },
 });
@@ -133,7 +133,7 @@ const { timeline } = createTimeline(jsPsych, {
 Digits instead of letters (the recall matrix shows 1 to 9):
 
 ```javascript
-const { timeline } = createTimeline(jsPsych, {
+const task = createTimeline(jsPsych, {
   stimulus_set: utils.stimuli.digits,
 });
 ```
@@ -141,7 +141,7 @@ const { timeline } = createTimeline(jsPsych, {
 Typed recall of your own words with the keyboard; the instructions call them "words" and the data records the set's name:
 
 ```javascript
-const { timeline } = createTimeline(jsPsych, {
+const task = createTimeline(jsPsych, {
   stimulus_set: {
     name: "concrete_nouns",
     noun: { singular: "word", plural: "words" },

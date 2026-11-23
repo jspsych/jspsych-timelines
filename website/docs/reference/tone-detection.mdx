@@ -100,7 +100,7 @@ For a short run, pick "Quick demo" in the Preset menu (the walkthrough, a volume
 Detection in quiet, two intervals, three frequencies, tracks that end after eight reversals:
 
 ```javascript
-const { timeline } = createTimeline(jsPsych, {
+const task = createTimeline(jsPsych, {
   stimulus_set: { masker: "none" },
   task_variant: "2I-2AFC_which_contains_tone",
   tone_frequency_hz: [500, 1000, 2000],
@@ -112,7 +112,7 @@ const { timeline } = createTimeline(jsPsych, {
 A weighted rule that converges at 75% correct (S031: 2 dB down after a correct answer, 6 dB up after a wrong one), ending after four mistakes:
 
 ```javascript
-const { timeline } = createTimeline(jsPsych, {
+const task = createTimeline(jsPsych, {
   adaptive: {
     procedure: "staircase_1up_1down",
     step_size: { up: 6, down: 2 },
@@ -124,7 +124,7 @@ const { timeline } = createTimeline(jsPsych, {
 Constant stimuli with a practice that repeats until accuracy is at least 80% (twice at most):
 
 ```javascript
-const { timeline } = createTimeline(jsPsych, {
+const task = createTimeline(jsPsych, {
   adaptive: null,
   difficulty_levels: [-8, -12, -16],
   trials_per_block: 30,
@@ -215,7 +215,7 @@ Every sound is computed as samples (`Float32Array`) in plain functions, then pla
 
 ## Simulation
 
-Under `jsPsych.simulate(timeline, "data-only")` a trial is answered by an independent listener: a logistic psychometric function of level (50% point between guessing and perfect at -21 dB SNR, or -60 dB FS in quiet, 1.5 dB scale) with a guess rate of 1/n and a 2% lapse rate, so staircases reverse and settle near the simulated threshold (`utils.constants.SIMULATION`). The walkthrough answers correctly; the headphone screen answers correctly 90% of the time. A global `default: { data: { rt } }` simulation option overrides the model for the task's trials; a simulation option named `response`, `instruction_check` or `headphone_check` replaces the answers of that part.
+Under `jsPsych.simulate([task], "data-only")` a trial is answered by an independent listener: a logistic psychometric function of level (50% point between guessing and perfect at -21 dB SNR, or -60 dB FS in quiet, 1.5 dB scale) with a guess rate of 1/n and a 2% lapse rate, so staircases reverse and settle near the simulated threshold (`utils.constants.SIMULATION`). The walkthrough answers correctly; the headphone screen answers correctly 90% of the time. A global `default: { data: { rt } }` simulation option overrides the model for the task's trials; a simulation option named `response`, `instruction_check` or `headphone_check` replaces the answers of that part.
 
 ## References
 

@@ -100,10 +100,10 @@ createTimeline(jsPsych, {
 
 ### Simulation
 
-Under `jsPsych.simulate(timeline, "data-only")` jsPsych's default participant responds on every trial, so every no-go trial is a commission error. No-go trials use the named simulation options `nogo`; set them to withhold the response:
+Under `jsPsych.simulate([task], "data-only")` jsPsych's default participant responds on every trial, so every no-go trial is a commission error. No-go trials use the named simulation options `nogo`; set them to withhold the response:
 
 ```javascript
-jsPsych.simulate(timeline.timeline, "data-only", {
+jsPsych.simulate([task], "data-only", {
   default: { data: { rt: 400 } },
   nogo: { data: { response: null, rt: null } },
 });

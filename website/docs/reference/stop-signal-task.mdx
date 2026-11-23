@@ -92,7 +92,7 @@ For a short run, pick "Quick demo" in the Preset menu (the walkthrough, 8 practi
 A two-staircase design with one staircase per go direction, a 66.7% target and a fresh staircase in the test:
 
 ```javascript
-const { timeline } = createTimeline(jsPsych, {
+const task = createTimeline(jsPsych, {
   adaptive: {
     tracks: "per_condition",
     step_size: { up: 25, down: 50 },
@@ -105,7 +105,7 @@ const { timeline } = createTimeline(jsPsych, {
 Fixed delays, with block-wise stop proportions (a 40% and then a 20% block, repeating):
 
 ```javascript
-const { timeline } = createTimeline(jsPsych, {
+const task = createTimeline(jsPsych, {
   difficulty_levels: [17, 67, 117, 167],
   n_blocks: 4,
   trials_per_block: 40,
@@ -116,7 +116,7 @@ const { timeline } = createTimeline(jsPsych, {
 A practice that repeats until go accuracy is at least 80% (twice at most), a blue frame as the signal and a tone-free, keyboard-free touch version:
 
 ```javascript
-const { timeline } = createTimeline(jsPsych, {
+const task = createTimeline(jsPsych, {
   practice_criterion: { accuracy: 0.8, on_fail: "repeat", max_repeats: 2 },
   stimulus_set: { stop_signal: "border" },
   response_device: "touch",
@@ -196,7 +196,7 @@ createTimeline(jsPsych, {
 
 ## Simulation
 
-Under `jsPsych.simulate(timeline, "data-only")` a stop trial is an independent race between an ex-Gaussian go process (mean 500 ms) and a stop process that finishes about 200 ms after the signal, with 3% trigger failures, 2% go omissions and 3% choice errors (`utils.constants.SIMULATION`). The staircase converges near 50% stops, SSRT estimates are near 200 ms, and failed stops are faster than go responses. A global `default: { data: { rt } }` simulation option overrides the model.
+Under `jsPsych.simulate([task], "data-only")` a stop trial is an independent race between an ex-Gaussian go process (mean 500 ms) and a stop process that finishes about 200 ms after the signal, with 3% trigger failures, 2% go omissions and 3% choice errors (`utils.constants.SIMULATION`). The staircase converges near 50% stops, SSRT estimates are near 200 ms, and failed stops are faster than go responses. A global `default: { data: { rt } }` simulation option overrides the model.
 
 ## References
 
