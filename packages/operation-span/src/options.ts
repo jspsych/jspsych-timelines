@@ -1,4 +1,4 @@
-import { FALLBACK_DEADLINE_MS } from "./constants";
+import { FALLBACK_DEADLINE_MS, INSTRUCTION_RECALL_SET_SIZE } from "./constants";
 /**
  * Options for the complex span (operation span) timeline.
  *
@@ -9,6 +9,7 @@ import { FALLBACK_DEADLINE_MS } from "./constants";
  * generated spec are listed with reasons in packages/operation-span/DEFAULTS.md.
  */
 import { DeadlineFunction, deadlines } from "./deadlines";
+import { Stimulus, StimulusSet, asStimulusSet, buildPool, letters, setProblems } from "./sets";
 import type { TextConfig } from "./text";
 
 // -- value types --------------------------------------------------------------------------------
@@ -63,13 +64,18 @@ export interface PracticeCriterion {
   max_repeats?: number;
 }
 
-export interface StimulusSet {
+export type { Stimulus, StimulusSet } from "./sets";
+
+/** The `stimulus_set` option: the memoranda, and where they come from. */
+export interface StimulusSetOption {
   /**
-   * Memoranda. "letters" (the 12 consonants of the Engle-lab task), "digits" (1-9), or `{ words: [...] }`
-   * with your own pool (any strings, e.g. words; needs at least as many as the largest set size).
-   * (default: "letters" — Unsworth et al. 2005, S006)
+   * The memoranda: a set (`{ name?, noun?, items }`) or a plain array of items. The bundled sets are
+   * `utils.stimuli.letters` (the 12 consonants of the Engle-lab task, F H J K L N P Q R S T Y) and `utils.stimuli.digits` (1-9).
+   * Your own set takes strings or `{ text, id? }` objects (text only: recall names the items), at least as many as the largest
+   * set size; `noun` is what the instructions call them (default "item"/"items"). The recall matrix shows the set in its order.
+   * (default: utils.stimuli.letters — Unsworth et al. 2005, S006)
    */
-  memorandum?: "letters" | "digits" | { words: string[] };
+  memorandum?: StimulusSet | readonly Stimulus[];
   /**
    * Where memoranda come from. Only "separate_item" is implemented; "sentence_final_word" (reading span) needs sentences.
    * (default: "separate_item" — S006)
@@ -108,7 +114,7 @@ export interface OperationSpanOptions {
   // -- stimulus --
   /**
    * Language of verbal stimuli. The task has no built-in word lists: only null (language-neutral letters, digits and equations) is implemented.
-   * Supply your own words with `stimulus_set.memorandum`.
+   * Supply your own words as a set in `stimulus_set.memorandum`.
    * (default: null — the anchor uses letters; the spec's fill of "Portuguese" (2/4) belongs to word and sentence materials)
    */
   stimulus_language?: "Dutch" | "German" | "Portuguese" | null;
@@ -116,7 +122,7 @@ export interface OperationSpanOptions {
    * Memorandum material, keyed by the task's own terms: `memorandum`, `memorandum_source`.
    * (default: { memorandum: "letters", memorandum_source: "separate_item" } — S006)
    */
-  stimulus_set?: StimulusSet;
+  stimulus_set?: StimulusSetOption;
   /**
    * Layout of the processing task. "problem_then_answer_screens": the problem alone (timed, click when solved),
    * then the proposed answer with true/false. "equation_with_answer_single_screen": problem and answer together (timed true/false).
@@ -306,8 +312,13 @@ const TEST_ONLY = ["set_sizes"];
 export type PhaseOptionKey = (typeof PHASE_OPTIONS)[number];
 
 export type ResolvedOptions = Required<
-  Omit<OperationSpanOptions, "practice" | "text" | "response_device">
+  Omit<OperationSpanOptions, "practice" | "text" | "response_device" | "stimulus_set">
 > & {
+  /** The memoranda as a set (a bare array is normalised to `{ items }`). */
+  stimulus_set: {
+    memorandum: StimulusSet;
+    memorandum_source: NonNullable<StimulusSetOption["memorandum_source"]>;
+  };
   /** Both devices, resolved. */
   response_device: { processing: ResponseDeviceName; recall: ResponseDeviceName };
 };
@@ -318,7 +329,7 @@ export const DEFAULT_OPTIONS: ResolvedOptions & { practice: Partial<OperationSpa
   response_window_ms: deadlines.meanPlusSd(2.5),
   stimulus_duration_ms: 800,
   stimulus_language: null,
-  stimulus_set: { memorandum: "letters", memorandum_source: "separate_item" },
+  stimulus_set: { memorandum: letters, memorandum_source: "separate_item" },
   processing_display_format: "problem_then_answer_screens",
   block_order: "random",
   n_test_trials: 15,
@@ -441,6 +452,8 @@ export function resolveOptions(
   delete merged.practice;
   for (const [k, v] of Object.entries(layer)) if (v !== undefined) merged[k] = v;
   merged.stimulus_set = { ...DEFAULT_OPTIONS.stimulus_set, ...(layer.stimulus_set ?? {}) };
+  merged.stimulus_set.memorandum =
+    asStimulusSet(merged.stimulus_set.memorandum) ?? merged.stimulus_set.memorandum;
   merged.response_device = normaliseDevice(layer.response_device, DEFAULT_OPTIONS.response_device);
 
   if (phase === "test") {
@@ -486,8 +499,17 @@ export function validateOptions(o: ResolvedOptions, phase: "practice" | "test" =
   }
   if (o.stimulus_language !== null) {
     throw new Error(
-      `operation-span: stimulus_language: "${o.stimulus_language}" is not implemented (no word lists are bundled; give your own with stimulus_set.memorandum: { words: [...] }).`
+      `operation-span: stimulus_language: "${o.stimulus_language}" is not implemented (no word lists are bundled; give your own words as a set in stimulus_set.memorandum).`
     );
+  }
+  if (!asStimulusSet(o.stimulus_set.memorandum)) {
+    throw new Error(
+      "operation-span: stimulus_set.memorandum must be a set ({ name?, noun?, items }) or an array of items, e.g. utils.stimuli.letters."
+    );
+  }
+  const setIssues = setProblems(o.stimulus_set.memorandum);
+  if (setIssues.length) {
+    throw new Error(`operation-span: stimulus_set.memorandum: ${setIssues.join("; ")}.`);
   }
   if (o.stimulus_set.memorandum_source === "sentence_final_word") {
     throw new Error(
@@ -522,8 +544,7 @@ export function validateOptions(o: ResolvedOptions, phase: "practice" | "test" =
   }
   if (
     o.response_format === "single_response" &&
-    typeof o.stimulus_set.memorandum === "object" &&
-    o.stimulus_set.memorandum.words.some((w) => w.length !== 1)
+    buildPool(o.stimulus_set.memorandum).some((it) => it.text.trim().length !== 1)
   ) {
     throw new Error(
       'operation-span: response_format "single_response" is one key per item and needs single-character memoranda.'
@@ -555,11 +576,16 @@ export function validateOptions(o: ResolvedOptions, phase: "practice" | "test" =
     );
   }
   const biggest = Math.max(...lists.flat());
-  const m = o.stimulus_set.memorandum;
-  const pool = m === "digits" ? 9 : m === "letters" || m === undefined ? 12 : m.words.length;
+  const pool = o.stimulus_set.memorandum.items.length;
   if (biggest > pool) {
     throw new Error(
       `operation-span: set size ${biggest} needs ${biggest} different memoranda but the pool has ${pool}.`
+    );
+  }
+  const walkthrough = o.instruction_format === "text" && o.instruction_demonstration !== "none";
+  if (walkthrough && pool < INSTRUCTION_RECALL_SET_SIZE) {
+    throw new Error(
+      `operation-span: the walkthrough's recall step needs ${INSTRUCTION_RECALL_SET_SIZE} different memoranda but the pool has ${pool}.`
     );
   }
   if (isNested(o.set_sizes) && o.block_order === "random_within_block") {

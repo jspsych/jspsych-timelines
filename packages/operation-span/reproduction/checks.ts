@@ -17,6 +17,7 @@ import {
 import type { OperationSpanOptions, ResolvedOptions } from "../src/options";
 import { setSizeLists } from "../src/options";
 import { scoreRecall } from "../src/scoring";
+import { buildPool } from "../src/sets";
 import { evalStimulus, rowsOf, trialsOf } from "./harness";
 import type { Run } from "./harness";
 
@@ -59,17 +60,21 @@ const spanOnly: Record<string, SpanCheck> = {
     requires: [],
     kind: "behaviour",
     fn: (r) => {
-      const m = r.eff.stimulus_set.memorandum ?? "letters";
-      const pool =
-        m === "letters"
-          ? "FHJKLNPQRSTY".split("")
-          : m === "digits"
-          ? "123456789".split("")
-          : m.words;
+      const set = r.eff.stimulus_set.memorandum;
+      const items = buildPool(set);
+      const pool = items.map((it) => it.text);
+      const ids = items.map((it) => it.id);
+      const name = set.name ?? "custom";
       const mem = rowsOf(r, "test", "memorandum");
       expect(mem.length).toBe(sizes(r).reduce((a, b) => a + b, 0));
-      mem.forEach((x) => expect(pool).toContain(x.memorandum));
+      mem.forEach((x) => {
+        expect(pool).toContain(x.memorandum);
+        expect(ids).toContain(x.memorandum_id);
+        expect(x.stimulus_set).toBe(name);
+      });
       test(r).forEach((x) => {
+        expect(x.stimulus_set).toBe(name);
+        x.presented_item_ids.forEach((id: string) => expect(ids).toContain(id));
         x.presented_items.forEach((p: string) => expect(pool).toContain(p));
         // different memoranda within a trial
         expect(distinct(x.presented_items)).toHaveLength(x.set_size);
@@ -77,7 +82,7 @@ const spanOnly: Record<string, SpanCheck> = {
       // the recall input offers the pool (n_afc)
       if (r.eff.response_format === "n_afc") {
         const html = evalStimulus(trialsOf(r, "response")[0]);
-        pool.forEach((p) => expect(html).toContain(`data-item="${p}"`));
+        pool.forEach((p: string) => expect(html).toContain(`data-item="${p}"`));
       }
     },
   },

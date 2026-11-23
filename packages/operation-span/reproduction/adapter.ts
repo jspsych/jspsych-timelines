@@ -11,7 +11,8 @@ import type {
   ConfigEntry as GenericConfigEntry,
 } from "@jspsych-timelines/testing";
 
-import type { OperationSpanOptions } from "../src/options";
+import type { OperationSpanOptions, StimulusSet } from "../src/options";
+import { digits, letters } from "../src/sets";
 
 export type Adapted = GenericAdapted<OperationSpanOptions>;
 export type ConfigEntry = GenericConfigEntry<OperationSpanOptions>;
@@ -41,25 +42,40 @@ export const subFromVariation = (option: string, variation: string): string =>
 export const subFromRole = (option: string, role: string): string =>
   SUBBED.includes(option) && SUB_BY_ROLE[role] ? SUB_BY_ROLE[role] : "main";
 
-/** A stand-in word pool: "words" is typed in the spec but the package has no word lists (the user supplies a pool). */
-export const WORD_POOL = [
-  "apple",
-  "bread",
-  "chair",
-  "dance",
-  "eagle",
-  "flame",
-  "grape",
-  "house",
-  "ivory",
-  "jelly",
-  "knife",
-  "lemon",
-  "mouse",
-  "night",
-  "ocean",
-  "plant",
-];
+/**
+ * A stand-in word set: "words" is typed in the spec (S034, S043) but no word list is bundled. The studies' lists are
+ * not reported and sit with non-English materials, so a bundled English list would not reproduce them either; the
+ * researcher supplies their own. Presets write this set inline and say it is a stand-in.
+ */
+export const WORD_POOL: StimulusSet = {
+  name: "words_stand_in",
+  noun: { singular: "word", plural: "words" },
+  items: [
+    "apple",
+    "bread",
+    "chair",
+    "dance",
+    "eagle",
+    "flame",
+    "grape",
+    "house",
+    "ivory",
+    "jelly",
+    "knife",
+    "lemon",
+    "mouse",
+    "night",
+    "ocean",
+    "plant",
+  ],
+};
+
+/** Spec memorandum types -> the bundled set (or the stand-in) that expresses them. */
+export const MEMORANDUM_SETS: Record<string, StimulusSet> = {
+  letters,
+  digits,
+  words: WORD_POOL,
+};
 
 /** Set sizes that make `n_test_trials` a multiple of the number of set sizes (trials per set size = n / count). */
 const SETS_FOR_N: Record<number, number[]> = {
@@ -100,13 +116,12 @@ export function adapt(
     case "stimulus_language":
       return gap(
         "option missing",
-        `"${value}" selects word or sentence lists; none are bundled (supply stimulus_set.memorandum: { words })`
+        `"${value}" selects word or sentence lists; none are bundled (supply your own words as a set in stimulus_set.memorandum)`
       );
     case "stimulus_set":
       if (sub === "type") {
-        if (value === "letters" || value === "digits")
-          return ok({ stimulus_set: { memorandum: value } });
-        if (value === "words") return ok({ stimulus_set: { memorandum: { words: WORD_POOL } } });
+        if (MEMORANDUM_SETS[value])
+          return ok({ stimulus_set: { memorandum: MEMORANDUM_SETS[value] } });
         return gap(
           "option missing",
           `memoranda "${value}" are spatial: they need a location grid or arrow display and a matching recall input`

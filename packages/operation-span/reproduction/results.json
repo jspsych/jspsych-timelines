@@ -266,7 +266,7 @@
       "labelledAddition": false,
       "status": "not expressible",
       "gap": "option missing",
-      "reason": "\"Portuguese\" selects word or sentence lists; none are bundled (supply stimulus_set.memorandum: { words })"
+      "reason": "\"Portuguese\" selects word or sentence lists; none are bundled (supply your own words as a set in stimulus_set.memorandum)"
     },
     {
       "option": "stimulus_language",
@@ -282,7 +282,7 @@
       "labelledAddition": false,
       "status": "not expressible",
       "gap": "option missing",
-      "reason": "\"Dutch\" selects word or sentence lists; none are bundled (supply stimulus_set.memorandum: { words })"
+      "reason": "\"Dutch\" selects word or sentence lists; none are bundled (supply your own words as a set in stimulus_set.memorandum)"
     },
     {
       "option": "stimulus_language",
@@ -298,7 +298,7 @@
       "labelledAddition": false,
       "status": "not expressible",
       "gap": "option missing",
-      "reason": "\"German\" selects word or sentence lists; none are bundled (supply stimulus_set.memorandum: { words })"
+      "reason": "\"German\" selects word or sentence lists; none are bundled (supply your own words as a set in stimulus_set.memorandum)"
     },
     {
       "option": "stimulus_set",
@@ -317,7 +317,9 @@
       "kind": "behaviour",
       "options": {
         "stimulus_set": {
-          "memorandum": "letters"
+          "memorandum": {
+            "$util": "stimuli.letters"
+          }
         }
       }
     },
@@ -339,7 +341,12 @@
       "options": {
         "stimulus_set": {
           "memorandum": {
-            "words": [
+            "name": "words_stand_in",
+            "noun": {
+              "singular": "word",
+              "plural": "words"
+            },
+            "items": [
               "apple",
               "bread",
               "chair",
@@ -377,7 +384,9 @@
       "kind": "behaviour",
       "options": {
         "stimulus_set": {
-          "memorandum": "digits"
+          "memorandum": {
+            "$util": "stimuli.digits"
+          }
         }
       }
     },
@@ -1599,7 +1608,7 @@
         {
           "key": "stimulus_language",
           "gap": "option missing",
-          "reason": "\"German\" selects word or sentence lists; none are bundled (supply stimulus_set.memorandum: { words })"
+          "reason": "\"German\" selects word or sentence lists; none are bundled (supply your own words as a set in stimulus_set.memorandum)"
         }
       ],
       "checked_options": [
@@ -1661,7 +1670,7 @@
         {
           "key": "stimulus_language",
           "gap": "option missing",
-          "reason": "\"Portuguese\" selects word or sentence lists; none are bundled (supply stimulus_set.memorandum: { words })"
+          "reason": "\"Portuguese\" selects word or sentence lists; none are bundled (supply your own words as a set in stimulus_set.memorandum)"
         },
         {
           "key": "stimulus_set.memorandum",

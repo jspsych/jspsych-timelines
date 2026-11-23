@@ -60,9 +60,9 @@ Classes: package fix needed, option missing, plugin needed, dossier value wrong,
 
 | Option / value | Sources | Class | Why |
 |---|---|---|---|
-| `stimulus_language: Portuguese` | S027, S032 | option missing | "Portuguese" selects word or sentence lists; none are bundled (supply stimulus_set.memorandum: { words }) |
-| `stimulus_language: Dutch` | S020 | option missing | "Dutch" selects word or sentence lists; none are bundled (supply stimulus_set.memorandum: { words }) |
-| `stimulus_language: German` | S020 | option missing | "German" selects word or sentence lists; none are bundled (supply stimulus_set.memorandum: { words }) |
+| `stimulus_language: Portuguese` | S027, S032 | option missing | "Portuguese" selects word or sentence lists; none are bundled (supply your own words as a set in stimulus_set.memorandum) |
+| `stimulus_language: Dutch` | S020 | option missing | "Dutch" selects word or sentence lists; none are bundled (supply your own words as a set in stimulus_set.memorandum) |
+| `stimulus_language: German` | S020 | option missing | "German" selects word or sentence lists; none are bundled (supply your own words as a set in stimulus_set.memorandum) |
 | `stimulus_set: grid_locations` | S027 | option missing | memoranda "grid_locations" are spatial: they need a location grid or arrow display and a matching recall input |
 | `stimulus_set: arrows` | S033 | option missing | memoranda "arrows" are spatial: they need a location grid or arrow display and a matching recall input |
 | `stimulus_set: sentence_final_word` | S027, S032 | option missing | the sentence-final word as memorandum is reading span: it needs a sentence processing task |

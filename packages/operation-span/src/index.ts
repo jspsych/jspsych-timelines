@@ -29,7 +29,8 @@ import {
 import { fixedOrder, practiceSetSizes, scheduleBlocks } from "./schedule";
 import { calculateScores, getSummary, scoreRecall } from "./scoring";
 import type { ScoringResult } from "./scoring";
-import { generateProblem, memorandumPool } from "./stimuli";
+import { buildPool, digits, letters } from "./sets";
+import { generateProblem } from "./stimuli";
 import { TextConfig, defaultText } from "./text";
 import {
   createCompletion,
@@ -76,8 +77,12 @@ export interface TrialData {
   /** Position within the block, 1-based. (jsPsych owns `trial_index`, a global counter; PACKAGE-STANDARD §4.) */
   trial_index_in_block?: number;
   set_size?: number;
-  /** memorandum rows: the item and its 1-based position; processing rows: the position of the memorandum step and the problem within it. */
+  /** memorandum rows: the item (its text) and its 1-based position; processing rows: the position of the memorandum step and the problem within it. */
   memorandum?: string;
+  /** memorandum rows: the item's id (default: its text). */
+  memorandum_id?: string;
+  /** memorandum and response rows: the name of the memorandum set ("letters", "digits", or "custom" for a set without a name). */
+  stimulus_set?: string;
   position?: number;
   episode?: number;
   // processing rows
@@ -102,8 +107,12 @@ export interface TrialData {
   response_window_rule?: string;
   practice_attempt?: number;
   // response (recall) rows
+  /** The presented memoranda (texts) and their ids. */
   presented_items?: string[];
+  presented_item_ids?: string[];
+  /** The entries, as entered (null = an omission), and the id of the item each one names (null: an omission, or typed text that is no item). */
   recalled_items?: (string | null)[];
+  recalled_item_ids?: (string | null)[];
   recall_correct_positions?: boolean[];
   n_correct_positions?: number;
   proportion_correct?: number | null;
@@ -187,11 +196,15 @@ export const utils = {
   },
   text: { defaultText },
   deadlines: { ...deadlines, calibrationRts, resolve: resolveWindow },
-  stimuli: { generateProblem, memorandumPool },
+  /** The bundled memorandum sets, and the helpers that read a set and generate problems. */
+  stimuli: { letters, digits, generateProblem },
+  /** Reads a memorandum set: its items, normalised to `{ id, text }`, in order. */
+  items: { buildPool },
   sequence: { scheduleBlocks, fixedOrder, practiceSetSizes },
   options: { resolveOptions, validateOptions },
 };
 
+export type { Stimulus, StimulusSet, StimulusSetOption } from "./options";
 export type {
   OperationSpanOptions,
   ScoringResult,

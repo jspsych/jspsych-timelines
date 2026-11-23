@@ -25,6 +25,7 @@ import {
 } from "./options";
 import { practiceSetSizes, scheduleBlocks } from "./schedule";
 import { calculateScores, scoreRecall } from "./scoring";
+import { itemNouns, setName } from "./sets";
 import {
   Problem,
   RecallSpec,
@@ -33,9 +34,10 @@ import {
   drawMemoranda,
   finalItems,
   generateProblem,
+  idOf,
   keyName,
-  memorandumPool,
   newRecallState,
+  poolTexts,
   renderAnswer,
   renderMemorandum,
   renderNotice,
@@ -47,6 +49,7 @@ import {
 } from "./stimuli";
 import {
   InstructionStepArgs,
+  Nouns,
   ProcessingInstructionArgs,
   RecallInstructionArgs,
   TextConfig,
@@ -148,6 +151,12 @@ const buttonHtml = (choice: string) => `<button class="jspsych-btn">${choice}</b
 
 type Device = "keyboard" | "mouse" | "touch";
 
+/** What the texts call the memoranda of `o` (the set's `noun`). */
+export function nounsOf(o: ResolvedOptions): Nouns {
+  const n = itemNouns(o.stimulus_set.memorandum);
+  return { noun: n.singular, nouns: n.plural };
+}
+
 function processingArgs(
   ctx: Context,
   o: ResolvedOptions,
@@ -173,6 +182,7 @@ function recallArgs(ctx: Context, o: ResolvedOptions): RecallInstructionArgs {
     omission: o.recall_omission_handling,
     blank_label:
       o.recall_omission_handling === "skip_button" ? ctx.text.skip_button : ctx.text.blank_button,
+    ...nounsOf(o),
   };
 }
 
@@ -182,7 +192,8 @@ function recallSpec(o: ResolvedOptions, set_size: number): RecallSpec {
     order: o.response_order as "serial" | "free",
     omission: o.recall_omission_handling,
     set_size,
-    pool: memorandumPool(o),
+    pool: poolTexts(o),
+    ...nounsOf(o),
   };
 }
 
@@ -404,7 +415,13 @@ export function createMemorandum(
     duration: ms,
     stimulus_duration: ms,
     stimulus: renderScreen(renderMemorandum(a.item)),
-    data: { ...a.data, memorandum: a.item, stimulus_duration: ms },
+    data: {
+      ...a.data,
+      memorandum: a.item,
+      memorandum_id: idOf(o)(a.item),
+      stimulus_set: setName(o.stimulus_set.memorandum),
+      stimulus_duration: ms,
+    },
   });
 }
 
@@ -442,6 +459,7 @@ export function createRecall(ctx: Context, o: ResolvedOptions, a: RecallArgs) {
   const spec = recallSpec(o, a.presented.length);
   const t = ctx.text;
   const state = ctx.state.recall;
+  const id = idOf(o);
   return {
     type: jsPsychHtmlButtonResponse,
     css_classes: [TASK_CLASS],
@@ -453,6 +471,8 @@ export function createRecall(ctx: Context, o: ResolvedOptions, a: RecallArgs) {
       part: a.part,
       set_size: a.presented.length,
       presented_items: a.presented,
+      presented_item_ids: a.presented.map(id),
+      stimulus_set: setName(o.stimulus_set.memorandum),
       response_order: o.response_order,
       response_format: o.response_format,
       response_device: o.response_device.recall,
@@ -470,6 +490,7 @@ export function createRecall(ctx: Context, o: ResolvedOptions, a: RecallArgs) {
       const score = scoreRecall(a.presented, recalled, spec.order);
       d.recall_rt = d.rt;
       d.recalled_items = recalled;
+      d.recalled_item_ids = recalled.map(id);
       d.recall_correct_positions = score.correct_positions;
       d.n_correct_positions = score.n_correct;
       d.proportion_correct = a.presented.length ? score.n_correct / a.presented.length : null;
@@ -505,7 +526,7 @@ export function feedbackHtml(ctx: Context, o: ResolvedOptions, out: RecallOutcom
   return (
     body +
     (o.trial_feedback === "correct_answer"
-      ? t.feedback_correct_answer({ items: out.presented })
+      ? t.feedback_correct_answer({ items: out.presented, ...nounsOf(o) })
       : "")
   );
 }
@@ -746,7 +767,7 @@ export function practiceParts(ctx: Context): PracticePart[] {
 function practiceIntro(ctx: Context, part: PracticePart) {
   const html =
     part === "storage"
-      ? ctx.text.practice_storage_intro
+      ? ctx.text.practice_storage_intro(nounsOf(ctx.test))
       : part === "processing_only"
       ? ctx.text.practice_processing_intro
       : ctx.text.practice_combined_intro;
@@ -940,7 +961,7 @@ export function createInstructions(ctx: Context) {
       : o.speed_accuracy_emphasis === "accuracy"
       ? t.emphasis_accuracy({ criterion_percent: Math.round(PROCESSING_ACCURACY_TARGET * 100) })
       : o.speed_accuracy_emphasis === "both"
-      ? t.emphasis_both
+      ? t.emphasis_both(nounsOf(o))
       : "";
   const pages: string[] = [];
   if (o.processing_items_per_memorandum > 0) {
@@ -948,6 +969,7 @@ export function createInstructions(ctx: Context) {
       t.instruction_intro({
         memorandum_first: o.memorandum_order_in_pair === "memorandum_first",
         items_per_memorandum: o.processing_items_per_memorandum,
+        ...nounsOf(o),
       })
     );
     pages.push(
@@ -961,7 +983,7 @@ export function createInstructions(ctx: Context) {
 }
 
 export const createTestIntro = (ctx: Context) =>
-  textPage(ctx, ctx.text.instruction_test_intro, "instructions", "instruction");
+  textPage(ctx, ctx.text.instruction_test_intro(nounsOf(ctx.test)), "instructions", "instruction");
 
 // -- walkthrough ------------------------------------------------------------------------------------
 
@@ -980,6 +1002,7 @@ function demoArgs(
     correct_label: step === "processing_false" ? p.false_label : p.true_label,
     items,
     recall: recallArgs(ctx, o),
+    ...nounsOf(o),
   };
 }
 

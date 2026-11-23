@@ -4,8 +4,9 @@
  */
 import type { JsPsych } from "jspsych";
 
-import { DIGITS, GRID_COLUMNS, LETTERS, TASK_CLASS } from "./constants";
+import { GRID_COLUMNS, TASK_CLASS } from "./constants";
 import type { ResolvedOptions } from "./options";
+import { Item, buildPool, normText } from "./sets";
 import type { TextConfig } from "./text";
 
 export const cls = (name: string) => `${TASK_CLASS}-${name}`;
@@ -62,18 +63,25 @@ export function generateProblem(jsPsych: JsPsych, isTrue?: boolean): Problem {
 
 // -- memoranda -----------------------------------------------------------------------------------
 
-/** The pool memoranda are drawn from. */
-export function memorandumPool(o: ResolvedOptions): string[] {
-  const m = o.stimulus_set.memorandum ?? "letters";
-  if (m === "letters") return [...LETTERS];
-  if (m === "digits") return [...DIGITS];
-  return [...m.words];
+/** The items memoranda are drawn from, in the set's order. */
+export const poolOf = (o: ResolvedOptions): Item[] => buildPool(o.stimulus_set.memorandum);
+
+/** The texts of the pool, in the set's order (the recall matrix). */
+export const poolTexts = (o: ResolvedOptions): string[] => poolOf(o).map((it) => it.text);
+
+/** `n` different memoranda (their texts) in random order. */
+export function drawMemoranda(jsPsych: JsPsych, o: ResolvedOptions, n: number): string[] {
+  return jsPsych.randomization.sampleWithoutReplacement(poolTexts(o), n);
 }
 
-/** `n` different memoranda in random order. */
-export function drawMemoranda(jsPsych: JsPsych, o: ResolvedOptions, n: number): string[] {
-  return jsPsych.randomization.sampleWithoutReplacement(memorandumPool(o), n);
+/** The id of a memorandum text, or of a recalled entry (null: an omission, or typed text that is no item). */
+export function idOf(o: ResolvedOptions): (text: string | null) => string | null {
+  const ids = new Map(poolOf(o).map((it) => [normText(it.text), it.id]));
+  return (text) => (text === null ? null : ids.get(normText(text)) ?? null);
 }
+
+const escapeAttr = (x: string) =>
+  x.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
 
 // -- screens -------------------------------------------------------------------------------------
 
@@ -130,8 +138,11 @@ export interface RecallSpec {
   order: "serial" | "free";
   omission: "blank_button" | "none" | "question_mark_key" | "skip_button";
   set_size: number;
-  /** The pool shown in the matrix (n_afc). */
+  /** The pool shown in the matrix (n_afc): the texts, in the set's order. */
   pool: string[];
+  /** What the instructions call one memorandum, and several. */
+  noun: string;
+  nouns: string;
 }
 
 /** Recall panel (the stage of a recall screen): prompt, entered items, input. */
@@ -140,6 +151,8 @@ export function renderRecallPanel(spec: RecallSpec, text: TextConfig): string {
     format: spec.format,
     order: spec.order,
     set_size: spec.set_size,
+    noun: spec.noun,
+    nouns: spec.nouns,
   })}</div>`;
   const blankLabel = spec.omission === "skip_button" ? text.skip_button : text.blank_button;
   const blankButton =
@@ -172,7 +185,12 @@ export function renderRecallPanel(spec: RecallSpec, text: TextConfig): string {
       ? `<div class="${cls(
           "grid"
         )}" style="grid-template-columns: repeat(${GRID_COLUMNS}, minmax(0, 1fr));">${spec.pool
-          .map((x) => `<button type="button" class="${cls("key")}" data-item="${x}">${x}</button>`)
+          .map(
+            (x) =>
+              `<button type="button" class="${cls("key")}" data-item="${escapeAttr(
+                x
+              )}">${x}</button>`
+          )
           .join("")}</div>`
       : "";
   return `<div class="${cls("recall")}">${prompt}<div class="${cls(
@@ -203,10 +221,7 @@ export const newRecallState = (): RecallState => ({
   cleanup: null,
 });
 
-const norm = (x: unknown) =>
-  String(x ?? "")
-    .trim()
-    .toLowerCase();
+const norm = normText;
 
 /** Final entered items: one per memorandum, null for an omission. */
 export function finalItems(state: RecallState, spec: RecallSpec): (string | null)[] {
