@@ -1956,7 +1956,7 @@
     {
       "id": "S034",
       "label": "MacMillan et al. 2024, Memory & Cognition",
-      "description": "empirical · online-unsupervised · 10 spec options · memoranda: a stand-in list of 16 English words written into the preset, not the study's words (none are reported or bundled): supply your own",
+      "description": "empirical · online-unsupervised · 10 spec options · memoranda: the package's stand-in list of 16 English words, not the study's words (none are reported): supply your own",
       "options": {
         "response_device": {
           "recall": "keyboard",
@@ -1976,29 +1976,7 @@
         ],
         "stimulus_set": {
           "memorandum": {
-            "name": "words_stand_in",
-            "noun": {
-              "singular": "word",
-              "plural": "words"
-            },
-            "items": [
-              "apple",
-              "bread",
-              "chair",
-              "dance",
-              "eagle",
-              "flame",
-              "grape",
-              "house",
-              "ivory",
-              "jelly",
-              "knife",
-              "lemon",
-              "mouse",
-              "night",
-              "ocean",
-              "plant"
-            ]
+            "$util": "stimuli.words"
           }
         },
         "trials_per_condition": 4
@@ -2025,7 +2003,7 @@
     {
       "id": "S043",
       "label": "Wallinheimo et al. 2023, Frontiers in Artificial Intelligence",
-      "description": "empirical · online-unsupervised · 4 spec options · memoranda: a stand-in list of 16 English words written into the preset, not the study's words (none are reported or bundled): supply your own",
+      "description": "empirical · online-unsupervised · 4 spec options · memoranda: the package's stand-in list of 16 English words, not the study's words (none are reported): supply your own",
       "options": {
         "n_test_trials": 12,
         "set_sizes": [
@@ -2037,29 +2015,7 @@
         "stimulus_set": {
           "memorandum_source": "separate_item",
           "memorandum": {
-            "name": "words_stand_in",
-            "noun": {
-              "singular": "word",
-              "plural": "words"
-            },
-            "items": [
-              "apple",
-              "bread",
-              "chair",
-              "dance",
-              "eagle",
-              "flame",
-              "grape",
-              "house",
-              "ivory",
-              "jelly",
-              "knife",
-              "lemon",
-              "mouse",
-              "night",
-              "ocean",
-              "plant"
-            ]
+            "$util": "stimuli.words"
           }
         }
       }

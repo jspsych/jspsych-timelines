@@ -18,7 +18,7 @@ import { initJsPsych } from "jspsych";
 
 import meta from "../docs-meta/options.meta.json";
 import * as adapterModule from "../reproduction/adapter";
-import { WORD_POOL, adaptConfig, assumedSettings, combine, isGap } from "../reproduction/adapter";
+import { adaptConfig, assumedSettings, combine, isGap } from "../reproduction/adapter";
 import { CHECKS } from "../reproduction/checks";
 import { contract } from "../reproduction/contract";
 import expected from "../reproduction/expected-tallies.json";
@@ -34,8 +34,8 @@ const reproductionDir = path.join(__dirname, "..", "reproduction");
 const itemsNote = (opts: any): string => {
   const set = opts?.stimulus_set?.memorandum;
   if (!set) return "";
-  return set === WORD_POOL
-    ? " · memoranda: a stand-in list of 16 English words written into the preset, not the study's words (none are reported or bundled): supply your own"
+  return set === utils.stimuli.words
+    ? " · memoranda: the package's stand-in list of 16 English words, not the study's words (none are reported): supply your own"
     : set === utils.stimuli.letters
     ? " · memoranda: the package's letters, the 12 consonants of the Engle-lab task (S006)"
     : ` · memoranda: the package's ${set.name}, not necessarily the study's own list`;
@@ -89,7 +89,7 @@ defineReproduction({
       case "stimulus_duration_ms.memorandum":
         return [e.stimulus_duration_ms, value];
       case "stimulus_set.memorandum_type":
-        return [e.stimulus_set.memorandum.name, value === "words" ? WORD_POOL.name : value];
+        return [e.stimulus_set.memorandum.name, value];
       case "practice_criterion":
         return [e.practice_criterion, { accuracy: value.accuracy, window: value.block_trials }];
       case "stimulus_set.memorandum":

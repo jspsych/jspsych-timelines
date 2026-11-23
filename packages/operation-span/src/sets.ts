@@ -30,6 +30,33 @@ export const letters: StimulusSet = {
   items: LETTERS,
 };
 
+/**
+ * 16 common English nouns, five letters each: a stand-in for the word lists of S034 and S043, which are not reported
+ * (and were not in English). Original to this package.
+ */
+export const words: StimulusSet = {
+  name: "words",
+  noun: { singular: "word", plural: "words" },
+  items: [
+    "apple",
+    "bread",
+    "chair",
+    "dance",
+    "eagle",
+    "flame",
+    "grape",
+    "house",
+    "ivory",
+    "jelly",
+    "knife",
+    "lemon",
+    "mouse",
+    "night",
+    "ocean",
+    "plant",
+  ],
+};
+
 /** The digits 1-9 (S020). */
 export const digits: StimulusSet = {
   name: "digits",

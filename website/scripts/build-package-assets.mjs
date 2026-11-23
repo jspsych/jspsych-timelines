@@ -184,7 +184,8 @@ export function applyUtilRefs(schema, pkgDir) {
   const sets = mod?.utils?.stimuli;
   if (!isObject(sets)) return 0;
   const refs = Object.entries(sets)
-    .filter(([, v]) => isObject(v) && Array.isArray(v.items))
+    // a set is any plain object in utils.stimuli (functions there are render helpers); its shape is the package's
+    .filter(([, v]) => isObject(v))
     .map(([k, v]) => ({ ref: { $util: `stimuli.${k}` }, value: v }));
   const refOf = (v) => refs.find((r) => r.value === v)?.ref;
   const defaults = mod?.utils?.constants?.DEFAULT_OPTIONS ?? {};

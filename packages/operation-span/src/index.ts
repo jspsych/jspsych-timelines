@@ -29,7 +29,7 @@ import {
 import { fixedOrder, practiceSetSizes, scheduleBlocks } from "./schedule";
 import { calculateScores, getSummary, scoreRecall } from "./scoring";
 import type { ScoringResult } from "./scoring";
-import { buildPool, digits, letters } from "./sets";
+import { buildPool, digits, letters, words } from "./sets";
 import { generateProblem } from "./stimuli";
 import { TextConfig, defaultText } from "./text";
 import {
@@ -197,7 +197,7 @@ export const utils = {
   text: { defaultText },
   deadlines: { ...deadlines, calibrationRts, resolve: resolveWindow },
   /** The bundled memorandum sets, and the helpers that read a set and generate problems. */
-  stimuli: { letters, digits, generateProblem },
+  stimuli: { letters, digits, words, generateProblem },
   /** Reads a memorandum set: its items, normalised to `{ id, text }`, in order. */
   items: { buildPool },
   sequence: { scheduleBlocks, fixedOrder, practiceSetSizes },

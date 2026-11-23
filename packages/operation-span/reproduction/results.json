@@ -341,29 +341,7 @@
       "options": {
         "stimulus_set": {
           "memorandum": {
-            "name": "words_stand_in",
-            "noun": {
-              "singular": "word",
-              "plural": "words"
-            },
-            "items": [
-              "apple",
-              "bread",
-              "chair",
-              "dance",
-              "eagle",
-              "flame",
-              "grape",
-              "house",
-              "ivory",
-              "jelly",
-              "knife",
-              "lemon",
-              "mouse",
-              "night",
-              "ocean",
-              "plant"
-            ]
+            "$util": "stimuli.words"
           }
         }
       }
