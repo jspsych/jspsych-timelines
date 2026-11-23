@@ -2957,7 +2957,7 @@ var jsPsychTimelineOperationSpan = (function (exports) {
       const r = s;
       if (typeof (r == null ? void 0 : r.image) === "string" || typeof (r == null ? void 0 : r.svg) === "string") {
         out.push(
-          `item ${i + 1} is an ${typeof r.image === "string" ? "image" : "SVG"}; memoranda must be text, because recall names them (the matrix labels, typed and key-press recall, the feedback)`
+          `item ${i + 1} is an ${typeof r.image === "string" ? "image" : "SVG"}; memory items must be text, because recall names them (the matrix labels, typed and key-press recall, the feedback)`
         );
       } else if (typeof (r == null ? void 0 : r.text) !== "string" || r.text.trim() === "") {
         out.push(`item ${i + 1} must be a string or an object with a text`);
@@ -3012,14 +3012,14 @@ var jsPsychTimelineOperationSpan = (function (exports) {
     response_window_ms: deadlines.meanPlusSd(2.5),
     stimulus_duration_ms: 800,
     stimulus_language: null,
-    stimulus_set: { memorandum: letters, memorandum_source: "separate_item" },
+    stimulus_set: letters,
     processing_display_format: "problem_then_answer_screens",
     block_order: "random",
     n_test_trials: 15,
     set_sizes: [3, 4, 5, 6, 7],
     trials_per_condition: 3,
-    memorandum_order_in_pair: "processing_first",
-    processing_items_per_memorandum: 1,
+    order_in_pair: "processing_first",
+    processing_items_per_memory_item: 1,
     task_variant: "operation_span",
     response_device: { processing: "mouse", recall: "mouse" },
     response_format: "n_afc",
@@ -3047,7 +3047,7 @@ var jsPsychTimelineOperationSpan = (function (exports) {
     ],
     [
       "processing_display_format",
-      ["equation_and_memorandum_same_screen"],
+      ["equation_and_memory_item_same_screen"],
       "use problem_then_answer_screens or equation_with_answer_single_screen"
     ],
     [
@@ -3093,7 +3093,7 @@ var jsPsychTimelineOperationSpan = (function (exports) {
     return setSizeLists(s).reduce((a, l) => a + l.length, 0);
   }
   function resolveOptions(user = {}, phase = "test") {
-    var _b, _c;
+    var _b;
     const _a = user, { practice, text: _text } = _a, top = __objRest(_a, ["practice", "text"]);
     const topKeys = new Set(Object.keys(top).filter((k) => top[k] !== void 0));
     let layer = __spreadValues({}, top);
@@ -3110,8 +3110,7 @@ var jsPsychTimelineOperationSpan = (function (exports) {
     const merged = __spreadValues({}, DEFAULT_OPTIONS);
     delete merged.practice;
     for (const [k, v] of Object.entries(layer)) if (v !== void 0) merged[k] = v;
-    merged.stimulus_set = __spreadValues(__spreadValues({}, DEFAULT_OPTIONS.stimulus_set), (_b = layer.stimulus_set) != null ? _b : {});
-    merged.stimulus_set.memorandum = (_c = asStimulusSet(merged.stimulus_set.memorandum)) != null ? _c : merged.stimulus_set.memorandum;
+    merged.stimulus_set = (_b = asStimulusSet(merged.stimulus_set)) != null ? _b : merged.stimulus_set;
     merged.response_device = normaliseDevice(layer.response_device, DEFAULT_OPTIONS.response_device);
     if (phase === "test") {
       const cells = cellCount(merged.set_sizes);
@@ -3148,22 +3147,17 @@ var jsPsychTimelineOperationSpan = (function (exports) {
     }
     if (o.stimulus_language !== null) {
       throw new Error(
-        `operation-span: stimulus_language: "${o.stimulus_language}" is not implemented (no word lists are bundled; give your own words as a set in stimulus_set.memorandum).`
+        `operation-span: stimulus_language: "${o.stimulus_language}" is not implemented (no word lists are bundled; give your own words as a set in stimulus_set).`
       );
     }
-    if (!asStimulusSet(o.stimulus_set.memorandum)) {
+    if (!asStimulusSet(o.stimulus_set)) {
       throw new Error(
-        "operation-span: stimulus_set.memorandum must be a set ({ name?, noun?, items }) or an array of items, e.g. utils.stimuli.letters."
+        "operation-span: stimulus_set must be a set ({ name?, noun?, items }) or an array of items, e.g. utils.stimuli.letters."
       );
     }
-    const setIssues = setProblems(o.stimulus_set.memorandum);
+    const setIssues = setProblems(o.stimulus_set);
     if (setIssues.length) {
-      throw new Error(`operation-span: stimulus_set.memorandum: ${setIssues.join("; ")}.`);
-    }
-    if (o.stimulus_set.memorandum_source === "sentence_final_word") {
-      throw new Error(
-        'operation-span: stimulus_set.memorandum_source: "sentence_final_word" is not implemented (reading span needs a sentence processing task).'
-      );
+      throw new Error(`operation-span: stimulus_set: ${setIssues.join("; ")}.`);
     }
     for (const [role, d] of Object.entries(o.response_device)) {
       if (!DEVICES_IMPLEMENTED.includes(d)) {
@@ -3188,9 +3182,9 @@ var jsPsychTimelineOperationSpan = (function (exports) {
         'operation-span: recall_omission_handling "question_mark_key" needs response_device recall "keyboard".'
       );
     }
-    if (o.response_format === "single_response" && buildPool(o.stimulus_set.memorandum).some((it) => it.text.trim().length !== 1)) {
+    if (o.response_format === "single_response" && buildPool(o.stimulus_set).some((it) => it.text.trim().length !== 1)) {
       throw new Error(
-        'operation-span: response_format "single_response" is one key per item and needs single-character memoranda.'
+        'operation-span: response_format "single_response" is one key per item and needs single-character memory items.'
       );
     }
     if (!Array.isArray(o.response_keys) || o.response_keys.length !== 2) {
@@ -3200,7 +3194,7 @@ var jsPsychTimelineOperationSpan = (function (exports) {
     }
     if (typeof o.stimulus_duration_ms === "number" ? !(o.stimulus_duration_ms > 0) : o.stimulus_duration_ms === null) {
       throw new Error(
-        "operation-span: stimulus_duration_ms must be a duration: each memorandum is shown for that long."
+        "operation-span: stimulus_duration_ms must be a duration: each memory item is shown for that long."
       );
     }
     const lists = setSizeLists(o.set_sizes);
@@ -3212,16 +3206,16 @@ var jsPsychTimelineOperationSpan = (function (exports) {
       );
     }
     const biggest = Math.max(...lists.flat());
-    const pool = o.stimulus_set.memorandum.items.length;
+    const pool = o.stimulus_set.items.length;
     if (biggest > pool) {
       throw new Error(
-        `operation-span: set size ${biggest} needs ${biggest} different memoranda but the pool has ${pool}.`
+        `operation-span: set size ${biggest} needs ${biggest} different memory items but the pool has ${pool}.`
       );
     }
     const walkthrough = o.instruction_format === "text" && o.instruction_demonstration !== "none";
     if (walkthrough && pool < INSTRUCTION_RECALL_SET_SIZE) {
       throw new Error(
-        `operation-span: the walkthrough's recall step needs ${INSTRUCTION_RECALL_SET_SIZE} different memoranda but the pool has ${pool}.`
+        `operation-span: the walkthrough's recall step needs ${INSTRUCTION_RECALL_SET_SIZE} different memory items but the pool has ${pool}.`
       );
     }
     if (isNested(o.set_sizes) && o.block_order === "random_within_block") {
@@ -3232,9 +3226,9 @@ var jsPsychTimelineOperationSpan = (function (exports) {
     if (phase === "test" && !(o.trials_per_condition >= 1)) {
       throw new Error("operation-span: trials_per_condition must be at least 1.");
     }
-    if (!(o.processing_items_per_memorandum >= 0) || !Number.isInteger(o.processing_items_per_memorandum)) {
+    if (!(o.processing_items_per_memory_item >= 0) || !Number.isInteger(o.processing_items_per_memory_item)) {
       throw new Error(
-        "operation-span: processing_items_per_memorandum must be a non-negative integer."
+        "operation-span: processing_items_per_memory_item must be a non-negative integer."
       );
     }
     const pc = o.practice_criterion;
@@ -3247,9 +3241,9 @@ var jsPsychTimelineOperationSpan = (function (exports) {
         throw new Error("operation-span: response_window_ms: { min, max } needs 0 < min <= max.");
       }
     }
-    if (o.processing_items_per_memorandum === 0 && o.practice_criterion) {
+    if (o.processing_items_per_memory_item === 0 && o.practice_criterion) {
       throw new Error(
-        "operation-span: practice_criterion needs processing (processing_items_per_memorandum is 0)."
+        "operation-span: practice_criterion needs processing (processing_items_per_memory_item is 0)."
       );
     }
   }
@@ -3385,9 +3379,9 @@ var jsPsychTimelineOperationSpan = (function (exports) {
     }
     return { text: `(${a} ${op1} ${b}) ${op2} ${c}`, value, shown, is_true: truth };
   }
-  var poolOf = (o) => buildPool(o.stimulus_set.memorandum);
+  var poolOf = (o) => buildPool(o.stimulus_set);
   var poolTexts = (o) => poolOf(o).map((it) => it.text);
-  function drawMemoranda(jsPsych, o, n) {
+  function drawMemoryItems(jsPsych, o, n) {
     return jsPsych.randomization.sampleWithoutReplacement(poolTexts(o), n);
   }
   function idOf(o) {
@@ -3404,7 +3398,7 @@ var jsPsychTimelineOperationSpan = (function (exports) {
   var textBlock = (html) => `<div class="${cls("text")}">${html}</div>`;
   var renderProblem = (p, withAnswer) => `<div class="${cls("problem")}">${p.text} ${withAnswer ? `= <strong>${p.shown}</strong> ?` : "= ?"}</div>`;
   var renderAnswer = (p) => `<div class="${cls("problem")}"><strong>${p.shown}</strong></div>`;
-  var renderMemorandum = (item) => `<div class="${cls("memorandum")}">${item}</div>`;
+  var renderMemoryItem = (item) => `<div class="${cls("memory-item")}">${item}</div>`;
   var renderNotice = (html, kind = "") => `<div class="${cls("notice")} ${kind}">${html}</div>`;
   var KEY_NAMES = {
     " ": "space",
@@ -3567,13 +3561,13 @@ var jsPsychTimelineOperationSpan = (function (exports) {
   var pct = (x) => x === null ? "-" : `${Math.round(x * 100)}%`;
   var defaultText = {
     instruction_intro: ({
-      memorandum_first,
-      items_per_memorandum,
+      memory_item_first,
+      items_per_memory_item,
       noun,
       nouns
     }) => `<h2>Operation Span</h2>
     <p>This task has two parts that you do at the same time: solving math problems and remembering ${nouns}.</p>
-    <p>You will see a ${items_per_memorandum > 1 ? "series of problems" : "math problem"} and one ${noun}${memorandum_first ? `, starting with the ${noun}` : ", starting with the problem"}, over and over. Remember the ${nouns} in the order they appear. After a few of each, you will be asked to recall the ${nouns}.</p>`,
+    <p>You will see a ${items_per_memory_item > 1 ? "series of problems" : "math problem"} and one ${noun}${memory_item_first ? `, starting with the ${noun}` : ", starting with the problem"}, over and over. Remember the ${nouns} in the order they appear. After a few of each, you will be asked to recall the ${nouns}.</p>`,
     instruction_processing: (r) => {
       const answer = r.device === "keyboard" ? `Press ${r.true_label} if the answer shown is correct, or ${r.false_label} if it is wrong.` : `Click <strong>${r.true_label}</strong> if the answer shown is correct, or <strong>${r.false_label}</strong> if it is wrong.`;
       const limit = r.timed ? " There is a time limit, so work quickly." : "";
@@ -3667,7 +3661,7 @@ var jsPsychTimelineOperationSpan = (function (exports) {
   }
 
   // src/styles.css
-  styleInject(".jspsych-timelines-operation-span .jspsych-timelines-operation-span-text {\n  max-width: 600px;\n  margin: 0 auto;\n  padding: 0 20px;\n  text-align: left;\n}\n.jspsych-timelines-operation-span .jspsych-timelines-operation-span-text h2 {\n  text-align: center;\n}\n.jspsych-timelines-operation-span {\n  --ospan-stage-h: min(240px, 38vh);\n  --ospan-recall-h: min(330px, 66vh);\n  --ospan-btn-reserve: 76px;\n}\n.jspsych-timelines-operation-span:has(.jspsych-timelines-operation-span-screen) {\n  position: relative;\n  box-sizing: border-box;\n  width: 100%;\n  max-width: none;\n  height: 100vh;\n  margin: 0;\n  overflow: hidden;\n}\n.jspsych-timelines-operation-span .jspsych-timelines-operation-span-screen {\n  display: contents;\n}\n.jspsych-timelines-operation-span .jspsych-timelines-operation-span-stage {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  transform: translate(-50%, -50%);\n  box-sizing: border-box;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 640px;\n  max-width: calc(100vw - 16px);\n  height: var(--ospan-stage-h);\n  padding: 8px;\n  overflow: hidden;\n}\n.jspsych-timelines-operation-span .jspsych-timelines-operation-span-screen-recall {\n  --ospan-stage-h: var(--ospan-recall-h);\n}\n.jspsych-timelines-operation-span .jspsych-timelines-operation-span-below {\n  position: absolute;\n  top: calc(50% + var(--ospan-stage-h) / 2 + 8px);\n  right: 0;\n  bottom: 0;\n  left: 0;\n  overflow-y: auto;\n  overscroll-behavior: contain;\n}\n.jspsych-timelines-operation-span .jspsych-timelines-operation-span-below .jspsych-timelines-operation-span-text {\n  text-align: center;\n  text-wrap: balance;\n}\n.jspsych-timelines-operation-span:has(#jspsych-html-button-response-btngroup) .jspsych-timelines-operation-span-below {\n  bottom: var(--ospan-btn-reserve);\n}\n.jspsych-timelines-operation-span:has(.jspsych-timelines-operation-span-screen) #jspsych-html-button-response-btngroup {\n  position: absolute;\n  right: 0;\n  bottom: 12px;\n  left: 0;\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  justify-content: center;\n  gap: 8px;\n}\n.jspsych-timelines-operation-span .jspsych-timelines-operation-span-problem {\n  font-size: 2.2em;\n  text-align: center;\n  white-space: nowrap;\n}\n.jspsych-timelines-operation-span .jspsych-timelines-operation-span-memorandum {\n  font-size: 4.5em;\n  font-weight: bold;\n  line-height: 1;\n}\n.jspsych-timelines-operation-span .jspsych-timelines-operation-span-notice {\n  font-size: 1em;\n  text-align: center;\n  text-wrap: balance;\n}\n.jspsych-timelines-operation-span .jspsych-timelines-operation-span-notice p {\n  margin: 0.3em 0;\n}\n.jspsych-timelines-operation-span .jspsych-timelines-operation-span-notice.incorrect,\n.jspsych-timelines-operation-span .jspsych-timelines-operation-span-notice.timeout {\n  font-weight: bold;\n}\n.jspsych-timelines-operation-span .jspsych-timelines-operation-span-recall {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  gap: 8px;\n  width: 100%;\n}\n.jspsych-timelines-operation-span .jspsych-timelines-operation-span-recall-prompt {\n  font-size: 1.05em;\n}\n.jspsych-timelines-operation-span .jspsych-timelines-operation-span-slots,\n.jspsych-timelines-operation-span .jspsych-timelines-operation-span-boxes {\n  display: flex;\n  flex-wrap: wrap;\n  justify-content: center;\n  gap: 6px;\n}\n.jspsych-timelines-operation-span .jspsych-timelines-operation-span-slot {\n  box-sizing: border-box;\n  min-width: 40px;\n  height: 40px;\n  padding: 0 6px;\n  border: 2px solid currentColor;\n  border-radius: 6px;\n  font-size: 1.3em;\n  font-weight: bold;\n  line-height: 36px;\n  text-align: center;\n}\n.jspsych-timelines-operation-span .jspsych-timelines-operation-span-box {\n  box-sizing: border-box;\n  width: 64px;\n  height: 40px;\n  font-size: 1.2em;\n  text-align: center;\n  text-transform: none;\n}\n.jspsych-timelines-operation-span .jspsych-timelines-operation-span-grid {\n  display: grid;\n  gap: 6px;\n  width: min(320px, 100%);\n}\n.jspsych-timelines-operation-span .jspsych-timelines-operation-span-key,\n.jspsych-timelines-operation-span .jspsych-timelines-operation-span-control {\n  box-sizing: border-box;\n  min-height: 42px;\n  padding: 0 10px;\n  border: 1px solid #888;\n  border-radius: 6px;\n  background: #f4f4f4;\n  color: #111;\n  font-size: 1.1em;\n  font-weight: bold;\n  cursor: pointer;\n}\n.jspsych-timelines-operation-span .jspsych-timelines-operation-span-key:disabled {\n  opacity: 0.35;\n  cursor: default;\n}\n.jspsych-timelines-operation-span .jspsych-timelines-operation-span-controls {\n  display: flex;\n  gap: 8px;\n}\n@media (max-height: 520px) {\n  .jspsych-timelines-operation-span .jspsych-timelines-operation-span-slot {\n    height: 32px;\n    line-height: 28px;\n  }\n  .jspsych-timelines-operation-span .jspsych-timelines-operation-span-key,\n  .jspsych-timelines-operation-span .jspsych-timelines-operation-span-control {\n    min-height: 34px;\n  }\n  .jspsych-timelines-operation-span .jspsych-timelines-operation-span-grid {\n    gap: 4px;\n  }\n}\n@media (max-width: 420px) {\n  .jspsych-timelines-operation-span .jspsych-timelines-operation-span-slots,\n  .jspsych-timelines-operation-span .jspsych-timelines-operation-span-boxes {\n    gap: 4px;\n  }\n  .jspsych-timelines-operation-span .jspsych-timelines-operation-span-slot {\n    min-width: 30px;\n    padding: 0 3px;\n  }\n  .jspsych-timelines-operation-span .jspsych-timelines-operation-span-box {\n    width: 40px;\n  }\n}\n");
+  styleInject(".jspsych-timelines-operation-span .jspsych-timelines-operation-span-text {\n  max-width: 600px;\n  margin: 0 auto;\n  padding: 0 20px;\n  text-align: left;\n}\n.jspsych-timelines-operation-span .jspsych-timelines-operation-span-text h2 {\n  text-align: center;\n}\n.jspsych-timelines-operation-span {\n  --ospan-stage-h: min(240px, 38vh);\n  --ospan-recall-h: min(330px, 66vh);\n  --ospan-btn-reserve: 76px;\n}\n.jspsych-timelines-operation-span:has(.jspsych-timelines-operation-span-screen) {\n  position: relative;\n  box-sizing: border-box;\n  width: 100%;\n  max-width: none;\n  height: 100vh;\n  margin: 0;\n  overflow: hidden;\n}\n.jspsych-timelines-operation-span .jspsych-timelines-operation-span-screen {\n  display: contents;\n}\n.jspsych-timelines-operation-span .jspsych-timelines-operation-span-stage {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  transform: translate(-50%, -50%);\n  box-sizing: border-box;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 640px;\n  max-width: calc(100vw - 16px);\n  height: var(--ospan-stage-h);\n  padding: 8px;\n  overflow: hidden;\n}\n.jspsych-timelines-operation-span .jspsych-timelines-operation-span-screen-recall {\n  --ospan-stage-h: var(--ospan-recall-h);\n}\n.jspsych-timelines-operation-span .jspsych-timelines-operation-span-below {\n  position: absolute;\n  top: calc(50% + var(--ospan-stage-h) / 2 + 8px);\n  right: 0;\n  bottom: 0;\n  left: 0;\n  overflow-y: auto;\n  overscroll-behavior: contain;\n}\n.jspsych-timelines-operation-span .jspsych-timelines-operation-span-below .jspsych-timelines-operation-span-text {\n  text-align: center;\n  text-wrap: balance;\n}\n.jspsych-timelines-operation-span:has(#jspsych-html-button-response-btngroup) .jspsych-timelines-operation-span-below {\n  bottom: var(--ospan-btn-reserve);\n}\n.jspsych-timelines-operation-span:has(.jspsych-timelines-operation-span-screen) #jspsych-html-button-response-btngroup {\n  position: absolute;\n  right: 0;\n  bottom: 12px;\n  left: 0;\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  justify-content: center;\n  gap: 8px;\n}\n.jspsych-timelines-operation-span .jspsych-timelines-operation-span-problem {\n  font-size: 2.2em;\n  text-align: center;\n  white-space: nowrap;\n}\n.jspsych-timelines-operation-span .jspsych-timelines-operation-span-memory-item {\n  font-size: 4.5em;\n  font-weight: bold;\n  line-height: 1;\n}\n.jspsych-timelines-operation-span .jspsych-timelines-operation-span-notice {\n  font-size: 1em;\n  text-align: center;\n  text-wrap: balance;\n}\n.jspsych-timelines-operation-span .jspsych-timelines-operation-span-notice p {\n  margin: 0.3em 0;\n}\n.jspsych-timelines-operation-span .jspsych-timelines-operation-span-notice.incorrect,\n.jspsych-timelines-operation-span .jspsych-timelines-operation-span-notice.timeout {\n  font-weight: bold;\n}\n.jspsych-timelines-operation-span .jspsych-timelines-operation-span-recall {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  gap: 8px;\n  width: 100%;\n}\n.jspsych-timelines-operation-span .jspsych-timelines-operation-span-recall-prompt {\n  font-size: 1.05em;\n}\n.jspsych-timelines-operation-span .jspsych-timelines-operation-span-slots,\n.jspsych-timelines-operation-span .jspsych-timelines-operation-span-boxes {\n  display: flex;\n  flex-wrap: wrap;\n  justify-content: center;\n  gap: 6px;\n}\n.jspsych-timelines-operation-span .jspsych-timelines-operation-span-slot {\n  box-sizing: border-box;\n  min-width: 40px;\n  height: 40px;\n  padding: 0 6px;\n  border: 2px solid currentColor;\n  border-radius: 6px;\n  font-size: 1.3em;\n  font-weight: bold;\n  line-height: 36px;\n  text-align: center;\n}\n.jspsych-timelines-operation-span .jspsych-timelines-operation-span-box {\n  box-sizing: border-box;\n  width: 64px;\n  height: 40px;\n  font-size: 1.2em;\n  text-align: center;\n  text-transform: none;\n}\n.jspsych-timelines-operation-span .jspsych-timelines-operation-span-grid {\n  display: grid;\n  gap: 6px;\n  width: min(320px, 100%);\n}\n.jspsych-timelines-operation-span .jspsych-timelines-operation-span-key,\n.jspsych-timelines-operation-span .jspsych-timelines-operation-span-control {\n  box-sizing: border-box;\n  min-height: 42px;\n  padding: 0 10px;\n  border: 1px solid #888;\n  border-radius: 6px;\n  background: #f4f4f4;\n  color: #111;\n  font-size: 1.1em;\n  font-weight: bold;\n  cursor: pointer;\n}\n.jspsych-timelines-operation-span .jspsych-timelines-operation-span-key:disabled {\n  opacity: 0.35;\n  cursor: default;\n}\n.jspsych-timelines-operation-span .jspsych-timelines-operation-span-controls {\n  display: flex;\n  gap: 8px;\n}\n@media (max-height: 520px) {\n  .jspsych-timelines-operation-span .jspsych-timelines-operation-span-slot {\n    height: 32px;\n    line-height: 28px;\n  }\n  .jspsych-timelines-operation-span .jspsych-timelines-operation-span-key,\n  .jspsych-timelines-operation-span .jspsych-timelines-operation-span-control {\n    min-height: 34px;\n  }\n  .jspsych-timelines-operation-span .jspsych-timelines-operation-span-grid {\n    gap: 4px;\n  }\n}\n@media (max-width: 420px) {\n  .jspsych-timelines-operation-span .jspsych-timelines-operation-span-slots,\n  .jspsych-timelines-operation-span .jspsych-timelines-operation-span-boxes {\n    gap: 4px;\n  }\n  .jspsych-timelines-operation-span .jspsych-timelines-operation-span-slot {\n    min-width: 30px;\n    padding: 0 3px;\n  }\n  .jspsych-timelines-operation-span .jspsych-timelines-operation-span-box {\n    width: 40px;\n  }\n}\n");
 
   // ../../node_modules/jspsych/dist/index.js
   __toESM(require_auto_bind());
@@ -4166,7 +4160,7 @@ var jsPsychTimelineOperationSpan = (function (exports) {
   var noResponse = (d) => typeof d.rt !== "number";
   var buttonHtml = (choice) => `<button class="jspsych-btn">${choice}</button>`;
   function nounsOf(o) {
-    const n = itemNouns(o.stimulus_set.memorandum);
+    const n = itemNouns(o.stimulus_set);
     return { noun: n.singular, nouns: n.plural };
   }
   function processingArgs(ctx, o, timed) {
@@ -4337,18 +4331,18 @@ var jsPsychTimelineOperationSpan = (function (exports) {
       ]
     };
   }
-  function createMemorandum(ctx, o, a) {
+  function createMemoryItem(ctx, o, a) {
     const ms = sampleDuration(ctx.jsPsych, o.stimulus_duration_ms);
     return createDisplayTrial({
       phase: a.phase,
       part: a.part,
       duration: ms,
       stimulus_duration: ms,
-      stimulus: renderScreen(renderMemorandum(a.item)),
+      stimulus: renderScreen(renderMemoryItem(a.item)),
       data: __spreadProps(__spreadValues({}, a.data), {
-        memorandum: a.item,
-        memorandum_id: idOf(o)(a.item),
-        stimulus_set: setName(o.stimulus_set.memorandum),
+        memory_item: a.item,
+        memory_item_id: idOf(o)(a.item),
+        stimulus_set: setName(o.stimulus_set),
         stimulus_duration: ms
       })
     });
@@ -4381,7 +4375,7 @@ var jsPsychTimelineOperationSpan = (function (exports) {
         set_size: a.presented.length,
         presented_items: a.presented,
         presented_item_ids: a.presented.map(id),
-        stimulus_set: setName(o.stimulus_set.memorandum),
+        stimulus_set: setName(o.stimulus_set),
         response_order: o.response_order,
         response_format: o.response_format,
         response_device: o.response_device.recall
@@ -4472,9 +4466,9 @@ var jsPsychTimelineOperationSpan = (function (exports) {
     };
   }
   function planTrial(ctx, o, base, withProcessing) {
-    const k = withProcessing ? o.processing_items_per_memorandum : 0;
+    const k = withProcessing ? o.processing_items_per_memory_item : 0;
     return __spreadProps(__spreadValues({}, base), {
-      items: drawMemoranda(ctx.jsPsych, o, base.set_size),
+      items: drawMemoryItems(ctx.jsPsych, o, base.set_size),
       problems: Array.from({ length: base.set_size * k }, () => generateProblem(ctx.jsPsych))
     });
   }
@@ -4500,9 +4494,9 @@ var jsPsychTimelineOperationSpan = (function (exports) {
     const data = trialData(plan);
     const events = [];
     for (let i = 0; i < plan.set_size; i++) {
-      const memorandum = createMemorandum(ctx, o, {
+      const memoryItem = createMemoryItem(ctx, o, {
         phase: plan.phase,
-        part: "memorandum",
+        part: "memory_item",
         item: plan.items[i],
         data: __spreadProps(__spreadValues({}, data), { position: i + 1 })
       });
@@ -4525,7 +4519,7 @@ var jsPsychTimelineOperationSpan = (function (exports) {
         })
       );
       events.push(
-        ...o.memorandum_order_in_pair === "processing_first" ? [...procs, memorandum] : [memorandum, ...procs]
+        ...o.order_in_pair === "processing_first" ? [...procs, memoryItem] : [memoryItem, ...procs]
       );
     }
     const timeline = [];
@@ -4593,7 +4587,7 @@ var jsPsychTimelineOperationSpan = (function (exports) {
       practice_combined_trials
     } = ctx.test;
     const parts = [];
-    const hasProcessing = ctx.test.processing_items_per_memorandum > 0;
+    const hasProcessing = ctx.test.processing_items_per_memory_item > 0;
     if ((s === "storage_processing_combined" || s === "storage_processing") && practice_storage_trials > 0)
       parts.push("storage");
     if ((s === "storage_processing_combined" || s === "storage_processing") && practice_trials > 0 && hasProcessing)
@@ -4757,11 +4751,11 @@ var jsPsychTimelineOperationSpan = (function (exports) {
     const timed = o.response_window_ms !== null;
     const emphasis = o.speed_accuracy_emphasis === "speed" ? t.emphasis_speed : o.speed_accuracy_emphasis === "accuracy" ? t.emphasis_accuracy({ criterion_percent: Math.round(PROCESSING_ACCURACY_TARGET * 100) }) : o.speed_accuracy_emphasis === "both" ? t.emphasis_both(nounsOf(o)) : "";
     const pages = [];
-    if (o.processing_items_per_memorandum > 0) {
+    if (o.processing_items_per_memory_item > 0) {
       pages.push(
         t.instruction_intro(__spreadValues({
-          memorandum_first: o.memorandum_order_in_pair === "memorandum_first",
-          items_per_memorandum: o.processing_items_per_memorandum
+          memory_item_first: o.order_in_pair === "memory_item_first",
+          items_per_memory_item: o.processing_items_per_memory_item
         }, nounsOf(o)))
       );
       pages.push(
@@ -4786,7 +4780,7 @@ var jsPsychTimelineOperationSpan = (function (exports) {
     const mode = o.instruction_demonstration;
     if (o.instruction_format !== "text" || mode === "none") return { timeline: [] };
     const t = ctx.text;
-    const hasProcessing = o.processing_items_per_memorandum > 0;
+    const hasProcessing = o.processing_items_per_memory_item > 0;
     const steps = [
       ...hasProcessing ? ["processing_true", "processing_false"] : [],
       "recall"
@@ -4796,7 +4790,7 @@ var jsPsychTimelineOperationSpan = (function (exports) {
         textPage(ctx, t.instruction_examples_intro, "instructions", "instruction")
       ];
       for (const step of steps) {
-        const items = drawMemoranda(ctx.jsPsych, o, INSTRUCTION_RECALL_SET_SIZE);
+        const items = drawMemoryItems(ctx.jsPsych, o, INSTRUCTION_RECALL_SET_SIZE);
         const p = step === "recall" ? null : generateProblem(ctx.jsPsych, step === "processing_true");
         const args = demoArgs(ctx, o, step, items);
         const stage = p ? renderProblem(p, true) : renderRecallPanel(recallSpec(o, INSTRUCTION_RECALL_SET_SIZE), t);
@@ -4815,7 +4809,7 @@ var jsPsychTimelineOperationSpan = (function (exports) {
     }
     const nodes = [textPage(ctx, t.instruction_demo_intro, "instructions", "instruction")];
     for (const step of steps) {
-      const items = step === "recall" ? drawMemoranda(ctx.jsPsych, o, INSTRUCTION_RECALL_SET_SIZE) : [];
+      const items = step === "recall" ? drawMemoryItems(ctx.jsPsych, o, INSTRUCTION_RECALL_SET_SIZE) : [];
       const args = demoArgs(ctx, o, step, items);
       const state = { attempt: 0, correct: null };
       const stepData = { condition: step };
@@ -4824,7 +4818,7 @@ var jsPsychTimelineOperationSpan = (function (exports) {
       if (step === "recall") {
         items.forEach((item, i) => {
           sub.push(
-            createMemorandum(ctx, o, {
+            createMemoryItem(ctx, o, {
               phase: "instructions",
               part: "instruction_example",
               item,
@@ -4962,7 +4956,7 @@ var jsPsychTimelineOperationSpan = (function (exports) {
     createInstructionWalkthrough,
     createTestIntro,
     createTransition,
-    createMemorandum,
+    createMemoryItem,
     createInterItem,
     createProcessing,
     createRecall,
@@ -4993,9 +4987,9 @@ var jsPsychTimelineOperationSpan = (function (exports) {
     },
     text: { defaultText },
     deadlines: __spreadProps(__spreadValues({}, deadlines), { calibrationRts, resolve: resolveWindow }),
-    /** The bundled memorandum sets, and the helpers that read a set and generate problems. */
+    /** The bundled memory item sets, and the helpers that read a set and generate problems. */
     stimuli: { letters, digits, words, generateProblem },
-    /** Reads a memorandum set: its items, normalised to `{ id, text }`, in order. */
+    /** Reads a memory item set: its items, normalised to `{ id, text }`, in order. */
     items: { buildPool },
     sequence: { scheduleBlocks, fixedOrder, practiceSetSizes },
     options: { resolveOptions, validateOptions }
