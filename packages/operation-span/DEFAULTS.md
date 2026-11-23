@@ -23,7 +23,7 @@ What the anchor does (S006, dossier `canonical_design`): three practice parts (l
 |---|---|---|---|
 | `response_window_ms` | `6000` (fill, 2/6) from the component `processing_deadline_ms`; the anchor's rule untyped | the calibrated-deadline function (above) | The anchor's rule has no typed form; PACKAGE-STANDARD §2a makes computed values functions with prebuilt helpers. |
 | `inter_item_interval_ms` | `500` (fill, 1/2: one jsPsych implementation, S020) | `0` | The anchor shows the next event immediately after the previous one, and S007 recommends no free time between events (free time allows rehearsal). A 500 ms gap would also lengthen every trial by up to 7 s. |
-| `stimulus_language` | `"Portuguese"` (fill, 2/4) | `null` | The default material is letters and equations, which have no language. The spec's values (Dutch, German, Portuguese) belong to word and sentence materials, for which the package has no lists; any value throws naming the option, and own words go in `stimulus_set.memorandum: { words: [...] }`. |
+| `stimulus_language` | `"Portuguese"` (fill, 2/4) | `null` | The default material is letters and equations, which have no language. The spec's values (Dutch, German, Portuguese) belong to word and sentence materials, for which the package has no lists; any value throws naming the option, and own words go in `stimulus_set.memorandum` as a set. |
 | `instruction_format` | `null` (the fill, "video then written", is untyped) | `"text"` | Video needs media; `"experimenter"` skips the pages. |
 | `trial_feedback` | `"accuracy"` (anchor) | `"accuracy"` in practice and test | Kept. The content is the anchor's (letters recalled, math errors, running math accuracy), with no response time (PACKAGE-STANDARD §2a). `"correct_answer"` adds the presented sequence. |
 | `practice_trials` | `15` (anchor, component `processing_practice_trials`) | `15` | Kept, with a precise meaning: processing-only practice problems. The spec has no option for the other practice parts, so the package adds `practice_structure`, `practice_storage_trials` and `practice_combined_trials` (task-specific, from the dossier's `phase_structure`). |
@@ -36,6 +36,7 @@ What the anchor does (S006, dossier `canonical_design`): three practice parts (l
 |---|---|---|---|
 | `feedback_duration_ms` | 2000 | S006 Fig. 1 | Shown after every recall (and after each problem in processing-only practice). |
 | `stimulus_duration_ms` | 800 | S006 | The memorandum, one letter at a time. |
+| `stimulus_set.memorandum` | `utils.stimuli.letters` | S006 (also S028) | The 12 consonants of the Engle-lab task (F H J K L N P Q R S T Y). The spec's `memorandum_type` values map to sets: `letters` and `digits` (S020) to the bundled `utils.stimuli.letters` and `utils.stimuli.digits`; `words` (S034, S043) to no bundled set (see "Memorandum sets" below); `grid_locations` and `arrows` are spatial and not implemented. |
 | `block_order` | `"random"` | S006 | One block of 15 trials, set sizes shuffled per participant. `"random_within_block"` gives `trials_per_condition` blocks of one trial per set size. |
 | `n_test_trials`, `set_sizes`, `trials_per_condition` | 15, [3-7], 3 | S006 | Consistent: 5 x 3 = 15. The three are reconciled; a contradiction throws. |
 | `memorandum_order_in_pair` | `"processing_first"` | S006 | The last event before recall is a letter (the recency item). |
@@ -48,3 +49,14 @@ What the anchor does (S006, dossier `canonical_design`): three practice parts (l
 | `practice_criterion` | `null` | S006 has none | S036's `{ accuracy: .85, window: 10 }` is a study preset. |
 | `instruction_demonstration` | `"interactive"` | PACKAGE-STANDARD §6a | A documented exception to evidence-anchored defaults. |
 | `response_keys` | `["f", "j"]` (true, false) | not in the spec | Letters, one per hand (PACKAGE-STANDARD §2a); only used when the processing device is the keyboard. The dossier names F/J and a/l without counts. |
+
+## Memorandum sets (PACKAGE-STANDARD §2a)
+
+`stimulus_set.memorandum` takes a set, `{ name?, noun?, items }`, or a plain array of items. The bundled sets are values of the same type: `utils.stimuli.letters` and `utils.stimuli.digits`. Both are lists of characters, so no licence question arises.
+
+- **Text only.** An item is a string or `{ text, id? }`. `image` and `svg` items throw: recall names the memoranda (the matrix buttons show them, typed and key-press recall match entries against their text, and the feedback and walkthrough texts list them), and no study in the spec used pictorial memoranda (the spatial ones, `grid_locations` and `arrows`, need a location display, not pictures). Supporting pictures would mean a matrix-only mode and an HTML rendering of items in every text that lists them.
+- **Ids.** The default id is the text. Rows record the text (`memorandum`, `presented_items`, `recalled_items`, as before) and the id (`memorandum_id`, `presented_item_ids`, `recalled_item_ids`; a typed entry that names no item has a `null` id). Scoring compares texts as before (trimmed, case-insensitive), so two items whose texts differ only in case or surrounding spaces throw, as do duplicate ids.
+- **Name and noun.** `name` is recorded as `stimulus_set` on memorandum and recall rows (`"custom"` without one). `noun` is what the instructions, the recall prompt and the feedback call the items; a set without one is called "item"/"items" (not "word", as in self-ordered pointing: a researcher's set here is as likely to be consonants or digits as words).
+- **Recall matrix.** It shows the whole set in the order of `items`, `GRID_COLUMNS` (4) to a row, as the Engle-lab matrix does. A long set makes a tall matrix; the layout check includes a 16-word set at 390 x 800.
+- **Size.** The set needs at least as many items as the largest set size (test and practice) and at least 2 when the walkthrough runs; key-press recall needs one-character items.
+- **Words.** No word set is bundled. The two studies that used words (S034, S043) do not report their lists, and the spec's word-related languages (Portuguese, Dutch, German) show that a bundled English list would not reproduce them. Their presets carry a stand-in list of 16 English words inline (`name: "words_stand_in"`, from `reproduction/adapter.ts`) and say so in the description; a researcher supplies their own list.
