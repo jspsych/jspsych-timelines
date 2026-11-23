@@ -1822,7 +1822,7 @@
         }
       }
     },
-    "instruction_framing": {
+    "stimulus_set": {
       "x-jspsych": {
         "group": "instructions",
         "advanced": false,
@@ -2074,11 +2074,13 @@
     {
       "id": "S007",
       "label": "Daw et al. 2011, Neuron",
-      "description": "empirical · lab-native · 13 spec options · not expressible, left out: iti_ms, response_keys",
+      "description": "empirical · lab-native · 13 spec options · not expressible, left out: iti_ms, response_keys · pictures: the package's own drawings (abstract symbols), not the study's",
       "options": {
         "common_transition_prob": 0.7,
         "contingency_disclosure": "partial",
-        "instruction_framing": "abstract_symbols",
+        "stimulus_set": {
+          "$util": "stimuli.abstractSymbols"
+        },
         "missed_response_handling": "skip_trial",
         "n_blocks": 3,
         "n_test_trials": 201,
@@ -2100,9 +2102,11 @@
     {
       "id": "S011",
       "label": "Gillan et al. 2016, eLife",
-      "description": "empirical · online-unsupervised · 6 spec options · not expressible, left out: comprehension_check, practice.practice_trials.training_sequence",
+      "description": "empirical · online-unsupervised · 6 spec options · not expressible, left out: comprehension_check, practice.practice_trials.training_sequence · pictures: the package's own drawings (abstract symbols), not the study's",
       "options": {
-        "instruction_framing": "abstract_symbols",
+        "stimulus_set": {
+          "$util": "stimuli.abstractSymbols"
+        },
         "n_test_trials": 200,
         "response_keys": [
           "e",
@@ -2125,9 +2129,11 @@
     {
       "id": "S022",
       "label": "Nussenbaum et al. 2020, OSF Preprints",
-      "description": "empirical · online-unsupervised · 13 spec options · not expressible, left out: comprehension_check, fullscreen_enforcement, instruction_format, population_protocol",
+      "description": "empirical · online-unsupervised · 13 spec options · not expressible, left out: comprehension_check, fullscreen_enforcement, instruction_format, population_protocol · pictures: the package's own drawings (spaceship planet alien), not the study's",
       "options": {
-        "instruction_framing": "spaceship_planet_alien",
+        "stimulus_set": {
+          "$util": "stimuli.spaceshipPlanetAlien"
+        },
         "manipulation_check": "questionnaire",
         "n_blocks": 4,
         "n_test_trials": 200,
@@ -2144,7 +2150,7 @@
     {
       "id": "S024",
       "label": "Expfactory two-stage-decision defaults",
-      "description": "reference-impl · no setting · 24 spec options",
+      "description": "reference-impl · no setting · 24 spec options · pictures: the package's own drawings (abstract symbols), not the study's",
       "options": {
         "common_transition_prob": 0.7,
         "comprehension_check": "none",
@@ -2152,7 +2158,9 @@
         "fixation_duration_ms": 0,
         "fullscreen_enforcement": "none",
         "instruction_format": "text",
-        "instruction_framing": "abstract_symbols",
+        "stimulus_set": {
+          "$util": "stimuli.abstractSymbols"
+        },
         "iti_ms": 1000,
         "manipulation_check": "none",
         "missed_response_handling": "skip_trial",
@@ -2205,10 +2213,12 @@
     {
       "id": "S025",
       "label": "Kool space_daw_task jsPsych",
-      "description": "reference-impl · no setting · 14 spec options · not expressible, left out: practice.practice_trials.training_sequence",
+      "description": "reference-impl · no setting · 14 spec options · not expressible, left out: practice.practice_trials.training_sequence · pictures: the package's own drawings (spaceship planet alien), not the study's",
       "options": {
         "feedback_duration_ms": 500,
-        "instruction_framing": "spaceship_planet_alien",
+        "stimulus_set": {
+          "$util": "stimuli.spaceshipPlanetAlien"
+        },
         "iti_ms": 1000,
         "n_test_trials": 125,
         "practice_trials": 25,
@@ -2244,11 +2254,13 @@
     {
       "id": "S026",
       "label": "Niv lab jsPsych two-step",
-      "description": "reference-impl · no setting · 13 spec options · not expressible, left out: comprehension_check, missed_response_handling.missed_trial_abort_threshold, reward_schedule.reward_schedule, sequence_constraints",
+      "description": "reference-impl · no setting · 13 spec options · not expressible, left out: comprehension_check, missed_response_handling.missed_trial_abort_threshold, reward_schedule.reward_schedule, sequence_constraints · pictures: the package's own drawings (spaceship planet alien), not the study's",
       "options": {
         "common_transition_prob": 0.7,
         "feedback_duration_ms": 1200,
-        "instruction_framing": "spaceship_planet_alien",
+        "stimulus_set": {
+          "$util": "stimuli.spaceshipPlanetAlien"
+        },
         "manipulation_check": "questionnaire",
         "missed_response_handling": "repeat_trial",
         "n_test_trials": 201,
@@ -2369,9 +2381,11 @@
     {
       "id": "S055",
       "label": "Donegan et al. 2025, Translational Psychiatry",
-      "description": "empirical · online-unsupervised · 3 spec options",
+      "description": "empirical · online-unsupervised · 3 spec options · pictures: the package's own drawings (spaceship planet alien), not the study's",
       "options": {
-        "instruction_framing": "spaceship_planet_alien",
+        "stimulus_set": {
+          "$util": "stimuli.spaceshipPlanetAlien"
+        },
         "n_test_trials": 150,
         "response_window_ms": 2500
       }
@@ -2411,13 +2425,15 @@
     {
       "id": "S134",
       "label": "Oguchi et al. 2023, Scientific Reports",
-      "description": "empirical · online-unsupervised · 8 spec options · not expressible, left out: practice.practice_trials.training_sequence",
+      "description": "empirical · online-unsupervised · 8 spec options · not expressible, left out: practice.practice_trials.training_sequence · pictures: the package's own drawings (abstract symbols), not the study's",
       "options": {
         "fixation_duration_ms": {
           "min": 2000,
           "max": 4000
         },
-        "instruction_framing": "abstract_symbols",
+        "stimulus_set": {
+          "$util": "stimuli.abstractSymbols"
+        },
         "iti_ms": {
           "min": 3000,
           "max": 5000

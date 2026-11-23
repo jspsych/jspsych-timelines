@@ -16,7 +16,7 @@
 
 - `reward_schedule`: `pregenerated_walk_sets` (S026, S062) and `block_alternating` (S013): kinds the typed schedule names and that throw when used. A fixed set of walks would need the researcher's walks as input; block alternation is a different design (reward contingencies that switch between blocks).
 - `comprehension_check`: `quiz`, `quiz_with_repeat`: the interactive walkthrough already asks check questions and repeats them (PACKAGE-STANDARD 6a). A quiz of the sources' own items (3 to 10 items, S011, S022, S026, S120, S138) would be a separate option; the loop caps and exclusion rules of the sources are not built.
-- `instruction_framing`: `magic_carpet_mountain_genie` (S033, S120), `ship_island_chest` (S047): other cover stories, not drawn. `abstract_symbols` and `spaceship_planet_alien` are.
+- `instruction_framing`: `magic_carpet_mountain_genie` (S033, S120), `ship_island_chest` (S047): other cover stories with no bundled set; a researcher passes their own as `stimulus_set`. `abstract_symbols` and `spaceship_planet_alien` map to the bundled sets `utils.stimuli.abstractSymbols` and `utils.stimuli.spaceshipPlanetAlien` (`STIMULUS_SETS` in the adapter), drawings original to the package that stand in for the studies' pictures; the presets say so, and `results.json` and the presets write them as `{"$util": ...}` references. The check reads the set's pictures on screen and its ids in the rows.
 - `instruction_format: audio` (S022), `population_protocol: child` (S022: a bundle of a 3 s deadline, audio, a tutorial and progress breaks; the parts are separate options).
 
 ### Things the checks cannot show (limitations of this reproduction)
