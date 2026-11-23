@@ -595,6 +595,10 @@ describe("two-step-task", () => {
         [{ instruction_format: "audio" }, /instruction_format/],
         [{ instruction_framing: "spaceship_planet_alien" } as any, /replaced by stimulus_set/],
         [{ stimulus_set: "spaceship_planet_alien" } as any, /stimulus_set.*is a name, not a set/],
+        [
+          { practice: { stimulus_set: utils.stimuli.spaceshipPlanetAlien } },
+          /practice\.stimulus_set differs from stimulus_set/,
+        ],
         [{ population_protocol: "child" }, /population_protocol/],
         [{ missed_response_handling: "none" }, /missed_response_handling/],
         [{ reward_schedule: { kind: "block_alternating" } }, /reward_schedule.*block_alternating/],

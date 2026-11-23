@@ -80,6 +80,12 @@ export function createContext(jsPsych: JsPsych, options: TwoStepTaskOptions = {}
   const practice = resolveOptions(options, "practice");
   validateOptions(test);
   validateOptions(practice);
+  if (practice.stimulus_set !== test.stimulus_set) {
+    // the instructions and the walkthrough use one set's words; practice with other pictures would contradict them
+    throw new Error(
+      "two-step-task: practice.stimulus_set differs from stimulus_set; the instructions name one set's pictures, so practice and test use the same set."
+    );
+  }
   const set = prepareSet(test.stimulus_set);
   return {
     jsPsych,

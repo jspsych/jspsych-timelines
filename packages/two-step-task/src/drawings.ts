@@ -22,7 +22,7 @@
 /**
  * The drawings of the bundled stimulus sets: simple shapes written for this package (circles, paths and
  * rectangles in a 100 x 100 view box), not taken from any study or icon set. They stand in for the studies' own
- * pictures (Expfactory's symbol images, the spaceship and alien pictures of the Kool and Niv lab jsPsych tasks, S025, S026), which are not bundled.
+ * pictures (Expfactory's own abstract symbols (S024), the spaceship and alien pictures of the Kool and Niv lab jsPsych tasks, S025, S026), which are not bundled.
  */
 
 /** A drawing as a whole SVG element: `inner` markup in a 100 x 100 view box. */
