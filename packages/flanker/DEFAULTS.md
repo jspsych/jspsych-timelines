@@ -30,7 +30,7 @@ What PEBL does (S019, `battery/flanker/flanker.pbl`): arrows, four trial types (
 | `n_test_trials`, `practice_trials` | 160, 8 | S019 | The PEBL code comment says 12 practice trials; the code does 8 (dossier decision). 8 = one balanced pass over the 4 types x 2 directions. |
 | `trial_order` | `"shuffled_list"` | S019 | A balanced list, shuffled: exact condition counts per block. |
 | `condition_proportions` | .25 each over the four PEBL trial types | S019 | |
-| `stimulus_set` | `{ target: "arrows", flanker: { per_side: 2 }, neutral_flanker: "dashes", cue: "none" }` | S019 | Spec default was the string `"arrows"` plus per-role components. |
+| `stimulus_set` | `{ target: "arrows", flanker: { per_side: 2 }, neutral_flanker: "dashes", cue: "none" }` | S019 | Spec default was the string `"arrows"` plus per-role components. Arrows are glyphs drawn from parameters, so they stay a kind (PACKAGE-STANDARD §2a). Letters are researcher data, `{ letters: [[...], [...]] }`, one group per response; the letter shown is recorded as `target`. That is kept rather than the `{ name, items }` set shape: the items here are text characters repeated in a generated array and assigned to responses, and the shown letter is already its own id. A letter that repeats, is empty, or is a glyph name (`left`, `dash`, ...) throws. |
 | `stimulus_layout` | `{ flanker_spacing: { gap: 2, unit: "px" }, array_position: "centre_at_fixation", orientation: "horizontal" }` | S019 gap; position fill 2/3 | Spec default held the gap as the string `"{gap: 2, unit: px}"`. |
 | `stimulus_size`, `stimulus_color` | 40 px, `"white on black"` | S019 | |
 | `targets_per_response` | 1 | fill 2/3 | Arrows have one target per response. |

@@ -11,6 +11,20 @@ function svg(inner: string, size: number, rotate = 0): string {
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 48 48"><g fill="currentColor"${t}>${inner}</g></svg>`;
 }
 
+/** The labels `renderGlyph` draws as shapes; any other label is drawn as text (a letter). */
+export const GLYPH_NAMES = [
+  "left",
+  "right",
+  "up",
+  "dash",
+  "line",
+  "square",
+  "plus",
+  "diamond",
+  "cross",
+  "blank",
+];
+
 /** HTML for one array item. Unknown labels are rendered as text (letters). */
 export function renderGlyph(glyph: Glyph, size: number): string {
   switch (glyph) {

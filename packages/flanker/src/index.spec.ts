@@ -293,6 +293,17 @@ describe("flanker", () => {
       bad.forEach((o) => expect(() => createTimeline(jsPsych, o)).toThrow(/not implemented/));
     });
 
+    it("throws on a letter set with a repeated, empty or glyph-name letter", () => {
+      const make = (letters: any) => () =>
+        createTimeline(jsPsych, { stimulus_set: { target: { letters } } });
+      expect(make([["H"], ["H"]])).toThrow(
+        /"H" appears twice; each letter belongs to one response/
+      );
+      expect(make([[""], ["K"]])).toThrow(/is not a usable letter/);
+      expect(make([["left"], ["K"]])).toThrow(/"left" is not a usable letter/);
+      expect(make([["H"], ["K"]])).not.toThrow();
+    });
+
     it("throws on contradictory settings", () => {
       expect(() => createTimeline(jsPsych, { response_keys: ["a"] })).toThrow(/two keys/);
       expect(() =>

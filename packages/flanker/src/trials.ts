@@ -26,6 +26,7 @@ import {
 } from "./options";
 import { Mapping, TrialSpec, buildDemoSpec, buildTrialSpecs } from "./sequence";
 import {
+  GLYPH_NAMES,
   Glyph,
   fixationLayer,
   paintDisplay,
@@ -72,6 +73,21 @@ export function createContext(jsPsych: JsPsych, options: FlankerOptions = {}): C
       if (t.letters.length !== 2 || t.letters.some((g) => g.length !== o.targets_per_response)) {
         throw new Error(
           "flanker: stimulus_set.target.letters needs two groups, each with targets_per_response letters."
+        );
+      }
+      const all = t.letters.flat();
+      const bad = all.find((l) => typeof l !== "string" || l === "" || GLYPH_NAMES.includes(l));
+      if (bad !== undefined) {
+        throw new Error(
+          `flanker: stimulus_set.target.letters: ${JSON.stringify(
+            bad
+          )} is not a usable letter (a non-empty string that is not a glyph name such as "left" or "dash").`
+        );
+      }
+      const twice = all.find((l, i) => all.indexOf(l) !== i);
+      if (twice !== undefined) {
+        throw new Error(
+          `flanker: stimulus_set.target.letters: "${twice}" appears twice; each letter belongs to one response.`
         );
       }
     } else if (o.targets_per_response !== 1) {
