@@ -60,9 +60,9 @@ Classes: package fix needed, option missing, plugin needed, dossier value wrong,
 
 | Option / value | Sources | Class | Why |
 |---|---|---|---|
-| `stimulus_language: Portuguese` | S027, S032 | option missing | "Portuguese" selects word or sentence lists; none are bundled (supply stimulus_set.memorandum: { words }) |
-| `stimulus_language: Dutch` | S020 | option missing | "Dutch" selects word or sentence lists; none are bundled (supply stimulus_set.memorandum: { words }) |
-| `stimulus_language: German` | S020 | option missing | "German" selects word or sentence lists; none are bundled (supply stimulus_set.memorandum: { words }) |
+| `stimulus_language: Portuguese` | S027, S032 | option missing | "Portuguese" selects word or sentence lists; none are bundled (supply your own words as a set in stimulus_set.memorandum) |
+| `stimulus_language: Dutch` | S020 | option missing | "Dutch" selects word or sentence lists; none are bundled (supply your own words as a set in stimulus_set.memorandum) |
+| `stimulus_language: German` | S020 | option missing | "German" selects word or sentence lists; none are bundled (supply your own words as a set in stimulus_set.memorandum) |
 | `stimulus_set: grid_locations` | S027 | option missing | memoranda "grid_locations" are spatial: they need a location grid or arrow display and a matching recall input |
 | `stimulus_set: arrows` | S033 | option missing | memoranda "arrows" are spatial: they need a location grid or arrow display and a matching recall input |
 | `stimulus_set: sentence_final_word` | S027, S032 | option missing | the sentence-final word as memorandum is reading span: it needs a sentence processing task |
@@ -98,7 +98,7 @@ The spec is `complex-span`; the package is `operation-span` (PACKAGE-STANDARD §
 
 ### Typed values the package does not express
 
-- `stimulus_language` (Portuguese, Dutch, German): option missing. The package has no word or sentence lists; own words go in `stimulus_set.memorandum: { words }` (which is expressible, and checked with a stand-in pool).
+- `stimulus_language` (Portuguese, Dutch, German): option missing. The package has no word or sentence lists; own words go in `stimulus_set.memorandum` as a set (which is expressible: the spec's `words` maps to a stand-in set of 16 English words, `WORD_POOL` in `reproduction/adapter.ts`, which the presets for S034 and S043 carry inline and label as a stand-in). `letters` and `digits` map to the bundled `utils.stimuli.letters` and `utils.stimuli.digits`, which presets write as `{"$util": ...}` references.
 - `stimulus_set` memoranda `grid_locations` and `arrows` (symmetry and rotation span): option missing. They need spatial memoranda and a matching recall input.
 - `stimulus_set` source `sentence_final_word` (reading span): option missing; needs the sentence processing task.
 - `processing_display_format: equation_and_memorandum_same_screen` (S039, lab): option missing.

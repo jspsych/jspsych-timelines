@@ -11,24 +11,35 @@
 import * as fs from "fs";
 import * as path from "path";
 
-import { defineReproduction } from "@jspsych-timelines/testing";
+import { defineReproduction, resolveUtilRefs, toUtilRefs } from "@jspsych-timelines/testing";
 import type { Fixture, Tallies } from "@jspsych-timelines/testing";
 import { simulateTimeline } from "@jspsych/test-utils";
 import { initJsPsych } from "jspsych";
 
 import meta from "../docs-meta/options.meta.json";
 import * as adapterModule from "../reproduction/adapter";
-import { adaptConfig, assumedSettings, combine, isGap } from "../reproduction/adapter";
+import { WORD_POOL, adaptConfig, assumedSettings, combine, isGap } from "../reproduction/adapter";
 import { CHECKS } from "../reproduction/checks";
 import { contract } from "../reproduction/contract";
 import expected from "../reproduction/expected-tallies.json";
 import { harness } from "../reproduction/harness";
 import fixtureJson from "../reproduction/spec-observed.json";
 import { DEFAULT_OPTIONS, PHASE_OPTIONS, resolveOptions } from "./options";
-import { createTimeline } from ".";
+import { createTimeline, utils } from ".";
 
 const fixture = fixtureJson as unknown as Fixture;
 const reproductionDir = path.join(__dirname, "..", "reproduction");
+
+/** What a preset's memoranda are (PACKAGE-STANDARD §12): the package's bundled set, or the stand-in word list. */
+const itemsNote = (opts: any): string => {
+  const set = opts?.stimulus_set?.memorandum;
+  if (!set) return "";
+  return set === WORD_POOL
+    ? " · memoranda: a stand-in list of 16 English words written into the preset, not the study's words (none are reported or bundled): supply your own"
+    : set === utils.stimuli.letters
+    ? " · memoranda: the package's letters, the 12 consonants of the Engle-lab task (S006)"
+    : ` · memoranda: the package's ${set.name}, not necessarily the study's own list`;
+};
 
 /** A short run for trying the task on the docs page. Not from a study; listed first. */
 export const QUICK_DEMO_PRESET = {
@@ -60,6 +71,7 @@ defineReproduction({
     subFromVariation: adapterModule.subFromVariation,
   },
   checks: CHECKS,
+  utils: utils as any,
   // the `null`s of the pacing-rule component name a rule (fixed deadline), not an untimed task
   nullExcludedVariations: ["processing_pacing_rule"],
   // level 2: the resolved option must equal the value the configuration reports
@@ -77,9 +89,7 @@ defineReproduction({
       case "stimulus_duration_ms.memorandum":
         return [e.stimulus_duration_ms, value];
       case "stimulus_set.memorandum_type":
-        return value === "words"
-          ? [typeof e.stimulus_set.memorandum, "object"]
-          : [e.stimulus_set.memorandum, value];
+        return [e.stimulus_set.memorandum.name, value === "words" ? WORD_POOL.name : value];
       case "practice_criterion":
         return [e.practice_criterion, { accuracy: value.accuracy, window: value.block_trials }];
       case "stimulus_set.memorandum":
@@ -107,7 +117,6 @@ defineReproduction({
             .filter((e) => isGap(e.adapted) && !e.key.startsWith("response_window_ms."))
             .map((e) => e.key);
           const assumed = assumedSettings(entries.map((e) => e.adapted));
-          const standIn = typeof (opts as any).stimulus_set?.memorandum === "object";
           return {
             expressible,
             id: sc.source,
@@ -121,9 +130,10 @@ defineReproduction({
                 ? " · uses a calibrated deadline (mean + SD of the practice RTs): the package default, code-only, so not set here"
                 : "") +
               (gaps.length ? ` · not expressible, left out: ${gaps.join(", ")}` : "") +
-              (standIn ? " · the word pool is a stand-in: supply your own words" : "") +
-              (assumed.length ? ` · assumed, not reported: ${assumed.join(", ")}` : ""),
-            options: opts,
+              (assumed.length ? ` · assumed, not reported: ${assumed.join(", ")}` : "") +
+              itemsNote(opts),
+            // JSON: a bundled stimulus set is written as a reference the docs theme resolves
+            options: toUtilRefs(opts, utils as any),
           };
         })
         // at least one value the study reported (assumed companion settings do not count; PACKAGE-STANDARD §12)
@@ -158,7 +168,8 @@ describe("defaults reproduce the automated operation span anchor (S006) except t
     expect(o.set_sizes).toEqual(s006.set_sizes);
     expect(o.speed_accuracy_emphasis).toBe(s006.speed_accuracy_emphasis);
     expect(o.stimulus_duration_ms).toBe(s006["stimulus_duration_ms.memorandum"]);
-    expect(o.stimulus_set.memorandum).toBe(s006["stimulus_set.memorandum_type"]);
+    expect(o.stimulus_set.memorandum.name).toBe(s006["stimulus_set.memorandum_type"]);
+    expect(o.stimulus_set.memorandum).toBe(utils.stimuli.letters);
     expect(o.stimulus_set.memorandum_source).toBe(s006["stimulus_set.memorandum"]);
     expect(o.trial_feedback).toBe(s006.trial_feedback);
     expect(o.trials_per_condition).toBe(s006.trials_per_condition);
@@ -210,7 +221,9 @@ describe("docs-meta/options.meta.json", () => {
     expect(presets.length).toBeGreaterThan(5);
     for (const p of presets) {
       Object.keys(p.options).forEach((k) => expect([...optionNames, "practice"]).toContain(k));
-      expect(() => createTimeline(initJsPsych(), p.options)).not.toThrow();
+      expect(() =>
+        createTimeline(initJsPsych(), resolveUtilRefs(p.options, utils as any))
+      ).not.toThrow();
     }
   });
 

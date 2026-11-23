@@ -2,7 +2,7 @@ import { clickTarget, flushPromises, pressKey, startTimeline } from "@jspsych/te
 import { JsPsych, initJsPsych } from "jspsych";
 
 import { OperationSpanOptions } from "./options";
-import { timelineUnits } from ".";
+import { timelineUnits, utils } from ".";
 
 /** The recall input, in a real (jsdom) run: matrix clicks, typed boxes, single key presses and omissions. */
 describe("recall input", () => {
@@ -125,7 +125,7 @@ describe("recall input", () => {
   it("digits and word pools give their own matrix", async () => {
     const ctx = timelineUnits.createContext(jsPsych, {
       set_sizes: [2],
-      stimulus_set: { memorandum: "digits" },
+      stimulus_set: { memorandum: utils.stimuli.digits },
     });
     const t = timelineUnits.createRecall(ctx, ctx.test, {
       phase: "test",
@@ -137,6 +137,67 @@ describe("recall input", () => {
     expect(displayElement.querySelectorAll(".jspsych-timelines-operation-span-key")).toHaveLength(
       9
     );
+  });
+
+  const ANIMALS = {
+    name: "animals",
+    noun: { singular: "animal", plural: "animals" },
+    items: [
+      { id: "a1", text: "cat" },
+      { id: "a2", text: "dog" },
+      { id: "a3", text: 'say "hi"' },
+      "owl",
+    ],
+  };
+
+  it("an own set: the matrix shows its texts in order, the prompt uses its noun, rows record ids and the set name", async () => {
+    const r = await recallScreen({ stimulus_set: { memorandum: ANIMALS } }, [
+      "dog",
+      'say "hi"',
+      "owl",
+    ]);
+    const keys = Array.from(
+      r.displayElement.querySelectorAll<HTMLButtonElement>(".jspsych-timelines-operation-span-key")
+    );
+    expect(keys.map((k) => k.textContent)).toEqual(["cat", "dog", 'say "hi"', "owl"]);
+    expect(keys[2].dataset.item).toBe('say "hi"');
+    expect(r.displayElement.textContent).toContain("Select the 3 animals");
+    await r.click("dog");
+    await r.click('say "hi"');
+    await r.click("cat");
+    await r.click("Done");
+    expect(r.row()).toMatchObject({
+      stimulus_set: "animals",
+      presented_items: ["dog", 'say "hi"', "owl"],
+      presented_item_ids: ["a2", "a3", "owl"],
+      recalled_items: ["dog", 'say "hi"', "cat"],
+      recalled_item_ids: ["a2", "a3", "a1"],
+      n_correct_positions: 2,
+    });
+  });
+
+  it("an own set, typed: entries match the item texts whatever their case; text that is no item has no id", async () => {
+    const r = await recallScreen(
+      {
+        stimulus_set: { memorandum: ANIMALS },
+        response_device: { recall: "keyboard" },
+        response_format: "free_text",
+      },
+      ["cat", "dog", "owl"]
+    );
+    const boxes = Array.from(
+      r.displayElement.querySelectorAll<HTMLInputElement>(".jspsych-timelines-operation-span-box")
+    );
+    ["CAT", "dgo", "owl"].forEach((v, i) => {
+      boxes[i].value = v;
+      boxes[i].dispatchEvent(new Event("input"));
+    });
+    await r.click("Done");
+    expect(r.row()).toMatchObject({
+      recalled_items: ["CAT", "dgo", "owl"],
+      recalled_item_ids: ["a1", null, "owl"],
+      n_correct_positions: 2,
+    });
   });
 });
 

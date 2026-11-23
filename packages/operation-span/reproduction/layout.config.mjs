@@ -68,6 +68,43 @@ export default {
       },
       keys: { problem: "f" },
     })),
+    // one variant per bundled memorandum set (letters are the default above), and an own set of longer words
+    {
+      name: "digits 390x430",
+      viewport: { width: 390, height: 430 },
+      options: { ...short, stimulus_set: { memorandum: { $util: "stimuli.digits" } } },
+    },
+    {
+      name: "own word set 390x800",
+      viewport: { width: 390, height: 800 },
+      options: {
+        ...short,
+        stimulus_set: {
+          memorandum: {
+            name: "words",
+            noun: { singular: "word", plural: "words" },
+            items: [
+              "apple",
+              "bread",
+              "chair",
+              "dance",
+              "eagle",
+              "flame",
+              "grape",
+              "house",
+              "ivory",
+              "jelly",
+              "knife",
+              "lemon",
+              "mouse",
+              "night",
+              "ocean",
+              "plant",
+            ],
+          },
+        },
+      },
+    },
     {
       name: "touch, memorandum first 390x800",
       viewport: { width: 390, height: 800, hasTouch: true },

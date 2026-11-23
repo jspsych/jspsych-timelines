@@ -14,8 +14,17 @@ export interface ProcessingInstructionArgs {
   timed: boolean;
 }
 
+/**
+ * What the texts call the memoranda: the set's `noun` ("letter"/"letters" for `utils.stimuli.letters`,
+ * "item"/"items" for a set without one).
+ */
+export interface Nouns {
+  noun: string;
+  nouns: string;
+}
+
 /** Arguments of the recall instruction text. */
-export interface RecallInstructionArgs {
+export interface RecallInstructionArgs extends Nouns {
   format: "n_afc" | "free_text" | "single_response";
   order: "serial" | "free";
   omission: "blank_button" | "none" | "question_mark_key" | "skip_button";
@@ -24,7 +33,7 @@ export interface RecallInstructionArgs {
 }
 
 /** Arguments of the walkthrough step texts. */
-export interface InstructionStepArgs extends ProcessingInstructionArgs {
+export interface InstructionStepArgs extends ProcessingInstructionArgs, Nouns {
   /** "processing_true", "processing_false" or "recall". */
   step: "processing_true" | "processing_false" | "recall";
   /** HTML of the response that is correct for a processing step (a key cap or a button label). */
@@ -44,8 +53,11 @@ export interface TextConfig {
    * First instruction page.
    * @param r.memorandum_first true when each memorandum comes before its problem
    * @param r.items_per_memorandum problems per memorandum
+   * @param r.noun what one memorandum is called ("letter"); `r.nouns` the plural
    */
-  instruction_intro: (r: { memorandum_first: boolean; items_per_memorandum: number }) => string;
+  instruction_intro: (
+    r: { memorandum_first: boolean; items_per_memorandum: number } & Nouns
+  ) => string;
   /** Second page: how to answer the processing task. */
   instruction_processing: (r: ProcessingInstructionArgs) => string;
   /** Third page: how to recall. */
@@ -53,7 +65,7 @@ export interface TextConfig {
   /** Emphasis sentences, by `speed_accuracy_emphasis`. `emphasis_accuracy` takes the criterion as a whole percent. */
   emphasis_speed: string;
   emphasis_accuracy: (r: { criterion_percent: number }) => string;
-  emphasis_both: string;
+  emphasis_both: (r: Nouns) => string;
   /** Added when `processing_read_aloud` is set. */
   read_aloud: string;
   /** Page before the interactive walkthrough. */
@@ -68,14 +80,14 @@ export interface TextConfig {
   instruction_reveal: (r: InstructionStepArgs) => string;
   /** Brief confirmation after a correct walkthrough response. */
   instruction_correct: string;
-  /** Shown before the letters-only practice. */
-  practice_storage_intro: string;
+  /** Shown before the memoranda-only practice. */
+  practice_storage_intro: (r: Nouns) => string;
   /** Shown before the processing-only practice. */
   practice_processing_intro: string;
   /** Shown before the combined practice. */
   practice_combined_intro: string;
   /** Shown before the test. */
-  instruction_test_intro: string;
+  instruction_test_intro: (r: Nouns) => string;
   /**
    * Shown when the practice criterion was missed and practice repeats.
    * @param r.accuracy processing accuracy over the criterion window (0-1)
@@ -109,11 +121,13 @@ export interface TextConfig {
 
   // -- recall screens --
   /** Prompt above the recall input. */
-  recall_prompt: (r: {
-    format: "n_afc" | "free_text" | "single_response";
-    order: "serial" | "free";
-    set_size: number;
-  }) => string;
+  recall_prompt: (
+    r: {
+      format: "n_afc" | "free_text" | "single_response";
+      order: "serial" | "free";
+      set_size: number;
+    } & Nouns
+  ) => string;
   /** @param r.position 1-based position of the box */
   recall_box_label: (r: { position: number }) => string;
 
@@ -135,7 +149,7 @@ export interface TextConfig {
     math_accuracy: number | null;
   }) => string;
   /** @param r.items the presented memoranda in order */
-  feedback_correct_answer: (r: { items: string[] }) => string;
+  feedback_correct_answer: (r: { items: string[] } & Nouns) => string;
 
   // -- completion --
   task_complete: string;
@@ -163,13 +177,18 @@ export interface TextConfig {
 const pct = (x: number | null) => (x === null ? "-" : `${Math.round(x * 100)}%`);
 
 export const defaultText: TextConfig = {
-  instruction_intro: ({ memorandum_first, items_per_memorandum }) => `<h2>Operation Span</h2>
-    <p>This task has two parts that you do at the same time: solving math problems and remembering letters.</p>
+  instruction_intro: ({
+    memorandum_first,
+    items_per_memorandum,
+    noun,
+    nouns,
+  }) => `<h2>Operation Span</h2>
+    <p>This task has two parts that you do at the same time: solving math problems and remembering ${nouns}.</p>
     <p>You will see a ${
       items_per_memorandum > 1 ? "series of problems" : "math problem"
-    } and a letter${
-    memorandum_first ? ", starting with the letter" : ", starting with the problem"
-  }, over and over. Remember the letters in the order they appear. After a few of each, you will be asked to recall the letters.</p>`,
+    } and one ${noun}${
+    memorandum_first ? `, starting with the ${noun}` : ", starting with the problem"
+  }, over and over. Remember the ${nouns} in the order they appear. After a few of each, you will be asked to recall the ${nouns}.</p>`,
   instruction_processing: (r) => {
     const answer =
       r.device === "keyboard"
@@ -189,30 +208,30 @@ export const defaultText: TextConfig = {
   instruction_recall: (r) => {
     const blank =
       r.omission === "blank_button" || r.omission === "skip_button"
-        ? ` If you can't remember a letter, click <strong>${r.blank_label}</strong> to leave its place empty.`
+        ? ` If you can't remember one, click <strong>${r.blank_label}</strong> to leave its place empty.`
         : r.omission === "question_mark_key"
         ? " If you can't remember one, press <kbd>?</kbd> to leave its place empty."
         : " Fill every place, guessing if you have to.";
     const order = r.order === "serial" ? "in the order they were shown" : "in any order";
     if (r.format === "n_afc") {
-      return `<p>After the last letter, a grid of letters appears. Click the letters you saw, ${order}.${blank}</p>`;
+      return `<p>After the last ${r.noun}, a grid of ${r.nouns} appears. Click the ${r.nouns} you saw, ${order}.${blank}</p>`;
     }
     if (r.format === "free_text") {
-      return `<p>After the last letter, a row of boxes appears. Type the letters you saw, one per box, ${order}.${blank}</p>`;
+      return `<p>After the last ${r.noun}, a row of boxes appears. Type the ${r.nouns} you saw, one per box, ${order}.${blank}</p>`;
     }
-    return `<p>After the last letter, press the keys of the letters you saw, one at a time, ${order}.${blank}</p>`;
+    return `<p>After the last ${r.noun}, press the keys of the ${r.nouns} you saw, one at a time, ${order}.${blank}</p>`;
   },
   emphasis_speed: "<p>Answer the math problems as quickly as you can.</p>",
   emphasis_accuracy: ({ criterion_percent }) =>
     `<p>It is important that you work as quickly and accurately as you can on the math problems. Keep your math accuracy at ${criterion_percent}% or higher. You will see your accuracy during the task.</p>`,
-  emphasis_both:
-    "<p>Work quickly and accurately on both parts: the math problems and the letters.</p>",
+  emphasis_both: ({ nouns }) =>
+    `<p>Work quickly and accurately on both parts: the math problems and the ${nouns}.</p>`,
   read_aloud: "<p>Read each math problem out loud as you solve it.</p>",
   instruction_demo_intro: `<p>Now let's try each part, one step at a time. A wrong answer repeats the step with a hint.</p>`,
   instruction_examples_intro: `<p>Here is what each part looks like.</p>`,
   instruction_step: (r) => {
     if (r.step === "recall") {
-      return `<p>Remember these ${r.items.length} letters in order, then recall them.</p>`;
+      return `<p>Remember these ${r.items.length} ${r.nouns} in order, then recall them.</p>`;
     }
     const truth = r.step === "processing_true" ? "is correct" : "is wrong";
     const how =
@@ -223,17 +242,21 @@ export const defaultText: TextConfig = {
   },
   instruction_hint: (r) =>
     r.step === "recall"
-      ? `<p>Not quite. Try again: remember the letters in the order they were shown.</p>`
+      ? `<p>Not quite. Try again: remember the ${r.nouns} in the order they were shown.</p>`
       : `<p>Not quite. Work out the problem, then decide: if the number shown is the answer, it is ${r.true_label}; if not, ${r.false_label}.</p>`,
   instruction_reveal: (r) =>
     r.step === "recall"
-      ? `<p>The letters were <strong>${r.items.join(" ")}</strong>, in that order. Let's go on.</p>`
+      ? `<p>The ${r.nouns} were <strong>${r.items.join(
+          " "
+        )}</strong>, in that order. Let's go on.</p>`
       : `<p>The correct answer here was ${r.correct_label}. Let's go on.</p>`,
   instruction_correct: "Correct!",
-  practice_storage_intro: `<p>Next, a short practice in three parts: letters alone, math alone, then both together, as in the real task.</p><p>Part 1: you will see a few letters. Recall them in order.</p>`,
+  practice_storage_intro: ({ nouns }) =>
+    `<p>Next, a short practice in three parts: ${nouns} alone, math alone, then both together, as in the real task.</p><p>Part 1: you will see a few ${nouns}. Recall them in order.</p>`,
   practice_processing_intro: `<p>Part 2: the math problems alone, at your own pace. Your speed here sets your time limit later.</p>`,
   practice_combined_intro: `<p>Part 3: both together, as in the real task.</p>`,
-  instruction_test_intro: `<p>That's the end of practice. The real task is the same, with more letters to remember each time. Remember to keep solving the math problems accurately.</p>`,
+  instruction_test_intro: ({ nouns }) =>
+    `<p>That's the end of practice. The real task is the same, with more ${nouns} to remember each time. Remember to keep solving the math problems accurately.</p>`,
   practice_repeat: ({ accuracy, criterion }) =>
     `<p>Your math accuracy was ${pct(accuracy)}; you need ${pct(
       criterion
@@ -259,12 +282,12 @@ export const defaultText: TextConfig = {
       ? `<p>Is this the answer? ${true_label} = true, ${false_label} = false.</p>`
       : `<p>Is this the answer?</p>`,
 
-  recall_prompt: ({ format, order, set_size }) =>
+  recall_prompt: ({ format, order, set_size, nouns }) =>
     format === "n_afc"
-      ? `Select the ${set_size} letters${order === "serial" ? " in the order shown" : ""}`
+      ? `Select the ${set_size} ${nouns}${order === "serial" ? " in the order shown" : ""}`
       : format === "free_text"
-      ? `Type the ${set_size} letters${order === "serial" ? " in the order shown" : ""}`
-      : `Press the keys of the ${set_size} letters${
+      ? `Type the ${set_size} ${nouns}${order === "serial" ? " in the order shown" : ""}`
+      : `Press the keys of the ${set_size} ${nouns}${
           order === "serial" ? " in the order shown" : ""
         }`,
   recall_box_label: ({ position }) => `Item ${position}`,
@@ -279,7 +302,7 @@ export const defaultText: TextConfig = {
       : `<p>You made ${math_errors} math error${math_errors === 1 ? "" : "s"} on this trial.${
           math_accuracy === null ? "" : ` Math accuracy so far: ${pct(math_accuracy)}.`
         }</p>`),
-  feedback_correct_answer: ({ items }) => `<p>The letters were: ${items.join(" ")}</p>`,
+  feedback_correct_answer: ({ items, nouns }) => `<p>The ${nouns} were: ${items.join(" ")}</p>`,
 
   task_complete: "Task complete",
   result_summary: (r) =>

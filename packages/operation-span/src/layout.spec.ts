@@ -6,7 +6,7 @@ import { initJsPsych } from "jspsych";
 import { OperationSpanOptions } from "./options";
 import { renderRecallPanel, renderScreen } from "./stimuli";
 import { defaultText } from "./text";
-import { createTimeline } from ".";
+import { createTimeline, utils } from ".";
 
 /**
  * Layout itself cannot be measured in jsdom (the real check is the stage-position measurement in a
@@ -61,6 +61,8 @@ describe("operation span anchored stage layout", () => {
         omission: "blank_button",
         set_size: 3,
         pool: ["F", "H", "J"],
+        noun: "letter",
+        nouns: "letters",
       },
       defaultText
     );
@@ -84,6 +86,14 @@ describe("operation span anchored stage layout", () => {
         response_device: { processing: "keyboard", recall: "keyboard" },
         response_format: "free_text",
         inter_item_interval_ms: 200,
+      },
+    ],
+    [
+      "digits",
+      {
+        set_sizes: [2],
+        trials_per_condition: 1,
+        stimulus_set: { memorandum: utils.stimuli.digits },
       },
     ],
     [

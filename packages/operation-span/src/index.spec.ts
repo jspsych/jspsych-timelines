@@ -255,10 +255,77 @@ describe("createTimeline", () => {
     expect(rows.filter((r) => r.phase === "instructions")).toHaveLength(0);
   });
 
+  it("an own memorandum set: drawn from, recorded by id and set name, and named by its noun in the instructions", async () => {
+    const fruit = {
+      name: "fruit",
+      noun: { singular: "fruit word", plural: "fruit words" },
+      items: ["apple", "pear", { id: "fig-1", text: "fig" }, "plum"],
+    };
+    const rows = await run(jsPsych, {
+      ...SMALL,
+      instruction_demonstration: "interactive",
+      stimulus_set: { memorandum: fruit },
+    });
+    const mem = rows.filter((r) => r.part === "memorandum");
+    expect(mem.length).toBeGreaterThan(0);
+    mem.forEach((r) => {
+      expect(["apple", "pear", "fig", "plum"]).toContain(r.memorandum);
+      expect(r.memorandum_id).toBe(r.memorandum === "fig" ? "fig-1" : r.memorandum);
+      expect(r.stimulus_set).toBe("fruit");
+    });
+    of(rows, "test", "response").forEach((r) => {
+      expect(r.stimulus_set).toBe("fruit");
+      expect(r.presented_item_ids).toEqual(
+        r.presented_items.map((x: string) => (x === "fig" ? "fig-1" : x))
+      );
+    });
+    const pages = rows
+      .filter((r) => r.phase === "instructions")
+      .map((r) => r.stimulus ?? "")
+      .join(" ");
+    expect(pages).toContain("remembering fruit words");
+    expect(pages).not.toContain("letter");
+  });
+
+  it("memorandum first: the intro names the set's noun and says the memorandum comes first", async () => {
+    const rows = await run(jsPsych, {
+      ...SMALL,
+      memorandum_order_in_pair: "memorandum_first",
+      stimulus_set: { memorandum: utils.stimuli.digits },
+    });
+    const intro = of(rows, "instructions", "instruction")[0].stimulus;
+    expect(intro).toContain("a math problem and one digit, starting with the digit");
+  });
+
+  it("a bare array is a set without a name: recorded as custom, called items", async () => {
+    const rows = await run(jsPsych, {
+      ...SMALL,
+      stimulus_set: { memorandum: ["1", "2", "3", "4"] },
+    });
+    of(rows, "test", "response").forEach((r) => expect(r.stimulus_set).toBe("custom"));
+    const pages = of(rows, "instructions", "instruction")
+      .map((r) => r.stimulus)
+      .join(" ");
+    expect(pages).toContain("remembering items");
+  });
+
+  it("the digits set names its items digits", async () => {
+    const rows = await run(jsPsych, {
+      ...SMALL,
+      stimulus_set: { memorandum: utils.stimuli.digits },
+    });
+    of(rows, "test", "response").forEach((r) => expect(r.stimulus_set).toBe("digits"));
+    expect(
+      of(rows, "instructions", "instruction")
+        .map((r) => r.stimulus)
+        .join(" ")
+    ).toContain("remembering digits");
+  });
+
   it("translated text is used", async () => {
     const rows = await run(jsPsych, {
       ...SMALL,
-      text: { instruction_test_intro: "<p>PRUEBA</p>", continue_button: "Seguir" },
+      text: { instruction_test_intro: () => "<p>PRUEBA</p>", continue_button: "Seguir" },
     });
     expect(
       of(rows, "instructions", "instruction")
@@ -379,10 +446,48 @@ describe("options", () => {
       {
         response_device: { recall: "keyboard" },
         response_format: "single_response",
-        stimulus_set: { memorandum: { words: ["apple", "bread"] } },
+        stimulus_set: { memorandum: ["apple", "bread"] },
         set_sizes: [2],
       },
       /single-character/,
+    ],
+    [
+      "a memorandum set that is not a set",
+      { stimulus_set: { memorandum: "letters" as any } },
+      /stimulus_set.memorandum must be a set/,
+    ],
+    [
+      "an image memorandum",
+      { stimulus_set: { memorandum: [{ image: "a.png" } as any, "B", "C", "D"] }, set_sizes: [2] },
+      /item 1 is an image; memoranda must be text/,
+    ],
+    [
+      "an svg memorandum",
+      { stimulus_set: { memorandum: ["A", { svg: "<svg/>" } as any, "C"] }, set_sizes: [2] },
+      /item 2 is an SVG; memoranda must be text/,
+    ],
+    [
+      "duplicate ids",
+      {
+        stimulus_set: { memorandum: [{ id: "x", text: "cat" }, { id: "x", text: "dog" }, "owl"] },
+        set_sizes: [2],
+      },
+      /two items have the id "x"/,
+    ],
+    [
+      "two items recall cannot tell apart",
+      { stimulus_set: { memorandum: ["cat", "Cat ", "owl"] }, set_sizes: [2] },
+      /items 1 and 2 read the same/,
+    ],
+    [
+      "an empty memorandum set",
+      { stimulus_set: { memorandum: { name: "none", items: [] } }, set_sizes: [1] },
+      /the set has no items/,
+    ],
+    [
+      "a pool too small for the walkthrough",
+      { stimulus_set: { memorandum: ["A"] }, set_sizes: [1] },
+      /walkthrough's recall step needs 2 different memoranda but the pool has 1/,
     ],
   ];
   it.each(cases)("throws on %s, naming the option", (_n, options, re) => {

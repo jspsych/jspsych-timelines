@@ -336,6 +336,7 @@
     "stimulus_set": {
       "x-jspsych": {
         "group": "stimulus",
+        "widget": "bundle",
         "advanced": false,
         "vocabulary": "stimulus_set",
         "phaseOverridable": false,
@@ -1720,7 +1721,7 @@
     {
       "id": "S006",
       "label": "Unsworth et al. 2005, Behavior Research Methods",
-      "description": "reference-impl · no setting · 21 spec options · uses a calibrated deadline (mean + SD of the practice RTs): the package default, code-only, so not set here",
+      "description": "reference-impl · no setting · 21 spec options · uses a calibrated deadline (mean + SD of the practice RTs): the package default, code-only, so not set here · memoranda: the package's letters, the 12 consonants of the Engle-lab task (S006)",
       "options": {
         "block_order": "random",
         "feedback_duration_ms": 2000,
@@ -1748,7 +1749,9 @@
         "stimulus_duration_ms": 800,
         "stimulus_set": {
           "memorandum_source": "separate_item",
-          "memorandum": "letters"
+          "memorandum": {
+            "$util": "stimuli.letters"
+          }
         },
         "trial_feedback": "accuracy",
         "trials_per_condition": 3
@@ -1800,7 +1803,7 @@
     {
       "id": "S020",
       "label": "Klaus & Schriefers jsPsych reading/operation/mixed span",
-      "description": "MIT, commit 4dc9ed6 · reference-impl · no setting · 9 spec options · not expressible, left out: stimulus_language",
+      "description": "MIT, commit 4dc9ed6 · reference-impl · no setting · 9 spec options · not expressible, left out: stimulus_language · memoranda: the package's digits, not necessarily the study's own list",
       "options": {
         "response_device": {
           "recall": "keyboard"
@@ -1812,7 +1815,9 @@
         "response_window_ms": 10000,
         "stimulus_duration_ms": 1200,
         "stimulus_set": {
-          "memorandum": "digits"
+          "memorandum": {
+            "$util": "stimuli.digits"
+          }
         }
       }
     },
@@ -1895,7 +1900,7 @@
     {
       "id": "S028",
       "label": "Wereszczyński et al. 2025, Data in Brief",
-      "description": "empirical · online-unsupervised · 2 spec options",
+      "description": "empirical · online-unsupervised · 2 spec options · memoranda: the package's letters, the 12 consonants of the Engle-lab task (S006)",
       "options": {
         "set_sizes": [
           3,
@@ -1905,7 +1910,9 @@
           7
         ],
         "stimulus_set": {
-          "memorandum": "letters"
+          "memorandum": {
+            "$util": "stimuli.letters"
+          }
         }
       }
     },
@@ -1949,7 +1956,7 @@
     {
       "id": "S034",
       "label": "MacMillan et al. 2024, Memory & Cognition",
-      "description": "empirical · online-unsupervised · 10 spec options · the word pool is a stand-in: supply your own words",
+      "description": "empirical · online-unsupervised · 10 spec options · memoranda: a stand-in list of 16 English words written into the preset, not the study's words (none are reported or bundled): supply your own",
       "options": {
         "response_device": {
           "recall": "keyboard",
@@ -1969,7 +1976,12 @@
         ],
         "stimulus_set": {
           "memorandum": {
-            "words": [
+            "name": "words_stand_in",
+            "noun": {
+              "singular": "word",
+              "plural": "words"
+            },
+            "items": [
               "apple",
               "bread",
               "chair",
@@ -2013,7 +2025,7 @@
     {
       "id": "S043",
       "label": "Wallinheimo et al. 2023, Frontiers in Artificial Intelligence",
-      "description": "empirical · online-unsupervised · 4 spec options · the word pool is a stand-in: supply your own words",
+      "description": "empirical · online-unsupervised · 4 spec options · memoranda: a stand-in list of 16 English words written into the preset, not the study's words (none are reported or bundled): supply your own",
       "options": {
         "n_test_trials": 12,
         "set_sizes": [
@@ -2025,7 +2037,12 @@
         "stimulus_set": {
           "memorandum_source": "separate_item",
           "memorandum": {
-            "words": [
+            "name": "words_stand_in",
+            "noun": {
+              "singular": "word",
+              "plural": "words"
+            },
+            "items": [
               "apple",
               "bread",
               "chair",

@@ -31,6 +31,20 @@ jsPsychTimelineOperationSpan.utils.scoring.calculateScores(jsPsych.data.get());
 
 The default processing deadline is computed from practice: `utils.deadlines.meanPlusSd(2.5)` is mean + 2.5 SD of the participant's correct processing-only practice RTs. Pass your own function for another rule.
 
+The memoranda are a stimulus set: the Engle-lab letters by default (`utils.stimuli.letters`), the digits 1-9 (`utils.stimuli.digits`), or your own text items:
+
+```js
+jsPsychTimelineOperationSpan.createTimeline(jsPsych, {
+  stimulus_set: {
+    memorandum: {
+      name: "concrete_nouns",
+      noun: { singular: "word", plural: "words" },
+      items: ["apple", "bread", "chair", "dance", "eagle", "flame", "grape"],
+    },
+  },
+});
+```
+
 ## Documentation
 
 Full reference (options, data output, scoring, translation): `website/docs/reference/operation-span.mdx` on the documentation site.

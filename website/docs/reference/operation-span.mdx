@@ -67,7 +67,16 @@ Each test trial is a sequence of steps, one per letter to remember. A step is a 
 
 **Set sizes and block order.** `set_sizes`, `trials_per_condition` and `n_test_trials` describe the same design (15 = 5 sizes × 3) and are reconciled: give one and the others follow, give inconsistent ones and it throws. `block_order` sets the order: `"random"` (one block, shuffled per participant), `"random_within_block"` (one block per repetition, each holding every set size once in random order), `"fixed"` (the same interleaved order for everyone), `"ascending"`, `"descending"`. A list of lists in `set_sizes` gives each block its own set sizes. Practice set sizes are `practice.set_sizes` (default `[2]`), never the test's.
 
-**Other options.** Problems per memorandum (0 gives a simple span), memorandum before the problem, a single-screen problem format, typed recall (one box per letter) or key-press recall, free recall order, blank, skip or ? as the omission, digits or your own words as memoranda, mouse, touch or keyboard for the processing task and for recall separately.
+**Memoranda.** `stimulus_set.memorandum` takes a stimulus set, which is data: the package's bundled sets are values in `utils.stimuli`, and your own set is the same shape. The bundled sets:
+
+| Set | Items |
+|---|---|
+| `utils.stimuli.letters` (default) | The 12 consonants of the Engle-lab automated span, F H J K L N P Q R S T Y (Unsworth et al., 2005) |
+| `utils.stimuli.digits` | 1 to 9 (S020) |
+
+Your own set is `{ name, noun, items }`, or just the array of items. An item is a string or an object `{ text, id }`; the data records the text and the `id` (default: the text). Memoranda are text, because recall names them: the matrix labels its buttons with them, typed and key-press recall match what is entered against them (ignoring case and surrounding spaces, so two items may not differ only in case), and the feedback lists them. An `image` or `svg` item throws. `name` is recorded as `stimulus_set` on memorandum and recall rows (`"custom"` without one). `noun` (`{ singular, plural }`) is what the instructions and the recall prompt call the items; without it they say "item". The recall matrix shows the whole set, in the order of `items`, four to a row. The set needs at least as many items as the largest set size (and 2, for the walkthrough), and key-press recall needs one-character items. No word list is bundled: the studies that used words (S034, S043) do not report their lists, so their presets carry a stand-in list of 16 English words and say so; supply your own. In a preset or a shared link, which are JSON, a bundled set is written `{ "$util": "stimuli.digits" }`, and the Code view shows it as `utils.stimuli.digits`.
+
+**Other options.** Problems per memorandum (0 gives a simple span), memorandum before the problem, a single-screen problem format, typed recall (one box per item) or key-press recall, free recall order, blank, skip or ? as the omission, mouse, touch or keyboard for the processing task and for recall separately.
 
 ## Parameters
 
@@ -120,11 +129,25 @@ const { timeline } = createTimeline(jsPsych, {
 });
 ```
 
-A reading-span-like typed recall of words with the keyboard (own word list):
+Digits instead of letters (the recall matrix shows 1 to 9):
 
 ```javascript
 const { timeline } = createTimeline(jsPsych, {
-  stimulus_set: { memorandum: { words: ["apple", "bread", "chair", "dance", "eagle", "flame", "grape"] } },
+  stimulus_set: { memorandum: utils.stimuli.digits },
+});
+```
+
+Typed recall of your own words with the keyboard; the instructions call them "words" and the data records the set's name:
+
+```javascript
+const { timeline } = createTimeline(jsPsych, {
+  stimulus_set: {
+    memorandum: {
+      name: "concrete_nouns",
+      noun: { singular: "word", plural: "words" },
+      items: ["apple", "bread", "chair", "dance", "eagle", "flame", "grape"],
+    },
+  },
   set_sizes: [2, 3, 4],
   response_device: { processing: "keyboard", recall: "keyboard" },
   response_format: "free_text",
@@ -141,10 +164,10 @@ Every row carries `task: "operation-span"` and `task_version`. **The scorable ro
 | `part` | Rows |
 |---|---|
 | `instruction` | Instruction and transition pages |
-| `instruction_example` | Walkthrough: the problem screen, the letters of the recall step, and the static examples |
+| `instruction_example` | Walkthrough: the problem screen, the memoranda of the recall step, and the static examples |
 | `instruction_check` | Walkthrough: a problem answered, or a recall, with `condition`, `attempt`, `correct`. Never scored |
 | `instruction_feedback` | Walkthrough: confirmation, hint, or the revealed answer (`feedback_kind`) |
-| `memorandum` | A letter shown (`memorandum`, `position`, `stimulus_duration`, `duration_ms`) |
+| `memorandum` | A memorandum shown (`memorandum` (its text), `memorandum_id`, `stimulus_set` (the set's name), `position`, `stimulus_duration`, `duration_ms`) |
 | `inter_item` | The gap between events within a trial (`inter_item_interval`, `duration_ms`) |
 | `processing_problem` | Two-screen format: the timed problem screen (`rt` is the solve time, `timeout`, `response_window`) |
 | `processing` | **One row per processing episode**, in every display format (see below) |
@@ -152,11 +175,11 @@ Every row carries `task: "operation-span"` and `task_version`. **The scorable ro
 | `feedback` | Trial feedback (`feedback_kind`, `feedback_duration`) |
 | `completion` | The last screen |
 
-**Recall row (`response`).** `set_size`, `presented_items`, `recalled_items` (`null` for a blank), `recall_correct_positions` (one boolean per presented position), `n_correct_positions`, `proportion_correct`, `perfect` and `correct` (every position right), `recall_rt`, `response_order`, `response_format`, `response_device` (recall), `processing_n`, `processing_errors`, `processing_timeouts` (null in letters-only practice), `practice_part` (practice only), `block` (1…n; practice is block 1) and `trial_index_in_block` (1-based). `trial_index` is jsPsych's.
+**Recall row (`response`).** `set_size`, `stimulus_set` (the memorandum set's name), `presented_items` and `presented_item_ids`, `recalled_items` (as entered; `null` for a blank) and `recalled_item_ids` (the item each entry names; `null` for a blank or typed text that is no item), `recall_correct_positions` (one boolean per presented position), `n_correct_positions`, `proportion_correct`, `perfect` and `correct` (every position right), `recall_rt`, `response_order`, `response_format`, `response_device` (recall), `processing_n`, `processing_errors`, `processing_timeouts` (null in letters-only practice), `practice_part` (practice only), `block` (1…n; practice is block 1) and `trial_index_in_block` (1-based). `trial_index` is jsPsych's.
 
 **Processing row (`processing`).** `problem`, `shown_answer`, `answer_is_true`, `correct_response`, `response`, `correct` (verified correctly and in time), `timeout` (deadline missed: a speed error), `rt` (the timed response: the solve time in the two-screen format, the true/false response in the single-screen format; `null` after a timeout), `solve_rt`, `verify_rt` (two-screen format), `response_window` (the deadline in force in ms, `null` if none), `response_window_rule` (`"fixed"`, `"none"`, `"self-paced"`, `"jitter"`, a prebuilt helper's label with how it applied, such as `"mean + 2.5 SD of correct practice RTs (n = 15)"` or `"mean + 2.5 SD of correct practice RTs: fixed 6000 ms fallback, 3 of 5 usable practice RTs"`, or `"custom function"`), `response_device`, `set_size`, `position` (memorandum step), `episode`, `practice_part`, `practice_attempt`. After a missed deadline in the two-screen format the answer screen is skipped and a brief "Too slow" notice is the row.
 
-`practice_part` is `"storage"` (letters only), `"processing_only"` or `"combined"`. The calibrated deadline reads the correct `processing_only` rows.
+`practice_part` is `"storage"` (memoranda only), `"processing_only"` or `"combined"`. The calibrated deadline reads the correct `processing_only` rows.
 
 ## Scoring
 
@@ -175,13 +198,13 @@ Every row carries `task: "operation-span"` and `task_version`. **The scorable ro
 
 The package does not exclude participants. Unsworth et al. (2005) drop participants below 85% processing accuracy; apply that, or another rule, to `processing_accuracy` in the analysis.
 
-With `response_order: "free"` a position counts when its letter was entered anywhere. Letters are compared without regard to case. Walkthrough and practice rows are never scored.
+With `response_order: "free"` a position counts when its item was entered anywhere. Entries are compared with the items without regard to case or surrounding spaces. Walkthrough and practice rows are never scored.
 
 ## Translation
 
-Pass `text` with any of the keys below; unspecified keys keep their defaults. Keys marked (fn) are functions of a named-parameter object (see the doc comments in `src/text.ts`):
+Pass `text` with any of the keys below; unspecified keys keep their defaults. Keys marked (fn) are functions of a named-parameter object (see the doc comments in `src/text.ts`); every text that names the memoranda gets `noun` and `nouns` from the set:
 
-`instruction_intro` (fn), `instruction_processing` (fn), `instruction_recall` (fn), `emphasis_speed`, `emphasis_accuracy` (fn), `emphasis_both`, `read_aloud`, `instruction_demo_intro`, `instruction_examples_intro`, `instruction_step` (fn), `instruction_hint` (fn), `instruction_reveal` (fn), `instruction_correct`, `practice_storage_intro`, `practice_processing_intro`, `practice_combined_intro`, `instruction_test_intro`, `practice_repeat` (fn), `practice_failed`, `continue_button`, `ok_button`, `done_button`, `solved_button`, `true_button`, `false_button`, `blank_button`, `skip_button`, `clear_button`, `solve_prompt` (fn), `verify_prompt` (fn), `recall_prompt` (fn), `recall_box_label` (fn), `correct_feedback`, `incorrect_feedback`, `timeout_feedback`, `recall_feedback` (fn), `feedback_correct_answer` (fn), `task_complete`, `result_summary` (fn).
+`instruction_intro` (fn), `instruction_processing` (fn), `instruction_recall` (fn), `emphasis_speed`, `emphasis_accuracy` (fn), `emphasis_both` (fn), `read_aloud`, `instruction_demo_intro`, `instruction_examples_intro`, `instruction_step` (fn), `instruction_hint` (fn), `instruction_reveal` (fn), `instruction_correct`, `practice_storage_intro` (fn), `practice_processing_intro`, `practice_combined_intro`, `instruction_test_intro` (fn), `practice_repeat` (fn), `practice_failed`, `continue_button`, `ok_button`, `done_button`, `solved_button`, `true_button`, `false_button`, `blank_button`, `skip_button`, `clear_button`, `solve_prompt` (fn), `verify_prompt` (fn), `recall_prompt` (fn), `recall_box_label` (fn), `correct_feedback`, `incorrect_feedback`, `timeout_feedback`, `recall_feedback` (fn), `feedback_correct_answer` (fn), `task_complete`, `result_summary` (fn).
 
 ```javascript
 createTimeline(jsPsych, {
@@ -196,7 +219,7 @@ createTimeline(jsPsych, {
 
 ## Timeline Units
 
-`timelineUnits` holds `createContext`, `createInstructions`, `createInstructionWalkthrough`, `createTestIntro`, `createTransition`, `createMemorandum`, `createInterItem`, `createProcessing` (one processing episode, in the configured display format), `createRecall`, `createRecallFeedback`, `createProblemFeedback`, `createSpanTrial`, `planTrial`, `createPracticePart`, `createPractice`, `createTest` and `createCompletion`. Most take the object from `createContext(jsPsych, options)`. `utils` holds `scoring`, `constants`, `text`, `deadlines`, `stimuli` (`generateProblem`, `memorandumPool`), `sequence` (`scheduleBlocks`, `fixedOrder`, `practiceSetSizes`) and `options` (`resolveOptions`, `validateOptions`).
+`timelineUnits` holds `createContext`, `createInstructions`, `createInstructionWalkthrough`, `createTestIntro`, `createTransition`, `createMemorandum`, `createInterItem`, `createProcessing` (one processing episode, in the configured display format), `createRecall`, `createRecallFeedback`, `createProblemFeedback`, `createSpanTrial`, `planTrial`, `createPracticePart`, `createPractice`, `createTest` and `createCompletion`. Most take the object from `createContext(jsPsych, options)`. `utils` holds `scoring`, `constants`, `text`, `deadlines`, `stimuli` (the bundled sets `letters` and `digits`, and `generateProblem`), `items` (`buildPool`: a set's items as `{ id, text }`), `sequence` (`scheduleBlocks`, `fixedOrder`, `practiceSetSizes`) and `options` (`resolveOptions`, `validateOptions`).
 
 ## References
 
