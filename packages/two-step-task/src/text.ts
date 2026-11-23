@@ -1,22 +1,6 @@
-import type { StateId } from "./options";
-import type { ShipId } from "./schedule";
+import type { FramingWords } from "./sets";
 
-/** The words the instructions use for the parts of the task, which depend on `instruction_framing`. */
-export interface FramingWords {
-  /** a first-stage option, singular and plural (a spaceship) */
-  first: string;
-  first_plural: string;
-  /** a second-stage option (an alien) */
-  second: string;
-  second_plural: string;
-  /** a second-stage state (a planet) */
-  state: string;
-  state_plural: string;
-  /** how a first-stage option is named in a sentence, by option (`A`, `B`) */
-  first_name: Record<ShipId, string>;
-  /** how a state is named in a sentence, by colour */
-  state_name: Record<StateId, string>;
-}
+export type { FramingWords } from "./sets";
 
 /** What the walkthrough steps say about a step. */
 export interface StepArgs {
@@ -32,11 +16,13 @@ export interface StepArgs {
  */
 export interface TextConfig {
   /**
-   * Words for the parts of the task, by `instruction_framing` (`abstract_symbols`, `spaceship_planet_alien`). A
-   * translation returns the words for both.
-   * @param r.framing the cover story
+   * The words for the parts of the task. They come from the stimulus set (its `noun`, the `name` of its first-stage
+   * items and states); the default returns them unchanged. A translation returns its own words, by set if it
+   * translates more than one.
+   * @param r.words the set's words (English for the bundled sets)
+   * @param r.set the set's `name` ("abstract_symbols", "spaceship_planet_alien", "custom")
    */
-  framing_words: (r: { framing: "abstract_symbols" | "spaceship_planet_alien" }) => FramingWords;
+  framing_words: (r: { words: FramingWords; set: string }) => FramingWords;
 
   // -- instruction pages --
   /** First page: what the task is. */
@@ -82,7 +68,7 @@ export interface TextConfig {
     sides_vary: boolean;
   }) => string;
   /** Shown before the main task, after practice (or after the instructions when there is no practice). */
-  instruction_test_intro: string;
+  instruction_test_intro: (r: { words: FramingWords }) => string;
 
   // -- walkthrough steps (each has a prompt, a hint after a wrong answer, and the answer after the last attempt) --
   /** Choosing a first-stage option. */
@@ -134,11 +120,11 @@ export interface TextConfig {
   // -- trials --
   fixation: string;
   too_slow: string;
-  /** Under the outcome. */
-  outcome_coin: string;
-  outcome_none: string;
-  /** @param r.total coins earned so far */
-  running_total: (r: { total: number }) => string;
+  /** Under the outcome; `words.reward` is the set's reward noun ("coin"). */
+  outcome_coin: (r: { words: FramingWords }) => string;
+  outcome_none: (r: { words: FramingWords }) => string;
+  /** @param r.total rewards earned so far in the phase */
+  running_total: (r: { words: FramingWords; total: number }) => string;
 
   // -- breaks, questionnaire, end --
   /** @param r.block block just finished, r.n_blocks number of blocks */
@@ -155,39 +141,32 @@ export interface TextConfig {
     right_key: string;
   }) => string;
   task_complete: string;
-  /** @param r.coins coins earned in the main task, r.n_trials trials, r.n_missed missed trials */
-  result_summary: (r: { coins: number; n_trials: number; n_missed: number }) => string;
+  /** @param r.coins rewards earned in the main task, r.n_trials trials, r.n_missed missed trials */
+  result_summary: (r: {
+    words: FramingWords;
+    coins: number;
+    n_trials: number;
+    n_missed: number;
+  }) => string;
 }
-
-const abstract: FramingWords = {
-  first: "symbol",
-  first_plural: "symbols",
-  second: "symbol",
-  second_plural: "symbols",
-  state: "screen",
-  state_plural: "screens",
-  first_name: { A: "the ring", B: "the cross" },
-  state_name: { red: "the red screen", blue: "the blue screen" },
-};
-
-const spaceship: FramingWords = {
-  first: "spaceship",
-  first_plural: "spaceships",
-  second: "alien",
-  second_plural: "aliens",
-  state: "planet",
-  state_plural: "planets",
-  first_name: { A: "the rocket", B: "the flying saucer" },
-  state_name: { red: "the red planet", blue: "the blue planet" },
-};
 
 const sideOf = (s: "left" | "right") => s;
 
 export const defaultText: TextConfig = {
-  framing_words: ({ framing }) => (framing === "abstract_symbols" ? abstract : spaceship),
+  framing_words: ({ words }) => words,
 
   instruction_intro: ({ words: w }) =>
-    `<p>In this task you collect coins. Every trial has two steps. In the first step you choose one of two ${w.first_plural}. It takes you to one of two ${w.state_plural}, a red one or a blue one. There you choose one of two ${w.second_plural}, and the ${w.second} you choose may give you a coin.</p><p>Collect as many coins as you can.</p>`,
+    `<p>In this task you collect ${
+      w.reward_plural
+    }. Every trial has two steps. In the first step you choose one of two ${
+      w.first_plural
+    }. It takes you to one of two ${w.state_plural}: ${w.state_name.red} or ${
+      w.state_name.blue
+    }. There you choose one of two ${w.second_plural}, and the ${
+      w.second
+    } you choose may give you ${a(w.reward)}.</p><p>Collect as many ${
+      w.reward_plural
+    } as you can.</p>`,
   instruction_response: ({
     words: w,
     left_key,
@@ -226,10 +205,18 @@ export const defaultText: TextConfig = {
         : `<p>You will have to find out which ${w.state} each ${w.first} usually takes you to.</p>`
     }`,
   instruction_drift: ({ words: w }) =>
-    `<p>How likely the ${w.second_plural} are to give a coin changes slowly during the task. One that is good now may get worse later, and one that is poor now may get better. Keep an eye on which ones give coins.</p>`,
+    `<p>How likely the ${w.second_plural} are to give ${a(
+      w.reward
+    )} changes slowly during the task. One that is good now may get worse later, and one that is poor now may get better. Keep an eye on which ones give ${
+      w.reward_plural
+    }.</p>`,
   instruction_demo_intro: ({ words: w }) =>
-    `<p>Let's try one trial. You will choose a ${w.first}, see where it takes you, and then choose one of two ${w.second_plural}. This trial is for learning the keys, so which one you choose does not matter.</p>`,
-  instruction_practice_intro: ({ timed, sides_vary }) =>
+    `<p>Let's try one trial. You will choose ${a(
+      w.first
+    )}, see where it takes you, and then choose one of two ${
+      w.second_plural
+    }. This trial is for learning the keys, so which one you choose does not matter.</p>`,
+  instruction_practice_intro: ({ words: w, timed, sides_vary }) =>
     `<p>Now you will practice. The trials run at the pace of the real task${
       timed ? `: you have a limited time for each choice` : ""
     }${
@@ -238,8 +225,11 @@ export const defaultText: TextConfig = {
             timed ? ", and" : ": "
           } the two options of each choice change places from trial to trial`
         : ""
-    }. The coins you get in practice are not counted.</p><p>When practice is over, the main task starts.</p>`,
-  instruction_test_intro: `<p>Practice is over. Now the main task starts. Collect as many coins as you can.</p>`,
+    }. The ${
+      w.reward_plural
+    } you get in practice are not counted.</p><p>When practice is over, the main task starts.</p>`,
+  instruction_test_intro: ({ words: w }) =>
+    `<p>Practice is over. Now the main task starts. Collect as many ${w.reward_plural} as you can.</p>`,
 
   step_first: ({ words: w, side, key }) =>
     `Choose the ${w.first} on the ${sideOf(side)}: press <kbd>${key}</kbd>.`,
@@ -253,7 +243,8 @@ export const defaultText: TextConfig = {
     `That was the other one. Choose the ${w.second} on the ${side}: press <kbd>${key}</kbd>.`,
   step_second_reveal: ({ words: w, side, key }) =>
     `Press <kbd>${key}</kbd> to choose the ${w.second} on the ${side}.`,
-  step_outcome: ({ words: w }) => `This ${w.second} gave you a coin. Not every choice does.`,
+  step_outcome: ({ words: w }) =>
+    `This ${w.second} gave you ${a(w.reward)}. Not every choice does.`,
 
   check_mapping: ({ words: w, first_name, left_key, right_key }) =>
     `Which ${w.state} does ${first_name} usually take you to? Press <kbd>${left_key}</kbd> for the one on the left, or <kbd>${right_key}</kbd> for the one on the right.`,
@@ -267,22 +258,22 @@ export const defaultText: TextConfig = {
     `Not quite. The true sentence is on the ${side}: press <kbd>${key}</kbd>.`,
   check_statement_reveal: ({ side }) => `The true sentence is the one on the ${side}.`,
   statement_transitions_true: ({ words: w }) =>
-    `A ${w.first} usually takes you to the same ${w.state}, but not always.`,
+    `${cap(a(w.first))} usually takes you to the same ${w.state}, but not always.`,
   statement_transitions_false: ({ words: w }) =>
-    `A ${w.first} takes you to either ${w.state} equally often.`,
+    `${cap(a(w.first))} takes you to either ${w.state} equally often.`,
   statement_drift_true: ({ words: w }) =>
-    `How likely the ${w.second_plural} are to give a coin changes slowly.`,
+    `How likely the ${w.second_plural} are to give ${a(w.reward)} changes slowly.`,
   statement_drift_false: ({ words: w }) =>
-    `How likely the ${w.second_plural} are to give a coin never changes.`,
+    `How likely the ${w.second_plural} are to give ${a(w.reward)} never changes.`,
   instruction_correct: "Correct!",
 
   continue_button: "Continue",
 
   fixation: "+",
   too_slow: "Too slow",
-  outcome_coin: "You got a coin",
-  outcome_none: "No coin",
-  running_total: ({ total }) => `Coins: ${total}`,
+  outcome_coin: ({ words: w }) => `You got ${a(w.reward)}`,
+  outcome_none: ({ words: w }) => `No ${w.reward}`,
+  running_total: ({ words: w, total }) => `${cap(w.reward_plural)}: ${total}`,
 
   block_complete: ({ block, n_blocks }) =>
     `<p>You have finished block ${block} of ${n_blocks}. Take a short break if you like.</p>`,
@@ -290,11 +281,16 @@ export const defaultText: TextConfig = {
   questionnaire_question: ({ words: w, first_name, left_key, right_key }) =>
     `Which ${w.state} did ${first_name} take you to most of the time? Press <kbd>${left_key}</kbd> for the one on the left, or <kbd>${right_key}</kbd> for the one on the right.`,
   task_complete: "Task complete",
-  result_summary: ({ coins, n_trials, n_missed }) =>
-    `<p>You collected ${coins} coins in ${n_trials} trials${
+  result_summary: ({ words: w, coins, n_trials, n_missed }) =>
+    `<p>You collected ${coins} ${coins === 1 ? w.reward : w.reward_plural} in ${n_trials} trials${
       n_missed > 0 ? ` (${n_missed} ${n_missed === 1 ? "trial was" : "trials were"} missed)` : ""
     }.</p>`,
 };
+
+/** The noun with its indefinite article ("a spaceship", "an alien"). */
+function a(noun: string): string {
+  return `${/^[aeiou]/i.test(noun) ? "an" : "a"} ${noun}`;
+}
 
 function cap(s: string): string {
   return s.charAt(0).toUpperCase() + s.slice(1);

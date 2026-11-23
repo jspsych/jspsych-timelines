@@ -13,7 +13,13 @@ import type {
 } from "@jspsych-timelines/testing";
 
 import { DEFAULT_OPTIONS } from "../src/options";
-import type { RewardProbability, RewardSchedule, TwoStepTaskOptions } from "../src/options";
+import type {
+  RewardProbability,
+  RewardSchedule,
+  TwoStepStimulusSet,
+  TwoStepTaskOptions,
+} from "../src/options";
+import { stimuli } from "../src/sets";
 
 export type Adapted = GenericAdapted<TwoStepTaskOptions>;
 export type ConfigEntry = GenericConfigEntry<TwoStepTaskOptions>;
@@ -63,7 +69,14 @@ export function retypeProbabilities(value: any): RewardProbability {
 /** Settings that only make a single value cheap to observe: a short run. Level 1 only. */
 const SPEED = { practice_trials: 4, n_test_trials: 40 } as const;
 
-const NOT_DRAWN = new Set(["magic_carpet_mountain_genie", "ship_island_chest"]);
+/**
+ * The spec's `instruction_framing` values, as the bundled stimulus sets (utils.stimuli). The set carries the
+ * pictures and the words of the cover story; the other stories of the literature have no bundled set.
+ */
+export const STIMULUS_SETS: Record<string, TwoStepStimulusSet> = {
+  abstract_symbols: stimuli.abstractSymbols,
+  spaceship_planet_alien: stimuli.spaceshipPlanetAlien,
+};
 
 /**
  * Retype one observed value. `value` is the spec's typed value. `fast` adds the short-run companions
@@ -133,9 +146,12 @@ function adaptValue(option: string, sub: string, value: any, fast: boolean): Ada
         ? ok({ instruction_format: value }, speed())
         : gap("plugin needed", `instruction_format "${value}" needs recorded media`);
     case "instruction_framing":
-      return NOT_DRAWN.has(value)
-        ? gap("option missing", `the "${value}" cover story is not drawn`)
-        : ok({ instruction_framing: value }, speed());
+      return STIMULUS_SETS[value]
+        ? ok({ stimulus_set: STIMULUS_SETS[value] }, speed())
+        : gap(
+            "option missing",
+            `no bundled stimulus set for the "${value}" cover story; pass your own set as stimulus_set`
+          );
     case "population_protocol":
       return value === "standard"
         ? ok({ population_protocol: "standard" }, speed())

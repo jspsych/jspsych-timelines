@@ -8,6 +8,7 @@ import { Check, CheckSet, extendCheck, sharedChecks } from "@jspsych-timelines/t
 
 import { MAX_TRIAL_REPEATS } from "../src/constants";
 import type { ResolvedOptions, TwoStepTaskOptions } from "../src/options";
+import { prepareSet, stimuli } from "../src/sets";
 import { renderShip } from "../src/stimuli";
 import { scheduleLabel } from "../src/trials";
 import { contract } from "./contract";
@@ -295,12 +296,26 @@ const taskOnly: Record<string, TwoStepCheck> = {
     requires: [],
     kind: "structure",
     fn: (r) => {
-      const framing = r.eff.instruction_framing as "abstract_symbols" | "spaceship_planet_alien";
+      // the cover story is the stimulus set: its pictures on screen, its ids and name in the rows
+      const set = r.eff.stimulus_set;
+      const p = prepareSet(set);
       const first = evalStimulus(trialsOf(r, "choice").find((t) => t.data.stage === 1)!);
-      expect(first).toContain(renderShip(framing, "A"));
-      const otherFraming =
-        framing === "abstract_symbols" ? "spaceship_planet_alien" : "abstract_symbols";
-      expect(first).not.toContain(renderShip(otherFraming, "A"));
+      expect(first).toContain(renderShip(set, "A"));
+      const other =
+        set === stimuli.abstractSymbols ? stimuli.spaceshipPlanetAlien : stimuli.abstractSymbols;
+      expect(first).not.toContain(renderShip(other, "A"));
+      const rows = r.rows.filter((x) => x.part === "response" && !x.missed);
+      expect(rows.length).toBeGreaterThan(0);
+      for (const x of rows) {
+        expect(x.stimulus_set).toBe(set.name);
+        expect(x.stage1_item_id).toBe(p.first[x.stage1_choice as "A" | "B"].id);
+        expect(x.stage2_state_id).toBe(p.states[x.stage2_state as "red" | "blue"].id);
+        expect(x.stage2_item_id).toBe(
+          p.states[x.stage2_state as "red" | "blue"].items[
+            x.stage2_choice as "option_1" | "option_2"
+          ].id
+        );
+      }
     },
   },
 };

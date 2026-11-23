@@ -53,7 +53,11 @@ export default {
       {
         name: `abstract symbols ${viewport.width}x${viewport.height}`,
         viewport,
-        options: { ...options, contingency_disclosure: "partial" },
+        options: {
+          ...options,
+          stimulus_set: { $util: "stimuli.abstractSymbols" },
+          contingency_disclosure: "partial",
+        },
         keys: { choice: "ArrowLeft", question: "ArrowLeft" },
       },
       {
@@ -61,7 +65,7 @@ export default {
         viewport,
         options: {
           ...options,
-          instruction_framing: "spaceship_planet_alien",
+          stimulus_set: { $util: "stimuli.spaceshipPlanetAlien" },
           contingency_disclosure: "full",
         },
         keys: { choice: "ArrowRight", question: "ArrowRight" },

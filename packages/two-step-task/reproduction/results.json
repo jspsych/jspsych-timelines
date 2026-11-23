@@ -1846,7 +1846,9 @@
       "options": {
         "practice_trials": 4,
         "n_test_trials": 40,
-        "instruction_framing": "abstract_symbols"
+        "stimulus_set": {
+          "$util": "stimuli.abstractSymbols"
+        }
       }
     },
     {
@@ -1869,7 +1871,9 @@
       "options": {
         "practice_trials": 4,
         "n_test_trials": 40,
-        "instruction_framing": "spaceship_planet_alien"
+        "stimulus_set": {
+          "$util": "stimuli.spaceshipPlanetAlien"
+        }
       }
     },
     {
@@ -1887,7 +1891,7 @@
       "labelledAddition": false,
       "status": "not expressible",
       "gap": "option missing",
-      "reason": "the \"magic_carpet_mountain_genie\" cover story is not drawn"
+      "reason": "no bundled stimulus set for the \"magic_carpet_mountain_genie\" cover story; pass your own set as stimulus_set"
     },
     {
       "option": "instruction_framing",
@@ -1903,7 +1907,7 @@
       "labelledAddition": false,
       "status": "not expressible",
       "gap": "option missing",
-      "reason": "the \"ship_island_chest\" cover story is not drawn"
+      "reason": "no bundled stimulus set for the \"ship_island_chest\" cover story; pass your own set as stimulus_set"
     },
     {
       "option": "population_protocol",
@@ -2056,7 +2060,7 @@
         {
           "key": "instruction_framing",
           "gap": "option missing",
-          "reason": "the \"magic_carpet_mountain_genie\" cover story is not drawn"
+          "reason": "no bundled stimulus set for the \"magic_carpet_mountain_genie\" cover story; pass your own set as stimulus_set"
         }
       ],
       "checked_options": [
@@ -2080,7 +2084,7 @@
         {
           "key": "instruction_framing",
           "gap": "option missing",
-          "reason": "the \"ship_island_chest\" cover story is not drawn"
+          "reason": "no bundled stimulus set for the \"ship_island_chest\" cover story; pass your own set as stimulus_set"
         }
       ],
       "checked_options": [
@@ -2161,7 +2165,7 @@
         {
           "key": "instruction_framing",
           "gap": "option missing",
-          "reason": "the \"magic_carpet_mountain_genie\" cover story is not drawn"
+          "reason": "no bundled stimulus set for the \"magic_carpet_mountain_genie\" cover story; pass your own set as stimulus_set"
         }
       ],
       "checked_options": [

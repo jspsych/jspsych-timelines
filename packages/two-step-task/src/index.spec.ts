@@ -6,6 +6,7 @@ import { MAX_TRIAL_REPEATS } from "./constants";
 import { DEFAULT_OPTIONS, TwoStepTaskOptions, resolveOptions, validateOptions } from "./options";
 import { buildSchedule, generateWalk, splitTrials, stepProbability } from "./schedule";
 import { calculateScores, getSummary, trialTable } from "./scoring";
+import { prepareSet } from "./sets";
 import { setSimulatedAgent } from "./simulation";
 import { defaultText } from "./text";
 import { createTimeline, timelineUnits, utils } from ".";
@@ -57,7 +58,7 @@ describe("two-step-task", () => {
         n_test_trials: 9,
         n_blocks: 3,
         response_keys: ["f", "j"],
-        instruction_framing: "spaceship_planet_alien",
+        stimulus_set: utils.stimuli.spaceshipPlanetAlien,
         rest_breaks: "self_paced",
         manipulation_check: "questionnaire",
         feedback_duration_ms: 0,
@@ -592,7 +593,12 @@ describe("two-step-task", () => {
         [{ rest_breaks: "fixed_interval" }, /rest_breaks/],
         [{ response_acknowledgement: "keypress_mark" }, /response_acknowledgement/],
         [{ instruction_format: "audio" }, /instruction_format/],
-        [{ instruction_framing: "magic_carpet_mountain_genie" }, /instruction_framing/],
+        [{ instruction_framing: "spaceship_planet_alien" } as any, /replaced by stimulus_set/],
+        [{ stimulus_set: "spaceship_planet_alien" } as any, /stimulus_set.*is a name, not a set/],
+        [
+          { practice: { stimulus_set: utils.stimuli.spaceshipPlanetAlien } },
+          /practice\.stimulus_set differs from stimulus_set/,
+        ],
         [{ population_protocol: "child" }, /population_protocol/],
         [{ missed_response_handling: "none" }, /missed_response_handling/],
         [{ reward_schedule: { kind: "block_alternating" } }, /reward_schedule.*block_alternating/],
@@ -969,34 +975,208 @@ describe("two-step-task", () => {
       expect(fixed).toContain("pace of the real task");
     });
 
-    it("reads correctly for the framing, with no article before a vowel", () => {
-      for (const framing of ["abstract_symbols", "spaceship_planet_alien"] as const) {
-        const text = pages({ instruction_framing: framing, contingency_disclosure: "full" });
-        expect(text).not.toMatch(/\ban (symbol|alien)/i);
+    it("reads correctly for the set, with the right article", () => {
+      for (const set of [utils.stimuli.abstractSymbols, utils.stimuli.spaceshipPlanetAlien]) {
+        const text = pages({ stimulus_set: set, contingency_disclosure: "full" });
+        expect(text).not.toMatch(/\ban (symbol|spaceship|coin)/i);
+        expect(text).not.toMatch(/\ba (alien|apple)/i);
         expect(text).toContain(
-          framing === "abstract_symbols"
+          set === utils.stimuli.abstractSymbols
             ? "How likely the symbols are"
             : "How likely the aliens are"
         );
       }
+      expect(pages({ stimulus_set: utils.stimuli.spaceshipPlanetAlien })).toContain(
+        "one of two planets: the red planet or the blue planet"
+      );
     });
 
-    it("the framing words are a function, so a translation can give both framings", () => {
-      const words = defaultText.framing_words({ framing: "spaceship_planet_alien" });
-      expect(words.state_name.red).toBe("the red planet");
+    it("the framing words come from the set, and a translation can change them", () => {
+      const seen: any[] = [];
+      const { timeline } = createTimeline(initJsPsych(), {
+        practice_trials: 0,
+        n_test_trials: 1,
+        stimulus_set: utils.stimuli.spaceshipPlanetAlien,
+        text: {
+          framing_words: (r) => {
+            seen.push(r);
+            return { ...r.words, first: "ruimteschip" };
+          },
+        },
+      });
+      expect(seen[0].set).toBe("spaceship_planet_alien");
+      expect(seen[0].words.state_name.red).toBe("the red planet");
+      expect(seen[0].words.first_name.A).toBe("the rocket");
+      expect(JSON.stringify(allTrials(timeline).map((t) => t.stimulus ?? ""))).toContain(
+        "to choose the ruimteschip on the left"
+      );
+    });
+
+    it("the default framing words pass the set's words through", () => {
+      const words = { ...prepareSet(utils.stimuli.abstractSymbols).words };
+      expect(defaultText.framing_words({ words, set: "abstract_symbols" })).toBe(words);
+      // a translation that changes one word for every set
       const { timeline } = createTimeline(initJsPsych(), {
         practice_trials: 0,
         n_test_trials: 1,
         text: {
-          framing_words: ({ framing }) => ({
-            ...defaultText.framing_words({ framing }),
-            first: "teken",
-          }),
+          framing_words: ({ words: w }) => ({ ...w, first: "teken" }),
         },
       });
       expect(JSON.stringify(allTrials(timeline).map((t) => t.stimulus ?? ""))).toContain(
         "to choose the teken on the left"
       );
+    });
+  });
+
+  describe("stimulus sets are data", () => {
+    /** A researcher's own set: images for the first stage, text for one state, an svg for the reward. */
+    const fruit = {
+      name: "fruit_market",
+      noun: {
+        first: { singular: "market", plural: "markets" },
+        second: { singular: "fruit", plural: "fruits" },
+        state: { singular: "stall", plural: "stalls" },
+        reward: { singular: "apple", plural: "apples" },
+      },
+      first_stage: [
+        { id: "north", name: "the north market", image: "img/north.png" },
+        { id: "south", name: "the south market", image: "img/south.png" },
+      ],
+      states: [
+        { id: "green_stall", name: "the green stall", items: ["pear", "plum"], color: "#2a7" },
+        {
+          id: "orange_stall",
+          name: "the orange stall",
+          items: [
+            { id: "fig", image: "img/fig.png" },
+            { id: "lime", image: "img/lime.png" },
+          ],
+          background: "#4a2a10",
+        },
+      ],
+      reward: {
+        rewarded: {
+          id: "apple",
+          svg: "<svg viewBox='0 0 10 10'><circle cx='5' cy='5' r='4'/></svg>",
+        },
+        unrewarded: { id: "none", text: "-" },
+      },
+    } as const;
+
+    it("the bundled sets are values of the option's type, and the default is one of them", () => {
+      expect(DEFAULT_OPTIONS.stimulus_set).toBe(utils.stimuli.abstractSymbols);
+      for (const set of [utils.stimuli.abstractSymbols, utils.stimuli.spaceshipPlanetAlien])
+        expect(utils.stimuli.setProblems(set)).toEqual([]);
+      expect(utils.stimuli.abstractSymbols.name).toBe("abstract_symbols");
+      expect(utils.stimuli.spaceshipPlanetAlien.name).toBe("spaceship_planet_alien");
+    });
+
+    it("runs a researcher's own set and records its name and the ids of the pictures chosen", async () => {
+      const rows = await simulate(jsPsych, {
+        practice_trials: 0,
+        n_test_trials: 20,
+        n_blocks: 1,
+        stimulus_set: fruit as any,
+        manipulation_check: "questionnaire",
+      });
+      const resp = responses(rows).filter((r) => !r.missed);
+      expect(resp.length).toBeGreaterThan(10);
+      const second: Record<string, string[]> = {
+        red: ["pear", "plum"],
+        blue: ["fig", "lime"],
+      };
+      for (const r of resp) {
+        expect(r.stimulus_set).toBe("fruit_market");
+        expect(r.stage1_item_id).toBe(r.stage1_choice === "A" ? "north" : "south");
+        expect(r.stage2_state_id).toBe(r.stage2_state === "red" ? "green_stall" : "orange_stall");
+        expect(r.stage2_item_id).toBe(
+          second[r.stage2_state][r.stage2_choice === "option_1" ? 0 : 1]
+        );
+      }
+      const choices = rows.filter((r) => r.part === "choice" && r.phase === "test");
+      for (const c of choices) {
+        expect(c.stimulus_set).toBe("fruit_market");
+        expect([c.left_item_id, c.right_item_id]).toContain(c.chosen_item_id ?? c.left_item_id);
+        if (c.stage === 1) expect(c.state_id).toBeNull();
+        else expect(["green_stall", "orange_stall"]).toContain(c.state_id);
+      }
+      const mc = rows.filter((r) => r.part === "manipulation_check");
+      expect(mc.map((r) => r.item_id)).toEqual(["north", "south"]);
+    });
+
+    it("draws the researcher's pictures and takes the instruction words from the set", () => {
+      const { timeline } = createTimeline(initJsPsych(), {
+        practice_trials: 0,
+        n_test_trials: 2,
+        stimulus_set: fruit as any,
+        contingency_disclosure: "full",
+      });
+      const html = JSON.stringify(
+        allTrials(timeline).map((t) => {
+          try {
+            return typeof t.stimulus === "function" ? t.stimulus() : t.stimulus ?? "";
+          } catch {
+            return "";
+          }
+        })
+      );
+      expect(html).toContain("img/north.png");
+      expect(html).toContain("one of two stalls: the green stall or the orange stall");
+      expect(html).toContain("may give you an apple");
+      expect(html).toContain("The north market usually takes you to the green stall");
+      expect(html).toContain("Collect as many apples as you can");
+      expect(html).not.toMatch(/spaceship|symbol|planet|alien|\bcoin/);
+    });
+
+    it("fills in ids, nouns and names a set leaves out", () => {
+      const p = prepareSet({
+        first_stage: [{ svg: "<svg></svg>" }, { svg: "<svg></svg>" }],
+        states: [{ items: ["a", "b"] }, { items: ["c", "d"] }],
+      });
+      expect(p.name).toBe("custom");
+      expect([p.first.A.id, p.first.B.id]).toEqual(["custom-first-1", "custom-first-2"]);
+      expect([p.states.red.id, p.states.blue.id]).toEqual(["custom-state-1", "custom-state-2"]);
+      expect(p.states.red.items.option_1.id).toBe("a");
+      expect(p.words.first).toBe("picture");
+      expect(p.words.second).toBe("word");
+      expect(p.words.first_name.A).toBe("the first picture");
+      expect(p.words.state_name.blue).toBe("the second screen");
+      expect(p.words.reward).toBe("coin");
+    });
+
+    it("throws on a set it cannot use, saying what is wrong", () => {
+      const base = utils.stimuli.abstractSymbols;
+      const bad: Array<[unknown, RegExp]> = [
+        [
+          { ...base, first_stage: [base.first_stage[0]] },
+          /first_stage must be a list of exactly two/,
+        ],
+        [{ ...base, states: [base.states[0]] }, /states must be a list of exactly two states/],
+        [
+          { ...base, first_stage: [{ text: "x", image: "y.png" }, "z"] },
+          /first_stage\[0\] must give exactly one of text, image or svg/,
+        ],
+        [
+          { ...base, first_stage: [{ id: "circle", text: "x" }, "z"] },
+          /two items have the id "circle"/,
+        ],
+        [
+          { ...base, states: [{ ...base.states[0], background: "red;}body{x:y" }, base.states[1]] },
+          /states\[0\]\.background must be a CSS colour/,
+        ],
+        [{ ...base, noun: { first: "ship" } }, /noun\.first must be \{ singular, plural \}/],
+        [
+          { ...base, states: [base.states[0], { ...base.states[1], id: "red_screen" }] },
+          /two states have the id/,
+        ],
+      ];
+      for (const [set, msg] of bad) {
+        expect(() => createTimeline(initJsPsych(), { stimulus_set: set as any })).toThrow(
+          /two-step-task: stimulus_set:/
+        );
+        expect(() => createTimeline(initJsPsych(), { stimulus_set: set as any })).toThrow(msg);
+      }
     });
   });
 

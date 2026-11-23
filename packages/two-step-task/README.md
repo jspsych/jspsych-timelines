@@ -29,6 +29,10 @@ jsPsych.run([task]);
 jsPsychTimelineTwoStepTask.utils.scoring.calculateScores(jsPsych.data.get());
 ```
 
+## Pictures
+
+`stimulus_set` takes the pictures in their roles and the words of the cover story: `utils.stimuli.abstractSymbols` (default), `utils.stimuli.spaceshipPlanetAlien`, or your own set (`{ name, noun, first_stage: [A, B], states: [{ items: [x, y] }, { items: [x, y] }], reward }`, items as text, image URLs or SVG). The data records the set's name and the ids of the pictures chosen.
+
 ## Documentation
 
 Full reference (options, data output, scoring, translation): `website/docs/reference/two-step-task.mdx` on the documentation site.

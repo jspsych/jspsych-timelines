@@ -56,9 +56,36 @@ From a CDN:
 
 ## Task Description
 
-**A trial.** An optional fixation (`fixation_duration_ms`, 0 by default). Two first-stage options appear, left and right (by default two abstract symbols; `instruction_framing: "spaceship_planet_alien"` draws a rocket and a flying saucer). The participant presses the left or the right key within `response_window_ms`. The chosen option is highlighted (`response_acknowledgement_ms`). The screen then changes to one of two second-stage states, a red one or a blue one, which the first-stage option usually leads to (`common_transition_prob`): option A to red, option B to blue. Two second-stage options appear, and the same two keys choose one. The chosen option is highlighted, and the outcome (a coin or no coin) is shown for `feedback_duration_ms` with the running total of coins (`running_score_display`). After `iti_ms` the next trial starts.
+**A trial.** An optional fixation (`fixation_duration_ms`, 0 by default). Two first-stage options appear, left and right (by default two abstract symbols; `stimulus_set: utils.stimuli.spaceshipPlanetAlien` draws a rocket and a flying saucer). The participant presses the left or the right key within `response_window_ms`. The chosen option is highlighted (`response_acknowledgement_ms`). The screen then changes to one of two second-stage states, a red one or a blue one, which the first-stage option usually leads to (`common_transition_prob`): option A to red, option B to blue. Two second-stage options appear, and the same two keys choose one. The chosen option is highlighted, and the outcome (a coin or no coin) is shown for `feedback_duration_ms` with the running total of coins (`running_score_display`). After `iti_ms` the next trial starts.
 
 **There is no correct answer.** Rewards are random. Nothing in the data says that a choice was right or wrong, and the package writes neither `correct` nor `correct_response`. What the task measures is how the choice depends on what happened before.
+
+**Pictures and cover story.** `stimulus_set` takes a stimulus set, which is data: the pictures in their roles and the words the instructions use for them. The package's bundled sets are values in `utils.stimuli`, and your own set is the same shape. One option holds both, so the story always matches the pictures.
+
+| Set | Pictures | Words |
+|---|---|---|
+| `utils.stimuli.abstractSymbols` (default) | A ring and a cross; on the red screen a circle and a square, on the blue screen a triangle and a diamond; a coin | symbol, screen, coin; "the ring", "the red screen" |
+| `utils.stimuli.spaceshipPlanetAlien` | A rocket and a flying saucer; two aliens on each of a red and a blue planet, with the planet's curve along the bottom of the display; a coin | spaceship, planet, alien, coin; "the rocket", "the red planet" |
+
+Both are simple drawings written for this package (MIT, like the package; the licence is a `@license` comment in `src/drawings.ts` and in the bundle). They stand in for the studies' own pictures: Expfactory's own abstract symbols (S024) and the spaceship and alien pictures of the Kool and Niv lab jsPsych tasks (S025, S026) are not bundled, and the study presets say so. The other cover stories of the literature (`magic_carpet_mountain_genie`, S033, S120; `ship_island_chest`, S047) have no bundled set; pass your own.
+
+Your own set:
+
+```ts
+{
+  name?: string,                                // recorded as stimulus_set (default "custom")
+  noun?: { first?, second?, state?, reward? },  // each { singular, plural }
+  first_stage: [A, B],                          // two items
+  states: [                                     // the state A usually leads to, then the one B usually leads to
+    { items: [option_1, option_2], id?, name?, picture?, background?, foreground?, color?, horizon? },
+    { items: [option_1, option_2], ... },
+  ],
+  reward?: { rewarded, unrewarded },            // the outcome pictures (default: a coin, an empty slot)
+  background?, foreground?,                     // colours of the first-stage screens
+}
+```
+
+An item is a string (a text item) or an object with one of `text`, `image` (a URL) or `svg` (SVG markup), an optional `id` and, for a first-stage item, an optional `name` ("the north market"), which the instructions use. A state's `name` names it in a sentence, `picture` shows it in the questions about where each option leads (default: a square in `color`), `background` and `foreground` colour the display on its screens, and `horizon: true` draws a planet's curve in `color`. The nouns default to "picture" (or "word" for text items), "screen" and "coin"; the names to "the first picture" and "the second screen". Ids default to the text, or the set's name and the role (`custom-first-1`, `custom-state-2`, `custom-state-2-option-1`). Duplicate ids throw, as do a pair that is not two items, an item with two kinds and a colour that is not a CSS colour. The roles keep their names in the data and in `reward_probability`: `A` and `B`, `red` and `blue` (the first and the second state, whatever their colour), `option_1` and `option_2`; the set's own ids are recorded beside them. In a preset or a shared link, which are JSON, a bundled set is written `{ "$util": "stimuli.spaceshipPlanetAlien" }`.
 
 **The schedule.** Everything that is generated is drawn when `createTimeline` is called, through `jsPsych.randomization`, so a seeded run has the same schedule whatever the participant (or a simulated participant) chooses: the common or rare transition of each trial, the reward probability of each of the four second-stage options (a Gaussian random walk from a starting value), whether each option would pay a coin on that trial, which option is on which side, and jittered durations. The probabilities are recorded on every trial (`reward_probs`), so analyses can use the true values (S009's correction to the stay analysis needs them). Practice has its own walk. A trial that is missed keeps its place in the walk: with `missed_response_handling: "skip_trial"` the walk moves on, with `"repeat_trial"` the same trial is run again, with the same probabilities and outcomes.
 
@@ -153,11 +180,48 @@ Spaceships and aliens, with fixed sides per participant, repeated misses and a q
 
 ```javascript
 createTimeline(jsPsych, {
-  instruction_framing: "spaceship_planet_alien",
+  stimulus_set: utils.stimuli.spaceshipPlanetAlien,
   option_side_assignment: "fixed",
   missed_response_handling: "repeat_trial",
   response_window_ms: 3000,
   manipulation_check: "questionnaire",
+});
+```
+
+Your own pictures: two markets, a stall of each colour with two fruits, and apples as the reward. The instructions say "market", "stall", "fruit" and "apple", and the data records the ids (`stage1_item_id: "north"`, `stage2_item_id: "fig"`):
+
+```javascript
+createTimeline(jsPsych, {
+  stimulus_set: {
+    name: "fruit_market",
+    noun: {
+      first: { singular: "market", plural: "markets" },
+      second: { singular: "fruit", plural: "fruits" },
+      state: { singular: "stall", plural: "stalls" },
+      reward: { singular: "apple", plural: "apples" },
+    },
+    first_stage: [
+      { id: "north", name: "the north market", image: "img/north.png" },
+      { id: "south", name: "the south market", image: "img/south.png" },
+    ],
+    states: [
+      {
+        id: "green_stall",
+        name: "the green stall",
+        items: [{ id: "pear", image: "img/pear.png" }, { id: "plum", image: "img/plum.png" }],
+        background: "#12301c",
+        color: "#2a7",
+      },
+      {
+        id: "orange_stall",
+        name: "the orange stall",
+        items: [{ id: "fig", image: "img/fig.png" }, { id: "lime", image: "img/lime.png" }],
+        background: "#4a2a10",
+        color: "#e80",
+      },
+    ],
+    reward: { rewarded: { id: "apple", image: "img/apple.png" }, unrewarded: { id: "no_apple", text: "-" } },
+  },
 });
 ```
 
@@ -191,6 +255,8 @@ Every row carries `task: "two-step-task"` and `task_version`. A trial has two ki
 | `stage2_state` | `"red"` or `"blue"`, or null | The state reached |
 | `stage2_choice` | `"option_1"` or `"option_2"`, or null | The second-stage option chosen |
 | `stage2_key`, `stage2_side`, `stage2_rt`, `stage2_left` | | As for the first stage |
+| `stimulus_set` | string | The stimulus set's `name` (`"abstract_symbols"`, `"spaceship_planet_alien"`, or `"custom"` for a set without one) |
+| `stage1_item_id`, `stage2_state_id`, `stage2_item_id` | string or null | The set's ids of the first-stage picture chosen, the state reached and the second-stage picture chosen (`"rocket"`, `"red_planet"`, `"green_alien"`); null when missed |
 | `reward` | 0, 1 or null | Whether the chosen option paid a coin; null when a choice was missed |
 | `reward_probs` | object | The reward probability of each option on this trial: `{ red: { option_1, option_2 }, blue: { ... } }` |
 | `reward_walk` | string | The schedule, e.g. `random_walk sd=0.025 bounds=[0.25,0.75] boundary=reverse_step` |
@@ -199,7 +265,7 @@ Every row carries `task: "two-step-task"` and `task_version`. A trial has two ki
 | `response`, `rt`, `timeout` | | The first choice's key and RT, and `timeout` = `missed`, so a battery-wide filter on `part: "response"` finds a response. `null` when missed |
 | `response_window` | number or null | The window of this trial, ms |
 
-**`choice` rows** have `stage` (1 or 2), `left` and `right` (the options on screen), `choice`, `side`, `state` (second stage), the native `response` and `rt` (`null` when missed), `timeout`, `response_window` and `condition`.
+**`choice` rows** have `stage` (1 or 2), `left` and `right` (the options on screen), `choice`, `side`, `state` (second stage), `stimulus_set`, the set's ids `left_item_id`, `right_item_id`, `chosen_item_id` and `state_id`, the native `response` and `rt` (`null` when missed), `timeout`, `response_window` and `condition`.
 
 **`part` values the package writes:** `instruction`, `instruction_example`, `instruction_check`, `instruction_feedback`, `fixation`, `choice`, `acknowledgement`, `feedback` (the outcome; also `reward` and `running_total`), `timeout_message`, `response`, `iti`, `rest`, `manipulation_check_intro`, `manipulation_check`, `transition`, `completion`. `phase` is `instructions`, `practice`, `test` or `completion`. Display rows record the sampled duration as `duration_ms` and under the option's name without `_ms` (`fixation_duration`, `iti`, `feedback_duration`, `response_acknowledgement`, `timeout_message`).
 
@@ -235,24 +301,29 @@ The two indices are cell-mean contrasts on the probability scale, not the coeffi
 
 Pass a `text` object to replace interface strings; partial objects are merged with the defaults. The keys, from `src/text.ts`, where each function documents its named parameters:
 
-- **Strings:** `instruction_test_intro`, `instruction_correct`, `continue_button`, `fixation`, `too_slow`, `outcome_coin`, `outcome_none`, `questionnaire_intro`, `task_complete`.
+- **Strings:** `instruction_correct`, `continue_button`, `fixation`, `too_slow`, `questionnaire_intro`, `task_complete`.
 - **Functions** (they can only be set from code):
   - the instruction pages: `instruction_intro`, `instruction_response`, `instruction_transitions`, `instruction_drift`, `instruction_demo_intro`, `instruction_practice_intro`;
   - the walkthrough, each with a prompt, a hint after a wrong answer and the answer after the last attempt: `step_first`, `step_first_hint`, `step_first_reveal`, `step_second`, `step_second_hint`, `step_second_reveal`, `check_mapping`, `check_mapping_hint`, `check_mapping_reveal`, `check_statement`, `check_statement_hint`, `check_statement_reveal`; and `step_outcome`, `statement_transitions_true`, `statement_transitions_false`, `statement_drift_true`, `statement_drift_false`;
-  - during and after the task: `running_total`, `block_complete`, `questionnaire_question`, `result_summary`;
-  - `framing_words`, which returns the nouns for a cover story (`first`, `first_plural`, `second`, `second_plural`, `state`, `state_plural`, and how each option and state is named in a sentence, `first_name` and `state_name`). A translation returns them for both `abstract_symbols` and `spaceship_planet_alien`.
+  - during and after the task: `instruction_test_intro`, `outcome_coin`, `outcome_none`, `running_total`, `block_complete`, `questionnaire_question`, `result_summary` (they take the set's reward noun);
+  - `framing_words({ words, set })`, which returns the nouns of the cover story (`first`, `first_plural`, `second`, `second_plural`, `state`, `state_plural`, `reward`, `reward_plural`, and how each option and state is named in a sentence, `first_name` and `state_name`). The words come from the stimulus set (its `noun` and the `name` of its items and states); the default returns them unchanged. A translation returns its own words, by `set` (the set's name) if it translates more than one set.
 
 The instruction functions receive the resolved options that change what they say (the key names, the time allowed, whether a missed trial is repeated, whether the options change places), so a translation can reproduce those sentences.
 
 ```javascript
 createTimeline(jsPsych, {
-  text: { too_slow: "Te langzaam", continue_button: "Verder", outcome_coin: "Je kreeg een munt" },
+  text: {
+    too_slow: "Te langzaam",
+    continue_button: "Verder",
+    outcome_coin: () => "Je kreeg een munt",
+    framing_words: ({ words }) => ({ ...words, reward: "munt", reward_plural: "munten" }),
+  },
 });
 ```
 
 ## Timeline Units
 
-`timelineUnits` exports factories for the individual pieces. Most take the object from `timelineUnits.createContext(jsPsych, options)`: `createInstructions`, `createInstructionWalkthrough`, `createPracticeIntro`, `createTestIntro`, `createSchedule` (the generated plans of a phase), `createBlock`, `createTrial`, `createDisplayTrial`, `createTransition`, `createRestBreak`, `createQuestionnaire` and `createCompletion`.
+`timelineUnits` exports factories for the individual pieces. Most take the object from `timelineUnits.createContext(jsPsych, options)`: `createInstructions`, `createInstructionWalkthrough`, `createPracticeIntro`, `createTestIntro`, `createSchedule` (the generated plans of a phase), `createBlock`, `createTrial`, `createDisplayTrial`, `createTransition`, `createRestBreak`, `createQuestionnaire` and `createCompletion`. `utils.stimuli` holds the bundled stimulus sets (`abstractSymbols`, `spaceshipPlanetAlien`) beside helpers that work for any set: `setProblems` (what is wrong with a set, as messages), `prepareSet` (the set with its defaults filled in and keyed by role), and the renderers `renderItem`, `renderShip`, `renderOption`, `renderState`, `renderCoin`, `renderPair` and `paintDisplay`.
 
 ## References
 
