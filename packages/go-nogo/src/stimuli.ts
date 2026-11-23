@@ -1,4 +1,5 @@
-import type { ResolvedItem, StimulusLayout } from "./options";
+import { resolveItems } from "./options";
+import type { ResolvedItem, StimulusItem, StimulusLayout } from "./options";
 import type { TextConfig } from "./text";
 
 const SAFE_COLOR = /^[#a-zA-Z0-9(),.%\s-]+$/;
@@ -33,8 +34,12 @@ export function namesOf(items: ResolvedItem[], text: TextConfig): string {
   return items.map((i) => stimulusName(i, text)).join(` ${text.list_or} `);
 }
 
-/** SVG, picture or text for one stimulus, `size` px. */
-export function renderItem(item: ResolvedItem, size: number): string {
+const isResolved = (x: StimulusItem | ResolvedItem): x is ResolvedItem =>
+  typeof x === "object" && x !== null && "named" in x;
+
+/** SVG, picture or text for one stimulus (as given in `stimulus_set`, or resolved), `size` px. */
+export function renderItem(given: StimulusItem | ResolvedItem, size: number): string {
+  const item = isResolved(given) ? given : resolveItems({ go: [given], nogo: [] }).go[0];
   if (item.image !== undefined) {
     return `<img class="jspsych-timelines-go-nogo-picture" src="${escapeHtml(
       item.image

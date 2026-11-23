@@ -307,13 +307,14 @@ export type ResolvedOptions = Required<
   condition_proportions: Record<GoNogoCondition, number>;
 };
 
-/** The default stimuli as given (drawn shapes, so no bundled set): a blue and an orange square (S022). */
-export const DEFAULT_STIMULI: { go: StimulusItem[]; nogo: StimulusItem[] } = {
-  go: [{ shape: "square", color: "blue" }],
-  nogo: [{ shape: "square", color: "orange" }],
-};
-
-export const DEFAULT_OPTIONS: ResolvedOptions & { practice: Partial<GoNogoOptions> } = {
+/**
+ * The defaults. `stimulus_set` is in the form a researcher gives it (resolveOptions gives each item its id), so the
+ * defaults can be passed back as options.
+ */
+export const DEFAULT_OPTIONS: Omit<ResolvedOptions, "stimulus_set"> & {
+  stimulus_set: { go: StimulusItem[]; nogo: StimulusItem[] };
+  practice: Partial<GoNogoOptions>;
+} = {
   feedback_duration_ms: 1000,
   iti_ms: 0,
   pre_block_countdown_ms: 0,
@@ -324,8 +325,8 @@ export const DEFAULT_OPTIONS: ResolvedOptions & { practice: Partial<GoNogoOption
   stimulus_layout: "center",
   stimulus_modality: "visual",
   stimulus_set: {
-    go: [{ id: "square_blue", named: false, shape: "square", color: "blue" }],
-    nogo: [{ id: "square_orange", named: false, shape: "square", color: "orange" }],
+    go: [{ shape: "square", color: "blue" }],
+    nogo: [{ shape: "square", color: "orange" }],
   },
   condition_proportions: { go: 0.9, nogo: 0.1 },
   n_blocks: 1,
@@ -488,8 +489,8 @@ export function resolveOptions(
   delete merged.practice;
   for (const [k, v] of Object.entries(layer)) if (v !== undefined) merged[k] = v;
   merged.stimulus_set = resolveItems({
-    go: asList(layer.stimulus_set?.go, DEFAULT_STIMULI.go),
-    nogo: asList(layer.stimulus_set?.nogo, DEFAULT_STIMULI.nogo),
+    go: asList(layer.stimulus_set?.go, DEFAULT_OPTIONS.stimulus_set.go),
+    nogo: asList(layer.stimulus_set?.nogo, DEFAULT_OPTIONS.stimulus_set.nogo),
   });
   const props = layer.condition_proportions;
   if (props !== undefined) {

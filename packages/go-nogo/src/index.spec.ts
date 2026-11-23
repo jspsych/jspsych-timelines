@@ -432,6 +432,26 @@ describe("go-nogo", () => {
       expect(html).toContain("(picture)");
     });
 
+    it("keeps the default stimuli in the given form, so they can be passed back as options", () => {
+      expect(utils.constants.DEFAULT_OPTIONS.stimulus_set.go).toEqual([
+        { shape: "square", color: "blue" },
+      ]);
+      const ctx = timelineUnits.createContext(initJsPsych(), {
+        stimulus_role_assignment: "fixed",
+        stimulus_set: utils.constants.DEFAULT_OPTIONS.stimulus_set,
+      });
+      expect(ctx.stimulus_set.go[0].id).toBe("square_blue");
+      expect(JSON.stringify(timelineUnits.createInstructions(ctx))).toContain("(blue square)");
+    });
+
+    it("utils.stimuli.renderItem draws an item as given or resolved", () => {
+      expect(utils.stimuli.renderItem({ shape: "square", color: "blue" }, 40)).toContain(
+        'aria-label="square_blue"'
+      );
+      expect(utils.stimuli.renderItem("P", 40)).toContain(">P</span>");
+      expect(utils.stimuli.renderItem({ image: "a.png", id: "a" }, 40)).toContain('src="a.png"');
+    });
+
     it("throws a clear error for a malformed item or a duplicate id", () => {
       const make = (stimulus_set: any) => () => createTimeline(initJsPsych(), { stimulus_set });
       expect(make({ go: { shape: "square", text: "A" } })).toThrow(
