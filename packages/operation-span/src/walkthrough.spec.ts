@@ -71,7 +71,7 @@ describe("instruction walkthrough (interactive)", () => {
     expect(c[2].recalled_items).toEqual(c[2].presented_items);
   });
 
-  it("uses the real memoranda at task timing and the real recall input", async () => {
+  it("uses the real memory items at task timing and the real recall input", async () => {
     const rows = await run(jsPsych, { ...SMALL, stimulus_duration_ms: 1100 });
     const demo = rows.filter(
       (r) =>
@@ -124,7 +124,7 @@ describe("instruction walkthrough (interactive)", () => {
   });
 
   it("a span with no processing has only the recall step", async () => {
-    const rows = await run(jsPsych, { ...SMALL, processing_items_per_memorandum: 0 });
+    const rows = await run(jsPsych, { ...SMALL, processing_items_per_memory_item: 0 });
     expect(checks(rows).map((r) => r.condition)).toEqual(["recall"]);
   });
 
@@ -205,13 +205,13 @@ describe("instruction walkthrough (interactive)", () => {
       jest.useFakeTimers();
       const ctx = timelineUnits.createContext(jsPsych, {
         ...base,
-        processing_items_per_memorandum: 0,
+        processing_items_per_memory_item: 0,
       });
       const wt = timelineUnits.createInstructionWalkthrough(ctx);
       const { displayElement, getData } = await startTimeline([wt], jsPsych);
       await clickTarget(displayElement.querySelector("button")!); // demo intro
       await clickTarget(displayElement.querySelector("button")!); // step text
-      // two memoranda at 50 ms
+      // two memory items at 50 ms
       const shown: string[] = [];
       for (let i = 0; i < 2; i++) {
         shown.push(displayElement.textContent!.trim());

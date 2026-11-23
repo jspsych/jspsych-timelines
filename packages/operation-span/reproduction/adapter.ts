@@ -4,6 +4,10 @@
  * The spec records some values under role keys ("response_device.processing task",
  * "stimulus_set.memorandum_type") or with invented field names ("block_trials"). This file is the
  * single, hand-written retyping table. Every entry is either an options fragment or a classified gap.
+ *
+ * The spec's vocabulary calls the items to remember "memoranda" (`memorandum_order_in_pair`,
+ * `processing_items_per_memorandum`, `memorandum_first`); the package calls them memory items. The spec's
+ * names stay on the input side of this table (and in the check names); the options use the package's.
  */
 import { createAdapterKit, gap, isGap, ok } from "@jspsych-timelines/testing";
 import type {
@@ -43,7 +47,7 @@ export const subFromRole = (option: string, role: string): string =>
   SUBBED.includes(option) && SUB_BY_ROLE[role] ? SUB_BY_ROLE[role] : "main";
 
 /** Spec memorandum types -> the bundled set that expresses them (`words` is a stand-in: the studies' lists are not reported). */
-export const MEMORANDUM_SETS: Record<string, StimulusSet> = {
+export const MEMORY_ITEM_SETS: Record<string, StimulusSet> = {
   letters,
   digits,
   words,
@@ -88,30 +92,33 @@ export function adapt(
     case "stimulus_language":
       return gap(
         "option missing",
-        `"${value}" selects word or sentence lists; none are bundled (supply your own words as a set in stimulus_set.memorandum)`
+        `"${value}" selects word or sentence lists; none are bundled (supply your own words as a set in stimulus_set)`
       );
     case "stimulus_set":
       if (sub === "type") {
-        if (MEMORANDUM_SETS[value])
-          return ok({ stimulus_set: { memorandum: MEMORANDUM_SETS[value] } });
+        if (MEMORY_ITEM_SETS[value]) return ok({ stimulus_set: MEMORY_ITEM_SETS[value] });
         return gap(
           "option missing",
-          `memoranda "${value}" are spatial: they need a location grid or arrow display and a matching recall input`
+          `memory items "${value}" are spatial: they need a location grid or arrow display and a matching recall input`
         );
       }
-      if (value === "separate_item")
-        return ok({ stimulus_set: { memorandum_source: "separate_item" } });
+      // memory items are always separate screens: nothing to set
+      if (value === "separate_item") return ok({});
       return gap(
         "option missing",
-        "the sentence-final word as memorandum is reading span: it needs a sentence processing task"
+        "the sentence-final word as memory item is reading span: it needs a sentence processing task"
       );
     case "processing_display_format":
       return value === "equation_and_memorandum_same_screen"
         ? gap(
             "option missing",
-            "the memorandum shown on the equation's screen (S039, lab) is not implemented"
+            "the memory item shown on the equation's screen (S039, lab) is not implemented"
           )
         : ok({ processing_display_format: value });
+    case "memorandum_order_in_pair":
+      return ok({ order_in_pair: value === "memorandum_first" ? "memory_item_first" : value });
+    case "processing_items_per_memorandum":
+      return ok({ processing_items_per_memory_item: value });
     case "block_order":
       return ok({ block_order: value });
     case "n_test_trials":
@@ -156,7 +163,7 @@ export function adapt(
 }
 
 const kit = createAdapterKit<OperationSpanOptions>({
-  mapOptions: ["stimulus_set", "response_device", "practice"],
+  mapOptions: ["response_device", "practice"],
 });
 export const { mergeOptions, assumedSettings, combine } = kit;
 

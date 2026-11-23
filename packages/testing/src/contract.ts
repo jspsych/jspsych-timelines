@@ -44,7 +44,7 @@ export interface FieldNames {
 /**
  * Where an option's shared check looks when the option belongs to another part of a multi-part trial
  * than the scorable `parts.response` (a dual task: the processing task's deadline and device, the
- * memoranda's duration). Omit for options of the scorable trial.
+ * memory items's duration). Omit for options of the scorable trial.
  */
 export interface OptionScope<E = any> {
   /** the part whose rows the check reads (a key of `parts` or a literal part name) */

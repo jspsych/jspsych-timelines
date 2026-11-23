@@ -93,16 +93,16 @@ describe("operation span anchored stage layout", () => {
       {
         set_sizes: [2],
         trials_per_condition: 1,
-        stimulus_set: { memorandum: utils.stimuli.digits },
+        stimulus_set: utils.stimuli.digits,
       },
     ],
     [
-      "touch, memorandum first",
+      "touch, memory item first",
       {
         set_sizes: [2],
         trials_per_condition: 1,
         response_device: "touch",
-        memorandum_order_in_pair: "memorandum_first",
+        order_in_pair: "memory_item_first",
         inter_item_interval_ms: 200,
       },
     ],
@@ -126,7 +126,7 @@ describe("operation span anchored stage layout", () => {
       }
       expect(checked).toBeGreaterThan(8);
       const need = [
-        "memorandum",
+        "memory_item",
         "processing",
         "response",
         "instruction_check",

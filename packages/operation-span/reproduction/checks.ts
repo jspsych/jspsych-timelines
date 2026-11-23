@@ -1,8 +1,8 @@
 /**
  * Operation span checks. The checks for options every package shares (counts, durations, feedback,
  * response keys and device) live in `@jspsych-timelines/testing`; the contract that points them at the
- * span's data (the processing and memorandum parts) is `./contract.ts`. This file has what is specific
- * to the span: set-size schedules and block order, the memoranda, the display format, the recall input,
+ * span's data (the processing and memory item parts) is `./contract.ts`. This file has what is specific
+ * to the span: set-size schedules and block order, the memory items, the display format, the recall input,
  * the practice criterion, and additional assertions on the processing deadline and device.
  */
 import {
@@ -33,14 +33,14 @@ const blocks = (r: Run) => {
 const sorted = (xs: number[]) => [...xs].sort((a, b) => a - b);
 const nondecreasing = (xs: number[]) => xs.every((x, i) => i === 0 || x >= xs[i - 1]);
 
-/** The test rows of the first span trial, in order (memoranda, problems, recall), without gaps. */
+/** The test rows of the first span trial, in order (memory items, problems, recall), without gaps. */
 function firstTrial(r: Run) {
   return r.rows.filter(
     (x) =>
       x.phase === "test" &&
       x.block === 1 &&
       x.trial_index_in_block === 1 &&
-      ["memorandum", "processing_problem", "processing", "response"].includes(x.part)
+      ["memory_item", "processing_problem", "processing", "response"].includes(x.part)
   );
 }
 
@@ -60,23 +60,23 @@ const spanOnly: Record<string, SpanCheck> = {
     requires: [],
     kind: "behaviour",
     fn: (r) => {
-      const set = r.eff.stimulus_set.memorandum;
+      const set = r.eff.stimulus_set;
       const items = buildPool(set);
       const pool = items.map((it) => it.text);
       const ids = items.map((it) => it.id);
       const name = set.name ?? "custom";
-      const mem = rowsOf(r, "test", "memorandum");
+      const mem = rowsOf(r, "test", "memory_item");
       expect(mem.length).toBe(sizes(r).reduce((a, b) => a + b, 0));
       mem.forEach((x) => {
-        expect(pool).toContain(x.memorandum);
-        expect(ids).toContain(x.memorandum_id);
+        expect(pool).toContain(x.memory_item);
+        expect(ids).toContain(x.memory_item_id);
         expect(x.stimulus_set).toBe(name);
       });
       test(r).forEach((x) => {
         expect(x.stimulus_set).toBe(name);
         x.presented_item_ids.forEach((id: string) => expect(ids).toContain(id));
         x.presented_items.forEach((p: string) => expect(pool).toContain(p));
-        // different memoranda within a trial
+        // different memory items within a trial
         expect(distinct(x.presented_items)).toHaveLength(x.set_size);
       });
       // the recall input offers the pool (n_afc)
@@ -151,7 +151,7 @@ const spanOnly: Record<string, SpanCheck> = {
           expect(sorted(b)).toEqual(sorted(lists[i].flatMap((s) => Array(reps).fill(s))));
         });
       }
-      // each trial presents exactly set_size memoranda
+      // each trial presents exactly set_size memory items
       test(r).forEach((x) => expect(x.presented_items).toHaveLength(x.set_size));
     },
   },
@@ -172,11 +172,11 @@ const spanOnly: Record<string, SpanCheck> = {
       const t = firstTrial(r);
       const first = t[0].part;
       const lastBeforeRecall = t[t.length - 2].part;
-      if (r.eff.memorandum_order_in_pair === "processing_first") {
+      if (r.eff.order_in_pair === "processing_first") {
         expect(["processing_problem", "processing"]).toContain(first);
-        expect(lastBeforeRecall).toBe("memorandum");
+        expect(lastBeforeRecall).toBe("memory_item");
       } else {
-        expect(first).toBe("memorandum");
+        expect(first).toBe("memory_item");
         expect(["processing_problem", "processing"]).toContain(lastBeforeRecall);
       }
     },
@@ -185,7 +185,7 @@ const spanOnly: Record<string, SpanCheck> = {
     requires: [],
     kind: "behaviour",
     fn: (r) => {
-      const k = r.eff.processing_items_per_memorandum;
+      const k = r.eff.processing_items_per_memory_item;
       for (const x of test(r)) {
         const proc = rowsOf(r, "test", "processing").filter(
           (p) => p.block === x.block && p.trial_index_in_block === x.trial_index_in_block
@@ -211,7 +211,7 @@ const spanOnly: Record<string, SpanCheck> = {
       expect(html.includes("-grid")).toBe(f === "n_afc");
       expect(html.includes("-box")).toBe(f === "free_text");
       expect(html.includes("-slot")).toBe(f !== "free_text");
-      // the recall input has one place per memorandum
+      // the recall input has one place per memory item
       const places = f === "free_text" ? /<input[^>]*-box/g : /class="[^"]*-slot"/g;
       expect(html.match(places)).toHaveLength(trial.data.set_size);
     },

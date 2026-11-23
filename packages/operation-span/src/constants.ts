@@ -5,7 +5,7 @@ export const VERSION: string = version;
 export const TASK_CLASS = "jspsych-timelines-operation-span";
 
 /**
- * Letters used as memoranda: the twelve consonants of the Engle-lab automated span (F H J K L N P Q R S T Y),
+ * Letters used as memory items: the twelve consonants of the Engle-lab automated span (F H J K L N P Q R S T Y),
  * shown in the 4 x 3 recall matrix (Unsworth et al. 2005, S006).
  */
 export const LETTERS: readonly string[] = [
@@ -22,7 +22,7 @@ export const LETTERS: readonly string[] = [
   "T",
   "Y",
 ];
-/** Digits as memoranda (S020). */
+/** Digits as memory items (S020). */
 export const DIGITS: readonly string[] = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
 /** Columns of the recall matrix (S006: a 4 x 3 matrix, so 4 columns). */
 export const GRID_COLUMNS = 4;

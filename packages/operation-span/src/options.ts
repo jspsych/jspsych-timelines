@@ -66,23 +66,6 @@ export interface PracticeCriterion {
 
 export type { Stimulus, StimulusSet } from "./sets";
 
-/** The `stimulus_set` option: the memoranda, and where they come from. */
-export interface StimulusSetOption {
-  /**
-   * The memoranda: a set (`{ name?, noun?, items }`) or a plain array of items. The bundled sets are
-   * `utils.stimuli.letters` (the 12 consonants of the Engle-lab task, F H J K L N P Q R S T Y) and `utils.stimuli.digits` (1-9).
-   * Your own set takes strings or `{ text, id? }` objects (text only: recall names the items), at least as many as the largest
-   * set size; `noun` is what the instructions call them (default "item"/"items"). The recall matrix shows the set in its order.
-   * (default: utils.stimuli.letters — Unsworth et al. 2005, S006)
-   */
-  memorandum?: StimulusSet | readonly Stimulus[];
-  /**
-   * Where memoranda come from. Only "separate_item" is implemented; "sentence_final_word" (reading span) needs sentences.
-   * (default: "separate_item" — S006)
-   */
-  memorandum_source?: "separate_item" | "sentence_final_word";
-}
-
 export interface OperationSpanOptions {
   // -- timing --
   /**
@@ -91,7 +74,7 @@ export interface OperationSpanOptions {
    */
   feedback_duration_ms?: DurationOrJitter;
   /**
-   * Gap between successive events (a problem, a memorandum) within a trial; 0 = none.
+   * Gap between successive events (a problem, a memory item) within a trial; 0 = none.
    * (default: 0 — no free time between events, as in S006 and recommended by S007; the spec's fill of 500 ms comes from one jsPsych implementation, S020. See DEFAULTS.md)
    */
   inter_item_interval_ms?: DurationOrJitter;
@@ -106,7 +89,7 @@ export interface OperationSpanOptions {
    */
   response_window_ms?: ResponseWindow;
   /**
-   * How long each memorandum is shown. Must be a duration (a memorandum cannot wait for a response).
+   * How long each memory item is shown. Must be a duration (a memory item cannot wait for a response).
    * (default: 800 — Unsworth et al. 2005, S006)
    */
   stimulus_duration_ms?: DurationOrJitter;
@@ -114,25 +97,29 @@ export interface OperationSpanOptions {
   // -- stimulus --
   /**
    * Language of verbal stimuli. The task has no built-in word lists: only null (language-neutral letters, digits and equations) is implemented.
-   * Supply your own words as a set in `stimulus_set.memorandum`.
+   * Supply your own words as a set in `stimulus_set`.
    * (default: null — the anchor uses letters; the spec's fill of "Portuguese" (2/4) belongs to word and sentence materials)
    */
   stimulus_language?: "Dutch" | "German" | "Portuguese" | null;
   /**
-   * Memorandum material, keyed by the task's own terms: `memorandum`, `memorandum_source`.
-   * (default: { memorandum: utils.stimuli.letters, memorandum_source: "separate_item" } — S006)
+   * The memory items: a set (`{ name?, noun?, items }`) or a plain array of items. The bundled sets are
+   * `utils.stimuli.letters` (the 12 consonants of the Engle-lab task, F H J K L N P Q R S T Y) and `utils.stimuli.digits` (1-9).
+   * Your own set takes strings or `{ text, id? }` objects (text only: recall names the items), at least as many as the largest
+   * set size; `noun` is what the instructions call them (default "item"/"items"). The recall matrix shows the set in its order.
+   * Memory items are always separate screens (the sentence-final words of reading span are not implemented).
+   * (default: utils.stimuli.letters — Unsworth et al. 2005, S006)
    */
-  stimulus_set?: StimulusSetOption;
+  stimulus_set?: StimulusSet | readonly Stimulus[];
   /**
    * Layout of the processing task. "problem_then_answer_screens": the problem alone (timed, click when solved),
    * then the proposed answer with true/false. "equation_with_answer_single_screen": problem and answer together (timed true/false).
-   * "equation_and_memorandum_same_screen" is not implemented.
+   * "equation_and_memory_item_same_screen" is not implemented.
    * (default: "problem_then_answer_screens" — S006 p. 502; the verification screen is untimed, S017)
    */
   processing_display_format?:
     | "problem_then_answer_screens"
     | "equation_with_answer_single_screen"
-    | "equation_and_memorandum_same_screen";
+    | "equation_and_memory_item_same_screen";
 
   // -- design --
   /**
@@ -150,7 +137,7 @@ export interface OperationSpanOptions {
    */
   n_test_trials?: number;
   /**
-   * Set sizes (number of memoranda per trial). A flat list is the levels of one design. A list of lists is one list per block
+   * Set sizes (number of memory items per trial). A flat list is the levels of one design. A list of lists is one list per block
    * (the number of blocks is the length of the outer list; each block holds each of its set sizes `trials_per_condition` times).
    * Practice set sizes are `practice.set_sizes`, not this.
    * (default: [3, 4, 5, 6, 7] — S006; S007 calls 2-5 adequate for college samples, S011 adds 8-9 for high ability)
@@ -162,16 +149,16 @@ export interface OperationSpanOptions {
    */
   trials_per_condition?: number;
   /**
-   * Order of events within one memorandum step. "processing_first": the problem, then the memorandum (so the last event before recall
-   * is a memorandum). "memorandum_first": the memorandum, then the problem(s), so processing follows the last item.
-   * (default: "processing_first" — S006; S021 and S033 use memorandum_first)
+   * Order of events within one memory item step. "processing_first": the problem, then the memory item (so the last event before recall
+   * is a memory item). "memory_item_first": the memory item, then the problem(s), so processing follows the last item.
+   * (default: "processing_first" — S006; S021 and S033 use memory_item_first)
    */
-  memorandum_order_in_pair?: "memorandum_first" | "processing_first";
+  order_in_pair?: "memory_item_first" | "processing_first";
   /**
-   * Processing problems per memorandum; 0 gives a simple span with no processing.
+   * Processing problems per memory item; 0 gives a simple span with no processing.
    * (default: 1 — S006; S045 uses 2)
    */
-  processing_items_per_memorandum?: number;
+  processing_items_per_memory_item?: number;
   /**
    * Which complex span runs. Only "operation_span" (arithmetic processing) is implemented; the deferred processing task of the spec
    * (reading, symmetry and rotation span) needs other stimulus generators.
@@ -188,7 +175,7 @@ export interface OperationSpanOptions {
   response_device?: ResponseDeviceName | ResponseDeviceMap;
   /**
    * Shape of the recall response. "n_afc": click letters in an on-screen matrix (needs mouse or touch). "free_text": one typed
-   * box per memorandum (keyboard). "single_response": one key press per recalled item (keyboard). The processing task is always a true/false choice.
+   * box per memory item (keyboard). "single_response": one key press per recalled item (keyboard). The processing task is always a true/false choice.
    * (default: "n_afc" — S006's 4 x 3 click matrix)
    */
   response_format?: "single_response" | "n_afc" | "rating" | "free_text" | "location" | "none";
@@ -234,7 +221,7 @@ export interface OperationSpanOptions {
    */
   practice_storage_trials?: number;
   /**
-   * Combined (processing + memoranda) practice trials, at the practice set sizes; 0 skips that part.
+   * Combined (processing + memory items) practice trials, at the practice set sizes; 0 skips that part.
    * (default: 3 — S006: three trials of set size 2; S033 3, S027 3, S034 2)
    */
   practice_combined_trials?: number;
@@ -314,11 +301,8 @@ export type PhaseOptionKey = (typeof PHASE_OPTIONS)[number];
 export type ResolvedOptions = Required<
   Omit<OperationSpanOptions, "practice" | "text" | "response_device" | "stimulus_set">
 > & {
-  /** The memoranda as a set (a bare array is normalised to `{ items }`). */
-  stimulus_set: {
-    memorandum: StimulusSet;
-    memorandum_source: NonNullable<StimulusSetOption["memorandum_source"]>;
-  };
+  /** The memory items as a set (a bare array is normalised to `{ items }`). */
+  stimulus_set: StimulusSet;
   /** Both devices, resolved. */
   response_device: { processing: ResponseDeviceName; recall: ResponseDeviceName };
 };
@@ -329,14 +313,14 @@ export const DEFAULT_OPTIONS: ResolvedOptions & { practice: Partial<OperationSpa
   response_window_ms: deadlines.meanPlusSd(2.5),
   stimulus_duration_ms: 800,
   stimulus_language: null,
-  stimulus_set: { memorandum: letters, memorandum_source: "separate_item" },
+  stimulus_set: letters,
   processing_display_format: "problem_then_answer_screens",
   block_order: "random",
   n_test_trials: 15,
   set_sizes: [3, 4, 5, 6, 7],
   trials_per_condition: 3,
-  memorandum_order_in_pair: "processing_first",
-  processing_items_per_memorandum: 1,
+  order_in_pair: "processing_first",
+  processing_items_per_memory_item: 1,
   task_variant: "operation_span",
   response_device: { processing: "mouse", recall: "mouse" },
   response_format: "n_afc",
@@ -367,7 +351,7 @@ const NOT_IMPLEMENTED: Array<[keyof ResolvedOptions, string[], string]> = [
   ],
   [
     "processing_display_format",
-    ["equation_and_memorandum_same_screen"],
+    ["equation_and_memory_item_same_screen"],
     "use problem_then_answer_screens or equation_with_answer_single_screen",
   ],
   [
@@ -451,9 +435,7 @@ export function resolveOptions(
   const merged: any = { ...DEFAULT_OPTIONS };
   delete merged.practice;
   for (const [k, v] of Object.entries(layer)) if (v !== undefined) merged[k] = v;
-  merged.stimulus_set = { ...DEFAULT_OPTIONS.stimulus_set, ...(layer.stimulus_set ?? {}) };
-  merged.stimulus_set.memorandum =
-    asStimulusSet(merged.stimulus_set.memorandum) ?? merged.stimulus_set.memorandum;
+  merged.stimulus_set = asStimulusSet(merged.stimulus_set) ?? merged.stimulus_set;
   merged.response_device = normaliseDevice(layer.response_device, DEFAULT_OPTIONS.response_device);
 
   if (phase === "test") {
@@ -499,22 +481,17 @@ export function validateOptions(o: ResolvedOptions, phase: "practice" | "test" =
   }
   if (o.stimulus_language !== null) {
     throw new Error(
-      `operation-span: stimulus_language: "${o.stimulus_language}" is not implemented (no word lists are bundled; give your own words as a set in stimulus_set.memorandum).`
+      `operation-span: stimulus_language: "${o.stimulus_language}" is not implemented (no word lists are bundled; give your own words as a set in stimulus_set).`
     );
   }
-  if (!asStimulusSet(o.stimulus_set.memorandum)) {
+  if (!asStimulusSet(o.stimulus_set)) {
     throw new Error(
-      "operation-span: stimulus_set.memorandum must be a set ({ name?, noun?, items }) or an array of items, e.g. utils.stimuli.letters."
+      "operation-span: stimulus_set must be a set ({ name?, noun?, items }) or an array of items, e.g. utils.stimuli.letters."
     );
   }
-  const setIssues = setProblems(o.stimulus_set.memorandum);
+  const setIssues = setProblems(o.stimulus_set);
   if (setIssues.length) {
-    throw new Error(`operation-span: stimulus_set.memorandum: ${setIssues.join("; ")}.`);
-  }
-  if (o.stimulus_set.memorandum_source === "sentence_final_word") {
-    throw new Error(
-      'operation-span: stimulus_set.memorandum_source: "sentence_final_word" is not implemented (reading span needs a sentence processing task).'
-    );
+    throw new Error(`operation-span: stimulus_set: ${setIssues.join("; ")}.`);
   }
   for (const [role, d] of Object.entries(o.response_device)) {
     if (!DEVICES_IMPLEMENTED.includes(d)) {
@@ -544,10 +521,10 @@ export function validateOptions(o: ResolvedOptions, phase: "practice" | "test" =
   }
   if (
     o.response_format === "single_response" &&
-    buildPool(o.stimulus_set.memorandum).some((it) => it.text.trim().length !== 1)
+    buildPool(o.stimulus_set).some((it) => it.text.trim().length !== 1)
   ) {
     throw new Error(
-      'operation-span: response_format "single_response" is one key per item and needs single-character memoranda.'
+      'operation-span: response_format "single_response" is one key per item and needs single-character memory items.'
     );
   }
   if (!Array.isArray(o.response_keys) || o.response_keys.length !== 2) {
@@ -561,7 +538,7 @@ export function validateOptions(o: ResolvedOptions, phase: "practice" | "test" =
       : o.stimulus_duration_ms === null
   ) {
     throw new Error(
-      "operation-span: stimulus_duration_ms must be a duration: each memorandum is shown for that long."
+      "operation-span: stimulus_duration_ms must be a duration: each memory item is shown for that long."
     );
   }
   const lists = setSizeLists(o.set_sizes);
@@ -576,16 +553,16 @@ export function validateOptions(o: ResolvedOptions, phase: "practice" | "test" =
     );
   }
   const biggest = Math.max(...lists.flat());
-  const pool = o.stimulus_set.memorandum.items.length;
+  const pool = o.stimulus_set.items.length;
   if (biggest > pool) {
     throw new Error(
-      `operation-span: set size ${biggest} needs ${biggest} different memoranda but the pool has ${pool}.`
+      `operation-span: set size ${biggest} needs ${biggest} different memory items but the pool has ${pool}.`
     );
   }
   const walkthrough = o.instruction_format === "text" && o.instruction_demonstration !== "none";
   if (walkthrough && pool < INSTRUCTION_RECALL_SET_SIZE) {
     throw new Error(
-      `operation-span: the walkthrough's recall step needs ${INSTRUCTION_RECALL_SET_SIZE} different memoranda but the pool has ${pool}.`
+      `operation-span: the walkthrough's recall step needs ${INSTRUCTION_RECALL_SET_SIZE} different memory items but the pool has ${pool}.`
     );
   }
   if (isNested(o.set_sizes) && o.block_order === "random_within_block") {
@@ -597,11 +574,11 @@ export function validateOptions(o: ResolvedOptions, phase: "practice" | "test" =
     throw new Error("operation-span: trials_per_condition must be at least 1.");
   }
   if (
-    !(o.processing_items_per_memorandum >= 0) ||
-    !Number.isInteger(o.processing_items_per_memorandum)
+    !(o.processing_items_per_memory_item >= 0) ||
+    !Number.isInteger(o.processing_items_per_memory_item)
   ) {
     throw new Error(
-      "operation-span: processing_items_per_memorandum must be a non-negative integer."
+      "operation-span: processing_items_per_memory_item must be a non-negative integer."
     );
   }
   const pc = o.practice_criterion;
@@ -614,9 +591,9 @@ export function validateOptions(o: ResolvedOptions, phase: "practice" | "test" =
       throw new Error("operation-span: response_window_ms: { min, max } needs 0 < min <= max.");
     }
   }
-  if (o.processing_items_per_memorandum === 0 && o.practice_criterion) {
+  if (o.processing_items_per_memory_item === 0 && o.practice_criterion) {
     throw new Error(
-      "operation-span: practice_criterion needs processing (processing_items_per_memorandum is 0)."
+      "operation-span: practice_criterion needs processing (processing_items_per_memory_item is 0)."
     );
   }
 }

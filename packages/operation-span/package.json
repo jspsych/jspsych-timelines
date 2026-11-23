@@ -1,7 +1,7 @@
 {
   "name": "@jspsych-timelines/operation-span",
   "version": "0.0.1",
-  "description": "Complex span (automated operation span, OSPAN) for working memory capacity: interleaved math verification and letter memoranda, serial recall grid, partial-credit scoring and a processing deadline calibrated from practice.",
+  "description": "Complex span (automated operation span, OSPAN) for working memory capacity: interleaved math verification and letter memory items, serial recall grid, partial-credit scoring and a processing deadline calibrated from practice.",
   "type": "module",
   "main": "dist/index.cjs",
   "types": "dist/index.d.ts",

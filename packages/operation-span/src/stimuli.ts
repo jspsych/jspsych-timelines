@@ -61,20 +61,20 @@ export function generateProblem(jsPsych: JsPsych, isTrue?: boolean): Problem {
   return { text: `(${a} ${op1} ${b}) ${op2} ${c}`, value, shown, is_true: truth };
 }
 
-// -- memoranda -----------------------------------------------------------------------------------
+// -- memory items -----------------------------------------------------------------------------------
 
-/** The items memoranda are drawn from, in the set's order. */
-export const poolOf = (o: ResolvedOptions): Item[] => buildPool(o.stimulus_set.memorandum);
+/** The items memory items are drawn from, in the set's order. */
+export const poolOf = (o: ResolvedOptions): Item[] => buildPool(o.stimulus_set);
 
 /** The texts of the pool, in the set's order (the recall matrix). */
 export const poolTexts = (o: ResolvedOptions): string[] => poolOf(o).map((it) => it.text);
 
-/** `n` different memoranda (their texts) in random order. */
-export function drawMemoranda(jsPsych: JsPsych, o: ResolvedOptions, n: number): string[] {
+/** `n` different memory items (their texts) in random order. */
+export function drawMemoryItems(jsPsych: JsPsych, o: ResolvedOptions, n: number): string[] {
   return jsPsych.randomization.sampleWithoutReplacement(poolTexts(o), n);
 }
 
-/** The id of a memorandum text, or of a recalled entry (null: an omission, or typed text that is no item). */
+/** The id of a memory item text, or of a recalled entry (null: an omission, or typed text that is no item). */
 export function idOf(o: ResolvedOptions): (text: string | null) => string | null {
   const ids = new Map(poolOf(o).map((it) => [normText(it.text), it.id]));
   return (text) => (text === null ? null : ids.get(normText(text)) ?? null);
@@ -109,8 +109,8 @@ export const renderProblem = (p: Problem, withAnswer: boolean): string =>
 export const renderAnswer = (p: Problem): string =>
   `<div class="${cls("problem")}"><strong>${p.shown}</strong></div>`;
 
-export const renderMemorandum = (item: string): string =>
-  `<div class="${cls("memorandum")}">${item}</div>`;
+export const renderMemoryItem = (item: string): string =>
+  `<div class="${cls("memory-item")}">${item}</div>`;
 
 export const renderNotice = (html: string, kind = ""): string =>
   `<div class="${cls("notice")} ${kind}">${html}</div>`;
@@ -140,7 +140,7 @@ export interface RecallSpec {
   set_size: number;
   /** The pool shown in the matrix (n_afc): the texts, in the set's order. */
   pool: string[];
-  /** What the instructions call one memorandum, and several. */
+  /** What the instructions call one memory item, and several. */
   noun: string;
   nouns: string;
 }
@@ -223,7 +223,7 @@ export const newRecallState = (): RecallState => ({
 
 const norm = normText;
 
-/** Final entered items: one per memorandum, null for an omission. */
+/** Final entered items: one per memory item, null for an omission. */
 export function finalItems(state: RecallState, spec: RecallSpec): (string | null)[] {
   const raw = state.read ? state.read() : state.items;
   return Array.from({ length: spec.set_size }, (_, i) => {

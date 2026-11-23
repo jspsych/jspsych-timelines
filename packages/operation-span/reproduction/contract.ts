@@ -3,9 +3,9 @@
  * `@jspsych-timelines/testing`).
  *
  * The scorable row (`part: "response"`) is the recall of one span trial. The processing task and the
- * memoranda are other parts of the same trial, so the options that belong to them are routed with
+ * memory items are other parts of the same trial, so the options that belong to them are routed with
  * `scope`: the deadline and the device of the processing task read the `processing` rows (the one row
- * per episode, in every display format), and the memorandum duration reads the `memorandum` rows.
+ * per episode, in every display format), and the memory item duration reads the `memory_item` rows.
  */
 import { defineContract } from "@jspsych-timelines/testing";
 
@@ -29,7 +29,7 @@ export const contract = defineContract<ResolvedOptions>({
       builtPart: timedPart,
       value: (eff) => eff.response_window_ms,
     },
-    stimulus_duration_ms: { part: "memorandum" },
+    stimulus_duration_ms: { part: "memory_item" },
     // a missed deadline is answered by a notice (a display trial), not by a response screen
     response_device: {
       part: "processing",

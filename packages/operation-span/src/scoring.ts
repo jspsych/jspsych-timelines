@@ -55,11 +55,11 @@ export function scoreRecall(
 export interface ScoringResult {
   /** Test recall rows. 0 if none. */
   n_trials: number;
-  /** Memoranda presented in the test, summed over trials. 0 if none. */
+  /** Memory items presented in the test, summed over trials. 0 if none. */
   total_items: number;
-  /** Partial-credit load (Engle-lab "partial score"): memoranda recalled in the correct position, summed over trials. 0 if none. */
+  /** Partial-credit load (Engle-lab "partial score"): memory items recalled in the correct position, summed over trials. 0 if none. */
   partial_credit_load: number;
-  /** Partial-credit unit (Conway et al. 2005): mean over trials of the proportion of memoranda correct. null if no trials. Recommended primary DV. */
+  /** Partial-credit unit (Conway et al. 2005): mean over trials of the proportion of memory items correct. null if no trials. Recommended primary DV. */
   partial_credit_unit: number | null;
   /** Absolute score (all-or-nothing load): summed set sizes of the perfectly recalled trials. 0 if none. */
   absolute_score: number;

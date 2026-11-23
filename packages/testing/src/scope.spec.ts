@@ -3,12 +3,12 @@ import { defineContract } from "./contract";
 
 /**
  * `contract.scope` routes an option's shared check to another part of a multi-part trial (a dual
- * task): here the memoranda's duration and the processing task's deadline, device and keys.
+ * task): here the memory items's duration and the processing task's deadline, device and keys.
  */
 const contract = defineContract({
   task: "dual",
   scope: {
-    stimulus_duration_ms: { part: "memorandum" },
+    stimulus_duration_ms: { part: "memory_item" },
     response_window_ms: {
       part: "processing",
       builtPart: () => "problem",
@@ -50,13 +50,13 @@ describe("contract.scope", () => {
     expect(defineContract({ task: "x" }).scope).toEqual({});
   });
 
-  it("stimulus_duration_ms reads the memorandum rows and the built memorandum trials", async () => {
+  it("stimulus_duration_ms reads the memory item rows and the built memory item trials", async () => {
     const trials = [
-      { type: {}, data: { part: "memorandum", phase: "test" }, stimulus_duration: 800 },
+      { type: {}, data: { part: "memory_item", phase: "test" }, stimulus_duration: 800 },
     ];
     const good = fakeRun(
       { stimulus_duration_ms: 800 },
-      [row("memorandum", { stimulus_duration: 800 })],
+      [row("memory_item", { stimulus_duration: 800 })],
       trials
     );
     await expect(
@@ -64,7 +64,7 @@ describe("contract.scope", () => {
     ).resolves.toBeUndefined();
     const bad = fakeRun(
       { stimulus_duration_ms: 900 },
-      [row("memorandum", { stimulus_duration: 800 })],
+      [row("memory_item", { stimulus_duration: 800 })],
       trials
     );
     expect(() => sharedChecks.stimulus_duration_ms.fn(bad, ctx)).toThrow();
@@ -72,10 +72,10 @@ describe("contract.scope", () => {
     const jitter = fakeRun(
       { stimulus_duration_ms: { min: 600, max: 1000, step: 200 } },
       [
-        row("memorandum", { stimulus_duration: 600 }),
-        row("memorandum", { stimulus_duration: 1000 }),
+        row("memory_item", { stimulus_duration: 600 }),
+        row("memory_item", { stimulus_duration: 1000 }),
       ],
-      [{ type: {}, data: { part: "memorandum", phase: "test" }, stimulus_duration: 800 }]
+      [{ type: {}, data: { part: "memory_item", phase: "test" }, stimulus_duration: 800 }]
     );
     expect(() => sharedChecks.stimulus_duration_ms.fn(jitter, ctx)).not.toThrow();
   });

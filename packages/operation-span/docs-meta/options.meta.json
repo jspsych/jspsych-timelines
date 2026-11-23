@@ -217,7 +217,7 @@
               "source": "S006",
               "sourceType": "reference-impl",
               "setting": null,
-              "component": "memorandum",
+              "component": "memory_item",
               "phase": null
             },
             {
@@ -226,7 +226,7 @@
               "source": "S021",
               "sourceType": "reference-impl",
               "setting": null,
-              "component": "memorandum",
+              "component": "memory_item",
               "phase": null
             },
             {
@@ -235,7 +235,7 @@
               "source": "S026",
               "sourceType": "empirical",
               "setting": "online-unsupervised",
-              "component": "memorandum",
+              "component": "memory_item",
               "phase": null
             },
             {
@@ -244,7 +244,7 @@
               "source": "S033",
               "sourceType": "empirical",
               "setting": "online-unsupervised",
-              "component": "memorandum",
+              "component": "memory_item",
               "phase": null
             },
             {
@@ -253,7 +253,7 @@
               "source": "S020",
               "sourceType": "reference-impl",
               "setting": null,
-              "component": "memorandum",
+              "component": "memory_item",
               "phase": null
             },
             {
@@ -262,7 +262,7 @@
               "source": "S036",
               "sourceType": "empirical",
               "setting": "online-unsupervised",
-              "component": "memorandum",
+              "component": "memory_item",
               "phase": null
             },
             {
@@ -271,11 +271,11 @@
               "source": "S045",
               "sourceType": "empirical",
               "setting": "online-unsupervised",
-              "component": "memorandum",
+              "component": "memory_item",
               "phase": null
             }
           ],
-          "defaultSource": "component:memorandum",
+          "defaultSource": "component:memory item",
           "needsTranslation": false
         },
         "unit": "ms",
@@ -336,7 +336,6 @@
     "stimulus_set": {
       "x-jspsych": {
         "group": "stimulus",
-        "widget": "bundle",
         "advanced": false,
         "vocabulary": "stimulus_set",
         "phaseOverridable": false,
@@ -348,7 +347,7 @@
               "source": "S006",
               "sourceType": "reference-impl",
               "setting": null,
-              "component": "memorandum_type",
+              "component": "memory_item_type",
               "phase": null
             },
             {
@@ -357,7 +356,7 @@
               "source": "S028",
               "sourceType": "empirical",
               "setting": "online-unsupervised",
-              "component": "memorandum_type",
+              "component": "memory_item_type",
               "phase": null
             },
             {
@@ -366,7 +365,7 @@
               "source": "S034",
               "sourceType": "empirical",
               "setting": "online-unsupervised",
-              "component": "memorandum_type",
+              "component": "memory_item_type",
               "phase": null
             },
             {
@@ -375,7 +374,7 @@
               "source": "S043",
               "sourceType": "empirical",
               "setting": "online-unsupervised",
-              "component": "memorandum_type",
+              "component": "memory_item_type",
               "phase": null
             },
             {
@@ -384,7 +383,7 @@
               "source": "S020",
               "sourceType": "reference-impl",
               "setting": null,
-              "component": "memorandum_type",
+              "component": "memory_item_type",
               "phase": null
             },
             {
@@ -393,7 +392,7 @@
               "source": "S027",
               "sourceType": "empirical",
               "setting": "online-unsupervised",
-              "component": "memorandum_type",
+              "component": "memory_item_type",
               "phase": null
             },
             {
@@ -402,7 +401,7 @@
               "source": "S033",
               "sourceType": "empirical",
               "setting": "online-unsupervised",
-              "component": "memorandum_type",
+              "component": "memory_item_type",
               "phase": null
             },
             {
@@ -411,7 +410,7 @@
               "source": "S006",
               "sourceType": "reference-impl",
               "setting": null,
-              "component": "memorandum",
+              "component": "memory_item",
               "phase": null
             },
             {
@@ -420,7 +419,7 @@
               "source": "S043",
               "sourceType": "empirical",
               "setting": "online-unsupervised",
-              "component": "memorandum",
+              "component": "memory_item",
               "phase": null
             },
             {
@@ -429,7 +428,7 @@
               "source": "S027",
               "sourceType": "empirical",
               "setting": "online-unsupervised",
-              "component": "memorandum",
+              "component": "memory_item",
               "phase": null
             },
             {
@@ -438,7 +437,7 @@
               "source": "S032",
               "sourceType": "empirical",
               "setting": "online-unsupervised",
-              "component": "memorandum",
+              "component": "memory_item",
               "phase": null
             }
           ],
@@ -483,7 +482,7 @@
               "phase": null
             },
             {
-              "value": "equation_and_memorandum_same_screen",
+              "value": "equation_and_memory_item_same_screen",
               "typed": true,
               "source": "S039",
               "sourceType": "empirical",
@@ -928,7 +927,7 @@
         "unit": "count"
       }
     },
-    "memorandum_order_in_pair": {
+    "order_in_pair": {
       "x-jspsych": {
         "group": "design",
         "advanced": false,
@@ -955,7 +954,7 @@
               "phase": null
             },
             {
-              "value": "memorandum_first",
+              "value": "memory_item_first",
               "typed": true,
               "source": "S021",
               "sourceType": "reference-impl",
@@ -964,7 +963,7 @@
               "phase": null
             },
             {
-              "value": "memorandum_first",
+              "value": "memory_item_first",
               "typed": true,
               "source": "S033",
               "sourceType": "empirical",
@@ -978,7 +977,7 @@
         }
       }
     },
-    "processing_items_per_memorandum": {
+    "processing_items_per_memory_item": {
       "x-jspsych": {
         "group": "design",
         "advanced": false,
@@ -1721,15 +1720,15 @@
     {
       "id": "S006",
       "label": "Unsworth et al. 2005, Behavior Research Methods",
-      "description": "reference-impl · no setting · 21 spec options · uses a calibrated deadline (mean + SD of the practice RTs): the package default, code-only, so not set here · memoranda: the package's letters, the 12 consonants of the Engle-lab task (S006)",
+      "description": "reference-impl · no setting · 21 spec options · uses a calibrated deadline (mean + SD of the practice RTs): the package default, code-only, so not set here · memory items: the package's letters, the 12 consonants of the Engle-lab task (S006)",
       "options": {
         "block_order": "random",
         "feedback_duration_ms": 2000,
-        "memorandum_order_in_pair": "processing_first",
+        "order_in_pair": "processing_first",
         "n_test_trials": 15,
         "practice_trials": 15,
         "processing_display_format": "problem_then_answer_screens",
-        "processing_items_per_memorandum": 1,
+        "processing_items_per_memory_item": 1,
         "processing_read_aloud": false,
         "recall_omission_handling": "blank_button",
         "response_device": {
@@ -1748,10 +1747,7 @@
         "speed_accuracy_emphasis": "accuracy",
         "stimulus_duration_ms": 800,
         "stimulus_set": {
-          "memorandum_source": "separate_item",
-          "memorandum": {
-            "$util": "stimuli.letters"
-          }
+          "$util": "stimuli.letters"
         },
         "trial_feedback": "accuracy",
         "trials_per_condition": 3
@@ -1803,7 +1799,7 @@
     {
       "id": "S020",
       "label": "Klaus & Schriefers jsPsych reading/operation/mixed span",
-      "description": "MIT, commit 4dc9ed6 · reference-impl · no setting · 9 spec options · not expressible, left out: stimulus_language · memoranda: the package's digits, not necessarily the study's own list",
+      "description": "MIT, commit 4dc9ed6 · reference-impl · no setting · 9 spec options · not expressible, left out: stimulus_language · memory items: the package's digits, not necessarily the study's own list",
       "options": {
         "response_device": {
           "recall": "keyboard"
@@ -1815,9 +1811,7 @@
         "response_window_ms": 10000,
         "stimulus_duration_ms": 1200,
         "stimulus_set": {
-          "memorandum": {
-            "$util": "stimuli.digits"
-          }
+          "$util": "stimuli.digits"
         }
       }
     },
@@ -1827,7 +1821,7 @@
       "description": "no licence, commit c4700e7 · reference-impl · no setting · 8 spec options",
       "options": {
         "feedback_duration_ms": 1000,
-        "memorandum_order_in_pair": "memorandum_first",
+        "order_in_pair": "memory_item_first",
         "processing_display_format": "equation_with_answer_single_screen",
         "response_window_ms": 6000,
         "set_sizes": [
@@ -1873,7 +1867,7 @@
     {
       "id": "S027",
       "label": "Gaspar et al. 2026, Journal of Cognition",
-      "description": "empirical · online-unsupervised · 15 spec options · not expressible, left out: stimulus_language, stimulus_set.memorandum, stimulus_set.memorandum_type",
+      "description": "empirical · online-unsupervised · 15 spec options · not expressible, left out: stimulus_language, stimulus_set (sentence-final words), stimulus_set (spatial memory items)",
       "options": {
         "response_device": {
           "recall": "keyboard",
@@ -1881,7 +1875,7 @@
         },
         "block_order": "fixed",
         "end_of_task_feedback": "score",
-        "memorandum_order_in_pair": "processing_first",
+        "order_in_pair": "processing_first",
         "n_test_trials": 15,
         "response_format": "free_text",
         "response_order": "serial",
@@ -1900,7 +1894,7 @@
     {
       "id": "S028",
       "label": "Wereszczyński et al. 2025, Data in Brief",
-      "description": "empirical · online-unsupervised · 2 spec options · memoranda: the package's letters, the 12 consonants of the Engle-lab task (S006)",
+      "description": "empirical · online-unsupervised · 2 spec options · memory items: the package's letters, the 12 consonants of the Engle-lab task (S006)",
       "options": {
         "set_sizes": [
           3,
@@ -1910,16 +1904,14 @@
           7
         ],
         "stimulus_set": {
-          "memorandum": {
-            "$util": "stimuli.letters"
-          }
+          "$util": "stimuli.letters"
         }
       }
     },
     {
       "id": "S032",
       "label": "de Azevedo et al. 2025, Psicologia: Reflexão e Crítica",
-      "description": "empirical · online-unsupervised · 5 spec options · not expressible, left out: instruction_format, stimulus_language, stimulus_set.memorandum",
+      "description": "empirical · online-unsupervised · 5 spec options · not expressible, left out: instruction_format, stimulus_language, stimulus_set (sentence-final words)",
       "options": {
         "block_order": "ascending",
         "set_sizes": [
@@ -1934,12 +1926,12 @@
     {
       "id": "S033",
       "label": "Vermeent et al. 2025, Royal Society Open Science",
-      "description": "empirical · online-unsupervised · 11 spec options · not expressible, left out: practice_criterion, stimulus_set.memorandum_type",
+      "description": "empirical · online-unsupervised · 11 spec options · not expressible, left out: practice_criterion, stimulus_set (spatial memory items)",
       "options": {
-        "memorandum_order_in_pair": "memorandum_first",
+        "order_in_pair": "memory_item_first",
         "n_test_trials": 9,
         "practice_trials": 8,
-        "processing_items_per_memorandum": 1,
+        "processing_items_per_memory_item": 1,
         "response_device": {
           "processing": "keyboard",
           "recall": "mouse"
@@ -1956,7 +1948,7 @@
     {
       "id": "S034",
       "label": "MacMillan et al. 2024, Memory & Cognition",
-      "description": "empirical · online-unsupervised · 10 spec options · memoranda: the package's stand-in list of 16 English words, not the study's words (none are reported): supply your own",
+      "description": "empirical · online-unsupervised · 10 spec options · memory items: the package's stand-in list of 16 English words, not the study's words (none are reported): supply your own",
       "options": {
         "response_device": {
           "recall": "keyboard",
@@ -1975,9 +1967,7 @@
           6
         ],
         "stimulus_set": {
-          "memorandum": {
-            "$util": "stimuli.words"
-          }
+          "$util": "stimuli.words"
         },
         "trials_per_condition": 4
       }
@@ -2003,7 +1993,7 @@
     {
       "id": "S043",
       "label": "Wallinheimo et al. 2023, Frontiers in Artificial Intelligence",
-      "description": "empirical · online-unsupervised · 4 spec options · memoranda: the package's stand-in list of 16 English words, not the study's words (none are reported): supply your own",
+      "description": "empirical · online-unsupervised · 4 spec options · memory items: the package's stand-in list of 16 English words, not the study's words (none are reported): supply your own",
       "options": {
         "n_test_trials": 12,
         "set_sizes": [
@@ -2013,10 +2003,7 @@
           5
         ],
         "stimulus_set": {
-          "memorandum_source": "separate_item",
-          "memorandum": {
-            "$util": "stimuli.words"
-          }
+          "$util": "stimuli.words"
         }
       }
     },
@@ -2029,7 +2016,7 @@
           "recall": "keyboard"
         },
         "n_test_trials": 18,
-        "processing_items_per_memorandum": 2,
+        "processing_items_per_memory_item": 2,
         "recall_omission_handling": "none",
         "response_format": "single_response",
         "set_sizes": [

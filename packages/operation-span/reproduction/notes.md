@@ -9,16 +9,16 @@ The spec is `complex-span`; the package is `operation-span` (PACKAGE-STANDARD §
 | Option / raw value | Source | Class |
 |---|---|---|
 | `response_window_ms`: `individual_mean_plus_2.5sd` | S006, S017 | option missing in the vocabulary (the spec itself says "no typed form"); the package implements the rule as a function, `utils.deadlines.meanPlusSd(2.5)`, which is the default. A typed spec value cannot express a function, so level 2 does not run S006 (the anchor); `src/reproduction.spec.ts` ties the defaults to S006 instead. |
-| `response_window_ms`: `individual_mean_plus_2sd` | S039 | the same, with `utils.deadlines.meanPlusSd(2)` (S039 also puts the memorandum on the equation's screen: `processing_display_format: "equation_and_memorandum_same_screen"`, not implemented). |
+| `response_window_ms`: `individual_mean_plus_2sd` | S039 | the same, with `utils.deadlines.meanPlusSd(2)` (S039 also puts the memory item on the equation's screen: `processing_display_format: "equation_and_memory_item_same_screen"`, not implemented). |
 | `practice_criterion`: `optional_repeat_if_at_or_below_chance` | S033 | option missing: the participant is *offered* a repeat when at or below chance. `practice_criterion` is an accuracy gate (`repeat`, `continue`, `end`), not an offer, and "chance" depends on the recall format. |
 | `instruction_format`: video then written; written or video tutorial | S026, S032 | option missing (`video_then_text`, `text_or_video`) and media needed. |
 
 ### Typed values the package does not express
 
-- `stimulus_language` (Portuguese, Dutch, German): option missing. The package has no word or sentence lists; own words go in `stimulus_set.memorandum` as a set (which is expressible: the spec's `words` maps to a stand-in set of 16 English words, `WORD_POOL` in `reproduction/adapter.ts`, which the presets for S034 and S043 carry inline and label as a stand-in). `letters` and `digits` map to the bundled `utils.stimuli.letters` and `utils.stimuli.digits`, which presets write as `{"$util": ...}` references.
-- `stimulus_set` memoranda `grid_locations` and `arrows` (symmetry and rotation span): option missing. They need spatial memoranda and a matching recall input.
+- `stimulus_language` (Portuguese, Dutch, German): option missing. The package has no word or sentence lists; own words go in `stimulus_set` as a set (which is expressible: the spec's `words` maps to a stand-in set of 16 English words, `WORD_POOL` in `reproduction/adapter.ts`, which the presets for S034 and S043 carry inline and label as a stand-in). `letters` and `digits` map to the bundled `utils.stimuli.letters` and `utils.stimuli.digits`, which presets write as `{"$util": ...}` references.
+- `stimulus_set` memory items `grid_locations` and `arrows` (symmetry and rotation span): option missing. They need spatial memory items and a matching recall input.
 - `stimulus_set` source `sentence_final_word` (reading span): option missing; needs the sentence processing task.
-- `processing_display_format: equation_and_memorandum_same_screen` (S039, lab): option missing.
+- `processing_display_format: equation_and_memory_item_same_screen` (S039, lab): option missing.
 
 ### Contradictions and oddities in the spec
 
@@ -31,7 +31,7 @@ The spec is `complex-span`; the package is `operation-span` (PACKAGE-STANDARD §
 
 ### Things the checks cannot show (limitations of this reproduction)
 
-- Data-only simulation ignores time, so deadlines, memorandum durations and gaps are shown through the data fields and plugin parameters the package sets, not through measured durations. Browser timing was not verified.
+- Data-only simulation ignores time, so deadlines, memory item durations and gaps are shown through the data fields and plugin parameters the package sets, not through measured durations. Browser timing was not verified.
 - Simulated RTs are constant (400 ms), so a calibrated deadline would have SD 0; the calibration is tested on hand-built rows with variance and on a run whose simulated RTs vary (`src/deadlines.spec.ts`), not at level 1 or 2.
 - jsPsych's data-only simulation of a timed-out button trial leaves `response: 0` in place (it clears only truthy responses) while setting `rt: null`; the package therefore detects a missed deadline by the missing RT.
 - Recall is simulated as a correct recall: the recall screen is a custom panel wired in `on_load`, which data-only simulation does not run. The panel itself (matrix, typed boxes, key presses, omissions) is tested in jsdom (`src/recall.spec.ts`).

@@ -31,7 +31,7 @@ import {
   RecallSpec,
   RecallState,
   cls,
-  drawMemoranda,
+  drawMemoryItems,
   finalItems,
   generateProblem,
   idOf,
@@ -39,7 +39,7 @@ import {
   newRecallState,
   poolTexts,
   renderAnswer,
-  renderMemorandum,
+  renderMemoryItem,
   renderNotice,
   renderProblem,
   renderRecallPanel,
@@ -151,9 +151,9 @@ const buttonHtml = (choice: string) => `<button class="jspsych-btn">${choice}</b
 
 type Device = "keyboard" | "mouse" | "touch";
 
-/** What the texts call the memoranda of `o` (the set's `noun`). */
+/** What the texts call the memory items of `o` (the set's `noun`). */
 export function nounsOf(o: ResolvedOptions): Nouns {
-  const n = itemNouns(o.stimulus_set.memorandum);
+  const n = itemNouns(o.stimulus_set);
   return { noun: n.singular, nouns: n.plural };
 }
 
@@ -205,12 +205,12 @@ interface DisplayArgs {
   duration: number;
   stimulus: string | (() => string);
   data?: Record<string, unknown>;
-  /** plugin `stimulus_duration` (the memorandum) */
+  /** plugin `stimulus_duration` (the memory item) */
   stimulus_duration?: number;
 }
 
 /**
- * No-response display trial (memorandum, inter-item gap, feedback, notices): the keyboard plugin with
+ * No-response display trial (memory item, inter-item gap, feedback, notices): the keyboard plugin with
  * `choices: "NO_KEYS"` and a fixed duration, whatever the response device (PACKAGE-STANDARD §10).
  */
 export function createDisplayTrial(a: DisplayArgs) {
@@ -401,9 +401,9 @@ export function createProcessing(a: ProcessingArgsOf) {
   };
 }
 
-// -- memoranda, recall, feedback ------------------------------------------------------------------
+// -- memory items, recall, feedback ------------------------------------------------------------------
 
-export function createMemorandum(
+export function createMemoryItem(
   ctx: Context,
   o: ResolvedOptions,
   a: { phase: string; part: string; item: string; data: Record<string, unknown> }
@@ -414,12 +414,12 @@ export function createMemorandum(
     part: a.part,
     duration: ms,
     stimulus_duration: ms,
-    stimulus: renderScreen(renderMemorandum(a.item)),
+    stimulus: renderScreen(renderMemoryItem(a.item)),
     data: {
       ...a.data,
-      memorandum: a.item,
-      memorandum_id: idOf(o)(a.item),
-      stimulus_set: setName(o.stimulus_set.memorandum),
+      memory_item: a.item,
+      memory_item_id: idOf(o)(a.item),
+      stimulus_set: setName(o.stimulus_set),
       stimulus_duration: ms,
     },
   });
@@ -472,7 +472,7 @@ export function createRecall(ctx: Context, o: ResolvedOptions, a: RecallArgs) {
       set_size: a.presented.length,
       presented_items: a.presented,
       presented_item_ids: a.presented.map(id),
-      stimulus_set: setName(o.stimulus_set.memorandum),
+      stimulus_set: setName(o.stimulus_set),
       response_order: o.response_order,
       response_format: o.response_format,
       response_device: o.response_device.recall,
@@ -589,7 +589,7 @@ export interface TrialPlan {
   trial_index_in_block: number;
   set_size: number;
   items: string[];
-  /** `processing_items_per_memorandum` problems per memorandum, in order */
+  /** `processing_items_per_memory_item` problems per memory item, in order */
   problems: Problem[];
 }
 
@@ -599,10 +599,10 @@ export function planTrial(
   base: Omit<TrialPlan, "items" | "problems">,
   withProcessing: boolean
 ): TrialPlan {
-  const k = withProcessing ? o.processing_items_per_memorandum : 0;
+  const k = withProcessing ? o.processing_items_per_memory_item : 0;
   return {
     ...base,
-    items: drawMemoranda(ctx.jsPsych, o, base.set_size),
+    items: drawMemoryItems(ctx.jsPsych, o, base.set_size),
     problems: Array.from({ length: base.set_size * k }, () => generateProblem(ctx.jsPsych)),
   };
 }
@@ -628,8 +628,8 @@ function windowOf(ctx: Context, o: ResolvedOptions, plan: TrialPlan): () => Reso
 }
 
 /**
- * One trial of the complex span: for each memorandum, the processing problem(s) and the memorandum
- * (in `memorandum_order_in_pair` order, with `inter_item_interval_ms` between events), then recall and
+ * One trial of the complex span: for each memory item, the processing problem(s) and the memory item
+ * (in `order_in_pair` order, with `inter_item_interval_ms` between events), then recall and
  * feedback. With no processing (letters-only practice) it is a simple span.
  */
 export function createSpanTrial(
@@ -643,9 +643,9 @@ export function createSpanTrial(
   const data = trialData(plan);
   const events: any[] = [];
   for (let i = 0; i < plan.set_size; i++) {
-    const memorandum = createMemorandum(ctx, o, {
+    const memoryItem = createMemoryItem(ctx, o, {
       phase: plan.phase,
-      part: "memorandum",
+      part: "memory_item",
       item: plan.items[i],
       data: { ...data, position: i + 1 },
     });
@@ -668,9 +668,7 @@ export function createSpanTrial(
       })
     );
     events.push(
-      ...(o.memorandum_order_in_pair === "processing_first"
-        ? [...procs, memorandum]
-        : [memorandum, ...procs])
+      ...(o.order_in_pair === "processing_first" ? [...procs, memoryItem] : [memoryItem, ...procs])
     );
   }
   const timeline: any[] = [];
@@ -744,7 +742,7 @@ export function practiceParts(ctx: Context): PracticePart[] {
     practice_combined_trials,
   } = ctx.test;
   const parts: PracticePart[] = [];
-  const hasProcessing = ctx.test.processing_items_per_memorandum > 0;
+  const hasProcessing = ctx.test.processing_items_per_memory_item > 0;
   if (
     (s === "storage_processing_combined" || s === "storage_processing") &&
     practice_storage_trials > 0
@@ -964,11 +962,11 @@ export function createInstructions(ctx: Context) {
       ? t.emphasis_both(nounsOf(o))
       : "";
   const pages: string[] = [];
-  if (o.processing_items_per_memorandum > 0) {
+  if (o.processing_items_per_memory_item > 0) {
     pages.push(
       t.instruction_intro({
-        memorandum_first: o.memorandum_order_in_pair === "memorandum_first",
-        items_per_memorandum: o.processing_items_per_memorandum,
+        memory_item_first: o.order_in_pair === "memory_item_first",
+        items_per_memory_item: o.processing_items_per_memory_item,
         ...nounsOf(o),
       })
     );
@@ -1009,7 +1007,7 @@ function demoArgs(
 /**
  * Interactive walkthrough (PACKAGE-STANDARD §6a): a true and a false problem, answered in the task's own
  * format, then a two-item recall at task timing on the real recall input. Wrong answers get a hint and
- * repeat; after INSTRUCTION_MAX_ATTEMPTS the answer is shown. Untimed apart from the memoranda, which
+ * repeat; after INSTRUCTION_MAX_ATTEMPTS the answer is shown. Untimed apart from the memory items, which
  * need their task duration. Rows: `phase: "instructions"`, `part: "instruction_check"` (hints and
  * confirmations `instruction_feedback`, the problem screen and the letters `instruction_example`); never scored.
  */
@@ -1018,7 +1016,7 @@ export function createInstructionWalkthrough(ctx: Context) {
   const mode = o.instruction_demonstration;
   if (o.instruction_format !== "text" || mode === "none") return { timeline: [] as any[] };
   const t = ctx.text;
-  const hasProcessing = o.processing_items_per_memorandum > 0;
+  const hasProcessing = o.processing_items_per_memory_item > 0;
   const steps: DemoStepName[] = [
     ...(hasProcessing ? (["processing_true", "processing_false"] as const) : []),
     "recall",
@@ -1029,7 +1027,7 @@ export function createInstructionWalkthrough(ctx: Context) {
       textPage(ctx, t.instruction_examples_intro, "instructions", "instruction"),
     ];
     for (const step of steps) {
-      const items = drawMemoranda(ctx.jsPsych, o, INSTRUCTION_RECALL_SET_SIZE);
+      const items = drawMemoryItems(ctx.jsPsych, o, INSTRUCTION_RECALL_SET_SIZE);
       const p = step === "recall" ? null : generateProblem(ctx.jsPsych, step === "processing_true");
       const args = demoArgs(ctx, o, step, items);
       const stage = p
@@ -1052,7 +1050,7 @@ export function createInstructionWalkthrough(ctx: Context) {
   const nodes: any[] = [textPage(ctx, t.instruction_demo_intro, "instructions", "instruction")];
   for (const step of steps) {
     const items =
-      step === "recall" ? drawMemoranda(ctx.jsPsych, o, INSTRUCTION_RECALL_SET_SIZE) : [];
+      step === "recall" ? drawMemoryItems(ctx.jsPsych, o, INSTRUCTION_RECALL_SET_SIZE) : [];
     const args = demoArgs(ctx, o, step, items);
     const state = { attempt: 0, correct: null as boolean | null };
     const stepData = { condition: step };
@@ -1062,7 +1060,7 @@ export function createInstructionWalkthrough(ctx: Context) {
     if (step === "recall") {
       items.forEach((item, i) => {
         sub.push(
-          createMemorandum(ctx, o, {
+          createMemoryItem(ctx, o, {
             phase: "instructions",
             part: "instruction_example",
             item,

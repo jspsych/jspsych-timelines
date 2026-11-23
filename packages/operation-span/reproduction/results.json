@@ -266,7 +266,7 @@
       "labelledAddition": false,
       "status": "not expressible",
       "gap": "option missing",
-      "reason": "\"Portuguese\" selects word or sentence lists; none are bundled (supply your own words as a set in stimulus_set.memorandum)"
+      "reason": "\"Portuguese\" selects word or sentence lists; none are bundled (supply your own words as a set in stimulus_set)"
     },
     {
       "option": "stimulus_language",
@@ -282,7 +282,7 @@
       "labelledAddition": false,
       "status": "not expressible",
       "gap": "option missing",
-      "reason": "\"Dutch\" selects word or sentence lists; none are bundled (supply your own words as a set in stimulus_set.memorandum)"
+      "reason": "\"Dutch\" selects word or sentence lists; none are bundled (supply your own words as a set in stimulus_set)"
     },
     {
       "option": "stimulus_language",
@@ -298,7 +298,7 @@
       "labelledAddition": false,
       "status": "not expressible",
       "gap": "option missing",
-      "reason": "\"German\" selects word or sentence lists; none are bundled (supply your own words as a set in stimulus_set.memorandum)"
+      "reason": "\"German\" selects word or sentence lists; none are bundled (supply your own words as a set in stimulus_set)"
     },
     {
       "option": "stimulus_set",
@@ -317,9 +317,7 @@
       "kind": "behaviour",
       "options": {
         "stimulus_set": {
-          "memorandum": {
-            "$util": "stimuli.letters"
-          }
+          "$util": "stimuli.letters"
         }
       }
     },
@@ -340,9 +338,7 @@
       "kind": "behaviour",
       "options": {
         "stimulus_set": {
-          "memorandum": {
-            "$util": "stimuli.words"
-          }
+          "$util": "stimuli.words"
         }
       }
     },
@@ -362,9 +358,7 @@
       "kind": "behaviour",
       "options": {
         "stimulus_set": {
-          "memorandum": {
-            "$util": "stimuli.digits"
-          }
+          "$util": "stimuli.digits"
         }
       }
     },
@@ -382,7 +376,7 @@
       "labelledAddition": false,
       "status": "not expressible",
       "gap": "option missing",
-      "reason": "memoranda \"grid_locations\" are spatial: they need a location grid or arrow display and a matching recall input"
+      "reason": "memory items \"grid_locations\" are spatial: they need a location grid or arrow display and a matching recall input"
     },
     {
       "option": "stimulus_set",
@@ -398,7 +392,7 @@
       "labelledAddition": false,
       "status": "not expressible",
       "gap": "option missing",
-      "reason": "memoranda \"arrows\" are spatial: they need a location grid or arrow display and a matching recall input"
+      "reason": "memory items \"arrows\" are spatial: they need a location grid or arrow display and a matching recall input"
     },
     {
       "option": "stimulus_set",
@@ -415,11 +409,7 @@
       "labelledAddition": false,
       "status": "checked",
       "kind": "behaviour",
-      "options": {
-        "stimulus_set": {
-          "memorandum_source": "separate_item"
-        }
-      }
+      "options": {}
     },
     {
       "option": "stimulus_set",
@@ -436,7 +426,7 @@
       "labelledAddition": false,
       "status": "not expressible",
       "gap": "option missing",
-      "reason": "the sentence-final word as memorandum is reading span: it needs a sentence processing task"
+      "reason": "the sentence-final word as memory item is reading span: it needs a sentence processing task"
     },
     {
       "option": "processing_display_format",
@@ -489,7 +479,7 @@
       "labelledAddition": false,
       "status": "not expressible",
       "gap": "option missing",
-      "reason": "the memorandum shown on the equation's screen (S039, lab) is not implemented"
+      "reason": "the memory item shown on the equation's screen (S039, lab) is not implemented"
     },
     {
       "option": "block_order",
@@ -1012,7 +1002,7 @@
       "status": "checked",
       "kind": "behaviour",
       "options": {
-        "memorandum_order_in_pair": "processing_first"
+        "order_in_pair": "processing_first"
       }
     },
     {
@@ -1031,7 +1021,7 @@
       "status": "checked",
       "kind": "behaviour",
       "options": {
-        "memorandum_order_in_pair": "memorandum_first"
+        "order_in_pair": "memory_item_first"
       }
     },
     {
@@ -1050,7 +1040,7 @@
       "status": "checked",
       "kind": "behaviour",
       "options": {
-        "processing_items_per_memorandum": 1
+        "processing_items_per_memory_item": 1
       }
     },
     {
@@ -1068,7 +1058,7 @@
       "status": "checked",
       "kind": "behaviour",
       "options": {
-        "processing_items_per_memorandum": 2
+        "processing_items_per_memory_item": 2
       }
     },
     {
@@ -1586,7 +1576,7 @@
         {
           "key": "stimulus_language",
           "gap": "option missing",
-          "reason": "\"German\" selects word or sentence lists; none are bundled (supply your own words as a set in stimulus_set.memorandum)"
+          "reason": "\"German\" selects word or sentence lists; none are bundled (supply your own words as a set in stimulus_set)"
         }
       ],
       "checked_options": [
@@ -1648,17 +1638,17 @@
         {
           "key": "stimulus_language",
           "gap": "option missing",
-          "reason": "\"Portuguese\" selects word or sentence lists; none are bundled (supply your own words as a set in stimulus_set.memorandum)"
+          "reason": "\"Portuguese\" selects word or sentence lists; none are bundled (supply your own words as a set in stimulus_set)"
         },
         {
           "key": "stimulus_set.memorandum",
           "gap": "option missing",
-          "reason": "the sentence-final word as memorandum is reading span: it needs a sentence processing task"
+          "reason": "the sentence-final word as memory item is reading span: it needs a sentence processing task"
         },
         {
           "key": "stimulus_set.memorandum_type",
           "gap": "option missing",
-          "reason": "memoranda \"grid_locations\" are spatial: they need a location grid or arrow display and a matching recall input"
+          "reason": "memory items \"grid_locations\" are spatial: they need a location grid or arrow display and a matching recall input"
         }
       ],
       "checked_options": [
@@ -1747,7 +1737,7 @@
         "stimulus_set"
       ],
       "assumed": [],
-      "tied_to_reported_value": 4
+      "tied_to_reported_value": 3
     },
     {
       "source": "S045",

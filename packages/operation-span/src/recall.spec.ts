@@ -87,7 +87,7 @@ describe("recall input", () => {
     expect(r.done().disabled).toBe(false);
   });
 
-  it("typed recall: one box per memorandum, empty boxes are omissions, case does not matter", async () => {
+  it("typed recall: one box per memory item, empty boxes are omissions, case does not matter", async () => {
     const r = await recallScreen({
       response_device: { recall: "keyboard" },
       response_format: "free_text",
@@ -125,7 +125,7 @@ describe("recall input", () => {
   it("digits and word pools give their own matrix", async () => {
     const ctx = timelineUnits.createContext(jsPsych, {
       set_sizes: [2],
-      stimulus_set: { memorandum: utils.stimuli.digits },
+      stimulus_set: utils.stimuli.digits,
     });
     const t = timelineUnits.createRecall(ctx, ctx.test, {
       phase: "test",
@@ -151,11 +151,7 @@ describe("recall input", () => {
   };
 
   it("an own set: the matrix shows its texts in order, the prompt uses its noun, rows record ids and the set name", async () => {
-    const r = await recallScreen({ stimulus_set: { memorandum: ANIMALS } }, [
-      "dog",
-      'say "hi"',
-      "owl",
-    ]);
+    const r = await recallScreen({ stimulus_set: ANIMALS }, ["dog", 'say "hi"', "owl"]);
     const keys = Array.from(
       r.displayElement.querySelectorAll<HTMLButtonElement>(".jspsych-timelines-operation-span-key")
     );
@@ -179,7 +175,7 @@ describe("recall input", () => {
   it("an own set, typed: entries match the item texts whatever their case; text that is no item has no id", async () => {
     const r = await recallScreen(
       {
-        stimulus_set: { memorandum: ANIMALS },
+        stimulus_set: ANIMALS,
         response_device: { recall: "keyboard" },
         response_format: "free_text",
       },

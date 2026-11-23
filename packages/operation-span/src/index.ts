@@ -38,7 +38,7 @@ import {
   createInstructionWalkthrough,
   createInstructions,
   createInterItem,
-  createMemorandum,
+  createMemoryItem,
   createPractice,
   createPracticePart,
   createProblemFeedback,
@@ -63,7 +63,7 @@ export interface TrialData {
     | "instruction_example"
     | "instruction_check"
     | "instruction_feedback"
-    | "memorandum"
+    | "memory_item"
     | "inter_item"
     | "processing_problem"
     | "processing"
@@ -77,11 +77,11 @@ export interface TrialData {
   /** Position within the block, 1-based. (jsPsych owns `trial_index`, a global counter; PACKAGE-STANDARD §4.) */
   trial_index_in_block?: number;
   set_size?: number;
-  /** memorandum rows: the item (its text) and its 1-based position; processing rows: the position of the memorandum step and the problem within it. */
-  memorandum?: string;
-  /** memorandum rows: the item's id (default: its text). */
-  memorandum_id?: string;
-  /** memorandum and response rows: the name of the memorandum set ("letters", "digits", or "custom" for a set without a name). */
+  /** memory item rows: the item (its text) and its 1-based position; processing rows: the position of the memory item step and the problem within it. */
+  memory_item?: string;
+  /** memory item rows: the item's id (default: its text). */
+  memory_item_id?: string;
+  /** memory item and response rows: the name of the memory item set ("letters", "digits", or "custom" for a set without a name). */
   stimulus_set?: string;
   position?: number;
   episode?: number;
@@ -107,7 +107,7 @@ export interface TrialData {
   response_window_rule?: string;
   practice_attempt?: number;
   // response (recall) rows
-  /** The presented memoranda (texts) and their ids. */
+  /** The presented memory items (texts) and their ids. */
   presented_items?: string[];
   presented_item_ids?: string[];
   /** The entries, as entered (null = an omission), and the id of the item each one names (null: an omission, or typed text that is no item). */
@@ -164,7 +164,7 @@ export const timelineUnits = {
   createInstructionWalkthrough,
   createTestIntro,
   createTransition,
-  createMemorandum,
+  createMemoryItem,
   createInterItem,
   createProcessing,
   createRecall,
@@ -196,15 +196,15 @@ export const utils = {
   },
   text: { defaultText },
   deadlines: { ...deadlines, calibrationRts, resolve: resolveWindow },
-  /** The bundled memorandum sets, and the helpers that read a set and generate problems. */
+  /** The bundled memory item sets, and the helpers that read a set and generate problems. */
   stimuli: { letters, digits, words, generateProblem },
-  /** Reads a memorandum set: its items, normalised to `{ id, text }`, in order. */
+  /** Reads a memory item set: its items, normalised to `{ id, text }`, in order. */
   items: { buildPool },
   sequence: { scheduleBlocks, fixedOrder, practiceSetSizes },
   options: { resolveOptions, validateOptions },
 };
 
-export type { Stimulus, StimulusSet, StimulusSetOption } from "./options";
+export type { Stimulus, StimulusSet } from "./options";
 export type {
   OperationSpanOptions,
   ScoringResult,

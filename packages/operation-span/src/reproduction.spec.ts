@@ -30,16 +30,24 @@ import { createTimeline, utils } from ".";
 const fixture = fixtureJson as unknown as Fixture;
 const reproductionDir = path.join(__dirname, "..", "reproduction");
 
-/** What a preset's memoranda are (PACKAGE-STANDARD §12): the package's bundled set, or the stand-in word list. */
+/** What a preset's memory items are (PACKAGE-STANDARD §12): the package's bundled set, or the stand-in word list. */
 const itemsNote = (opts: any): string => {
-  const set = opts?.stimulus_set?.memorandum;
+  const set = opts?.stimulus_set;
   if (!set) return "";
   return set === utils.stimuli.words
-    ? " · memoranda: the package's stand-in list of 16 English words, not the study's words (none are reported): supply your own"
+    ? " · memory items: the package's stand-in list of 16 English words, not the study's words (none are reported): supply your own"
     : set === utils.stimuli.letters
-    ? " · memoranda: the package's letters, the 12 consonants of the Engle-lab task (S006)"
-    : ` · memoranda: the package's ${set.name}, not necessarily the study's own list`;
+    ? " · memory items: the package's letters, the 12 consonants of the Engle-lab task (S006)"
+    : ` · memory items: the package's ${set.name}, not necessarily the study's own list`;
 };
+
+/** A spec key as the docs show it: the spec's "memorandum" keys are the package's memory items. */
+const SPEC_KEY_LABELS: Record<string, string> = {
+  "stimulus_set.memorandum_type": "stimulus_set (spatial memory items)",
+  "stimulus_set.memorandum": "stimulus_set (sentence-final words)",
+};
+const specKeyLabel = (key: string): string =>
+  SPEC_KEY_LABELS[key] ?? key.replace(/memorand(?:um|a)/g, "memory_item");
 
 /** A short run for trying the task on the docs page. Not from a study; listed first. */
 export const QUICK_DEMO_PRESET = {
@@ -89,11 +97,13 @@ defineReproduction({
       case "stimulus_duration_ms.memorandum":
         return [e.stimulus_duration_ms, value];
       case "stimulus_set.memorandum_type":
-        return [e.stimulus_set.memorandum.name, value];
+        return [e.stimulus_set.name, value];
+      case "memorandum_order_in_pair":
+        return [e.order_in_pair, value === "memorandum_first" ? "memory_item_first" : value];
+      case "processing_items_per_memorandum":
+        return [e.processing_items_per_memory_item, value];
       case "practice_criterion":
         return [e.practice_criterion, { accuracy: value.accuracy, window: value.block_trials }];
-      case "stimulus_set.memorandum":
-        return [e.stimulus_set.memorandum_source, value];
       default:
         return null;
     }
@@ -115,7 +125,7 @@ defineReproduction({
           );
           const gaps = entries
             .filter((e) => isGap(e.adapted) && !e.key.startsWith("response_window_ms."))
-            .map((e) => e.key);
+            .map((e) => specKeyLabel(e.key));
           const assumed = assumedSettings(entries.map((e) => e.adapted));
           return {
             expressible,
@@ -154,11 +164,11 @@ describe("defaults reproduce the automated operation span anchor (S006) except t
   it("matches every typed S006 key that was not changed", () => {
     expect(o.block_order).toBe(s006.block_order);
     expect(o.feedback_duration_ms).toBe(s006.feedback_duration_ms);
-    expect(o.memorandum_order_in_pair).toBe(s006.memorandum_order_in_pair);
+    expect(o.order_in_pair).toBe(s006.memorandum_order_in_pair);
     expect(o.n_test_trials).toBe(s006.n_test_trials);
     expect(o.practice_trials).toBe(s006["practice_trials.processing_practice_trials"]);
     expect(o.processing_display_format).toBe(s006.processing_display_format);
-    expect(o.processing_items_per_memorandum).toBe(s006.processing_items_per_memorandum);
+    expect(o.processing_items_per_memory_item).toBe(s006.processing_items_per_memorandum);
     expect(o.processing_read_aloud).toBe(s006.processing_read_aloud);
     expect(o.recall_omission_handling).toBe(s006.recall_omission_handling);
     expect(o.response_device.processing).toBe(s006["response_device.processing task"]);
@@ -168,9 +178,9 @@ describe("defaults reproduce the automated operation span anchor (S006) except t
     expect(o.set_sizes).toEqual(s006.set_sizes);
     expect(o.speed_accuracy_emphasis).toBe(s006.speed_accuracy_emphasis);
     expect(o.stimulus_duration_ms).toBe(s006["stimulus_duration_ms.memorandum"]);
-    expect(o.stimulus_set.memorandum.name).toBe(s006["stimulus_set.memorandum_type"]);
-    expect(o.stimulus_set.memorandum).toBe(utils.stimuli.letters);
-    expect(o.stimulus_set.memorandum_source).toBe(s006["stimulus_set.memorandum"]);
+    expect(o.stimulus_set.name).toBe(s006["stimulus_set.memorandum_type"]);
+    expect(o.stimulus_set).toBe(utils.stimuli.letters);
+    expect(s006["stimulus_set.memorandum"]).toBe("separate_item"); // the only kind the package builds
     expect(o.trial_feedback).toBe(s006.trial_feedback);
     expect(o.trials_per_condition).toBe(s006.trials_per_condition);
   });

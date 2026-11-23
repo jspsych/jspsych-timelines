@@ -56,9 +56,9 @@ describe("createTimeline", () => {
     // 3 trials of each of the set sizes 3-7, in one block
     for (const s of [3, 4, 5, 6, 7]) expect(test.filter((r) => r.set_size === s)).toHaveLength(3);
     expect(new Set(test.map((r) => r.block))).toEqual(new Set([1]));
-    // one problem per memorandum, one memorandum per position
+    // one problem per memory item, one memory item per position
     expect(of(rows, "test", "processing")).toHaveLength(75);
-    expect(of(rows, "test", "memorandum")).toHaveLength(75);
+    expect(of(rows, "test", "memory_item")).toHaveLength(75);
     expect(rows.filter((r) => r.part === "completion")).toHaveLength(1);
   });
 
@@ -85,14 +85,14 @@ describe("createTimeline", () => {
     );
   });
 
-  it("respects a non-default configuration: per-block lists, single-screen format, two problems per memorandum, memorandum first", async () => {
+  it("respects a non-default configuration: per-block lists, single-screen format, two problems per memory item, memory item first", async () => {
     const rows = await run(jsPsych, {
       ...SMALL,
       set_sizes: [[2], [3, 4]],
       trials_per_condition: 2,
       processing_display_format: "equation_with_answer_single_screen",
-      processing_items_per_memorandum: 2,
-      memorandum_order_in_pair: "memorandum_first",
+      processing_items_per_memory_item: 2,
+      order_in_pair: "memory_item_first",
       practice_structure: "combined_only",
       practice_combined_trials: 2,
     });
@@ -209,7 +209,7 @@ describe("createTimeline", () => {
         r.part !== "instruction"
     );
     const parts = trial.map((r) => r.part);
-    // problem screen, problem answer, gap, memorandum, gap, problem screen, answer, gap, memorandum, recall
+    // problem screen, problem answer, gap, memory item, gap, problem screen, answer, gap, memory item, recall
     expect(parts.filter((p) => p === "inter_item")).toHaveLength(3);
     expect(parts[parts.length - 1]).toBe("response");
     expect(parts[parts.length - 2]).not.toBe("inter_item");
@@ -255,7 +255,7 @@ describe("createTimeline", () => {
     expect(rows.filter((r) => r.phase === "instructions")).toHaveLength(0);
   });
 
-  it("an own memorandum set: drawn from, recorded by id and set name, and named by its noun in the instructions", async () => {
+  it("an own memory item set: drawn from, recorded by id and set name, and named by its noun in the instructions", async () => {
     const fruit = {
       name: "fruit",
       noun: { singular: "fruit word", plural: "fruit words" },
@@ -264,13 +264,13 @@ describe("createTimeline", () => {
     const rows = await run(jsPsych, {
       ...SMALL,
       instruction_demonstration: "interactive",
-      stimulus_set: { memorandum: fruit },
+      stimulus_set: fruit,
     });
-    const mem = rows.filter((r) => r.part === "memorandum");
+    const mem = rows.filter((r) => r.part === "memory_item");
     expect(mem.length).toBeGreaterThan(0);
     mem.forEach((r) => {
-      expect(["apple", "pear", "fig", "plum"]).toContain(r.memorandum);
-      expect(r.memorandum_id).toBe(r.memorandum === "fig" ? "fig-1" : r.memorandum);
+      expect(["apple", "pear", "fig", "plum"]).toContain(r.memory_item);
+      expect(r.memory_item_id).toBe(r.memory_item === "fig" ? "fig-1" : r.memory_item);
       expect(r.stimulus_set).toBe("fruit");
     });
     of(rows, "test", "response").forEach((r) => {
@@ -287,11 +287,11 @@ describe("createTimeline", () => {
     expect(pages).not.toContain("letter");
   });
 
-  it("memorandum first: the intro names the set's noun and says the memorandum comes first", async () => {
+  it("memory item first: the intro names the set's noun and says the memory item comes first", async () => {
     const rows = await run(jsPsych, {
       ...SMALL,
-      memorandum_order_in_pair: "memorandum_first",
-      stimulus_set: { memorandum: utils.stimuli.digits },
+      order_in_pair: "memory_item_first",
+      stimulus_set: utils.stimuli.digits,
     });
     const intro = of(rows, "instructions", "instruction")[0].stimulus;
     expect(intro).toContain("a math problem and one digit, starting with the digit");
@@ -300,7 +300,7 @@ describe("createTimeline", () => {
   it("a bare array is a set without a name: recorded as custom, called items", async () => {
     const rows = await run(jsPsych, {
       ...SMALL,
-      stimulus_set: { memorandum: ["1", "2", "3", "4"] },
+      stimulus_set: ["1", "2", "3", "4"],
     });
     of(rows, "test", "response").forEach((r) => expect(r.stimulus_set).toBe("custom"));
     const pages = of(rows, "instructions", "instruction")
@@ -312,7 +312,7 @@ describe("createTimeline", () => {
   it("the digits set names its items digits", async () => {
     const rows = await run(jsPsych, {
       ...SMALL,
-      stimulus_set: { memorandum: utils.stimuli.digits },
+      stimulus_set: utils.stimuli.digits,
     });
     of(rows, "test", "response").forEach((r) => expect(r.stimulus_set).toBe("digits"));
     expect(
@@ -393,7 +393,7 @@ describe("options", () => {
     ],
     [
       "unimplemented display format",
-      { processing_display_format: "equation_and_memorandum_same_screen" },
+      { processing_display_format: "equation_and_memory_item_same_screen" },
       /processing_display_format/,
     ],
     [
@@ -402,11 +402,6 @@ describe("options", () => {
       /block_order: "counterbalanced"/,
     ],
     ["language", { stimulus_language: "German" }, /stimulus_language: "German"/],
-    [
-      "sentence-final word",
-      { stimulus_set: { memorandum_source: "sentence_final_word" } },
-      /memorandum_source/,
-    ],
     ["audio instructions", { instruction_format: "audio" }, /instruction_format: "audio"/],
     ["RT feedback", { trial_feedback: "accuracy_rt" }, /trial_feedback: "accuracy_rt"/],
     ["microphone", { response_device: "microphone" }, /response_device.processing: "microphone"/],
@@ -426,14 +421,14 @@ describe("options", () => {
       /question_mark_key/,
     ],
     [
-      "no memorandum duration",
+      "no memory item duration",
       { stimulus_duration_ms: null as any },
       /stimulus_duration_ms must be a duration/,
     ],
     [
       "set size beyond the pool",
       { set_sizes: [13] },
-      /needs 13 different memoranda but the pool has 12/,
+      /needs 13 different memory items but the pool has 12/,
     ],
     [
       "random_within_block with per-block lists",
@@ -446,48 +441,48 @@ describe("options", () => {
       {
         response_device: { recall: "keyboard" },
         response_format: "single_response",
-        stimulus_set: { memorandum: ["apple", "bread"] },
+        stimulus_set: ["apple", "bread"],
         set_sizes: [2],
       },
       /single-character/,
     ],
     [
-      "a memorandum set that is not a set",
-      { stimulus_set: { memorandum: "letters" as any } },
-      /stimulus_set.memorandum must be a set/,
+      "a memory item set that is not a set",
+      { stimulus_set: "letters" as any },
+      /stimulus_set must be a set/,
     ],
     [
-      "an image memorandum",
-      { stimulus_set: { memorandum: [{ image: "a.png" } as any, "B", "C", "D"] }, set_sizes: [2] },
-      /item 1 is an image; memoranda must be text/,
+      "an image memory item",
+      { stimulus_set: [{ image: "a.png" } as any, "B", "C", "D"], set_sizes: [2] },
+      /item 1 is an image; memory items must be text/,
     ],
     [
-      "an svg memorandum",
-      { stimulus_set: { memorandum: ["A", { svg: "<svg/>" } as any, "C"] }, set_sizes: [2] },
-      /item 2 is an SVG; memoranda must be text/,
+      "an svg memory item",
+      { stimulus_set: ["A", { svg: "<svg/>" } as any, "C"], set_sizes: [2] },
+      /item 2 is an SVG; memory items must be text/,
     ],
     [
       "duplicate ids",
       {
-        stimulus_set: { memorandum: [{ id: "x", text: "cat" }, { id: "x", text: "dog" }, "owl"] },
+        stimulus_set: [{ id: "x", text: "cat" }, { id: "x", text: "dog" }, "owl"],
         set_sizes: [2],
       },
       /two items have the id "x"/,
     ],
     [
       "two items recall cannot tell apart",
-      { stimulus_set: { memorandum: ["cat", "Cat ", "owl"] }, set_sizes: [2] },
+      { stimulus_set: ["cat", "Cat ", "owl"], set_sizes: [2] },
       /items 1 and 2 read the same/,
     ],
     [
-      "an empty memorandum set",
-      { stimulus_set: { memorandum: { name: "none", items: [] } }, set_sizes: [1] },
+      "an empty memory item set",
+      { stimulus_set: { name: "none", items: [] }, set_sizes: [1] },
       /the set has no items/,
     ],
     [
       "a pool too small for the walkthrough",
-      { stimulus_set: { memorandum: ["A"] }, set_sizes: [1] },
-      /walkthrough's recall step needs 2 different memoranda but the pool has 1/,
+      { stimulus_set: ["A"], set_sizes: [1] },
+      /walkthrough's recall step needs 2 different memory items but the pool has 1/,
     ],
   ];
   it.each(cases)("throws on %s, naming the option", (_n, options, re) => {

@@ -1,19 +1,19 @@
 /**
- * Memorandum sets: the items a participant remembers. A set is data, so a researcher can pass their own; the sets
+ * Memory item sets: the items a participant remembers. A set is data, so a researcher can pass their own; the sets
  * this package bundles are exported as `utils.stimuli.<name>` and are ordinary values of the same type.
  *
- * Memoranda are text. The recall input names them (typed recall, key-press recall, the click matrix's labels) and
+ * Memory items are text. The recall input names them (typed recall, key-press recall, the click matrix's labels) and
  * the feedback and walkthrough texts list them, so an image or SVG item is rejected with an error.
  */
 import { DIGITS, LETTERS } from "./constants";
 
 /**
- * One memorandum. A string is a text item. An object gives its `text` and optionally an `id`
- * (recorded as `memorandum_id`, `presented_item_ids` and `recalled_item_ids`; default: the text).
+ * One memory item. A string is a text item. An object gives its `text` and optionally an `id`
+ * (recorded as `memory_item_id`, `presented_item_ids` and `recalled_item_ids`; default: the text).
  */
 export type Stimulus = string | { id?: string; text: string };
 
-/** A set of memoranda. */
+/** A set of memory items. */
 export interface StimulusSet {
   /** Recorded as `stimulus_set` in the data. (default: "custom") */
   name?: string;
@@ -66,7 +66,7 @@ export const digits: StimulusSet = {
 
 // -- normalised items --------------------------------------------------------------------------------
 
-/** A memorandum as the screens use it. */
+/** A memory item as the screens use it. */
 export interface Item {
   /** Stable identity, recorded in the data. */
   id: string;
@@ -102,7 +102,7 @@ export function setProblems(set: StimulusSet): string[] {
       out.push(
         `item ${i + 1} is an ${
           typeof r.image === "string" ? "image" : "SVG"
-        }; memoranda must be text, because recall names them (the matrix labels, typed and key-press recall, the feedback)`
+        }; memory items must be text, because recall names them (the matrix labels, typed and key-press recall, the feedback)`
       );
     } else if (typeof r?.text !== "string" || r.text.trim() === "") {
       out.push(`item ${i + 1} must be a string or an object with a text`);

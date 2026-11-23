@@ -12,7 +12,7 @@
 }
 
 /* Anchored layout (PACKAGE-STANDARD section 5), for a task whose trial has several parts. Every screen
-   with a stage (problem, answer, memorandum, gap, feedback, notice and the recall panel) puts the
+   with a stage (problem, answer, memory item, gap, feedback, notice and the recall panel) puts the
    stage on the vertical centre of the display with absolute positioning, so nothing else on the
    screen can move it. The recall panel is a taller stage on the same centre. Text goes in the region
    below the stage (scrolls if long); the plugin's button group is pinned to the bottom edge. */
@@ -99,7 +99,7 @@
   white-space: nowrap;
 }
 
-.jspsych-timelines-operation-span .jspsych-timelines-operation-span-memorandum {
+.jspsych-timelines-operation-span .jspsych-timelines-operation-span-memory-item {
   font-size: 4.5em;
   font-weight: bold;
   line-height: 1;

@@ -15,7 +15,7 @@ export interface ProcessingInstructionArgs {
 }
 
 /**
- * What the texts call the memoranda: the set's `noun` ("letter"/"letters" for `utils.stimuli.letters`,
+ * What the texts call the memory items: the set's `noun` ("letter"/"letters" for `utils.stimuli.letters`,
  * "item"/"items" for a set without one).
  */
 export interface Nouns {
@@ -38,7 +38,7 @@ export interface InstructionStepArgs extends ProcessingInstructionArgs, Nouns {
   step: "processing_true" | "processing_false" | "recall";
   /** HTML of the response that is correct for a processing step (a key cap or a button label). */
   correct_label: string;
-  /** The memoranda of the recall step, in presentation order. */
+  /** The memory items of the recall step, in presentation order. */
   items: string[];
   recall: RecallInstructionArgs;
 }
@@ -51,12 +51,12 @@ export interface TextConfig {
   // -- instruction pages --
   /**
    * First instruction page.
-   * @param r.memorandum_first true when each memorandum comes before its problem
-   * @param r.items_per_memorandum problems per memorandum
-   * @param r.noun what one memorandum is called ("letter"); `r.nouns` the plural
+   * @param r.memory_item_first true when each memory item comes before its problem
+   * @param r.items_per_memory_item problems per memory item
+   * @param r.noun what one memory item is called ("letter"); `r.nouns` the plural
    */
   instruction_intro: (
-    r: { memorandum_first: boolean; items_per_memorandum: number } & Nouns
+    r: { memory_item_first: boolean; items_per_memory_item: number } & Nouns
   ) => string;
   /** Second page: how to answer the processing task. */
   instruction_processing: (r: ProcessingInstructionArgs) => string;
@@ -80,7 +80,7 @@ export interface TextConfig {
   instruction_reveal: (r: InstructionStepArgs) => string;
   /** Brief confirmation after a correct walkthrough response. */
   instruction_correct: string;
-  /** Shown before the memoranda-only practice. */
+  /** Shown before the memory items-only practice. */
   practice_storage_intro: (r: Nouns) => string;
   /** Shown before the processing-only practice. */
   practice_processing_intro: string;
@@ -137,8 +137,8 @@ export interface TextConfig {
   timeout_feedback: string;
   /**
    * After a recall.
-   * @param r.n_correct memoranda recalled in the right position (or recalled, with free order)
-   * @param r.set_size memoranda in the trial
+   * @param r.n_correct memory items recalled in the right position (or recalled, with free order)
+   * @param r.set_size memory items in the trial
    * @param r.math_errors processing errors in this trial (wrong or too slow), or null when the trial has no processing (letters-only practice)
    * @param r.math_accuracy running processing accuracy so far (0-1), or null
    */
@@ -148,15 +148,15 @@ export interface TextConfig {
     math_errors: number | null;
     math_accuracy: number | null;
   }) => string;
-  /** @param r.items the presented memoranda in order */
+  /** @param r.items the presented memory items in order */
   feedback_correct_answer: (r: { items: string[] } & Nouns) => string;
 
   // -- completion --
   task_complete: string;
   /**
    * Score report (`end_of_task_feedback: "score"` or `"summary"`).
-   * @param r.partial_score memoranda recalled in the correct position, summed over test trials
-   * @param r.total_items memoranda presented in all test trials
+   * @param r.partial_score memory items recalled in the correct position, summed over test trials
+   * @param r.total_items memory items presented in all test trials
    * @param r.processing_accuracy proportion of processing problems solved correctly in time, or null
    * @param r.summary true for `"summary"`
    * @param r.absolute_score summed set sizes of perfectly recalled trials
@@ -178,16 +178,16 @@ const pct = (x: number | null) => (x === null ? "-" : `${Math.round(x * 100)}%`)
 
 export const defaultText: TextConfig = {
   instruction_intro: ({
-    memorandum_first,
-    items_per_memorandum,
+    memory_item_first,
+    items_per_memory_item,
     noun,
     nouns,
   }) => `<h2>Operation Span</h2>
     <p>This task has two parts that you do at the same time: solving math problems and remembering ${nouns}.</p>
     <p>You will see a ${
-      items_per_memorandum > 1 ? "series of problems" : "math problem"
+      items_per_memory_item > 1 ? "series of problems" : "math problem"
     } and one ${noun}${
-    memorandum_first ? `, starting with the ${noun}` : ", starting with the problem"
+    memory_item_first ? `, starting with the ${noun}` : ", starting with the problem"
   }, over and over. Remember the ${nouns} in the order they appear. After a few of each, you will be asked to recall the ${nouns}.</p>`,
   instruction_processing: (r) => {
     const answer =
