@@ -186,7 +186,7 @@ export const defaultText: TextConfig = {
     <p>This task has two parts that you do at the same time: solving math problems and remembering ${nouns}.</p>
     <p>You will see a ${
       items_per_memorandum > 1 ? "series of problems" : "math problem"
-    } and then one ${noun}${
+    } and one ${noun}${
     memorandum_first ? `, starting with the ${noun}` : ", starting with the problem"
   }, over and over. Remember the ${nouns} in the order they appear. After a few of each, you will be asked to recall the ${nouns}.</p>`,
   instruction_processing: (r) => {

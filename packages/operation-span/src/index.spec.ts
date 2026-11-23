@@ -287,6 +287,16 @@ describe("createTimeline", () => {
     expect(pages).not.toContain("letter");
   });
 
+  it("memorandum first: the intro names the set's noun and says the memorandum comes first", async () => {
+    const rows = await run(jsPsych, {
+      ...SMALL,
+      memorandum_order_in_pair: "memorandum_first",
+      stimulus_set: { memorandum: utils.stimuli.digits },
+    });
+    const intro = of(rows, "instructions", "instruction")[0].stimulus;
+    expect(intro).toContain("a math problem and one digit, starting with the digit");
+  });
+
   it("a bare array is a set without a name: recorded as custom, called items", async () => {
     const rows = await run(jsPsych, {
       ...SMALL,

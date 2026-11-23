@@ -98,7 +98,7 @@ The spec is `complex-span`; the package is `operation-span` (PACKAGE-STANDARD §
 
 ### Typed values the package does not express
 
-- `stimulus_language` (Portuguese, Dutch, German): option missing. The package has no word or sentence lists; own words go in `stimulus_set.memorandum: { words }` (which is expressible, and checked with a stand-in pool).
+- `stimulus_language` (Portuguese, Dutch, German): option missing. The package has no word or sentence lists; own words go in `stimulus_set.memorandum` as a set (which is expressible: the spec's `words` maps to a stand-in set of 16 English words, `WORD_POOL` in `reproduction/adapter.ts`, which the presets for S034 and S043 carry inline and label as a stand-in). `letters` and `digits` map to the bundled `utils.stimuli.letters` and `utils.stimuli.digits`, which presets write as `{"$util": ...}` references.
 - `stimulus_set` memoranda `grid_locations` and `arrows` (symmetry and rotation span): option missing. They need spatial memoranda and a matching recall input.
 - `stimulus_set` source `sentence_final_word` (reading span): option missing; needs the sentence processing task.
 - `processing_display_format: equation_and_memorandum_same_screen` (S039, lab): option missing.

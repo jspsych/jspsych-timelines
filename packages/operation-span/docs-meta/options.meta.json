@@ -1721,7 +1721,7 @@
     {
       "id": "S006",
       "label": "Unsworth et al. 2005, Behavior Research Methods",
-      "description": "reference-impl · no setting · 21 spec options · uses a calibrated deadline (mean + SD of the practice RTs): the package default, code-only, so not set here · memoranda: the package's letters",
+      "description": "reference-impl · no setting · 21 spec options · uses a calibrated deadline (mean + SD of the practice RTs): the package default, code-only, so not set here · memoranda: the package's letters, the 12 consonants of the Engle-lab task (S006)",
       "options": {
         "block_order": "random",
         "feedback_duration_ms": 2000,
@@ -1803,7 +1803,7 @@
     {
       "id": "S020",
       "label": "Klaus & Schriefers jsPsych reading/operation/mixed span",
-      "description": "MIT, commit 4dc9ed6 · reference-impl · no setting · 9 spec options · not expressible, left out: stimulus_language · memoranda: the package's digits",
+      "description": "MIT, commit 4dc9ed6 · reference-impl · no setting · 9 spec options · not expressible, left out: stimulus_language · memoranda: the package's digits, not necessarily the study's own list",
       "options": {
         "response_device": {
           "recall": "keyboard"
@@ -1900,7 +1900,7 @@
     {
       "id": "S028",
       "label": "Wereszczyński et al. 2025, Data in Brief",
-      "description": "empirical · online-unsupervised · 2 spec options · memoranda: the package's letters",
+      "description": "empirical · online-unsupervised · 2 spec options · memoranda: the package's letters, the 12 consonants of the Engle-lab task (S006)",
       "options": {
         "set_sizes": [
           3,

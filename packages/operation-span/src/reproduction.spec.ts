@@ -36,7 +36,9 @@ const itemsNote = (opts: any): string => {
   if (!set) return "";
   return set === WORD_POOL
     ? " · memoranda: a stand-in list of 16 English words written into the preset, not the study's words (none are reported or bundled): supply your own"
-    : ` · memoranda: the package's ${set.name}`;
+    : set === utils.stimuli.letters
+    ? " · memoranda: the package's letters, the 12 consonants of the Engle-lab task (S006)"
+    : ` · memoranda: the package's ${set.name}, not necessarily the study's own list`;
 };
 
 /** A short run for trying the task on the docs page. Not from a study; listed first. */

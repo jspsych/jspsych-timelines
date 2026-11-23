@@ -120,7 +120,7 @@ export interface OperationSpanOptions {
   stimulus_language?: "Dutch" | "German" | "Portuguese" | null;
   /**
    * Memorandum material, keyed by the task's own terms: `memorandum`, `memorandum_source`.
-   * (default: { memorandum: "letters", memorandum_source: "separate_item" } — S006)
+   * (default: { memorandum: utils.stimuli.letters, memorandum_source: "separate_item" } — S006)
    */
   stimulus_set?: StimulusSetOption;
   /**
