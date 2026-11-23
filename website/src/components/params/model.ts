@@ -151,9 +151,9 @@ function absentText(x: SchemaProp["x-jspsych"]): string | null {
 }
 
 const DEFAULT_SOURCES: Record<string, string> = {
-  anchor: "the anchor configuration (PEBL flanker battery, S019)",
+  anchor: "the anchor configuration (the reference study the package follows)",
   fill: "the most common value in the literature (the anchor does not set it)",
-  exception: "a documented change from the anchor (packages/flanker/DEFAULTS.md)",
+  exception: "a documented change from the anchor (see the package's DEFAULTS.md)",
 };
 
 export function itemsOf(schema: OptionsSchema): ParamItem[] {
