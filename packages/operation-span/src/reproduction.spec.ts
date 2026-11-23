@@ -126,8 +126,8 @@ defineReproduction({
             options: opts,
           };
         })
-        // at least two values the study reported (assumed companion settings do not count)
-        .filter((p) => p.expressible >= 2)
+        // at least one value the study reported (assumed companion settings do not count; PACKAGE-STANDARD §12)
+        .filter((p) => p.expressible >= 1)
         .map(({ expressible: _e, ...p }) => p),
     ];
     fs.writeFileSync(metaPath, JSON.stringify(m, null, 2) + "\n");

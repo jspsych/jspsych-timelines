@@ -12,7 +12,8 @@ import type {
   ConfigEntry as GenericConfigEntry,
 } from "@jspsych-timelines/testing";
 
-import type { SelfOrderedPointingOptions } from "../src/options";
+import type { SelfOrderedPointingOptions, StimulusSet } from "../src/options";
+import { stimuli } from "../src/sets";
 
 export type Adapted = GenericAdapted<SelfOrderedPointingOptions>;
 export type ConfigEntry = GenericConfigEntry<SelfOrderedPointingOptions>;
@@ -38,6 +39,14 @@ export const POSITION_RULES: Record<string, SelfOrderedPointingOptions> = {
   detect_strategy_and_remind: { position_repeat_rule: "detect_and_remind" },
 };
 
+/** The spec's stimulus-set values, as the bundled sets (utils.stimuli). */
+export const STIMULUS_SETS: Record<string, StimulusSet> = {
+  abstract_designs: stimuli.abstractDesigns,
+  representational_drawings: stimuli.representationalDrawings,
+  words: stimuli.words,
+  nonwords: stimuli.nonwords,
+};
+
 /** Practice needs to run for a practice-phase value to be observable. */
 const PRACTICE_RUNS: SelfOrderedPointingOptions = { practice_trials: 2 };
 
@@ -60,12 +69,12 @@ export function adapt(
       return ok({ stimulus_layout: value });
     case "stimulus_set":
       if (sub === "pool") return ok({ stimulus_set: { pool: value } });
-      if (value === "representational_drawings")
-        return gap(
-          "option missing",
-          "no licensed drawing set is bundled (S024's drawings are proprietary); supply your own with stimulus_set.items: { images: [...] }"
-        );
-      return ok({ stimulus_set: { items: value } });
+      return STIMULUS_SETS[value]
+        ? ok({ stimulus_set: { items: STIMULUS_SETS[value] } })
+        : gap(
+            "option missing",
+            `no bundled stimulus set for "${value}"; pass your own set as stimulus_set.items`
+          );
     case "rearrangement_rule":
       return ok({ rearrangement_rule: value });
     case "block_order":

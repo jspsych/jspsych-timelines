@@ -6,8 +6,6 @@ export const TASK_CLASS = "jspsych-timelines-self-ordered-pointing";
 /** Added to the display element on the screens whose stage is the item grid (the plugin's button group). */
 export const PICK_CLASS = `${TASK_CLASS}-pick`;
 
-/** Most items in the built-in pools (abstract designs, words, nonwords). */
-export const POOL_SIZE = 48;
 /** Largest grid the layout is built for. */
 export const MAX_SET_SIZE = 12;
 

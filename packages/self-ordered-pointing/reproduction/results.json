@@ -3,8 +3,8 @@
     "observed_values_total": 85,
     "typed_values_total": 81,
     "level1_distinct_cases": 45,
-    "level1_checked": 38,
-    "level1_not_expressible": 7,
+    "level1_checked": 39,
+    "level1_not_expressible": 6,
     "level1_labelled_additions": 1,
     "level2_configs": 11,
     "level2_fully_expressible": 7
@@ -107,7 +107,9 @@
       "kind": "behaviour",
       "options": {
         "stimulus_set": {
-          "items": "abstract_designs"
+          "items": {
+            "$util": "stimuli.abstractDesigns"
+          }
         }
       }
     },
@@ -125,9 +127,15 @@
         "representational_drawings"
       ],
       "labelledAddition": false,
-      "status": "not expressible",
-      "gap": "option missing",
-      "reason": "no licensed drawing set is bundled (S024's drawings are proprietary); supply your own with stimulus_set.items: { images: [...] }"
+      "status": "checked",
+      "kind": "behaviour",
+      "options": {
+        "stimulus_set": {
+          "items": {
+            "$util": "stimuli.representationalDrawings"
+          }
+        }
+      }
     },
     {
       "option": "stimulus_set",
@@ -146,7 +154,9 @@
       "kind": "behaviour",
       "options": {
         "stimulus_set": {
-          "items": "words"
+          "items": {
+            "$util": "stimuli.words"
+          }
         }
       }
     },
@@ -166,7 +176,9 @@
       "kind": "behaviour",
       "options": {
         "stimulus_set": {
-          "items": "nonwords"
+          "items": {
+            "$util": "stimuli.nonwords"
+          }
         }
       }
     },

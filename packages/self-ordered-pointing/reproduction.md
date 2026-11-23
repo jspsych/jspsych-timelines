@@ -15,14 +15,14 @@ This file is generated. Commentary that belongs to the package goes in `reproduc
 | Typed with value `null` (absent), skipped | 2 | |
 | Typed with value `null` that mean "until response" or "untimed", **added** as labelled additions | 4 | 1 |
 | Cases in level 1 | 79 | 45 |
-| Expressible and checked | 69 (87.3%) | 38 (84.4%) |
-| Not expressible | 10 | 7 |
+| Expressible and checked | 72 (91.1%) | 39 (86.7%) |
+| Not expressible | 7 | 6 |
 
-Of all 85 rows, 69 (81.2%) are expressible and checked. The 38 checked cases split by what the check can see:
+Of all 85 rows, 72 (84.7%) are expressible and checked. The 39 checked cases split by what the check can see:
 
 | Check kind | Cases | What it asserts |
 |---|---|---|
-| Behaviour | 35 | Counts per phase and block, exact condition counts, rows present or absent, timeouts under forced slow RTs, keys, device, mapping across seeds |
+| Behaviour | 36 | Counts per phase and block, exact condition counts, rows present or absent, timeouts under forced slow RTs, keys, device, mapping across seeds |
 | Recorded parameter | 1 | A duration, interval or spacing equals the value in the data row and in the plugin parameter. Both come from one variable and the data-only simulator ignores time, so this proves the value arrived, not that the browser times it. |
 | Structure | 2 | The rendered HTML or built timeline contains it: colours, sizes, positions, instruction sentences, plugins and their parameters |
 
@@ -56,11 +56,10 @@ Companion settings that a configuration needed but did not state count as expres
 
 Classes: package fix needed, option missing, plugin needed, dossier value wrong, genuinely contradictory.
 
-### Typed values the package cannot express (7 cases)
+### Typed values the package cannot express (6 cases)
 
 | Option / value | Sources | Class | Why |
 |---|---|---|---|
-| `stimulus_set: representational_drawings` | S024, S055, S056 | option missing | no licensed drawing set is bundled (S024's drawings are proprietary); supply your own with stimulus_set.items: { images: [...] } |
 | `adaptive: irt_cat` | S040 | option missing | "irt_cat" needs an item bank (irt_cat) or a discontinue rule with no count in the spec (ascending_until_fail) |
 | `adaptive: ascending_until_fail` | S056 | option missing | "ascending_until_fail" needs an item bank (irt_cat) or a discontinue rule with no count in the spec (ascending_until_fail) |
 | `instruction_language: Chinese` | S019 | option missing | "Chinese": the language of the instructions is the `text` option; no translation is bundled |
@@ -68,7 +67,7 @@ Classes: package fix needed, option missing, plugin needed, dossier value wrong,
 | `instruction_language: French` | S009 | option missing | "French": the language of the instructions is the `text` option; no translation is bundled |
 | `population_protocol: child` | S056, S008 | option missing | "child": the preschool protocol needs picture cards, pre-training and a discontinue rule with no count in the spec |
 
-By class: option missing 7.
+By class: option missing 6.
 
 ### Untyped values (4 rows, not attempted)
 
@@ -85,7 +84,7 @@ By class: option missing 7.
 
 **Languages.** `instruction_language` (Chinese, Portuguese, French) is not an option: the language of the instructions is the `text` option and no translation is bundled. S008, S009 and S019 therefore show a gap for that key.
 
-**Representational drawings.** S024, S055 and S056 used drawings; no licensed set is bundled, so `stimulus_set.items: "representational_drawings"` throws and the value is a gap. Your own images go in `{ images: [...] }`.
+**Stimulus sets.** The spec's values (`abstract_designs`, `representational_drawings`, `words`, `nonwords`) map to the bundled sets in `utils.stimuli` (`STIMULUS_SETS` in the adapter). Every bundled set stands in for a study's own items: the presets say so in their description, and for the drawings (S024, S055, S056) that they are substitutes (outline drawings from Lucide, see DEFAULTS.md). `results.json` and the presets write a bundled set as a `{"$util": ...}` reference.
 
 **Not attempted.** `terminate_on_repeat` (S056, untyped, no count given) is deferred. IRT-CAT and ascending-until-fail (S040, S056) and the preschool protocol are gaps, not partial implementations.
 

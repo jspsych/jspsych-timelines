@@ -11,7 +11,7 @@
 import { Check, CheckSet, distinct, extendCheck, sharedChecks } from "@jspsych-timelines/testing";
 
 import type { ResolvedOptions, SelfOrderedPointingOptions } from "../src/options";
-import { gridDims } from "../src/stimuli";
+import { buildPool, gridDims } from "../src/stimuli";
 import { rowsOf } from "./harness";
 import type { Run } from "./harness";
 
@@ -41,9 +41,6 @@ function expectCompleteSeries(rows: any[]) {
     });
   }
 }
-
-const itemKind = (id: string) =>
-  id.startsWith("design-") ? "design" : id.startsWith("image-") ? "image" : "text";
 
 const spanOnly: Record<string, SoptCheck> = {
   set_sizes: {
@@ -139,24 +136,17 @@ const spanOnly: Record<string, SoptCheck> = {
     kind: "behaviour",
     fn: (r) => {
       const { items, pool } = r.eff.stimulus_set;
-      const kind =
-        typeof items === "object"
-          ? "words" in items
-            ? "text"
-            : "image"
-          : items === "abstract_designs"
-          ? "design"
-          : "text";
+      // every item shown comes from the set, and the rows name the set
+      const poolIds = new Set(buildPool(items).map((it) => it.id));
       const bySize = new Map<number, Set<string>>();
       for (const x of test(r)) {
-        x.item_arrangement.forEach((id: string) => expect(itemKind(id)).toBe(kind));
+        expect(x.stimulus_set).toBe(items.name ?? "custom");
+        x.item_arrangement.forEach((id: string) => expect(poolIds.has(id)).toBe(true));
         const s = bySize.get(x.set_size) ?? new Set<string>();
         x.item_arrangement.forEach((id: string) => s.add(id));
         bySize.set(x.set_size, s);
       }
       for (const [size, set] of bySize) expect(set.size).toBe(size);
-      if (typeof items === "string" && items !== "abstract_designs")
-        for (const set of bySize.values()) set.forEach((id) => expect(id).toMatch(/^[a-z]+$/));
       const sets = [...bySize.entries()].sort((a, b) => a[0] - b[0]);
       if (pool === "nested_first_n") {
         // each smaller set is contained in the next larger one

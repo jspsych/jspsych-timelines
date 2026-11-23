@@ -5,50 +5,15 @@
 import type { JsPsych } from "jspsych";
 
 import { PICK_CLASS, TASK_CLASS } from "./constants";
-import type { DurationOrJitter, ItemSet, ResolvedOptions } from "./options";
-import { DESIGN_PATHS } from "./shapes";
-import { NONWORDS, WORDS } from "./wordlists";
+import type { DurationOrJitter, ResolvedOptions } from "./options";
+import type { Item } from "./sets";
 
 export const cls = (name: string) => `${TASK_CLASS}-${name}`;
 
 // -- items ----------------------------------------------------------------------------------------
 
-export interface Item {
-  /** Stable identity, recorded as `chosen_item_id`. */
-  id: string;
-  kind: "design" | "text" | "image";
-  /** SVG path (design), the text (text), or the URL (image). */
-  content: string;
-}
-
-/** The whole pool of an item set, in its fixed order. */
-export function buildPool(set: ItemSet): Item[] {
-  if (set === "abstract_designs") {
-    return DESIGN_PATHS.map((d, i) => ({
-      id: `design-${String(i + 1).padStart(2, "0")}`,
-      kind: "design",
-      content: d,
-    }));
-  }
-  if (set === "words") return WORDS.map((w) => ({ id: w, kind: "text", content: w }));
-  if (set === "nonwords") return NONWORDS.map((w) => ({ id: w, kind: "text", content: w }));
-  if (typeof set === "object" && "words" in set)
-    return set.words.map((w) => ({ id: w, kind: "text", content: w }));
-  if (typeof set === "object" && "images" in set)
-    return set.images.map((u, i) => ({ id: `image-${i + 1}`, kind: "image", content: u }));
-  throw new Error(
-    `self-ordered-pointing: stimulus_set.items: ${JSON.stringify(set)} is not implemented.`
-  );
-}
-
-/** The noun the instructions use for one item of the set, and its plural. */
-export function itemNouns(set: ItemSet): { singular: string; plural: string } {
-  if (set === "abstract_designs") return { singular: "design", plural: "designs" };
-  if (set === "words" || (typeof set === "object" && "words" in set))
-    return { singular: "word", plural: "words" };
-  if (set === "nonwords") return { singular: "made-up word", plural: "made-up words" };
-  return { singular: "picture", plural: "pictures" };
-}
+export type { Item } from "./sets";
+export { buildPool, itemNouns } from "./sets";
 
 /** Which items each context (walkthrough, practice size, test size) gets. */
 export interface ItemAssignment {
@@ -175,8 +140,9 @@ const esc = (s: string) =>
 
 /** The content of an item button. */
 export function renderItem(item: Item): string {
-  if (item.kind === "design")
-    return `<svg viewBox="0 0 100 100" aria-hidden="true" focusable="false"><path d="${item.content}" fill="currentColor"/></svg>`;
+  // the markup is the set author's own; the button carries the accessible name
+  if (item.kind === "svg")
+    return item.content.replace(/^\s*<svg\b/i, '<svg aria-hidden="true" focusable="false"');
   if (item.kind === "image") return `<img src="${esc(item.content)}" alt="" draggable="false">`;
   return `<span class="${cls("item-text")}">${esc(item.content)}</span>`;
 }

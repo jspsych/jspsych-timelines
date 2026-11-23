@@ -339,6 +339,7 @@ export function createPickTrial(a: PickArgs) {
       phase: a.phase,
       part: a.part,
       set_size: n,
+      stimulus_set: o.stimulus_set.items.name ?? "custom",
       stimulus_layout: o.stimulus_layout,
       rearrangement_rule: o.rearrangement_rule,
       response_device: o.response_device,

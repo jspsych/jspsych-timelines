@@ -147,6 +147,7 @@
     "stimulus_set": {
       "x-jspsych": {
         "group": "stimulus",
+        "widget": "bundle",
         "advanced": false,
         "vocabulary": "stimulus_set",
         "phaseOverridable": false,
@@ -1089,9 +1090,21 @@
       }
     },
     {
+      "id": "S005",
+      "label": "Petrides & Milner 1982, Neuropsychologia",
+      "description": "empirical · no setting · 1 spec options · items: the package's words, not the study's own",
+      "options": {
+        "stimulus_set": {
+          "items": {
+            "$util": "stimuli.words"
+          }
+        }
+      }
+    },
+    {
       "id": "S010",
       "label": "Geva et al. 2016, Developmental Cognitive Neuroscience",
-      "description": "empirical · lab-native · 7 spec options",
+      "description": "empirical · lab-native · 7 spec options · items: the package's abstract designs, not the study's own",
       "options": {
         "rearrangement_rule": "full_reshuffle_each_page",
         "position_repeat_rule": "instructed",
@@ -1106,7 +1119,9 @@
         "stimulus_layout": "fixed_grid_slots",
         "stimulus_set": {
           "pool": "distinct_per_set_size",
-          "items": "abstract_designs"
+          "items": {
+            "$util": "stimuli.abstractDesigns"
+          }
         },
         "trials_per_condition": 3
       }
@@ -1127,7 +1142,7 @@
     {
       "id": "S014",
       "label": "Cox et al. 2014, Intelligence",
-      "description": "empirical · lab-native · 7 spec options",
+      "description": "empirical · lab-native · 7 spec options · items: the package's abstract designs, not the study's own",
       "options": {
         "rearrangement_rule": "partial_reshuffle_each_page",
         "response_device": "touch",
@@ -1137,7 +1152,9 @@
         ],
         "stimulus_layout": "fixed_grid_slots",
         "stimulus_set": {
-          "items": "abstract_designs"
+          "items": {
+            "$util": "stimuli.abstractDesigns"
+          }
         },
         "trials_per_condition": 3
       }
@@ -1145,7 +1162,7 @@
     {
       "id": "S019",
       "label": "reference implementation",
-      "description": "reference-impl · no setting · 16 spec options · not expressible, left out: instruction_language",
+      "description": "reference-impl · no setting · 16 spec options · not expressible, left out: instruction_language · items: the package's abstract designs, not the study's own",
       "options": {
         "adaptive": null,
         "block_order": "ascending",
@@ -1165,7 +1182,9 @@
         "stimulus_layout": "fixed_grid_slots",
         "stimulus_set": {
           "pool": "nested_first_n",
-          "items": "abstract_designs"
+          "items": {
+            "$util": "stimuli.abstractDesigns"
+          }
         },
         "trial_feedback": "none",
         "trials_per_condition": 3
@@ -1174,7 +1193,7 @@
     {
       "id": "S024",
       "label": "Inquisit SOPT",
-      "description": "proprietary, licence-included · reference-impl · no setting · 8 spec options · not expressible, left out: stimulus_set.item_stimulus_set",
+      "description": "proprietary, licence-included · reference-impl · no setting · 8 spec options · items: substitute drawings (the package's outline drawings from Lucide), not the study's own pictures",
       "options": {
         "adaptive": null,
         "block_order": "ascending",
@@ -1187,13 +1206,18 @@
           10,
           12
         ],
+        "stimulus_set": {
+          "items": {
+            "$util": "stimuli.representationalDrawings"
+          }
+        },
         "trials_per_condition": 3
       }
     },
     {
       "id": "S030",
       "label": "Streamlit launcher for an online SOPT (no licence file) at e3c730a",
-      "description": "reference-impl · no setting · 2 spec options",
+      "description": "reference-impl · no setting · 2 spec options · items: the package's nonwords, not the study's own",
       "options": {
         "set_sizes": [
           4,
@@ -1203,14 +1227,16 @@
           12
         ],
         "stimulus_set": {
-          "items": "nonwords"
+          "items": {
+            "$util": "stimuli.nonwords"
+          }
         }
       }
     },
     {
       "id": "S034",
       "label": "Sturm et al. 2026, Journal of Clinical and Experimental Neuropsychology",
-      "description": "empirical · online-unsupervised · 3 spec options",
+      "description": "empirical · online-unsupervised · 3 spec options · items: the package's abstract designs, not the study's own",
       "options": {
         "rearrangement_rule": "full_reshuffle_each_page",
         "set_sizes": [
@@ -1219,7 +1245,9 @@
           12
         ],
         "stimulus_set": {
-          "items": "abstract_designs"
+          "items": {
+            "$util": "stimuli.abstractDesigns"
+          }
         }
       }
     },
@@ -1270,7 +1298,7 @@
     {
       "id": "S054",
       "label": "Silman et al. 2022, International Journal of Environmental Research and Public Health",
-      "description": "empirical · lab-native · 8 spec options",
+      "description": "empirical · lab-native · 8 spec options · items: the package's abstract designs, not the study's own",
       "options": {
         "block_order": "ascending",
         "practice": {
@@ -1287,7 +1315,9 @@
         ],
         "stimulus_layout": "free_positions_in_area",
         "stimulus_set": {
-          "items": "abstract_designs"
+          "items": {
+            "$util": "stimuli.abstractDesigns"
+          }
         },
         "trials_per_condition": 2
       }
@@ -1295,20 +1325,25 @@
     {
       "id": "S055",
       "label": "Hahn et al. 2012, Developmental Science",
-      "description": "empirical · lab-native · 4 spec options · not expressible, left out: stimulus_set.item_stimulus_set",
+      "description": "empirical · lab-native · 4 spec options · items: substitute drawings (the package's outline drawings from Lucide), not the study's own pictures",
       "options": {
         "position_repeat_rule": "enforced",
         "position_repeat_max": 2,
         "set_sizes": [
           12
         ],
+        "stimulus_set": {
+          "items": {
+            "$util": "stimuli.representationalDrawings"
+          }
+        },
         "trials_per_condition": 1
       }
     },
     {
       "id": "S056",
       "label": "Deng et al. 2025, Frontiers in Psychology",
-      "description": "empirical · lab-native · 6 spec options · not expressible, left out: adaptive.procedure, error_correction_procedure, population_protocol, stimulus_set.item_stimulus_set · assumed, not reported: practice_trials",
+      "description": "empirical · lab-native · 6 spec options · not expressible, left out: adaptive.procedure, error_correction_procedure, population_protocol · assumed, not reported: practice_trials · items: substitute drawings (the package's outline drawings from Lucide), not the study's own pictures",
       "options": {
         "practice_trials": 2,
         "practice": {
@@ -1321,7 +1356,12 @@
           3,
           4,
           5
-        ]
+        ],
+        "stimulus_set": {
+          "items": {
+            "$util": "stimuli.representationalDrawings"
+          }
+        }
       }
     }
   ],

@@ -1,3 +1,16 @@
+import * as fs from "fs";
+import * as path from "path";
+
+import { isGap } from "./adapter";
+import type { Adapted, ConfigEntry, ReproductionAdapter } from "./adapter";
+import type { CheckSet } from "./checks/types";
+import { missingContract } from "./checks/types";
+import type { DataContract } from "./contract";
+import { collectCases, rawValuesFor } from "./fixture";
+import type { Case, Fixture, StudyConfiguration } from "./fixture";
+import type { Harness, Run } from "./harness";
+import { writeReproductionMd } from "./report";
+import type { CheckKind, GapClass } from "./types";
 /**
  * Runners for literature reproduction.
  *
@@ -12,19 +25,7 @@
  *
  * Call `defineReproduction` from a spec file in the package (`src/reproduction.spec.ts`).
  */
-import * as fs from "fs";
-import * as path from "path";
-
-import { isGap } from "./adapter";
-import type { Adapted, ConfigEntry, ReproductionAdapter } from "./adapter";
-import type { CheckSet } from "./checks/types";
-import { missingContract } from "./checks/types";
-import type { DataContract } from "./contract";
-import { collectCases, rawValuesFor } from "./fixture";
-import type { Case, Fixture, StudyConfiguration } from "./fixture";
-import type { Harness, Run } from "./harness";
-import { writeReproductionMd } from "./report";
-import type { CheckKind, GapClass } from "./types";
+import { toUtilRefs } from "./util-refs";
 
 export interface Tallies {
   observed_values_total: number;
@@ -102,6 +103,11 @@ export interface ReproductionConfig<O = any, E = any> {
   onUpdate?: (results: ReproductionResults) => void;
   /** Default: `process.env.UPDATE_REPRODUCTION` is set. */
   update?: boolean;
+  /**
+   * The package's `utils`. When given, `results.json` writes a bundled stimulus set in the options as a
+   * `{"$util": "stimuli.<name>"}` reference (see `toUtilRefs`) instead of the whole set.
+   */
+  utils?: Record<string, unknown>;
 }
 
 const defaultCheckedOption = (key: string) =>
@@ -227,7 +233,9 @@ export function defineReproduction<O = any, E = any>(config: ReproductionConfig<
       expect(tallies).toEqual(config.expectedTallies);
       return;
     }
-    const all: ReproductionResults = { tallies, ...results };
+    const all: ReproductionResults = config.utils
+      ? toUtilRefs({ tallies, ...results }, config.utils)
+      : { tallies, ...results };
     fs.writeFileSync(
       path.join(config.dir, "expected-tallies.json"),
       JSON.stringify(tallies, null, 2) + "\n"

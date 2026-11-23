@@ -157,7 +157,19 @@ function pageHtml(globalName) {
 <link rel="stylesheet" href="/jspsych.css"></head><body>
 <script src="/jspsych.js"></script><script src="/bundle.js"></script>
 <script>
-  const options = JSON.parse(decodeURIComponent(location.hash.slice(1)) || "{}");
+  // {"$util": "stimuli.words"} names a value the package exports under utils, as on the docs site
+  const resolveRefs = (v) => {
+    if (Array.isArray(v)) return v.map(resolveRefs);
+    if (!v || typeof v !== "object") return v;
+    const keys = Object.keys(v);
+    if (keys.length === 1 && keys[0] === "$util") {
+      const target = v.$util.split(".").reduce((o, k) => (o == null ? undefined : o[k]), window.${globalName}.utils);
+      if (target === undefined) throw new Error("no utils." + v.$util);
+      return target;
+    }
+    return Object.fromEntries(keys.map((k) => [k, resolveRefs(v[k])]));
+  };
+  const options = resolveRefs(JSON.parse(decodeURIComponent(location.hash.slice(1)) || "{}"));
   const jsPsych = initJsPsych({ on_finish: () => { document.body.dataset.done = "1"; } });
   jsPsych.run([window.${globalName}.createTimeline(jsPsych, options)]);
 </script></body></html>`;

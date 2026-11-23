@@ -14,8 +14,9 @@ import {
   DEFAULT_POSITION_REPEAT_MAX,
   DEFAULT_RESHUFFLE_PROPORTION,
   MAX_SET_SIZE,
-  POOL_SIZE,
 } from "./constants";
+import { abstractDesigns, asStimulusSet, setProblems } from "./sets";
+import type { Stimulus, StimulusSet } from "./sets";
 import type { TextConfig } from "./text";
 
 // -- value types --------------------------------------------------------------------------------
@@ -23,23 +24,19 @@ import type { TextConfig } from "./text";
 /** Fixed duration, or a uniform jitter range sampled in `step` increments. */
 export type DurationOrJitter = number | { min: number; max: number; step?: number };
 
-/** What the items are. */
-export type ItemSet =
-  | "abstract_designs"
-  | "representational_drawings"
-  | "words"
-  | "nonwords"
-  | { words: string[] }
-  | { images: string[] };
+export type { Stimulus, StimulusSet } from "./sets";
 
-export interface StimulusSet {
+/** The `stimulus_set` option: which items, and how the set sizes share them. */
+export interface StimulusSetOption {
   /**
-   * The items. "abstract_designs": this package's own random polygons (seeded Attneave-style, 48 in the pool);
-   * "words": 48 common concrete nouns; "nonwords": 48 pronounceable nonwords; `{ words: [...] }`: your own text
-   * items; `{ images: [...] }`: your own image URLs. "representational_drawings" is not implemented (no licensed drawing set is bundled).
-   * (default: "abstract_designs" — S019, S010, S034, S054, S014)
+   * The items: a stimulus set (`{ name?, noun?, items }`) or a plain array of items. The bundled sets are
+   * `utils.stimuli.abstractDesigns` (48 random polygons original to this package), `utils.stimuli.representationalDrawings`
+   * (48 outline drawings of everyday objects, from Lucide), `utils.stimuli.words` (48 common concrete nouns) and
+   * `utils.stimuli.nonwords` (48 pronounceable nonwords). Your own set takes strings (text items) or objects with
+   * one of `text`, `image` (a URL) or `svg` (markup), each with an optional `id`.
+   * (default: utils.stimuli.abstractDesigns — S019, S010, S034, S054, S014)
    */
-  items?: ItemSet;
+  items?: StimulusSet | readonly Stimulus[];
   /**
    * Which items each set size uses. "nested_first_n": the first N items of one pool (a set of 6 is the first 6 of the set of 12; S019).
    * "distinct_per_set_size": every set size gets its own items, so no item reappears across sizes (S010, S053).
@@ -97,7 +94,7 @@ export interface SelfOrderedPointingOptions {
    * The items, keyed by the task's own terms: `items` and `pool`.
    * (default: { items: "abstract_designs", pool: "nested_first_n" } — S019)
    */
-  stimulus_set?: StimulusSet;
+  stimulus_set?: StimulusSetOption;
   /**
    * What moves between pages. "full_reshuffle_each_page": a new random arrangement on every page (never the same as the page before);
    * "partial_reshuffle_each_page": only some of the items change places after each pick (S014), so some spatial cues remain.
@@ -234,7 +231,7 @@ export const PHASE_OPTIONS = [
 const TEST_ONLY = ["set_sizes", "block_order"];
 
 export type ResolvedOptions = Required<Omit<SelfOrderedPointingOptions, "practice" | "text">> & {
-  stimulus_set: Required<StimulusSet>;
+  stimulus_set: { items: StimulusSet; pool: NonNullable<StimulusSetOption["pool"]> };
 };
 
 export const DEFAULT_OPTIONS: ResolvedOptions & { practice: Partial<SelfOrderedPointingOptions> } =
@@ -243,7 +240,7 @@ export const DEFAULT_OPTIONS: ResolvedOptions & { practice: Partial<SelfOrderedP
     response_window_ms: null,
     feedback_duration_ms: 800,
     stimulus_layout: "fixed_grid_slots",
-    stimulus_set: { items: "abstract_designs", pool: "nested_first_n" },
+    stimulus_set: { items: abstractDesigns, pool: "nested_first_n" },
     rearrangement_rule: "full_reshuffle_each_page",
     reshuffle_proportion: DEFAULT_RESHUFFLE_PROPORTION,
     block_order: "ascending",
@@ -328,13 +325,14 @@ export function resolveOptions(
   delete merged.practice;
   for (const [k, v] of Object.entries(layer)) if (v !== undefined) merged[k] = v;
   merged.stimulus_set = { ...DEFAULT_OPTIONS.stimulus_set, ...(layer.stimulus_set ?? {}) };
+  // a plain array of items is a set without a name; anything else is left for validateOptions to report
+  merged.stimulus_set.items = asStimulusSet(merged.stimulus_set.items) ?? merged.stimulus_set.items;
   return merged as ResolvedOptions;
 }
 
-/** Number of items a set of the items option can supply, or Infinity for the built-in pools (checked against POOL_SIZE). */
-export function poolCapacity(items: ItemSet): number {
-  if (typeof items === "object") return "words" in items ? items.words.length : items.images.length;
-  return POOL_SIZE;
+/** Number of items a set can supply. */
+export function poolCapacity(items: StimulusSet): number {
+  return items.items.length;
 }
 
 const isDuration = (v: unknown) =>
@@ -388,22 +386,16 @@ export function validateOptions(o: ResolvedOptions, phase: "practice" | "test" =
       `self-ordered-pointing: response_device: "${o.response_device}" is not implemented (mouse and touch only: the response is a click or tap on an item).`
     );
   }
-  const items = o.stimulus_set.items;
-  if (items === "representational_drawings") {
+  if (!asStimulusSet(o.stimulus_set.items)) {
     throw new Error(
-      'self-ordered-pointing: stimulus_set.items: "representational_drawings" is not implemented (no licensed drawing set is bundled); use "abstract_designs", "words", "nonwords", { words: [...] } or { images: [...] }.'
+      `self-ordered-pointing: stimulus_set.items: ${JSON.stringify(
+        o.stimulus_set.items
+      )} is not a stimulus set. Use one of utils.stimuli (abstractDesigns, representationalDrawings, words, nonwords), your own { items: [...] }, or an array of items.`
     );
   }
-  if (
-    typeof items === "object" &&
-    !(
-      ("words" in items && Array.isArray(items.words)) ||
-      ("images" in items && Array.isArray(items.images))
-    )
-  ) {
-    throw new Error(
-      "self-ordered-pointing: stimulus_set.items as an object must be { words: [...] } or { images: [...] }."
-    );
+  const problems = setProblems(o.stimulus_set.items);
+  if (problems.length) {
+    throw new Error(`self-ordered-pointing: stimulus_set.items: ${problems.join("; ")}.`);
   }
   if (!["nested_first_n", "distinct_per_set_size"].includes(o.stimulus_set.pool)) {
     throw new Error(

@@ -11,7 +11,7 @@
 import * as fs from "fs";
 import * as path from "path";
 
-import { defineReproduction } from "@jspsych-timelines/testing";
+import { defineReproduction, resolveUtilRefs, toUtilRefs } from "@jspsych-timelines/testing";
 import type { Fixture, Tallies } from "@jspsych-timelines/testing";
 import { simulateTimeline } from "@jspsych/test-utils";
 import { initJsPsych } from "jspsych";
@@ -31,10 +31,19 @@ import expected from "../reproduction/expected-tallies.json";
 import { harness } from "../reproduction/harness";
 import fixtureJson from "../reproduction/spec-observed.json";
 import { DEFAULT_OPTIONS, PHASE_OPTIONS, resolveOptions } from "./options";
-import { createTimeline } from ".";
+import { createTimeline, utils } from ".";
 
 const fixture = fixtureJson as unknown as Fixture;
 const reproductionDir = path.join(__dirname, "..", "reproduction");
+
+/** What a preset's items are: the package's bundled set stands in for the study's own items (PACKAGE-STANDARD §12). */
+const itemsNote = (opts: any): string => {
+  const set = opts?.stimulus_set?.items;
+  if (!set) return "";
+  return set === utils.stimuli.representationalDrawings
+    ? " · items: substitute drawings (the package's outline drawings from Lucide), not the study's own pictures"
+    : ` · items: the package's ${set.name.replace(/_/g, " ")}, not the study's own`;
+};
 
 /** A short run for trying the task on the docs page. Not from a study; listed first. */
 export const QUICK_DEMO_PRESET = {
@@ -69,6 +78,7 @@ defineReproduction({
   },
   checks: CHECKS,
   addNullOptions: ["response_window_ms"],
+  utils: utils as any,
   // level 2: `practice.set_sizes.practice_set_size` is one practice size, which is practice's `set_sizes`
   checkedOption: (key) => key.replace(/^practice\./, "").split(".")[0],
   reportedValue: (key, value, r) => {
@@ -79,7 +89,7 @@ defineReproduction({
       case "practice.set_sizes.practice_set_size":
         return [(r.effP as any).set_sizes, [value]];
       case "stimulus_set.item_stimulus_set":
-        return [e.stimulus_set.items, value];
+        return [e.stimulus_set.items.name, value];
       case "stimulus_set.item_pool_across_set_sizes":
         return [e.stimulus_set.pool, value];
       case "sequence_constraints":
@@ -116,12 +126,14 @@ defineReproduction({
                 Object.keys(sc.options).length
               } spec options` +
               (gaps.length ? ` · not expressible, left out: ${gaps.join(", ")}` : "") +
-              (assumed.length ? ` · assumed, not reported: ${assumed.join(", ")}` : ""),
-            options: opts,
+              (assumed.length ? ` · assumed, not reported: ${assumed.join(", ")}` : "") +
+              itemsNote(opts),
+            // JSON: a bundled stimulus set is written as a reference the docs theme resolves
+            options: toUtilRefs(opts, utils as any),
           };
         })
-        // at least two values the study reported (assumed companion settings do not count)
-        .filter((p) => p.expressible >= 2)
+        // at least one value the study reported (assumed companion settings do not count; PACKAGE-STANDARD §12)
+        .filter((p) => p.expressible >= 1)
         .map(({ expressible: _e, ...p }) => p),
     ];
     fs.writeFileSync(metaPath, JSON.stringify(m, null, 2) + "\n");
@@ -145,7 +157,7 @@ describe("defaults reproduce the TaskBeacon anchor (S019) except the documented 
     expect(o.set_sizes).toEqual(s019["set_sizes.set_sizes"]);
     expect(o.stimulus_layout).toBe(s019.stimulus_layout);
     expect(o.stimulus_set.pool).toBe(s019["stimulus_set.item_pool_across_set_sizes"]);
-    expect(o.stimulus_set.items).toBe(s019["stimulus_set.item_stimulus_set"]);
+    expect(o.stimulus_set.items.name).toBe(s019["stimulus_set.item_stimulus_set"]);
     expect(o.trial_feedback).toBe(s019.trial_feedback);
     expect(o.trials_per_condition).toBe(s019.trials_per_condition);
     expect(o.position_repeat_rule).toBe("none"); // s019.sequence_constraints is null
@@ -188,7 +200,9 @@ describe("docs-meta/options.meta.json", () => {
     expect(presets.length).toBeGreaterThan(5);
     for (const p of presets) {
       Object.keys(p.options).forEach((k) => expect([...optionNames, "practice"]).toContain(k));
-      expect(() => createTimeline(initJsPsych(), p.options)).not.toThrow();
+      expect(() =>
+        createTimeline(initJsPsych(), resolveUtilRefs(p.options, utils as any))
+      ).not.toThrow();
     }
   });
 

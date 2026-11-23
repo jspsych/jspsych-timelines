@@ -4,6 +4,7 @@ import { DataCollection, JsPsych, initJsPsych } from "jspsych";
 import { INSTRUCTION_MAX_ATTEMPTS, INSTRUCTION_SET_SIZE } from "./constants";
 import { SelfOrderedPointingOptions } from "./options";
 import { calculateScores } from "./scoring";
+import { stimuli } from "./sets";
 import { createTimeline, timelineUnits } from ".";
 
 async function run(jsPsych: JsPsych, options: SelfOrderedPointingOptions) {
@@ -200,7 +201,7 @@ describe("instruction walkthrough (interactive)", () => {
     it("describes the stimulus and the response as configured: words, touch, partial reshuffle", async () => {
       const { displayElement } = await walk({
         ...SMALL,
-        stimulus_set: { items: "words" },
+        stimulus_set: { items: stimuli.words },
         response_device: "touch",
         rearrangement_rule: "partial_reshuffle_each_page",
       });
@@ -222,7 +223,7 @@ describe("instruction walkthrough (interactive)", () => {
       );
       expect(words.every((w) => /^[a-z]+$/.test(w!))).toBe(true);
       const ctx = timelineUnits.createContext(jsPsych, {
-        stimulus_set: { items: "words" },
+        stimulus_set: { items: stimuli.words },
         response_device: "touch",
         rearrangement_rule: "partial_reshuffle_each_page",
       });
@@ -237,7 +238,7 @@ describe("instruction walkthrough (interactive)", () => {
 
     it("the instruction pages follow the resolved options: nothing describes the default design", () => {
       const ctx = timelineUnits.createContext(jsPsych, {
-        stimulus_set: { items: "nonwords" },
+        stimulus_set: { items: stimuli.nonwords },
         response_window_ms: 4000,
         position_repeat_rule: "enforced",
         position_repeat_max: 1,

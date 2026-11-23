@@ -1786,6 +1786,18 @@
       }
     },
     {
+      "id": "S017",
+      "label": "PsyToolkit AOSPAN",
+      "description": "reference-impl · no setting · 2 spec options · uses a calibrated deadline (mean + SD of the practice RTs): the package default, code-only, so not set here · assumed, not reported: response_device.recall, response_format",
+      "options": {
+        "response_device": {
+          "recall": "keyboard"
+        },
+        "response_format": "free_text",
+        "recall_omission_handling": "question_mark_key"
+      }
+    },
+    {
       "id": "S020",
       "label": "Klaus & Schriefers jsPsych reading/operation/mixed span",
       "description": "MIT, commit 4dc9ed6 · reference-impl · no setting · 9 spec options · not expressible, left out: stimulus_language",
@@ -1821,6 +1833,14 @@
         "speed_accuracy_emphasis": "both",
         "stimulus_duration_ms": 1000,
         "trial_feedback": "accuracy"
+      }
+    },
+    {
+      "id": "S023",
+      "label": "Öztekin & Erçetin 2026, Journal of Psycholinguistic Research",
+      "description": "empirical · lab-native · 1 spec options",
+      "options": {
+        "trials_per_condition": 1
       }
     },
     {

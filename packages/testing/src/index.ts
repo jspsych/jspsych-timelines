@@ -20,4 +20,5 @@ export * from "./checks/schema";
 export * from "./fixture";
 export * from "./adapter";
 export * from "./reproduction";
+export * from "./util-refs";
 export { renderReproductionMd, writeReproductionMd } from "./report";

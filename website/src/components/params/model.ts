@@ -78,8 +78,26 @@ export const GROUPS: { id: string; label: string }[] = [
 ];
 const OTHER = { id: "other", label: "Other" };
 
-const fmt = (v: Json): string =>
-  v === undefined ? "—" : typeof v === "string" ? JSON.stringify(v) : JSON.stringify(v);
+/** A `{"$util": "stimuli.words"}` reference to a bundled value (PACKAGE-STANDARD §2a), shown as the code that names it. */
+const isUtilRef = (v: unknown): v is { $util: string } =>
+  typeof v === "object" &&
+  v !== null &&
+  !Array.isArray(v) &&
+  Object.keys(v).length === 1 &&
+  typeof (v as any).$util === "string";
+
+/** JSON, except that references print as `utils.stimuli.words` (unquoted). */
+export function stringify(v: Json, indent?: number): string {
+  const marks: string[] = [];
+  const text = JSON.stringify(
+    v,
+    (_k, x) => (isUtilRef(x) ? `\u0000${marks.push(`utils.${x.$util}`) - 1}\u0000` : x),
+    indent
+  );
+  return text.replace(/"\\u0000(\d+)\\u0000"/g, (_m, i) => marks[Number(i)]);
+}
+
+const fmt = (v: Json): string => (v === undefined ? "—" : stringify(v));
 
 /** A compact one-line rendering of a value, for defaults and observed values. */
 export function short(v: Json, max = 48): string {
@@ -93,7 +111,8 @@ function typeOf(p: SchemaProp, depth = 0): string {
     // the branches may be nested one level (a named DurationOrJitter type inside a wider union)
     const branches = (p.anyOf ?? p.oneOf ?? []).flatMap((b) => [b, ...(b.anyOf ?? b.oneOf ?? [])]);
     const nullable =
-      [p.type ?? []].flat().includes("null") || branches.some((b) => [b.type ?? []].flat().includes("null"));
+      [p.type ?? []].flat().includes("null") ||
+      branches.some((b) => [b.type ?? []].flat().includes("null"));
     const jitter = branches.some((b) => b.type === "object");
     return ["ms", jitter && "{min, max, step}", nullable && "null"].filter(Boolean).join(" | ");
   }
@@ -160,8 +179,8 @@ export function itemsOf(schema: OptionsSchema): ParamItem[] {
           : p.default === undefined
           ? "—"
           : typeof p.default === "object" && p.default !== null
-          ? JSON.stringify(p.default, null, 2)
-          : JSON.stringify(p.default),
+          ? stringify(p.default, 2)
+          : stringify(p.default),
       summary: firstSentence(description),
       description,
       phaseOverridable: x.phaseOverridable === true,

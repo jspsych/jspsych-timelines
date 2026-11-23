@@ -63,7 +63,16 @@ From a CDN:
 
 **A page.** A blank screen (250 ms), then the N items in a grid. The grid is the stage: it stays at the vertical centre of the display and fits a 390 px wide phone and a 430 px tall run area. The participant clicks (mouse) or taps (touch) one item, and the next page follows. The pick is a position on screen; the package maps it to the item that sat there and decides from the series' history whether it is a repeat. After N pages the series is over. A page opens each series, so participants know the memory restarts. By default nothing marks the picked items and there is no feedback, as in the reference implementation.
 
-**Items.** The default items are this package's own abstract designs: 48 random polygons (7 to 10 vertices, Attneave style), generated once with a seeded generator and committed as data, so every run draws the same pool. The designs of Petrides and Milner (1982) are not used, because their licence is unclear. Other item sets: 48 common concrete nouns (`"words"`), 48 pronounceable nonwords (`"nonwords"`), your own text (`{ words: [...] }`) or your own images (`{ images: [...] }`). The Inquisit drawings of S024 are proprietary and no drawing set is bundled (`"representational_drawings"` throws).
+**Items.** `stimulus_set.items` takes a stimulus set, which is data: the package's bundled sets are values in `utils.stimuli`, and your own set is the same shape. The bundled sets:
+
+| Set | Items |
+|---|---|
+| `utils.stimuli.abstractDesigns` (default) | 48 random polygons (7 to 10 vertices, Attneave style), generated once with a seeded generator and committed as data, so every run draws the same pool. The designs of Petrides and Milner (1982) are not used, because their licence is unclear. |
+| `utils.stimuli.representationalDrawings` | 48 outline drawings of nameable everyday objects (animals, food, tools, household items, vehicles, clothing, instruments), from the [Lucide](https://lucide.dev) icon set (ISC licence). They are icon-style line drawings, not a normed picture set: the Snodgrass and Vanderwart style sets used in the literature have no open licence, and Inquisit's drawings (S024) are proprietary. |
+| `utils.stimuli.words` | 48 common concrete nouns |
+| `utils.stimuli.nonwords` | 48 pronounceable nonwords |
+
+Your own set is `{ name, noun, items }`, or just the array of items. An item is a string (a text item) or an object with one of `text`, `image` (a URL) or `svg` (SVG markup), and an optional `id`, which the data records as `chosen_item_id` (the default is the text, or the set's name and the item's position). `name` is recorded as `stimulus_set` on every pick row. `noun` (`{ singular, plural }`) is what the instructions call the items; without it they say "word" for a set of text items and "picture" otherwise. The order of `items` matters for `pool: "nested_first_n"`, which takes the first N. In a preset or a shared link, which are JSON, a bundled set is written `{ "$util": "stimuli.words" }`, and the Code view shows it as `utils.stimuli.words`.
 
 **Which items each set has.** `stimulus_set.pool`: `"nested_first_n"` (default, as in the reference implementation) makes every set the first N items of the pool, so a set of 6 is contained in the set of 12; `"distinct_per_set_size"` gives every set size its own items (Geva et al., 2016; Johnson et al., 2024), so no item reappears across sizes. The items of a set size are the same in all its series; only their positions change.
 
@@ -77,7 +86,7 @@ From a CDN:
 
 **Timing.** The task is untimed in every source (`response_window_ms: null`). A number or `{min, max, step}` limits each pick; a miss records no pick (`timeout: true`, `response: null`), the page is not repeated and the item stays unpicked.
 
-**Not implemented (throws, naming the option).** `adaptive` other than null (S040's IRT-CAT, S056's ascending-until-fail), `error_correction_procedure` other than `"none"`, `population_protocol` other than `"standard"` (the preschool protocol needs picture cards, pre-training and a discontinue rule that the spec gives no count for), `response_device` other than mouse and touch, keyboard and other devices, `trial_feedback` other than `"accuracy"` and `"none"`, `stimulus_set.items: "representational_drawings"`, `block_order: "counterbalanced"` and `"alternating"`. The language of the instructions is the `text` option (see Translation).
+**Not implemented (throws, naming the option).** `adaptive` other than null (S040's IRT-CAT, S056's ascending-until-fail), `error_correction_procedure` other than `"none"`, `population_protocol` other than `"standard"` (the preschool protocol needs picture cards, pre-training and a discontinue rule that the spec gives no count for), `response_device` other than mouse and touch, keyboard and other devices, `trial_feedback` other than `"accuracy"` and `"none"`, `block_order: "counterbalanced" and `"alternating"`. The language of the instructions is the `text` option (see Translation).
 
 ## Parameters
 
@@ -114,10 +123,29 @@ const { timeline } = createTimeline(jsPsych, {
 A Petrides and Milner style position rule, enforced by the program, with words:
 
 ```javascript
+const { createTimeline, utils } = jsPsychTimelineSelfOrderedPointing;
 const { timeline } = createTimeline(jsPsych, {
-  stimulus_set: { items: "words" },
+  stimulus_set: { items: utils.stimuli.words },
   position_repeat_rule: "enforced",
   position_repeat_max: 2,
+});
+```
+
+Your own pictures, with their own ids, and the instructions calling them "photos":
+
+```javascript
+const { timeline } = createTimeline(jsPsych, {
+  stimulus_set: {
+    items: {
+      name: "my_photos",
+      noun: { singular: "photo", plural: "photos" },
+      items: [
+        { id: "beach", image: "img/beach.jpg" },
+        { id: "forest", image: "img/forest.jpg" },
+        // ... at least as many as the largest set size
+      ],
+    },
+  },
 });
 ```
 
@@ -150,7 +178,7 @@ Every row carries `task: "self-ordered-pointing"` and `task_version`. **The scor
 | `reminder` | The position reminder (`position_repeat_rule: "detect_and_remind"`) |
 | `completion` | The last screen |
 
-**Pick row (`response`).** Where it is: `block` (1…n; practice is block 1), `trial_index_in_block` (1-based position of the series in its block; in the grouped orders this is the series number within its set size), `series` (1-based in the phase), `set_size`, `set_size_trial` (the series' number among those of its set size), `choice_index` (the page within the series, 1…`set_size`). What was picked: `chosen_item_id` and `response` (the same, `null` on a timeout), `chosen_position` (1-based slot, row by row), `chosen_row`, `chosen_col`, `item_arrangement` (the item id in each slot on this page), `item_offsets` (free positions only), `previous_item_id` (the item picked on the page before, `null` on page 1 or after a timeout). Correctness from the history: `n_picked_before`, `is_repeat_error`, `correct` (a new item was picked: false for a repeat and for a timeout). The position rule: `same_position_run` (consecutive picks at this slot, including this one), `position_rule_violation` (the run exceeds `position_repeat_max`, when the rule is not `"none"`), `disabled_position` (the slot switched off under `"enforced"`). Timing: `rt`, `timeout`, `response_window`. Setup: `stimulus_layout`, `rearrangement_rule`, `response_device`. `trial_index` is jsPsych's.
+**Pick row (`response`).** Where it is: `block` (1…n; practice is block 1), `trial_index_in_block` (1-based position of the series in its block; in the grouped orders this is the series number within its set size), `series` (1-based in the phase), `set_size`, `set_size_trial` (the series' number among those of its set size), `choice_index` (the page within the series, 1…`set_size`). What was picked: `chosen_item_id` and `response` (the same, `null` on a timeout), `chosen_position` (1-based slot, row by row), `chosen_row`, `chosen_col`, `item_arrangement` (the item id in each slot on this page), `item_offsets` (free positions only), `previous_item_id` (the item picked on the page before, `null` on page 1 or after a timeout). Correctness from the history: `n_picked_before`, `is_repeat_error`, `correct` (a new item was picked: false for a repeat and for a timeout). The position rule: `same_position_run` (consecutive picks at this slot, including this one), `position_rule_violation` (the run exceeds `position_repeat_max`, when the rule is not `"none"`), `disabled_position` (the slot switched off under `"enforced"`). Timing: `rt`, `timeout`, `response_window`. Setup: `stimulus_set` (the set's `name`, `"custom"` without one), `stimulus_layout`, `rearrangement_rule`, `response_device`. `trial_index` is jsPsych's.
 
 ## Scoring
 
@@ -196,7 +224,7 @@ createTimeline(jsPsych, {
 
 ## Timeline Units
 
-`timelineUnits` holds `createContext`, `createInstructions`, `createInstructionWalkthrough`, `createTestIntro`, `createPickTrial` (one page: the grid of items and one pick), `createDisplayTrial`, `createSeries` (a series from a plan), `planSeries` (the series of a phase), `createPractice`, `createTest` and `createCompletion`. Most take the object from `createContext(jsPsych, options)`. `utils` holds `scoring`, `constants`, `text`, `stimuli` (`buildPool`, `assignItems`, `gridDims`, `nextArrangement`), `sequence` (`scheduleBlocks`, `practiceSetSizes`), `simulation` (the simulated participant, below) and `options` (`resolveOptions`, `validateOptions`).
+`timelineUnits` holds `createContext`, `createInstructions`, `createInstructionWalkthrough`, `createTestIntro`, `createPickTrial` (one page: the grid of items and one pick), `createDisplayTrial`, `createSeries` (a series from a plan), `planSeries` (the series of a phase), `createPractice`, `createTest` and `createCompletion`. Most take the object from `createContext(jsPsych, options)`. `utils` holds `scoring`, `constants`, `text`, `stimuli` (the bundled stimulus sets), `items` (`buildPool`, `assignItems`, `gridDims`, `nextArrangement`), `sequence` (`scheduleBlocks`, `practiceSetSizes`), `simulation` (the simulated participant, below) and `options` (`resolveOptions`, `validateOptions`).
 
 **Simulation.** `jsPsych.simulate(..., "data-only")` answers every page with a simulated participant who recognises each earlier pick as picked with a probability that falls with set size (0.97 at 3 items, 0.88 at 6, 0.7 at 12) and picks at random among the items it does not recognise as picked, so repeat errors rise with set size and within a series. The simulated pick is a slot: it goes through the same code as a click, which finds the item, checks the history and writes the row. The walkthrough is answered correctly.
 

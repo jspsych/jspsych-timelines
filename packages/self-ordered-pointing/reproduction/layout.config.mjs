@@ -59,8 +59,13 @@ export default {
         ...short,
         response_device: "touch",
         stimulus_layout: "free_positions_in_area",
-        stimulus_set: { items: "words" },
+        stimulus_set: { items: { $util: "stimuli.words" } },
       },
+    })),
+    ...VIEWPORTS.map((viewport) => ({
+      name: `drawings, set of 12 ${viewport.width}x${viewport.height}`,
+      viewport,
+      options: { ...short, stimulus_set: { items: { $util: "stimuli.representationalDrawings" } } },
     })),
     {
       name: "enforced position rule, partial reshuffle, nonwords 390x430",
@@ -70,7 +75,7 @@ export default {
         set_sizes: [10],
         position_repeat_rule: "enforced",
         rearrangement_rule: "partial_reshuffle_each_page",
-        stimulus_set: { items: "nonwords" },
+        stimulus_set: { items: { $util: "stimuli.nonwords" } },
       },
     },
   ],

@@ -134,6 +134,10 @@ node ../testing/scripts/layout-check.mjs reproduction/layout.config.mjs     # fr
 
 The config module default-exports `{ bundle, global, stageSelector, belowSelector, screenKind, variants, expectKinds }`. It serves a page running `dist/index.browser.js` with each variant's options at its viewport, steps through the task (pressing `keys[kind]` on a screen kind, clicking enabled buttons), records the stage's bounding rect per screen type, and asserts the same centre (±1 px), no overlap of the text region with the stage, and response buttons inside the viewport. `screenKind(stage, doc)` is serialised into the page, so it must be self-contained. Needs Chrome (`$CHROME_PATH` or a standard location) and `puppeteer-core` (a devDependency here). A variant may set its own `expectKinds` (it replaces the config's for that variant), e.g. a "too slow" screen that only a deadline variant reaches. On each screen the runner clicks the **first** enabled `.jspsych-btn`, so put the button that advances first, or give other buttons (such as "Listen again") a class of their own. See `packages/flanker/reproduction/layout.config.mjs`.
 
+### Bundled stimulus sets
+
+A package whose stimulus sets are data (PACKAGE-STANDARD §2a) has its adapter return the bundled sets themselves (`utils.stimuli.words`). Pass `utils` to `defineReproduction`, and `results.json` writes them as `{"$util": "stimuli.words"}` references. Do the same when regenerating presets: `toUtilRefs(options, utils)`. `resolveUtilRefs(options, utils)` turns references back into sets, for tests that run presets. The layout driver resolves references in variant options against the bundle's `utils`.
+
 ## Shared checks
 
 | Option                                                                                                         | What it asserts                                                                                                                                                                                   | Needs from the contract                                                 |

@@ -6,7 +6,6 @@ import {
   INSTRUCTION_MAX_ATTEMPTS,
   INSTRUCTION_SET_SIZE,
   MAX_SET_SIZE,
-  POOL_SIZE,
   TASK_CLASS,
   TASK_NAME,
   VERSION,
@@ -21,6 +20,7 @@ import {
 import { practiceSetSizes, scheduleBlocks } from "./schedule";
 import { calculateScores, getSummary } from "./scoring";
 import type { ScoringResult } from "./scoring";
+import { stimuli } from "./sets";
 import { recognitionProbability, simulateCorrectPick, simulateMemoryPick } from "./simulate";
 import { assignItems, buildPool, gridDims, nextArrangement } from "./stimuli";
 import { TextConfig, defaultText } from "./text";
@@ -65,6 +65,8 @@ export interface TrialData {
   set_size?: number;
   /** Page within the series, 1-based. */
   choice_index?: number;
+  /** The stimulus set's `name` ("custom" when it has none). */
+  stimulus_set?: string;
   stimulus_layout?: string;
   rearrangement_rule?: string;
   response_device?: string;
@@ -157,7 +159,6 @@ export const utils = {
     TASK_CLASS,
     DEFAULT_OPTIONS,
     PHASE_OPTIONS,
-    POOL_SIZE,
     MAX_SET_SIZE,
     INSTRUCTION_SET_SIZE,
     INSTRUCTION_MAX_ATTEMPTS,
@@ -165,10 +166,13 @@ export const utils = {
     DEFAULT_POSITION_REPEAT_MAX,
   },
   text: { defaultText },
-  stimuli: { buildPool, assignItems, gridDims, nextArrangement },
+  /** The bundled stimulus sets, as values for `stimulus_set.items`. */
+  stimuli,
+  items: { buildPool, assignItems, gridDims, nextArrangement },
   sequence: { scheduleBlocks, practiceSetSizes },
   simulation: { recognitionProbability, simulateMemoryPick, simulateCorrectPick },
   options: { resolveOptions, validateOptions },
 };
 
 export type { SelfOrderedPointingOptions, ScoringResult, TextConfig };
+export type { Stimulus, StimulusSet, StimulusSetOption } from "./options";

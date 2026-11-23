@@ -1,6 +1,7 @@
 import { initJsPsych } from "jspsych";
 
 import { SelfOrderedPointingOptions } from "./options";
+import { stimuli } from "./sets";
 import { itemButtonHtml, renderPickScreen, renderScreen } from "./stimuli";
 import { createTimeline } from ".";
 
@@ -52,7 +53,11 @@ describe("anchored stage layout", () => {
   it("item buttons are `.jspsych-btn` (the layout driver reaches them) and carry their id and an accessible name", () => {
     const b = parse(
       itemButtonHtml({
-        item: { id: "design-01", kind: "design", content: "M0 0Z" },
+        item: {
+          id: "design-01",
+          kind: "svg",
+          content: '<svg viewBox="0 0 100 100"><path d="M0 0Z"/></svg>',
+        },
         slot: 4,
         n: 6,
         aria_label: "Item 5",
@@ -100,7 +105,7 @@ describe("anchored stage layout", () => {
         practice_trials: 1,
         response_device: "touch",
         stimulus_layout: "free_positions_in_area",
-        stimulus_set: { items: "words" },
+        stimulus_set: { items: stimuli.words },
         response_window_ms: 3000,
         end_of_task_feedback: "score",
       },

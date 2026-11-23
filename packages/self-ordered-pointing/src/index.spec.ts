@@ -3,6 +3,7 @@ import { DataCollection, JsPsych, initJsPsych } from "jspsych";
 
 import { DEFAULT_OPTIONS, SelfOrderedPointingOptions, resolveOptions } from "./options";
 import { calculateScores } from "./scoring";
+import { stimuli } from "./sets";
 import { recognitionProbability } from "./simulate";
 import { assignItems, buildPool, gridDims, nextArrangement } from "./stimuli";
 import { newSeriesState, planPage } from "./trials";
@@ -140,7 +141,7 @@ describe("createTimeline", () => {
       set_sizes: [3, 5],
       trials_per_condition: 2,
       block_order: "descending",
-      stimulus_set: { items: "words", pool: "distinct_per_set_size" },
+      stimulus_set: { items: stimuli.words, pool: "distinct_per_set_size" },
       rearrangement_rule: "partial_reshuffle_each_page",
       iti_ms: { min: 100, max: 300, step: 50 },
       stimulus_layout: "free_positions_in_area",
@@ -267,9 +268,14 @@ describe("createTimeline", () => {
     const bad = (o: SelfOrderedPointingOptions, re: RegExp) =>
       expect(() => createTimeline(initJsPsych(), o)).toThrow(re);
     bad(
-      { stimulus_set: { items: "representational_drawings" } },
-      /stimulus_set\.items.*representational_drawings/
+      { stimulus_set: { items: "words" as any } },
+      /stimulus_set\.items: "words" is not a stimulus set/
     );
+    bad(
+      { stimulus_set: { items: [{ text: "a", image: "b.png" } as any, "c"] } },
+      /item 1 must be a string or give exactly one of text, image or svg/
+    );
+    bad({ stimulus_set: { items: ["a", "a", "b"] }, set_sizes: [3] }, /two items have the id "a"/);
     bad({ population_protocol: "child" }, /population_protocol.*child/);
     bad({ adaptive: { procedure: "irt_cat" } as any }, /adaptive/);
     bad({ response_device: "keyboard" }, /response_device.*keyboard/);
@@ -286,10 +292,7 @@ describe("createTimeline", () => {
       { position_repeat_rule: "enforced", stimulus_layout: "free_positions_in_area" },
       /position_repeat_rule.*stimulus_layout/
     );
-    bad(
-      { stimulus_set: { items: { words: ["a", "b", "c"] } }, set_sizes: [6] },
-      /needs 6 different items/
-    );
+    bad({ stimulus_set: { items: ["a", "b", "c"] }, set_sizes: [6] }, /needs 6 different items/);
     bad(
       { stimulus_set: { pool: "distinct_per_set_size" }, set_sizes: [6, 8, 10, 12, 4, 5, 7] },
       /needs \d+ different items/
@@ -439,7 +442,7 @@ describe("position-repeat rules", () => {
     jsPsych.randomization.setSeed("swap");
     const o = resolveOptions({ position_repeat_rule: "enforced", position_repeat_max: 2 }, "test");
     for (let i = 0; i < 40; i++) {
-      const items = buildPool("abstract_designs").slice(0, 3);
+      const items = buildPool(stimuli.abstractDesigns).slice(0, 3);
       const state = newSeriesState();
       state.picked = new Set([0, 1]);
       state.slots = [0, 0];
@@ -526,7 +529,7 @@ describe("arrangements", () => {
   });
 
   it("pools: nested sets are the first N; distinct sets do not overlap", () => {
-    const pool = buildPool("abstract_designs");
+    const pool = buildPool(stimuli.abstractDesigns);
     expect(pool).toHaveLength(48);
     expect(new Set(pool.map((i) => i.id)).size).toBe(48);
     const nested = assignItems(pool, "nested_first_n", 3, [3], [6, 12]);
