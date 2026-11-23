@@ -1,34 +1,37 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
-    <meta charset="UTF-8" />
+    <title>Operation Span Example</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Operation Span Task</title>
     <script src="https://unpkg.com/jspsych@8"></script>
     <script src="../dist/index.browser.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css" />
+    <!-- Once published: <script src="https://unpkg.com/@jspsych-timelines/operation-span"></script> -->
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/jspsych@8/css/jspsych.css" />
   </head>
+
   <body></body>
   <script>
     const jsPsych = initJsPsych({
-      on_finish: function () {
-        // Calculate and display scores
-        const scores = jsPsychTimelineOperationSpan.utils.scoring.getSummary(
-          jsPsych.data.get()
-        );
-        console.log("Operation Span Results:", scores);
-
-        // Display summary
+      on_finish: () => {
+        // Display data
         jsPsych.data.displayData();
+
+        // Calculate and display scores
+        const scores = jsPsychTimelineOperationSpan.utils.scoring.getSummary(jsPsych.data.get());
+        console.log("Operation Span Results:", scores);
       },
     });
 
-    const timeline = jsPsychTimelineOperationSpan.createTimeline(jsPsych, {
-      showInstructions: true,
-      setSizes: [3, 4, 5],
-      trialsPerSetSize: 2,
+    // Operation span with the defaults of the automated task (Unsworth et al., 2005).
+    // For a shorter demo, reduce set sizes and practice:
+    const task = jsPsychTimelineOperationSpan.createTimeline(jsPsych, {
+      set_sizes: [2, 3],
+      trials_per_condition: 2,
+      practice_trials: 6,
+      practice_storage_trials: 2,
+      practice_combined_trials: 2,
     });
 
-    jsPsych.run([timeline]);
+    jsPsych.run([task]);
   </script>
 </html>

@@ -1,10 +1,4 @@
 {
-    "extends": "@jspsych/config/tsconfig.contrib.json",
-    "compilerOptions": {
-        "baseUrl": "."
-    },
-    "include": [
-        "src",
-        "../cli/src/build.js"
-    ]
+  "extends": "../../tsconfig.base.json",
+  "include": ["src"]
 }

@@ -1,19 +1,9 @@
+const baseConfig = require("@jspsych/config/jest").makePackageConfig(__dirname);
+
 module.exports = {
-  preset: "ts-jest",
-  testEnvironment: "jsdom",
-  transform: {
-    "^.+\\.tsx?$": [
-      "ts-jest",
-      {
-        tsconfig: {
-          module: "commonjs",
-          moduleResolution: "node",
-        },
-      },
-    ],
-  },
+  ...baseConfig,
   moduleNameMapper: {
-    "^(\\.{1,2}/.*)\\.js$": "$1",
-    "\\.css$": "<rootDir>/src/__mocks__/styleMock.js",
+    ...baseConfig.moduleNameMapper,
+    "\\.(css|less|scss|sass)$": "identity-obj-proxy",
   },
 };

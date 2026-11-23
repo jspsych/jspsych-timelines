@@ -25,8 +25,8 @@
     // Create the flanker task with default settings
     // For a shorter demo, reduce trial counts:
     const task = jsPsychTimelineFlanker.createTimeline(jsPsych, {
-      numPracticeTrials: 6,
-      numTestTrials: 12,
+      practice_trials: 6,
+      n_test_trials: 16,
     });
 
     jsPsych.run([task]);

@@ -1,0 +1,304 @@
+/* Parameter reference (index + detail). Infima variables only, so light and dark follow the site theme;
+   the accent matches TimelineExample's focus orange. */
+
+.root {
+  --pr-accent: #c2620d;
+  --pr-accent-soft: rgb(241 132 38 / 0.12);
+  --pr-rule: var(--ifm-color-emphasis-200);
+  --pr-muted: var(--ifm-color-content-secondary);
+  --pr-hover: var(--ifm-color-emphasis-100);
+  margin: 1.25rem 0 2rem;
+  font-size: 0.9375rem;
+}
+
+:global([data-theme="dark"]) .root {
+  --pr-accent: #ff9c3b;
+  --pr-accent-soft: rgb(255 156 59 / 0.14);
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.muted {
+  color: var(--pr-muted);
+}
+
+/* ---- toolbar ------------------------------------------------------------------------------ */
+
+.toolbar {
+  position: sticky;
+  top: var(--ifm-navbar-height);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.75rem 0;
+  background: var(--ifm-background-color);
+  border-bottom: 1px solid var(--pr-rule);
+}
+
+.searchRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.search {
+  position: relative;
+  flex: 1;
+  max-width: 26rem;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 0.65rem;
+  top: 50%;
+  width: 1rem;
+  height: 1rem;
+  transform: translateY(-50%);
+  color: var(--pr-muted);
+  pointer-events: none;
+}
+
+.search input {
+  width: 100%;
+  padding: 0.45rem 0.75rem 0.45rem 2.1rem;
+  font: inherit;
+  color: var(--ifm-font-color-base);
+  background: var(--ifm-background-surface-color);
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 8px;
+}
+
+.search input:focus-visible,
+.root button:focus-visible,
+.root select:focus-visible,
+.root summary:focus-visible,
+.advancedToggle input:focus-visible {
+  outline: 2px solid var(--pr-accent);
+  outline-offset: 2px;
+}
+
+.count {
+  color: var(--pr-muted);
+  font-size: 0.8125rem;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.filterRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+}
+
+.advancedToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8125rem;
+  color: var(--pr-muted);
+  cursor: pointer;
+}
+
+.empty {
+  margin: 1.5rem 0;
+  color: var(--pr-muted);
+}
+
+/* ---- shared details ----------------------------------------------------------------------- */
+
+.details {
+  max-width: 70ch;
+}
+
+.detailsHead {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.detailsName {
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.description {
+  margin: 0 0 0.75rem;
+  text-wrap: pretty;
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.3rem 1rem;
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+.fact {
+  display: contents;
+}
+
+.fact dt {
+  color: var(--pr-muted);
+  font-weight: 500;
+}
+
+.fact dd {
+  margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.defaultPre {
+  margin: 0;
+  padding: 0.4rem 0.6rem;
+  font-size: 0.75rem;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.valueChip {
+  display: inline-block;
+  margin: 0 0.25rem 0.25rem 0;
+}
+
+.observed {
+  display: inline-block;
+  max-width: 100%;
+  margin: 0 0.4rem 0.25rem 0;
+}
+
+.observed code {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.badges {
+  display: inline-flex;
+  gap: 0.25rem;
+  margin-left: 0.4rem;
+  vertical-align: 0.1em;
+}
+
+.badge {
+  padding: 0 0.4rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--pr-muted);
+  border: 1px solid var(--pr-rule);
+  border-radius: 4px;
+}
+
+/* ---- index + detail ------------------------------------------------------------------------- */
+
+.panes {
+  display: grid;
+  grid-template-columns: minmax(12rem, 16rem) 1fr;
+  gap: 0 1.5rem;
+  margin-top: 1rem;
+  min-height: 24rem;
+}
+
+.paneSelect {
+  display: none;
+}
+
+.index {
+  max-height: 32rem;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+  border-right: 1px solid var(--pr-rule);
+}
+
+.indexGroup {
+  margin: 0.75rem 0 0.2rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--pr-muted);
+}
+
+.indexGroup:first-child {
+  margin-top: 0;
+}
+
+.indexItem {
+  display: block;
+  width: 100%;
+  padding: 0.2rem 0.5rem;
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.8125rem;
+  text-align: left;
+  color: var(--ifm-font-color-base);
+  background: none;
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+
+.indexItem:hover {
+  background: var(--pr-hover);
+}
+
+.indexItemActive,
+.indexItemActive:hover {
+  color: var(--pr-accent);
+  font-weight: 600;
+  background: var(--pr-accent-soft);
+}
+
+.pane {
+  min-width: 0;
+  padding: 0.25rem 0;
+  scroll-margin-top: calc(var(--ifm-navbar-height) + 7rem);
+}
+
+.anchorProxy {
+  display: block;
+  height: 0;
+  scroll-margin-top: calc(var(--ifm-navbar-height) + 7rem);
+}
+
+.paneGroup {
+  margin-bottom: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--pr-muted);
+}
+
+@media (max-width: 760px) {
+  .panes {
+    grid-template-columns: 1fr;
+    min-height: 0;
+  }
+  .index {
+    display: none;
+  }
+  .paneSelect {
+    display: block;
+    margin-bottom: 1rem;
+  }
+  .paneSelect select {
+    width: 100%;
+    padding: 0.45rem 0.5rem;
+    font: inherit;
+    font-family: var(--ifm-font-family-monospace);
+    color: var(--ifm-font-color-base);
+    background: var(--ifm-background-surface-color);
+    border: 1px solid var(--ifm-color-emphasis-300);
+    border-radius: 8px;
+  }
+}

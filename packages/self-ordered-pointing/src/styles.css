@@ -1,0 +1,230 @@
+/* All rules are scoped under the task class (PACKAGE-STANDARD §5). */
+
+.jspsych-timelines-self-ordered-pointing .jspsych-timelines-self-ordered-pointing-text {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0 20px;
+  text-align: left;
+}
+
+.jspsych-timelines-self-ordered-pointing .jspsych-timelines-self-ordered-pointing-text h2 {
+  text-align: center;
+}
+
+/* Anchored layout (PACKAGE-STANDARD section 5). Every screen with a stage (the blank between pages, feedback,
+   hints, the item grid) puts the stage on the vertical centre of the display with absolute positioning, so
+   nothing else can move it. On the pick screens the stage is the plugin's button group: the grid of items.
+   Text goes in the region below the stage; the continue button of a text screen is pinned to the bottom edge. */
+.jspsych-timelines-self-ordered-pointing {
+  --sopt-stage-w: min(380px, calc(100vw - 16px));
+  --sopt-stage-h: min(292px, 62vh);
+  --sopt-gap: 8px;
+  --sopt-pad: 8px;
+  --sopt-max-item: 84px;
+  --sopt-btn-reserve: 76px;
+}
+
+.jspsych-timelines-self-ordered-pointing:has(.jspsych-timelines-self-ordered-pointing-screen) {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: none;
+  height: 100vh;
+  margin: 0;
+  overflow: hidden;
+}
+
+.jspsych-timelines-self-ordered-pointing .jspsych-timelines-self-ordered-pointing-screen {
+  display: contents;
+}
+
+.jspsych-timelines-self-ordered-pointing .jspsych-timelines-self-ordered-pointing-stage {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--sopt-stage-w);
+  height: var(--sopt-stage-h);
+  padding: var(--sopt-pad);
+  overflow: hidden;
+}
+
+.jspsych-timelines-self-ordered-pointing .jspsych-timelines-self-ordered-pointing-below {
+  position: absolute;
+  top: calc(50% + var(--sopt-stage-h) / 2 + 8px);
+  right: 0;
+  bottom: 0;
+  left: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* Short text under the stage (prompts, hints) is centred under the stimulus. */
+.jspsych-timelines-self-ordered-pointing
+  .jspsych-timelines-self-ordered-pointing-below
+  .jspsych-timelines-self-ordered-pointing-text {
+  padding: 0 12px;
+  text-align: center;
+  text-wrap: balance;
+}
+
+.jspsych-timelines-self-ordered-pointing
+  .jspsych-timelines-self-ordered-pointing-below
+  .jspsych-timelines-self-ordered-pointing-text
+  p {
+  margin: 0.3em 0;
+}
+
+/* Screens with a continue button (hints, reveals): the button group is pinned to the bottom edge. */
+.jspsych-timelines-self-ordered-pointing:not(.jspsych-timelines-self-ordered-pointing-pick):has(
+    .jspsych-timelines-self-ordered-pointing-screen
+  )
+  #jspsych-html-button-response-btngroup {
+  position: absolute;
+  right: 0;
+  bottom: 12px;
+  left: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.jspsych-timelines-self-ordered-pointing:not(.jspsych-timelines-self-ordered-pointing-pick):has(
+    #jspsych-html-button-response-btngroup
+  )
+  .jspsych-timelines-self-ordered-pointing-below {
+  bottom: var(--sopt-btn-reserve);
+}
+
+.jspsych-timelines-self-ordered-pointing .jspsych-timelines-self-ordered-pointing-notice {
+  font-size: 1em; /* body size: only stimuli are larger (standard §5) */
+  text-align: center;
+  text-wrap: balance;
+}
+
+.jspsych-timelines-self-ordered-pointing .jspsych-timelines-self-ordered-pointing-reveal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.jspsych-timelines-self-ordered-pointing .jspsych-timelines-self-ordered-pointing-demo-item {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.jspsych-timelines-self-ordered-pointing .jspsych-timelines-self-ordered-pointing-demo-item svg,
+.jspsych-timelines-self-ordered-pointing .jspsych-timelines-self-ordered-pointing-demo-item img {
+  width: 100%;
+  height: 100%;
+}
+
+/* The item grid: the plugin's button group is the stage. --cols and --rows are set on it when the page loads. */
+.jspsych-timelines-self-ordered-pointing.jspsych-timelines-self-ordered-pointing-pick
+  #jspsych-html-button-response-btngroup {
+  --cell: min(
+    var(--sopt-max-item),
+    calc((var(--sopt-stage-w) - 2 * var(--sopt-pad) - (var(--cols, 4) - 1) * var(--sopt-gap)) / var(--cols, 4)),
+    calc((var(--sopt-stage-h) - 2 * var(--sopt-pad) - (var(--rows, 3) - 1) * var(--sopt-gap)) / var(--rows, 3))
+  );
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 4), var(--cell)) !important;
+  grid-template-rows: repeat(var(--rows, 3), var(--cell)) !important;
+  gap: var(--sopt-gap);
+  justify-content: center;
+  align-content: center;
+  width: var(--sopt-stage-w);
+  max-width: none; /* core's grid group is fit-content wide */
+  margin: 0;
+  height: var(--sopt-stage-h);
+  padding: var(--sopt-pad);
+  overflow: hidden;
+}
+
+.jspsych-timelines-self-ordered-pointing.jspsych-timelines-self-ordered-pointing-pick
+  #jspsych-html-button-response-btngroup
+  .jspsych-btn {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--cell);
+  height: var(--cell);
+  min-width: 0;
+  min-height: 0;
+  margin: 0;
+  padding: 6px;
+  line-height: 1;
+}
+
+.jspsych-timelines-self-ordered-pointing.jspsych-timelines-self-ordered-pointing-pick
+  #jspsych-html-button-response-btngroup
+  .jspsych-btn
+  svg,
+.jspsych-timelines-self-ordered-pointing.jspsych-timelines-self-ordered-pointing-pick
+  #jspsych-html-button-response-btngroup
+  .jspsych-btn
+  img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.jspsych-timelines-self-ordered-pointing .jspsych-timelines-self-ordered-pointing-item-text {
+  font-size: clamp(11px, calc(var(--cell, 70px) * 0.19), 18px);
+  overflow-wrap: anywhere;
+}
+
+.jspsych-timelines-self-ordered-pointing.jspsych-timelines-self-ordered-pointing-pick
+  #jspsych-html-button-response-btngroup
+  .jspsych-btn:disabled {
+  opacity: 0.35;
+}
+
+/* Free positions: each item sits inside its own cell of the area, at a random offset (--u, --v from 0 to 1). */
+.jspsych-timelines-self-ordered-pointing.jspsych-timelines-self-ordered-pointing-pick.jspsych-timelines-self-ordered-pointing-free
+  #jspsych-html-button-response-btngroup {
+  --cell: min(
+    var(--sopt-max-item),
+    calc((var(--sopt-stage-w) - 2 * var(--sopt-pad)) / var(--cols, 4) * 0.8),
+    calc((var(--sopt-stage-h) - 2 * var(--sopt-pad)) / var(--rows, 3) * 0.8)
+  );
+  display: block;
+}
+
+.jspsych-timelines-self-ordered-pointing.jspsych-timelines-self-ordered-pointing-pick.jspsych-timelines-self-ordered-pointing-free
+  #jspsych-html-button-response-btngroup
+  .jspsych-btn {
+  position: absolute;
+  left: calc(
+    var(--sopt-pad) + var(--col) * ((100% - 2 * var(--sopt-pad)) / var(--cols, 4)) + var(--u) *
+      ((100% - 2 * var(--sopt-pad)) / var(--cols, 4) - var(--cell))
+  );
+  top: calc(
+    var(--sopt-pad) + var(--row) * ((100% - 2 * var(--sopt-pad)) / var(--rows, 3)) + var(--v) *
+      ((100% - 2 * var(--sopt-pad)) / var(--rows, 3) - var(--cell))
+  );
+}
+
+@media (max-height: 520px) {
+  .jspsych-timelines-self-ordered-pointing {
+    --sopt-gap: 6px;
+    --sopt-pad: 6px;
+  }
+}

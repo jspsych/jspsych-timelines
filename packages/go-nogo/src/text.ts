@@ -1,85 +1,234 @@
-// constant shapes to use across the task
-export const square = `
-  <div role="img" aria-label="square"
-    style="height:25vh;aspect-ratio:1;background:#000;margin:auto;"></div>`;
-export const octagon = `
-  <div role="img" aria-label="octagon"
-    style="height:25vh;aspect-ratio:1;background:#000;margin:auto;clip-path:polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);"></div>`;
-export const circle = `
-  <div role="img" aria-label="circle"
-    style="height:25vh;aspect-ratio:1;background:#000;border-radius:50%;margin:auto;"></div>`;
+import type { StimulusShape } from "./options";
+
+export interface InstructionStepArgs {
+  /** "go" | "nogo" */
+  condition: "go" | "nogo";
+  device: "keyboard" | "mouse" | "touch";
+  /** HTML of the stimulus of this step is drawn above; its name, e.g. "blue square". */
+  stimulus_name: string;
+  /** label of the go response: key name or button label */
+  response: string;
+}
 
 /**
- * Object with text properties used in the Go/No-Go task.
- *
- * note: coupled to the stimuli, so if you use different ones
- * ensure you change the instructions accordingly.
+ * Text for the go/no-go task. To translate, pass a partial object with the same keys as `text`.
+ * Functions that interpolate runtime values take named parameters; see each doc comment.
  */
-export const trial_text = {
-  // can feed HTML strings, so we can include the shapes
-  instructions_pages: [
-    "In this task, you will see symbols appear one at a time on the screen.",
-    "When you see a circle, click the button as quickly as possible." + circle,
-    "But if you see the octagon, do nothing — don't press anything." + octagon,
-    "Try to be fast, but also careful. Only press when it's a circle.",
-    "Continue when ready to start the practice.",
-  ],
+export interface TextConfig {
+  // -- instruction pages --
+  /**
+   * First instruction page.
+   * @param r.go_stimuli    HTML of the go stimuli, drawn small
+   * @param r.nogo_stimuli  HTML of the no-go stimuli, drawn small
+   * @param r.go_names      names of the go stimuli ("blue square"), joined with "or"
+   * @param r.nogo_names    names of the no-go stimuli
+   */
+  instruction_intro: (r: {
+    go_stimuli: string;
+    nogo_stimuli: string;
+    go_names: string;
+    nogo_names: string;
+  }) => string;
+  /**
+   * Second instruction page: how to respond.
+   * @param r.device    "keyboard" | "mouse" | "touch"
+   * @param r.response  label of the response: key name or button label
+   */
+  instruction_response: (r: { device: "keyboard" | "mouse" | "touch"; response: string }) => string;
+  /** Page before the interactive walkthrough (`instruction_demonstration: "interactive"`). */
+  instruction_demo_intro: string;
+  /** Page before the static examples (`instruction_demonstration: "examples"`). */
+  instruction_examples_intro: string;
+  /** Explanation shown under a walkthrough stimulus (a step of "interactive", or an example). */
+  instruction_step: (r: InstructionStepArgs) => string;
+  /** Hint after a wrong response in a walkthrough step; the step then repeats. Same parameters as `instruction_step`. */
+  instruction_hint: (r: InstructionStepArgs) => string;
+  /** Shown after the last allowed attempt: the answer, then the walkthrough moves on. */
+  instruction_reveal: (r: InstructionStepArgs) => string;
+  /** Brief confirmation after a correct walkthrough response. */
+  instruction_correct: string;
+  /** Emphasis sentences, by `speed_accuracy_emphasis`. */
+  emphasis_speed: string;
+  emphasis_accuracy: string;
+  emphasis_both: string;
+  /**
+   * Reminder under the stimulus (`rule_reminder: "on_screen"`).
+   * @param r.go_names    names of the go stimuli
+   * @param r.nogo_names  names of the no-go stimuli
+   * @param r.response    label of the response
+   * @param r.device      "keyboard" | "mouse" | "touch"
+   */
+  rule_reminder: (r: {
+    go_names: string;
+    nogo_names: string;
+    response: string;
+    device: "keyboard" | "mouse" | "touch";
+  }) => string;
+  /** Shown before practice. */
+  instruction_practice_intro: string;
+  /** Shown before the test, after practice (or after the instructions when practice_trials is 0). */
+  instruction_test_intro: string;
+  /** Shown before a go-only baseline block (`single_task_blocks`). */
+  instruction_baseline_intro: string;
 
-  // Default stimuli
-  stimulusButton: "Click",
+  // -- shapes, joined lists --
+  /** Names of the shapes, used with a colour to name a stimulus ("blue square"). */
+  shape_names: Record<StimulusShape, string>;
+  /** Joins several names: "blue square or green circle". */
+  list_or: string;
+  /**
+   * Name of a stimulus made of a colour and a shape.
+   * @param r.color  the colour as given in the stimulus
+   * @param r.shape  the translated shape name
+   */
+  stimulus_name: (r: { color: string; shape: string }) => string;
+  /** Name of an image or SVG stimulus that has no `id` (give an id, e.g. "car", to name it). */
+  picture_name: string;
 
-  //instructions button labels, empty strings give us just arrows per jsPsychInstructions
-  backButton: "",
-  nextButton: "",
+  // -- buttons --
+  /** Label of the response button for the mouse and touch devices. */
+  go_button: string;
+  continue_button: string;
 
-  // go practice: coupled with the stimuli
-  goPageContent: `<b>GO Trials</b><br>
-  When you see the circle, click the button as quickly as possible!<br>
-  Try clicking the button below to practice:`,
-  goSuccess: "Perfect! You clicked quickly for the circle stimulus.",
-  goFailure: "You failed to click in time for the circle stimulus.",
+  // -- trial feedback --
+  correct_feedback: string;
+  /** Wrong response: a response to a no-go stimulus. */
+  incorrect_feedback: string;
+  /** No response to a go stimulus. */
+  timeout_feedback: string;
+  /** @param r.rt reaction time in ms */
+  feedback_rt: (r: { rt: number }) => string;
+  /** Shown after a response to a no-go stimulus under `trial_feedback: "correct_answer"`. */
+  feedback_correct_nogo: string;
+  /** @param r.response label of the response to a go stimulus */
+  feedback_correct_go: (r: { response: string }) => string;
 
-  // no-go practice: coupled with the stimuli
-  noGoPageContent: `<b>NO-GO Trials</b><br>
-  When you see the octagon, do NOT click the button!<br>
-  Try waiting without clicking the button below:`,
-  noGoSuccess: "Excellent! You correctly did NOT click for the octagon.",
-  noGoFailure: "Remember, you should NOT click for the octagon!",
+  // -- screens --
+  fixation: string;
+  /** Shown during `pre_block_countdown_ms`. @param r.phase "practice" | "test"  @param r.block block number */
+  countdown: (r: { phase: "practice" | "test"; block: number }) => string;
+  /**
+   * @param r.block      block just finished
+   * @param r.n_blocks   total blocks
+   * @param r.accuracy   proportion correct in the block (0-1), or null
+   * @param r.mean_rt    mean correct go RT in ms, or null
+   * @param r.kind       "accuracy" | "rt" | "accuracy_rt" | "progress"
+   */
+  block_feedback: (r: {
+    block: number;
+    n_blocks: number;
+    accuracy: number | null;
+    mean_rt: number | null;
+    kind: "accuracy" | "rt" | "accuracy_rt" | "progress";
+  }) => string;
 
-  // Practice completion page (after interactive instructions)
-  practiceCompleteContent: `We now start with a short practice round to get used to the task before the real task begins.`,
-  beginTaskButton: "Begin Task",
+  // -- completion --
+  task_complete: string;
+  /**
+   * @param r.commission_error_rate  proportion of no-go trials with a response, or null
+   * @param r.omission_error_rate    proportion of go trials without a response, or null
+   * @param r.mean_correct_go_rt     mean RT of correct go responses in ms, or null
+   */
+  result_summary: (r: {
+    commission_error_rate: number | null;
+    omission_error_rate: number | null;
+    mean_correct_go_rt: number | null;
+  }) => string;
+}
 
-  // End of practice block page (after practice block)
-  endOfPracticeContent: `Okay, now let's begin the real task!`,
-  endOfPracticeButton: "Continue",
+const act = (device: "keyboard" | "mouse" | "touch") =>
+  device === "keyboard" ? "press" : device === "touch" ? "tap" : "click";
 
-  // Block instructions
-  blockBreakContent: (blockNum: number, totalBlocks: number) =>
-    "<b>Block " +
-    blockNum +
-    " Complete!</b><br>You have completed block " +
-    blockNum +
-    " of " +
-    totalBlocks +
-    ".<br>Take a short break if needed, then click below to continue.",
-  continueButton: "Continue",
-  blockBreakTimerText: (seconds: number) =>
-    `Next block begins in ${seconds} second${seconds !== 1 ? "s" : ""}...`,
+export const defaultText: TextConfig = {
+  instruction_intro: (r) => `<h2>Go/No-go Task</h2>
+    <p>On each trial one shape will appear on the screen.</p>
+    <p>When you see ${r.go_stimuli} (${r.go_names}), <strong>respond</strong>.</p>
+    <p>When you see ${r.nogo_stimuli} (${r.nogo_names}), <strong>do not respond</strong>.</p>`,
+  instruction_response: (r) =>
+    `<h2>How to Respond</h2><p>To respond, ${act(r.device)} <strong>${r.response}</strong>.</p>
+    <p>If you should not respond, simply wait until the next shape.</p>`,
+  instruction_demo_intro: `<h2>Let's Try It</h2>
+    <p>Here are the shapes you will see. Respond to each one as you would in the task.</p>
+    <p>There is no time limit when you should respond. If you respond incorrectly, you will get a hint and try again.</p>`,
+  instruction_examples_intro: `<h2>Examples</h2>
+    <p>Here are the shapes you will see, with the correct response for each.</p>`,
+  instruction_step: (r) =>
+    r.condition === "go"
+      ? `<p>This is the ${r.stimulus_name}. Respond: ${act(r.device)} <strong>${
+          r.response
+        }</strong>.</p>`
+      : `<p>This is the ${r.stimulus_name}. Do <strong>not</strong> respond. Just wait.</p>`,
+  instruction_hint: (r) =>
+    r.condition === "go"
+      ? `<p>Not quite. The ${r.stimulus_name} means respond: ${act(r.device)} <strong>${
+          r.response
+        }</strong>.</p><p>Let's try again.</p>`
+      : `<p>The ${r.stimulus_name} means do <strong>not</strong> respond. Wait until it disappears.</p><p>Let's try again.</p>`,
+  instruction_reveal: (r) =>
+    r.condition === "go"
+      ? `<p>For the ${r.stimulus_name}, ${act(r.device)} <strong>${
+          r.response
+        }</strong>. Let's move on.</p>`
+      : `<p>With the ${r.stimulus_name}, do not respond at all. Let's move on.</p>`,
+  instruction_correct: "Correct!",
+  emphasis_speed: "Respond as quickly as you can.",
+  emphasis_accuracy: "Try to be as accurate as you can.",
+  emphasis_both: "Respond as quickly and as accurately as you can.",
+  rule_reminder: (r) =>
+    `${act(r.device) === "press" ? "Press" : act(r.device) === "tap" ? "Tap" : "Click"} ${
+      r.response
+    } for ${r.go_names}. Do not respond to ${r.nogo_names}.`,
+  instruction_practice_intro: `<h2>Practice</h2><p>Now some practice at the pace of the real task. The main task starts after the practice.</p>`,
+  instruction_test_intro: `<h2>Main Task</h2><p>Now the main task begins.</p>`,
+  instruction_baseline_intro: `<h2>Go-only Block</h2><p>In this block every shape is a go shape: respond to each one.</p>`,
 
-  // Results/Debrief
-  finishButton: "Finish",
+  shape_names: {
+    square: "square",
+    circle: "circle",
+    triangle: "triangle",
+    diamond: "diamond",
+    cross: "cross",
+  },
+  list_or: "or",
+  stimulus_name: (r) => `${r.color} ${r.shape}`,
+  picture_name: "picture",
 
-  // -- COMPLETION --
+  go_button: "Respond",
+  continue_button: "Continue",
+
+  correct_feedback: "Correct",
+  incorrect_feedback: "Incorrect",
+  timeout_feedback: "Too slow!",
+  feedback_rt: (r) => `${Math.round(r.rt)} ms`,
+  feedback_correct_nogo: "Do not respond to this one",
+  feedback_correct_go: (r) => `Respond with ${r.response}`,
+
+  fixation: "+",
+  countdown: () => "Get ready...",
+  block_feedback: (r) => {
+    const parts: string[] = [`Block ${r.block} of ${r.n_blocks} complete.`];
+    if ((r.kind === "accuracy" || r.kind === "accuracy_rt") && r.accuracy !== null) {
+      parts.push(`Accuracy: ${Math.round(r.accuracy * 100)}%`);
+    }
+    if ((r.kind === "rt" || r.kind === "accuracy_rt") && r.mean_rt !== null) {
+      parts.push(`Mean response time: ${Math.round(r.mean_rt)} ms`);
+    }
+    return parts.map((p) => `<p>${p}</p>`).join("");
+  },
+
   task_complete: "Task Complete",
-  result_summary: (goAccuracy: number, nogoAccuracy: number, commissionErrors: number) => {
-    let html = `<div class="jspsych-go-nogo-instructions">`;
-    html += `<p><strong>Go Accuracy:</strong> ${(goAccuracy * 100).toFixed(1)}%</p>`;
-    html += `<p><strong>No-Go Accuracy:</strong> ${(nogoAccuracy * 100).toFixed(1)}%</p>`;
-    html += `<p><strong>Commission Errors:</strong> ${commissionErrors}</p>`;
-    html += `</div>`;
+  result_summary: (r) => {
+    let html = "";
+    if (r.commission_error_rate !== null)
+      html += `<p><strong>Responses to no-go shapes:</strong> ${(
+        r.commission_error_rate * 100
+      ).toFixed(1)}%</p>`;
+    if (r.omission_error_rate !== null)
+      html += `<p><strong>Missed go shapes:</strong> ${(r.omission_error_rate * 100).toFixed(
+        1
+      )}%</p>`;
+    if (r.mean_correct_go_rt !== null)
+      html += `<p><strong>Mean response time:</strong> ${r.mean_correct_go_rt.toFixed(0)} ms</p>`;
     return html;
   },
 };
-
-export type TextConfig = typeof trial_text;

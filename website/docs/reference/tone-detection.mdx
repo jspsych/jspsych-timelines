@@ -1,0 +1,226 @@
+---
+title: Tone Detection
+sidebar_label: Tone Detection
+---
+
+import {TimelineExample} from '@jspsych/docusaurus-theme/components';
+import ParamsTable from '@site/src/components/ParamsTable';
+import schema from '@site/src/schemas/tone-detection.schema.json';
+import manifest from '@site/src/schemas/manifest.json';
+
+# Tone Detection
+
+Package: `@jspsych-timelines/tone-detection` ([source](https://github.com/jspsych/jspsych-timelines/tree/main/packages/tone-detection)). Version documented here: <code>{manifest['tone-detection'].version}</code>. Needs jsPsych 8.4.0 or later (`jsPsych.adaptive`) and a browser with the Web Audio API. This is the first auditory package.
+
+## Overview
+
+Tone detection measures the quietest sound a listener can hear. On each trial the participant hears two or three marked intervals, one after the other, and says which one held a short tone. A staircase (`jsPsych.adaptive`) makes the tone quieter after correct answers and louder after mistakes, so the level settles near the listener's threshold, and the threshold is the mean level of the last reversals of several tracks. The same machinery, with other stimuli, measures frequency and intensity discrimination thresholds; only the detection variants are implemented here.
+
+The defaults follow the online tone-in-noise protocol of Zhao, Brown, Holt & Dick (2022): a 1000 Hz, 250 ms tone with 10 ms ramps in white noise, three intervals 250 ms apart, a 3-down/1-up staircase in dB SNR (79.4% correct), three 40-trial tracks, six practice trials with feedback, a volume-setting screen and a headphone screen.
+
+**Canonical citations:** Zhao, S., Brown, C. A., Holt, L. L., & Dick, F. (2022). Robust and efficient online auditory psychophysics. *Trends in Hearing, 26*, 23312165221118792. Levitt, H. (1971). Transformed up-down methods in psychoacoustics. *Journal of the Acoustical Society of America, 49*(2B), 467-477.
+
+## Installation
+
+```bash
+npm install @jspsych-timelines/tone-detection
+```
+
+From a CDN:
+
+```html
+<script src="https://unpkg.com/jspsych@8.4.0"></script>
+<script src="https://unpkg.com/@jspsych-timelines/tone-detection"></script>
+<link rel="stylesheet" href="https://unpkg.com/jspsych@8.4.0/css/jspsych.css" />
+```
+
+## Quick Start
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <script src="https://unpkg.com/jspsych@8.4.0"></script>
+    <script src="https://unpkg.com/@jspsych-timelines/tone-detection"></script>
+    <link rel="stylesheet" href="https://unpkg.com/jspsych@8.4.0/css/jspsych.css" />
+  </head>
+  <body></body>
+  <script>
+    const jsPsych = initJsPsych();
+    const task = jsPsychTimelineToneDetection.createTimeline(jsPsych);
+    jsPsych.run([task]);
+  </script>
+</html>
+```
+
+The first sound plays after the participant's first click (the instruction pages), because browsers keep audio off until the page has been clicked. Do not start the task from code with no click before the first sound.
+
+## Task Description
+
+**The participant's path.** Optional hearing question, instruction pages (what the task is, headphones and a quiet place, how to answer, and what to do when the tone cannot be heard), the volume screen, the headphone screen, a listening walkthrough, practice, the test, and a summary.
+
+**A trial.** Two screens share one stage, so nothing moves. On the first, a row of numbered boxes, one per interval, shows the intervals; the box of the interval that is playing fills in. A 300 ms lead-in and the three 250 ms intervals, 250 ms apart, play. On the second, the same boxes stay and the participant answers (1, 2 or 3 by default; with `response_device: "mouse"` or `"touch"`, buttons). Answers are possible only after the last interval, so the response time is measured from the end of the last interval and an early key press does nothing. In practice a feedback screen follows (accuracy only), then a 500 ms pause. A trial in noise has the masker on through the whole sound; the tone is in one interval, chosen at random with equal probability.
+
+**Levels.** Every level is in dB re digital full scale, as an RMS level: 0 dB FS is the RMS of a full-scale sine wave, a tone at L dB FS has peak amplitude 10^(L/20), and noise at L dB FS has RMS 10^(L/20)/sqrt(2). A signal-to-noise ratio is the difference of the two. With a masker, the tracked level is the tone's level re the masker (dB SNR) and the masker sits at `presentation_level_db` (default -20 dB FS). In quiet (`stimulus_set: { masker: "none" }`) the tracked level is the tone's level in dB FS. A browser cannot know the volume of the device, so nothing is in dB SPL or dB HL: thresholds are comparable across listeners only through the volume screen.
+
+**Volume screen.** A calibration sound plays at a fixed digital level (`calibration_level_db`; by default the masker level minus 40 dB, the anchor's "+40 dB re the participant's just-detectable noise level") and the participant sets the volume of their device until it is just detectable (`calibration_target: "just_detectable"`) or comfortable (`"comfortable"`, S013 and S044). The page cannot read or set the device volume; it records the digital level of the sound and what the participant was asked. The data carry the masker's level re the calibration sound (`level_re_calibration_db`).
+
+**Headphone screen.** `headphone_check: "screening_task"` plays the antiphase screen of Woods et al. (2017): three 200 Hz tones of 1 s, 500 ms apart: one in phase and 6 dB quieter than the others, one in antiphase between the ears; over headphones the attenuated tone is the quietest, over loudspeakers the antiphase tone is (its sound cancels). The participant says which tone was the quietest, six times (`headphone_check_trials`). The number correct is recorded on every row of the screen (`headphone_check_n_correct`) and **nobody is excluded**: the task goes on whatever the count. The anchor's Huggins pitch screen (`headphone_screen: "huggins_pitch"`) is not implemented and throws.
+
+**Walkthrough** (PACKAGE-STANDARD §6a, adapted to sound). A listening example (the tone is in a named interval; "Listen again" plays it again), then two check steps with the tone in other intervals, at a level that is clearly audible (6 dB above the masker; in quiet, 36 dB above the calibration sound), answered with the task's own keys. A wrong answer gives a hint and plays the step again, at most three times. The sounds keep their real durations, and there is no step that withholds a response. The standard's rule that the walkthrough is untimed and its static `examples` form do not carry over to sound: `instruction_demonstration: "examples"` is only the listening example.
+
+**Staircase.** A 3-down/1-up staircase (`procedure: "staircase_1up_3down"`) starts at -13.75 dB SNR, steps 1.5 dB until the first reversal and 0.75 dB after it, within -60 and +10 dB SNR, and a track ends after 40 trials (`discontinue_rule: { trials: 40 }`). Each track is a fresh staircase, started in its own block; three tracks per condition (`trials_per_condition`). `discontinue_rule` also takes `reversals`, `consecutive_failures`, `failures_at_level`, `ceiling` (core's rules) and `mistakes` (total wrong answers; counted by the package). `procedure` is `staircase_1up_1down` (50%, or the `target_accuracy` implied by `{ up, down }` steps, e.g. down 2 dB and up 6 dB for 75%), `staircase_1up_2down` (70.7%) or `staircase_1up_3down` (79.4%). `step_size` is a number, `{ up, down }`, or a list of these indexed by the number of reversals so far (S044: `[8, 8, 2, 2, 0.5]`). A hard cap of 200 trials ends a track whose rule never fires. The track's state after every trial and its full `toJSON()` on its last row are in the data.
+
+**Conditions.** `tone_frequency_hz` is a frequency or a list: a list is a set of conditions, each tested in `trials_per_condition` tracks, in rounds that hold every condition once, ordered by `block_order` (`random_within_block`, `fixed`, `ascending`, `descending`). Frequency roving is not implemented.
+
+**Fixed levels.** `adaptive: null` with `difficulty_levels: [-6, -12, -18]` and `trials_per_block: 30` runs the constant-stimuli method: each trial gets one level, balanced over the list. Practice runs at fixed levels by default (the staircase's start level, as in S012). `adaptive` and `difficulty_levels` describe the test and reach practice only when given inside `practice`.
+
+## Parameters
+
+Pick an option on the left, or search by name or description. Each option shows its default and where that default came from, what turns it off, whether practice can use a different value, and the values used in the studies behind the spec. Link to one with `#param-<name>`, e.g. [`#param-adaptive`](#param-adaptive).
+
+<ParamsTable schema={schema} />
+
+## Try it
+
+For a short run, pick "Quick demo" in the Preset menu (the walkthrough, a volume screen, a 3-trial headphone check, 4 practice trials and one track of 20 test trials) and press Run. Put on headphones first. The task makes its sounds in the browser: the first sound plays after your first click inside the demo, as in any page. The other presets are study configurations from the literature; values the package cannot express are listed in each preset's description. The options are kept in the URL hash, so you can share a configuration.
+
+<TimelineExample
+  schema={schema}
+  bundle="/bundles/tone-detection/index.browser.js"
+  globalName={manifest['tone-detection'].globalName}
+  syncToUrl
+  hashKey="tone-detection"
+  height={460}
+/>
+
+## Examples
+
+Detection in quiet, two intervals, three frequencies, tracks that end after eight reversals:
+
+```javascript
+const task = createTimeline(jsPsych, {
+  stimulus_set: { masker: "none" },
+  task_variant: "2I-2AFC_which_contains_tone",
+  tone_frequency_hz: [500, 1000, 2000],
+  trials_per_condition: 3,
+  adaptive: { discontinue_rule: { reversals: 8 } },
+});
+```
+
+A weighted rule that converges at 75% correct (S031: 2 dB down after a correct answer, 6 dB up after a wrong one), ending after four mistakes:
+
+```javascript
+const task = createTimeline(jsPsych, {
+  adaptive: {
+    procedure: "staircase_1up_1down",
+    step_size: { up: 6, down: 2 },
+    discontinue_rule: { mistakes: 4 },
+  },
+});
+```
+
+Constant stimuli with a practice that repeats until accuracy is at least 80% (twice at most):
+
+```javascript
+const task = createTimeline(jsPsych, {
+  adaptive: null,
+  difficulty_levels: [-8, -12, -16],
+  trials_per_block: 30,
+  practice_criterion: { accuracy: 0.8, on_fail: "repeat", max_repeats: 2 },
+});
+```
+
+## Data Output
+
+Every trial carries `task: "tone-detection"` and `task_version`. The row that records the answer (`phase: "practice"` or `"test"`, `part: "response"`) has these fields; the screen where the sound plays (`part: "stimulus"`) has the sound's parameters.
+
+| Field | Type | Description |
+|---|---|---|
+| `phase` | string | `"practice"` or `"test"` |
+| `block` | number | The track, 1..n over the test (practice is block 1) |
+| `track_id` | number | The track within its condition, 1..`trials_per_condition` |
+| `trial_index_in_block`, `trial_in_track` | number | Position within the track (1-indexed; the second is the spec's name) |
+| `practice_attempt` | number | Practice only: 1-indexed attempt (with `practice_criterion`) |
+| `condition` | string | The tone frequency, e.g. `"1000_hz"` |
+| `tone_frequency`, `standard_value` | number | Frequency of the tone, Hz |
+| `level` | number | The level presented, in `level_unit` |
+| `level_unit` | string | `"dB SNR"` (tone re masker) with a masker, `"dB FS"` in quiet |
+| `tone_level_db`, `masker_level_db` | number | Digital levels, dB FS RMS (`masker_level_db` is null in quiet) |
+| `calibration_level_db`, `level_re_calibration_db` | number or null | Digital level of the volume-screen sound, and the masker's (or tone's) level re it |
+| `step_size`, `step_size_up` | number or null | The step in force for this answer's move, dB: down after a correct run, up after a wrong answer |
+| `target_interval`, `response_interval` | number | The interval that held the tone, and the one chosen (null for no answer), 1-based |
+| `n_alternatives` | number | 2 or 3 |
+| `response`, `correct_response` | string or number | Key (keyboard) or button index |
+| `rt` | number or null | ms from the end of the last interval; null for no answer |
+| `correct` | boolean | |
+| `is_reversal`, `reversal_count` | boolean, number | This answer reversed the staircase, and the running count (null with fixed levels) |
+| `next_level` | number or null | The level the staircase will present next |
+| `track_threshold` | number or null | Running estimate: the mean of all reversal levels so far (null before the first) |
+| `track_state` | object | The staircase after this trial's update (`toJSON()` without `history`), with `errors` and `stop_reason` |
+| `track_done`, `track_final` | | `track_final` is on the last row of a track only: `toJSON()` of the whole staircase, history included |
+| `tone_duration`, `tone_ramp`, `inter_item_interval`, `iti`, `sound_duration` | number | The settings in force (sampled values when jittered), ms |
+| `audio_context_state` | string | The state of the audio context when the sound started: `"running"` means the sound could be heard; `"suspended"` means the browser had audio off; `"none"` means no Web Audio; `"unplayed"` means a simulated trial. The data never claim a tone nobody heard |
+| `peak_before_limiting`, `sound_limited` | number, boolean | The largest sample before the sound was scaled down to avoid clipping, and whether it was (the SNR is unchanged) |
+| `progress_text` | string or null | The progress counter shown on the screen |
+| `practice_criterion_met`, `practice_accuracy` | | On the last row of each practice attempt, with `practice_criterion` |
+
+Volume-screen rows (`part: "volume_calibration"`) have `calibration_level_db`, `calibration_target`, `calibration_sound` (`"noise"` or `"tone"`), `calibration_plays`, `device_volume_setting` and `presentation_level_db`. Headphone-screen rows (`part: "headphone_check"`, `phase: "instructions"`) have `headphone_screen`, `antiphase_interval`, `target_interval`, `response_interval`, `correct` and the running `headphone_check_n_correct` and `headphone_check_n_trials`; the last row holds the final count. The hearing question (`part: "hearing_check"`) records `hearing_difficulty`.
+
+**`part` values the package writes:** `instruction`, `instruction_example`, `instruction_check`, `instruction_feedback` (walkthrough rows: `phase: "instructions"`, never scored), `hearing_check`, `volume_calibration`, `headphone_check`, `stimulus`, `response`, `feedback`, `iti`, `rest`, `completion`. The final screen uses `phase: "completion"`. The row of the headphone check and the screens before the task use `phase: "instructions"`.
+
+## Scoring
+
+```javascript
+import { utils } from "@jspsych-timelines/tone-detection";
+
+const scores = utils.scoring.getSummary(jsPsych.data.get(), { last_n_reversals: 6 });
+```
+
+Scores come from the test phase and are in the unit of `level_unit`; lower is better (a quieter tone was heard). Counts are 0 and every mean, rate and threshold is `null` on empty data (never `NaN`).
+
+| Metric | Description | Interpretation |
+|---|---|---|
+| `threshold` | The threshold of the single condition: the mean over its tracks of each track's `threshold`. `null` with several conditions (see `conditions`) | Lower is better. A 3-down/1-up track converges on 79.4% correct |
+| `tracks[].threshold` | The mean level of the last `last_n_reversals` reversals of the track (default 6; S036 and S045 use 4; an even number, Levitt, 1971); all reversals if fewer | `null` without a reversal |
+| `tracks[].threshold_mode`, `threshold_mode` | The mode of the levels of the track's trials (ties averaged) | S012: within 0.2 dB of the reversal mean |
+| `tracks[].threshold_final`, `threshold_final` | The level the track would have presented next (S031) | |
+| `conditions[]` | One entry per frequency: `n_tracks`, `n_trials`, `accuracy`, and the tracks' mean `threshold`, `threshold_mode`, `threshold_final` | |
+| `accuracy` | Proportion correct over the test | A staircase aims at its own proportion, not at 100% |
+| `mean_rt` | Mean RT of correct answers, ms from the end of the last interval | |
+| `n_trials`, `n_tracks`, `level_unit`, `last_n_reversals` | | |
+
+The package does not judge or exclude sessions or tracks. The literature's usual criteria, for the analysis: the headphone screen (S012: 6/6 correct with two attempts; S013 and S044: 5/6), a first-run threshold more than 3 SD from the mean (S044), accuracy below 75% (S059), thresholds outside a plausible range (S005), and tracks with too few reversals to average. The fields above (`headphone_check_n_correct`, `n_reversals` per track in the scores, `reversal_count`) have what those checks need. A psychometric function fit (S013) is not included: use the rows (`level`, `correct`, `n_alternatives`).
+
+## Translation
+
+Pass a `text` object to replace interface strings; partial objects are merged with the defaults. The string keys are listed in the `text` row of the parameters table. Functions that interpolate values (`instruction_intro`, `instruction_response`, `instruction_listen`, `instruction_step`, `instruction_hint`, `instruction_reveal`, `instruction_test_intro`, `calibration_page`, `headphone_instructions`, `headphone_question`, `response_prompt`, `interval_label`, `progress`, `track_complete`, `result_summary`) can only be set from code.
+
+```javascript
+createTimeline(jsPsych, {
+  text: { continue_button: "Continuar", correct_feedback: "Correcto", incorrect_feedback: "Incorrecto" },
+});
+```
+
+## Timeline Units
+
+`timelineUnits` exports factories for the individual pieces. Most take the context from `createContext(jsPsych, options)`: `createInstructions`, `createInstructionWalkthrough`, `createPracticeIntro`, `createTestIntro`, `createHearingCheck`, `createVolumeCalibration`, `createHeadphoneCheck`, `createBlock` (one track), `createPractice` (with `practice_criterion`), `createRestBreak`, `createTransition`, `createDisplayTrial` and `createCompletion`. `utils` also has `utils.audio` (the sound synthesis as plain functions, below), `utils.sequence` (`buildTrackSpecs`, `allocateLevels`), `utils.adaptive` (`resolveAdaptive`, `Track`) and `utils.simulation.probabilityCorrect`.
+
+## Sounds
+
+Every sound is computed as samples (`Float32Array`) in plain functions, then played as an `AudioBuffer` on jsPsych's audio context (`utils.audio.renderTone`, `renderNoise`, `renderTrialSound`, `renderHeadphoneSound`, `renderCalibrationSound`, `toWav`). There are no audio files. Functions that need randomness (the noise) take it as a function (`jsPsych.randomization.sampleNormal`), so nothing calls `Math.random`, and a seeded session draws the same noise only if every other draw is the same. The noise is scaled to its exact RMS, so an SNR is exact; the whole trial is one buffer, so the intervals are sample-accurate; the same samples can be written to a WAV file (`toWav`) for an audio plugin. Everything runs from `on_load`, so data-only simulation draws no noise and needs no audio. The masker plays through each trial (one noise burst, faded in and out), not continuously across the experiment as in S012: gapless audio across jsPsych trials needs a plugin. A sound that would clip is scaled down as a whole (the SNR is unchanged) and the row says so. The sound starts 50 ms after the screen and the markers follow the planned times; they were not verified against an audio loopback.
+
+**In the docs demo.** The Try it demo runs in a sandboxed iframe (`sandbox="allow-scripts"`). The Web Audio API works there, and the audio context starts after the first click inside the demo (the instruction pages ask jsPsych for the context when the participant clicks Continue), so the first sound plays; the `audio_context_state` of every row says `"running"` when it did. Checked in headless Chrome with a scripted participant; not checked on real headphones, in other browsers or on mobile.
+
+## Simulation
+
+Under `jsPsych.simulate([task], "data-only")` a trial is answered by an independent listener: a logistic psychometric function of level (50% point between guessing and perfect at -21 dB SNR, or -60 dB FS in quiet, 1.5 dB scale) with a guess rate of 1/n and a 2% lapse rate, so staircases reverse and settle near the simulated threshold (`utils.constants.SIMULATION`). The walkthrough answers correctly; the headphone screen answers correctly 90% of the time. A global `default: { data: { rt } }` simulation option overrides the model for the task's trials; a simulation option named `response`, `instruction_check` or `headphone_check` replaces the answers of that part.
+
+## References
+
+Levitt, H. (1971). Transformed up-down methods in psychoacoustics. *Journal of the Acoustical Society of America, 49*(2B), 467-477. (Cited from memory: the dossier did not read it. Verify before publishing.)
+
+Woods, K. J. P., Siegel, M. H., Traer, J., & McDermott, J. H. (2017). Headphone screening to facilitate web-based auditory experiments. *Attention, Perception, & Psychophysics, 79*, 2064-2072. (Cited from memory; the screen follows its use in S044 and S013. Verify before publishing.)
+
+Zhao, S., Brown, C. A., Holt, L. L., & Dick, F. (2022). Robust and efficient online auditory psychophysics. *Trends in Hearing, 26*, 23312165221118792. https://doi.org/10.1177/23312165221118792

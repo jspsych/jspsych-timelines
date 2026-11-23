@@ -1,0 +1,2469 @@
+{
+  "properties": {
+    "feedback_duration_ms": {
+      "x-jspsych": {
+        "group": "timing",
+        "advanced": false,
+        "vocabulary": "feedback_duration_ms",
+        "phaseOverridable": true,
+        "evidence": {
+          "observed": [
+            {
+              "value": 500,
+              "typed": true,
+              "source": "S024",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": 500,
+              "typed": true,
+              "source": "S025",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": 1000,
+              "typed": true,
+              "source": "S029",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": 1200,
+              "typed": true,
+              "source": "S026",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": 1500,
+              "typed": true,
+              "source": "S113",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": 2500,
+              "typed": true,
+              "source": "S138",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": null,
+              "phase": null
+            }
+          ],
+          "defaultSource": "anchor",
+          "needsTranslation": false
+        },
+        "unit": "ms",
+        "widget": "duration"
+      }
+    },
+    "fixation_duration_ms": {
+      "x-jspsych": {
+        "group": "timing",
+        "advanced": false,
+        "vocabulary": "fixation_duration_ms",
+        "phaseOverridable": true,
+        "evidence": {
+          "observed": [
+            {
+              "value": 0,
+              "typed": true,
+              "source": "S024",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": 0,
+              "typed": true,
+              "source": "S029",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": {
+                "min": 2000,
+                "max": 4000
+              },
+              "typed": true,
+              "source": "S134",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": null,
+              "phase": null
+            }
+          ],
+          "defaultSource": "anchor",
+          "needsTranslation": false
+        },
+        "unit": "ms",
+        "absentValue": 0,
+        "widget": "duration"
+      }
+    },
+    "iti_ms": {
+      "x-jspsych": {
+        "group": "timing",
+        "advanced": false,
+        "vocabulary": "iti_ms",
+        "phaseOverridable": true,
+        "evidence": {
+          "observed": [
+            {
+              "value": 1000,
+              "typed": true,
+              "source": "S024",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": 1000,
+              "typed": true,
+              "source": "S025",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": 500,
+              "typed": true,
+              "source": "S113",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": {
+                "min": 1000,
+                "max": 2000
+              },
+              "typed": true,
+              "source": "S010",
+              "sourceType": "empirical",
+              "setting": "lab-native",
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": {
+                "min": 3000,
+                "max": 5000
+              },
+              "typed": true,
+              "source": "S134",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": "randomized, mean about 1 TR",
+              "typed": false,
+              "source": "S007",
+              "sourceType": "empirical",
+              "setting": "lab-native",
+              "component": null,
+              "phase": null
+            }
+          ],
+          "defaultSource": "anchor",
+          "needsTranslation": true
+        },
+        "unit": "ms",
+        "absentValue": 0,
+        "widget": "duration"
+      }
+    },
+    "response_window_ms": {
+      "x-jspsych": {
+        "group": "timing",
+        "advanced": false,
+        "vocabulary": "response_window_ms",
+        "phaseOverridable": true,
+        "evidence": {
+          "observed": [
+            {
+              "value": 2000,
+              "typed": true,
+              "source": "S007",
+              "sourceType": "empirical",
+              "setting": "lab-native",
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": 2000,
+              "typed": true,
+              "source": "S024",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": 2000,
+              "typed": true,
+              "source": "S025",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": 2000,
+              "typed": true,
+              "source": "S029",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": 2000,
+              "typed": true,
+              "source": "S134",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": 2500,
+              "typed": true,
+              "source": "S011",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": 2500,
+              "typed": true,
+              "source": "S055",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": 3000,
+              "typed": true,
+              "source": "S022",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": 10000,
+              "typed": true,
+              "source": "S026",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": 1500,
+              "typed": true,
+              "source": "S113",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": 1500,
+              "typed": true,
+              "source": "S138",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": null,
+              "typed": true,
+              "source": "S013",
+              "sourceType": "empirical",
+              "setting": "lab-native",
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": null,
+              "typed": true,
+              "source": "S062",
+              "sourceType": "empirical",
+              "setting": "tablet",
+              "component": null,
+              "phase": null
+            }
+          ],
+          "defaultSource": "anchor",
+          "needsTranslation": false
+        },
+        "unit": "ms",
+        "absentValue": null,
+        "widget": "duration"
+      }
+    },
+    "timeout_message_ms": {
+      "x-jspsych": {
+        "group": "timing",
+        "advanced": true,
+        "vocabulary": "timeout_message_ms",
+        "phaseOverridable": true,
+        "evidence": {
+          "observed": [
+            {
+              "value": 1500,
+              "typed": true,
+              "source": "S025",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": 1000,
+              "typed": true,
+              "source": "S029",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": null,
+              "phase": null
+            }
+          ],
+          "defaultSource": "fill",
+          "needsTranslation": false
+        },
+        "unit": "ms",
+        "absentValue": 0,
+        "widget": "duration"
+      }
+    },
+    "n_blocks": {
+      "x-jspsych": {
+        "group": "design",
+        "advanced": false,
+        "vocabulary": "n_blocks",
+        "phaseOverridable": false,
+        "evidence": {
+          "observed": [
+            {
+              "value": 3,
+              "typed": true,
+              "source": "S007",
+              "sourceType": "empirical",
+              "setting": "lab-native",
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": 3,
+              "typed": true,
+              "source": "S033",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": 2,
+              "typed": true,
+              "source": "S024",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": 4,
+              "typed": true,
+              "source": "S022",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": 4,
+              "typed": true,
+              "source": "S047",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": 8,
+              "typed": true,
+              "source": "S120",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": 2,
+              "typed": true,
+              "source": "S113",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": null,
+              "phase": null
+            }
+          ],
+          "defaultSource": "anchor",
+          "needsTranslation": false
+        },
+        "unit": "count"
+      }
+    },
+    "n_test_trials": {
+      "x-jspsych": {
+        "group": "design",
+        "advanced": false,
+        "vocabulary": "n_test_trials",
+        "phaseOverridable": false,
+        "evidence": {
+          "observed": [
+            {
+              "value": 201,
+              "typed": true,
+              "source": "S007",
+              "sourceType": "empirical",
+              "setting": "lab-native",
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": 201,
+              "typed": true,
+              "source": "S026",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": 201,
+              "typed": true,
+              "source": "S033",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": 200,
+              "typed": true,
+              "source": "S024",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": 200,
+              "typed": true,
+              "source": "S011",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": 200,
+              "typed": true,
+              "source": "S022",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": 200,
+              "typed": true,
+              "source": "S059",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": 200,
+              "typed": true,
+              "source": "S134",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": 150,
+              "typed": true,
+              "source": "S055",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": 125,
+              "typed": true,
+              "source": "S025",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": 121,
+              "typed": true,
+              "source": "S010",
+              "sourceType": "empirical",
+              "setting": "lab-native",
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": 100,
+              "typed": true,
+              "source": "S012",
+              "sourceType": "empirical",
+              "setting": "lab-native",
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": 100,
+              "typed": true,
+              "source": "S029",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": 256,
+              "typed": true,
+              "source": "S113",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": 300,
+              "typed": true,
+              "source": "S047",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": 320,
+              "typed": true,
+              "source": "S120",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": 1200,
+              "typed": true,
+              "source": "S013",
+              "sourceType": "empirical",
+              "setting": "lab-native",
+              "component": null,
+              "phase": null
+            }
+          ],
+          "defaultSource": "anchor",
+          "needsTranslation": false
+        },
+        "unit": "count"
+      }
+    },
+    "reward_probability": {
+      "x-jspsych": {
+        "group": "design",
+        "advanced": false,
+        "vocabulary": "reward_probability",
+        "phaseOverridable": true,
+        "evidence": {
+          "observed": [
+            {
+              "value": {
+                "state_1": {
+                  "option_1": {
+                    "min": 0.25,
+                    "max": 0.75
+                  },
+                  "option_2": {
+                    "min": 0.25,
+                    "max": 0.75
+                  }
+                },
+                "state_2": {
+                  "option_1": {
+                    "min": 0.25,
+                    "max": 0.75
+                  },
+                  "option_2": {
+                    "min": 0.25,
+                    "max": 0.75
+                  }
+                }
+              },
+              "typed": true,
+              "source": "S024",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": {
+                "state_1": {
+                  "option_1": {
+                    "min": 0.25,
+                    "max": 0.75
+                  },
+                  "option_2": {
+                    "min": 0.25,
+                    "max": 0.75
+                  }
+                },
+                "state_2": {
+                  "option_1": {
+                    "min": 0.25,
+                    "max": 0.75
+                  },
+                  "option_2": {
+                    "min": 0.25,
+                    "max": 0.75
+                  }
+                }
+              },
+              "typed": true,
+              "source": "S029",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": {
+                "state_1": {
+                  "option_1": 0.25,
+                  "option_2": 0.75
+                },
+                "state_2": {
+                  "option_1": 0.4,
+                  "option_2": 0.6
+                }
+              },
+              "typed": true,
+              "source": "S025",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": {
+                "state_1": {
+                  "option_1": {
+                    "min": 0.58,
+                    "max": 0.72
+                  },
+                  "option_2": {
+                    "min": 0.58,
+                    "max": 0.72
+                  }
+                },
+                "state_2": {
+                  "option_1": {
+                    "min": 0.31,
+                    "max": 0.45
+                  },
+                  "option_2": {
+                    "min": 0.31,
+                    "max": 0.45
+                  }
+                }
+              },
+              "typed": true,
+              "source": "S047",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": null,
+              "phase": null
+            }
+          ],
+          "defaultSource": "anchor",
+          "needsTranslation": false
+        },
+        "unit": "probability",
+        "widget": "map"
+      }
+    },
+    "reward_schedule": {
+      "x-jspsych": {
+        "group": "design",
+        "advanced": false,
+        "vocabulary": "reward_schedule",
+        "phaseOverridable": true,
+        "evidence": {
+          "observed": [
+            {
+              "value": "{sd: 0.025, lower: 0.25, upper: 0.75, boundary: reflect}",
+              "typed": true,
+              "source": "S007",
+              "sourceType": "empirical",
+              "setting": "lab-native",
+              "component": "reward_walk",
+              "phase": null
+            },
+            {
+              "value": "{sd: 0.025, lower: 0.25, upper: 0.75, boundary: reflect}",
+              "typed": true,
+              "source": "S029",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": "reward_walk",
+              "phase": null
+            },
+            {
+              "value": "{sd: 0.025, lower: 0.25, upper: 0.75, boundary: reflect}",
+              "typed": true,
+              "source": "S025",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": "reward_walk",
+              "phase": null
+            },
+            {
+              "value": "{sd: 0.025, lower: 0.25, upper: 0.75, boundary: reverse_step}",
+              "typed": true,
+              "source": "S024",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": "reward_walk",
+              "phase": null
+            },
+            {
+              "value": "{sd: 0.0275, lower: 0.25, upper: 0.75, boundary: reflect}",
+              "typed": true,
+              "source": "S047",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": "reward_walk",
+              "phase": null
+            },
+            {
+              "value": "walk_generated_per_participant",
+              "typed": true,
+              "source": "S025",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": "reward_schedule",
+              "phase": null
+            },
+            {
+              "value": "walk_generated_per_participant",
+              "typed": true,
+              "source": "S024",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": "reward_schedule",
+              "phase": null
+            },
+            {
+              "value": "pregenerated_walk_sets",
+              "typed": true,
+              "source": "S026",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": "reward_schedule",
+              "phase": null
+            },
+            {
+              "value": "pregenerated_walk_sets",
+              "typed": true,
+              "source": "S062",
+              "sourceType": "empirical",
+              "setting": "tablet",
+              "component": "reward_schedule",
+              "phase": null
+            },
+            {
+              "value": "block_alternating",
+              "typed": true,
+              "source": "S013",
+              "sourceType": "empirical",
+              "setting": "lab-native",
+              "component": "reward_schedule",
+              "phase": null
+            }
+          ],
+          "defaultSource": "component:reward_walk",
+          "needsTranslation": false
+        }
+      }
+    },
+    "sequence_constraints": {
+      "x-jspsych": {
+        "group": "design",
+        "advanced": false,
+        "vocabulary": "sequence_constraints",
+        "phaseOverridable": false,
+        "evidence": {
+          "observed": [
+            {
+              "value": {},
+              "typed": true,
+              "source": "S024",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": {},
+              "typed": true,
+              "source": "S029",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": "resample_until_realized_common_in_0.6_0.8",
+              "typed": false,
+              "source": "S026",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": null,
+              "phase": null
+            }
+          ],
+          "defaultSource": "anchor",
+          "needsTranslation": true
+        },
+        "testOnly": true,
+        "absentValue": null,
+        "widget": "map"
+      }
+    },
+    "trials_per_block": {
+      "x-jspsych": {
+        "group": "design",
+        "advanced": false,
+        "vocabulary": "trials_per_block",
+        "phaseOverridable": false,
+        "evidence": {
+          "observed": [
+            {
+              "value": 67,
+              "typed": true,
+              "source": "S007",
+              "sourceType": "empirical",
+              "setting": "lab-native",
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": 67,
+              "typed": true,
+              "source": "S033",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": 100,
+              "typed": true,
+              "source": "S024",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": 50,
+              "typed": true,
+              "source": "S022",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": 75,
+              "typed": true,
+              "source": "S047",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": 40,
+              "typed": true,
+              "source": "S120",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": 128,
+              "typed": true,
+              "source": "S113",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": null,
+              "phase": null
+            }
+          ],
+          "defaultSource": "anchor",
+          "needsTranslation": false
+        },
+        "unit": "count"
+      }
+    },
+    "common_transition_prob": {
+      "x-jspsych": {
+        "group": "design",
+        "advanced": false,
+        "vocabulary": null,
+        "phaseOverridable": true,
+        "evidence": {
+          "observed": [
+            {
+              "value": 0.7,
+              "typed": true,
+              "source": "S007",
+              "sourceType": "empirical",
+              "setting": "lab-native",
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": 0.7,
+              "typed": true,
+              "source": "S024",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": 0.7,
+              "typed": true,
+              "source": "S029",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": 0.7,
+              "typed": true,
+              "source": "S026",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": 0.7,
+              "typed": true,
+              "source": "S120",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": 0.8,
+              "typed": true,
+              "source": "S013",
+              "sourceType": "empirical",
+              "setting": "lab-native",
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": 0.8,
+              "typed": true,
+              "source": "S009",
+              "sourceType": "review",
+              "setting": null,
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": 0.8,
+              "typed": true,
+              "source": "S062",
+              "sourceType": "empirical",
+              "setting": "tablet",
+              "component": null,
+              "phase": null
+            }
+          ],
+          "defaultSource": "anchor",
+          "needsTranslation": false
+        }
+      }
+    },
+    "missed_response_handling": {
+      "x-jspsych": {
+        "group": "response",
+        "advanced": false,
+        "vocabulary": "missed_response_handling",
+        "phaseOverridable": true,
+        "evidence": {
+          "observed": [
+            {
+              "value": "skip_trial",
+              "typed": true,
+              "source": "S007",
+              "sourceType": "empirical",
+              "setting": "lab-native",
+              "component": "missed_response_handling",
+              "phase": null
+            },
+            {
+              "value": "skip_trial",
+              "typed": true,
+              "source": "S024",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": "missed_response_handling",
+              "phase": null
+            },
+            {
+              "value": "skip_trial",
+              "typed": true,
+              "source": "S029",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": "missed_response_handling",
+              "phase": null
+            },
+            {
+              "value": "repeat_trial",
+              "typed": true,
+              "source": "S026",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": "missed_response_handling",
+              "phase": null
+            },
+            {
+              "value": "repeat_trial",
+              "typed": true,
+              "source": "S134",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": "missed_response_handling",
+              "phase": null
+            },
+            {
+              "value": "repeat_trial",
+              "typed": true,
+              "source": "S033",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": "missed_response_handling",
+              "phase": null
+            },
+            {
+              "value": "none",
+              "typed": true,
+              "source": "S024",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": "missed_trial_abort_threshold",
+              "phase": null
+            },
+            {
+              "value": 6,
+              "typed": false,
+              "source": "S026",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": "missed_trial_abort_threshold",
+              "phase": null
+            }
+          ],
+          "defaultSource": "anchor",
+          "needsTranslation": true
+        }
+      }
+    },
+    "option_side_assignment": {
+      "x-jspsych": {
+        "group": "response",
+        "advanced": false,
+        "vocabulary": "option_side_assignment",
+        "phaseOverridable": true,
+        "evidence": {
+          "observed": [
+            {
+              "value": "random_per_trial",
+              "typed": true,
+              "source": "S007",
+              "sourceType": "empirical",
+              "setting": "lab-native",
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": "random_per_trial",
+              "typed": true,
+              "source": "S008",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": "random_per_trial",
+              "typed": true,
+              "source": "S120",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": "fixed",
+              "typed": true,
+              "source": "S022",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": "fixed",
+              "typed": true,
+              "source": "S026",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": null,
+              "phase": null
+            }
+          ],
+          "defaultSource": "fill",
+          "needsTranslation": false
+        }
+      }
+    },
+    "response_keys": {
+      "x-jspsych": {
+        "group": "response",
+        "advanced": false,
+        "vocabulary": "response_keys",
+        "phaseOverridable": false,
+        "evidence": {
+          "observed": [
+            {
+              "value": [
+                "f",
+                "j"
+              ],
+              "typed": true,
+              "source": "S025",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": [
+                "f",
+                "j"
+              ],
+              "typed": true,
+              "source": "S113",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": [
+                "f",
+                "j"
+              ],
+              "typed": true,
+              "source": "S138",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": [
+                "e",
+                "i"
+              ],
+              "typed": true,
+              "source": "S011",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": [
+                "1",
+                "0"
+              ],
+              "typed": true,
+              "source": "S022",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": [
+                "ArrowLeft",
+                "ArrowRight"
+              ],
+              "typed": true,
+              "source": "S024",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": [
+                "ArrowLeft",
+                "ArrowRight"
+              ],
+              "typed": true,
+              "source": "S026",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": [
+                "z",
+                "m"
+              ],
+              "typed": true,
+              "source": "S029",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": "button_box",
+              "typed": false,
+              "source": "S007",
+              "sourceType": "empirical",
+              "setting": "lab-native",
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": "touch",
+              "typed": false,
+              "source": "S062",
+              "sourceType": "empirical",
+              "setting": "tablet",
+              "component": null,
+              "phase": null
+            }
+          ],
+          "defaultSource": "anchor",
+          "needsTranslation": true
+        }
+      }
+    },
+    "comprehension_check": {
+      "x-jspsych": {
+        "group": "procedure",
+        "advanced": false,
+        "vocabulary": "comprehension_check",
+        "phaseOverridable": false,
+        "evidence": {
+          "observed": [
+            {
+              "value": "none",
+              "typed": true,
+              "source": "S024",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": "quiz_with_repeat",
+              "typed": true,
+              "source": "S011",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": "quiz",
+              "typed": true,
+              "source": "S022",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": "quiz_with_repeat",
+              "typed": true,
+              "source": "S026",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": "quiz",
+              "typed": true,
+              "source": "S120",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": "quiz",
+              "typed": true,
+              "source": "S138",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": null,
+              "phase": null
+            }
+          ],
+          "defaultSource": "anchor",
+          "needsTranslation": false
+        },
+        "absentValue": "none"
+      }
+    },
+    "fullscreen_enforcement": {
+      "x-jspsych": {
+        "group": "procedure",
+        "advanced": true,
+        "vocabulary": "fullscreen_enforcement",
+        "phaseOverridable": false,
+        "evidence": {
+          "observed": [
+            {
+              "value": true,
+              "typed": false,
+              "source": "S022",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": "none",
+              "typed": true,
+              "source": "S024",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": null,
+              "phase": null
+            }
+          ],
+          "defaultSource": "anchor",
+          "needsTranslation": true
+        },
+        "absentValue": "none"
+      }
+    },
+    "manipulation_check": {
+      "x-jspsych": {
+        "group": "procedure",
+        "advanced": false,
+        "vocabulary": "manipulation_check",
+        "phaseOverridable": false,
+        "evidence": {
+          "observed": [
+            {
+              "value": "none",
+              "typed": true,
+              "source": "S024",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": "questionnaire",
+              "typed": true,
+              "source": "S022",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": "questionnaire",
+              "typed": true,
+              "source": "S026",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": null,
+              "phase": null
+            }
+          ],
+          "defaultSource": "anchor",
+          "needsTranslation": false
+        },
+        "absentValue": "none"
+      }
+    },
+    "practice_trials": {
+      "x-jspsych": {
+        "group": "procedure",
+        "advanced": false,
+        "vocabulary": "practice_trials",
+        "phaseOverridable": false,
+        "evidence": {
+          "observed": [
+            {
+              "value": 50,
+              "typed": true,
+              "source": "S007",
+              "sourceType": "empirical",
+              "setting": "lab-native",
+              "component": "practice_trials",
+              "phase": null
+            },
+            {
+              "value": 50,
+              "typed": true,
+              "source": "S024",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": "practice_trials",
+              "phase": null
+            },
+            {
+              "value": 50,
+              "typed": true,
+              "source": "S033",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": "practice_trials",
+              "phase": null
+            },
+            {
+              "value": 25,
+              "typed": true,
+              "source": "S025",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": "practice_trials",
+              "phase": null
+            },
+            {
+              "value": 25,
+              "typed": true,
+              "source": "S047",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": "practice_trials",
+              "phase": null
+            },
+            {
+              "value": 25,
+              "typed": true,
+              "source": "S138",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": "practice_trials",
+              "phase": null
+            },
+            {
+              "value": 22,
+              "typed": true,
+              "source": "S120",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": "practice_trials",
+              "phase": null
+            },
+            {
+              "value": 20,
+              "typed": true,
+              "source": "S022",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": "practice_trials",
+              "phase": null
+            },
+            {
+              "value": 20,
+              "typed": true,
+              "source": "S138",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": "practice_trials",
+              "phase": null
+            },
+            {
+              "value": 5,
+              "typed": true,
+              "source": "S134",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": "practice_trials",
+              "phase": null
+            },
+            {
+              "value": null,
+              "typed": true,
+              "source": "S024",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": "training_sequence",
+              "phase": "practice"
+            },
+            {
+              "value": "staged_stage2_then_transitions_then_full",
+              "typed": false,
+              "source": "S025",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": "training_sequence",
+              "phase": "practice"
+            },
+            {
+              "value": "staged_stage2_then_transitions_then_full",
+              "typed": false,
+              "source": "S011",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": "training_sequence",
+              "phase": "practice"
+            },
+            {
+              "value": "staged_stage2_then_transitions_then_full",
+              "typed": false,
+              "source": "S029",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": "training_sequence",
+              "phase": "practice"
+            },
+            {
+              "value": "observe_only_demo",
+              "typed": false,
+              "source": "S134",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": "training_sequence",
+              "phase": "practice"
+            }
+          ],
+          "defaultSource": "anchor",
+          "needsTranslation": true
+        },
+        "unit": "count",
+        "absentValue": 0
+      }
+    },
+    "rest_breaks": {
+      "x-jspsych": {
+        "group": "procedure",
+        "advanced": true,
+        "vocabulary": "rest_breaks",
+        "phaseOverridable": false,
+        "evidence": {
+          "observed": [
+            {
+              "value": null,
+              "typed": true,
+              "source": "S022",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": "none",
+              "typed": true,
+              "source": "S024",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": null,
+              "phase": null
+            }
+          ],
+          "defaultSource": "anchor",
+          "needsTranslation": false
+        },
+        "absentValue": "none"
+      }
+    },
+    "response_acknowledgement": {
+      "x-jspsych": {
+        "group": "feedback",
+        "advanced": false,
+        "vocabulary": "response_acknowledgement",
+        "phaseOverridable": true,
+        "evidence": {
+          "observed": [
+            {
+              "value": "highlight",
+              "typed": true,
+              "source": "S024",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": "highlight",
+              "typed": true,
+              "source": "S025",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": "highlight",
+              "typed": true,
+              "source": "S029",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": "highlight",
+              "typed": true,
+              "source": "S113",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": "highlight",
+              "typed": true,
+              "source": "S138",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": null,
+              "phase": null
+            }
+          ],
+          "defaultSource": "anchor",
+          "needsTranslation": false
+        },
+        "absentValue": "none"
+      }
+    },
+    "running_score_display": {
+      "x-jspsych": {
+        "group": "feedback",
+        "advanced": true,
+        "vocabulary": "running_score_display",
+        "phaseOverridable": true,
+        "evidence": {
+          "observed": [
+            {
+              "value": "running_total",
+              "typed": true,
+              "source": "S025",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": "none",
+              "typed": true,
+              "source": "S029",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": null,
+              "phase": null
+            }
+          ],
+          "defaultSource": "fill",
+          "needsTranslation": false
+        },
+        "absentValue": "none"
+      }
+    },
+    "contingency_disclosure": {
+      "x-jspsych": {
+        "group": "instructions",
+        "advanced": false,
+        "vocabulary": "contingency_disclosure",
+        "phaseOverridable": false,
+        "evidence": {
+          "observed": [
+            {
+              "value": "partial",
+              "typed": true,
+              "source": "S007",
+              "sourceType": "empirical",
+              "setting": "lab-native",
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": "full",
+              "typed": true,
+              "source": "S008",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": "full",
+              "typed": true,
+              "source": "S120",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": "none",
+              "typed": true,
+              "source": "S013",
+              "sourceType": "empirical",
+              "setting": "lab-native",
+              "component": null,
+              "phase": null
+            }
+          ],
+          "defaultSource": "fill",
+          "needsTranslation": false
+        },
+        "absentValue": "none"
+      }
+    },
+    "instruction_format": {
+      "x-jspsych": {
+        "group": "instructions",
+        "advanced": true,
+        "vocabulary": "instruction_format",
+        "phaseOverridable": false,
+        "evidence": {
+          "observed": [
+            {
+              "value": "audio",
+              "typed": true,
+              "source": "S022",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": "text",
+              "typed": true,
+              "source": "S024",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": null,
+              "phase": null
+            }
+          ],
+          "defaultSource": "anchor",
+          "needsTranslation": false
+        }
+      }
+    },
+    "stimulus_set": {
+      "x-jspsych": {
+        "group": "instructions",
+        "advanced": false,
+        "vocabulary": "instruction_framing",
+        "phaseOverridable": false,
+        "evidence": {
+          "observed": [
+            {
+              "value": "abstract_symbols",
+              "typed": true,
+              "source": "S007",
+              "sourceType": "empirical",
+              "setting": "lab-native",
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": "abstract_symbols",
+              "typed": true,
+              "source": "S011",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": "abstract_symbols",
+              "typed": true,
+              "source": "S024",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": "abstract_symbols",
+              "typed": true,
+              "source": "S134",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": "spaceship_planet_alien",
+              "typed": true,
+              "source": "S025",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": "spaceship_planet_alien",
+              "typed": true,
+              "source": "S022",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": "spaceship_planet_alien",
+              "typed": true,
+              "source": "S026",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": "spaceship_planet_alien",
+              "typed": true,
+              "source": "S055",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": "magic_carpet_mountain_genie",
+              "typed": true,
+              "source": "S120",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": "magic_carpet_mountain_genie",
+              "typed": true,
+              "source": "S033",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": "ship_island_chest",
+              "typed": true,
+              "source": "S047",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": null,
+              "phase": null
+            }
+          ],
+          "defaultSource": "anchor",
+          "needsTranslation": false
+        }
+      }
+    },
+    "population_protocol": {
+      "x-jspsych": {
+        "group": "population",
+        "advanced": true,
+        "vocabulary": "population_protocol",
+        "phaseOverridable": false,
+        "evidence": {
+          "observed": [
+            {
+              "value": "standard",
+              "typed": true,
+              "source": "S024",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": null,
+              "phase": null
+            },
+            {
+              "value": "child",
+              "typed": true,
+              "source": "S022",
+              "sourceType": "empirical",
+              "setting": "online-unsupervised",
+              "component": null,
+              "phase": null
+            }
+          ],
+          "defaultSource": "anchor",
+          "needsTranslation": false
+        }
+      }
+    },
+    "response_acknowledgement_ms": {
+      "x-jspsych": {
+        "group": "timing",
+        "advanced": true,
+        "vocabulary": null,
+        "phaseOverridable": true,
+        "unit": "ms",
+        "absentValue": 0,
+        "widget": "duration",
+        "evidence": {
+          "observed": [
+            {
+              "value": 1000,
+              "typed": false,
+              "source": "S024",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": "selection_display_ms",
+              "phase": null
+            },
+            {
+              "value": 1000,
+              "typed": false,
+              "source": "S025",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": "selection_display_ms",
+              "phase": null
+            },
+            {
+              "value": 500,
+              "typed": false,
+              "source": "S029",
+              "sourceType": "reference-impl",
+              "setting": null,
+              "component": "selection_display_ms",
+              "phase": null
+            },
+            {
+              "value": 500,
+              "typed": false,
+              "source": "S113",
+              "sourceType": "empirical",
+              "setting": null,
+              "component": "selection_display_ms",
+              "phase": null
+            },
+            {
+              "value": 1500,
+              "typed": false,
+              "source": "S138",
+              "sourceType": "empirical",
+              "setting": null,
+              "component": "selection_display_ms",
+              "phase": null
+            }
+          ],
+          "defaultSource": "anchor",
+          "needsTranslation": false
+        },
+        "note": "Not in the vocabulary yet: the spec records this duration as the raw value of response_acknowledgement (selection_display_ms) and the translator proposes response_acknowledgement_ms."
+      }
+    },
+    "instruction_demonstration": {
+      "x-jspsych": {
+        "group": "instructions",
+        "advanced": true,
+        "vocabulary": null,
+        "phaseOverridable": false,
+        "note": "PACKAGE-STANDARD 6a: interactive walkthrough by default."
+      }
+    },
+    "practice": {
+      "x-jspsych": {
+        "group": "procedure",
+        "advanced": true,
+        "vocabulary": null,
+        "phaseOverridable": false,
+        "note": "Practice-phase overrides (PACKAGE-STANDARD 2a). Honoured keys are those with phaseOverridable true."
+      }
+    },
+    "text": {
+      "x-jspsych": {
+        "group": "instructions",
+        "advanced": true,
+        "vocabulary": null,
+        "phaseOverridable": false,
+        "note": "Translation strings; see the Translation section of the site page."
+      }
+    }
+  },
+  "x-jspsych-presets": [
+    {
+      "id": "quick-demo",
+      "label": "Quick demo",
+      "description": "A short run for trying the task: the walkthrough, 4 practice trials and 24 test trials, at a faster pace (shorter highlight and inter-trial interval). Not from a study.",
+      "options": {
+        "practice_trials": 4,
+        "n_test_trials": 24,
+        "n_blocks": 1,
+        "response_acknowledgement_ms": 400,
+        "iti_ms": 300
+      }
+    },
+    {
+      "id": "S007",
+      "label": "Daw et al. 2011, Neuron",
+      "description": "empirical · lab-native · 13 spec options · not expressible, left out: iti_ms, response_keys · pictures: the package's own drawings (abstract symbols), not the study's",
+      "options": {
+        "common_transition_prob": 0.7,
+        "contingency_disclosure": "partial",
+        "stimulus_set": {
+          "$util": "stimuli.abstractSymbols"
+        },
+        "missed_response_handling": "skip_trial",
+        "n_blocks": 3,
+        "n_test_trials": 201,
+        "option_side_assignment": "random_per_trial",
+        "practice_trials": 50,
+        "response_window_ms": 2000,
+        "reward_schedule": {
+          "kind": "random_walk",
+          "sd": 0.025,
+          "bounds": [
+            0.25,
+            0.75
+          ],
+          "boundary": "reflect"
+        },
+        "trials_per_block": 67
+      }
+    },
+    {
+      "id": "S011",
+      "label": "Gillan et al. 2016, eLife",
+      "description": "empirical · online-unsupervised · 6 spec options · not expressible, left out: comprehension_check, practice.practice_trials.training_sequence · pictures: the package's own drawings (abstract symbols), not the study's",
+      "options": {
+        "stimulus_set": {
+          "$util": "stimuli.abstractSymbols"
+        },
+        "n_test_trials": 200,
+        "response_keys": [
+          "e",
+          "i"
+        ],
+        "response_window_ms": 2500
+      }
+    },
+    {
+      "id": "S013",
+      "label": "Castro-Rodrigues et al. 2022, Nature Human Behaviour",
+      "description": "empirical · lab-native · 5 spec options · not expressible, left out: reward_schedule.reward_schedule",
+      "options": {
+        "common_transition_prob": 0.8,
+        "contingency_disclosure": "none",
+        "n_test_trials": 1200,
+        "response_window_ms": null
+      }
+    },
+    {
+      "id": "S022",
+      "label": "Nussenbaum et al. 2020, OSF Preprints",
+      "description": "empirical · online-unsupervised · 13 spec options · not expressible, left out: comprehension_check, fullscreen_enforcement, instruction_format, population_protocol · pictures: the package's own drawings (spaceship planet alien), not the study's",
+      "options": {
+        "stimulus_set": {
+          "$util": "stimuli.spaceshipPlanetAlien"
+        },
+        "manipulation_check": "questionnaire",
+        "n_blocks": 4,
+        "n_test_trials": 200,
+        "option_side_assignment": "fixed",
+        "practice_trials": 20,
+        "response_keys": [
+          "1",
+          "0"
+        ],
+        "response_window_ms": 3000,
+        "trials_per_block": 50
+      }
+    },
+    {
+      "id": "S024",
+      "label": "Expfactory two-stage-decision defaults",
+      "description": "reference-impl · no setting · 24 spec options · pictures: the package's own drawings (abstract symbols), not the study's",
+      "options": {
+        "common_transition_prob": 0.7,
+        "comprehension_check": "none",
+        "feedback_duration_ms": 500,
+        "fixation_duration_ms": 0,
+        "fullscreen_enforcement": "none",
+        "instruction_format": "text",
+        "stimulus_set": {
+          "$util": "stimuli.abstractSymbols"
+        },
+        "iti_ms": 1000,
+        "manipulation_check": "none",
+        "missed_response_handling": "skip_trial",
+        "n_blocks": 2,
+        "n_test_trials": 200,
+        "population_protocol": "standard",
+        "practice_trials": 50,
+        "response_acknowledgement": "highlight",
+        "response_keys": [
+          "ArrowLeft",
+          "ArrowRight"
+        ],
+        "response_window_ms": 2000,
+        "rest_breaks": "none",
+        "reward_probability": {
+          "red": {
+            "option_1": {
+              "min": 0.25,
+              "max": 0.75
+            },
+            "option_2": {
+              "min": 0.25,
+              "max": 0.75
+            }
+          },
+          "blue": {
+            "option_1": {
+              "min": 0.25,
+              "max": 0.75
+            },
+            "option_2": {
+              "min": 0.25,
+              "max": 0.75
+            }
+          }
+        },
+        "reward_schedule": {
+          "kind": "random_walk",
+          "sd": 0.025,
+          "bounds": [
+            0.25,
+            0.75
+          ],
+          "boundary": "reverse_step"
+        },
+        "sequence_constraints": {},
+        "trials_per_block": 100
+      }
+    },
+    {
+      "id": "S025",
+      "label": "Kool space_daw_task jsPsych",
+      "description": "reference-impl · no setting · 14 spec options · not expressible, left out: practice.practice_trials.training_sequence · pictures: the package's own drawings (spaceship planet alien), not the study's",
+      "options": {
+        "feedback_duration_ms": 500,
+        "stimulus_set": {
+          "$util": "stimuli.spaceshipPlanetAlien"
+        },
+        "iti_ms": 1000,
+        "n_test_trials": 125,
+        "practice_trials": 25,
+        "response_acknowledgement": "highlight",
+        "response_keys": [
+          "f",
+          "j"
+        ],
+        "response_window_ms": 2000,
+        "reward_probability": {
+          "red": {
+            "option_1": 0.25,
+            "option_2": 0.75
+          },
+          "blue": {
+            "option_1": 0.4,
+            "option_2": 0.6
+          }
+        },
+        "reward_schedule": {
+          "kind": "random_walk",
+          "sd": 0.025,
+          "bounds": [
+            0.25,
+            0.75
+          ],
+          "boundary": "reflect"
+        },
+        "running_score_display": "running_total",
+        "timeout_message_ms": 1500
+      }
+    },
+    {
+      "id": "S026",
+      "label": "Niv lab jsPsych two-step",
+      "description": "reference-impl · no setting · 13 spec options · not expressible, left out: comprehension_check, missed_response_handling.missed_trial_abort_threshold, reward_schedule.reward_schedule, sequence_constraints · pictures: the package's own drawings (spaceship planet alien), not the study's",
+      "options": {
+        "common_transition_prob": 0.7,
+        "feedback_duration_ms": 1200,
+        "stimulus_set": {
+          "$util": "stimuli.spaceshipPlanetAlien"
+        },
+        "manipulation_check": "questionnaire",
+        "missed_response_handling": "repeat_trial",
+        "n_test_trials": 201,
+        "option_side_assignment": "fixed",
+        "response_keys": [
+          "ArrowLeft",
+          "ArrowRight"
+        ],
+        "response_window_ms": 10000
+      }
+    },
+    {
+      "id": "S029",
+      "label": "kinleyid jsPsych 7 two-step module",
+      "description": "reference-impl · no setting · 14 spec options · not expressible, left out: practice.practice_trials.training_sequence",
+      "options": {
+        "common_transition_prob": 0.7,
+        "feedback_duration_ms": 1000,
+        "fixation_duration_ms": 0,
+        "missed_response_handling": "skip_trial",
+        "n_test_trials": 100,
+        "response_acknowledgement": "highlight",
+        "response_keys": [
+          "z",
+          "m"
+        ],
+        "response_window_ms": 2000,
+        "reward_probability": {
+          "red": {
+            "option_1": {
+              "min": 0.25,
+              "max": 0.75
+            },
+            "option_2": {
+              "min": 0.25,
+              "max": 0.75
+            }
+          },
+          "blue": {
+            "option_1": {
+              "min": 0.25,
+              "max": 0.75
+            },
+            "option_2": {
+              "min": 0.25,
+              "max": 0.75
+            }
+          }
+        },
+        "reward_schedule": {
+          "kind": "random_walk",
+          "sd": 0.025,
+          "bounds": [
+            0.25,
+            0.75
+          ],
+          "boundary": "reflect"
+        },
+        "running_score_display": "none",
+        "sequence_constraints": {},
+        "timeout_message_ms": 1000
+      }
+    },
+    {
+      "id": "S033",
+      "label": "Feher da Silva & Hare magic-carpet PsychoPy task",
+      "description": "reference-impl · no setting · 6 spec options · not expressible, left out: instruction_framing",
+      "options": {
+        "missed_response_handling": "repeat_trial",
+        "n_blocks": 3,
+        "n_test_trials": 201,
+        "practice_trials": 50,
+        "trials_per_block": 67
+      }
+    },
+    {
+      "id": "S047",
+      "label": "Onysk & Seriès 2022, PLOS ONE",
+      "description": "empirical · online-unsupervised · 7 spec options · not expressible, left out: instruction_framing",
+      "options": {
+        "n_blocks": 4,
+        "n_test_trials": 300,
+        "practice_trials": 25,
+        "reward_probability": {
+          "red": {
+            "option_1": {
+              "min": 0.58,
+              "max": 0.72
+            },
+            "option_2": {
+              "min": 0.58,
+              "max": 0.72
+            }
+          },
+          "blue": {
+            "option_1": {
+              "min": 0.31,
+              "max": 0.45
+            },
+            "option_2": {
+              "min": 0.31,
+              "max": 0.45
+            }
+          }
+        },
+        "reward_schedule": {
+          "kind": "random_walk",
+          "sd": 0.0275,
+          "bounds": [
+            0.25,
+            0.75
+          ],
+          "boundary": "reflect"
+        },
+        "trials_per_block": 75
+      }
+    },
+    {
+      "id": "S055",
+      "label": "Donegan et al. 2025, Translational Psychiatry",
+      "description": "empirical · online-unsupervised · 3 spec options · pictures: the package's own drawings (spaceship planet alien), not the study's",
+      "options": {
+        "stimulus_set": {
+          "$util": "stimuli.spaceshipPlanetAlien"
+        },
+        "n_test_trials": 150,
+        "response_window_ms": 2500
+      }
+    },
+    {
+      "id": "S113",
+      "label": "Karagoz et al. 2024, Journal of Experimental Psychology: General",
+      "description": "empirical · online-unsupervised · 8 spec options",
+      "options": {
+        "feedback_duration_ms": 1500,
+        "iti_ms": 500,
+        "n_blocks": 2,
+        "n_test_trials": 256,
+        "response_acknowledgement": "highlight",
+        "response_keys": [
+          "f",
+          "j"
+        ],
+        "response_window_ms": 1500,
+        "trials_per_block": 128
+      }
+    },
+    {
+      "id": "S120",
+      "label": "Hiser et al. 2023, Behaviour Research and Therapy",
+      "description": "empirical · online-unsupervised · 9 spec options · not expressible, left out: comprehension_check, instruction_framing",
+      "options": {
+        "common_transition_prob": 0.7,
+        "contingency_disclosure": "full",
+        "n_blocks": 8,
+        "n_test_trials": 320,
+        "option_side_assignment": "random_per_trial",
+        "practice_trials": 22,
+        "trials_per_block": 40
+      }
+    },
+    {
+      "id": "S134",
+      "label": "Oguchi et al. 2023, Scientific Reports",
+      "description": "empirical · online-unsupervised · 8 spec options · not expressible, left out: practice.practice_trials.training_sequence · pictures: the package's own drawings (abstract symbols), not the study's",
+      "options": {
+        "fixation_duration_ms": {
+          "min": 2000,
+          "max": 4000
+        },
+        "stimulus_set": {
+          "$util": "stimuli.abstractSymbols"
+        },
+        "iti_ms": {
+          "min": 3000,
+          "max": 5000
+        },
+        "missed_response_handling": "repeat_trial",
+        "n_test_trials": 200,
+        "practice_trials": 5,
+        "response_window_ms": 2000
+      }
+    },
+    {
+      "id": "S138",
+      "label": "Tashjian et al. 2022, PLOS Computational Biology",
+      "description": "empirical · online-unsupervised · 6 spec options · not expressible, left out: comprehension_check",
+      "options": {
+        "feedback_duration_ms": 2500,
+        "practice_trials": 20,
+        "response_acknowledgement": "highlight",
+        "response_keys": [
+          "f",
+          "j"
+        ],
+        "response_window_ms": 1500
+      }
+    }
+  ],
+  "x-jspsych-spec": {
+    "task": "2-step-task",
+    "vocabulary": "2026-11-13-std-final",
+    "generated_by": "specs/scripts/generate_spec.py",
+    "status": "draft: generated from an unreviewed dossier; values flagged needsTranslation are untyped"
+  }
+}

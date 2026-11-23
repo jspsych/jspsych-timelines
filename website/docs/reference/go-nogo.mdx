@@ -1,0 +1,255 @@
+---
+title: Go/No-go
+sidebar_label: Go/No-go
+---
+
+import {TimelineExample} from '@jspsych/docusaurus-theme/components';
+import ParamsTable from '@site/src/components/ParamsTable';
+import schema from '@site/src/schemas/go-nogo.schema.json';
+import manifest from '@site/src/schemas/manifest.json';
+
+# Go/No-go
+
+Package: `@jspsych-timelines/go-nogo` ([source](https://github.com/jspsych/jspsych-timelines/tree/main/packages/go-nogo)). Version documented here: <code>{manifest['go-nogo'].version}</code>.
+
+## Overview
+
+The go/no-go task measures response inhibition and sustained attention. One stimulus appears on each trial. The participant responds to the frequent "go" stimulus and withholds the response to the rare "no-go" stimulus. A response to a no-go stimulus is a commission error (a false alarm), a missing response to a go stimulus an omission error. The usual measures are the commission and omission error rates, the mean RT of correct go responses, and d'.
+
+The defaults follow the Experiment Factory go_nogo task (S022 in the spec): coloured squares, 90% go, 350 test trials, a 750 ms stimulus inside a 1000 to 1500 ms response window, and feedback in practice only. Studies differ most in the proportion of go trials, the timing, and the order of the trials, so the package has options for all three, including the ordering rules some studies use.
+
+**Canonical citation:** Gomez, P., Ratcliff, R., & Perea, M. (2007). A model of the go/no-go task. *Journal of Experimental Psychology: General, 136*(3), 389-413. (Cited from memory; verify before publishing.)
+
+## Installation
+
+```bash
+npm install @jspsych-timelines/go-nogo
+```
+
+From a CDN:
+
+```html
+<script src="https://unpkg.com/jspsych@8"></script>
+<script src="https://unpkg.com/@jspsych-timelines/go-nogo"></script>
+<link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css" />
+```
+
+## Quick Start
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://unpkg.com/jspsych@8"></script>
+    <script src="https://unpkg.com/@jspsych-timelines/go-nogo"></script>
+    <link rel="stylesheet" href="https://unpkg.com/jspsych@8/css/jspsych.css" />
+  </head>
+  <body></body>
+  <script>
+    const jsPsych = initJsPsych();
+    const task = jsPsychTimelineGoNogo.createTimeline(jsPsych);
+    jsPsych.run([task]);
+  </script>
+</html>
+```
+
+## Task Description
+
+Each trial shows one stimulus (by default a blue or an orange square) for 750 ms. The participant presses the space bar for the go stimulus and does nothing for the no-go stimulus. Which of the two squares is the go stimulus is drawn once per participant. The trial lasts the whole response window, sampled per trial from 1000 to 1500 ms and recorded as `response_window`; a response does not end it (`trial_termination_rule: "fixed_duration"`). There is no interval between trials by default.
+
+The task opens with an interactive walkthrough: one step for each stimulus, a go stimulus first and then a no-go stimulus. A go step waits for the response and a no-go step waits 2.5 seconds for you not to respond. A wrong response shows a hint and the step repeats, up to 3 attempts. Then come 10 practice trials at 50% go with correct/incorrect feedback, and 350 test trials, 90% go, without feedback.
+
+`trial_order: "shuffled_list"` is the default (the spec types Expfactory's order as `random`, but Expfactory shuffles a list with exact counts). Counts are exact within each block: `condition_proportions` is turned into counts by largest remainders, the stimuli of each trial type are balanced, and that list is shuffled. `"random"` draws every trial independently; `"fixed_sequence"` gives every participant the same order.
+
+### Ordering rules
+
+`sequence_constraints` holds rules for the order of the go and no-go trials within each block, built with `@jspsych/sequencer`. The rules that look at neighbours (`max_run`, `min_gap`, `max_gap`, `run_length`, `no_immediate_repeat`, `balanced_transitions`) also hold across the boundary between blocks. They apply to the test phase; practice is unconstrained unless `practice.sequence_constraints` is set. An order the rules cannot give (for example, `min_gap: { nogo: 3 }` with half no-go trials) throws when the timeline is built, naming the rule.
+
+```javascript
+// Allen et al. 2025 (S157): at most 2 no-go in a row, at least 3 other trials between no-go trials, one fixed order
+createTimeline(jsPsych, {
+  n_test_trials: 150,
+  condition_proportions: { go: 0.82, nogo: 0.18 },
+  trial_order: "fixed_sequence",
+  sequence_constraints: { max_run: { nogo: 2 }, min_gap: { nogo: 3 } },
+});
+
+// Smith & Jamadar 2021 (S207): 1, 3 or 5 go trials before each no-go trial (needs about 75% go, not 90%)
+createTimeline(jsPsych, {
+  condition_proportions: { go: 0.75, nogo: 0.25 },
+  sequence_constraints: { run_length: { go: [1, 3, 5] } },
+});
+```
+
+### Response windows
+
+`response_window_ms` is a number, a `{ min, max, step }` jitter range (the default), `null` (no limit; with `trial_termination_rule: "response_or_timeout"` and no no-go trials), or a function that returns the window when each trial starts. `utils.deadlines.meanPlusSd(k)` and `utils.deadlines.percentile(p)` calibrate a per-participant deadline from the correct go RTs in practice (S207: mean + 2 SD, or the 90th percentile). They return 1250 ms during practice and until there are 5 usable practice RTs, and the same value on every test trial afterwards. The window used is recorded on every trial as `response_window`, with the helper's label as `response_window_rule`. Functions are code-only: the options form and shareable URLs do not edit them, and the presets leave them out.
+
+```javascript
+createTimeline(jsPsych, {
+  practice_trials: 20,
+  stimulus_duration_ms: 500,
+  response_window_ms: utils.deadlines.meanPlusSd(2, { min: 400, max: 1200 }),
+});
+```
+
+### Go-only baseline blocks
+
+`single_task_blocks` adds blocks of 16 go trials (as in S183): `"before_dual"` (one before the test), `"after_dual"`, or `"interleaved"` (one before each test block). They are not counted in `n_blocks` or `n_test_trials`, use the test options, and are recorded as `condition: "go_control"` with `block: null` and `baseline_block`. The names come from the vocabulary's dual-task designs; there is no dual task here.
+
+### Simulation
+
+Under `jsPsych.simulate([task], "data-only")` jsPsych's default participant responds on every trial, so every no-go trial is a commission error. No-go trials use the named simulation options `nogo`; set them to withhold the response:
+
+```javascript
+jsPsych.simulate([task], "data-only", {
+  default: { data: { rt: 400 } },
+  nogo: { data: { response: null, rt: null } },
+});
+```
+
+The instruction walkthrough answers correctly in data-only mode (and withholds on no-go steps).
+
+## Parameters
+
+Pick an option on the left, or search by name or description. Each option shows its default and where that default came from, what turns it off, whether practice can use a different value, and the values used in the studies behind the spec. Link to one with `#param-<name>`, e.g. [`#param-sequence_constraints`](#param-sequence_constraints).
+
+<ParamsTable schema={schema} />
+
+## Try it
+
+For a short run, pick "Quick demo" in the Preset menu (the walkthrough, 6 practice and 20 test trials) and press Run. The other presets are study configurations from the literature; values the package cannot express are noted in each preset's description. The task runs from the bundle built from this repository. The options are kept in the URL hash, so you can share a configuration.
+
+<TimelineExample
+  schema={schema}
+  bundle="/bundles/go-nogo/index.browser.js"
+  globalName={manifest['go-nogo'].globalName}
+  syncToUrl
+  hashKey="go-nogo"
+  height={460}
+/>
+
+## Examples
+
+Faster presentation with a short ITI, fixation between stimuli and a rule reminder (a harder task: shorter windows raise commission errors):
+
+```javascript
+createTimeline(jsPsych, {
+  stimulus_duration_ms: 300,
+  response_window_ms: 700,
+  iti_ms: { min: 500, max: 900, step: 100 },
+  inter_trial_display: "fixation_cross",
+  rule_reminder: "on_screen",
+  n_blocks: 4,
+  n_test_trials: 240,
+  block_feedback: "accuracy_rt",
+});
+```
+
+Letter stimuli with three go letters and one no-go letter (S123), responding by clicking a button:
+
+```javascript
+createTimeline(jsPsych, {
+  stimulus_set: { go: [{ text: "A" }, { text: "B" }, { text: "C" }], nogo: { text: "X" } },
+  stimulus_role_assignment: "fixed",
+  response_device: "mouse",
+});
+```
+
+Your own pictures: an item is a string (text), or one of `{ shape, color }`, `{ text, color }`, `{ image: url }` or `{ svg: markup }`, with an optional `id`. The id is recorded as `stimulus` and is what the instructions call the stimulus; without one, a picture is recorded as `picture-<n>` and called "picture". Ids must be unique across the go and no-go stimuli. The package bundles no pictures; preload image files with a `preload` trial before the timeline.
+
+```javascript
+createTimeline(jsPsych, {
+  stimulus_set: {
+    go: { image: "img/car.png", id: "car" },
+    nogo: { image: "img/dog.png", id: "dog" },
+  },
+  stimulus_role_assignment: "fixed",
+});
+```
+
+Practice with RT feedback only after errors, none in the test:
+
+```javascript
+createTimeline(jsPsych, {
+  practice: { trial_feedback: "accuracy_rt", feedback_condition: "errors_only" },
+});
+```
+
+## Data Output
+
+Every trial carries `task: "go-nogo"` and `task_version`. The trial that records the response (`part: "response"`) has these fields; it is the only row that is scored.
+
+| Field | Type | Description |
+|---|---|---|
+| `task`, `task_version` | string | `"go-nogo"` and the package version |
+| `phase` | string | `"practice"` or `"test"` |
+| `block` | number or null | Block number, 1-indexed (practice is block 1); `null` in go-only baseline blocks |
+| `trial_index_in_block` | number | Position within the block, 1-indexed |
+| `condition` | string | `"go"`, `"nogo"`, or `"go_control"` (a go-only baseline trial) |
+| `stimulus` | string | Identifier of the stimulus: its `id`, else `<shape>_<color>`, its text, or `picture-<n>` |
+| `stimulus_location` | string | `center`, `top_center`, `top_left`, `top_right`, `bottom_left` or `bottom_right` |
+| `baseline_block` | number | Baseline rows: which go-only block |
+| `correct_response` | string, number or null | The key (or button index 0); `null` on no-go trials |
+| `response` | string, number or null | The key or button pressed; `null` if none |
+| `rt` | number or null | Response time in ms from stimulus onset; `null` if no response |
+| `responded` | boolean | A key or button was pressed in the window |
+| `correct` | boolean | Go: responded. No-go: did not respond |
+| `timeout` | boolean | No response in the window (on a no-go trial this is the correct outcome) |
+| `response_window` | number or null | The response window of this trial in ms; `null` for none |
+| `response_window_rule` | string | The label of a computed window rule, when one was used |
+| `stimulus_duration` | number or null | How long the stimulus stayed visible, ms |
+| `trial_termination` | string | `fixed_duration` or `response_or_timeout` |
+| `response_device` | string | `keyboard`, `mouse` or `touch` |
+
+**`part` values the package writes:** `instruction`, `instruction_example`, `instruction_check`, `instruction_feedback`, `response`, `feedback`, `iti`, `transition` (the countdown), `block_feedback`, `completion`. `phase` is `instructions`, `practice`, `test` or `completion`.
+
+- `iti` rows record the sampled interval as `iti` and `duration_ms`; `feedback` rows record `feedback_duration`, `feedback_kind`, `feedback_condition` and `feedback_text`.
+- Walkthrough rows (`phase: "instructions"`) are `instruction_check` (with `condition`, `stimulus`, `correct`, `attempt`) and `instruction_feedback` (`feedback_kind`: `correct`, `hint` or `reveal`). They are never scored.
+
+## Scoring
+
+```javascript
+import { utils } from "@jspsych-timelines/go-nogo";
+
+const scores = utils.scoring.getSummary(jsPsych.data.get());
+```
+
+Scores use the test phase's go and no-go trials. With no data, counts are `0` and every rate, mean, SD and d' is `null`.
+
+| Metric | Description | Interpretation |
+|---|---|---|
+| `commission_error_rate` | Proportion of no-go trials with a response | Higher means poorer inhibition |
+| `omission_error_rate` | Proportion of go trials without a response | Higher means missed or too-slow responses |
+| `nogo_accuracy`, `accuracy` | 1 minus the commission rate; overall proportion correct | Higher is better |
+| `mean_correct_go_rt`, `go_rt_sd` | Mean and SD of the RTs of correct go responses (ms) | Lower is faster; a larger SD means more variable responding |
+| `false_alarm_rt` | Mean RT of commission errors (ms) | Fast errors suggest a prepotent response |
+| `d_prime`, `criterion_c` | Sensitivity and response bias from hit and false-alarm rates | d': higher is better. c: positive means a conservative bias (fewer responses) |
+| `d_prime_correction` | `"macmillan_kaplan"`: rates of 0 or 1 become 1/(2n) and 1 - 1/(2n) | |
+| `n_trials`, `n_go`, `n_nogo`, `hits`, `omissions`, `commissions`, `correct_rejections` | Counts | |
+| `baseline_n_trials`, `baseline_mean_rt` | Go-only baseline trials and their mean RT (ms) | Baseline RT against go RT in the mixed blocks |
+| `by_block` | `{ block, n_trials, commission_error_rate, omission_error_rate, mean_correct_go_rt }` for each test block | |
+
+The probit in d' comes from `simple-statistics` and is accurate to about 0.003.
+
+## Translation
+
+Pass a `text` object to replace interface strings; partial objects are merged with the defaults. The string keys are listed in the `text` row of the parameters table. Several keys are functions (`instruction_intro`, `instruction_response`, `instruction_step`, `instruction_hint`, `instruction_reveal`, `rule_reminder`, `stimulus_name`, `countdown`, `block_feedback`, `feedback_rt`, `feedback_correct_go`, `result_summary`) and can only be set from code; each documents its named parameters in `src/text.ts`.
+
+```javascript
+createTimeline(jsPsych, {
+  text: { go_button: "Reaccionar", continue_button: "Continuar", correct_feedback: "Correcto" },
+});
+```
+
+## Timeline Units
+
+`timelineUnits` exports factories for the individual pieces. Most take the object from `timelineUnits.createContext(jsPsych, options)`: `createInstructions`, `createInstructionWalkthrough`, `createPracticeIntro`, `createTestIntro`, `createResponseTrial`, `createFeedback`, `createIti`, `createCountdown`, `createDisplayTrial`, `createTrialSequence`, `createBlock`, `createBaselineBlock`, `createBlockFeedback` and `createCompletion`.
+
+## References
+
+- Gomez, P., Ratcliff, R., & Perea, M. (2007). A model of the go/no-go task. *Journal of Experimental Psychology: General, 136*(3), 389-413. (Cited from memory; verify.)
+- Sochat, V. V., Eisenberg, I. W., Enkavi, A. Z., Li, J., Bissett, P. G., & Poldrack, R. A. (2016). The Experiment Factory: Standardizing behavioral experiments. *Frontiers in Psychology, 7*, 610. (The Expfactory go_nogo task is the anchor of the defaults; cited from memory; verify.)
+- Hedge, C., Powell, G., & Sumner, P. (2018). The reliability paradox: Why robust cognitive tasks do not produce reliable individual differences. *Behavior Research Methods, 50*, 1166-1186.
+- Allen, M. T., et al. (2025). PeerJ (S157, ordering rules); Smith, & Jamadar (2021), PsyArXiv (S207, runs of 1, 3 or 5 go trials). See the spec for the full list of studies behind each option.

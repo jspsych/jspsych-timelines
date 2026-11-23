@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>EEfRT Example</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/jspsych@8"></script>
+    <script src="../dist/index.browser.js"></script>
+    <!-- Once published: <script src="https://unpkg.com/@jspsych-timelines/eefrt"></script> -->
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/jspsych@8/css/jspsych.css" />
+  </head>
+
+  <body></body>
+  <script>
+    const jsPsych = initJsPsych({
+      on_finish: () => {
+        // Display data
+        jsPsych.data.displayData();
+
+        // Calculate and display scores
+        const scores = jsPsychTimelineEefrt.utils.scoring.getSummary(jsPsych.data.get());
+        console.log("EEfRT Results:", scores);
+      },
+    });
+
+    // The EEfRT with its original settings runs for 20 minutes.
+    // For a short demo: 2 practice trials, 6 test trials, smaller press requirements.
+    const task = jsPsychTimelineEefrt.createTimeline(jsPsych, {
+      practice_trials: 2,
+      task_end_rule: "fixed_trial_count",
+      n_test_trials: 6,
+      difficulty_levels: { easy: 10, hard: 25 },
+      response_window_ms: { choice: 5000, easy: 4000, hard: 8000 },
+    });
+
+    jsPsych.run([task]);
+  </script>
+</html>

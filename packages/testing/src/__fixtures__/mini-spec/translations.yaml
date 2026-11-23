@@ -1,0 +1,8 @@
+task: mini-task
+entries:
+  - variation: n_test_trials
+    raw: lots
+    as: null
+    confidence: low
+    flag: true
+    note: no number given

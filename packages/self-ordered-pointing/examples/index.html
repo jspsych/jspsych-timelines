@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Self-ordered Pointing Example</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/jspsych@8"></script>
+    <script src="../dist/index.browser.js"></script>
+    <!-- Once published: <script src="https://unpkg.com/@jspsych-timelines/self-ordered-pointing"></script> -->
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/jspsych@8/css/jspsych.css" />
+  </head>
+
+  <body></body>
+  <script>
+    const jsPsych = initJsPsych({
+      on_finish: () => {
+        // Display data
+        jsPsych.data.displayData();
+
+        // Calculate and display scores
+        const scores = jsPsychTimelineSelfOrderedPointing.utils.scoring.getSummary(jsPsych.data.get());
+        console.log("Self-ordered pointing results:", scores);
+      },
+    });
+
+    // The reference configuration: 6, 8, 10 and 12 items, three series each, ascending.
+    // For a shorter demo, use two small set sizes and two practice series:
+    const task = jsPsychTimelineSelfOrderedPointing.createTimeline(jsPsych, {
+      set_sizes: [4, 6],
+      trials_per_condition: 1,
+      practice_trials: 2,
+    });
+
+    jsPsych.run([task]);
+  </script>
+</html>

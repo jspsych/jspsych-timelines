@@ -1,0 +1,78 @@
+# A tiny spec in the shape of the generated task specs, for testing the fixture generator.
+task: mini-task
+vocabulary: test-vocabulary
+defaults:
+  anchor:
+    source: S1
+    citation: Mini defaults
+options:
+  - name: n_test_trials
+    default: { value: 20, raw: 20, basis: anchor, source: S1 }
+    components:
+      - variation: n_test_trials
+        role: null
+        phase: null
+        field: null
+        observed:
+          - { raw: 20, source: S1, value: 20, ok: true }
+          - { raw: 40, source: S2, value: 40, ok: true }
+          - raw: lots
+            source: S3
+            ok: false
+            translation: { confidence: low, flag: true, note: no number given }
+  - name: fixation_duration_ms
+    default: { value: 500, raw: 500, basis: anchor, source: S1 }
+    components:
+      - variation: fixation_duration_ms
+        observed:
+          - { raw: 500, source: S1, value: 500, ok: true }
+          - raw: 300-600 step 100
+            source: S2
+            value: &jitter { min: 300, max: 600, step: 100 }
+            ok: true
+            translation: { confidence: high, flag: false, note: a range }
+          - { raw: none, source: S3, value: 0, ok: true }
+  - name: response_window_ms
+    default: { value: 800, raw: 800, basis: anchor, source: S1 }
+    components:
+      - variation: response_deadline_ms
+        observed:
+          - { raw: 800, source: S1, value: 800, ok: true }
+          - { raw: until_response, source: S2, value: null, ok: true }
+  - name: trial_feedback
+    default: { value: none, raw: none, basis: fill }
+    components:
+      - variation: trial_feedback
+        observed:
+          - { raw: accuracy, source: S1, value: accuracy, ok: true }
+          - { raw: bank, source: S2, value: points_bank, ok: true }
+study_configurations:
+  - source: S1
+    citation: Mini et al. 2020
+    doi: 10.0000/mini
+    source_type: empirical
+    setting: lab
+    n_options: 4
+    fully_typed: true
+    options:
+      n_test_trials: 20
+      fixation_duration_ms: 500
+      response_window_ms.response_deadline_ms: 800
+      practice.trial_feedback: accuracy
+  - source: S2
+    citation: Mini & Jitter 2021
+    source_type: empirical
+    setting: null
+    n_options: 3
+    fully_typed: true
+    options:
+      n_test_trials: 40
+      fixation_duration_ms: *jitter
+      trial_feedback: points_bank
+  - source: S3
+    citation: Partly typed
+    source_type: empirical
+    n_options: 2
+    fully_typed: false
+    options:
+      n_test_trials: { untranslated: lots }
