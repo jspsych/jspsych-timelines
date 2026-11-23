@@ -13,6 +13,7 @@ What Expfactory does (S024): abstract symbols, 50 practice and 200 test trials i
 | `sequence_constraints` | `{}` (anchor: independent per trial) | `null` | `null` is the absent value of the standard; `{}` is accepted and means the same. Ordering rules are not implemented (any rule throws): the only rule in the sources (S026, resample until the realised common share is in [0.6, 0.8]) has no key in the typed form. |
 | `response_acknowledgement_ms` (new) | none: the anchor's selection display (1000 ms) is the raw value of `response_acknowledgement` | `1000` | A duration the spec records as the raw value of an enum. The translator proposes `response_acknowledgement_ms`. The Quick demo needs to shorten it. A duration (number, or jitter range), recorded as `response_acknowledgement`. |
 | `instruction_demonstration` | none in the spec (added by PACKAGE-STANDARD 6a) | `"interactive"` | The documented exception to the anchor rule (6a). The task has no correct answer, so the walkthrough asks for what the pages said, with the task's own screens and keys: which key chooses which side (a scripted first and second choice), and, by `contingency_disclosure`, where each first-stage option usually leads (`full`) or whether the transitions and reward chances are fixed (`partial`). `"none"` reproduces text-only instructions. |
+| `stimulus_set` (replaces `instruction_framing`) | `"abstract_symbols"`, an enum of cover stories (S024) | `utils.stimuli.abstractSymbols`, a stimulus set | The spec's value named both the drawings and the words of the instructions. The pictures are a set in roles, so they are data (PACKAGE-STANDARD 2a): see "Stimulus set" below. The set's `name` is the spec's value, so S024's `abstract_symbols` is the default. |
 | `n_test_trials`, `n_blocks`, `trials_per_block` | 200, 2, 100 | same | Three options for one design: any one sets the others, two set the third, three must agree (a contradiction throws). The spec's alternative is 201 (Daw: the first trial has no predecessor); 200 is the anchor's. |
 
 ## Spec defaults kept, with the coherence check
@@ -33,7 +34,29 @@ What Expfactory does (S024): abstract symbols, 50 practice and 200 test trials i
 | `response_acknowledgement` | `"highlight"` | S024 | The chosen option is outlined and the other dimmed. `keypress_mark` throws. |
 | `running_score_display` | `"running_total"` | fill, S025 (1/2) | Coins of the phase; practice coins are counted apart. |
 | `contingency_disclosure` | `"partial"` | fill, S007 (1/4) | Told that each option mostly leads to one state, not which. The walkthrough shows one scripted transition (to practise the keys), so a participant sees one option lead to its state before practice. |
-| `instruction_format`, `instruction_framing` | `"text"`, `"abstract_symbols"` | S024 | `spaceship_planet_alien` is also drawn; the other two cover stories throw. |
+| `instruction_format` | `"text"` | S024 | |
+
+## Stimulus set: the shape, and why one option
+
+**One option for pictures and story.** `stimulus_set` carries the pictures in their roles and the words the instructions use for them. `instruction_framing` is gone. As two options, pictures and story could disagree (spaceship text over abstract symbols), and the package would have to detect it; this is the same reason `reward_schedule` has no `start`. The spec's `instruction_framing` values map to the bundled sets in the adapter (`STIMULUS_SETS`), and a set's `name` is the spec's value (`abstract_symbols`, `spaceship_planet_alien`).
+
+**The shape.** A two-step set has roles, so it is not a flat list of items:
+
+```ts
+{
+  name?, noun?: { first?, second?, state?, reward? },   // each { singular, plural }
+  first_stage: [A, B],
+  states: [{ items: [option_1, option_2], id?, name?, picture?, background?, foreground?, color?, horizon? }, { ... }],
+  reward?: { rewarded, unrewarded },
+  background?, foreground?,
+}
+```
+
+`states[0]` is the state A usually leads to, `states[1]` the one B usually leads to. Items follow the standard: a string, or one of `text`, `image`, `svg`, with an optional stable `id`; a first-stage item may also have a `name` ("the rocket"), which the instructions use. What used to be code under `framing === "spaceship_planet_alien"` is now data: the state's picture in the mapping questions, its screen colours, and the planet's curve along the bottom of the display (`horizon`). The instructions take every noun from the set, the reward too ("collect apples"). The default `text.framing_words` passes them through, so a translation still has one place to change them.
+
+**Roles and ids.** The data keeps the role names (`stage1_choice: "A"`, `stage2_state: "red"`, `stage2_choice: "option_1"`), because `reward_probability`, scoring and the simulation key on them. The set's own ids are recorded beside them: `stimulus_set` (the set's name), `stage1_item_id`, `stage2_state_id` and `stage2_item_id` on `response` rows; `left_item_id`, `right_item_id`, `chosen_item_id` and `state_id` on `choice` rows; `item_id` and `answer_state_id` on `manipulation_check` rows. **Needs human decision:** for a researcher's own set, `red` and `blue` are role names, not colours (the first and the second state). Renaming them (`state_1`, `state_2`, as the spec does) would touch `reward_probability`, the data and the scoring.
+
+**Bundled sets and licence.** `utils.stimuli.abstractSymbols` and `utils.stimuli.spaceshipPlanetAlien` are the two framings the package drew before: simple circles, paths and rectangles written for this package (git history: added with the package, no outside source). They are MIT like the package, with the licence kept as a `@license` comment in `src/drawings.ts` that survives into `dist/`. No third-party art is bundled, the coin and the planets included. They stand in for the studies' pictures (Expfactory's symbol images; the spaceship and alien pictures of S025 and S026), and the study presets say so in their description. `magic_carpet_mountain_genie` (S033, S120) and `ship_island_chest` (S047) still have no bundled set, so they stay gaps (a researcher passes their own); the tallies did not change (level 1: 79 checked, 8 not expressible).
 
 ## The Quick demo
 
