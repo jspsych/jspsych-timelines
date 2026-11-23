@@ -23,8 +23,17 @@ import { buildSchedule, generateWalk, splitTrials, stepProbability } from "./sch
 import type { TrialPlan } from "./schedule";
 import { calculateScores, getSummary, trialTable } from "./scoring";
 import type { ScoringResult, TrialRecord } from "./scoring";
+import { prepareSet, setProblems, stimuli } from "./sets";
 import { HybridAgent, getSimulatedAgent, setSimulatedAgent } from "./simulation";
-import { renderCoin, renderOption, renderPair, renderShip, renderState } from "./stimuli";
+import {
+  paintDisplay,
+  renderCoin,
+  renderItem,
+  renderOption,
+  renderPair,
+  renderShip,
+  renderState,
+} from "./stimuli";
 import { TextConfig, defaultText } from "./text";
 import {
   blockSizes,
@@ -89,6 +98,14 @@ export interface TrialData {
   stage1_rt?: number | null;
   /** The first-stage option that was on the left. */
   stage1_left?: "A" | "B";
+  /** The stimulus set's `name` ("custom" when it has none). On `response`, `choice` and `manipulation_check` rows. */
+  stimulus_set?: string;
+  /** `response` rows: the set's id of the first-stage picture chosen ("rocket"). */
+  stage1_item_id?: string | null;
+  /** `response` rows: the set's id of the state reached ("red_planet"). */
+  stage2_state_id?: string | null;
+  /** `response` rows: the set's id of the second-stage picture chosen ("green_alien"). */
+  stage2_item_id?: string | null;
   /** The state reached, `red` or `blue`. */
   stage2_state?: "red" | "blue" | null;
   stage2_choice?: "option_1" | "option_2" | null;
@@ -112,6 +129,11 @@ export interface TrialData {
   choice?: string | null;
   side?: "left" | "right" | null;
   state?: "red" | "blue" | null;
+  /** `choice` rows: the set's ids of the state, of the pictures on the left and the right, and of the one chosen. */
+  state_id?: string | null;
+  left_item_id?: string;
+  right_item_id?: string;
+  chosen_item_id?: string | null;
   /** `response` rows: the first choice's key and RT (`choice` rows: the choice's own). */
   response?: string | null;
   rt?: number | null;
@@ -135,6 +157,9 @@ export interface TrialData {
   ship?: "A" | "B";
   answer?: "red" | "blue" | null;
   common_state?: "red" | "blue";
+  /** manipulation_check rows: the set's id of the first-stage picture asked about, and of the state answered. */
+  item_id?: string;
+  answer_state_id?: string | null;
 }
 
 /**
@@ -213,12 +238,37 @@ export const utils = {
     SIMULATION,
   },
   text: { defaultText },
-  stimuli: { renderShip, renderOption, renderState, renderCoin, renderPair, keyName },
+  /**
+   * The bundled stimulus sets (`abstractSymbols`, `spaceshipPlanetAlien`), as values for `stimulus_set`, beside the
+   * helpers that draw any set (bundled or your own) and check one (`setProblems`).
+   */
+  stimuli: {
+    ...stimuli,
+    prepareSet,
+    setProblems,
+    renderItem,
+    renderShip,
+    renderOption,
+    renderState,
+    renderCoin,
+    renderPair,
+    paintDisplay,
+    keyName,
+  },
   schedule: { buildSchedule, generateWalk, stepProbability, splitTrials },
   simulation: { setSimulatedAgent, getSimulatedAgent, HybridAgent },
   options: { resolveOptions, validateOptions },
 };
 
+export type {
+  FramingWords,
+  Item,
+  Noun,
+  PreparedSet,
+  Stimulus,
+  StimulusState,
+  TwoStepStimulusSet,
+} from "./sets";
 export type {
   ResolvedOptions,
   ScoringResult,

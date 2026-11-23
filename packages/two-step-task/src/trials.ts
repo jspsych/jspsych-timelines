@@ -15,7 +15,6 @@ import {
 } from "./constants";
 import {
   DurationOrJitter,
-  Framing,
   OptionId,
   ResolvedOptions,
   StateId,
@@ -24,6 +23,8 @@ import {
   validateOptions,
 } from "./options";
 import { ShipId, TrialPlan, buildSchedule, splitTrials } from "./schedule";
+import { prepareSet } from "./sets";
+import type { PreparedSet } from "./sets";
 import { HybridAgent, hasForcedRt } from "./simulation";
 import {
   colorsFor,
@@ -79,14 +80,14 @@ export function createContext(jsPsych: JsPsych, options: TwoStepTaskOptions = {}
   const practice = resolveOptions(options, "practice");
   validateOptions(test);
   validateOptions(practice);
-  const framing = test.instruction_framing as "abstract_symbols" | "spaceship_planet_alien";
+  const set = prepareSet(test.stimulus_set);
   return {
     jsPsych,
     text,
     user: options,
     practice,
     test,
-    words: text.framing_words({ framing }),
+    words: text.framing_words({ words: set.words, set: set.name }),
     state: { total: { practice: 0, test: 0 } },
     agent: new HybridAgent(jsPsych, test.common_transition_prob),
   };
@@ -127,7 +128,8 @@ const SHIPS = ["A", "B"] as const;
 const OPTIONS = ["option_1", "option_2"] as const;
 const STATES = ["red", "blue"] as const;
 
-const framingOf = (o: ResolvedOptions) => o.instruction_framing as Framing;
+/** The stimulus set of the run, with its defaults filled in and keyed by role. */
+const setOf = (o: ResolvedOptions): PreparedSet => prepareSet(o.stimulus_set);
 
 function sideOfKey(o: ResolvedOptions, key: string | null): Side | null {
   if (key === null) return null;
@@ -163,10 +165,10 @@ function shipsHtml(o: ResolvedOptions, plan: TrialPlan, chosen: Side | null = nu
   const left = plan.ship_left;
   const right = other(left, SHIPS);
   return renderPair({
-    left: renderShip(framingOf(o), left),
-    right: renderShip(framingOf(o), right),
+    left: renderShip(setOf(o), left),
+    right: renderShip(setOf(o), right),
     chosen,
-    framing: framingOf(o),
+    set: setOf(o),
     state: null,
     below,
   });
@@ -182,10 +184,10 @@ function optionsHtml(
   const left = plan.alien_left[state];
   const right = other(left, OPTIONS);
   return renderPair({
-    left: renderOption(framingOf(o), state, left),
-    right: renderOption(framingOf(o), state, right),
+    left: renderOption(setOf(o), state, left),
+    right: renderOption(setOf(o), state, right),
     chosen,
-    framing: framingOf(o),
+    set: setOf(o),
     state,
     below,
   });
@@ -320,6 +322,17 @@ function createChoice(a: TrialArgs, st: TrialState, d: Durations, stage: 1 | 2) 
       row.right = ids.right;
       row.choice = choice;
       row.state = stage === 1 ? null : st.state;
+      // the pictures, by the set's own ids
+      const set = setOf(o);
+      const itemId = (role: string) =>
+        stage === 1
+          ? set.first[role as ShipId].id
+          : set.states[st.state as StateId].items[role as OptionId].id;
+      row.stimulus_set = set.name;
+      row.state_id = stage === 1 ? null : set.states[st.state as StateId].id;
+      row.left_item_id = itemId(ids.left);
+      row.right_item_id = itemId(ids.right);
+      row.chosen_item_id = choice === null ? null : itemId(choice);
       row.condition = st.transition;
       if (stage === 1) {
         st.stage1 = { choice, key, side, rt: row.rt };
@@ -405,21 +418,21 @@ function outcomeHtml(
   const id = side === "left" ? left : other(left, OPTIONS);
   const total =
     o.running_score_display === "running_total"
-      ? `<p>${t.running_total({ total: ctx.state.total[phase] })}</p>`
+      ? `<p>${t.running_total({ words: ctx.words, total: ctx.state.total[phase] })}</p>`
       : "";
   const caption =
     captionHtml ??
     `<div class="ts-text"><p class="ts-outcome-text">${
-      rewarded ? t.outcome_coin : t.outcome_none
+      rewarded ? t.outcome_coin({ words: ctx.words }) : t.outcome_none({ words: ctx.words })
     }</p>${total}</div>`;
   return renderStage(
     `<div class="ts-outcome">${renderOption(
-      framingOf(o),
+      setOf(o),
       st.state as StateId,
       id as OptionId,
       72
-    )}${renderCoin(rewarded, 40)}</div>`,
-    framingOf(o),
+    )}${renderCoin(setOf(o), rewarded, 40)}</div>`,
+    setOf(o),
     st.state,
     caption
   );
@@ -452,7 +465,7 @@ function createTimeoutMessage(a: TrialArgs, st: TrialState, ms: number) {
     part: "timeout_message",
     block: a.block,
     stimulus: () =>
-      renderMessage(framingOf(a.o), st.missed_stage === 2 ? st.state : null, a.ctx.text.too_slow),
+      renderMessage(setOf(a.o), st.missed_stage === 2 ? st.state : null, a.ctx.text.too_slow),
     duration: ms,
     data: { trial_index_in_block: a.trial_index_in_block, timeout_message: ms },
     on_finish: (row) => {
@@ -473,7 +486,7 @@ function createSummary(a: TrialArgs, st: TrialState, d: Durations) {
     type: jsPsychHtmlKeyboardResponse,
     css_classes: [TASK_CLASS],
     // a blank, painted display (as the ITI): an empty one could flash the page colour for a frame
-    stimulus: renderStage("", framingOf(o), null),
+    stimulus: renderStage("", setOf(o), null),
     choices: "NO_KEYS",
     trial_duration: 0,
     data: baseData({
@@ -502,6 +515,15 @@ function createSummary(a: TrialArgs, st: TrialState, d: Durations) {
       row.stage2_side = st.stage2.side;
       row.stage2_rt = st.stage2.rt;
       row.stage2_left = st.state === null ? null : plan.alien_left[st.state];
+      // the pictures, by the set's own ids
+      const set = setOf(o);
+      row.stimulus_set = set.name;
+      row.stage1_item_id = st.stage1.choice === null ? null : set.first[st.stage1.choice].id;
+      row.stage2_state_id = st.state === null ? null : set.states[st.state].id;
+      row.stage2_item_id =
+        st.state === null || st.stage2.choice === null
+          ? null
+          : set.states[st.state].items[st.stage2.choice].id;
       row.reward = st.reward;
       row.reward_probs = plan.probs;
       row.planned_transition = plan.common ? "common" : "rare";
@@ -528,7 +550,7 @@ export function createTrial(a: TrialArgs) {
         phase: a.phase,
         part: "fixation",
         block: a.block,
-        stimulus: renderFixation(framingOf(o), ctx.text.fixation),
+        stimulus: renderFixation(setOf(o), ctx.text.fixation),
         duration: d.fixation,
         data: { trial_index_in_block: a.trial_index_in_block, fixation_duration: d.fixation },
       })
@@ -568,7 +590,7 @@ export function createTrial(a: TrialArgs) {
         phase: a.phase,
         part: "iti",
         block: a.block,
-        stimulus: renderStage("", framingOf(o), null),
+        stimulus: renderStage("", setOf(o), null),
         duration: d.iti,
         data: { trial_index_in_block: a.trial_index_in_block, iti: d.iti },
       })
@@ -696,7 +718,7 @@ export function demoSteps(ctx: Context): Step[] {
   const o = ctx.test;
   const t = ctx.text;
   const words = ctx.words;
-  const framing = framingOf(o);
+  const set = setOf(o);
   const plan = demoPlan();
   const key = (side: Side) => keyLabel(o, side);
   const steps: Step[] = [];
@@ -735,14 +757,14 @@ export function demoSteps(ctx: Context): Step[] {
         left_key: key("left"),
         right_key: key("right"),
       };
-      const picture = `<span class="ts-inline">${renderShip(framing, ship, 40)}</span> `;
+      const picture = `<span class="ts-inline">${renderShip(set, ship, 40)}</span> `;
       const pair = (cap: string) => {
         const left = side === "left" ? common : other(common, STATES);
         const right = other(left, STATES);
         return renderPair({
-          left: renderState(framing, left),
-          right: renderState(framing, right),
-          framing,
+          left: renderState(set, left),
+          right: renderState(set, right),
+          set,
           state: null,
           below: cap,
         });
@@ -766,7 +788,7 @@ export function demoSteps(ctx: Context): Step[] {
         renderPair({
           left: statement(t.statement_transitions_true({ words })),
           right: statement(t.statement_transitions_false({ words })),
-          framing,
+          set,
           state: null,
           below: cap,
         }),
@@ -786,7 +808,7 @@ export function demoSteps(ctx: Context): Step[] {
         renderPair({
           left: statement(t.statement_drift_false({ words })),
           right: statement(t.statement_drift_true({ words })),
-          framing,
+          set,
           state: null,
           below: cap,
         }),
@@ -925,7 +947,12 @@ export function createPracticeIntro(ctx: Context) {
 }
 
 export function createTestIntro(ctx: Context) {
-  return textPage(ctx, ctx.text.instruction_test_intro, "instructions", "instruction");
+  return textPage(
+    ctx,
+    ctx.text.instruction_test_intro({ words: ctx.words }),
+    "instructions",
+    "instruction"
+  );
 }
 
 // -- breaks, questionnaire, completion -------------------------------------------------------------
@@ -942,7 +969,7 @@ export function createRestBreak(ctx: Context, block: number) {
 /** `manipulation_check: "questionnaire"`: for each first-stage option, which state it mostly led to. */
 export function createQuestionnaire(ctx: Context) {
   const o = ctx.test;
-  const framing = framingOf(o);
+  const set = setOf(o);
   const t = ctx.text;
   const trials = SHIPS.map((ship, i) => {
     const common = COMMON_STATE[ship];
@@ -950,7 +977,7 @@ export function createQuestionnaire(ctx: Context) {
     const trueSide: Side = i === 0 ? "left" : "right";
     const left = trueSide === "left" ? common : other(common, STATES);
     const caption = `<div class="ts-text"><p><span class="ts-inline">${renderShip(
-      framing,
+      set,
       ship,
       40
     )}</span> ${t.questionnaire_question({
@@ -963,9 +990,9 @@ export function createQuestionnaire(ctx: Context) {
       type: jsPsychHtmlKeyboardResponse,
       css_classes: [TASK_CLASS],
       stimulus: renderPair({
-        left: renderState(framing, left),
-        right: renderState(framing, other(left, STATES)),
-        framing,
+        left: renderState(set, left),
+        right: renderState(set, other(left, STATES)),
+        set,
         state: null,
         below: caption,
       }),
@@ -980,6 +1007,9 @@ export function createQuestionnaire(ctx: Context) {
         d.rt = key === null ? null : d.rt;
         d.answer = answer;
         d.common_state = common;
+        d.stimulus_set = set.name;
+        d.item_id = set.first[ship].id;
+        d.answer_state_id = answer === null ? null : set.states[answer].id;
         d.correct = answer === common;
       },
     };
@@ -997,6 +1027,7 @@ export function createCompletion(ctx: Context, calculate: (data: any) => any) {
       const s = calculate(ctx.jsPsych.data.get());
       return textHtml(
         `<h2>${ctx.text.task_complete}</h2>${ctx.text.result_summary({
+          words: ctx.words,
           coins: s.total_reward,
           n_trials: s.n_trials,
           n_missed: s.n_missed,

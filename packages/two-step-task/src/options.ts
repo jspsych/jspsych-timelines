@@ -6,7 +6,11 @@
  * packages/two-step-task/DEFAULTS.md.
  */
 import { OPTION_IDS, STATE_IDS } from "./constants";
+import { abstractSymbols, setProblems } from "./sets";
+import type { TwoStepStimulusSet } from "./sets";
 import type { TextConfig } from "./text";
+
+export type { Noun, Stimulus, StimulusState, TwoStepStimulusSet } from "./sets";
 
 // -- value types --------------------------------------------------------------------------------
 
@@ -45,12 +49,6 @@ export type RewardSchedule =
   | { kind: "pregenerated_walk_sets" };
 
 export type SequenceConstraints = Record<string, unknown> | null;
-
-export type Framing =
-  | "abstract_symbols"
-  | "spaceship_planet_alien"
-  | "magic_carpet_mountain_genie"
-  | "ship_island_chest";
 
 export interface TwoStepTaskOptions {
   // -- timing --
@@ -188,11 +186,16 @@ export interface TwoStepTaskOptions {
    */
   instruction_demonstration?: "interactive" | "none";
   /**
-   * The cover story and drawings. `abstract_symbols`: plain symbols on coloured screens. `spaceship_planet_alien`:
-   * two spaceships, two planets, four aliens. The other two stories of the literature are not implemented.
-   * (default: "abstract_symbols" — Expfactory two-stage-decision, S024)
+   * The pictures in their roles and the words of the cover story: `{ name?, noun?, first_stage: [A, B], states:
+   * [state A usually leads to, state B usually leads to], reward? }`, each state `{ items: [option_1, option_2],
+   * picture?, background?, color?, ... }`. The instructions take their nouns ("spaceship", "planet", "alien") and
+   * names ("the rocket") from the set. Bundled: `utils.stimuli.abstractSymbols` (plain symbols on coloured
+   * screens) and `utils.stimuli.spaceshipPlanetAlien` (two spaceships, two planets, four aliens); both are drawings
+   * original to this package. Items are strings (text) or objects with one of `text`, `image` (a URL) or `svg`
+   * (markup), and an optional `id`, which the data records.
+   * (default: utils.stimuli.abstractSymbols — Expfactory two-stage-decision, S024: abstract_symbols)
    */
-  instruction_framing?: Framing;
+  stimulus_set?: TwoStepStimulusSet;
   /** Not implemented: only "standard". (default: "standard" — S024) */
   population_protocol?: "standard" | "child" | "gamified_child" | "clinical";
 
@@ -248,7 +251,7 @@ export const DEFAULT_OPTIONS: ResolvedOptions & { practice: Partial<TwoStepTaskO
   contingency_disclosure: "partial",
   instruction_format: "text",
   instruction_demonstration: "interactive",
-  instruction_framing: "abstract_symbols",
+  stimulus_set: abstractSymbols,
   population_protocol: "standard",
   practice: {},
 };
@@ -381,11 +384,6 @@ const NOT_IMPLEMENTED: Array<[keyof ResolvedOptions, string[], string]> = [
     "no media is bundled; supply your own instruction trials",
   ],
   [
-    "instruction_framing",
-    ["magic_carpet_mountain_genie", "ship_island_chest"],
-    "only abstract_symbols and spaceship_planet_alien are drawn",
-  ],
-  [
     "population_protocol",
     ["child", "gamified_child", "clinical"],
     "it bundles a deadline, audio, a tutorial and breaks; set those options one by one",
@@ -409,6 +407,15 @@ function checkProbability(where: string, v: ProbabilitySpec, lo: number, hi: num
 
 /** Throw on values the package cannot honour or combinations that contradict each other. */
 export function validateOptions(o: ResolvedOptions): void {
+  if ("instruction_framing" in o) {
+    throw new Error(
+      "two-step-task: instruction_framing was replaced by stimulus_set, which carries the pictures and the words of the cover story: stimulus_set: utils.stimuli.spaceshipPlanetAlien (or your own set)."
+    );
+  }
+  const problems = setProblems(o.stimulus_set);
+  if (problems.length) {
+    throw new Error(`two-step-task: stimulus_set: ${problems.join("; ")}.`);
+  }
   for (const [key, values, why] of NOT_IMPLEMENTED) {
     if (values.includes(o[key] as string)) {
       throw new Error(`two-step-task: ${key}: "${o[key]}" is not implemented (${why}).`);

@@ -11,7 +11,7 @@
 import * as fs from "fs";
 import * as path from "path";
 
-import { defineReproduction } from "@jspsych-timelines/testing";
+import { defineReproduction, resolveUtilRefs, toUtilRefs } from "@jspsych-timelines/testing";
 import type { Fixture, Tallies } from "@jspsych-timelines/testing";
 import { simulateTimeline } from "@jspsych/test-utils";
 import { initJsPsych } from "jspsych";
@@ -32,7 +32,16 @@ import expected from "../reproduction/expected-tallies.json";
 import { harness } from "../reproduction/harness";
 import fixtureJson from "../reproduction/spec-observed.json";
 import { DEFAULT_OPTIONS, PHASE_OPTIONS, resolveOptions } from "./options";
-import { createTimeline } from ".";
+import { createTimeline, utils } from ".";
+
+/** What a preset's pictures are: the package's drawings stand in for the study's own (PACKAGE-STANDARD §12). */
+const itemsNote = (opts: any): string =>
+  opts?.stimulus_set
+    ? ` · pictures: the package's own drawings (${opts.stimulus_set.name.replace(
+        /_/g,
+        " "
+      )}), not the study's`
+    : "";
 
 jest.setTimeout(120000);
 
@@ -73,6 +82,7 @@ defineReproduction({
   },
   checks: CHECKS,
   addNullOptions: ADD_NULL_OPTIONS,
+  utils: utils as any,
   // level 2: the resolved option must equal the value the configuration reports
   reportedValue: (key, value, r) => {
     const e = r.eff as any;
@@ -92,6 +102,8 @@ defineReproduction({
         return [e.practice_trials, value];
       case "sequence_constraints":
         return [e.sequence_constraints ?? {}, value];
+      case "instruction_framing":
+        return [e.stimulus_set.name, value];
       case "missed_response_handling.missed_trial_abort_threshold":
         return null;
       default:
@@ -119,8 +131,10 @@ defineReproduction({
                 Object.keys(sc.options).length
               } spec options` +
               (gaps.length ? ` · not expressible, left out: ${gaps.join(", ")}` : "") +
-              (assumed.length ? ` · assumed, not reported: ${assumed.join(", ")}` : ""),
-            options: opts,
+              (assumed.length ? ` · assumed, not reported: ${assumed.join(", ")}` : "") +
+              itemsNote(opts),
+            // JSON: a bundled stimulus set is written as a reference the docs theme resolves
+            options: toUtilRefs(opts, utils as any),
           };
         })
         .filter((p) => Object.keys(p.options).length >= 3),
@@ -142,7 +156,8 @@ describe("defaults reproduce the Expfactory anchor (S024) except the documented 
     expect(o.fixation_duration_ms).toBe(s024.fixation_duration_ms);
     expect(o.fullscreen_enforcement).toBe(s024.fullscreen_enforcement);
     expect(o.instruction_format).toBe(s024.instruction_format);
-    expect(o.instruction_framing).toBe(s024.instruction_framing);
+    expect(o.stimulus_set).toBe(utils.stimuli.abstractSymbols);
+    expect(o.stimulus_set.name).toBe(s024.instruction_framing);
     expect(o.iti_ms).toBe(s024.iti_ms);
     expect(o.manipulation_check).toBe(s024.manipulation_check);
     expect(o.missed_response_handling).toBe(
@@ -207,7 +222,9 @@ describe("docs-meta/options.meta.json", () => {
     expect(presets.length).toBeGreaterThan(5);
     for (const p of presets) {
       Object.keys(p.options).forEach((k) => expect([...optionNames, "practice"]).toContain(k));
-      expect(() => createTimeline(initJsPsych(), p.options)).not.toThrow();
+      expect(() =>
+        createTimeline(initJsPsych(), resolveUtilRefs(p.options, utils as any))
+      ).not.toThrow();
     }
   });
 

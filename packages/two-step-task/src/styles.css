@@ -120,9 +120,30 @@
   line-height: 0;
 }
 
-.jspsych-timelines-two-step-task .ts-item svg {
+/* One picture of the stimulus set, in a box of the size the screen asks for (renderItem). */
+.jspsych-timelines-two-step-task .ts-pic {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
   max-width: 100%;
-  height: auto;
+  vertical-align: middle;
+}
+
+.jspsych-timelines-two-step-task .ts-pic > svg,
+.jspsych-timelines-two-step-task .ts-pic > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* A text item: a word in the box, not a sentence. */
+.jspsych-timelines-two-step-task .ts-pic-text {
+  padding: 0 0.3em;
+  font-weight: bold;
+  line-height: 1.2;
+  white-space: nowrap;
 }
 
 /* The chosen option is outlined, the other dimmed. */

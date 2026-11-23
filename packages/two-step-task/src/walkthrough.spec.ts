@@ -10,7 +10,7 @@ import { DataCollection, JsPsych, initJsPsych } from "jspsych";
 import { INSTRUCTION_MAX_ATTEMPTS } from "./constants";
 import { TwoStepTaskOptions } from "./options";
 import { calculateScores } from "./scoring";
-import { createTimeline, timelineUnits } from ".";
+import { createTimeline, timelineUnits, utils } from ".";
 
 function allTrials(tl: any, out: any[] = []): any[] {
   if (Array.isArray(tl)) tl.forEach((t) => allTrials(t, out));
@@ -224,7 +224,7 @@ describe("instruction walkthrough (interactive)", () => {
       const ctx = timelineUnits.createContext(jsPsych, {
         ...base,
         response_keys: ["f", "j"],
-        instruction_framing: "spaceship_planet_alien",
+        stimulus_set: utils.stimuli.spaceshipPlanetAlien,
         contingency_disclosure: "full",
       });
       const wt = timelineUnits.createInstructionWalkthrough(ctx);
@@ -276,7 +276,7 @@ describe("instruction walkthrough (interactive)", () => {
     const { timeline } = createTimeline(jsPsych, {
       practice_trials: 0,
       n_test_trials: 2,
-      instruction_framing: "spaceship_planet_alien",
+      stimulus_set: utils.stimuli.spaceshipPlanetAlien,
       text: {
         step_first: (r) => {
           seen.push(r);

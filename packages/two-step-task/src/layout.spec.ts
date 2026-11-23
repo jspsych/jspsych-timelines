@@ -4,7 +4,8 @@ import { join } from "path";
 import { initJsPsych } from "jspsych";
 
 import { TwoStepTaskOptions } from "./options";
-import { renderFixation, renderMessage, renderPair, renderStage } from "./stimuli";
+import { abstractSymbols, spaceshipPlanetAlien } from "./sets";
+import { renderFixation, renderMessage, renderPair, renderShip, renderStage } from "./stimuli";
 import { createTimeline } from ".";
 
 /**
@@ -52,7 +53,7 @@ describe("two-step-task anchored stage layout", () => {
         left: "<i>L</i>",
         right: "<i>R</i>",
         chosen: "left",
-        framing: "abstract_symbols",
+        set: abstractSymbols,
         state: "red",
         below: '<div class="ts-text">hi</div>',
       })
@@ -61,23 +62,51 @@ describe("two-step-task anchored stage layout", () => {
     expect(a.stage.querySelectorAll(".ts-item")).toHaveLength(2);
     expect(a.stage.querySelector(".ts-chosen")?.getAttribute("data-side")).toBe("left");
     expect(a.stage.querySelector(".ts-dim")?.getAttribute("data-side")).toBe("right");
-    expect(expectAnchored(renderStage("", "abstract_symbols", null)).below).toBeNull();
-    expect(expectAnchored(renderFixation("abstract_symbols", "+")).stage.textContent).toBe("+");
-    expect(
-      expectAnchored(renderMessage("abstract_symbols", null, "Too slow")).stage.textContent
-    ).toBe("Too slow");
+    expect(expectAnchored(renderStage("", abstractSymbols, null)).below).toBeNull();
+    expect(expectAnchored(renderFixation(abstractSymbols, "+")).stage.textContent).toBe("+");
+    expect(expectAnchored(renderMessage(abstractSymbols, null, "Too slow")).stage.textContent).toBe(
+      "Too slow"
+    );
   });
 
-  it("paints the whole display with the state's colour, and a planet under the spaceship framing", () => {
-    expect(renderStage("", "abstract_symbols", "red")).toContain("background:#3a1520");
-    expect(renderStage("", "abstract_symbols", null)).toContain("background:#17181d");
-    expect(renderStage("", "spaceship_planet_alien", "blue")).toContain("radial-gradient");
-    expect(renderStage("", "abstract_symbols", "blue")).not.toContain("radial-gradient");
+  it("paints the whole display with the state's colour, and a planet under the spaceship set", () => {
+    expect(renderStage("", abstractSymbols, "red")).toContain("background:#3a1520");
+    expect(renderStage("", abstractSymbols, null)).toContain("background:#17181d");
+    expect(renderStage("", spaceshipPlanetAlien, "blue")).toContain("radial-gradient");
+    expect(renderStage("", abstractSymbols, "blue")).not.toContain("radial-gradient");
+  });
+
+  it("paints a researcher's own set with its own colours, and draws image and text items", () => {
+    const own = {
+      first_stage: [{ image: "a.png" }, "B"],
+      states: [
+        { items: ["x", "y"], background: "darkgreen", color: "#0a0", horizon: true },
+        { items: ["p", "q"] },
+      ],
+      background: "rgb(0, 0, 0)",
+    } as const;
+    expect(renderStage("", own as any, "red")).toContain(
+      "radial-gradient(ellipse 130% 30% at 50% 108%, #0a0"
+    );
+    expect(renderStage("", own as any, "red")).toContain("darkgreen");
+    expect(renderStage("", own as any, null)).toContain("background:rgb(0, 0, 0)");
+    expect(renderStage("", own as any, "blue")).toContain("background:#102a4c");
+    const pair = expectAnchored(
+      renderPair({
+        left: renderShip(own as any, "A"),
+        right: renderShip(own as any, "B"),
+        set: own as any,
+        state: null,
+      })
+    );
+    expect(pair.stage.querySelector("img")?.getAttribute("src")).toBe("a.png");
+    expect(pair.stage.querySelector('[data-item="custom-first-1"]')).not.toBeNull();
+    expect(pair.stage.querySelector('[data-item="B"]')?.textContent).toBe("B");
   });
 
   for (const [name, options] of [
     [
-      "default framing",
+      "default set",
       {
         practice_trials: 2,
         n_test_trials: 2,
@@ -87,11 +116,11 @@ describe("two-step-task anchored stage layout", () => {
       },
     ],
     [
-      "spaceship framing",
+      "spaceship set",
       {
         practice_trials: 2,
         n_test_trials: 2,
-        instruction_framing: "spaceship_planet_alien",
+        stimulus_set: spaceshipPlanetAlien,
         manipulation_check: "questionnaire",
       },
     ],
